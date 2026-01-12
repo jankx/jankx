@@ -124,13 +124,156 @@ interface PreviewItemProps {
     className?: string;
     style?: CSSProperties;
     index: number;
+    templateItemStyle?: CSSProperties;
+    templateItemClassName?: string;
 }
+
+/**
+ * Build inline styles for template item from block attributes
+ */
+const buildTemplateItemStyle = (attributes: any): CSSProperties => {
+    const styles: CSSProperties = {};
+    const attrStyle = attributes?.style;
+
+    if (!attrStyle) {
+        return styles;
+    }
+
+    // Spacing - padding
+    if (attrStyle?.spacing?.padding) {
+        const p = attrStyle.spacing.padding;
+        if (p.top) styles.paddingTop = p.top;
+        if (p.right) styles.paddingRight = p.right;
+        if (p.bottom) styles.paddingBottom = p.bottom;
+        if (p.left) styles.paddingLeft = p.left;
+    }
+
+    // Spacing - margin
+    if (attrStyle?.spacing?.margin) {
+        const m = attrStyle.spacing.margin;
+        if (m.top) styles.marginTop = m.top;
+        if (m.right) styles.marginRight = m.right;
+        if (m.bottom) styles.marginBottom = m.bottom;
+        if (m.left) styles.marginLeft = m.left;
+    }
+
+    // Colors - background
+    if (attrStyle?.color?.background) {
+        styles.backgroundColor = attrStyle.color.background;
+    }
+
+    // Colors - text
+    if (attrStyle?.color?.text) {
+        styles.color = attrStyle.color.text;
+    }
+
+    // Colors - gradient
+    if (attrStyle?.color?.gradient) {
+        styles.background = attrStyle.color.gradient;
+    }
+
+    // Typography - font size
+    if (attrStyle?.typography?.fontSize) {
+        styles.fontSize = attrStyle.typography.fontSize;
+    }
+
+    // Typography - line height
+    if (attrStyle?.typography?.lineHeight) {
+        styles.lineHeight = attrStyle.typography.lineHeight;
+    }
+
+    // Typography - font family
+    if (attrStyle?.typography?.fontFamily) {
+        styles.fontFamily = attrStyle.typography.fontFamily;
+    }
+
+    // Typography - font weight
+    if (attrStyle?.typography?.fontWeight) {
+        styles.fontWeight = attrStyle.typography.fontWeight;
+    }
+
+    // Typography - font style
+    if (attrStyle?.typography?.fontStyle) {
+        styles.fontStyle = attrStyle.typography.fontStyle;
+    }
+
+    // Typography - text transform
+    if (attrStyle?.typography?.textTransform) {
+        styles.textTransform = attrStyle.typography.textTransform as any;
+    }
+
+    // Typography - text decoration
+    if (attrStyle?.typography?.textDecoration) {
+        styles.textDecoration = attrStyle.typography.textDecoration;
+    }
+
+    // Typography - letter spacing
+    if (attrStyle?.typography?.letterSpacing) {
+        styles.letterSpacing = attrStyle.typography.letterSpacing;
+    }
+
+    // Border
+    if (attrStyle?.border) {
+        const border = attrStyle.border;
+        if (border.radius) {
+            styles.borderRadius = border.radius;
+        }
+        if (border.width) {
+            styles.borderWidth = border.width;
+        }
+        if (border.style) {
+            styles.borderStyle = border.style;
+        }
+        if (border.color) {
+            styles.borderColor = border.color;
+        }
+    }
+
+    return styles;
+};
+
+/**
+ * Build CSS classes for template item from block attributes
+ */
+const buildTemplateItemClasses = (attributes: any): string => {
+    const classes: string[] = [];
+
+    // Add custom className if present
+    if (attributes?.className) {
+        classes.push(attributes.className);
+    }
+
+    // Add color classes if using theme colors
+    if (attributes?.backgroundColor) {
+        classes.push(`has-${attributes.backgroundColor}-background-color`);
+        classes.push('has-background');
+    }
+
+    if (attributes?.textColor) {
+        classes.push(`has-${attributes.textColor}-color`);
+        classes.push('has-text-color');
+    }
+
+    if (attributes?.gradient) {
+        classes.push(`has-${attributes.gradient}-gradient-background`);
+        classes.push('has-background');
+    }
+
+    // Add font size class if using preset
+    if (attributes?.fontSize) {
+        classes.push(`has-${attributes.fontSize}-font-size`);
+    }
+
+    return classes.filter(Boolean).join(' ');
+};
 
 const PreviewItem = ({
     blocks,
     className,
     style,
     index,
+    templateItemStyle,
+    templateItemClassName,
 }: PreviewItemProps) => {
     const [resizeListener, sizes] = useResizeObserver();
     const width = sizes && sizes.width;
@@ -142,7 +285,10 @@ const PreviewItem = ({
             style={style}
         >
             {resizeListener}
-            <div className="dynamic-data-template__inner-blocks">
+            <div
+                className={`dynamic-data-template__inner-blocks${templateItemClassName ? ' ' + templateItemClassName : ''}`}
+                style={templateItemStyle}
+            >
                 {!!width && (
                     <BlockPreview
                         blocks={blocks}
@@ -691,12 +837,16 @@ export default function Edit({
                                                     <PreviewItem
                                                         index={index}
                                                         blocks={sharedInnerBlocks}
+                                                        templateItemStyle={buildTemplateItemStyle(attributes)}
+                                                        templateItemClassName={buildTemplateItemClasses(attributes)}
                                                     />
                                                 </BlockContextProvider>
                                             ) : (
                                                 <PreviewItem
                                                     index={index}
                                                     blocks={sharedInnerBlocks}
+                                                    templateItemStyle={buildTemplateItemStyle(attributes)}
+                                                    templateItemClassName={buildTemplateItemClasses(attributes)}
                                                 />
                                             )}
                                         </div>
@@ -793,12 +943,16 @@ export default function Edit({
                                             <PreviewItem
                                                 index={index}
                                                 blocks={sharedInnerBlocks}
+                                                templateItemStyle={buildTemplateItemStyle(attributes)}
+                                                templateItemClassName={buildTemplateItemClasses(attributes)}
                                             />
                                         </BlockContextProvider>
                                     ) : (
                                         <PreviewItem
                                             index={index}
                                             blocks={sharedInnerBlocks}
+                                            templateItemStyle={buildTemplateItemStyle(attributes)}
+                                            templateItemClassName={buildTemplateItemClasses(attributes)}
                                         />
                                     )}
                                 </div>

@@ -14,7 +14,7 @@ import {
 import { useSelect } from '@wordpress/data';
 import { useCallback, useEffect, useState, useMemo, useRef } from '@wordpress/element';
 import type { CSSProperties } from 'react';
-type TokenLike = string | { value: string; [key: string]: unknown };
+type TokenLike = string | { value: string;[key: string]: unknown };
 import { ResponsiveControl, ResponsiveValue } from '../../shared/components';
 import './style.scss';
 import './editor.scss';
@@ -272,7 +272,7 @@ const toSafeHelpText = (input: unknown, fallback: string): string => {
 };
 
 declare global {
-    interface Window extends WordPressWindow {}
+    interface Window extends WordPressWindow { }
 }
 
 const normalizeTokens = (tokens: TokenLike[]): string[] => {
@@ -381,7 +381,7 @@ interface EditProps {
 }
 
 function Edit({ attributes, setAttributes, clientId }: EditProps) {
-    
+
     const {
         queryPreset = 'custom',
         postType = 'post',
@@ -446,12 +446,12 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
         showRating = false,
         excerptLength = 55,
     } = attributes;
-    
+
     // States for taxonomies and authors
     const [taxonomies, setTaxonomies] = useState<TaxonomyItem[]>([]);
-    
+
     const [authors, setAuthors] = useState<AuthorItem[]>([]);
-    
+
     const [taxonomyTerms, setTaxonomyTerms] = useState<Record<string, TermItem[]>>({});
 
     const isMountedRef = useRef(true);
@@ -478,13 +478,13 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
     // Reset queryPreset if current preset is not valid for the current postType
     useEffect(() => {
         const allPresets: QueryPresetOption[] = window.jankxQueryOptions?.queryPresets || [];
-        
-        const validPresets = allPresets.filter((preset: QueryPresetOption) => 
+
+        const validPresets = allPresets.filter((preset: QueryPresetOption) =>
             !preset.postType || preset.postType === postType
         );
-        
+
         const currentPresetValid = validPresets.some((preset: QueryPresetOption) => preset.value === queryPreset);
-        
+
         if (!currentPresetValid && validPresets.length > 0 && validPresets[0]?.value) {
             // Reset to first valid preset
             const newPreset = validPresets[0].value as QueryPreset;
@@ -494,9 +494,9 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
 
     // Fetch taxonomies and authors when postType changes
     useEffect(() => {
-        
+
         const fetchTaxonomiesAndAuthors = async () => {
-            
+
             if (!window.wp?.apiFetch) {
                 return;
             }
@@ -539,7 +539,7 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                         };
                     })
                     .filter((author): author is AuthorItem => author.id > 0 && author.name.length > 0);
-                
+
                 setAuthors(normalizedAuthors);
             } catch (error) {
 
@@ -557,7 +557,7 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
 
     // Function to fetch terms for a specific taxonomy
     const fetchTermsForTaxonomy = useCallback(async (taxonomy: string) => {
-        
+
         if (taxonomyTerms[taxonomy]) {
             return; // Already loaded
         }
@@ -585,7 +585,7 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                     };
                 })
                 .filter((term): term is TermItem => term.id > 0 && term.name.length > 0);
-            
+
 
             setTaxonomyTerms(prev => {
                 const newState = {
@@ -665,7 +665,7 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
             responsiveColumns.desktop !== expected.desktop ||
             responsiveColumns.tablet !== expected.tablet ||
             responsiveColumns.mobile !== expected.mobile;
-        
+
         if (needsUpdate) {
             setAttributes({ responsiveColumns: expected });
         }
@@ -681,7 +681,7 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
     const publicPostTypes: Array<{ slug: string; name: string }> = Array.isArray((window as any).jankxPublicPostTypes)
         ? (window as any).jankxPublicPostTypes
         : [];
-    
+
     // Get layouts data from PHP (normalize to avoid objects being rendered)
     const layoutsData: LayoutsData = normalizeLayoutsData(window.jankxDynamicDataLayouts);
 
@@ -717,17 +717,20 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
 
     // Get available layouts for current post type
     const availableLayouts = useMemo(() => {
-        const layouts: Array<{ name: string; title: string; supportedOptions?: string[]; settingsDefinition?: SettingDefinition[] }> = [];
-        
+        const layouts: Array<{ name: string; title: string; supportedOptions?: string[]; readOnlyOptions?: string[]; settingsDefinition?: SettingDefinition[] }> = [];
+
         // Add common layouts
         if (layoutsData.commonLayouts) {
             layoutsData.commonLayouts.forEach((layoutInfo: LayoutInfo) => {
-                const layoutItem: { name: string; title: string; supportedOptions?: string[]; settingsDefinition?: SettingDefinition[] } = {
+                const layoutItem: { name: string; title: string; supportedOptions?: string[]; readOnlyOptions?: string[]; settingsDefinition?: SettingDefinition[] } = {
                     name: layoutInfo.name || '',
                     title: layoutInfo.title || layoutInfo.name || '',
                 };
                 if (layoutInfo.supportedOptions) {
                     layoutItem.supportedOptions = layoutInfo.supportedOptions;
+                }
+                if (layoutInfo.readOnlyOptions) {
+                    layoutItem.readOnlyOptions = layoutInfo.readOnlyOptions;
                 }
                 if (layoutInfo.settingsDefinition) {
                     layoutItem.settingsDefinition = layoutInfo.settingsDefinition;
@@ -735,16 +738,19 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                 layouts.push(layoutItem);
             });
         }
-        
+
         // Add post type specific layouts
         if (layoutsData.layoutsByPostType && layoutsData.layoutsByPostType[postType]) {
             layoutsData.layoutsByPostType[postType].forEach((layoutInfo: LayoutInfo) => {
-                const layoutItem: { name: string; title: string; supportedOptions?: string[]; settingsDefinition?: SettingDefinition[] } = {
+                const layoutItem: { name: string; title: string; supportedOptions?: string[]; readOnlyOptions?: string[]; settingsDefinition?: SettingDefinition[] } = {
                     name: layoutInfo.name || '',
                     title: layoutInfo.title || layoutInfo.name || '',
                 };
                 if (layoutInfo.supportedOptions) {
                     layoutItem.supportedOptions = layoutInfo.supportedOptions;
+                }
+                if (layoutInfo.readOnlyOptions) {
+                    layoutItem.readOnlyOptions = layoutInfo.readOnlyOptions;
                 }
                 if (layoutInfo.settingsDefinition) {
                     layoutItem.settingsDefinition = layoutInfo.settingsDefinition;
@@ -752,7 +758,7 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                 layouts.push(layoutItem);
             });
         }
-        
+
         return layouts;
     }, [postType, layoutsData]);
 
@@ -767,8 +773,16 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
 
     // Get current layout's supported options
     const currentLayout = availableLayouts.find((l) => l.name === layout);
-    
-    const supportedOptions: string[] = currentLayout?.supportedOptions || [];
+
+    // Define default supported options for standard layouts
+    const standardLayoutDefaults: Record<string, string[]> = {
+        'grid': ['columns', 'showFeaturedImage', 'showTitle', 'showExcerpt', 'showDate', 'showAuthor', 'showPrice', 'showAddToCart', 'showRating'],
+        'card': ['columns', 'showFeaturedImage', 'showTitle', 'showExcerpt', 'showDate', 'showAuthor', 'showPrice', 'showAddToCart', 'showRating'],
+        'carousel': ['columns', 'showFeaturedImage', 'showTitle', 'showExcerpt', 'showDate', 'showAuthor', 'showPrice', 'showAddToCart', 'showRating'],
+        'list': ['showFeaturedImage', 'showTitle', 'showExcerpt', 'showDate', 'showAuthor', 'showPrice', 'showAddToCart', 'showRating'],
+    };
+
+    const supportedOptions: string[] = currentLayout?.supportedOptions || standardLayoutDefaults[layout] || [];
     const readOnlyOptions: string[] = currentLayout?.readOnlyOptions || [];
     const settingsDefinition: SettingDefinition[] = currentLayout?.settingsDefinition || [];
 
@@ -857,7 +871,7 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
             case 'panel':
                 return (
                     <PanelBody title={setting.title} initialOpen={setting.initialOpen} key={index}>
-                        {setting.controls?.map((childSetting, childIndex) => 
+                        {setting.controls?.map((childSetting, childIndex) =>
                             renderSettingsControl(childSetting, childIndex)
                         )}
                     </PanelBody>
@@ -880,7 +894,7 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
         // - Common options: postType is null (available for all post types)
         // - Specific options: postType matches current postType
         const filtered = allOrderByOptions
-            .filter((option: OrderByOption) => 
+            .filter((option: OrderByOption) =>
                 !option.postType || option.postType === postType
             )
             .map((option: OrderByOption) => ({
@@ -909,7 +923,7 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
         // - Common presets: postType is null (available for all post types)
         // - Specific presets: postType matches current postType
         const filtered = allPresets
-            .filter((preset: QueryPresetOption) => 
+            .filter((preset: QueryPresetOption) =>
                 !preset.postType || preset.postType === postType
             )
             .map((preset: QueryPresetOption) => ({
@@ -925,7 +939,7 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
         const helpText = toSafeHelpText(currentPreset?.help, __('Select a query preset', 'jankx'));
         return helpText;
     }, [queryPreset, normalizedPresets]);
-    
+
     return (
         <>
             <InspectorControls group="settings">
@@ -951,7 +965,7 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                             help={queryPreset === 'default' ? __('Select post type for the main query', 'jankx') : undefined}
                         />
                     ) : null}
-                    
+
                     <ToggleControl
                         label={__('Multi Post Type', 'jankx')}
                         checked={useMultiPostType}
@@ -1027,7 +1041,7 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                                     onChange={(value) => {
                                         const allOrderByOptions: OrderByOption[] = window.jankxQueryOptions?.orderBy || [];
                                         const selectedOption = allOrderByOptions.find((opt: OrderByOption) => opt.value === value);
-                                        
+
                                         // Auto-set metaKey if option has metaKey property
                                         const updates: Partial<DynamicDataLayoutAttributes> = { orderBy: value };
                                         if (selectedOption?.metaKey) {
@@ -1037,7 +1051,7 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                                                 updates.orderBy = 'meta_value_num';
                                             }
                                         }
-                                        
+
                                         setAttributes(updates);
                                     }}
                                     help={__('Sort posts by which criteria', 'jankx')}
@@ -1057,50 +1071,50 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
 
                 {/* Layout Settings */}
                 <PanelBody title={__('Layout', 'jankx')} initialOpen={true}>
-                            <SelectControl
-                                label={__('Layout Type', 'jankx')}
-                                value={layout}
-                                options={layoutOptions.length > 0 ? layoutOptions : [
-                                    { label: __('Grid', 'jankx'), value: 'grid' },
-                                    { label: __('List', 'jankx'), value: 'list' },
-                                    { label: __('Card', 'jankx'), value: 'card' },
-                                    { label: __('Carousel', 'jankx'), value: 'carousel' },
-                                ]}
-                                onChange={(value) => {
-                                    setAttributes({ layout: value });
-                                }}
-                            />
-                            {supportedOptions.includes('columns') ? (
-                                <ResponsiveControl
-                                    label={__('Columns', 'jankx')}
-                                    values={resolvedResponsiveColumns}
-                                    onChange={(values) => setAttributes({
-                                        columns: values.desktop,
-                                        columnsTablet: values.tablet,
-                                        columnsMobile: values.mobile,
-                                        responsiveColumns: values
-                                    })}
-                                    min={1}
-                                    max={6}
-                                    help={{
-                                        desktop: __('Number of columns on large screens (>1024px)', 'jankx'),
-                                        tablet: __('Number of columns on tablet (768px - 1024px)', 'jankx'),
-                                        mobile: __('Number of columns on mobile (<768px)', 'jankx')
-                                    }}
-                                />
-                            ) : null}
-                        </PanelBody>
-                    
-                    {/* Layout Specific Settings (Dynamic) */}
-                    {settingsDefinition.length > 0 && (
-                        <PanelBody title={__('Layout Settings', 'jankx')} initialOpen={true}>
-                            {settingsDefinition.map((setting, index) => renderSettingsControl(setting, index))}
-                        </PanelBody>
-                    )}
+                    <SelectControl
+                        label={__('Layout Type', 'jankx')}
+                        value={layout}
+                        options={layoutOptions.length > 0 ? layoutOptions : [
+                            { label: __('Grid', 'jankx'), value: 'grid' },
+                            { label: __('List', 'jankx'), value: 'list' },
+                            { label: __('Card', 'jankx'), value: 'card' },
+                            { label: __('Carousel', 'jankx'), value: 'carousel' },
+                        ]}
+                        onChange={(value) => {
+                            setAttributes({ layout: value });
+                        }}
+                    />
+                    {supportedOptions.includes('columns') ? (
+                        <ResponsiveControl
+                            label={__('Columns', 'jankx')}
+                            values={resolvedResponsiveColumns}
+                            onChange={(values) => setAttributes({
+                                columns: values.desktop,
+                                columnsTablet: values.tablet,
+                                columnsMobile: values.mobile,
+                                responsiveColumns: values
+                            })}
+                            min={1}
+                            max={6}
+                            help={{
+                                desktop: __('Number of columns on large screens (>1024px)', 'jankx'),
+                                tablet: __('Number of columns on tablet (768px - 1024px)', 'jankx'),
+                                mobile: __('Number of columns on mobile (<768px)', 'jankx')
+                            }}
+                        />
+                    ) : null}
+                </PanelBody>
+
+                {/* Layout Specific Settings (Dynamic) */}
+                {settingsDefinition.length > 0 && (
+                    <PanelBody title={__('Layout Settings', 'jankx')} initialOpen={true}>
+                        {settingsDefinition.map((setting, index) => renderSettingsControl(setting, index))}
+                    </PanelBody>
+                )}
 
                 {/* Query Parameters - Only show for custom preset */}
                 {queryPreset === 'custom' ? (
-                        <PanelBody title={__('Query Parameters', 'jankx')} initialOpen={false}>
+                    <PanelBody title={__('Query Parameters', 'jankx')} initialOpen={false}>
                         <RangeControl
                             label={__('Offset', 'jankx')}
                             value={offset}
@@ -1134,7 +1148,7 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                                 ) : null}
                             </>
                         ) : null}
-                        </PanelBody>
+                    </PanelBody>
                 ) : null}
 
                 {/* Advanced Query Parameters - Only show for custom preset */}
@@ -1768,18 +1782,18 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                         (select) => select(blockEditorStore).getBlocks(clientId),
                         [clientId]
                     );
-                    
+
                     const hasTemplateBlock = blocks && blocks.length > 0;
-                    
+
                     if (!hasTemplateBlock) {
                         return (
-                            <div style={{ 
+                            <div style={{
                                 padding: '1rem',
                                 border: '2px dashed #0073aa',
                                 borderRadius: '4px',
                                 backgroundColor: '#f0f6fc',
                             }}>
-                                <div style={{ 
+                                <div style={{
                                     fontSize: '0.85rem',
                                     color: '#0073aa',
                                     marginBottom: '0.75rem',
@@ -1787,7 +1801,7 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                                 }}>
                                     {__('Add Dynamic Data Template to define item layout', 'jankx')}
                                 </div>
-                                <InnerBlocks 
+                                <InnerBlocks
                                     allowedBlocks={['jankx/dynamic-data-template']}
                                     templateLock={false}
                                     renderAppender={InnerBlocks.ButtonBlockAppender}
@@ -1795,9 +1809,9 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                             </div>
                         );
                     }
-                    
+
                     return (
-                        <InnerBlocks 
+                        <InnerBlocks
                             allowedBlocks={['jankx/dynamic-data-template']}
                             templateLock={false}
                             renderAppender={InnerBlocks.DefaultBlockAppender}

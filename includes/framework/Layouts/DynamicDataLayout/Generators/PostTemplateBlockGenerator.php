@@ -105,9 +105,11 @@ class PostTemplateBlockGenerator extends AbstractContentGenerator
     protected function renderTemplateForPost(WP_Post $post, WP_Query $query, array $options): string
     {
         $context = $this->buildBlockContext($post, $query, $options);
-        
-        // Get overlay settings
+
+        // Get template block attributes
         $attrs = $this->templateBlock['attrs'] ?? [];
+
+        // Get overlay settings
         $overlayIcon = $attrs['overlayIcon'] ?? '';
         $overlayMode = $attrs['overlayIconShowMode'] ?? ($attrs['overlayIconMode'] ?? 'always-show');
         $overlayType = $attrs['overlayIconType'] ?? 'class';
@@ -167,6 +169,17 @@ class PostTemplateBlockGenerator extends AbstractContentGenerator
                 $output .= $blockHtml;
             }
 
+            // Build wrapper styles and classes for the template item
+            $wrapperStyle = $this->buildTemplateItemStyle($attrs);
+            $wrapperClasses = $this->buildTemplateItemClasses($attrs);
+
+            // If we have styles or classes to apply, wrap the output
+            if (!empty($wrapperStyle) || !empty($wrapperClasses)) {
+                $styleAttr = !empty($wrapperStyle) ? sprintf(' style="%s"', esc_attr($wrapperStyle)) : '';
+                $classAttr = !empty($wrapperClasses) ? sprintf(' class="%s"', esc_attr($wrapperClasses)) : '';
+                $output = sprintf('<div%s%s>%s</div>', $classAttr, $styleAttr, $output);
+            }
+
             return $output;
         } catch (\Throwable $exception) {
             Log::error(sprintf(
@@ -176,6 +189,92 @@ class PostTemplateBlockGenerator extends AbstractContentGenerator
             ));
             return '';
         }
+    }
+
+    /**
+     * Build inline styles for template item from block attributes
+     *
+     * @param array $attrs Block attributes
+     * @return string Inline CSS styles
+     */
+    protected function buildTemplateItemStyle(array $attrs): string
+    {
+        $styles = [];
+
+        // Handle spacing, colors, typography, and border using wp_style_engine_get_styles
+        if (!empty($attrs['style']) && is_array($attrs['style']) && function_exists('wp_style_engine_get_styles')) {
+            $styleConfig = [];
+
+            // Spacing (padding, margin)
+            if (!empty($attrs['style']['spacing']) && is_array($attrs['style']['spacing'])) {
+                $styleConfig['spacing'] = $attrs['style']['spacing'];
+            }
+
+            // Colors (background, text, gradient)
+            if (!empty($attrs['style']['color']) && is_array($attrs['style']['color'])) {
+                $styleConfig['color'] = $attrs['style']['color'];
+            }
+
+            // Typography (font size, line height, etc.)
+            if (!empty($attrs['style']['typography']) && is_array($attrs['style']['typography'])) {
+                $styleConfig['typography'] = $attrs['style']['typography'];
+            }
+
+            // Border
+            if (!empty($attrs['style']['border']) && is_array($attrs['style']['border'])) {
+                $styleConfig['border'] = $attrs['style']['border'];
+            }
+
+            if (!empty($styleConfig)) {
+                $generatedStyles = wp_style_engine_get_styles($styleConfig);
+                if (!empty($generatedStyles['css'])) {
+                    $styles[] = trim($generatedStyles['css']);
+                }
+            }
+        }
+
+        return implode('; ', array_filter($styles));
+    }
+
+    /**
+     * Build CSS classes for template item from block attributes
+     *
+     * @param array $attrs Block attributes
+     * @return string CSS classes
+     */
+    protected function buildTemplateItemClasses(array $attrs): string
+    {
+        $classes = [];
+
+        // Add custom className if present
+        if (!empty($attrs['className'])) {
+            $customClasses = preg_split('/\s+/', $attrs['className']);
+            $customClasses = array_filter(array_map('sanitize_html_class', (array) $customClasses));
+            $classes = array_merge($classes, $customClasses);
+        }
+
+        // Add color classes if using theme colors
+        if (!empty($attrs['backgroundColor'])) {
+            $classes[] = 'has-' . sanitize_html_class($attrs['backgroundColor']) . '-background-color';
+            $classes[] = 'has-background';
+        }
+
+        if (!empty($attrs['textColor'])) {
+            $classes[] = 'has-' . sanitize_html_class($attrs['textColor']) . '-color';
+            $classes[] = 'has-text-color';
+        }
+
+        if (!empty($attrs['gradient'])) {
+            $classes[] = 'has-' . sanitize_html_class($attrs['gradient']) . '-gradient-background';
+            $classes[] = 'has-background';
+        }
+
+        // Add font size class if using preset
+        if (!empty($attrs['fontSize'])) {
+            $classes[] = 'has-' . sanitize_html_class($attrs['fontSize']) . '-font-size';
+        }
+
+        return implode(' ', array_unique(array_filter($classes)));
     }
 
     protected function wrapWithOverlay(
@@ -190,10 +289,9 @@ class PostTemplateBlockGenerator extends AbstractContentGenerator
         string $bg = 'rgba(0, 0, 0, 0.5)',
         int $size = 24,
         string $position = 'center'
-    ): string
-    {
+    ): string {
         $wrapperClasses = 'jankx-thumbnail-overlay-wrapper overlay-mode-' . $mode . ' overlay-pos-' . sanitize_html_class($position);
-        
+
         $commonStyle = sprintf('style="color:%s;background:%s;font-size:%dpx;"', esc_attr($color), esc_attr($bg), (int) $size);
         $rotateStyle = $rotate !== 0 ? ' style="transform: rotate(' . (int) $rotate . 'deg);"' : '';
         if ($type === 'image' && $imageUrl) {
@@ -203,7 +301,7 @@ class PostTemplateBlockGenerator extends AbstractContentGenerator
         } else {
             $iconHtml = sprintf('<div class="jankx-overlay-icon" %s><i class="%s"%s></i></div>', $commonStyle, esc_attr($icon), $rotateStyle);
         }
-        
+
         return sprintf(
             '<div class="%s">%s%s</div>',
             esc_attr($wrapperClasses),
