@@ -90,6 +90,16 @@ abstract class BlockTemplateLayout implements BlockTemplateLayoutInterface
         if (!$this->query) {
             return '';
         }
+
+        // Allow dynamically setting content generator
+        $this->contentGenerator = apply_filters(
+            'jankx/view-layout/generator',
+            $this->contentGenerator,
+            $this->getOption('postType'),
+            $this->options,
+            $this
+        );
+
         if ($this->hasCustomGenerator()) {
             return $this->contentGenerator->generate($this->query, $this->options);
         }
@@ -113,6 +123,15 @@ abstract class BlockTemplateLayout implements BlockTemplateLayoutInterface
 
     public function renderPreview(): array
     {
+        // Allow dynamically setting content generator
+        $this->contentGenerator = apply_filters(
+            'jankx/view-layout/generator',
+            $this->contentGenerator,
+            $this->getOption('postType'),
+            $this->options,
+            $this
+        );
+
         if ($this->hasCustomGenerator()) {
             return $this->contentGenerator->generatePreview($this->options);
         }

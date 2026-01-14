@@ -91,6 +91,16 @@ abstract class AbstractViewLayout implements ViewLayoutInterface
         if (!$this->query) {
             return '';
         }
+
+        // Allow dynamically setting content generator
+        $this->contentGenerator = apply_filters(
+            'jankx/view-layout/generator',
+            $this->contentGenerator,
+            $this->getOption('postType'),
+            $this->options,
+            $this
+        );
+
         if ($this->hasCustomGenerator()) {
             return $this->contentGenerator->generate($this->query, $this->options);
         }
@@ -114,6 +124,15 @@ abstract class AbstractViewLayout implements ViewLayoutInterface
 
     public function renderPreview(): array
     {
+        // Allow dynamically setting content generator
+        $this->contentGenerator = apply_filters(
+            'jankx/view-layout/generator',
+            $this->contentGenerator,
+            $this->getOption('postType'),
+            $this->options,
+            $this
+        );
+
         if ($this->hasCustomGenerator()) {
             return $this->contentGenerator->generatePreview($this->options);
         }
@@ -302,14 +321,14 @@ abstract class AbstractViewLayout implements ViewLayoutInterface
             include $template_path;
             return ob_get_clean();
         }
-        
+
         // For Latte templates, prepare all data in the layout class
         $options = $args['options'] ?? [];
         $view_id = get_the_ID();
-        
+
         // Prepare all data in the layout class
         $params = $this->prepareTemplateData($view_id, $options);
-        
+
         try {
             return $this->latte->renderToString($template_path, $params);
         } catch (\Exception $e) {
@@ -419,7 +438,7 @@ abstract class AbstractViewLayout implements ViewLayoutInterface
         if ($show_date) {
             $date = [
                 'formatted' => get_the_date('', $view_id),
-                'datetime' => get_the_time('c', true, $view_id),
+                'datetime' => get_post_time('c', true, $view_id),
             ];
         } else {
             $date = null;
@@ -457,7 +476,7 @@ abstract class AbstractViewLayout implements ViewLayoutInterface
             'image_size' => $image_size,
             'thumbnail_position' => $thumbnail_position,
             'read_more_text' => $read_more_text,
-            
+
             // Processed data
             'title' => get_the_title($view_id),
             'permalink' => get_permalink($view_id),

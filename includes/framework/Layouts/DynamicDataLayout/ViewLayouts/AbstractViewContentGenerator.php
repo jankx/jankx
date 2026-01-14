@@ -8,16 +8,23 @@ use WP_Query;
 
 abstract class AbstractViewContentGenerator implements ViewContentGeneratorInterface
 {
-    /** @var ViewLayoutInterface|null */
+    /** @var object|null */
     protected $layout = null;
 
-    public function setLayout(ViewLayoutInterface $layout): self
+    /**
+     * @param object $layout
+     * @return self
+     */
+    public function setLayout($layout): self
     {
         $this->layout = $layout;
         return $this;
     }
 
-    public function getLayout(): ?ViewLayoutInterface
+    /**
+     * @return object|null
+     */
+    public function getLayout()
     {
         return $this->layout;
     }

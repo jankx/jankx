@@ -22,6 +22,7 @@ interface ViewLayoutInterface
     public function getReadOnlyOptions(): array;
     public function getSettingsDefinition(): array;
     public function appendClassesToWrapper(array $classes, array $options = []): array;
+    public function wrapTemplateHtml(string $html, array $options = []): string;
 
     public function renderViewItem(): string;
 
