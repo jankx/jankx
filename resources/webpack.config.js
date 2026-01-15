@@ -177,7 +177,7 @@ module.exports = {
     'blocks/floating-messengers/build/style': './blocks/floating-messengers/style.scss',
     'blocks/floating-messengers/build/editor': './blocks/floating-messengers/editor.scss',
     'blocks/floating-messengers/build/frontend': './blocks/floating-messengers/frontend.ts',
-    
+
     'blocks/sticky-box/build/index': './blocks/sticky-box/index.tsx',
     'blocks/sticky-box/build/style': './blocks/sticky-box/style.scss',
     'blocks/sticky-box/build/editor': './blocks/sticky-box/editor.scss',
@@ -203,7 +203,7 @@ module.exports = {
     'blocks/menu-builder/build/style': './blocks/menu-builder/style.scss',
     'blocks/menu-builder/build/editor': './blocks/menu-builder/editor.scss',
     'blocks/menu-builder/build/frontend': './blocks/menu-builder/frontend.js',
-    
+
     // Blocks Extra (global editor/frontend enhancements)
     'blocks-extra/build/editor': './blocks-extra/ts/editor.ts',
     'blocks-extra/build/frontend': './blocks-extra/ts/frontend.ts',
@@ -223,9 +223,10 @@ module.exports = {
       // Force all plyr imports (including plyr-react's internal `import PlyrJS from "plyr"`)
       // to use the compiled dist build. This avoids webpack 5 strict ESM "fully specified"
       // issues when bundling plyr/src/js/plyr.js.
-      plyr$: path.resolve(__dirname, './node_modules/plyr/dist/plyr.js'),
-      'plyr/src/js/plyr.js': path.resolve(__dirname, './node_modules/plyr/dist/plyr.js'),
-      plyr: path.resolve(__dirname, './node_modules/plyr/dist/plyr.js'),
+      plyr$: path.resolve(__dirname, '../node_modules/plyr/dist/plyr.js'),
+      'plyr/src/js/plyr.js': path.resolve(__dirname, '../node_modules/plyr/dist/plyr.js'),
+      plyr: path.resolve(__dirname, '../node_modules/plyr/dist/plyr.js'),
+      'embla-carousel-autoplay': path.resolve(__dirname, '../node_modules/embla-carousel-autoplay/esm/embla-carousel-autoplay.esm.js'),
     },
   },
   externals: {

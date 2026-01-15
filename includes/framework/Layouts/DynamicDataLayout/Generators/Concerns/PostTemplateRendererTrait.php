@@ -253,6 +253,13 @@ trait PostTemplateRendererTrait
                 $output .= $blockInstance->render();
             }
 
+            $templateAttrs = $this->templateBlock['attrs'] ?? [];
+            $loopLayout = $templateAttrs['contentLoopLayout'] ?? 'normal';
+
+            if ($loopLayout === 'boxed') {
+                return sprintf('<div class="card-body">%s</div>', $output);
+            }
+
             return $output;
         } catch (\Throwable $exception) {
             Log::error(sprintf(
@@ -271,6 +278,10 @@ trait PostTemplateRendererTrait
             'postId' => $post->ID,
             'queryId' => $this->getOption('queryId'),
         ];
+
+        if ($post->post_type === 'product') {
+            $context['productId'] = $post->ID;
+        }
 
         if ($layout = $this->getOption('layout', $options['layout'] ?? null)) {
             $context['displayLayout'] = $layout;
@@ -315,7 +326,7 @@ trait PostTemplateRendererTrait
 
     protected function buildWrapperAttributes(array $options): array
     {
-        $classes = ['wp-block-jankx-dynamic-data-layout'];
+        $classes = [];
         $templateAttrs = $this->templateBlock['attrs'] ?? [];
 
         if (!empty($templateAttrs['className'])) {

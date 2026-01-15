@@ -111,7 +111,7 @@ class DynamicDataLayoutBlock extends Block
             return null;
         }
 
-        if (in_array(($parsed_block['blockName'] ?? ''), ['jankx/dynamic-data-template', 'jankx/dynamic-data-ssr', 'jankx/dynamic-ssr-template'], true)) {
+        if (in_array(($parsedBlock['blockName'] ?? ''), ['jankx/dynamic-data-template', 'jankx/dynamic-data-ssr', 'jankx/dynamic-ssr-template'], true)) {
             return $parsedBlock;
         }
 

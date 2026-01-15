@@ -31,12 +31,12 @@ class BlockTemplateRenderer
     public function render(array $attributes, string $content = '', $block = null): string
     {
         $sanitizedAttributes = $this->attributeSanitizer->sanitize($attributes);
-        
+
         $layoutName = $sanitizedAttributes['layout'] ?? 'grid';
         $postType = $sanitizedAttributes['postType'] ?? 'post';
         $postsPerPage = (int) ($sanitizedAttributes['postsPerPage'] ?? 10);
         $paged = (int) ($sanitizedAttributes['paged'] ?? 1);
-        
+
         $queryArgs = [
             'post_type' => $postType,
             'post_status' => 'publish',
@@ -46,9 +46,9 @@ class BlockTemplateRenderer
 
         // Apply filters
         $queryArgs = apply_filters('jankx_block_template_query_args', $queryArgs, $sanitizedAttributes);
-        
+
         $query = new \WP_Query($queryArgs);
-        
+
         if (!$query->have_posts()) {
             return $this->renderEmptyState($sanitizedAttributes);
         }
@@ -58,7 +58,7 @@ class BlockTemplateRenderer
         $layout->setOptions($sanitizedAttributes);
 
         // Handle template block
-        $templateBlock = $this->extractTemplateBlock($attributes);
+        $templateBlock = $this->extractTemplateBlock($block instanceof \WP_Block ? ($block->parsed_block ?? []) : $attributes);
         if ($templateBlock) {
             $sanitizedTemplate = ($this->templateSanitizer)($templateBlock);
             if ($sanitizedTemplate) {

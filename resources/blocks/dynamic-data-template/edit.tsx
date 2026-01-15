@@ -405,13 +405,11 @@ export default function Edit({
         return layouts;
     }, [postType, layoutsData]);
 
-    // Layout options for SelectControl
-    const layoutOptions = useMemo(() => {
-        return availableLayouts.map((layoutInfo: ContentLoopLayoutOption) => ({
-            label: layoutInfo.title || layoutInfo.name,
-            value: layoutInfo.name,
-        }));
-    }, [availableLayouts]);
+    // Layout options for SelectControl - User requested only Normal/Boxed
+    const layoutOptions = [
+        { label: __('Normal', 'jankx'), value: 'normal' },
+        { label: __('Boxed', 'jankx'), value: 'boxed' },
+    ];
 
     // Get default blocks for post type
     const defaultBlocks = useMemo(() => {

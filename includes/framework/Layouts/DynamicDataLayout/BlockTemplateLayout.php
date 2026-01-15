@@ -152,19 +152,10 @@ abstract class BlockTemplateLayout implements BlockTemplateLayoutInterface
         $structure = $this->getHtmlStructure($options);
         $container = $structure['container'] ?? [];
         $tag = isset($container['tag']) ? (string) $container['tag'] : 'div';
-        $classes = isset($container['classes']) && is_array($container['classes']) ? $container['classes'] : [];
-        $classAttr = implode(' ', array_map('sanitize_html_class', $classes));
-        $styles = isset($container['styles']) && is_array($container['styles']) ? $container['styles'] : [];
-        $styleAttr = '';
-        foreach ($styles as $k => $v) {
-            $styleAttr .= $k . ':' . $v . ';';
-        }
-        $attributes = isset($container['attributes']) && is_array($container['attributes']) ? $container['attributes'] : [];
-        $attrStr = '';
-        foreach ($attributes as $key => $value) {
-            $attrStr .= ' ' . esc_attr($key) . '="' . esc_attr($value) . '"';
-        }
-        return sprintf('<%1$s class="%2$s" style="%3$s"%4$s>%5$s</%1$s>', $tag, $classAttr, $styleAttr, $attrStr, $html);
+
+        // Use custom generator if available for inner items
+        // This method should only provide the inner structure of the layout
+        return $html;
     }
 
     public function renderDefaultPreview(): array
@@ -186,15 +177,9 @@ abstract class BlockTemplateLayout implements BlockTemplateLayoutInterface
 
     protected function getContainerStructure(array $options): array
     {
-        $classes = ['post-type-layout', 'post-type-layout-' . $this->name, 'layout-' . $this->name];
+        $classes = ['post-type-layout-' . $this->name, 'layout-' . $this->name];
         if (!empty($options['columns'])) {
             $classes[] = 'columns-' . intval($options['columns']);
-        }
-        if (!empty($options['columnsTablet'])) {
-            $classes[] = 'columns-tablet-' . intval($options['columnsTablet']);
-        }
-        if (!empty($options['columnsMobile'])) {
-            $classes[] = 'columns-mobile-' . intval($options['columnsMobile']);
         }
         $styles = [];
         if (!empty($options['columns'])) {
@@ -297,6 +282,25 @@ abstract class BlockTemplateLayout implements BlockTemplateLayoutInterface
         return ob_get_clean();
     }
 
+    protected function buildItemClasses(): string
+    {
+        $classes = get_post_class(['jankx-loop-item']);
+        $templateBlock = $this->getOption('postTemplate');
+        $loopLayout = 'normal';
+
+        if (is_array($templateBlock) && !empty($templateBlock['attrs']['contentLoopLayout'])) {
+            $loopLayout = $templateBlock['attrs']['contentLoopLayout'];
+        }
+
+        $classes[] = 'content-loop-layout--' . $loopLayout;
+
+        if ($loopLayout === 'boxed') {
+            $classes[] = 'card';
+        }
+
+        return implode(' ', array_unique(array_filter(array_map('sanitize_html_class', $classes))));
+    }
+
     public function renderPostItem(): string
     {
         $post_id = get_the_ID();
@@ -304,7 +308,14 @@ abstract class BlockTemplateLayout implements BlockTemplateLayoutInterface
         $show_title = (bool) $this->getOption('showTitle', true);
         $show_excerpt = (bool) $this->getOption('showExcerpt', true);
         $show_date = (bool) $this->getOption('showDate', true);
+        $show_price = (bool) $this->getOption('showPrice', true);
+        $show_add_to_cart = (bool) $this->getOption('showAddToCart', true);
         $excerpt_length = (int) $this->getOption('excerptLength', 55);
+
+        $templateBlock = $this->getOption('postTemplate');
+        $loopLayout = is_array($templateBlock) && !empty($templateBlock['attrs']['contentLoopLayout'])
+            ? $templateBlock['attrs']['contentLoopLayout']
+            : 'normal';
 
         $parts = [];
 
@@ -312,6 +323,9 @@ abstract class BlockTemplateLayout implements BlockTemplateLayoutInterface
             $thumb = get_the_post_thumbnail($post_id, 'post-thumbnail', ['style' => 'object-fit:cover;']);
             $parts[] = sprintf('<figure class="wp-block-post-featured-image">%s</figure>', $thumb);
         }
+
+        // Start content wrapper
+        $parts[] = '<div class="post-content-wrapper">';
 
         if ($show_title) {
             $parts[] = sprintf(
@@ -338,7 +352,29 @@ abstract class BlockTemplateLayout implements BlockTemplateLayoutInterface
             );
         }
 
-        return implode('', $parts);
+        // Add WooCommerce blocks if it's a product
+        if (get_post_type($post_id) === 'product') {
+            if ($show_price && function_exists('woocommerce_template_loop_price')) {
+                ob_start();
+                woocommerce_template_loop_price();
+                $parts[] = sprintf('<div class="wp-block-woocommerce-product-price">%s</div>', ob_get_clean());
+            }
+
+            if ($show_add_to_cart && function_exists('woocommerce_template_loop_add_to_cart')) {
+                ob_start();
+                woocommerce_template_loop_add_to_cart();
+                $parts[] = sprintf('<div class="wp-block-woocommerce-product-button">%s</div>', ob_get_clean());
+            }
+        }
+
+        $parts[] = '</div>'; // End content wrapper
+
+        $content = implode('', $parts);
+        if ($loopLayout === 'boxed') {
+            return sprintf('<div class="card-body">%s</div>', $content);
+        }
+
+        return $content;
     }
 
     /**

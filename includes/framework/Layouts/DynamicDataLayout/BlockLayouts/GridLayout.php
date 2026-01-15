@@ -32,7 +32,6 @@ class GridLayout extends BlockTemplateLayout
         }
 
         $ul_classes = [
-            'wp-block-jankx-dynamic-data-layout',
             'post-type-layout-grid',
             'is-flex-container',
             'columns-' . max(1, $columns),
@@ -50,8 +49,8 @@ class GridLayout extends BlockTemplateLayout
             <?php
             while ($this->query->have_posts()) {
                 $this->query->the_post();
-                $li_classes = get_post_class('wp-block-post', get_the_ID());
-                echo '<li class="' . esc_attr(implode(' ', array_filter(array_map('sanitize_html_class', $li_classes)))) . '">';
+                $itemClasses = $this->buildItemClasses();
+                echo '<li class="' . esc_attr($itemClasses) . '">';
                 echo $this->renderPostItem();
                 echo '</li>';
             }
