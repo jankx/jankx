@@ -49,7 +49,7 @@ class DynamicDataLayoutBlock extends Block
     {
         // Enqueue editor scripts with localized data
         add_action('enqueue_block_editor_assets', [$this, 'enqueueEditorAssets'], 20);
-        
+
         // Filter block attributes to ensure queryId is always valid
         // This runs before WordPress processes providesContext
         add_filter('render_block_data', [$this, 'normalizeBlockAttributes'], 10, 1);
@@ -137,7 +137,7 @@ class DynamicDataLayoutBlock extends Block
         // Carousel assets will be handled by PostLayout system
         // This is a placeholder for future carousel-specific assets
     }
-    
+
     /**
      * Normalize block attributes before WordPress processes providesContext
      * 
@@ -150,17 +150,19 @@ class DynamicDataLayoutBlock extends Block
         if (($parsed_block['blockName'] ?? '') !== $this->blockId) {
             return $parsed_block;
         }
-        
+
         // Ensure attrs array exists
         if (!isset($parsed_block['attrs']) || !is_array($parsed_block['attrs'])) {
             $parsed_block['attrs'] = [];
         }
-        
+
         // Ensure queryId is set and valid (non-empty scalar)
         // Empty string causes "Illegal offset type" error in WordPress
-        if (!isset($parsed_block['attrs']['queryId']) || 
-            !is_scalar($parsed_block['attrs']['queryId']) || 
-            (is_string($parsed_block['attrs']['queryId']) && trim($parsed_block['attrs']['queryId']) === '')) {
+        if (
+            !isset($parsed_block['attrs']['queryId']) ||
+            !is_scalar($parsed_block['attrs']['queryId']) ||
+            (is_string($parsed_block['attrs']['queryId']) && trim($parsed_block['attrs']['queryId']) === '')
+        ) {
             // Generate a unique ID if not set or empty
             $parsed_block['attrs']['queryId'] = uniqid('ddl-', true);
         } else {
@@ -175,7 +177,7 @@ class DynamicDataLayoutBlock extends Block
                 }
             }
         }
-        
+
         return $parsed_block;
     }
 
@@ -216,9 +218,11 @@ class DynamicDataLayoutBlock extends Block
     {
         // Ensure queryId is set and valid (required for providesContext)
         // queryId must be a non-empty scalar value (string or number), not null, empty string, or array
-        if (!isset($attributes['queryId']) || 
-            !is_scalar($attributes['queryId']) || 
-            (is_string($attributes['queryId']) && trim($attributes['queryId']) === '')) {
+        if (
+            !isset($attributes['queryId']) ||
+            !is_scalar($attributes['queryId']) ||
+            (is_string($attributes['queryId']) && trim($attributes['queryId']) === '')
+        ) {
             // Generate a unique ID if not set or empty
             $attributes['queryId'] = uniqid('ddl-', true);
         } else {
@@ -328,23 +332,23 @@ class DynamicDataLayoutBlock extends Block
         }
 
         $asset = require $asset_file;
-        
+
         // Get the actual script handle from block registration
         // WordPress registers scripts with handle based on block name
         $block_name = str_replace('jankx/', '', $this->blockId);
         $script_handle = 'jankx-' . str_replace('/', '-', $block_name) . '-editor-script';
-        
+
         // Try alternative handle format
         if (!wp_script_is($script_handle, 'registered')) {
             $script_handle = 'jankx-' . str_replace('/', '-', $block_name) . '-editor';
         }
-        
+
         // If still not found, try to get from registered block
         $registered_block = \WP_Block_Type_Registry::get_instance()->get_registered($this->blockId);
         if ($registered_block && !empty($registered_block->editor_script)) {
             $script_handle = $registered_block->editor_script;
         }
-        
+
         // Only proceed if script is registered
         if (!wp_script_is($script_handle, 'registered')) {
             return;
@@ -436,7 +440,7 @@ class DynamicDataLayoutBlock extends Block
 
                 try {
                     $layout = $layoutManager->createLayout($layoutName);
-                    
+
                     if ($layout) {
                         $layoutInstance = $layout->getLayout();
                         if ($layoutInstance && method_exists($layoutInstance, 'getHtmlStructure')) {
@@ -545,7 +549,7 @@ class DynamicDataLayoutBlock extends Block
 
         $blocks = parse_blocks($post_obj->post_content);
         $found = $this->findBlockAttributesById($blocks, $block_id);
-        
+
         return $found !== null ? $found : $default;
     }
 
@@ -614,6 +618,12 @@ class DynamicDataLayoutBlock extends Block
      * @param array $attributes
      * @return string
      */
+    /**
+     * Build wrapper attributes with data-* for AJAX/filter integrations
+     *
+     * @param array $attributes
+     * @return string
+     */
     protected function buildWrapperAttributes(array $attributes): string
     {
         $attrs = [];
@@ -625,7 +635,7 @@ class DynamicDataLayoutBlock extends Block
             $baseClass,
             !empty($attributes['className']) ? $attributes['className'] : '',
         ]);
-        
+
         // Add carousel-specific attributes
         if (($attributes['layout'] ?? '') === 'carousel') {
             // Add carousel class
@@ -638,7 +648,7 @@ class DynamicDataLayoutBlock extends Block
             $attrs['data-autoplay'] = !empty($attributes['autoplay']) ? 'true' : 'false';
             $attrs['data-autoplay-delay'] = esc_attr($attributes['autoplayDelay'] ?? 3000);
             $attrs['data-loop'] = !empty($attributes['loop']) ? 'true' : 'false';
-            
+
             // Add carousel container class
             $attrs['class'] .= ' has-carousel';
         }
@@ -653,18 +663,26 @@ class DynamicDataLayoutBlock extends Block
         // Helpful data attributes for frontend reconstruction
         $attrs['data-post-type'] = esc_attr($attributes['postType'] ?? '');
         $attrs['data-layout'] = esc_attr($attributes['layout'] ?? '');
+
+        // Setup columns variables
+        $styleRules = [];
+        $columns = isset($attributes['columns']) ? (int) $attributes['columns'] : 3;
+        $attrs['data-columns'] = $columns;
+        $styleRules[] = '--columns-desktop: ' . $columns;
+
         if (isset($attributes['postsPerPage'])) {
             $attrs['data-posts-per-page'] = (int) $attributes['postsPerPage'];
         }
-        if (isset($attributes['columns'])) {
-            $attrs['data-columns'] = (int) $attributes['columns'];
-        }
+
         if (isset($attributes['columnsTablet'])) {
             $attrs['data-columns-tablet'] = (int) $attributes['columnsTablet'];
+            $styleRules[] = '--columns-tablet: ' . (int) $attributes['columnsTablet'];
         }
         if (isset($attributes['columnsMobile'])) {
             $attrs['data-columns-mobile'] = (int) $attributes['columnsMobile'];
+            $styleRules[] = '--columns-mobile: ' . (int) $attributes['columnsMobile'];
         }
+
         if (!empty($attributes['orderBy'])) {
             $attrs['data-order-by'] = esc_attr($attributes['orderBy']);
         }
@@ -676,6 +694,9 @@ class DynamicDataLayoutBlock extends Block
         }
         if (!empty($attributes['imageRatio'])) {
             $attrs['data-image-ratio'] = esc_attr($attributes['imageRatio']);
+            // Add image ratio to styles if needed, though usually handled by inner items
+            // But some layouts might use it on wrapper
+            $styleRules[] = '--jankx-image-ratio: ' . esc_attr($attributes['imageRatio']);
         }
         if (!empty($attributes['thumbnailPosition'])) {
             $attrs['data-thumbnail-position'] = esc_attr($attributes['thumbnailPosition']);
@@ -683,6 +704,11 @@ class DynamicDataLayoutBlock extends Block
 
         // Embed full attributes for AJAX fallback
         $attrs['data-block-settings'] = esc_attr(wp_json_encode($attributes));
+
+        // Inject style attribute
+        if (!empty($styleRules)) {
+            $attrs['style'] = implode(';', $styleRules);
+        }
 
         // Build attribute string
         $parts = [];
@@ -806,7 +832,7 @@ class DynamicDataLayoutBlock extends Block
         try {
             $app = Application::getInstance();
             $service = $app->make(DefaultThumbnailService::class);
-            
+
             if ($service && $service->isEnabled()) {
                 $service->boot();
             }

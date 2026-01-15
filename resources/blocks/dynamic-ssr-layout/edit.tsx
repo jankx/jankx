@@ -130,7 +130,7 @@ interface WordPressWindow {
         apiFetch: WordPressApiFetch;
     };
     jankxQueryOptions?: QueryOptions;
-    jankxDynamicDataLayouts?: LayoutsData;
+    jankxDynamicSsrLayouts?: LayoutsData;
 }
 
 interface WordPressSelect {
@@ -538,7 +538,7 @@ function Edit({ attributes, setAttributes, clientId, isSelected = false }: EditP
         : [];
     
     // Get layouts data from PHP
-    const layoutsData: LayoutsData = normalizeLayoutsData(window.jankxDynamicDataLayouts);
+    const layoutsData: LayoutsData = normalizeLayoutsData(window.jankxDynamicSsrLayouts);
 
     const postTypeOptions = (() => {
         const map = new Map<string, string>();

@@ -1,3 +1,145 @@
-.embla-banner{position:relative;overflow:hidden;border-radius:inherit;width:100%;height:100%;min-height:200px}.embla-banner__image{position:relative;width:100%;height:100%;background-size:cover;background-position:center;background-repeat:no-repeat;display:flex;align-items:center;justify-content:center}.embla-banner__image.image-size-contain{background-size:contain}.embla-banner__image.image-size-cover{background-size:cover}.embla-banner__image.image-size-fullwidth{background-size:100% 100% !important;background-position:center !important}.embla-banner__caption{position:relative;z-index:2;padding:2rem;max-width:80%}.embla-banner__caption-content{color:#fff;font-size:1.5rem;font-weight:600;line-height:1.4;text-shadow:0 2px 4px rgba(0,0,0,.5)}.embla-banner__link{display:block;width:100%;height:100%;text-decoration:none;color:inherit}.embla-banner--banner .embla-banner__caption-content{font-size:2rem;font-weight:700}.embla-banner--circles{border-radius:50%;aspect-ratio:1;flex-shrink:0}.embla-banner--circles .embla-banner__image{border-radius:50%}.embla-banner--circles .embla-banner__caption-content{font-size:1.2rem;text-align:center}.embla-banner--square{aspect-ratio:1}.embla-banner--square .embla-banner__image{border-radius:8px}.embla-banner--square .embla-banner__caption-content{font-size:1.3rem}.embla-banner.text-left .embla-banner__caption{justify-content:flex-start;text-align:left}.embla-banner.text-center .embla-banner__caption{justify-content:center;text-align:center}.embla-banner.text-right .embla-banner__caption{justify-content:flex-end;text-align:right}.embla-banner.text-position-top .embla-banner__caption{align-items:flex-start;padding-top:1rem}.embla-banner.text-position-middle .embla-banner__caption{align-items:center}.embla-banner.text-position-bottom .embla-banner__caption{align-items:flex-end;padding-bottom:1rem}.embla-banner.image-size-contain .embla-banner__image{background-size:contain !important}.embla-banner.image-size-cover .embla-banner__image{background-size:cover !important}.embla-banner.image-size-fullwidth .embla-banner__image{background-size:100% 100% !important;background-position:center !important}@media(max-width: 768px){.embla-banner__caption{padding:1rem;max-width:90%}.embla-banner__caption-content{font-size:1.2rem}.embla-banner--banner .embla-banner__caption-content{font-size:1.5rem}.embla-banner--circles .embla-banner__caption-content{font-size:1rem}.embla-banner--square .embla-banner__caption-content{font-size:1.1rem}}@media(max-width: 480px){.embla-banner__caption{padding:.75rem}.embla-banner__caption-content{font-size:1rem}.embla-banner--banner .embla-banner__caption-content{font-size:1.2rem}}.block-editor-block-list__layout .embla-banner{min-height:200px}
+/*!************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!./blocks/swiper-banner/style.scss ***!
+  \************************************************************************************************************************************************************************************************/
+.embla-banner {
+  position: relative;
+  overflow: hidden;
+  border-radius: inherit;
+  width: 100%;
+  height: 100%;
+  min-height: 200px;
+}
+.embla-banner__image {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.embla-banner__image.image-size-contain {
+  background-size: contain;
+}
+.embla-banner__image.image-size-cover {
+  background-size: cover;
+}
+.embla-banner__image.image-size-fullwidth {
+  background-size: 100% 100% !important;
+  background-position: center !important;
+}
+.embla-banner__caption {
+  position: relative;
+  z-index: 2;
+  padding: 2rem;
+  max-width: 80%;
+}
+.embla-banner__caption-content {
+  color: white;
+  font-size: 1.5rem;
+  font-weight: 600;
+  line-height: 1.4;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+.embla-banner__link {
+  display: block;
+  width: 100%;
+  height: 100%;
+  text-decoration: none;
+  color: inherit;
+}
+.embla-banner--banner .embla-banner__caption-content {
+  font-size: 2rem;
+  font-weight: 700;
+}
+.embla-banner--circles {
+  border-radius: 50%;
+  aspect-ratio: 1;
+  flex-shrink: 0;
+}
+.embla-banner--circles .embla-banner__image {
+  border-radius: 50%;
+}
+.embla-banner--circles .embla-banner__caption-content {
+  font-size: 1.2rem;
+  text-align: center;
+}
+.embla-banner--square {
+  aspect-ratio: 1;
+}
+.embla-banner--square .embla-banner__image {
+  border-radius: 8px;
+}
+.embla-banner--square .embla-banner__caption-content {
+  font-size: 1.3rem;
+}
+.embla-banner.text-left .embla-banner__caption {
+  justify-content: flex-start;
+  text-align: left;
+}
+.embla-banner.text-center .embla-banner__caption {
+  justify-content: center;
+  text-align: center;
+}
+.embla-banner.text-right .embla-banner__caption {
+  justify-content: flex-end;
+  text-align: right;
+}
+.embla-banner.text-position-top .embla-banner__caption {
+  align-items: flex-start;
+  padding-top: 1rem;
+}
+.embla-banner.text-position-middle .embla-banner__caption {
+  align-items: center;
+}
+.embla-banner.text-position-bottom .embla-banner__caption {
+  align-items: flex-end;
+  padding-bottom: 1rem;
+}
+.embla-banner.image-size-contain .embla-banner__image {
+  background-size: contain !important;
+}
+.embla-banner.image-size-cover .embla-banner__image {
+  background-size: cover !important;
+}
+.embla-banner.image-size-fullwidth .embla-banner__image {
+  background-size: 100% 100% !important;
+  background-position: center !important;
+}
+
+@media (max-width: 768px) {
+  .embla-banner__caption {
+    padding: 1rem;
+    max-width: 90%;
+  }
+  .embla-banner__caption-content {
+    font-size: 1.2rem;
+  }
+  .embla-banner--banner .embla-banner__caption-content {
+    font-size: 1.5rem;
+  }
+  .embla-banner--circles .embla-banner__caption-content {
+    font-size: 1rem;
+  }
+  .embla-banner--square .embla-banner__caption-content {
+    font-size: 1.1rem;
+  }
+}
+@media (max-width: 480px) {
+  .embla-banner__caption {
+    padding: 0.75rem;
+  }
+  .embla-banner__caption-content {
+    font-size: 1rem;
+  }
+  .embla-banner--banner .embla-banner__caption-content {
+    font-size: 1.2rem;
+  }
+}
+.block-editor-block-list__layout .embla-banner {
+  min-height: 200px;
+}
 
 /*# sourceMappingURL=style.css.map*/

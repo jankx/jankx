@@ -33,7 +33,7 @@ class DynamicSsrLayoutBlock extends Block
         add_action('wp_ajax_nopriv_jankx_posts_count', [$this, 'ajaxPostsCount']);
         $this->ensureServices();
     }
-    
+
     public function enqueueFrontendAssets()
     {
         // Only enqueue on frontend
@@ -166,7 +166,7 @@ class DynamicSsrLayoutBlock extends Block
                     true
                 );
             }
-            
+
             // Only enqueue when carousel blocks are present on page
             if (has_block($this->blockId)) {
                 // Enqueue carousel styles
@@ -186,9 +186,9 @@ class DynamicSsrLayoutBlock extends Block
                     }
                     wp_enqueue_style($style_handle);
                 }
-                
+
                 wp_enqueue_script($handle);
-                
+
                 // Add inline script for lazy loading carousel initialization
                 wp_add_inline_script($handle, "
                     // Lazy load carousel only when visible
@@ -230,7 +230,8 @@ class DynamicSsrLayoutBlock extends Block
         if (!isset($parsed_block['attrs']) || !is_array($parsed_block['attrs'])) {
             $parsed_block['attrs'] = [];
         }
-        if (!isset($parsed_block['attrs']['queryId']) ||
+        if (
+            !isset($parsed_block['attrs']['queryId']) ||
             !is_scalar($parsed_block['attrs']['queryId']) ||
             (is_string($parsed_block['attrs']['queryId']) && trim($parsed_block['attrs']['queryId']) === '')
         ) {
@@ -263,7 +264,8 @@ class DynamicSsrLayoutBlock extends Block
 
     public function render($attributes, $content = '', $block = null)
     {
-        if (!isset($attributes['queryId']) ||
+        if (
+            !isset($attributes['queryId']) ||
             !is_scalar($attributes['queryId']) ||
             (is_string($attributes['queryId']) && trim($attributes['queryId']) === '')
         ) {
@@ -326,11 +328,12 @@ class DynamicSsrLayoutBlock extends Block
     protected function buildWrapperAttributes(array $attributes): string
     {
         $attrs = [];
+        $styleRules = [];
         $baseClass = 'wp-block-jankx-dynamic-ssr-layout';
-        
+
         // Build class array with layout-specific classes
         $classes = [$baseClass];
-        
+
         // Add layout classes to match dynamic-ssr-layout CSS
         $layout = $attributes['layout'] ?? '';
         if ($layout) {
@@ -338,16 +341,22 @@ class DynamicSsrLayoutBlock extends Block
             $classes[] = 'dynamic-ssr-layout--' . $layout;
             $classes[] = 'view-type-layout-' . $layout;
         }
-        
-        // Add column classes
+
+        // Add column classes and variables
         if (isset($attributes['columns'])) {
             $classes[] = 'columns-' . (int) $attributes['columns'];
+            $attrs['data-columns'] = (int) $attributes['columns'];
+            $styleRules[] = '--columns-desktop: ' . (int) $attributes['columns'];
         }
         if (isset($attributes['columnsTablet'])) {
             $classes[] = 'columns-tablet-' . (int) $attributes['columnsTablet'];
+            $attrs['data-columns-tablet'] = (int) $attributes['columnsTablet'];
+            $styleRules[] = '--columns-tablet: ' . (int) $attributes['columnsTablet'];
         }
         if (isset($attributes['columnsMobile'])) {
             $classes[] = 'columns-mobile-' . (int) $attributes['columnsMobile'];
+            $attrs['data-columns-mobile'] = (int) $attributes['columnsMobile'];
+            $styleRules[] = '--columns-mobile: ' . (int) $attributes['columnsMobile'];
         }
 
         // Add carousel-specific attributes
@@ -365,34 +374,31 @@ class DynamicSsrLayoutBlock extends Block
             $attrs['data-loop'] = !empty($attributes['loop']) ? 'true' : 'false';
 
             // Add inline styles for carousel
-            $attrs['style'] = sprintf(
-                '--slides-per-view: %d; --space-between: %dpx;',
+            $styleRules[] = sprintf(
+                '--slides-per-view: %d; --space-between: %dpx',
                 (int) ($attributes['columns'] ?? 3),
                 (int) ($attributes['spaceBetween'] ?? 16)
             );
         }
-        
+
         $attrs['class'] = implode(' ', $classes);
-        
+
         $queryId = isset($attributes['queryId']) ? (string) $attributes['queryId'] : '';
         if ($queryId !== '') {
             $attrs['data-block-id'] = esc_attr($queryId);
             $attrs['data-query-id'] = esc_attr($queryId);
         }
         $attrs['data-post-type'] = esc_attr($attributes['postType'] ?? '');
-        $attrs['data-layout'] = esc_attr($attributes['layout'] ?? '');
+        $attrs['data-layout'] = esc_attr($layout);
         if (isset($attributes['postsPerPage'])) {
             $attrs['data-posts-per-page'] = (int) $attributes['postsPerPage'];
         }
-        if (isset($attributes['columns'])) {
-            $attrs['data-columns'] = (int) $attributes['columns'];
+
+        // Inject styles
+        if (!empty($styleRules)) {
+            $attrs['style'] = implode('; ', $styleRules);
         }
-        if (isset($attributes['columnsTablet'])) {
-            $attrs['data-columns-tablet'] = (int) $attributes['columnsTablet'];
-        }
-        if (isset($attributes['columnsMobile'])) {
-            $attrs['data-columns-mobile'] = (int) $attributes['columnsMobile'];
-        }
+
         $parts = [];
         foreach ($attrs as $key => $value) {
             if ($key === 'class') {
@@ -529,7 +535,7 @@ class DynamicSsrLayoutBlock extends Block
         if (wp_script_is($script_handle, 'registered') || wp_script_is($script_handle, 'enqueued')) {
             wp_localize_script(
                 $script_handle,
-                'jankxDynamicDataLayouts',
+                'jankxDynamicSsrLayouts',
                 $layouts_payload
             );
             wp_localize_script($script_handle, 'jankxPublicPostTypes', $public_post_types);
@@ -541,7 +547,7 @@ class DynamicSsrLayoutBlock extends Block
             $json_post_types = wp_json_encode($public_post_types);
             $json_query_options = wp_json_encode($query_options);
             $json_ssr_config = wp_json_encode($ssr_template_config);
-            wp_add_inline_script('wp-block-editor', "window.jankxDynamicDataLayouts = {$json_layouts};", 'before');
+            wp_add_inline_script('wp-block-editor', "window.jankxDynamicSsrLayouts = {$json_layouts};", 'before');
             wp_add_inline_script('wp-block-editor', "window.jankxPublicPostTypes = {$json_post_types};", 'before');
             wp_add_inline_script('wp-block-editor', "window.jankxQueryOptions = {$json_query_options};", 'before');
             wp_add_inline_script('wp-block-editor', "window.jankxDynamicSsrTemplate = {$json_ssr_config};", 'before');
@@ -674,7 +680,7 @@ class DynamicSsrLayoutBlock extends Block
 
         // Scan both parent and child theme views directories
         $directories = [$viewsDir, $parentViewsDir];
-        
+
         foreach ($directories as $dir) {
             if (!is_dir($dir)) {
                 continue;
@@ -740,7 +746,7 @@ class DynamicSsrLayoutBlock extends Block
         // Convert slug to readable title
         $title = str_replace(['-', '_'], ' ', $slug);
         $title = ucwords($title);
-        
+
         // Handle special cases
         $specialCases = [
             'layouts/loop/item-default' => __('Default Loop Item', 'jankx'),
@@ -808,7 +814,7 @@ class DynamicSsrLayoutBlock extends Block
                 case 'price':
                     $minPrice = !empty($filterSettings['minPrice']) ? floatval($filterSettings['minPrice']) : 0;
                     $maxPrice = !empty($filterSettings['maxPrice']) ? floatval($filterSettings['maxPrice']) : 999999;
-                    
+
                     $args['meta_query'] = [
                         [
                             'key' => '_price',
