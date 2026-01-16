@@ -138,6 +138,11 @@ class PostTemplateBlockGenerator extends AbstractContentGenerator
                     'innerContent' => is_array($innerBlock['innerContent'] ?? null) ? $innerBlock['innerContent'] : [],
                 ];
 
+                if ($normalizedBlock['blockName'] === 'woocommerce/product-title') {
+                    $normalizedBlock['blockName'] = 'core/post-title';
+                    $normalizedBlock['attrs']['isLink'] = true;
+                }
+
                 if (!empty($innerBlock['originalContent'])) {
                     $normalizedBlock['originalContent'] = $innerBlock['originalContent'];
                 }
