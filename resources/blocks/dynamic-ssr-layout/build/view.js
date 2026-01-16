@@ -1,2 +1,2179 @@
-(()=>{"use strict";function t(t){return"number"==typeof t}function e(t){return"string"==typeof t}function n(t){return"boolean"==typeof t}function o(t){return"[object Object]"===Object.prototype.toString.call(t)}function r(t){return Math.abs(t)}function i(t){return Math.sign(t)}function s(t,e){return r(t-e)}function a(t){return f(t).map(Number)}function c(t){return t[u(t)]}function u(t){return Math.max(0,t.length-1)}function l(t,e){return e===u(t)}function d(t,e=0){return Array.from(Array(t),(t,n)=>e+n)}function f(t){return Object.keys(t)}function p(t,e){return[t,e].reduce((t,e)=>(f(e).forEach(n=>{const r=t[n],i=e[n],s=o(r)&&o(i);t[n]=s?p(r,i):i}),t),{})}function m(t,e){return void 0!==e.MouseEvent&&t instanceof e.MouseEvent}function g(){let t=[];const e={add:function(n,o,r,i={passive:!0}){let s;if("addEventListener"in n)n.addEventListener(o,r,i),s=()=>n.removeEventListener(o,r,i);else{const t=n;t.addListener(r),s=()=>t.removeListener(r)}return t.push(s),e},clear:function(){t=t.filter(t=>t())}};return e}function h(t=0,e=0){const n=r(t-e);function o(e){return e<t}function i(t){return t>e}function s(t){return o(t)||i(t)}return{length:n,max:e,min:t,constrain:function(n){return s(n)?o(n)?t:e:n},reachedAny:s,reachedMax:i,reachedMin:o,removeOffset:function(t){return n?t-n*Math.ceil((t-e)/n):t}}}function y(t,e,n){const{constrain:o}=h(0,t),i=t+1;let s=a(e);function a(t){return n?r((i+t)%i):o(t)}function c(){return s}function u(){return y(t,c(),n)}const l={get:c,set:function(t){return s=a(t),l},add:function(t){return u().set(c()+t)},clone:u};return l}function v(t,e,o,a,c,u,l,d,f,p,y,v,b,w,x,S,L,E,A){const{cross:D,direction:I}=t,P=["INPUT","SELECT","TEXTAREA"],M={passive:!1},N=g(),O=g(),T=h(50,225).constrain(w.measure(20)),k={mouse:300,touch:400},C={mouse:500,touch:600},F=x?43:25;let V=!1,B=0,z=0,H=!1,q=!1,j=!1,R=!1;function G(t){if(!m(t,a)&&t.touches.length>=2)return _(t);const e=u.readPoint(t),n=u.readPoint(t,D),o=s(e,B),r=s(n,z);if(!q&&!R){if(!t.cancelable)return _(t);if(q=o>r,!q)return _(t)}const i=u.pointerMove(t);o>S&&(j=!0),p.useFriction(.3).useDuration(.75),d.start(),c.add(I(i)),t.preventDefault()}function _(t){const e=y.byDistance(0,!1).index!==v.get(),n=u.pointerUp(t)*(x?C:k)[R?"mouse":"touch"],o=function(t,e){const n=v.add(-1*i(t)),o=y.byDistance(t,!x).distance;return x||r(t)<T?o:L&&e?.5*o:y.byIndex(n.get(),0).distance}(I(n),e),a=function(t,e){if(0===t||0===e)return 0;if(r(t)<=r(e))return 0;const n=s(r(t),r(e));return r(n/t)}(n,o),c=F-10*a,l=E+a/50;q=!1,H=!1,O.clear(),p.useDuration(c).useFriction(l),f.distance(o,!x),R=!1,b.emit("pointerUp")}function U(t){j&&(t.stopPropagation(),t.preventDefault(),j=!1)}return{init:function(t){if(!A)return;function r(r){(n(A)||A(t,r))&&function(t){const n=m(t,a);R=n,j=x&&n&&!t.buttons&&V,V=s(c.get(),l.get())>=2,n&&0!==t.button||function(t){const e=t.nodeName||"";return P.includes(e)}(t.target)||(H=!0,u.pointerDown(t),p.useFriction(0).useDuration(0),c.set(l),function(){const t=R?o:e;O.add(t,"touchmove",G,M).add(t,"touchend",_).add(t,"mousemove",G,M).add(t,"mouseup",_)}(),B=u.readPoint(t),z=u.readPoint(t,D),b.emit("pointerDown"))}(r)}const i=e;N.add(i,"dragstart",t=>t.preventDefault(),M).add(i,"touchmove",()=>{},M).add(i,"touchend",()=>{}).add(i,"touchstart",r).add(i,"mousedown",r).add(i,"touchcancel",_).add(i,"contextmenu",_).add(i,"click",U,!0)},destroy:function(){N.clear(),O.clear()},pointerDown:function(){return H}}}function b(t,e){let n,o;function i(t){return t.timeStamp}function s(n,o){const r="client"+("x"===(o||t.scroll)?"X":"Y");return(m(n,e)?n:n.touches[0])[r]}return{pointerDown:function(t){return n=t,o=t,s(t)},pointerMove:function(t){const e=s(t)-s(o),r=i(t)-i(n)>170;return o=t,r&&(n=t),e},pointerUp:function(t){if(!n||!o)return 0;const e=s(o)-s(n),a=i(t)-i(n),c=i(t)-i(o)>170,u=e/a;return a&&!c&&r(u)>.1?u:0},readPoint:s}}function w(t,e,o,i,s,a,c){const u=[t].concat(i);let l,d,f=[],p=!1;function m(t){return s.measureSize(c.measure(t))}return{init:function(s){a&&(d=m(t),f=i.map(m),l=new ResizeObserver(o=>{(n(a)||a(s,o))&&function(n){for(const o of n){if(p)return;const n=o.target===t,a=i.indexOf(o.target),c=n?d:f[a];if(r(m(n?t:i[a])-c)>=.5){s.reInit(),e.emit("resize");break}}}(o)}),o.requestAnimationFrame(()=>{u.forEach(t=>l.observe(t))}))},destroy:function(){p=!0,l&&l.disconnect()}}}function x(t,e,n,o,i){const s=i.measure(10),a=i.measure(50),c=h(.1,.99);let u=!1;function l(){return!u&&!!t.reachedAny(n.get())&&!!t.reachedAny(e.get())}return{shouldConstrain:l,constrain:function(i){if(!l())return;const u=t.reachedMin(e.get())?"min":"max",d=r(t[u]-e.get()),f=n.get()-e.get(),p=c.constrain(d/a);n.subtract(f*p),!i&&r(f)<s&&(n.set(t.constrain(n.get())),o.useDuration(25).useBaseFriction())},toggleActive:function(t){u=!t}}}function S(t,e,n,o){const r=e.min+.1,i=e.max+.1,{reachedMin:s,reachedMax:a}=h(r,i);return{loop:function(e){if(!function(t){return 1===t?a(n.get()):-1===t&&s(n.get())}(e))return;const r=t*(-1*e);o.forEach(t=>t.add(r))}}}function L(e){let n=e;function o(e){return t(e)?e:e.get()}return{get:function(){return n},set:function(t){n=o(t)},add:function(t){n+=o(t)},subtract:function(t){n-=o(t)}}}function E(t,e){const n="x"===t.scroll?function(t){return`translate3d(${t}px,0px,0px)`}:function(t){return`translate3d(0px,${t}px,0px)`},o=e.style;let r=null,i=!1;return{clear:function(){i||(o.transform="",e.getAttribute("style")||e.removeAttribute("style"))},to:function(e){if(i)return;const s=(a=t.direction(e),Math.round(100*a)/100);var a;s!==r&&(o.transform=n(s),r=s)},toggleActive:function(t){i=!t}}}function A(t,e,n,o,r,i,s,c,u){const l=a(r),d=a(r).reverse(),f=function(){const t=s[0];return g(m(d,t),n,!1)}().concat(function(){const t=e-s[0]-1;return g(m(l,t),-n,!0)}());function p(t,e){return t.reduce((t,e)=>t-r[e],e)}function m(t,e){return t.reduce((t,n)=>p(t,e)>0?t.concat([n]):t,[])}function g(r,s,a){const l=function(t){return i.map((n,r)=>({start:n-o[r]+.5+t,end:n+e-.5+t}))}(s);return r.map(e=>{const o=a?0:-n,r=a?n:0,i=a?"end":"start",s=l[e][i];return{index:e,loopPoint:s,slideLocation:L(-1),translate:E(t,u[e]),target:()=>c.get()>s?o:r}})}return{canLoop:function(){return f.every(({index:t})=>p(l.filter(e=>e!==t),e)<=.1)},clear:function(){f.forEach(t=>t.translate.clear())},loop:function(){f.forEach(t=>{const{target:e,translate:n,slideLocation:o}=t,r=e();r!==o.get()&&(n.to(r),o.set(r))})},loopPoints:f}}function D(t,e,o){let r,i=!1;return{init:function(s){o&&(r=new MutationObserver(t=>{i||(n(o)||o(s,t))&&function(t){for(const n of t)if("childList"===n.type){s.reInit(),e.emit("slidesChanged");break}}(t)}),r.observe(t,{childList:!0}))},destroy:function(){r&&r.disconnect(),i=!0}}}function I(o,p,m,I,P,M,N){const{align:O,axis:T,direction:k,startIndex:C,loop:F,duration:V,dragFree:B,dragThreshold:z,inViewThreshold:H,slidesToScroll:q,skipSnaps:j,containScroll:R,watchResize:G,watchSlides:_,watchDrag:U,watchFocus:$}=M,W={measure:function(t){const{offsetTop:e,offsetLeft:n,offsetWidth:o,offsetHeight:r}=t;return{top:e,right:n+o,bottom:e+r,left:n,width:o,height:r}}},Q=W.measure(p),X=m.map(W.measure),J=function(t,e){const n="rtl"===e,o="y"===t,r=!o&&n?-1:1;return{scroll:o?"y":"x",cross:o?"x":"y",startEdge:o?"top":n?"right":"left",endEdge:o?"bottom":n?"left":"right",measureSize:function(t){const{height:e,width:n}=t;return o?e:n},direction:function(t){return t*r}}}(T,k),Y=J.measureSize(Q),K=function(t){return{measure:function(e){return t*(e/100)}}}(Y),Z=function(t,n){const o={start:function(){return 0},center:function(t){return r(t)/2},end:r};function r(t){return n-t}return{measure:function(r,i){return e(t)?o[t](r):t(n,r,i)}}}(O,Y),tt=!F&&!!R,et=F||!!R,{slideSizes:nt,slideSizesWithGaps:ot,startGap:rt,endGap:it}=function(t,e,n,o,i,s){const{measureSize:a,startEdge:u,endEdge:d}=t,f=n[0]&&i,p=function(){if(!f)return 0;const t=n[0];return r(e[u]-t[u])}(),m=function(){if(!f)return 0;const t=s.getComputedStyle(c(o));return parseFloat(t.getPropertyValue(`margin-${d}`))}(),g=n.map(a),h=n.map((t,e,n)=>{const o=!e,r=l(n,e);return o?g[e]+p:r?g[e]+m:n[e+1][u]-t[u]}).map(r);return{slideSizes:g,slideSizesWithGaps:h,startGap:p,endGap:m}}(J,Q,X,m,et,P),st=function(e,n,o,i,s,l,d,f,p){const{startEdge:m,endEdge:g,direction:h}=e,y=t(o);return{groupSlides:function(t){return y?function(t,e){return a(t).filter(t=>t%e===0).map(n=>t.slice(n,n+e))}(t,o):function(t){return t.length?a(t).reduce((e,o,a)=>{const y=c(e)||0,v=0===y,b=o===u(t),w=s[m]-l[y][m],x=s[m]-l[o][g],S=!i&&v?h(d):0,L=r(x-(!i&&b?h(f):0)-(w+S));return a&&L>n+p&&e.push(o),b&&e.push(t.length),e},[]).map((e,n,o)=>{const r=Math.max(o[n-1]||0);return t.slice(r,e)}):[]}(t)}}}(J,Y,q,F,Q,X,rt,it,2),{snaps:at,snapsAligned:ct}=function(t,e,n,o,i){const{startEdge:s,endEdge:a}=t,{groupSlides:u}=i,l=u(o).map(t=>c(t)[a]-t[0][s]).map(r).map(e.measure),d=o.map(t=>n[s]-t[s]).map(t=>-r(t)),f=u(d).map(t=>t[0]).map((t,e)=>t+l[e]);return{snaps:d,snapsAligned:f}}(J,Z,Q,X,st),ut=-c(at)+c(ot),{snapsContained:lt,scrollContainLimit:dt}=function(t,e,n,o){const r=h(-e+t,0),i=n.map((t,e)=>{const{min:o,max:i}=r,s=r.constrain(t),a=!e,c=l(n,e);return a?i:c||u(o,s)?o:u(i,s)?i:s}).map(t=>parseFloat(t.toFixed(3))),a=function(){const t=i[0],e=c(i);return h(i.lastIndexOf(t),i.indexOf(e)+1)}();function u(t,e){return s(t,e)<=1}return{snapsContained:function(){if(e<=t+2)return[r.max];if("keepSnaps"===o)return i;const{min:n,max:s}=a;return i.slice(n,s)}(),scrollContainLimit:a}}(Y,ut,ct,R),ft=tt?lt:ct,{limit:pt}=function(t,e,n){const o=e[0];return{limit:h(n?o-t:c(e),o)}}(ut,ft,F),mt=y(u(ft),C,F),gt=mt.clone(),ht=a(m),yt=function(t,e,n,o){const r=g(),i=1e3/60;let s=null,a=0,c=0;function u(t){if(!c)return;s||(s=t,n(),n());const r=t-s;for(s=t,a+=r;a>=i;)n(),a-=i;o(a/i),c&&(c=e.requestAnimationFrame(u))}function l(){e.cancelAnimationFrame(c),s=null,a=0,c=0}return{init:function(){r.add(t,"visibilitychange",()=>{t.hidden&&(s=null,a=0)})},destroy:function(){l(),r.clear()},start:function(){c||(c=e.requestAnimationFrame(u))},stop:l,update:n,render:o}}(I,P,()=>(({dragHandler:t,scrollBody:e,scrollBounds:n,options:{loop:o}})=>{o||n.constrain(t.pointerDown()),e.seek()})(Ot),t=>(({scrollBody:t,translate:e,location:n,offsetLocation:o,previousLocation:r,scrollLooper:i,slideLooper:s,dragHandler:a,animation:c,eventHandler:u,scrollBounds:l,options:{loop:d}},f)=>{const p=t.settled(),m=!l.shouldConstrain(),g=d?p:p&&m,h=g&&!a.pointerDown();h&&c.stop();const y=n.get()*f+r.get()*(1-f);o.set(y),d&&(i.loop(t.direction()),s.loop()),e.to(o.get()),h&&u.emit("settle"),g||u.emit("scroll")})(Ot,t)),vt=ft[mt.get()],bt=L(vt),wt=L(vt),xt=L(vt),St=L(vt),Lt=function(t,e,n,o,s){let a=0,c=0,u=s,l=.68,d=t.get(),f=0;function p(t){return u=t,g}function m(t){return l=t,g}const g={direction:function(){return c},duration:function(){return u},velocity:function(){return a},seek:function(){const e=o.get()-t.get();let r=0;return u?(n.set(t),a+=e/u,a*=l,d+=a,t.add(a),r=d-f):(a=0,n.set(o),t.set(o),r=e),c=i(r),f=d,g},settled:function(){return r(o.get()-e.get())<.001},useBaseFriction:function(){return m(.68)},useBaseDuration:function(){return p(s)},useFriction:m,useDuration:p};return g}(bt,xt,wt,St,V),Et=function(t,e,n,o,s){const{reachedAny:a,removeOffset:u,constrain:l}=o;function d(t){return t.concat().sort((t,e)=>r(t)-r(e))[0]}function f(e,o){const r=[e,e+n,e-n];if(!t)return e;if(!o)return d(r);const s=r.filter(t=>i(t)===o);return s.length?d(s):c(r)-n}return{byDistance:function(n,o){const i=s.get()+n,{index:c,distance:d}=function(n){const o=t?u(n):l(n),i=e.map((t,e)=>({diff:f(t-o,0),index:e})).sort((t,e)=>r(t.diff)-r(e.diff)),{index:s}=i[0];return{index:s,distance:o}}(i),p=!t&&a(i);return!o||p?{index:c,distance:n}:{index:c,distance:n+f(e[c]-d,0)}},byIndex:function(t,n){return{index:t,distance:f(e[t]-s.get(),n)}},shortcut:f}}(F,ft,ut,pt,St),At=function(t,e,n,o,r,i,s){function a(r){const a=r.distance,c=r.index!==e.get();i.add(a),a&&(o.duration()?t.start():(t.update(),t.render(1),t.update())),c&&(n.set(e.get()),e.set(r.index),s.emit("select"))}return{distance:function(t,e){a(r.byDistance(t,e))},index:function(t,n){const o=e.clone().set(t);a(r.byIndex(o.get(),n))}}}(yt,mt,gt,Lt,Et,St,N),Dt=function(t){const{max:e,length:n}=t;return{get:function(t){return n?(t-e)/-n:0}}}(pt),It=g(),Pt=function(t,e,n,o){const r={};let i,s=null,a=null,c=!1;return{init:function(){i=new IntersectionObserver(t=>{c||(t.forEach(t=>{const n=e.indexOf(t.target);r[n]=t}),s=null,a=null,n.emit("slidesInView"))},{root:t.parentElement,threshold:o}),e.forEach(t=>i.observe(t))},destroy:function(){i&&i.disconnect(),c=!0},get:function(t=!0){if(t&&s)return s;if(!t&&a)return a;const e=function(t){return f(r).reduce((e,n)=>{const o=parseInt(n),{isIntersecting:i}=r[o];return(t&&i||!t&&!i)&&e.push(o),e},[])}(t);return t&&(s=e),t||(a=e),e}}}(p,m,N,H),{slideRegistry:Mt}=function(t,e,n,o,r,i){const{groupSlides:s}=r,{min:a,max:f}=o;return{slideRegistry:function(){const o=s(i),r=!t||"keepSnaps"===e;return 1===n.length?[i]:r?o:o.slice(a,f).map((t,e,n)=>{const o=!e,r=l(n,e);return o?d(c(n[0])+1):r?d(u(i)-c(n)[0]+1,c(n)[0]):t})}()}}(tt,R,ft,dt,st,ht),Nt=function(e,o,r,i,s,a,c,u){const l={passive:!0,capture:!0};let d=0;function f(t){"Tab"===t.code&&(d=(new Date).getTime())}return{init:function(p){u&&(a.add(document,"keydown",f,!1),o.forEach((o,f)=>{a.add(o,"focus",o=>{(n(u)||u(p,o))&&function(n){if((new Date).getTime()-d>10)return;c.emit("slideFocusStart"),e.scrollLeft=0;const o=r.findIndex(t=>t.includes(n));t(o)&&(s.useDuration(0),i.index(o,0),c.emit("slideFocus"))}(f)},l)}))}}}(o,m,Mt,At,Lt,It,N,$),Ot={ownerDocument:I,ownerWindow:P,eventHandler:N,containerRect:Q,slideRects:X,animation:yt,axis:J,dragHandler:v(J,o,I,P,St,b(J,P),bt,yt,At,Lt,Et,mt,N,K,B,z,j,.68,U),eventStore:It,percentOfView:K,index:mt,indexPrevious:gt,limit:pt,location:bt,offsetLocation:xt,previousLocation:wt,options:M,resizeHandler:w(p,N,P,m,J,G,W),scrollBody:Lt,scrollBounds:x(pt,xt,St,Lt,K),scrollLooper:S(ut,pt,xt,[bt,xt,wt,St]),scrollProgress:Dt,scrollSnapList:ft.map(Dt.get),scrollSnaps:ft,scrollTarget:Et,scrollTo:At,slideLooper:A(J,Y,ut,nt,ot,at,ft,xt,m),slideFocus:Nt,slidesHandler:D(p,N,_),slidesInView:Pt,slideIndexes:ht,slideRegistry:Mt,slidesToScroll:st,target:St,translate:E(J,p)};return Ot}const P={align:"center",axis:"x",container:null,slides:null,containScroll:"trimSnaps",direction:"ltr",slidesToScroll:1,inViewThreshold:0,breakpoints:{},dragFree:!1,dragThreshold:10,loop:!1,skipSnaps:!1,duration:25,startIndex:0,active:!0,watchDrag:!0,watchResize:!0,watchSlides:!0,watchFocus:!0};function M(t){function e(t,e){return p(t,e||{})}return{mergeOptions:e,optionsAtMedia:function(n){const o=n.breakpoints||{},r=f(o).filter(e=>t.matchMedia(e).matches).map(t=>o[t]).reduce((t,n)=>e(t,n),{});return e(n,r)},optionsMediaQueries:function(e){return e.map(t=>f(t.breakpoints||{})).reduce((t,e)=>t.concat(e),[]).map(t.matchMedia)}}}function N(t,n,o){const r=t.ownerDocument,i=r.defaultView,s=M(i),a=function(t){let e=[];return{init:function(n,o){return e=o.filter(({options:e})=>!1!==t.optionsAtMedia(e).active),e.forEach(e=>e.init(n,t)),o.reduce((t,e)=>Object.assign(t,{[e.name]:e}),{})},destroy:function(){e=e.filter(t=>t.destroy())}}}(s),c=g(),u=function(){let t,e={};function n(t){return e[t]||[]}const o={init:function(e){t=e},emit:function(e){return n(e).forEach(n=>n(t,e)),o},off:function(t,r){return e[t]=n(t).filter(t=>t!==r),o},on:function(t,r){return e[t]=n(t).concat([r]),o},clear:function(){e={}}};return o}(),{mergeOptions:l,optionsAtMedia:d,optionsMediaQueries:f}=s,{on:p,off:m,emit:h}=u,y=T;let v,b,w,x,S=!1,L=l(P,N.globalOptions),E=l(L),A=[];function D(e){const n=I(t,w,x,r,i,e,u);return e.loop&&!n.slideLooper.canLoop()?D(Object.assign({},e,{loop:!1})):n}function O(n,o){S||(L=l(L,n),E=d(L),A=o||A,function(){const{container:n,slides:o}=E,r=e(n)?t.querySelector(n):n;w=r||t.children[0];const i=e(o)?w.querySelectorAll(o):o;x=[].slice.call(i||w.children)}(),v=D(E),f([L,...A.map(({options:t})=>t)]).forEach(t=>c.add(t,"change",T)),E.active&&(v.translate.to(v.location.get()),v.animation.init(),v.slidesInView.init(),v.slideFocus.init(V),v.eventHandler.init(V),v.resizeHandler.init(V),v.slidesHandler.init(V),v.options.loop&&v.slideLooper.loop(),w.offsetParent&&x.length&&v.dragHandler.init(V),b=a.init(V,A)))}function T(t,e){const n=F();k(),O(l({startIndex:n},t),e),u.emit("reInit")}function k(){v.dragHandler.destroy(),v.eventStore.clear(),v.translate.clear(),v.slideLooper.clear(),v.resizeHandler.destroy(),v.slidesHandler.destroy(),v.slidesInView.destroy(),v.animation.destroy(),a.destroy(),c.clear()}function C(t,e,n){E.active&&!S&&(v.scrollBody.useBaseFriction().useDuration(!0===e?0:E.duration),v.scrollTo.index(t,n||0))}function F(){return v.index.get()}const V={canScrollNext:function(){return v.index.add(1).get()!==F()},canScrollPrev:function(){return v.index.add(-1).get()!==F()},containerNode:function(){return w},internalEngine:function(){return v},destroy:function(){S||(S=!0,c.clear(),k(),u.emit("destroy"),u.clear())},off:m,on:p,emit:h,plugins:function(){return b},previousScrollSnap:function(){return v.indexPrevious.get()},reInit:y,rootNode:function(){return t},scrollNext:function(t){C(v.index.add(1).get(),t,-1)},scrollPrev:function(t){C(v.index.add(-1).get(),t,1)},scrollProgress:function(){return v.scrollProgress.get(v.offsetLocation.get())},scrollSnapList:function(){return v.scrollSnapList},scrollTo:C,selectedScrollSnap:F,slideNodes:function(){return x},slidesInView:function(){return v.slidesInView.get()},slidesNotInView:function(){return v.slidesInView.get(!1)}};return O(n,o),setTimeout(()=>u.emit("init"),0),V}N.globalOptions=void 0;const O={active:!0,breakpoints:{},delay:4e3,jump:!1,playOnInit:!0,stopOnFocusIn:!0,stopOnInteraction:!0,stopOnMouseEnter:!1,stopOnLastSnap:!1,rootNode:null};function T(t={}){let e,n,o,r,i=null,s=0,a=!1,c=!1,u=!1,l=!1;function d(){o||(m()?u=!0:(a||n.emit("autoplay:play"),function(){const{ownerWindow:t}=n.internalEngine();t.clearTimeout(s),s=t.setTimeout(b,r[n.selectedScrollSnap()]),i=(new Date).getTime(),n.emit("autoplay:timerset")}(),a=!0))}function f(){o||(a&&n.emit("autoplay:stop"),function(){const{ownerWindow:t}=n.internalEngine();t.clearTimeout(s),s=0,i=null,n.emit("autoplay:timerstopped")}(),a=!1)}function p(){if(m())return u=a,f();u&&d()}function m(){const{ownerDocument:t}=n.internalEngine();return"hidden"===t.visibilityState}function g(){c||f()}function h(){c||d()}function y(){c=!0,f()}function v(){c=!1,d()}function b(){const{index:t}=n.internalEngine(),o=t.clone().add(1).get(),r=n.scrollSnapList().length-1,i=e.stopOnLastSnap&&o===r;if(n.canScrollNext()?n.scrollNext(l):n.scrollTo(0,l),n.emit("autoplay:select"),i)return f();d()}return{name:"autoplay",options:t,init:function(i,s){n=i;const{mergeOptions:a,optionsAtMedia:c}=s,u=a(O,T.globalOptions),m=a(u,t);if(e=c(m),n.scrollSnapList().length<=1)return;l=e.jump,o=!1,r=function(t,e){const n=t.scrollSnapList();return"number"==typeof e?n.map(()=>e):e(n,t)}(n,e.delay);const{eventStore:b,ownerDocument:w}=n.internalEngine(),x=!!n.internalEngine().options.watchDrag,S=function(t,e){const n=t.rootNode();return e&&e(n)||n}(n,e.rootNode);b.add(w,"visibilitychange",p),x&&n.on("pointerDown",g),x&&!e.stopOnInteraction&&n.on("pointerUp",h),e.stopOnMouseEnter&&b.add(S,"mouseenter",y),e.stopOnMouseEnter&&!e.stopOnInteraction&&b.add(S,"mouseleave",v),e.stopOnFocusIn&&n.on("slideFocusStart",f),e.stopOnFocusIn&&!e.stopOnInteraction&&b.add(n.containerNode(),"focusout",d),e.playOnInit&&d()},destroy:function(){n.off("pointerDown",g).off("pointerUp",h).off("slideFocusStart",f),f(),o=!0,a=!1},play:function(t){void 0!==t&&(l=t),d()},stop:function(){a&&f()},reset:function(){a&&d()},isPlaying:function(){return a},timeUntilNext:function(){return i?r[n.selectedScrollSnap()]-((new Date).getTime()-i):null}}}T.globalOptions=void 0,function(){const t=new Map;function e(e){(e?e.querySelectorAll(".wp-block-jankx-dynamic-ssr-layout.view-type-layout-carousel"):document.querySelectorAll(".wp-block-jankx-dynamic-ssr-layout.view-type-layout-carousel")).forEach(e=>{if(e._carouselInitialized)return;const i=e.querySelector(".carousel-container");if(!i)return;Math.random().toString(36).substr(2,9);const s={carousel:e,container:i,embla:null,slides:[],autoplayTimeout:null,isPaused:!1},a=getComputedStyle(e),c=parseInt(a.getPropertyValue("--slides-per-view"))||NaN,u=parseInt(a.getPropertyValue("--space-between"))||NaN,l=parseInt(e.getAttribute("data-slides-per-view"))||NaN,d=parseInt(e.getAttribute("data-columns"))||NaN,f=parseInt(e.getAttribute("data-space-between"))||NaN;s.slidesPerView=l||d||c||1,s.spaceBetween=f||u||16,s.autoplay="true"===e.getAttribute("data-autoplay"),s.autoplayDelay=Math.max(3e3,parseInt(e.getAttribute("data-autoplay-delay"))||5e3),s.showArrows=e.classList.contains("has-arrows"),s.showDots=e.classList.contains("has-dots"),i.style.setProperty("--slides-per-view",s.slidesPerView),i.style.setProperty("--space-between",`${s.spaceBetween}px`),e.style.setProperty("--slides-per-view",s.slidesPerView),e.style.setProperty("--space-between",`${s.spaceBetween}px`),i.classList.add("embla__viewport");let p=i.querySelector(".embla__container");if(!p){for(p=document.createElement("div"),p.className="embla__container";i.firstChild;){const t=i.firstChild,e=1===t.nodeType,n=3===t.nodeType,o=8===t.nodeType;if(n&&""===(t.nodeValue||"").trim())i.removeChild(t);else if(o)i.removeChild(t);else if(e&&t.classList&&t.classList.contains("carousel-slide"))p.appendChild(t);else{const e=document.createElement("div");e.className="carousel-slide",i.removeChild(t),e.appendChild(t),p.appendChild(e)}}i.appendChild(p)}s.slides=Array.from(i.querySelectorAll(".carousel-slide"));const m=s.autoplay?[T({delay:s.autoplayDelay,stopOnInteraction:!0,stopOnMouseEnter:!0})]:[];if(s.embla=N(i,{loop:!0,duration:25,align:"start"},m),t.set(i,s),e._carouselInitialized=!0,s.showArrows){const t=e.querySelector(".carousel-prev"),n=e.querySelector(".carousel-next");t&&n?(t.addEventListener("click",t=>{t.preventDefault(),t.stopPropagation(),s.embla.scrollPrev();const e=s.embla.plugins?.().autoplay;e&&e.reset()},{passive:!0}),n.addEventListener("click",t=>{t.preventDefault(),t.stopPropagation(),s.embla.scrollNext();const e=s.embla.plugins?.().autoplay;e&&e.reset()},{passive:!0}),s.prevBtn=t,s.nextBtn=n):function(t,e,n){const o=document.createElement("button");o.className="carousel-nav carousel-prev",o.setAttribute("aria-label","Previous slide"),o.innerHTML='\n        <svg viewBox="0 0 24 24" fill="none">\n            <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>\n        </svg>\n    ',o.addEventListener("click",t=>{t.preventDefault(),t.stopPropagation(),n.embla.scrollPrev(),resetAutoplay(n)});const r=document.createElement("button");r.className="carousel-nav carousel-next",r.setAttribute("aria-label","Next slide"),r.innerHTML='\n        <svg viewBox="0 0 24 24" fill="none">\n            <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>\n        </svg>\n    ',r.addEventListener("click",t=>{t.preventDefault(),t.stopPropagation(),n.embla.scrollNext(),resetAutoplay(n)}),t.appendChild(o),t.appendChild(r),n.prevBtn=o,n.nextBtn=r}(e,0,s)}if(s.showDots){const t=e.querySelector(".carousel-dots");if(t){s.dotsContainer=t;const e=s.embla.slideNodes().length,n=Math.ceil(e/s.slidesPerView);t.innerHTML="";for(let e=0;e<n;e++){const n=document.createElement("button");n.className="carousel-dot",n.setAttribute("role","tab"),n.setAttribute("aria-label",`Go to slide ${e+1}`),n.setAttribute("aria-selected",0===e?"true":"false"),n.addEventListener("click",t=>{t.preventDefault(),s.embla.scrollTo(e*s.slidesPerView);const n=s.embla.plugins?.().autoplay;n&&n.reset()},{passive:!0}),t.appendChild(n)}}else!function(t,e,n){const o=n.embla.slideNodes();if(o.length<=1)return;const r=document.createElement("div");r.className="carousel-dots",r.setAttribute("role","tablist");const i=o.length,s=Math.ceil(i/n.slidesPerView);for(let t=0;t<s;t++){const e=document.createElement("button");e.className="carousel-dot",e.setAttribute("role","tab"),e.setAttribute("aria-label",`Go to slide ${t+1}`),e.setAttribute("aria-selected",0===t?"true":"false"),e.addEventListener("click",e=>{e.preventDefault(),n.embla.scrollTo(t*n.slidesPerView),resetAutoplay(n)}),r.appendChild(e)}t.appendChild(r),n.dotsContainer=r}(e,0,s)}if(function(t){const{embla:e,carousel:i}=t;if(e.on("select",()=>{o(t),r(t)}),e.on("reInit",()=>{n(t),o(t),r(t)}),t.autoplay){const e=t.embla.plugins?.().autoplay;e&&(i.addEventListener("mouseenter",()=>e.stop(),{passive:!0}),i.addEventListener("mouseleave",()=>e.play(),{passive:!0}),i.addEventListener("touchstart",()=>e.stop(),{passive:!0}),i.addEventListener("touchend",()=>e.play(),{passive:!0}))}}(s),s.autoplay){const t=s.embla.plugins?.().autoplay;t&&(e.addEventListener("mouseenter",()=>t.stop(),{passive:!0}),e.addEventListener("mouseleave",()=>t.play(),{passive:!0}),e.addEventListener("touchstart",()=>t.stop(),{passive:!0}),e.addEventListener("touchend",()=>t.play(),{passive:!0}))}n(s)})}function n(t){const{embla:e,slidesPerView:n,showDots:i,showArrows:s}=t;e&&(e.selectedScrollSnap(),i&&t.dotsContainer&&o(t),s&&r(t))}function o(t){const{dotsContainer:e,slidesPerView:n,embla:o}=t,r=e?.querySelectorAll(".carousel-dot");if(!r||!r.length)return;const i=Math.floor(o.selectedScrollSnap()/n);r.forEach((t,e)=>{const n=e===i;t.classList.toggle("is-active",n),t.setAttribute("aria-selected",n?"true":"false")})}function r(t){const{prevBtn:e,nextBtn:n,embla:o}=t;if(e){const t=!o.canScrollPrev();e.disabled=t,e.setAttribute("aria-disabled",t?"true":"false")}if(n){const t=!o.canScrollNext();n.disabled=t,n.setAttribute("aria-disabled",t?"true":"false")}}function i(){e()}"loading"===document.readyState?document.addEventListener("DOMContentLoaded",i):i(),setTimeout(i,100),document.addEventListener("jankx:reinitialize-carousel",t=>{e(t?.detail?.element||void 0)}),window.initCarousel=e,window.JankxCarousel={init:e,next:e=>{const n=t.get(e);if(n){n.embla.scrollNext();const t=n.embla.plugins?.().autoplay;t&&t.reset()}},prev:e=>{const n=t.get(e);if(n){n.embla.scrollPrev();const t=n.embla.plugins?.().autoplay;t&&t.reset()}},goTo:(e,n)=>{const o=t.get(e);if(o){o.embla.scrollTo(n);const t=o.embla.plugins?.().autoplay;t&&t.reset()}},update:e=>{const o=t.get(e);o&&n(o)}}}()})();
+/******/ (() => { // webpackBootstrap
+/******/ 	"use strict";
+/******/ 	var __webpack_modules__ = ({
+
+/***/ "../node_modules/embla-carousel-autoplay/esm/embla-carousel-autoplay.esm.js":
+/*!**********************************************************************************!*\
+  !*** ../node_modules/embla-carousel-autoplay/esm/embla-carousel-autoplay.esm.js ***!
+  \**********************************************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ Autoplay)
+/* harmony export */ });
+const defaultOptions = {
+  active: true,
+  breakpoints: {},
+  delay: 4000,
+  jump: false,
+  playOnInit: true,
+  stopOnFocusIn: true,
+  stopOnInteraction: true,
+  stopOnMouseEnter: false,
+  stopOnLastSnap: false,
+  rootNode: null
+};
+function normalizeDelay(emblaApi, delay) {
+  const scrollSnaps = emblaApi.scrollSnapList();
+  if (typeof delay === 'number') {
+    return scrollSnaps.map(() => delay);
+  }
+  return delay(scrollSnaps, emblaApi);
+}
+function getAutoplayRootNode(emblaApi, rootNode) {
+  const emblaRootNode = emblaApi.rootNode();
+  return rootNode && rootNode(emblaRootNode) || emblaRootNode;
+}
+function Autoplay(userOptions = {}) {
+  let options;
+  let emblaApi;
+  let destroyed;
+  let delay;
+  let timerStartTime = null;
+  let timerId = 0;
+  let autoplayActive = false;
+  let mouseIsOver = false;
+  let playOnDocumentVisible = false;
+  let jump = false;
+  function init(emblaApiInstance, optionsHandler) {
+    emblaApi = emblaApiInstance;
+    const {
+      mergeOptions,
+      optionsAtMedia
+    } = optionsHandler;
+    const optionsBase = mergeOptions(defaultOptions, Autoplay.globalOptions);
+    const allOptions = mergeOptions(optionsBase, userOptions);
+    options = optionsAtMedia(allOptions);
+    if (emblaApi.scrollSnapList().length <= 1) return;
+    jump = options.jump;
+    destroyed = false;
+    delay = normalizeDelay(emblaApi, options.delay);
+    const {
+      eventStore,
+      ownerDocument
+    } = emblaApi.internalEngine();
+    const isDraggable = !!emblaApi.internalEngine().options.watchDrag;
+    const root = getAutoplayRootNode(emblaApi, options.rootNode);
+    eventStore.add(ownerDocument, 'visibilitychange', visibilityChange);
+    if (isDraggable) {
+      emblaApi.on('pointerDown', pointerDown);
+    }
+    if (isDraggable && !options.stopOnInteraction) {
+      emblaApi.on('pointerUp', pointerUp);
+    }
+    if (options.stopOnMouseEnter) {
+      eventStore.add(root, 'mouseenter', mouseEnter);
+    }
+    if (options.stopOnMouseEnter && !options.stopOnInteraction) {
+      eventStore.add(root, 'mouseleave', mouseLeave);
+    }
+    if (options.stopOnFocusIn) {
+      emblaApi.on('slideFocusStart', stopAutoplay);
+    }
+    if (options.stopOnFocusIn && !options.stopOnInteraction) {
+      eventStore.add(emblaApi.containerNode(), 'focusout', startAutoplay);
+    }
+    if (options.playOnInit) startAutoplay();
+  }
+  function destroy() {
+    emblaApi.off('pointerDown', pointerDown).off('pointerUp', pointerUp).off('slideFocusStart', stopAutoplay);
+    stopAutoplay();
+    destroyed = true;
+    autoplayActive = false;
+  }
+  function setTimer() {
+    const {
+      ownerWindow
+    } = emblaApi.internalEngine();
+    ownerWindow.clearTimeout(timerId);
+    timerId = ownerWindow.setTimeout(next, delay[emblaApi.selectedScrollSnap()]);
+    timerStartTime = new Date().getTime();
+    emblaApi.emit('autoplay:timerset');
+  }
+  function clearTimer() {
+    const {
+      ownerWindow
+    } = emblaApi.internalEngine();
+    ownerWindow.clearTimeout(timerId);
+    timerId = 0;
+    timerStartTime = null;
+    emblaApi.emit('autoplay:timerstopped');
+  }
+  function startAutoplay() {
+    if (destroyed) return;
+    if (documentIsHidden()) {
+      playOnDocumentVisible = true;
+      return;
+    }
+    if (!autoplayActive) emblaApi.emit('autoplay:play');
+    setTimer();
+    autoplayActive = true;
+  }
+  function stopAutoplay() {
+    if (destroyed) return;
+    if (autoplayActive) emblaApi.emit('autoplay:stop');
+    clearTimer();
+    autoplayActive = false;
+  }
+  function visibilityChange() {
+    if (documentIsHidden()) {
+      playOnDocumentVisible = autoplayActive;
+      return stopAutoplay();
+    }
+    if (playOnDocumentVisible) startAutoplay();
+  }
+  function documentIsHidden() {
+    const {
+      ownerDocument
+    } = emblaApi.internalEngine();
+    return ownerDocument.visibilityState === 'hidden';
+  }
+  function pointerDown() {
+    if (!mouseIsOver) stopAutoplay();
+  }
+  function pointerUp() {
+    if (!mouseIsOver) startAutoplay();
+  }
+  function mouseEnter() {
+    mouseIsOver = true;
+    stopAutoplay();
+  }
+  function mouseLeave() {
+    mouseIsOver = false;
+    startAutoplay();
+  }
+  function play(jumpOverride) {
+    if (typeof jumpOverride !== 'undefined') jump = jumpOverride;
+    startAutoplay();
+  }
+  function stop() {
+    if (autoplayActive) stopAutoplay();
+  }
+  function reset() {
+    if (autoplayActive) startAutoplay();
+  }
+  function isPlaying() {
+    return autoplayActive;
+  }
+  function next() {
+    const {
+      index
+    } = emblaApi.internalEngine();
+    const nextIndex = index.clone().add(1).get();
+    const lastIndex = emblaApi.scrollSnapList().length - 1;
+    const kill = options.stopOnLastSnap && nextIndex === lastIndex;
+    if (emblaApi.canScrollNext()) {
+      emblaApi.scrollNext(jump);
+    } else {
+      emblaApi.scrollTo(0, jump);
+    }
+    emblaApi.emit('autoplay:select');
+    if (kill) return stopAutoplay();
+    startAutoplay();
+  }
+  function timeUntilNext() {
+    if (!timerStartTime) return null;
+    const currentDelay = delay[emblaApi.selectedScrollSnap()];
+    const timePastSinceStart = new Date().getTime() - timerStartTime;
+    return currentDelay - timePastSinceStart;
+  }
+  const self = {
+    name: 'autoplay',
+    options: userOptions,
+    init,
+    destroy,
+    play,
+    stop,
+    reset,
+    isPlaying,
+    timeUntilNext
+  };
+  return self;
+}
+Autoplay.globalOptions = undefined;
+
+
+/***/ }),
+
+/***/ "./assets/js/jankx-carousel-common.js":
+/*!********************************************!*\
+  !*** ./assets/js/jankx-carousel-common.js ***!
+  \********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__),
+/* harmony export */   initJankxCarousel: () => (/* binding */ initJankxCarousel)
+/* harmony export */ });
+/* harmony import */ var _shared_components_JankxCarousel__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./../../shared/components/JankxCarousel */ "./shared/components/JankxCarousel.ts");
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_shared_components_JankxCarousel__WEBPACK_IMPORTED_MODULE_0__["default"]);
+const carouselInstances = new Map();
+function initJankxCarousel(selector, root = document) {
+  const carousels = root ? root.querySelectorAll(selector) : document.querySelectorAll(selector);
+  carousels.forEach(carousel => {
+    if (carousel._carouselInitialized) return;
+    const instance = new _shared_components_JankxCarousel__WEBPACK_IMPORTED_MODULE_0__["default"](carousel);
+    if (instance.embla) {
+      carouselInstances.set(carousel, instance);
+    }
+  });
+}
+if (typeof window !== 'undefined') {
+  window.JankxCarousel = {
+    init: initJankxCarousel,
+    instances: carouselInstances,
+    Carousel: _shared_components_JankxCarousel__WEBPACK_IMPORTED_MODULE_0__["default"]
+  };
+}
+
+/***/ }),
+
+/***/ "./node_modules/embla-carousel/esm/embla-carousel.esm.js":
+/*!***************************************************************!*\
+  !*** ./node_modules/embla-carousel/esm/embla-carousel.esm.js ***!
+  \***************************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ EmblaCarousel)
+/* harmony export */ });
+function isNumber(subject) {
+  return typeof subject === 'number';
+}
+function isString(subject) {
+  return typeof subject === 'string';
+}
+function isBoolean(subject) {
+  return typeof subject === 'boolean';
+}
+function isObject(subject) {
+  return Object.prototype.toString.call(subject) === '[object Object]';
+}
+function mathAbs(n) {
+  return Math.abs(n);
+}
+function mathSign(n) {
+  return Math.sign(n);
+}
+function deltaAbs(valueB, valueA) {
+  return mathAbs(valueB - valueA);
+}
+function factorAbs(valueB, valueA) {
+  if (valueB === 0 || valueA === 0) return 0;
+  if (mathAbs(valueB) <= mathAbs(valueA)) return 0;
+  const diff = deltaAbs(mathAbs(valueB), mathAbs(valueA));
+  return mathAbs(diff / valueB);
+}
+function roundToTwoDecimals(num) {
+  return Math.round(num * 100) / 100;
+}
+function arrayKeys(array) {
+  return objectKeys(array).map(Number);
+}
+function arrayLast(array) {
+  return array[arrayLastIndex(array)];
+}
+function arrayLastIndex(array) {
+  return Math.max(0, array.length - 1);
+}
+function arrayIsLastIndex(array, index) {
+  return index === arrayLastIndex(array);
+}
+function arrayFromNumber(n, startAt = 0) {
+  return Array.from(Array(n), (_, i) => startAt + i);
+}
+function objectKeys(object) {
+  return Object.keys(object);
+}
+function objectsMergeDeep(objectA, objectB) {
+  return [objectA, objectB].reduce((mergedObjects, currentObject) => {
+    objectKeys(currentObject).forEach(key => {
+      const valueA = mergedObjects[key];
+      const valueB = currentObject[key];
+      const areObjects = isObject(valueA) && isObject(valueB);
+      mergedObjects[key] = areObjects ? objectsMergeDeep(valueA, valueB) : valueB;
+    });
+    return mergedObjects;
+  }, {});
+}
+function isMouseEvent(evt, ownerWindow) {
+  return typeof ownerWindow.MouseEvent !== 'undefined' && evt instanceof ownerWindow.MouseEvent;
+}
+function Alignment(align, viewSize) {
+  const predefined = {
+    start,
+    center,
+    end
+  };
+  function start() {
+    return 0;
+  }
+  function center(n) {
+    return end(n) / 2;
+  }
+  function end(n) {
+    return viewSize - n;
+  }
+  function measure(n, index) {
+    if (isString(align)) return predefined[align](n);
+    return align(viewSize, n, index);
+  }
+  const self = {
+    measure
+  };
+  return self;
+}
+function EventStore() {
+  let listeners = [];
+  function add(node, type, handler, options = {
+    passive: true
+  }) {
+    let removeListener;
+    if ('addEventListener' in node) {
+      node.addEventListener(type, handler, options);
+      removeListener = () => node.removeEventListener(type, handler, options);
+    } else {
+      const legacyMediaQueryList = node;
+      legacyMediaQueryList.addListener(handler);
+      removeListener = () => legacyMediaQueryList.removeListener(handler);
+    }
+    listeners.push(removeListener);
+    return self;
+  }
+  function clear() {
+    listeners = listeners.filter(remove => remove());
+  }
+  const self = {
+    add,
+    clear
+  };
+  return self;
+}
+function Animations(ownerDocument, ownerWindow, update, render) {
+  const documentVisibleHandler = EventStore();
+  const fixedTimeStep = 1000 / 60;
+  let lastTimeStamp = null;
+  let accumulatedTime = 0;
+  let animationId = 0;
+  function init() {
+    documentVisibleHandler.add(ownerDocument, 'visibilitychange', () => {
+      if (ownerDocument.hidden) reset();
+    });
+  }
+  function destroy() {
+    stop();
+    documentVisibleHandler.clear();
+  }
+  function animate(timeStamp) {
+    if (!animationId) return;
+    if (!lastTimeStamp) {
+      lastTimeStamp = timeStamp;
+      update();
+      update();
+    }
+    const timeElapsed = timeStamp - lastTimeStamp;
+    lastTimeStamp = timeStamp;
+    accumulatedTime += timeElapsed;
+    while (accumulatedTime >= fixedTimeStep) {
+      update();
+      accumulatedTime -= fixedTimeStep;
+    }
+    const alpha = accumulatedTime / fixedTimeStep;
+    render(alpha);
+    if (animationId) {
+      animationId = ownerWindow.requestAnimationFrame(animate);
+    }
+  }
+  function start() {
+    if (animationId) return;
+    animationId = ownerWindow.requestAnimationFrame(animate);
+  }
+  function stop() {
+    ownerWindow.cancelAnimationFrame(animationId);
+    lastTimeStamp = null;
+    accumulatedTime = 0;
+    animationId = 0;
+  }
+  function reset() {
+    lastTimeStamp = null;
+    accumulatedTime = 0;
+  }
+  const self = {
+    init,
+    destroy,
+    start,
+    stop,
+    update,
+    render
+  };
+  return self;
+}
+function Axis(axis, contentDirection) {
+  const isRightToLeft = contentDirection === 'rtl';
+  const isVertical = axis === 'y';
+  const scroll = isVertical ? 'y' : 'x';
+  const cross = isVertical ? 'x' : 'y';
+  const sign = !isVertical && isRightToLeft ? -1 : 1;
+  const startEdge = getStartEdge();
+  const endEdge = getEndEdge();
+  function measureSize(nodeRect) {
+    const {
+      height,
+      width
+    } = nodeRect;
+    return isVertical ? height : width;
+  }
+  function getStartEdge() {
+    if (isVertical) return 'top';
+    return isRightToLeft ? 'right' : 'left';
+  }
+  function getEndEdge() {
+    if (isVertical) return 'bottom';
+    return isRightToLeft ? 'left' : 'right';
+  }
+  function direction(n) {
+    return n * sign;
+  }
+  const self = {
+    scroll,
+    cross,
+    startEdge,
+    endEdge,
+    measureSize,
+    direction
+  };
+  return self;
+}
+function Limit(min = 0, max = 0) {
+  const length = mathAbs(min - max);
+  function reachedMin(n) {
+    return n < min;
+  }
+  function reachedMax(n) {
+    return n > max;
+  }
+  function reachedAny(n) {
+    return reachedMin(n) || reachedMax(n);
+  }
+  function constrain(n) {
+    if (!reachedAny(n)) return n;
+    return reachedMin(n) ? min : max;
+  }
+  function removeOffset(n) {
+    if (!length) return n;
+    return n - length * Math.ceil((n - max) / length);
+  }
+  const self = {
+    length,
+    max,
+    min,
+    constrain,
+    reachedAny,
+    reachedMax,
+    reachedMin,
+    removeOffset
+  };
+  return self;
+}
+function Counter(max, start, loop) {
+  const {
+    constrain
+  } = Limit(0, max);
+  const loopEnd = max + 1;
+  let counter = withinLimit(start);
+  function withinLimit(n) {
+    return !loop ? constrain(n) : mathAbs((loopEnd + n) % loopEnd);
+  }
+  function get() {
+    return counter;
+  }
+  function set(n) {
+    counter = withinLimit(n);
+    return self;
+  }
+  function add(n) {
+    return clone().set(get() + n);
+  }
+  function clone() {
+    return Counter(max, get(), loop);
+  }
+  const self = {
+    get,
+    set,
+    add,
+    clone
+  };
+  return self;
+}
+function DragHandler(axis, rootNode, ownerDocument, ownerWindow, target, dragTracker, location, animation, scrollTo, scrollBody, scrollTarget, index, eventHandler, percentOfView, dragFree, dragThreshold, skipSnaps, baseFriction, watchDrag) {
+  const {
+    cross: crossAxis,
+    direction
+  } = axis;
+  const focusNodes = ['INPUT', 'SELECT', 'TEXTAREA'];
+  const nonPassiveEvent = {
+    passive: false
+  };
+  const initEvents = EventStore();
+  const dragEvents = EventStore();
+  const goToNextThreshold = Limit(50, 225).constrain(percentOfView.measure(20));
+  const snapForceBoost = {
+    mouse: 300,
+    touch: 400
+  };
+  const freeForceBoost = {
+    mouse: 500,
+    touch: 600
+  };
+  const baseSpeed = dragFree ? 43 : 25;
+  let isMoving = false;
+  let startScroll = 0;
+  let startCross = 0;
+  let pointerIsDown = false;
+  let preventScroll = false;
+  let preventClick = false;
+  let isMouse = false;
+  function init(emblaApi) {
+    if (!watchDrag) return;
+    function downIfAllowed(evt) {
+      if (isBoolean(watchDrag) || watchDrag(emblaApi, evt)) down(evt);
+    }
+    const node = rootNode;
+    initEvents.add(node, 'dragstart', evt => evt.preventDefault(), nonPassiveEvent).add(node, 'touchmove', () => undefined, nonPassiveEvent).add(node, 'touchend', () => undefined).add(node, 'touchstart', downIfAllowed).add(node, 'mousedown', downIfAllowed).add(node, 'touchcancel', up).add(node, 'contextmenu', up).add(node, 'click', click, true);
+  }
+  function destroy() {
+    initEvents.clear();
+    dragEvents.clear();
+  }
+  function addDragEvents() {
+    const node = isMouse ? ownerDocument : rootNode;
+    dragEvents.add(node, 'touchmove', move, nonPassiveEvent).add(node, 'touchend', up).add(node, 'mousemove', move, nonPassiveEvent).add(node, 'mouseup', up);
+  }
+  function isFocusNode(node) {
+    const nodeName = node.nodeName || '';
+    return focusNodes.includes(nodeName);
+  }
+  function forceBoost() {
+    const boost = dragFree ? freeForceBoost : snapForceBoost;
+    const type = isMouse ? 'mouse' : 'touch';
+    return boost[type];
+  }
+  function allowedForce(force, targetChanged) {
+    const next = index.add(mathSign(force) * -1);
+    const baseForce = scrollTarget.byDistance(force, !dragFree).distance;
+    if (dragFree || mathAbs(force) < goToNextThreshold) return baseForce;
+    if (skipSnaps && targetChanged) return baseForce * 0.5;
+    return scrollTarget.byIndex(next.get(), 0).distance;
+  }
+  function down(evt) {
+    const isMouseEvt = isMouseEvent(evt, ownerWindow);
+    isMouse = isMouseEvt;
+    preventClick = dragFree && isMouseEvt && !evt.buttons && isMoving;
+    isMoving = deltaAbs(target.get(), location.get()) >= 2;
+    if (isMouseEvt && evt.button !== 0) return;
+    if (isFocusNode(evt.target)) return;
+    pointerIsDown = true;
+    dragTracker.pointerDown(evt);
+    scrollBody.useFriction(0).useDuration(0);
+    target.set(location);
+    addDragEvents();
+    startScroll = dragTracker.readPoint(evt);
+    startCross = dragTracker.readPoint(evt, crossAxis);
+    eventHandler.emit('pointerDown');
+  }
+  function move(evt) {
+    const isTouchEvt = !isMouseEvent(evt, ownerWindow);
+    if (isTouchEvt && evt.touches.length >= 2) return up(evt);
+    const lastScroll = dragTracker.readPoint(evt);
+    const lastCross = dragTracker.readPoint(evt, crossAxis);
+    const diffScroll = deltaAbs(lastScroll, startScroll);
+    const diffCross = deltaAbs(lastCross, startCross);
+    if (!preventScroll && !isMouse) {
+      if (!evt.cancelable) return up(evt);
+      preventScroll = diffScroll > diffCross;
+      if (!preventScroll) return up(evt);
+    }
+    const diff = dragTracker.pointerMove(evt);
+    if (diffScroll > dragThreshold) preventClick = true;
+    scrollBody.useFriction(0.3).useDuration(0.75);
+    animation.start();
+    target.add(direction(diff));
+    evt.preventDefault();
+  }
+  function up(evt) {
+    const currentLocation = scrollTarget.byDistance(0, false);
+    const targetChanged = currentLocation.index !== index.get();
+    const rawForce = dragTracker.pointerUp(evt) * forceBoost();
+    const force = allowedForce(direction(rawForce), targetChanged);
+    const forceFactor = factorAbs(rawForce, force);
+    const speed = baseSpeed - 10 * forceFactor;
+    const friction = baseFriction + forceFactor / 50;
+    preventScroll = false;
+    pointerIsDown = false;
+    dragEvents.clear();
+    scrollBody.useDuration(speed).useFriction(friction);
+    scrollTo.distance(force, !dragFree);
+    isMouse = false;
+    eventHandler.emit('pointerUp');
+  }
+  function click(evt) {
+    if (preventClick) {
+      evt.stopPropagation();
+      evt.preventDefault();
+      preventClick = false;
+    }
+  }
+  function pointerDown() {
+    return pointerIsDown;
+  }
+  const self = {
+    init,
+    destroy,
+    pointerDown
+  };
+  return self;
+}
+function DragTracker(axis, ownerWindow) {
+  const logInterval = 170;
+  let startEvent;
+  let lastEvent;
+  function readTime(evt) {
+    return evt.timeStamp;
+  }
+  function readPoint(evt, evtAxis) {
+    const property = evtAxis || axis.scroll;
+    const coord = `client${property === 'x' ? 'X' : 'Y'}`;
+    return (isMouseEvent(evt, ownerWindow) ? evt : evt.touches[0])[coord];
+  }
+  function pointerDown(evt) {
+    startEvent = evt;
+    lastEvent = evt;
+    return readPoint(evt);
+  }
+  function pointerMove(evt) {
+    const diff = readPoint(evt) - readPoint(lastEvent);
+    const expired = readTime(evt) - readTime(startEvent) > logInterval;
+    lastEvent = evt;
+    if (expired) startEvent = evt;
+    return diff;
+  }
+  function pointerUp(evt) {
+    if (!startEvent || !lastEvent) return 0;
+    const diffDrag = readPoint(lastEvent) - readPoint(startEvent);
+    const diffTime = readTime(evt) - readTime(startEvent);
+    const expired = readTime(evt) - readTime(lastEvent) > logInterval;
+    const force = diffDrag / diffTime;
+    const isFlick = diffTime && !expired && mathAbs(force) > 0.1;
+    return isFlick ? force : 0;
+  }
+  const self = {
+    pointerDown,
+    pointerMove,
+    pointerUp,
+    readPoint
+  };
+  return self;
+}
+function NodeRects() {
+  function measure(node) {
+    const {
+      offsetTop,
+      offsetLeft,
+      offsetWidth,
+      offsetHeight
+    } = node;
+    const offset = {
+      top: offsetTop,
+      right: offsetLeft + offsetWidth,
+      bottom: offsetTop + offsetHeight,
+      left: offsetLeft,
+      width: offsetWidth,
+      height: offsetHeight
+    };
+    return offset;
+  }
+  const self = {
+    measure
+  };
+  return self;
+}
+function PercentOfView(viewSize) {
+  function measure(n) {
+    return viewSize * (n / 100);
+  }
+  const self = {
+    measure
+  };
+  return self;
+}
+function ResizeHandler(container, eventHandler, ownerWindow, slides, axis, watchResize, nodeRects) {
+  const observeNodes = [container].concat(slides);
+  let resizeObserver;
+  let containerSize;
+  let slideSizes = [];
+  let destroyed = false;
+  function readSize(node) {
+    return axis.measureSize(nodeRects.measure(node));
+  }
+  function init(emblaApi) {
+    if (!watchResize) return;
+    containerSize = readSize(container);
+    slideSizes = slides.map(readSize);
+    function defaultCallback(entries) {
+      for (const entry of entries) {
+        if (destroyed) return;
+        const isContainer = entry.target === container;
+        const slideIndex = slides.indexOf(entry.target);
+        const lastSize = isContainer ? containerSize : slideSizes[slideIndex];
+        const newSize = readSize(isContainer ? container : slides[slideIndex]);
+        const diffSize = mathAbs(newSize - lastSize);
+        if (diffSize >= 0.5) {
+          emblaApi.reInit();
+          eventHandler.emit('resize');
+          break;
+        }
+      }
+    }
+    resizeObserver = new ResizeObserver(entries => {
+      if (isBoolean(watchResize) || watchResize(emblaApi, entries)) {
+        defaultCallback(entries);
+      }
+    });
+    ownerWindow.requestAnimationFrame(() => {
+      observeNodes.forEach(node => resizeObserver.observe(node));
+    });
+  }
+  function destroy() {
+    destroyed = true;
+    if (resizeObserver) resizeObserver.disconnect();
+  }
+  const self = {
+    init,
+    destroy
+  };
+  return self;
+}
+function ScrollBody(location, offsetLocation, previousLocation, target, baseDuration, baseFriction) {
+  let scrollVelocity = 0;
+  let scrollDirection = 0;
+  let scrollDuration = baseDuration;
+  let scrollFriction = baseFriction;
+  let rawLocation = location.get();
+  let rawLocationPrevious = 0;
+  function seek() {
+    const displacement = target.get() - location.get();
+    const isInstant = !scrollDuration;
+    let scrollDistance = 0;
+    if (isInstant) {
+      scrollVelocity = 0;
+      previousLocation.set(target);
+      location.set(target);
+      scrollDistance = displacement;
+    } else {
+      previousLocation.set(location);
+      scrollVelocity += displacement / scrollDuration;
+      scrollVelocity *= scrollFriction;
+      rawLocation += scrollVelocity;
+      location.add(scrollVelocity);
+      scrollDistance = rawLocation - rawLocationPrevious;
+    }
+    scrollDirection = mathSign(scrollDistance);
+    rawLocationPrevious = rawLocation;
+    return self;
+  }
+  function settled() {
+    const diff = target.get() - offsetLocation.get();
+    return mathAbs(diff) < 0.001;
+  }
+  function duration() {
+    return scrollDuration;
+  }
+  function direction() {
+    return scrollDirection;
+  }
+  function velocity() {
+    return scrollVelocity;
+  }
+  function useBaseDuration() {
+    return useDuration(baseDuration);
+  }
+  function useBaseFriction() {
+    return useFriction(baseFriction);
+  }
+  function useDuration(n) {
+    scrollDuration = n;
+    return self;
+  }
+  function useFriction(n) {
+    scrollFriction = n;
+    return self;
+  }
+  const self = {
+    direction,
+    duration,
+    velocity,
+    seek,
+    settled,
+    useBaseFriction,
+    useBaseDuration,
+    useFriction,
+    useDuration
+  };
+  return self;
+}
+function ScrollBounds(limit, location, target, scrollBody, percentOfView) {
+  const pullBackThreshold = percentOfView.measure(10);
+  const edgeOffsetTolerance = percentOfView.measure(50);
+  const frictionLimit = Limit(0.1, 0.99);
+  let disabled = false;
+  function shouldConstrain() {
+    if (disabled) return false;
+    if (!limit.reachedAny(target.get())) return false;
+    if (!limit.reachedAny(location.get())) return false;
+    return true;
+  }
+  function constrain(pointerDown) {
+    if (!shouldConstrain()) return;
+    const edge = limit.reachedMin(location.get()) ? 'min' : 'max';
+    const diffToEdge = mathAbs(limit[edge] - location.get());
+    const diffToTarget = target.get() - location.get();
+    const friction = frictionLimit.constrain(diffToEdge / edgeOffsetTolerance);
+    target.subtract(diffToTarget * friction);
+    if (!pointerDown && mathAbs(diffToTarget) < pullBackThreshold) {
+      target.set(limit.constrain(target.get()));
+      scrollBody.useDuration(25).useBaseFriction();
+    }
+  }
+  function toggleActive(active) {
+    disabled = !active;
+  }
+  const self = {
+    shouldConstrain,
+    constrain,
+    toggleActive
+  };
+  return self;
+}
+function ScrollContain(viewSize, contentSize, snapsAligned, containScroll, pixelTolerance) {
+  const scrollBounds = Limit(-contentSize + viewSize, 0);
+  const snapsBounded = measureBounded();
+  const scrollContainLimit = findScrollContainLimit();
+  const snapsContained = measureContained();
+  function usePixelTolerance(bound, snap) {
+    return deltaAbs(bound, snap) <= 1;
+  }
+  function findScrollContainLimit() {
+    const startSnap = snapsBounded[0];
+    const endSnap = arrayLast(snapsBounded);
+    const min = snapsBounded.lastIndexOf(startSnap);
+    const max = snapsBounded.indexOf(endSnap) + 1;
+    return Limit(min, max);
+  }
+  function measureBounded() {
+    return snapsAligned.map((snapAligned, index) => {
+      const {
+        min,
+        max
+      } = scrollBounds;
+      const snap = scrollBounds.constrain(snapAligned);
+      const isFirst = !index;
+      const isLast = arrayIsLastIndex(snapsAligned, index);
+      if (isFirst) return max;
+      if (isLast) return min;
+      if (usePixelTolerance(min, snap)) return min;
+      if (usePixelTolerance(max, snap)) return max;
+      return snap;
+    }).map(scrollBound => parseFloat(scrollBound.toFixed(3)));
+  }
+  function measureContained() {
+    if (contentSize <= viewSize + pixelTolerance) return [scrollBounds.max];
+    if (containScroll === 'keepSnaps') return snapsBounded;
+    const {
+      min,
+      max
+    } = scrollContainLimit;
+    return snapsBounded.slice(min, max);
+  }
+  const self = {
+    snapsContained,
+    scrollContainLimit
+  };
+  return self;
+}
+function ScrollLimit(contentSize, scrollSnaps, loop) {
+  const max = scrollSnaps[0];
+  const min = loop ? max - contentSize : arrayLast(scrollSnaps);
+  const limit = Limit(min, max);
+  const self = {
+    limit
+  };
+  return self;
+}
+function ScrollLooper(contentSize, limit, location, vectors) {
+  const jointSafety = 0.1;
+  const min = limit.min + jointSafety;
+  const max = limit.max + jointSafety;
+  const {
+    reachedMin,
+    reachedMax
+  } = Limit(min, max);
+  function shouldLoop(direction) {
+    if (direction === 1) return reachedMax(location.get());
+    if (direction === -1) return reachedMin(location.get());
+    return false;
+  }
+  function loop(direction) {
+    if (!shouldLoop(direction)) return;
+    const loopDistance = contentSize * (direction * -1);
+    vectors.forEach(v => v.add(loopDistance));
+  }
+  const self = {
+    loop
+  };
+  return self;
+}
+function ScrollProgress(limit) {
+  const {
+    max,
+    length
+  } = limit;
+  function get(n) {
+    const currentLocation = n - max;
+    return length ? currentLocation / -length : 0;
+  }
+  const self = {
+    get
+  };
+  return self;
+}
+function ScrollSnaps(axis, alignment, containerRect, slideRects, slidesToScroll) {
+  const {
+    startEdge,
+    endEdge
+  } = axis;
+  const {
+    groupSlides
+  } = slidesToScroll;
+  const alignments = measureSizes().map(alignment.measure);
+  const snaps = measureUnaligned();
+  const snapsAligned = measureAligned();
+  function measureSizes() {
+    return groupSlides(slideRects).map(rects => arrayLast(rects)[endEdge] - rects[0][startEdge]).map(mathAbs);
+  }
+  function measureUnaligned() {
+    return slideRects.map(rect => containerRect[startEdge] - rect[startEdge]).map(snap => -mathAbs(snap));
+  }
+  function measureAligned() {
+    return groupSlides(snaps).map(g => g[0]).map((snap, index) => snap + alignments[index]);
+  }
+  const self = {
+    snaps,
+    snapsAligned
+  };
+  return self;
+}
+function SlideRegistry(containSnaps, containScroll, scrollSnaps, scrollContainLimit, slidesToScroll, slideIndexes) {
+  const {
+    groupSlides
+  } = slidesToScroll;
+  const {
+    min,
+    max
+  } = scrollContainLimit;
+  const slideRegistry = createSlideRegistry();
+  function createSlideRegistry() {
+    const groupedSlideIndexes = groupSlides(slideIndexes);
+    const doNotContain = !containSnaps || containScroll === 'keepSnaps';
+    if (scrollSnaps.length === 1) return [slideIndexes];
+    if (doNotContain) return groupedSlideIndexes;
+    return groupedSlideIndexes.slice(min, max).map((group, index, groups) => {
+      const isFirst = !index;
+      const isLast = arrayIsLastIndex(groups, index);
+      if (isFirst) {
+        const range = arrayLast(groups[0]) + 1;
+        return arrayFromNumber(range);
+      }
+      if (isLast) {
+        const range = arrayLastIndex(slideIndexes) - arrayLast(groups)[0] + 1;
+        return arrayFromNumber(range, arrayLast(groups)[0]);
+      }
+      return group;
+    });
+  }
+  const self = {
+    slideRegistry
+  };
+  return self;
+}
+function ScrollTarget(loop, scrollSnaps, contentSize, limit, targetVector) {
+  const {
+    reachedAny,
+    removeOffset,
+    constrain
+  } = limit;
+  function minDistance(distances) {
+    return distances.concat().sort((a, b) => mathAbs(a) - mathAbs(b))[0];
+  }
+  function findTargetSnap(target) {
+    const distance = loop ? removeOffset(target) : constrain(target);
+    const ascDiffsToSnaps = scrollSnaps.map((snap, index) => ({
+      diff: shortcut(snap - distance, 0),
+      index
+    })).sort((d1, d2) => mathAbs(d1.diff) - mathAbs(d2.diff));
+    const {
+      index
+    } = ascDiffsToSnaps[0];
+    return {
+      index,
+      distance
+    };
+  }
+  function shortcut(target, direction) {
+    const targets = [target, target + contentSize, target - contentSize];
+    if (!loop) return target;
+    if (!direction) return minDistance(targets);
+    const matchingTargets = targets.filter(t => mathSign(t) === direction);
+    if (matchingTargets.length) return minDistance(matchingTargets);
+    return arrayLast(targets) - contentSize;
+  }
+  function byIndex(index, direction) {
+    const diffToSnap = scrollSnaps[index] - targetVector.get();
+    const distance = shortcut(diffToSnap, direction);
+    return {
+      index,
+      distance
+    };
+  }
+  function byDistance(distance, snap) {
+    const target = targetVector.get() + distance;
+    const {
+      index,
+      distance: targetSnapDistance
+    } = findTargetSnap(target);
+    const reachedBound = !loop && reachedAny(target);
+    if (!snap || reachedBound) return {
+      index,
+      distance
+    };
+    const diffToSnap = scrollSnaps[index] - targetSnapDistance;
+    const snapDistance = distance + shortcut(diffToSnap, 0);
+    return {
+      index,
+      distance: snapDistance
+    };
+  }
+  const self = {
+    byDistance,
+    byIndex,
+    shortcut
+  };
+  return self;
+}
+function ScrollTo(animation, indexCurrent, indexPrevious, scrollBody, scrollTarget, targetVector, eventHandler) {
+  function scrollTo(target) {
+    const distanceDiff = target.distance;
+    const indexDiff = target.index !== indexCurrent.get();
+    targetVector.add(distanceDiff);
+    if (distanceDiff) {
+      if (scrollBody.duration()) {
+        animation.start();
+      } else {
+        animation.update();
+        animation.render(1);
+        animation.update();
+      }
+    }
+    if (indexDiff) {
+      indexPrevious.set(indexCurrent.get());
+      indexCurrent.set(target.index);
+      eventHandler.emit('select');
+    }
+  }
+  function distance(n, snap) {
+    const target = scrollTarget.byDistance(n, snap);
+    scrollTo(target);
+  }
+  function index(n, direction) {
+    const targetIndex = indexCurrent.clone().set(n);
+    const target = scrollTarget.byIndex(targetIndex.get(), direction);
+    scrollTo(target);
+  }
+  const self = {
+    distance,
+    index
+  };
+  return self;
+}
+function SlideFocus(root, slides, slideRegistry, scrollTo, scrollBody, eventStore, eventHandler, watchFocus) {
+  const focusListenerOptions = {
+    passive: true,
+    capture: true
+  };
+  let lastTabPressTime = 0;
+  function init(emblaApi) {
+    if (!watchFocus) return;
+    function defaultCallback(index) {
+      const nowTime = new Date().getTime();
+      const diffTime = nowTime - lastTabPressTime;
+      if (diffTime > 10) return;
+      eventHandler.emit('slideFocusStart');
+      root.scrollLeft = 0;
+      const group = slideRegistry.findIndex(group => group.includes(index));
+      if (!isNumber(group)) return;
+      scrollBody.useDuration(0);
+      scrollTo.index(group, 0);
+      eventHandler.emit('slideFocus');
+    }
+    eventStore.add(document, 'keydown', registerTabPress, false);
+    slides.forEach((slide, slideIndex) => {
+      eventStore.add(slide, 'focus', evt => {
+        if (isBoolean(watchFocus) || watchFocus(emblaApi, evt)) {
+          defaultCallback(slideIndex);
+        }
+      }, focusListenerOptions);
+    });
+  }
+  function registerTabPress(event) {
+    if (event.code === 'Tab') lastTabPressTime = new Date().getTime();
+  }
+  const self = {
+    init
+  };
+  return self;
+}
+function Vector1D(initialValue) {
+  let value = initialValue;
+  function get() {
+    return value;
+  }
+  function set(n) {
+    value = normalizeInput(n);
+  }
+  function add(n) {
+    value += normalizeInput(n);
+  }
+  function subtract(n) {
+    value -= normalizeInput(n);
+  }
+  function normalizeInput(n) {
+    return isNumber(n) ? n : n.get();
+  }
+  const self = {
+    get,
+    set,
+    add,
+    subtract
+  };
+  return self;
+}
+function Translate(axis, container) {
+  const translate = axis.scroll === 'x' ? x : y;
+  const containerStyle = container.style;
+  let previousTarget = null;
+  let disabled = false;
+  function x(n) {
+    return `translate3d(${n}px,0px,0px)`;
+  }
+  function y(n) {
+    return `translate3d(0px,${n}px,0px)`;
+  }
+  function to(target) {
+    if (disabled) return;
+    const newTarget = roundToTwoDecimals(axis.direction(target));
+    if (newTarget === previousTarget) return;
+    containerStyle.transform = translate(newTarget);
+    previousTarget = newTarget;
+  }
+  function toggleActive(active) {
+    disabled = !active;
+  }
+  function clear() {
+    if (disabled) return;
+    containerStyle.transform = '';
+    if (!container.getAttribute('style')) container.removeAttribute('style');
+  }
+  const self = {
+    clear,
+    to,
+    toggleActive
+  };
+  return self;
+}
+function SlideLooper(axis, viewSize, contentSize, slideSizes, slideSizesWithGaps, snaps, scrollSnaps, location, slides) {
+  const roundingSafety = 0.5;
+  const ascItems = arrayKeys(slideSizesWithGaps);
+  const descItems = arrayKeys(slideSizesWithGaps).reverse();
+  const loopPoints = startPoints().concat(endPoints());
+  function removeSlideSizes(indexes, from) {
+    return indexes.reduce((a, i) => {
+      return a - slideSizesWithGaps[i];
+    }, from);
+  }
+  function slidesInGap(indexes, gap) {
+    return indexes.reduce((a, i) => {
+      const remainingGap = removeSlideSizes(a, gap);
+      return remainingGap > 0 ? a.concat([i]) : a;
+    }, []);
+  }
+  function findSlideBounds(offset) {
+    return snaps.map((snap, index) => ({
+      start: snap - slideSizes[index] + roundingSafety + offset,
+      end: snap + viewSize - roundingSafety + offset
+    }));
+  }
+  function findLoopPoints(indexes, offset, isEndEdge) {
+    const slideBounds = findSlideBounds(offset);
+    return indexes.map(index => {
+      const initial = isEndEdge ? 0 : -contentSize;
+      const altered = isEndEdge ? contentSize : 0;
+      const boundEdge = isEndEdge ? 'end' : 'start';
+      const loopPoint = slideBounds[index][boundEdge];
+      return {
+        index,
+        loopPoint,
+        slideLocation: Vector1D(-1),
+        translate: Translate(axis, slides[index]),
+        target: () => location.get() > loopPoint ? initial : altered
+      };
+    });
+  }
+  function startPoints() {
+    const gap = scrollSnaps[0];
+    const indexes = slidesInGap(descItems, gap);
+    return findLoopPoints(indexes, contentSize, false);
+  }
+  function endPoints() {
+    const gap = viewSize - scrollSnaps[0] - 1;
+    const indexes = slidesInGap(ascItems, gap);
+    return findLoopPoints(indexes, -contentSize, true);
+  }
+  function canLoop() {
+    return loopPoints.every(({
+      index
+    }) => {
+      const otherIndexes = ascItems.filter(i => i !== index);
+      return removeSlideSizes(otherIndexes, viewSize) <= 0.1;
+    });
+  }
+  function loop() {
+    loopPoints.forEach(loopPoint => {
+      const {
+        target,
+        translate,
+        slideLocation
+      } = loopPoint;
+      const shiftLocation = target();
+      if (shiftLocation === slideLocation.get()) return;
+      translate.to(shiftLocation);
+      slideLocation.set(shiftLocation);
+    });
+  }
+  function clear() {
+    loopPoints.forEach(loopPoint => loopPoint.translate.clear());
+  }
+  const self = {
+    canLoop,
+    clear,
+    loop,
+    loopPoints
+  };
+  return self;
+}
+function SlidesHandler(container, eventHandler, watchSlides) {
+  let mutationObserver;
+  let destroyed = false;
+  function init(emblaApi) {
+    if (!watchSlides) return;
+    function defaultCallback(mutations) {
+      for (const mutation of mutations) {
+        if (mutation.type === 'childList') {
+          emblaApi.reInit();
+          eventHandler.emit('slidesChanged');
+          break;
+        }
+      }
+    }
+    mutationObserver = new MutationObserver(mutations => {
+      if (destroyed) return;
+      if (isBoolean(watchSlides) || watchSlides(emblaApi, mutations)) {
+        defaultCallback(mutations);
+      }
+    });
+    mutationObserver.observe(container, {
+      childList: true
+    });
+  }
+  function destroy() {
+    if (mutationObserver) mutationObserver.disconnect();
+    destroyed = true;
+  }
+  const self = {
+    init,
+    destroy
+  };
+  return self;
+}
+function SlidesInView(container, slides, eventHandler, threshold) {
+  const intersectionEntryMap = {};
+  let inViewCache = null;
+  let notInViewCache = null;
+  let intersectionObserver;
+  let destroyed = false;
+  function init() {
+    intersectionObserver = new IntersectionObserver(entries => {
+      if (destroyed) return;
+      entries.forEach(entry => {
+        const index = slides.indexOf(entry.target);
+        intersectionEntryMap[index] = entry;
+      });
+      inViewCache = null;
+      notInViewCache = null;
+      eventHandler.emit('slidesInView');
+    }, {
+      root: container.parentElement,
+      threshold
+    });
+    slides.forEach(slide => intersectionObserver.observe(slide));
+  }
+  function destroy() {
+    if (intersectionObserver) intersectionObserver.disconnect();
+    destroyed = true;
+  }
+  function createInViewList(inView) {
+    return objectKeys(intersectionEntryMap).reduce((list, slideIndex) => {
+      const index = parseInt(slideIndex);
+      const {
+        isIntersecting
+      } = intersectionEntryMap[index];
+      const inViewMatch = inView && isIntersecting;
+      const notInViewMatch = !inView && !isIntersecting;
+      if (inViewMatch || notInViewMatch) list.push(index);
+      return list;
+    }, []);
+  }
+  function get(inView = true) {
+    if (inView && inViewCache) return inViewCache;
+    if (!inView && notInViewCache) return notInViewCache;
+    const slideIndexes = createInViewList(inView);
+    if (inView) inViewCache = slideIndexes;
+    if (!inView) notInViewCache = slideIndexes;
+    return slideIndexes;
+  }
+  const self = {
+    init,
+    destroy,
+    get
+  };
+  return self;
+}
+function SlideSizes(axis, containerRect, slideRects, slides, readEdgeGap, ownerWindow) {
+  const {
+    measureSize,
+    startEdge,
+    endEdge
+  } = axis;
+  const withEdgeGap = slideRects[0] && readEdgeGap;
+  const startGap = measureStartGap();
+  const endGap = measureEndGap();
+  const slideSizes = slideRects.map(measureSize);
+  const slideSizesWithGaps = measureWithGaps();
+  function measureStartGap() {
+    if (!withEdgeGap) return 0;
+    const slideRect = slideRects[0];
+    return mathAbs(containerRect[startEdge] - slideRect[startEdge]);
+  }
+  function measureEndGap() {
+    if (!withEdgeGap) return 0;
+    const style = ownerWindow.getComputedStyle(arrayLast(slides));
+    return parseFloat(style.getPropertyValue(`margin-${endEdge}`));
+  }
+  function measureWithGaps() {
+    return slideRects.map((rect, index, rects) => {
+      const isFirst = !index;
+      const isLast = arrayIsLastIndex(rects, index);
+      if (isFirst) return slideSizes[index] + startGap;
+      if (isLast) return slideSizes[index] + endGap;
+      return rects[index + 1][startEdge] - rect[startEdge];
+    }).map(mathAbs);
+  }
+  const self = {
+    slideSizes,
+    slideSizesWithGaps,
+    startGap,
+    endGap
+  };
+  return self;
+}
+function SlidesToScroll(axis, viewSize, slidesToScroll, loop, containerRect, slideRects, startGap, endGap, pixelTolerance) {
+  const {
+    startEdge,
+    endEdge,
+    direction
+  } = axis;
+  const groupByNumber = isNumber(slidesToScroll);
+  function byNumber(array, groupSize) {
+    return arrayKeys(array).filter(i => i % groupSize === 0).map(i => array.slice(i, i + groupSize));
+  }
+  function bySize(array) {
+    if (!array.length) return [];
+    return arrayKeys(array).reduce((groups, rectB, index) => {
+      const rectA = arrayLast(groups) || 0;
+      const isFirst = rectA === 0;
+      const isLast = rectB === arrayLastIndex(array);
+      const edgeA = containerRect[startEdge] - slideRects[rectA][startEdge];
+      const edgeB = containerRect[startEdge] - slideRects[rectB][endEdge];
+      const gapA = !loop && isFirst ? direction(startGap) : 0;
+      const gapB = !loop && isLast ? direction(endGap) : 0;
+      const chunkSize = mathAbs(edgeB - gapB - (edgeA + gapA));
+      if (index && chunkSize > viewSize + pixelTolerance) groups.push(rectB);
+      if (isLast) groups.push(array.length);
+      return groups;
+    }, []).map((currentSize, index, groups) => {
+      const previousSize = Math.max(groups[index - 1] || 0);
+      return array.slice(previousSize, currentSize);
+    });
+  }
+  function groupSlides(array) {
+    return groupByNumber ? byNumber(array, slidesToScroll) : bySize(array);
+  }
+  const self = {
+    groupSlides
+  };
+  return self;
+}
+function Engine(root, container, slides, ownerDocument, ownerWindow, options, eventHandler) {
+  // Options
+  const {
+    align,
+    axis: scrollAxis,
+    direction,
+    startIndex,
+    loop,
+    duration,
+    dragFree,
+    dragThreshold,
+    inViewThreshold,
+    slidesToScroll: groupSlides,
+    skipSnaps,
+    containScroll,
+    watchResize,
+    watchSlides,
+    watchDrag,
+    watchFocus
+  } = options;
+  // Measurements
+  const pixelTolerance = 2;
+  const nodeRects = NodeRects();
+  const containerRect = nodeRects.measure(container);
+  const slideRects = slides.map(nodeRects.measure);
+  const axis = Axis(scrollAxis, direction);
+  const viewSize = axis.measureSize(containerRect);
+  const percentOfView = PercentOfView(viewSize);
+  const alignment = Alignment(align, viewSize);
+  const containSnaps = !loop && !!containScroll;
+  const readEdgeGap = loop || !!containScroll;
+  const {
+    slideSizes,
+    slideSizesWithGaps,
+    startGap,
+    endGap
+  } = SlideSizes(axis, containerRect, slideRects, slides, readEdgeGap, ownerWindow);
+  const slidesToScroll = SlidesToScroll(axis, viewSize, groupSlides, loop, containerRect, slideRects, startGap, endGap, pixelTolerance);
+  const {
+    snaps,
+    snapsAligned
+  } = ScrollSnaps(axis, alignment, containerRect, slideRects, slidesToScroll);
+  const contentSize = -arrayLast(snaps) + arrayLast(slideSizesWithGaps);
+  const {
+    snapsContained,
+    scrollContainLimit
+  } = ScrollContain(viewSize, contentSize, snapsAligned, containScroll, pixelTolerance);
+  const scrollSnaps = containSnaps ? snapsContained : snapsAligned;
+  const {
+    limit
+  } = ScrollLimit(contentSize, scrollSnaps, loop);
+  // Indexes
+  const index = Counter(arrayLastIndex(scrollSnaps), startIndex, loop);
+  const indexPrevious = index.clone();
+  const slideIndexes = arrayKeys(slides);
+  // Animation
+  const update = ({
+    dragHandler,
+    scrollBody,
+    scrollBounds,
+    options: {
+      loop
+    }
+  }) => {
+    if (!loop) scrollBounds.constrain(dragHandler.pointerDown());
+    scrollBody.seek();
+  };
+  const render = ({
+    scrollBody,
+    translate,
+    location,
+    offsetLocation,
+    previousLocation,
+    scrollLooper,
+    slideLooper,
+    dragHandler,
+    animation,
+    eventHandler,
+    scrollBounds,
+    options: {
+      loop
+    }
+  }, alpha) => {
+    const shouldSettle = scrollBody.settled();
+    const withinBounds = !scrollBounds.shouldConstrain();
+    const hasSettled = loop ? shouldSettle : shouldSettle && withinBounds;
+    const hasSettledAndIdle = hasSettled && !dragHandler.pointerDown();
+    if (hasSettledAndIdle) animation.stop();
+    const interpolatedLocation = location.get() * alpha + previousLocation.get() * (1 - alpha);
+    offsetLocation.set(interpolatedLocation);
+    if (loop) {
+      scrollLooper.loop(scrollBody.direction());
+      slideLooper.loop();
+    }
+    translate.to(offsetLocation.get());
+    if (hasSettledAndIdle) eventHandler.emit('settle');
+    if (!hasSettled) eventHandler.emit('scroll');
+  };
+  const animation = Animations(ownerDocument, ownerWindow, () => update(engine), alpha => render(engine, alpha));
+  // Shared
+  const friction = 0.68;
+  const startLocation = scrollSnaps[index.get()];
+  const location = Vector1D(startLocation);
+  const previousLocation = Vector1D(startLocation);
+  const offsetLocation = Vector1D(startLocation);
+  const target = Vector1D(startLocation);
+  const scrollBody = ScrollBody(location, offsetLocation, previousLocation, target, duration, friction);
+  const scrollTarget = ScrollTarget(loop, scrollSnaps, contentSize, limit, target);
+  const scrollTo = ScrollTo(animation, index, indexPrevious, scrollBody, scrollTarget, target, eventHandler);
+  const scrollProgress = ScrollProgress(limit);
+  const eventStore = EventStore();
+  const slidesInView = SlidesInView(container, slides, eventHandler, inViewThreshold);
+  const {
+    slideRegistry
+  } = SlideRegistry(containSnaps, containScroll, scrollSnaps, scrollContainLimit, slidesToScroll, slideIndexes);
+  const slideFocus = SlideFocus(root, slides, slideRegistry, scrollTo, scrollBody, eventStore, eventHandler, watchFocus);
+  // Engine
+  const engine = {
+    ownerDocument,
+    ownerWindow,
+    eventHandler,
+    containerRect,
+    slideRects,
+    animation,
+    axis,
+    dragHandler: DragHandler(axis, root, ownerDocument, ownerWindow, target, DragTracker(axis, ownerWindow), location, animation, scrollTo, scrollBody, scrollTarget, index, eventHandler, percentOfView, dragFree, dragThreshold, skipSnaps, friction, watchDrag),
+    eventStore,
+    percentOfView,
+    index,
+    indexPrevious,
+    limit,
+    location,
+    offsetLocation,
+    previousLocation,
+    options,
+    resizeHandler: ResizeHandler(container, eventHandler, ownerWindow, slides, axis, watchResize, nodeRects),
+    scrollBody,
+    scrollBounds: ScrollBounds(limit, offsetLocation, target, scrollBody, percentOfView),
+    scrollLooper: ScrollLooper(contentSize, limit, offsetLocation, [location, offsetLocation, previousLocation, target]),
+    scrollProgress,
+    scrollSnapList: scrollSnaps.map(scrollProgress.get),
+    scrollSnaps,
+    scrollTarget,
+    scrollTo,
+    slideLooper: SlideLooper(axis, viewSize, contentSize, slideSizes, slideSizesWithGaps, snaps, scrollSnaps, offsetLocation, slides),
+    slideFocus,
+    slidesHandler: SlidesHandler(container, eventHandler, watchSlides),
+    slidesInView,
+    slideIndexes,
+    slideRegistry,
+    slidesToScroll,
+    target,
+    translate: Translate(axis, container)
+  };
+  return engine;
+}
+function EventHandler() {
+  let listeners = {};
+  let api;
+  function init(emblaApi) {
+    api = emblaApi;
+  }
+  function getListeners(evt) {
+    return listeners[evt] || [];
+  }
+  function emit(evt) {
+    getListeners(evt).forEach(e => e(api, evt));
+    return self;
+  }
+  function on(evt, cb) {
+    listeners[evt] = getListeners(evt).concat([cb]);
+    return self;
+  }
+  function off(evt, cb) {
+    listeners[evt] = getListeners(evt).filter(e => e !== cb);
+    return self;
+  }
+  function clear() {
+    listeners = {};
+  }
+  const self = {
+    init,
+    emit,
+    off,
+    on,
+    clear
+  };
+  return self;
+}
+const defaultOptions = {
+  align: 'center',
+  axis: 'x',
+  container: null,
+  slides: null,
+  containScroll: 'trimSnaps',
+  direction: 'ltr',
+  slidesToScroll: 1,
+  inViewThreshold: 0,
+  breakpoints: {},
+  dragFree: false,
+  dragThreshold: 10,
+  loop: false,
+  skipSnaps: false,
+  duration: 25,
+  startIndex: 0,
+  active: true,
+  watchDrag: true,
+  watchResize: true,
+  watchSlides: true,
+  watchFocus: true
+};
+function OptionsHandler(ownerWindow) {
+  function mergeOptions(optionsA, optionsB) {
+    return objectsMergeDeep(optionsA, optionsB || {});
+  }
+  function optionsAtMedia(options) {
+    const optionsAtMedia = options.breakpoints || {};
+    const matchedMediaOptions = objectKeys(optionsAtMedia).filter(media => ownerWindow.matchMedia(media).matches).map(media => optionsAtMedia[media]).reduce((a, mediaOption) => mergeOptions(a, mediaOption), {});
+    return mergeOptions(options, matchedMediaOptions);
+  }
+  function optionsMediaQueries(optionsList) {
+    return optionsList.map(options => objectKeys(options.breakpoints || {})).reduce((acc, mediaQueries) => acc.concat(mediaQueries), []).map(ownerWindow.matchMedia);
+  }
+  const self = {
+    mergeOptions,
+    optionsAtMedia,
+    optionsMediaQueries
+  };
+  return self;
+}
+function PluginsHandler(optionsHandler) {
+  let activePlugins = [];
+  function init(emblaApi, plugins) {
+    activePlugins = plugins.filter(({
+      options
+    }) => optionsHandler.optionsAtMedia(options).active !== false);
+    activePlugins.forEach(plugin => plugin.init(emblaApi, optionsHandler));
+    return plugins.reduce((map, plugin) => Object.assign(map, {
+      [plugin.name]: plugin
+    }), {});
+  }
+  function destroy() {
+    activePlugins = activePlugins.filter(plugin => plugin.destroy());
+  }
+  const self = {
+    init,
+    destroy
+  };
+  return self;
+}
+function EmblaCarousel(root, userOptions, userPlugins) {
+  const ownerDocument = root.ownerDocument;
+  const ownerWindow = ownerDocument.defaultView;
+  const optionsHandler = OptionsHandler(ownerWindow);
+  const pluginsHandler = PluginsHandler(optionsHandler);
+  const mediaHandlers = EventStore();
+  const eventHandler = EventHandler();
+  const {
+    mergeOptions,
+    optionsAtMedia,
+    optionsMediaQueries
+  } = optionsHandler;
+  const {
+    on,
+    off,
+    emit
+  } = eventHandler;
+  const reInit = reActivate;
+  let destroyed = false;
+  let engine;
+  let optionsBase = mergeOptions(defaultOptions, EmblaCarousel.globalOptions);
+  let options = mergeOptions(optionsBase);
+  let pluginList = [];
+  let pluginApis;
+  let container;
+  let slides;
+  function storeElements() {
+    const {
+      container: userContainer,
+      slides: userSlides
+    } = options;
+    const customContainer = isString(userContainer) ? root.querySelector(userContainer) : userContainer;
+    container = customContainer || root.children[0];
+    const customSlides = isString(userSlides) ? container.querySelectorAll(userSlides) : userSlides;
+    slides = [].slice.call(customSlides || container.children);
+  }
+  function createEngine(options) {
+    const engine = Engine(root, container, slides, ownerDocument, ownerWindow, options, eventHandler);
+    if (options.loop && !engine.slideLooper.canLoop()) {
+      const optionsWithoutLoop = Object.assign({}, options, {
+        loop: false
+      });
+      return createEngine(optionsWithoutLoop);
+    }
+    return engine;
+  }
+  function activate(withOptions, withPlugins) {
+    if (destroyed) return;
+    optionsBase = mergeOptions(optionsBase, withOptions);
+    options = optionsAtMedia(optionsBase);
+    pluginList = withPlugins || pluginList;
+    storeElements();
+    engine = createEngine(options);
+    optionsMediaQueries([optionsBase, ...pluginList.map(({
+      options
+    }) => options)]).forEach(query => mediaHandlers.add(query, 'change', reActivate));
+    if (!options.active) return;
+    engine.translate.to(engine.location.get());
+    engine.animation.init();
+    engine.slidesInView.init();
+    engine.slideFocus.init(self);
+    engine.eventHandler.init(self);
+    engine.resizeHandler.init(self);
+    engine.slidesHandler.init(self);
+    if (engine.options.loop) engine.slideLooper.loop();
+    if (container.offsetParent && slides.length) engine.dragHandler.init(self);
+    pluginApis = pluginsHandler.init(self, pluginList);
+  }
+  function reActivate(withOptions, withPlugins) {
+    const startIndex = selectedScrollSnap();
+    deActivate();
+    activate(mergeOptions({
+      startIndex
+    }, withOptions), withPlugins);
+    eventHandler.emit('reInit');
+  }
+  function deActivate() {
+    engine.dragHandler.destroy();
+    engine.eventStore.clear();
+    engine.translate.clear();
+    engine.slideLooper.clear();
+    engine.resizeHandler.destroy();
+    engine.slidesHandler.destroy();
+    engine.slidesInView.destroy();
+    engine.animation.destroy();
+    pluginsHandler.destroy();
+    mediaHandlers.clear();
+  }
+  function destroy() {
+    if (destroyed) return;
+    destroyed = true;
+    mediaHandlers.clear();
+    deActivate();
+    eventHandler.emit('destroy');
+    eventHandler.clear();
+  }
+  function scrollTo(index, jump, direction) {
+    if (!options.active || destroyed) return;
+    engine.scrollBody.useBaseFriction().useDuration(jump === true ? 0 : options.duration);
+    engine.scrollTo.index(index, direction || 0);
+  }
+  function scrollNext(jump) {
+    const next = engine.index.add(1).get();
+    scrollTo(next, jump, -1);
+  }
+  function scrollPrev(jump) {
+    const prev = engine.index.add(-1).get();
+    scrollTo(prev, jump, 1);
+  }
+  function canScrollNext() {
+    const next = engine.index.add(1).get();
+    return next !== selectedScrollSnap();
+  }
+  function canScrollPrev() {
+    const prev = engine.index.add(-1).get();
+    return prev !== selectedScrollSnap();
+  }
+  function scrollSnapList() {
+    return engine.scrollSnapList;
+  }
+  function scrollProgress() {
+    return engine.scrollProgress.get(engine.offsetLocation.get());
+  }
+  function selectedScrollSnap() {
+    return engine.index.get();
+  }
+  function previousScrollSnap() {
+    return engine.indexPrevious.get();
+  }
+  function slidesInView() {
+    return engine.slidesInView.get();
+  }
+  function slidesNotInView() {
+    return engine.slidesInView.get(false);
+  }
+  function plugins() {
+    return pluginApis;
+  }
+  function internalEngine() {
+    return engine;
+  }
+  function rootNode() {
+    return root;
+  }
+  function containerNode() {
+    return container;
+  }
+  function slideNodes() {
+    return slides;
+  }
+  const self = {
+    canScrollNext,
+    canScrollPrev,
+    containerNode,
+    internalEngine,
+    destroy,
+    off,
+    on,
+    emit,
+    plugins,
+    previousScrollSnap,
+    reInit,
+    rootNode,
+    scrollNext,
+    scrollPrev,
+    scrollProgress,
+    scrollSnapList,
+    scrollTo,
+    selectedScrollSnap,
+    slideNodes,
+    slidesInView,
+    slidesNotInView
+  };
+  activate(userOptions, userPlugins);
+  setTimeout(() => eventHandler.emit('init'), 0);
+  return self;
+}
+EmblaCarousel.globalOptions = undefined;
+
+
+/***/ }),
+
+/***/ "./shared/components/JankxCarousel.ts":
+/*!********************************************!*\
+  !*** ./shared/components/JankxCarousel.ts ***!
+  \********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ JankxCarousel)
+/* harmony export */ });
+/* harmony import */ var embla_carousel__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! embla-carousel */ "./node_modules/embla-carousel/esm/embla-carousel.esm.js");
+/* harmony import */ var embla_carousel_autoplay__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! embla-carousel-autoplay */ "../node_modules/embla-carousel-autoplay/esm/embla-carousel-autoplay.esm.js");
+
+
+class JankxCarousel {
+  prevBtn = null;
+  nextBtn = null;
+  dotsContainer = null;
+  updateDotsCallback = null;
+  constructor(carousel, options = {}) {
+    if (!carousel || carousel._carouselInitialized) return;
+    this.carousel = carousel;
+    this.options = options;
+    const container = carousel.querySelector('.carousel-container') || carousel.querySelector('.embla__viewport');
+    if (!container) return;
+    this.container = container;
+    this.init();
+  }
+  init() {
+    this.setupConfig();
+    this.prepareDOM();
+    this.initEmbla();
+    this.setupNavigation();
+    this.setupPagination();
+    this.setupEventListeners();
+    this.carousel._carouselInitialized = true;
+    this.carousel.classList.add('carousel-initialized');
+    this.updateUI();
+  }
+  setupConfig() {
+    const computed = getComputedStyle(this.carousel);
+    const cssSlides = parseInt(computed.getPropertyValue('--slides-per-view')) || NaN;
+    const cssSpace = parseInt(computed.getPropertyValue('--space-between')) || NaN;
+    const dataSlides = parseInt(this.carousel.getAttribute('data-slides-per-view')) || NaN;
+    const dataColumns = parseInt(this.carousel.getAttribute('data-columns')) || NaN;
+    const dataSpace = parseInt(this.carousel.getAttribute('data-space-between')) || NaN;
+    this.config = {
+      slidesPerView: dataSlides || dataColumns || cssSlides || 1,
+      spaceBetween: dataSpace || cssSpace || 16,
+      autoplay: this.carousel.getAttribute('data-autoplay') === 'true' || this.carousel.classList.contains('has-autoplay'),
+      autoplayDelay: Math.max(3000, parseInt(this.carousel.getAttribute('data-autoplay-delay')) || 5000),
+      showArrows: this.carousel.getAttribute('data-show-arrows') !== 'false' && (this.carousel.classList.contains('has-arrows') || this.carousel.classList.contains('show-arrows')),
+      showDots: this.carousel.getAttribute('data-show-dots') !== 'false' && (this.carousel.classList.contains('has-dots') || this.carousel.classList.contains('show-dots')),
+      loop: this.carousel.getAttribute('data-loop') !== 'false',
+      dotsPerPage: this.carousel.getAttribute('data-dots-per-page') === 'true' || this.options.dotsPerPage || false,
+      ...this.options
+    };
+
+    // If not specified, default these to true for certain block types or if they have specific classes
+    if (this.carousel.getAttribute('data-show-arrows') === null && !this.config.showArrows) {
+      this.config.showArrows = this.carousel.classList.contains('wp-block-jankx-dynamic-data-layout');
+    }
+    if (this.carousel.getAttribute('data-show-dots') === null && !this.config.showDots) {
+      this.config.showDots = this.carousel.classList.contains('wp-block-jankx-dynamic-data-layout');
+    }
+    this.container.style.setProperty('--slides-per-view', this.config.slidesPerView);
+    this.container.style.setProperty('--space-between', `${this.config.spaceBetween}px`);
+  }
+  prepareDOM() {
+    this.container.classList.add('embla__viewport');
+    let track = this.container.querySelector('.embla__container');
+    if (!track) {
+      track = document.createElement('div');
+      track.className = 'embla__container';
+      while (this.container.firstChild) {
+        const node = this.container.firstChild;
+        if (node.nodeType === 3 && !(node.nodeValue || '').trim()) {
+          this.container.removeChild(node);
+          continue;
+        }
+        if (node.nodeType === 8) {
+          this.container.removeChild(node);
+          continue;
+        }
+        if (node.nodeType === 1 && node.classList.contains('carousel-slide')) {
+          track.appendChild(node);
+        } else {
+          const wrapper = document.createElement('div');
+          wrapper.className = 'carousel-slide';
+          this.container.removeChild(node);
+          wrapper.appendChild(node);
+          track.appendChild(wrapper);
+        }
+      }
+      this.container.appendChild(track);
+    }
+  }
+  initEmbla() {
+    const plugins = this.config.autoplay ? [(0,embla_carousel_autoplay__WEBPACK_IMPORTED_MODULE_1__["default"])({
+      delay: this.config.autoplayDelay,
+      stopOnInteraction: true,
+      stopOnMouseEnter: true
+    })] : [];
+    this.embla = (0,embla_carousel__WEBPACK_IMPORTED_MODULE_0__["default"])(this.container, {
+      loop: this.config.loop,
+      duration: 25,
+      align: 'start',
+      slidesToScroll: this.config.dotsPerPage ? 'auto' : 1
+    }, plugins);
+  }
+  setupNavigation() {
+    if (!this.config.showArrows) return;
+    let prevBtn = this.carousel.querySelector('.carousel-prev');
+    let nextBtn = this.carousel.querySelector('.carousel-next');
+    if (!prevBtn || !nextBtn) {
+      prevBtn = document.createElement('button');
+      prevBtn.className = 'carousel-nav carousel-prev';
+      prevBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none"><path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+      nextBtn = document.createElement('button');
+      nextBtn.className = 'carousel-nav carousel-next';
+      nextBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none"><path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+      this.carousel.appendChild(prevBtn);
+      this.carousel.appendChild(nextBtn);
+    }
+    prevBtn.onclick = e => {
+      e.preventDefault();
+      this.embla.scrollPrev();
+    };
+    nextBtn.onclick = e => {
+      e.preventDefault();
+      this.embla.scrollNext();
+    };
+    this.prevBtn = prevBtn;
+    this.nextBtn = nextBtn;
+  }
+  setupPagination() {
+    if (!this.config.showDots) return;
+    let dotsContainer = this.carousel.querySelector('.carousel-dots');
+    if (!dotsContainer) {
+      dotsContainer = document.createElement('div');
+      dotsContainer.className = 'carousel-dots';
+      this.carousel.appendChild(dotsContainer);
+    }
+    const updateDots = () => {
+      const scrollSnaps = this.embla.scrollSnapList();
+      dotsContainer.innerHTML = '';
+      if (scrollSnaps.length <= 1) return;
+      scrollSnaps.forEach((_, index) => {
+        const dot = document.createElement('button');
+        dot.className = 'carousel-dot';
+        if (index === this.embla.selectedScrollSnap()) dot.classList.add('is-active');
+        dot.onclick = () => this.embla.scrollTo(index);
+        dotsContainer.appendChild(dot);
+      });
+    };
+    this.dotsContainer = dotsContainer;
+    this.updateDotsCallback = updateDots;
+    updateDots();
+  }
+  setupEventListeners() {
+    this.embla.on('select', () => this.updateUI());
+    this.embla.on('reInit', () => {
+      if (this.updateDotsCallback) this.updateDotsCallback();
+      this.updateUI();
+    });
+    if (this.config.autoplay) {
+      const ap = this.embla.plugins().autoplay;
+      if (ap) {
+        this.carousel.addEventListener('mouseenter', () => ap.stop());
+        this.carousel.addEventListener('mouseleave', () => ap.play());
+      }
+    }
+  }
+  updateUI() {
+    if (this.prevBtn) this.prevBtn.disabled = !this.embla.canScrollPrev();
+    if (this.nextBtn) this.nextBtn.disabled = !this.embla.canScrollNext();
+    if (this.dotsContainer) {
+      const dots = this.dotsContainer.querySelectorAll('.carousel-dot');
+      const activeIndex = this.embla.selectedScrollSnap();
+      dots.forEach((dot, i) => {
+        dot.classList.toggle('is-active', i === activeIndex);
+      });
+    }
+  }
+  destroy() {
+    if (this.embla) {
+      this.embla.destroy();
+    }
+    this.carousel._carouselInitialized = false;
+    this.carousel.classList.remove('carousel-initialized');
+  }
+}
+
+/***/ })
+
+/******/ 	});
+/************************************************************************/
+/******/ 	// The module cache
+/******/ 	var __webpack_module_cache__ = {};
+/******/ 	
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/ 		// Check if module is in cache
+/******/ 		var cachedModule = __webpack_module_cache__[moduleId];
+/******/ 		if (cachedModule !== undefined) {
+/******/ 			return cachedModule.exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = __webpack_module_cache__[moduleId] = {
+/******/ 			// no module.id needed
+/******/ 			// no module.loaded needed
+/******/ 			exports: {}
+/******/ 		};
+/******/ 	
+/******/ 		// Execute the module function
+/******/ 		__webpack_modules__[moduleId](module, module.exports, __webpack_require__);
+/******/ 	
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/ 	
+/************************************************************************/
+/******/ 	/* webpack/runtime/define property getters */
+/******/ 	(() => {
+/******/ 		// define getter functions for harmony exports
+/******/ 		__webpack_require__.d = (exports, definition) => {
+/******/ 			for(var key in definition) {
+/******/ 				if(__webpack_require__.o(definition, key) && !__webpack_require__.o(exports, key)) {
+/******/ 					Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
+/******/ 				}
+/******/ 			}
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/hasOwnProperty shorthand */
+/******/ 	(() => {
+/******/ 		__webpack_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/make namespace object */
+/******/ 	(() => {
+/******/ 		// define __esModule on exports
+/******/ 		__webpack_require__.r = (exports) => {
+/******/ 			if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 				Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 			}
+/******/ 			Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/************************************************************************/
+var __webpack_exports__ = {};
+// This entry needs to be wrapped in an IIFE because it needs to be isolated against other modules in the chunk.
+(() => {
+/*!*******************************************!*\
+  !*** ./blocks/dynamic-ssr-layout/view.js ***!
+  \*******************************************/
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _assets_js_jankx_carousel_common__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../assets/js/jankx-carousel-common */ "./assets/js/jankx-carousel-common.js");
+
+(function () {
+  const SELECTOR = '.wp-block-jankx-dynamic-ssr-layout.view-type-layout-carousel';
+  function initialize(root = document) {
+    const carousels = root.querySelectorAll(SELECTOR);
+    carousels.forEach(el => new _assets_js_jankx_carousel_common__WEBPACK_IMPORTED_MODULE_0__["default"](el, {
+      dotsPerPage: true
+    }));
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => initialize());
+  } else {
+    initialize();
+  }
+
+  // Handle block preview/editor updates
+  if (typeof wp !== 'undefined' && wp.data && wp.data.subscribe) {
+    wp.data.subscribe(() => {
+      setTimeout(initialize, 100);
+    });
+  }
+  document.addEventListener('jankx:reinitialize-carousel', e => {
+    const element = e?.detail?.element || document;
+    initialize(element);
+  });
+})();
+})();
+
+/******/ })()
+;
 //# sourceMappingURL=view.js.map

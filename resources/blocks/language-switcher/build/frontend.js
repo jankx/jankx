@@ -1,2 +1,166 @@
-(()=>{class t{constructor(){this.dropdowns=document.querySelectorAll(".language-switcher-dropdown-wrapper"),this.init()}init(){this.dropdowns.forEach(t=>{this.setupDropdown(t)}),window.addEventListener("resize",()=>{this.dropdowns.forEach(t=>{this.adjustDropdownPosition(t)})})}setupDropdown(t){const n=t.querySelector(".language-switcher-dropdown"),e=t.querySelector(".language-switcher-dropdown-menu");if(!n||!e)return;let i=!1,o=!1;const s=()=>{o||(this.adjustDropdownPosition(t),o=!0)},d=t=>{i=t,t?(s(),e.classList.add("is-open")):e.classList.remove("is-open")};t.addEventListener("mouseenter",()=>{this.isMobile()||(s(),d(!0))}),t.addEventListener("mouseleave",()=>{this.isMobile()||d(!1)}),n.addEventListener("click",t=>{t.preventDefault(),t.stopPropagation(),this.isMobile()&&(s(),d(!i))}),document.addEventListener("click",n=>{!t.contains(n.target)&&i&&d(!1)}),n.addEventListener("focus",()=>{s()})}isMobile(){return window.innerWidth<=768||"ontouchstart"in window}adjustDropdownPosition(t){const n=t.querySelector(".language-switcher-dropdown-menu");if(!n)return;const e=this.calculateOptimalPosition(t,n);n.classList.remove("align-right","align-left","align-top","align-bottom"),e.alignRight?n.classList.add("align-right"):n.classList.add("align-left"),e.alignTop?n.classList.add("align-top"):n.classList.add("align-bottom"),t.classList.add("is-positioned")}calculateOptimalPosition(t,n){const e=t.getBoundingClientRect(),i=n.getBoundingClientRect(),o=window.innerWidth,s=window.innerHeight,d=o-e.right,a=e.left,r=i.width||120,l=s-e.bottom,c=e.top;return{alignRight:d<r&&a>d,alignTop:l<(i.height||200)&&c>l}}}"loading"===document.readyState?document.addEventListener("DOMContentLoaded",function(){new t}):new t,document.addEventListener("content-loaded",function(){new t}),"undefined"!=typeof wp&&wp.domReady&&wp.domReady(function(){new t}),window.LanguageSwitcherPositionEngine=t})();
+/******/ (() => { // webpackBootstrap
+/*!**********************************************!*\
+  !*** ./blocks/language-switcher/frontend.ts ***!
+  \**********************************************/
+/**
+ * Language Switcher Frontend TypeScript
+ * Position engine for dropdown menu
+ */
+
+class LanguageSwitcherPositionEngine {
+  constructor() {
+    this.dropdowns = document.querySelectorAll('.language-switcher-dropdown-wrapper');
+    this.init();
+  }
+  init() {
+    this.dropdowns.forEach(dropdown => {
+      this.setupDropdown(dropdown);
+    });
+
+    // Re-calculate on window resize
+    window.addEventListener('resize', () => {
+      this.dropdowns.forEach(dropdown => {
+        this.adjustDropdownPosition(dropdown);
+      });
+    });
+  }
+  setupDropdown(wrapper) {
+    const dropdown = wrapper.querySelector('.language-switcher-dropdown');
+    const menu = wrapper.querySelector('.language-switcher-dropdown-menu');
+    if (!dropdown || !menu) return;
+
+    // Track if dropdown is open
+    let isOpen = false;
+    let isPositioned = false;
+
+    // Calculate position first time
+    const ensurePositioned = () => {
+      if (!isPositioned) {
+        this.adjustDropdownPosition(wrapper);
+        isPositioned = true;
+      }
+    };
+
+    // Toggle dropdown function
+    const toggleDropdown = open => {
+      isOpen = open;
+      if (open) {
+        ensurePositioned(); // Calculate position before showing
+        menu.classList.add('is-open');
+      } else {
+        menu.classList.remove('is-open');
+      }
+    };
+
+    // Desktop hover events
+    wrapper.addEventListener('mouseenter', () => {
+      if (!this.isMobile()) {
+        ensurePositioned(); // Calculate before hover
+        toggleDropdown(true);
+      }
+    });
+    wrapper.addEventListener('mouseleave', () => {
+      if (!this.isMobile()) {
+        toggleDropdown(false);
+      }
+    });
+
+    // Mobile touch events
+    dropdown.addEventListener('click', e => {
+      e.preventDefault();
+      e.stopPropagation();
+      if (this.isMobile()) {
+        ensurePositioned(); // Calculate before click
+        toggleDropdown(!isOpen);
+      }
+    });
+
+    // Close on click outside
+    document.addEventListener('click', e => {
+      if (!wrapper.contains(e.target) && isOpen) {
+        toggleDropdown(false);
+      }
+    });
+
+    // Adjust position on focus
+    dropdown.addEventListener('focus', () => {
+      ensurePositioned();
+    });
+  }
+  isMobile() {
+    return window.innerWidth <= 768 || 'ontouchstart' in window;
+  }
+  adjustDropdownPosition(wrapper) {
+    const menu = wrapper.querySelector('.language-switcher-dropdown-menu');
+    if (!menu) return;
+    const position = this.calculateOptimalPosition(wrapper, menu);
+
+    // Reset classes
+    menu.classList.remove('align-right', 'align-left', 'align-top', 'align-bottom');
+
+    // Apply position classes
+    if (position.alignRight) {
+      menu.classList.add('align-right');
+    } else {
+      menu.classList.add('align-left');
+    }
+    if (position.alignTop) {
+      menu.classList.add('align-top');
+    } else {
+      menu.classList.add('align-bottom');
+    }
+
+    // Mark as positioned to allow overflow
+    wrapper.classList.add('is-positioned');
+  }
+  calculateOptimalPosition(wrapper, menu) {
+    const wrapperRect = wrapper.getBoundingClientRect();
+    const menuRect = menu.getBoundingClientRect();
+    const viewportWidth = window.innerWidth;
+    const viewportHeight = window.innerHeight;
+
+    // Check horizontal overflow
+    const rightSpace = viewportWidth - wrapperRect.right;
+    const leftSpace = wrapperRect.left;
+    const menuWidth = menuRect.width || 120; // Fallback width
+
+    // Check vertical overflow
+    const bottomSpace = viewportHeight - wrapperRect.bottom;
+    const topSpace = wrapperRect.top;
+    const menuHeight = menuRect.height || 200; // Fallback height
+
+    return {
+      // Align right if not enough space on the left and more space on right
+      alignRight: rightSpace < menuWidth && leftSpace > rightSpace,
+      // Align top (show above) if not enough space below
+      alignTop: bottomSpace < menuHeight && topSpace > bottomSpace
+    };
+  }
+}
+
+// Initialize on DOM ready
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', function () {
+    new LanguageSwitcherPositionEngine();
+  });
+} else {
+  new LanguageSwitcherPositionEngine();
+}
+
+// Re-initialize on AJAX content load
+document.addEventListener('content-loaded', function () {
+  new LanguageSwitcherPositionEngine();
+});
+
+// Handle dynamic content (for themes that support it)
+if (typeof wp !== 'undefined' && wp.domReady) {
+  wp.domReady(function () {
+    new LanguageSwitcherPositionEngine();
+  });
+}
+
+// Export for external use
+window.LanguageSwitcherPositionEngine = LanguageSwitcherPositionEngine;
+/******/ })()
+;
 //# sourceMappingURL=frontend.js.map

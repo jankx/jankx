@@ -1,190 +1,28 @@
-import EmblaCarousel from 'embla-carousel';
-import Autoplay from 'embla-carousel-autoplay';
+import JankxCarousel from '../../assets/js/jankx-carousel-common';
 
-function initDynamicDataCarousel(root) {
-    const carousels = root ? root.querySelectorAll('.wp-block-jankx-dynamic-data-layout[data-layout="carousel"]') : 
-                           document.querySelectorAll('.wp-block-jankx-dynamic-data-layout[data-layout="carousel"]');
-    
-    carousels.forEach(carousel => {
-        if (carousel.classList.contains('carousel-initialized')) return;
-        
-        const container = carousel.querySelector('.carousel-container');
-        if (!container) return;
-        
-        carousel.classList.add('carousel-initialized');
-        
-        const slidesPerView = parseInt(carousel.getAttribute('data-slides-per-view')) || 
-                            parseInt(getComputedStyle(carousel).getPropertyValue('--slides-per-view')) || 1;
-        const spaceBetween = parseInt(carousel.getAttribute('data-space-between')) || 
-                           parseInt(getComputedStyle(carousel).getPropertyValue('--space-between')) || 16;
-        const autoplay = carousel.getAttribute('data-autoplay') === 'true';
-        const autoplayDelay = Math.max(3000, parseInt(carousel.getAttribute('data-autoplay-delay')) || 5000);
-        const loop = carousel.getAttribute('data-loop') === 'true';
-        const showArrows = carousel.classList.contains('has-arrows') || true;
-        const showDots = carousel.classList.contains('has-dots') || true;
-        
-        container.style.setProperty('--slides-per-view', slidesPerView);
-        container.style.setProperty('--space-between', `${spaceBetween}px`);
-        
-        container.classList.add('carousel-container', 'embla__viewport');
-        let track = container.querySelector('.embla__container');
-        if (!track) {
-            track = document.createElement('div');
-            track.className = 'embla__container';
-            while (container.firstChild) {
-                const node = container.firstChild;
-                const isElement = node.nodeType === 1;
-                const isText = node.nodeType === 3;
-                const isComment = node.nodeType === 8;
-                if (isText) {
-                    const text = node.nodeValue || '';
-                    if (text.trim() === '') {
-                        container.removeChild(node);
-                        continue;
-                    }
-                }
-                if (isComment) {
-                    container.removeChild(node);
-                    continue;
-                }
-                if (isElement && node.classList && node.classList.contains('carousel-slide')) {
-                    track.appendChild(node);
-                } else {
-                    const wrapper = document.createElement('div');
-                    wrapper.className = 'carousel-slide';
-                    container.removeChild(node);
-                    wrapper.appendChild(node);
-                    track.appendChild(wrapper);
-                }
-            }
-            container.appendChild(track);
-        }
-        
-        const slides = Array.from(container.children);
-        const plugins = autoplay ? [Autoplay({ delay: autoplayDelay, stopOnInteraction: true, stopOnMouseEnter: true })] : [];
-        const embla = EmblaCarousel(container, {
-            loop: loop,
-            duration: 25,
-            align: 'start'
-        }, plugins);
-        
-        if (showArrows) {
-            createNavigationButtons(carousel, container, embla);
-        }
-        
-        if (showDots) {
-            createPaginationDots(carousel, container, embla);
-        }
-        
-        if (autoplay) {
-            const ap = embla.plugins?.().autoplay;
-            if (ap) {
-                carousel.addEventListener('mouseenter', () => ap.stop(), { passive: true });
-                carousel.addEventListener('mouseleave', () => ap.play(), { passive: true });
-                carousel.addEventListener('touchstart', () => ap.stop(), { passive: true });
-                carousel.addEventListener('touchend', () => ap.play(), { passive: true });
-            }
-        }
-        
-        const onSelect = () => {
-            updateActiveDot(carousel, container, embla);
-            updateNavigationButtons(carousel, container, embla);
-        };
-        embla.on('select', onSelect);
-        embla.on('reInit', onSelect);
-        onSelect();
-    });
-}
+(function () {
+    const SELECTOR = '.wp-block-jankx-dynamic-data-layout[data-layout="carousel"]';
 
-function createNavigationButtons(carousel, container, embla) {
-    const prevBtn = document.createElement('button');
-    prevBtn.className = 'carousel-nav carousel-prev';
-    prevBtn.innerHTML = `
-        <svg viewBox="0 0 24 24" fill="none">
-            <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-    `;
-    prevBtn.addEventListener('click', () => embla.scrollPrev(), { passive: true });
-    
-    const nextBtn = document.createElement('button');
-    nextBtn.className = 'carousel-nav carousel-next';
-    nextBtn.innerHTML = `
-        <svg viewBox="0 0 24 24" fill="none">
-            <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-    `;
-    nextBtn.addEventListener('click', () => embla.scrollNext(), { passive: true });
-    
-    carousel.appendChild(prevBtn);
-    carousel.appendChild(nextBtn);
-}
-
-function createPaginationDots(carousel, container, embla) {
-    const slides = embla.slideNodes();
-    if (slides.length <= 1) return;
-    
-    const dotsContainer = document.createElement('div');
-    dotsContainer.className = 'carousel-dots';
-    
-    slides.forEach((_, index) => {
-        const dot = document.createElement('button');
-        dot.className = 'carousel-dot';
-        if (index === 0) dot.classList.add('is-active');
-        dot.addEventListener('click', () => embla.scrollTo(index), { passive: true });
-        
-        dotsContainer.appendChild(dot);
-    });
-    
-    carousel.appendChild(dotsContainer);
-}
-
-// Autoplay handled via embla-carousel-autoplay plugin above
-
-function updateActiveDot(carousel, container, embla) {
-    const dots = carousel.querySelectorAll('.carousel-dot');
-    if (dots.length === 0) return;
-    
-    const currentIndex = embla.selectedScrollSnap();
-    
-    dots.forEach((dot, index) => {
-        dot.classList.toggle('is-active', index === currentIndex);
-    });
-}
-
-function updateNavigationButtons(carousel, container, embla) {
-    const prevBtn = carousel.querySelector('.carousel-prev');
-    const nextBtn = carousel.querySelector('.carousel-next');
-    
-    if (prevBtn) {
-        prevBtn.disabled = !embla.canScrollPrev();
+    function initialize(root = document) {
+        const carousels = root.querySelectorAll(SELECTOR);
+        carousels.forEach(el => new JankxCarousel(el, { dotsPerPage: false }));
     }
-    
-    if (nextBtn) {
-        nextBtn.disabled = !embla.canScrollNext();
-    }
-}
 
-document.addEventListener('DOMContentLoaded', () => {
-    initDynamicDataCarousel();
-    
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => initialize());
+    } else {
+        initialize();
+    }
+
+    // Handle block preview/editor updates
     if (typeof wp !== 'undefined' && wp.data && wp.data.subscribe) {
         wp.data.subscribe(() => {
-            setTimeout(() => {
-                initDynamicDataCarousel();
-            }, 100);
+            setTimeout(initialize, 100);
         });
     }
-});
 
-// Export for potential manual initialization
-if (typeof window !== 'undefined') {
-    window.JankxCarousel = {
-        init: initDynamicDataCarousel
-    };
-}
-
-// Re-initialize carousels when custom event is fired
-document.addEventListener('jankx:reinitialize-carousel', e => {
-    const element = e?.detail?.element || null;
-    initDynamicDataCarousel(element || undefined);
-});
+    document.addEventListener('jankx:reinitialize-carousel', e => {
+        const element = e?.detail?.element || document;
+        initialize(element);
+    });
+})();

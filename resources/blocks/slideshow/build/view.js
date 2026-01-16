@@ -1,2 +1,739 @@
-!function(){"use strict";class t{constructor(t){this.element=t,this.currentSlide=0,this.autoplayTimer=null,this.isAutoplay=!1,this.settings=this.getSettings(),this.images=this.getImages(),this.init()}getSettings(){const t=this.element.dataset;return{autoplay:"true"===t.autoplay,autoplayDelay:parseInt(t.autoplayDelay)||3e3,fullscreen:"true"===t.fullscreen,showThumbnails:"true"===t.showThumbnails,showNavigation:"true"===t.showNavigation,showPagination:"true"===t.showPagination,transitionEffect:t.transitionEffect||"slide",transitionSpeed:parseInt(t.transitionSpeed)||300,enableLightbox:"true"===t.enableLightbox}}getImages(){const t=[];return this.element.querySelectorAll(".slideshow-slide").forEach((e,n)=>{const i=e.querySelector("img"),s=e.querySelector(".slideshow-caption");i?t.push({id:n,src:i.src,srcset:i.srcset,width:i.naturalWidth||800,height:i.naturalHeight||600,alt:i.alt,caption:s?s.innerHTML:"",element:e}):console.warn("Slideshow: Slide",n,"has no image")}),t}init(){this.setupEventListeners(),this.loadPhotoSwipe(),this.initSlideshow(),this.settings.autoplay&&this.startAutoplay()}setupEventListeners(){this.element.querySelectorAll(".slideshow-thumbnail").forEach((t,e)=>{t.addEventListener("click",()=>this.goToSlide(e))});const t=this.element.querySelector(".slideshow-nav-prev"),e=this.element.querySelector(".slideshow-nav-next");t&&t.addEventListener("click",()=>this.goToPrevious()),e&&e.addEventListener("click",()=>this.goToNext()),this.element.querySelectorAll(".slideshow-pagination-dot").forEach((t,e)=>{t.addEventListener("click",()=>this.goToSlide(e))});const n=this.element.querySelector(".slideshow-fullscreen-btn");n&&n.addEventListener("click",()=>this.openPhotoSwipe());const i=this.element.querySelector(".slideshow-autoplay-btn");i&&i.addEventListener("click",()=>this.toggleAutoplay()),this.settings.enableLightbox&&this.element.querySelectorAll(".slideshow-slide img").forEach((t,e)=>{t.addEventListener("click",()=>this.openPhotoSwipe(e)),t.style.cursor="pointer"}),this.element.querySelectorAll(".slideshow-thumbnail").forEach((t,e)=>{t.addEventListener("click",t=>{t.preventDefault(),this.goToSlide(e)})}),this.element.addEventListener("keydown",t=>{switch(t.key){case"ArrowLeft":t.preventDefault(),this.goToPrevious();break;case"ArrowRight":t.preventDefault(),this.goToNext();break;case"Escape":this.stopAutoplay()}}),this.addTouchSupport()}addTouchSupport(){let t=0,e=0,n=0,i=0;this.element.addEventListener("touchstart",n=>{t=n.touches[0].clientX,e=n.touches[0].clientY}),this.element.addEventListener("touchmove",s=>{t&&e&&(n=s.touches[0].clientX-t,i=s.touches[0].clientY-e)}),this.element.addEventListener("touchend",()=>{t&&e&&(Math.abs(n)>Math.abs(i)&&Math.abs(n)>50&&(n>0?this.goToPrevious():this.goToNext()),t=0,e=0,n=0,i=0)})}loadPhotoSwipe(){return Promise.resolve()}initSlideshow(){this.element.classList.add("photoswipe-enabled"),this.goToSlide(0)}goToSlide(t){t<0||t>=this.images.length||(this.currentSlide=t,this.updateSlideshow(),this.updateThumbnails(),this.updatePagination())}goToPrevious(){const t=(this.currentSlide-1+this.images.length)%this.images.length;this.goToSlide(t)}goToNext(){const t=(this.currentSlide+1)%this.images.length;this.goToSlide(t)}updateSlideshow(){const t=this.element.querySelector(".slideshow-track"),e=this.element.querySelectorAll(".slideshow-slide");t&&e.length&&e.forEach((t,e)=>{if(t.classList.toggle("active",e===this.currentSlide),"slide"===this.settings.transitionEffect){const n=100*(e-this.currentSlide);t.style.transform=`translateX(${n}%)`,t.style.opacity="1"}else"fade"===this.settings.transitionEffect&&(t.style.opacity=e===this.currentSlide?"1":"0",t.style.transform="translateX(0)")})}updateThumbnails(){this.element.querySelectorAll(".slideshow-thumbnail").forEach((t,e)=>{t.classList.toggle("active",e===this.currentSlide)})}updatePagination(){this.element.querySelectorAll(".slideshow-pagination-dot").forEach((t,e)=>{t.classList.toggle("active",e===this.currentSlide)});const t=this.element.querySelector(".slideshow-pagination-prev"),e=this.element.querySelector(".slideshow-pagination-next");t&&(t.disabled=0===this.currentSlide,t.addEventListener("click",()=>this.goToPrevious())),e&&(e.disabled=this.currentSlide===this.images.length-1,e.addEventListener("click",()=>this.goToNext()))}startAutoplay(){this.stopAutoplay(),this.isAutoplay=!0,this.autoplayTimer=setInterval(()=>{this.goToNext()},this.settings.autoplayDelay),this.element.classList.add("autoplay-active")}stopAutoplay(){this.autoplayTimer&&(clearInterval(this.autoplayTimer),this.autoplayTimer=null),this.isAutoplay=!1,this.element.classList.remove("autoplay-active")}toggleAutoplay(){this.isAutoplay?this.stopAutoplay():this.startAutoplay()}openPhotoSwipe(t=this.currentSlide){this.openLightboxWithAutoplay(t)}openLightbox(t=this.currentSlide){if(!this.images.length)return;const e=document.createElement("div");e.className="slideshow-lightbox",e.innerHTML=`\n        <div class="lightbox-overlay">\n          <div class="lightbox-container">\n            <button class="lightbox-close">&times;</button>\n            <button class="lightbox-prev">&larr;</button>\n            <button class="lightbox-next">&rarr;</button>\n            <div class="lightbox-image-container">\n              <img class="lightbox-image" src="${this.images[t].src}" alt="${this.images[t].alt}">\n              <div class="lightbox-caption">${this.images[t].caption}</div>\n            </div>\n            <div class="lightbox-counter">${t+1} / ${this.images.length}</div>\n          </div>\n        </div>\n      `;const n=document.createElement("style");n.textContent="\n        .slideshow-lightbox {\n          position: fixed;\n          top: 0;\n          left: 0;\n          width: 100%;\n          height: 100%;\n          z-index: 10000;\n          background: rgba(0, 0, 0, 0.9);\n          display: flex;\n          align-items: center;\n          justify-content: center;\n        }\n        .lightbox-container {\n          position: relative;\n          max-width: 90vw;\n          max-height: 90vh;\n          display: flex;\n          align-items: center;\n          justify-content: center;\n        }\n        .lightbox-close, .lightbox-prev, .lightbox-next {\n          position: absolute;\n          background: rgba(255, 255, 255, 0.8);\n          border: none;\n          border-radius: 50%;\n          width: 50px;\n          height: 50px;\n          font-size: 20px;\n          cursor: pointer;\n          z-index: 10001;\n          transition: background 0.2s ease;\n        }\n        .lightbox-close:hover, .lightbox-prev:hover, .lightbox-next:hover {\n          background: rgba(255, 255, 255, 1);\n        }\n        .lightbox-close {\n          top: 20px;\n          right: 20px;\n          font-size: 30px;\n        }\n        .lightbox-prev {\n          left: 20px;\n          top: 50%;\n          transform: translateY(-50%);\n        }\n        .lightbox-next {\n          right: 20px;\n          top: 50%;\n          transform: translateY(-50%);\n        }\n        .lightbox-image-container {\n          text-align: center;\n        }\n        .lightbox-image {\n          max-width: 100%;\n          max-height: 80vh;\n          object-fit: contain;\n        }\n        .lightbox-caption {\n          color: white;\n          margin-top: 20px;\n          padding: 0 20px;\n          font-size: 14px;\n          line-height: 1.5;\n        }\n        .lightbox-counter {\n          position: absolute;\n          bottom: 20px;\n          left: 50%;\n          transform: translateX(-50%);\n          color: white;\n          background: rgba(0, 0, 0, 0.7);\n          padding: 8px 16px;\n          border-radius: 20px;\n          font-size: 14px;\n        }\n      ",document.head.appendChild(n),document.body.appendChild(e);let i=t;const s=()=>{const t=e.querySelector(".lightbox-image"),n=e.querySelector(".lightbox-caption"),s=e.querySelector(".lightbox-counter");t.src=this.images[i].src,t.alt=this.images[i].alt,n.innerHTML=this.images[i].caption,s.textContent=`${i+1} / ${this.images.length}`;const o=e.querySelector(".lightbox-prev"),l=e.querySelector(".lightbox-next");o.style.display=this.images.length>1?"block":"none",l.style.display=this.images.length>1?"block":"none"},o=()=>{document.body.removeChild(e),document.head.removeChild(n)};e.querySelector(".lightbox-close").addEventListener("click",o),e.querySelector(".lightbox-overlay").addEventListener("click",t=>{t.target===t.currentTarget&&o()}),this.images.length>1&&(e.querySelector(".lightbox-prev").addEventListener("click",()=>{i=(i-1+this.images.length)%this.images.length,s()}),e.querySelector(".lightbox-next").addEventListener("click",()=>{i=(i+1)%this.images.length,s()}));const l=t=>{switch(t.key){case"Escape":o();break;case"ArrowLeft":this.images.length>1&&(i=(i-1+this.images.length)%this.images.length,s());break;case"ArrowRight":this.images.length>1&&(i=(i+1)%this.images.length,s())}};document.addEventListener("keydown",l);const a=o;o=()=>{document.removeEventListener("keydown",l),a()},s()}openLightboxWithAutoplay(t=this.currentSlide){if(!this.images.length)return;const e=document.createElement("div");e.className="slideshow-lightbox slideshow-lightbox-autoplay",e.innerHTML=`\n        <div class="lightbox-overlay">\n          <div class="lightbox-container">\n            <button class="lightbox-close">&times;</button>\n            <button class="lightbox-prev">&larr;</button>\n            <button class="lightbox-next">&rarr;</button>\n            <button class="lightbox-autoplay-toggle" title="Toggle slideshow">\n              <span class="play-icon" style="display: none;">▶</span>\n              <span class="pause-icon">⏸</span>\n            </button>\n            <div class="lightbox-image-container">\n              <img class="lightbox-image" src="${this.images[t].src}" alt="${this.images[t].alt}">\n              <div class="lightbox-caption">${this.images[t].caption}</div>\n            </div>\n            <div class="lightbox-counter">${t+1} / ${this.images.length}</div>\n            <div class="lightbox-progress-bar">\n              <div class="lightbox-progress-fill"></div>\n            </div>\n          </div>\n        </div>\n      `;const n=document.createElement("style");n.textContent="\n        .slideshow-lightbox-autoplay {\n          position: fixed;\n          top: 0;\n          left: 0;\n          width: 100%;\n          height: 100%;\n          z-index: 10000;\n          background: rgba(0, 0, 0, 0.9);\n          display: flex;\n          align-items: center;\n          justify-content: center;\n        }\n        .lightbox-container {\n          position: relative;\n          max-width: 90vw;\n          max-height: 90vh;\n          display: flex;\n          align-items: center;\n          justify-content: center;\n        }\n        .lightbox-close, .lightbox-prev, .lightbox-next, .lightbox-autoplay-toggle {\n          position: absolute;\n          background: rgba(255, 255, 255, 0.8);\n          border: none;\n          border-radius: 50%;\n          width: 50px;\n          height: 50px;\n          font-size: 20px;\n          cursor: pointer;\n          z-index: 10001;\n          transition: background 0.2s ease;\n          display: flex;\n          align-items: center;\n          justify-content: center;\n        }\n        .lightbox-close:hover, .lightbox-prev:hover, .lightbox-next:hover, .lightbox-autoplay-toggle:hover {\n          background: rgba(255, 255, 255, 1);\n        }\n        .lightbox-close {\n          top: 20px;\n          right: 20px;\n          font-size: 30px;\n        }\n        .lightbox-prev {\n          left: 20px;\n          top: 50%;\n          transform: translateY(-50%);\n        }\n        .lightbox-next {\n          right: 20px;\n          top: 50%;\n          transform: translateY(-50%);\n        }\n        .lightbox-autoplay-toggle {\n          top: 20px;\n          left: 20px;\n          font-size: 18px;\n        }\n        .lightbox-image-container {\n          text-align: center;\n        }\n        .lightbox-image {\n          max-width: 100%;\n          max-height: 80vh;\n          object-fit: contain;\n        }\n        .lightbox-caption {\n          color: white;\n          margin-top: 20px;\n          padding: 0 20px;\n          font-size: 14px;\n          line-height: 1.5;\n        }\n        .lightbox-counter {\n          position: absolute;\n          bottom: 60px;\n          left: 50%;\n          transform: translateX(-50%);\n          color: white;\n          background: rgba(0, 0, 0, 0.7);\n          padding: 8px 16px;\n          border-radius: 20px;\n          font-size: 14px;\n        }\n        .lightbox-progress-bar {\n          position: absolute;\n          bottom: 20px;\n          left: 20px;\n          right: 20px;\n          height: 4px;\n          background: rgba(255, 255, 255, 0.2);\n          border-radius: 2px;\n          overflow: hidden;\n        }\n        .lightbox-progress-fill {\n          height: 100%;\n          background: rgba(255, 255, 255, 0.8);\n          width: 0%;\n          transition: width linear;\n        }\n        .lightbox-progress-fill.running {\n          animation: progressAnimation linear;\n        }\n        @keyframes progressAnimation {\n          from { width: 0%; }\n          to { width: 100%; }\n        }\n      ",document.head.appendChild(n),document.body.appendChild(e);let i=t,s=!0,o=null;const l=()=>{const t=e.querySelector(".lightbox-image"),n=e.querySelector(".lightbox-caption"),o=e.querySelector(".lightbox-counter");t.src=this.images[i].src,t.alt=this.images[i].alt,n.innerHTML=this.images[i].caption,o.textContent=`${i+1} / ${this.images.length}`;const l=e.querySelector(".lightbox-prev"),r=e.querySelector(".lightbox-next");l.style.display=this.images.length>1?"block":"none",r.style.display=this.images.length>1?"block":"none",s&&a()},a=()=>{o&&clearInterval(o);const t=e.querySelector(".lightbox-progress-fill");t.classList.add("running"),t.style.animationDuration=`${this.settings.autoplayDelay}ms`,o=setTimeout(()=>{i=(i+1)%this.images.length,l()},this.settings.autoplayDelay)},r=()=>{o&&clearInterval(o);const t=e.querySelector(".lightbox-progress-fill");t.classList.remove("running"),t.style.animationDuration="0ms"},h=()=>{s=!s;const t=e.querySelector(".lightbox-autoplay-toggle"),n=t.querySelector(".play-icon"),i=t.querySelector(".pause-icon");s?(n.style.display="none",i.style.display="inline",a()):(n.style.display="inline",i.style.display="none",r())};let c=()=>{r(),document.body.removeChild(e),document.head.removeChild(n)};e.querySelector(".lightbox-close").addEventListener("click",c),e.querySelector(".lightbox-overlay").addEventListener("click",t=>{t.target===t.currentTarget&&c()}),this.images.length>1&&(e.querySelector(".lightbox-prev").addEventListener("click",()=>{i=(i-1+this.images.length)%this.images.length,l()}),e.querySelector(".lightbox-next").addEventListener("click",()=>{i=(i+1)%this.images.length,l()})),e.querySelector(".lightbox-autoplay-toggle").addEventListener("click",h);const g=t=>{switch(t.key){case"Escape":c();break;case"ArrowLeft":this.images.length>1&&(i=(i-1+this.images.length)%this.images.length,l());break;case"ArrowRight":this.images.length>1&&(i=(i+1)%this.images.length,l());break;case" ":t.preventDefault(),h()}};document.addEventListener("keydown",g);const d=c;c=()=>{document.removeEventListener("keydown",g),d()},l(),setTimeout(()=>{a()},100)}destroy(){this.stopAutoplay(),this.element.removeEventListener("keydown",this.handleKeydown)}}function e(){document.querySelectorAll(".slideshow-block[data-slideshow]").forEach(e=>{e.slideshowInstance||(e.slideshowInstance=new t(e))})}"loading"===document.readyState?document.addEventListener("DOMContentLoaded",e):e(),document.addEventListener("jankx:content-loaded",e),window.addEventListener("beforeunload",()=>{document.querySelectorAll(".slideshow-block[data-slideshow]").forEach(t=>{t.slideshowInstance&&t.slideshowInstance.destroy()})})}();
+/******/ (() => { // webpackBootstrap
+/*!**********************************!*\
+  !*** ./blocks/slideshow/view.js ***!
+  \**********************************/
+/**
+ * Slideshow Block Frontend Script
+ * Handles PhotoSwipe integration and slideshow functionality
+ */
+
+(function () {
+  'use strict';
+
+  // PhotoSwipe integration
+  class SlideshowBlock {
+    constructor(element) {
+      this.element = element;
+      this.currentSlide = 0;
+      this.autoplayTimer = null;
+      this.isAutoplay = false;
+      this.settings = this.getSettings();
+      this.images = this.getImages();
+      this.init();
+    }
+    getSettings() {
+      const data = this.element.dataset;
+      return {
+        autoplay: data.autoplay === 'true',
+        autoplayDelay: parseInt(data.autoplayDelay) || 3000,
+        fullscreen: data.fullscreen === 'true',
+        showThumbnails: data.showThumbnails === 'true',
+        showNavigation: data.showNavigation === 'true',
+        showPagination: data.showPagination === 'true',
+        transitionEffect: data.transitionEffect || 'slide',
+        transitionSpeed: parseInt(data.transitionSpeed) || 300,
+        enableLightbox: data.enableLightbox === 'true'
+      };
+    }
+    getImages() {
+      const images = [];
+      const slides = this.element.querySelectorAll('.slideshow-slide');
+      slides.forEach((slide, index) => {
+        const img = slide.querySelector('img');
+        const caption = slide.querySelector('.slideshow-caption');
+        if (img) {
+          images.push({
+            id: index,
+            src: img.src,
+            srcset: img.srcset,
+            width: img.naturalWidth || 800,
+            height: img.naturalHeight || 600,
+            alt: img.alt,
+            caption: caption ? caption.innerHTML : '',
+            element: slide
+          });
+        } else {
+          console.warn('Slideshow: Slide', index, 'has no image');
+        }
+      });
+      return images;
+    }
+    init() {
+      this.setupEventListeners();
+      this.loadPhotoSwipe();
+      this.initSlideshow();
+      if (this.settings.autoplay) {
+        this.startAutoplay();
+      }
+    }
+    setupEventListeners() {
+      // Thumbnail clicks
+      const thumbnails = this.element.querySelectorAll('.slideshow-thumbnail');
+      thumbnails.forEach((thumb, index) => {
+        thumb.addEventListener('click', () => this.goToSlide(index));
+      });
+
+      // Navigation buttons
+      const prevBtn = this.element.querySelector('.slideshow-nav-prev');
+      const nextBtn = this.element.querySelector('.slideshow-nav-next');
+      if (prevBtn) {
+        prevBtn.addEventListener('click', () => this.goToPrevious());
+      }
+      if (nextBtn) {
+        nextBtn.addEventListener('click', () => this.goToNext());
+      }
+
+      // Pagination dots
+      const paginationDots = this.element.querySelectorAll('.slideshow-pagination-dot');
+      paginationDots.forEach((dot, index) => {
+        dot.addEventListener('click', () => this.goToSlide(index));
+      });
+
+      // Fullscreen button
+      const fullscreenBtn = this.element.querySelector('.slideshow-fullscreen-btn');
+      if (fullscreenBtn) {
+        fullscreenBtn.addEventListener('click', () => this.openPhotoSwipe());
+      }
+
+      // Autoplay button
+      const autoplayBtn = this.element.querySelector('.slideshow-autoplay-btn');
+      if (autoplayBtn) {
+        autoplayBtn.addEventListener('click', () => this.toggleAutoplay());
+      }
+
+      // Click on main image to open PhotoSwipe (only if enableLightbox is true)
+      if (this.settings.enableLightbox) {
+        const mainImages = this.element.querySelectorAll('.slideshow-slide img');
+        mainImages.forEach((img, index) => {
+          img.addEventListener('click', () => this.openPhotoSwipe(index));
+          img.style.cursor = 'pointer';
+        });
+      }
+
+      // Click on thumbnails to navigate slideshow (not open PhotoSwipe)
+      const thumbnailBtns = this.element.querySelectorAll('.slideshow-thumbnail');
+      thumbnailBtns.forEach((thumb, index) => {
+        thumb.addEventListener('click', e => {
+          e.preventDefault();
+          this.goToSlide(index);
+        });
+      });
+
+      // Keyboard navigation
+      this.element.addEventListener('keydown', e => {
+        switch (e.key) {
+          case 'ArrowLeft':
+            e.preventDefault();
+            this.goToPrevious();
+            break;
+          case 'ArrowRight':
+            e.preventDefault();
+            this.goToNext();
+            break;
+          case 'Escape':
+            this.stopAutoplay();
+            break;
+        }
+      });
+
+      // Touch/swipe support
+      this.addTouchSupport();
+    }
+    addTouchSupport() {
+      let startX = 0;
+      let startY = 0;
+      let distX = 0;
+      let distY = 0;
+      this.element.addEventListener('touchstart', e => {
+        startX = e.touches[0].clientX;
+        startY = e.touches[0].clientY;
+      });
+      this.element.addEventListener('touchmove', e => {
+        if (!startX || !startY) return;
+        distX = e.touches[0].clientX - startX;
+        distY = e.touches[0].clientY - startY;
+      });
+      this.element.addEventListener('touchend', () => {
+        if (!startX || !startY) return;
+        const threshold = 50;
+        if (Math.abs(distX) > Math.abs(distY) && Math.abs(distX) > threshold) {
+          if (distX > 0) {
+            this.goToPrevious();
+          } else {
+            this.goToNext();
+          }
+        }
+        startX = 0;
+        startY = 0;
+        distX = 0;
+        distY = 0;
+      });
+    }
+    loadPhotoSwipe() {
+      // Skip PhotoSwipe loading for now and use custom lightbox with autoplay
+      return Promise.resolve();
+    }
+    initSlideshow() {
+      this.element.classList.add('photoswipe-enabled');
+      this.goToSlide(0);
+    }
+    goToSlide(index) {
+      if (index < 0 || index >= this.images.length) return;
+      this.currentSlide = index;
+      this.updateSlideshow();
+      this.updateThumbnails();
+      this.updatePagination();
+    }
+    goToPrevious() {
+      const prevIndex = (this.currentSlide - 1 + this.images.length) % this.images.length;
+      this.goToSlide(prevIndex);
+    }
+    goToNext() {
+      const nextIndex = (this.currentSlide + 1) % this.images.length;
+      this.goToSlide(nextIndex);
+    }
+    updateSlideshow() {
+      const track = this.element.querySelector('.slideshow-track');
+      const slides = this.element.querySelectorAll('.slideshow-slide');
+      if (!track || !slides.length) return;
+
+      // Update slide visibility
+      slides.forEach((slide, index) => {
+        slide.classList.toggle('active', index === this.currentSlide);
+        if (this.settings.transitionEffect === 'slide') {
+          // For slide effect, use transform
+          const translateX = (index - this.currentSlide) * 100;
+          slide.style.transform = `translateX(${translateX}%)`;
+          slide.style.opacity = '1';
+        } else if (this.settings.transitionEffect === 'fade') {
+          // For fade effect, use opacity
+          slide.style.opacity = index === this.currentSlide ? '1' : '0';
+          slide.style.transform = 'translateX(0)';
+        }
+      });
+    }
+    updateThumbnails() {
+      const thumbnails = this.element.querySelectorAll('.slideshow-thumbnail');
+      thumbnails.forEach((thumb, index) => {
+        thumb.classList.toggle('active', index === this.currentSlide);
+      });
+    }
+    updatePagination() {
+      const dots = this.element.querySelectorAll('.slideshow-pagination-dot');
+      dots.forEach((dot, index) => {
+        dot.classList.toggle('active', index === this.currentSlide);
+      });
+
+      // Update navigation button states
+      const prevBtn = this.element.querySelector('.slideshow-pagination-prev');
+      const nextBtn = this.element.querySelector('.slideshow-pagination-next');
+      if (prevBtn) {
+        prevBtn.disabled = this.currentSlide === 0;
+        prevBtn.addEventListener('click', () => this.goToPrevious());
+      }
+      if (nextBtn) {
+        nextBtn.disabled = this.currentSlide === this.images.length - 1;
+        nextBtn.addEventListener('click', () => this.goToNext());
+      }
+    }
+    startAutoplay() {
+      this.stopAutoplay();
+      this.isAutoplay = true;
+      this.autoplayTimer = setInterval(() => {
+        this.goToNext();
+      }, this.settings.autoplayDelay);
+      this.element.classList.add('autoplay-active');
+    }
+    stopAutoplay() {
+      if (this.autoplayTimer) {
+        clearInterval(this.autoplayTimer);
+        this.autoplayTimer = null;
+      }
+      this.isAutoplay = false;
+      this.element.classList.remove('autoplay-active');
+    }
+    toggleAutoplay() {
+      if (this.isAutoplay) {
+        this.stopAutoplay();
+      } else {
+        this.startAutoplay();
+      }
+    }
+    openPhotoSwipe(index = this.currentSlide) {
+      // Use enhanced lightbox with autoplay functionality
+      this.openLightboxWithAutoplay(index);
+    }
+    openLightbox(index = this.currentSlide) {
+      if (!this.images.length) return;
+
+      // Create lightbox overlay
+      const lightbox = document.createElement('div');
+      lightbox.className = 'slideshow-lightbox';
+      lightbox.innerHTML = `
+        <div class="lightbox-overlay">
+          <div class="lightbox-container">
+            <button class="lightbox-close">&times;</button>
+            <button class="lightbox-prev">&larr;</button>
+            <button class="lightbox-next">&rarr;</button>
+            <div class="lightbox-image-container">
+              <img class="lightbox-image" src="${this.images[index].src}" alt="${this.images[index].alt}">
+              <div class="lightbox-caption">${this.images[index].caption}</div>
+            </div>
+            <div class="lightbox-counter">${index + 1} / ${this.images.length}</div>
+          </div>
+        </div>
+      `;
+
+      // Add styles
+      const styles = document.createElement('style');
+      styles.textContent = `
+        .slideshow-lightbox {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          z-index: 10000;
+          background: rgba(0, 0, 0, 0.9);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        .lightbox-container {
+          position: relative;
+          max-width: 90vw;
+          max-height: 90vh;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        .lightbox-close, .lightbox-prev, .lightbox-next {
+          position: absolute;
+          background: rgba(255, 255, 255, 0.8);
+          border: none;
+          border-radius: 50%;
+          width: 50px;
+          height: 50px;
+          font-size: 20px;
+          cursor: pointer;
+          z-index: 10001;
+          transition: background 0.2s ease;
+        }
+        .lightbox-close:hover, .lightbox-prev:hover, .lightbox-next:hover {
+          background: rgba(255, 255, 255, 1);
+        }
+        .lightbox-close {
+          top: 20px;
+          right: 20px;
+          font-size: 30px;
+        }
+        .lightbox-prev {
+          left: 20px;
+          top: 50%;
+          transform: translateY(-50%);
+        }
+        .lightbox-next {
+          right: 20px;
+          top: 50%;
+          transform: translateY(-50%);
+        }
+        .lightbox-image-container {
+          text-align: center;
+        }
+        .lightbox-image {
+          max-width: 100%;
+          max-height: 80vh;
+          object-fit: contain;
+        }
+        .lightbox-caption {
+          color: white;
+          margin-top: 20px;
+          padding: 0 20px;
+          font-size: 14px;
+          line-height: 1.5;
+        }
+        .lightbox-counter {
+          position: absolute;
+          bottom: 20px;
+          left: 50%;
+          transform: translateX(-50%);
+          color: white;
+          background: rgba(0, 0, 0, 0.7);
+          padding: 8px 16px;
+          border-radius: 20px;
+          font-size: 14px;
+        }
+      `;
+      document.head.appendChild(styles);
+      document.body.appendChild(lightbox);
+
+      // Event handlers
+      let currentIndex = index;
+      const updateLightbox = () => {
+        const img = lightbox.querySelector('.lightbox-image');
+        const caption = lightbox.querySelector('.lightbox-caption');
+        const counter = lightbox.querySelector('.lightbox-counter');
+        img.src = this.images[currentIndex].src;
+        img.alt = this.images[currentIndex].alt;
+        caption.innerHTML = this.images[currentIndex].caption;
+        counter.textContent = `${currentIndex + 1} / ${this.images.length}`;
+
+        // Update navigation button states
+        const prevBtn = lightbox.querySelector('.lightbox-prev');
+        const nextBtn = lightbox.querySelector('.lightbox-next');
+        prevBtn.style.display = this.images.length > 1 ? 'block' : 'none';
+        nextBtn.style.display = this.images.length > 1 ? 'block' : 'none';
+      };
+      const closeLightbox = () => {
+        document.body.removeChild(lightbox);
+        document.head.removeChild(styles);
+      };
+
+      // Event listeners
+      lightbox.querySelector('.lightbox-close').addEventListener('click', closeLightbox);
+      lightbox.querySelector('.lightbox-overlay').addEventListener('click', e => {
+        if (e.target === e.currentTarget) closeLightbox();
+      });
+      if (this.images.length > 1) {
+        lightbox.querySelector('.lightbox-prev').addEventListener('click', () => {
+          currentIndex = (currentIndex - 1 + this.images.length) % this.images.length;
+          updateLightbox();
+        });
+        lightbox.querySelector('.lightbox-next').addEventListener('click', () => {
+          currentIndex = (currentIndex + 1) % this.images.length;
+          updateLightbox();
+        });
+      }
+
+      // Keyboard navigation
+      const handleKeydown = e => {
+        switch (e.key) {
+          case 'Escape':
+            closeLightbox();
+            break;
+          case 'ArrowLeft':
+            if (this.images.length > 1) {
+              currentIndex = (currentIndex - 1 + this.images.length) % this.images.length;
+              updateLightbox();
+            }
+            break;
+          case 'ArrowRight':
+            if (this.images.length > 1) {
+              currentIndex = (currentIndex + 1) % this.images.length;
+              updateLightbox();
+            }
+            break;
+        }
+      };
+      document.addEventListener('keydown', handleKeydown);
+
+      // Clean up event listener when lightbox closes
+      const originalClose = closeLightbox;
+      closeLightbox = () => {
+        document.removeEventListener('keydown', handleKeydown);
+        originalClose();
+      };
+      updateLightbox();
+    }
+    openLightboxWithAutoplay(index = this.currentSlide) {
+      if (!this.images.length) return;
+
+      // Create enhanced lightbox with autoplay
+      const lightbox = document.createElement('div');
+      lightbox.className = 'slideshow-lightbox slideshow-lightbox-autoplay';
+      lightbox.innerHTML = `
+        <div class="lightbox-overlay">
+          <div class="lightbox-container">
+            <button class="lightbox-close">&times;</button>
+            <button class="lightbox-prev">&larr;</button>
+            <button class="lightbox-next">&rarr;</button>
+            <button class="lightbox-autoplay-toggle" title="Toggle slideshow">
+              <span class="play-icon" style="display: none;">▶</span>
+              <span class="pause-icon">⏸</span>
+            </button>
+            <div class="lightbox-image-container">
+              <img class="lightbox-image" src="${this.images[index].src}" alt="${this.images[index].alt}">
+              <div class="lightbox-caption">${this.images[index].caption}</div>
+            </div>
+            <div class="lightbox-counter">${index + 1} / ${this.images.length}</div>
+            <div class="lightbox-progress-bar">
+              <div class="lightbox-progress-fill"></div>
+            </div>
+          </div>
+        </div>
+      `;
+
+      // Add enhanced styles
+      const styles = document.createElement('style');
+      styles.textContent = `
+        .slideshow-lightbox-autoplay {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          z-index: 10000;
+          background: rgba(0, 0, 0, 0.9);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        .lightbox-container {
+          position: relative;
+          max-width: 90vw;
+          max-height: 90vh;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        .lightbox-close, .lightbox-prev, .lightbox-next, .lightbox-autoplay-toggle {
+          position: absolute;
+          background: rgba(255, 255, 255, 0.8);
+          border: none;
+          border-radius: 50%;
+          width: 50px;
+          height: 50px;
+          font-size: 20px;
+          cursor: pointer;
+          z-index: 10001;
+          transition: background 0.2s ease;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        .lightbox-close:hover, .lightbox-prev:hover, .lightbox-next:hover, .lightbox-autoplay-toggle:hover {
+          background: rgba(255, 255, 255, 1);
+        }
+        .lightbox-close {
+          top: 20px;
+          right: 20px;
+          font-size: 30px;
+        }
+        .lightbox-prev {
+          left: 20px;
+          top: 50%;
+          transform: translateY(-50%);
+        }
+        .lightbox-next {
+          right: 20px;
+          top: 50%;
+          transform: translateY(-50%);
+        }
+        .lightbox-autoplay-toggle {
+          top: 20px;
+          left: 20px;
+          font-size: 18px;
+        }
+        .lightbox-image-container {
+          text-align: center;
+        }
+        .lightbox-image {
+          max-width: 100%;
+          max-height: 80vh;
+          object-fit: contain;
+        }
+        .lightbox-caption {
+          color: white;
+          margin-top: 20px;
+          padding: 0 20px;
+          font-size: 14px;
+          line-height: 1.5;
+        }
+        .lightbox-counter {
+          position: absolute;
+          bottom: 60px;
+          left: 50%;
+          transform: translateX(-50%);
+          color: white;
+          background: rgba(0, 0, 0, 0.7);
+          padding: 8px 16px;
+          border-radius: 20px;
+          font-size: 14px;
+        }
+        .lightbox-progress-bar {
+          position: absolute;
+          bottom: 20px;
+          left: 20px;
+          right: 20px;
+          height: 4px;
+          background: rgba(255, 255, 255, 0.2);
+          border-radius: 2px;
+          overflow: hidden;
+        }
+        .lightbox-progress-fill {
+          height: 100%;
+          background: rgba(255, 255, 255, 0.8);
+          width: 0%;
+          transition: width linear;
+        }
+        .lightbox-progress-fill.running {
+          animation: progressAnimation linear;
+        }
+        @keyframes progressAnimation {
+          from { width: 0%; }
+          to { width: 100%; }
+        }
+      `;
+      document.head.appendChild(styles);
+      document.body.appendChild(lightbox);
+
+      // Event handlers
+      let currentIndex = index;
+      let isAutoplay = true; // Mặc định bật autoplay khi mở fullscreen
+      let autoplayTimer = null;
+      let progressTimer = null;
+      const updateLightbox = () => {
+        const img = lightbox.querySelector('.lightbox-image');
+        const caption = lightbox.querySelector('.lightbox-caption');
+        const counter = lightbox.querySelector('.lightbox-counter');
+        img.src = this.images[currentIndex].src;
+        img.alt = this.images[currentIndex].alt;
+        caption.innerHTML = this.images[currentIndex].caption;
+        counter.textContent = `${currentIndex + 1} / ${this.images.length}`;
+
+        // Update navigation button states
+        const prevBtn = lightbox.querySelector('.lightbox-prev');
+        const nextBtn = lightbox.querySelector('.lightbox-next');
+        prevBtn.style.display = this.images.length > 1 ? 'block' : 'none';
+        nextBtn.style.display = this.images.length > 1 ? 'block' : 'none';
+
+        // Restart autoplay if it's running
+        if (isAutoplay) {
+          startAutoplay();
+        }
+      };
+      const startAutoplay = () => {
+        if (autoplayTimer) clearInterval(autoplayTimer);
+        if (progressTimer) clearInterval(progressTimer);
+        const progressFill = lightbox.querySelector('.lightbox-progress-fill');
+        progressFill.classList.add('running');
+        progressFill.style.animationDuration = `${this.settings.autoplayDelay}ms`;
+        autoplayTimer = setTimeout(() => {
+          currentIndex = (currentIndex + 1) % this.images.length;
+          updateLightbox();
+        }, this.settings.autoplayDelay);
+      };
+      const stopAutoplay = () => {
+        if (autoplayTimer) clearInterval(autoplayTimer);
+        if (progressTimer) clearInterval(progressTimer);
+        const progressFill = lightbox.querySelector('.lightbox-progress-fill');
+        progressFill.classList.remove('running');
+        progressFill.style.animationDuration = '0ms';
+      };
+      const toggleAutoplay = () => {
+        isAutoplay = !isAutoplay;
+        const toggleBtn = lightbox.querySelector('.lightbox-autoplay-toggle');
+        const playIcon = toggleBtn.querySelector('.play-icon');
+        const pauseIcon = toggleBtn.querySelector('.pause-icon');
+        if (isAutoplay) {
+          playIcon.style.display = 'none';
+          pauseIcon.style.display = 'inline';
+          startAutoplay();
+        } else {
+          playIcon.style.display = 'inline';
+          pauseIcon.style.display = 'none';
+          stopAutoplay();
+        }
+      };
+      let closeLightbox = () => {
+        stopAutoplay();
+        document.body.removeChild(lightbox);
+        document.head.removeChild(styles);
+      };
+
+      // Event listeners
+      lightbox.querySelector('.lightbox-close').addEventListener('click', closeLightbox);
+      lightbox.querySelector('.lightbox-overlay').addEventListener('click', e => {
+        if (e.target === e.currentTarget) closeLightbox();
+      });
+      if (this.images.length > 1) {
+        lightbox.querySelector('.lightbox-prev').addEventListener('click', () => {
+          currentIndex = (currentIndex - 1 + this.images.length) % this.images.length;
+          updateLightbox();
+        });
+        lightbox.querySelector('.lightbox-next').addEventListener('click', () => {
+          currentIndex = (currentIndex + 1) % this.images.length;
+          updateLightbox();
+        });
+      }
+      lightbox.querySelector('.lightbox-autoplay-toggle').addEventListener('click', toggleAutoplay);
+
+      // Keyboard navigation
+      const handleKeydown = e => {
+        switch (e.key) {
+          case 'Escape':
+            closeLightbox();
+            break;
+          case 'ArrowLeft':
+            if (this.images.length > 1) {
+              currentIndex = (currentIndex - 1 + this.images.length) % this.images.length;
+              updateLightbox();
+            }
+            break;
+          case 'ArrowRight':
+            if (this.images.length > 1) {
+              currentIndex = (currentIndex + 1) % this.images.length;
+              updateLightbox();
+            }
+            break;
+          case ' ':
+            e.preventDefault();
+            toggleAutoplay();
+            break;
+        }
+      };
+      document.addEventListener('keydown', handleKeydown);
+
+      // Clean up event listener when lightbox closes
+      const originalClose = closeLightbox;
+      closeLightbox = () => {
+        document.removeEventListener('keydown', handleKeydown);
+        originalClose();
+      };
+      updateLightbox();
+
+      // Tự động bắt đầu autoplay khi mở fullscreen
+      setTimeout(() => {
+        startAutoplay();
+      }, 100);
+    }
+    destroy() {
+      this.stopAutoplay();
+      this.element.removeEventListener('keydown', this.handleKeydown);
+      // Remove other event listeners as needed
+    }
+  }
+
+  // Initialize slideshow blocks
+  function initSlideshows() {
+    const slideshowBlocks = document.querySelectorAll('.slideshow-block[data-slideshow]');
+    slideshowBlocks.forEach(element => {
+      if (!element.slideshowInstance) {
+        element.slideshowInstance = new SlideshowBlock(element);
+      }
+    });
+  }
+
+  // Initialize on DOM ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initSlideshows);
+  } else {
+    initSlideshows();
+  }
+
+  // Re-initialize on AJAX content load (for dynamic content)
+  document.addEventListener('jankx:content-loaded', initSlideshows);
+
+  // Cleanup on page unload
+  window.addEventListener('beforeunload', () => {
+    const slideshowBlocks = document.querySelectorAll('.slideshow-block[data-slideshow]');
+    slideshowBlocks.forEach(element => {
+      if (element.slideshowInstance) {
+        element.slideshowInstance.destroy();
+      }
+    });
+  });
+})();
+/******/ })()
+;
 //# sourceMappingURL=view.js.map
