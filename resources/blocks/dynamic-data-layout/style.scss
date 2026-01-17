@@ -56,7 +56,8 @@
 
         .carousel-container,
         .embla__container,
-        .post-type-layout-carousel {
+        .post-type-layout-carousel,
+        .is-product-collection-layout-carousel {
             // Override parent inline style for responsive behavior
             --slides-per-view: var(--carousel-columns-mobile, var(--columns-mobile, 1));
 
@@ -78,9 +79,16 @@
             padding: 0 0 20px;
             list-style: none;
 
+            &.is-product-collection-layout-carousel {
+                display: flex;
+                flex-wrap: nowrap;
+                width: 100%;
+            }
+
             // Shared structure for slides
             .carousel-slide,
-            .embla__slide {
+            .embla__slide,
+            .wc-block-product {
                 flex: 0 0 calc(100%/ var(--slides-per-view, 1));
                 width: calc(100% / var(--slides-per-view, 1));
                 max-width: calc(100% / var(--slides-per-view, 1));

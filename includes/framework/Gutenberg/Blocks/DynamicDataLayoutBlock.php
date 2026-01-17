@@ -50,6 +50,9 @@ class DynamicDataLayoutBlock extends Block
         // Enqueue editor scripts with localized data
         add_action('enqueue_block_editor_assets', [$this, 'enqueueEditorAssets'], 20);
 
+        // Enqueue frontend scripts (view.js)
+        add_action('wp_enqueue_scripts', [$this, 'enqueueFrontendAssets']);
+
         // Filter block attributes to ensure queryId is always valid
         // This runs before WordPress processes providesContext
         add_filter('render_block_data', [$this, 'normalizeBlockAttributes'], 10, 1);
@@ -316,6 +319,48 @@ class DynamicDataLayoutBlock extends Block
         }
 
         return $sanitized;
+    }
+
+    /**
+     * Enqueue frontend assets
+     *
+     * @return void
+     */
+    public function enqueueFrontendAssets()
+    {
+        if (is_admin()) {
+            return;
+        }
+
+        $view_js_path = $this->blockPath . '/build/view.js';
+        $view_asset_path = $this->blockPath . '/build/view.asset.php';
+
+        if (file_exists($view_js_path)) {
+            $asset = file_exists($view_asset_path) ? require $view_asset_path : [
+                'dependencies' => [],
+                'version' => filemtime($view_js_path)
+            ];
+
+            $block_name = str_replace('jankx/', '', $this->blockId);
+            $handle = 'jankx-' . str_replace('/', '-', $block_name) . '-view';
+
+            // Use UrlManager to get correct URL
+            $script_url = (new \Jankx\Managers\UrlManager())->blockAsset('dynamic-data-layout/build/view.js');
+
+            wp_enqueue_script(
+                $handle,
+                $script_url,
+                $asset['dependencies'],
+                $asset['version'],
+                true
+            );
+
+            // Localize script with necessary data
+            wp_localize_script($handle, 'jankxDynamicDataLayoutView', [
+                'ajaxUrl' => admin_url('admin-ajax.php'),
+                'nonce' => wp_create_nonce('jankx_load_more')
+            ]);
+        }
     }
 
     /**

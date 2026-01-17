@@ -1,4 +1,5 @@
 import JankxCarousel from '../../assets/js/jankx-carousel-common';
+import { initWooCommerceSorting } from '../../assets/js/jankx-woocommerce-sorting';
 
 (function () {
     const SELECTOR = '.wp-block-jankx-dynamic-ssr-layout.view-type-layout-carousel';
@@ -9,9 +10,13 @@ import JankxCarousel from '../../assets/js/jankx-carousel-common';
     }
 
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', () => initialize());
+        document.addEventListener('DOMContentLoaded', () => {
+            initialize();
+            initWooCommerceSorting(initialize);
+        });
     } else {
         initialize();
+        initWooCommerceSorting(initialize);
     }
 
     // Handle block preview/editor updates

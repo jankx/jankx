@@ -150,6 +150,9 @@ class PostTemplateBlockGenerator extends AbstractContentGenerator
                 $blockInstance = new WP_Block($normalizedBlock, $context);
                 $blockHtml = $blockInstance->render();
 
+                // Fix missing styles: Apply render_block filters to ensure block supports are applied
+                $blockHtml = apply_filters('render_block', $blockHtml, $normalizedBlock, $blockInstance);
+
                 // Inject overlay only when targeting featured image
                 if (
                     $overlayTarget === 'featured-image'

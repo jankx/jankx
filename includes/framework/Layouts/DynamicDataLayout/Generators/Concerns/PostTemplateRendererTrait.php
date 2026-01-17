@@ -108,6 +108,7 @@ trait PostTemplateRendererTrait
 
         $wrapperClasses = [
             'post-type-layout-carousel',
+            'is-product-collection-layout-carousel',
             'columns-' . $columns,
             'columns-tablet-' . $columnsTablet,
             'columns-mobile-' . $columnsMobile,

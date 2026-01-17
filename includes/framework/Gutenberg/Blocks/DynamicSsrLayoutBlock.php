@@ -59,6 +59,12 @@ class DynamicSsrLayoutBlock extends Block
                 $asset['version'],
                 true
             );
+
+            // Localize script with necessary data
+            wp_localize_script($handle, 'jankxDynamicSsrLayoutView', [
+                'ajaxUrl' => admin_url('admin-ajax.php'),
+                'nonce' => wp_create_nonce('jankx_load_more')
+            ]);
         }
     }
 

@@ -4,6 +4,7 @@ namespace Jankx\Layouts\DynamicDataLayout;
 
 use Jankx\Layouts\DynamicDataLayout\BlockTemplateLayoutManager;
 use Jankx\Layouts\DynamicDataLayout\BlockTemplateAttributeSanitizer;
+use Jankx\Layouts\DynamicDataLayout\PaginationRenderer;
 use WP_Post;
 
 class BlockTemplateRenderer
@@ -35,7 +36,7 @@ class BlockTemplateRenderer
         $layoutName = $sanitizedAttributes['layout'] ?? 'grid';
         $postType = $sanitizedAttributes['postType'] ?? 'post';
         $postsPerPage = (int) ($sanitizedAttributes['postsPerPage'] ?? 10);
-        $paged = (int) ($sanitizedAttributes['paged'] ?? 1);
+        $paged = (int) ($sanitizedAttributes['paged'] ?? (get_query_var('paged') ?: (get_query_var('page') ?: 1)));
 
         $queryArgs = [
             'post_type' => $postType,
@@ -69,6 +70,10 @@ class BlockTemplateRenderer
         }
 
         $renderedContent = $layout->render();
+
+        if (!empty($sanitizedAttributes['enablePagination']) && $renderedContent !== '' && $query->max_num_pages > 1) {
+            $renderedContent .= PaginationRenderer::render($content, $query, $sanitizedAttributes);
+        }
 
         // Enqueue carousel assets if needed
         if ($this->carouselAssetsCallback && $layoutName === 'carousel') {
