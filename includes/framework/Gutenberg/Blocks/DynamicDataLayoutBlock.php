@@ -684,7 +684,7 @@ class DynamicDataLayoutBlock extends Block
         // Add carousel-specific attributes
         if (($attributes['layout'] ?? '') === 'carousel') {
             // Add carousel class
-            $attrs['class'] .= ' dynamic-data-layout--carousel';
+            $attrs['class'] .= ' jankx-carousel dynamic-data-layout--carousel';
 
             // Add carousel data attributes
             $attrs['data-layout'] = 'carousel';

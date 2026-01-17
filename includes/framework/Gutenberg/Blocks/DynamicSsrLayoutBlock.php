@@ -368,6 +368,7 @@ class DynamicSsrLayoutBlock extends Block
         // Add carousel-specific attributes
         if ($layout === 'carousel') {
             // Add carousel class
+            $classes[] = 'jankx-carousel';
             $classes[] = 'dynamic-ssr-layout--carousel';
             $classes[] = 'has-carousel';
 

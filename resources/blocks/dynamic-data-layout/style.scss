@@ -49,15 +49,13 @@
     }
 
     // Carousel layout
-    &.dynamic-data-layout--carousel {
+    &.dynamic-data-layout--carousel,
+    &.jankx-carousel {
         position: relative;
         overflow: hidden;
         width: 100%;
 
-        .carousel-container,
-        .embla__container,
-        .post-type-layout-carousel,
-        .is-product-collection-layout-carousel {
+        .jankx-carousel-container {
             // Override parent inline style for responsive behavior
             --slides-per-view: var(--carousel-columns-mobile, var(--columns-mobile, 1));
 
@@ -70,20 +68,11 @@
             }
 
             display: flex;
-            // overflow-x: auto; // Embla doesn't use this, but it doesn't hurt non-embla
-            // scroll-snap-type: x mandatory; // Native
-
-            // For Embla/Standard consistency
             width: 100%;
             margin: 0;
             padding: 0 0 20px;
             list-style: none;
-
-            &.is-product-collection-layout-carousel {
-                display: flex;
-                flex-wrap: nowrap;
-                width: 100%;
-            }
+            flex-wrap: nowrap;
 
             // Shared structure for slides
             .carousel-slide,
@@ -105,91 +94,25 @@
                     height: 100%;
                 }
             }
-
-            /* Navigation buttons */
-            .carousel-nav {
-                // ... (Keep existing nav styles if compatible, or just share basic styling)
-                position: absolute;
-                top: 50%;
-                transform: translateY(-50%);
-                background: rgba(255, 255, 255, 0.8);
-                border: none;
-                border-radius: 50%;
-                width: 40px;
-                height: 40px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                cursor: pointer;
-                z-index: 10;
-                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-                transition: all 0.3s ease;
-
-                &:hover {
-                    background: rgba(255, 255, 255, 1);
-                    transform: translateY(-50%) scale(1.1);
-                }
-
-                &.carousel-prev {
-                    left: 10px;
-                }
-
-                &.carousel-next {
-                    right: 10px;
-                }
-
-                svg {
-                    width: 24px;
-                    height: 24px;
-                }
-            }
-
-            /* Pagination dots */
-            .carousel-dots {
-                display: flex;
-                justify-content: center;
-                padding: 15px 0;
-                gap: 8px;
-
-                .carousel-dot {
-                    width: 10px;
-                    height: 10px;
-                    border-radius: 50%;
-                    background: #ccc;
-                    border: none;
-                    padding: 0;
-                    cursor: pointer;
-                    transition: all 0.3s ease;
-
-                    &.is-active {
-                        background: #000;
-                        transform: scale(1.2);
-                    }
-
-                    &:focus {
-                        outline: none;
-                    }
-                }
-            }
         }
 
-
-
-        // Navigation buttons
-        .carousel-nav {
+        /* Navigation buttons */
+        .carousel-nav,
+        .embla__button {
             position: absolute;
             top: 50%;
             transform: translateY(-50%);
-            background: rgba(255, 255, 255, 0.9);
+            background: rgba(255, 255, 255, 0.8);
             border: none;
+            border-radius: 50%;
             width: 40px;
             height: 40px;
-            border-radius: 50%;
-            cursor: pointer;
-            z-index: 10;
             display: flex;
             align-items: center;
             justify-content: center;
+            cursor: pointer;
+            z-index: 10;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
             transition: all 0.3s ease;
 
             &:hover {
@@ -197,57 +120,61 @@
                 transform: translateY(-50%) scale(1.1);
             }
 
-            &.carousel-prev {
+            &.carousel-prev,
+            &.embla__button--prev {
                 left: 10px;
             }
 
-            &.carousel-next {
+            &.carousel-next,
+            &.embla__button--next {
                 right: 10px;
             }
 
             svg {
-                width: 18px;
-                height: 18px;
-                fill: #333;
+                width: 24px;
+                height: 24px;
             }
         }
 
-        // Pagination dots
-        .carousel-dots {
-            position: absolute;
-            bottom: 10px;
-            left: 50%;
-            transform: translateX(-50%);
+        /* Pagination dots */
+        .carousel-dots,
+        .embla__dots {
             display: flex;
+            justify-content: center;
+            padding: 15px 0;
             gap: 8px;
-            z-index: 10;
-        }
 
-        .carousel-dot {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.6);
-            border: none;
-            cursor: pointer;
-            transition: all 0.3s ease;
+            .carousel-dot,
+            .embla__dot {
+                width: 10px;
+                height: 10px;
+                border-radius: 50%;
+                background: #ccc;
+                border: none;
+                padding: 0;
+                cursor: pointer;
+                transition: all 0.3s ease;
 
-            &:hover {
-                background: rgba(255, 255, 255, 0.8);
-            }
+                &.is-active,
+                &.is-selected {
+                    background: #000;
+                    transform: scale(1.2);
+                }
 
-            &.is-active {
-                background: #fff;
-                transform: scale(1.2);
+                &:focus {
+                    outline: none;
+                }
             }
         }
 
         // Hide navigation when not needed
-        &:not(.has-arrows) .carousel-nav {
+        &:not(.has-arrows) .carousel-nav,
+        &:not(.has-arrows) .embla__button {
             display: none;
         }
 
-        &:not(.has-dots) .carousel-dots {
+        &:not(.has-dots) .carousel-dots,
+        &:not(.has-dots) .embla__dots {
             display: none;
         }
     }

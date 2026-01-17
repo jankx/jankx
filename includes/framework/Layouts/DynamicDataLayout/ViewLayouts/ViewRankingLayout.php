@@ -21,7 +21,7 @@ class ViewRankingLayout extends AbstractViewLayout
 
         ob_start();
         ?>
-        <ul class="<?php echo esc_attr(implode(' ', $ul_classes)); ?>">
+        <div class="<?php echo esc_attr(implode(' ', $ul_classes)); ?>">
             <?php
             while ($this->query->have_posts()) {
                 $this->query->the_post();
@@ -39,17 +39,17 @@ class ViewRankingLayout extends AbstractViewLayout
                     $badgeClass = 'rank-badge rank-bronze';
                 }
 
-                echo '<li class="' . esc_attr(implode(' ', array_filter(array_map('sanitize_html_class', $li_classes)))) . '">';
+                echo '<div class="' . esc_attr(implode(' ', array_filter(array_map('sanitize_html_class', $li_classes)))) . '">';
                 if ($showRankBadge) {
                     $icon = $badgeClass ? '👑' : '';
                     echo '<span class="' . esc_attr($badgeClass) . '" aria-hidden="true">' . esc_html($icon) . '</span>';
                 }
                 echo $this->renderViewItem();
-                echo '</li>';
+                echo '</div>';
             }
             wp_reset_postdata();
             ?>
-        </ul>
+        </div>
         <?php
         return (string) ob_get_clean();
     }

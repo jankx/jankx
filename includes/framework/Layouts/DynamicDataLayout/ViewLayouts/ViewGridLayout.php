@@ -43,19 +43,19 @@ class ViewGridLayout extends AbstractViewLayout
 
         ob_start();
         ?>
-        <ul class="<?php echo esc_attr(implode(' ', $ul_classes)); ?>"
+        <div class="<?php echo esc_attr(implode(' ', $ul_classes)); ?>"
             style="<?php echo esc_attr(sprintf('--columns-desktop: %d; --columns-tablet: %d; --columns-mobile: %d; %s', $columns, $columnsTablet, $columnsMobile, $ratioStyle)); ?>">
             <?php
             while ($this->query->have_posts()) {
                 $this->query->the_post();
                 $li_classes = get_post_class('wp-block-view', get_the_ID());
-                echo '<li class="' . esc_attr(implode(' ', array_filter(array_map('sanitize_html_class', $li_classes)))) . '">';
+                echo '<div class="' . esc_attr(implode(' ', array_filter(array_map('sanitize_html_class', $li_classes)))) . '">';
                 echo $this->renderViewItem();
-                echo '</li>';
+                echo '</div>';
             }
             wp_reset_postdata();
             ?>
-        </ul>
+        </div>
         <?php
         return (string) ob_get_clean();
     }

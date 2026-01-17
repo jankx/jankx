@@ -74,7 +74,7 @@ trait PostTemplateRendererTrait
                     $itemContent
                 );
             } else {
-                $output[] = sprintf('<li class="%s"%s>%s</li>', esc_attr($classes), $currentStyleAttr, $itemContent);
+                $output[] = sprintf('<div class="%s"%s>%s</div>', esc_attr($classes), $currentStyleAttr, $itemContent);
             }
             $itemIndex++;
         }
@@ -107,6 +107,7 @@ trait PostTemplateRendererTrait
         $showDots = (bool) $this->getOption('showDots', $options['showDots'] ?? true);
 
         $wrapperClasses = [
+            'jankx-carousel',
             'post-type-layout-carousel',
             'is-product-collection-layout-carousel',
             'columns-' . $columns,
@@ -137,6 +138,7 @@ trait PostTemplateRendererTrait
 
         $containerAttributes = $this->buildWrapperAttributes($options);
         $containerClasses = preg_split('/\s+/', (string) ($containerAttributes['class'] ?? ''));
+        $containerClasses[] = 'jankx-carousel-container';
         $containerClasses[] = 'embla__container';
         $containerClasses = array_unique(array_filter(array_map('sanitize_html_class', $containerClasses)));
 

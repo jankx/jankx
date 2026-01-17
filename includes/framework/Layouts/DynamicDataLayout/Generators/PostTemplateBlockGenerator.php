@@ -75,7 +75,7 @@ class PostTemplateBlockGenerator extends AbstractContentGenerator
             return '';
         }
 
-        return sprintf('%s<ul %s>%s</ul>%s', $before, $this->stringifyAttributes($wrapperAttributes), $items, $after);
+        return sprintf('%s<div %s>%s</div>%s', $before, $this->stringifyAttributes($wrapperAttributes), $items, $after);
     }
 
     protected function renderPreviewContent(array $options = []): array

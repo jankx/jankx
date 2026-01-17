@@ -35,6 +35,7 @@ class ViewCarouselLayout extends AbstractViewLayout
         $dotsStyle = 'position:absolute;bottom:12px;left:50%;transform:translateX(-50%);display:flex;gap:8px;z-index:2;';
 
         $carouselClasses = [
+            'jankx-carousel',
             'wp-block-jankx-dynamic-ssr-layout',
             'view-type-layout-carousel',
         ];
@@ -48,20 +49,16 @@ class ViewCarouselLayout extends AbstractViewLayout
 
         ob_start();
         ?>
-        <div class="<?php echo esc_attr(implode(' ', $carouselClasses)); ?>"
-            style="position: relative;"
+        <div class="<?php echo esc_attr(implode(' ', $carouselClasses)); ?>" style="position: relative;"
             data-slides-per-view="<?php echo esc_attr($slidesPerView); ?>"
-            data-space-between="<?php echo esc_attr($spaceBetween); ?>"
-            data-loop="<?php echo $loop ? 'true' : 'false'; ?>"
+            data-space-between="<?php echo esc_attr($spaceBetween); ?>" data-loop="<?php echo $loop ? 'true' : 'false'; ?>"
             data-autoplay="<?php echo $autoplay ? 'true' : 'false'; ?>"
-            data-autoplay-delay="<?php echo esc_attr($autoplayDelay); ?>"
-            data-align="<?php echo esc_attr($carouselAlign); ?>"
+            data-autoplay-delay="<?php echo esc_attr($autoplayDelay); ?>" data-align="<?php echo esc_attr($carouselAlign); ?>"
             data-contain-scroll="<?php echo esc_attr($carouselContainScroll); ?>"
-            data-axis="<?php echo esc_attr($carouselAxis); ?>"
-            data-direction="<?php echo esc_attr($carouselDirection); ?>"
+            data-axis="<?php echo esc_attr($carouselAxis); ?>" data-direction="<?php echo esc_attr($carouselDirection); ?>"
             data-duration="<?php echo esc_attr($carouselDuration); ?>">
-            
-            <div class="carousel-container">
+
+            <div class="jankx-carousel-container carousel-container">
                 <?php
                 while ($this->query->have_posts()) {
                     $this->query->the_post();
@@ -75,19 +72,21 @@ class ViewCarouselLayout extends AbstractViewLayout
                 wp_reset_postdata();
                 ?>
             </div>
-            
+
             <!-- Navigation buttons -->
             <button class="carousel-nav carousel-prev" type="button" style="<?php echo esc_attr($prevStyle); ?>">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round">
                     <polyline points="15 18 9 12 15 6"></polyline>
                 </svg>
             </button>
             <button class="carousel-nav carousel-next" type="button" style="<?php echo esc_attr($nextStyle); ?>">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round">
                     <polyline points="9 18 15 12 9 6"></polyline>
                 </svg>
             </button>
-            
+
             <!-- Pagination dots -->
             <div class="carousel-dots" style="<?php echo esc_attr($dotsStyle); ?>"></div>
         </div>
