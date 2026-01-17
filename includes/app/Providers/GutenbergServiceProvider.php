@@ -16,6 +16,8 @@ class GutenbergServiceProvider extends FrameworkGutenbergServiceProvider
      */
     public function register(Application $app)
     {
+        parent::register($app);
+
         // Register Gutenberg service
         $app->singleton('gutenberg.service', function ($app) {
             return new GutenbergService($app);

@@ -49,6 +49,7 @@ use Jankx\Gutenberg\Blocks\DividerBlock;
 use Jankx\Gutenberg\Blocks\LanguageSwitcherBlock;
 use Jankx\Gutenberg\Blocks\PlyrPlayerBlock;
 use Jankx\Gutenberg\Extra\Categories as ExtraCategories;
+use Jankx\Gutenberg\Extra\PostTitle as ExtraPostTitle;
 
 /**
  * Gutenberg Service
@@ -75,7 +76,6 @@ class GutenbergService
         $this->repository = $app->make('gutenberg.repository');
 
         $this->registerBlockCategories();
-        $this->registerBlockExtras();
     }
 
     public function initBlocks()
@@ -119,7 +119,8 @@ class GutenbergService
                 }
             }
 
-            // Init extra Gutenberg filters/enhancements
+            // Register and initialize extra Gutenberg filters/enhancements
+            $this->registerBlockExtras();
             if ($this->app->bound('gutenberg.extra_manager')) {
                 $this->app->make('gutenberg.extra_manager')->init();
             }
@@ -425,6 +426,9 @@ class GutenbergService
 
             // Register Categories extra
             $extraManager->register(ExtraCategories::class);
+
+            // Register Post Title extra
+            $extraManager->register(ExtraPostTitle::class);
 
             // Allow child themes or plugins to register additional block extras
             do_action('jankx/gutenberg/register-block-extras', $extraManager, $this->app);
