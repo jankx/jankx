@@ -33,6 +33,11 @@ class GutenbergServiceProvider extends ServiceProvider
         $app->singleton('gutenberg.repository', function ($app) {
             return new \Jankx\Gutenberg\GutenbergRepository();
         });
+
+        // Register Block Extra Manager
+        $app->singleton('gutenberg.extra_manager', function ($app) {
+            return new \Jankx\Gutenberg\Extra\BlockExtraManager($app);
+        });
     }
 
     /**

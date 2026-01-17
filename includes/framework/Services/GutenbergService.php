@@ -48,6 +48,7 @@ use Jankx\Gutenberg\Blocks\StickyBoxBlock;
 use Jankx\Gutenberg\Blocks\DividerBlock;
 use Jankx\Gutenberg\Blocks\LanguageSwitcherBlock;
 use Jankx\Gutenberg\Blocks\PlyrPlayerBlock;
+use Jankx\Gutenberg\Extra\Categories as ExtraCategories;
 
 /**
  * Gutenberg Service
@@ -74,6 +75,7 @@ class GutenbergService
         $this->repository = $app->make('gutenberg.repository');
 
         $this->registerBlockCategories();
+        $this->registerBlockExtras();
     }
 
     public function initBlocks()
@@ -115,6 +117,11 @@ class GutenbergService
                 } catch (\Exception $e) {
                     Log::error('GutenbergService: Failed to register block ' . $blockName . ' - ' . $e->getMessage());
                 }
+            }
+
+            // Init extra Gutenberg filters/enhancements
+            if ($this->app->bound('gutenberg.extra_manager')) {
+                $this->app->make('gutenberg.extra_manager')->init();
             }
         } catch (\Exception $e) {
             Log::error('GutenbergService: Failed to initialize - ' . $e->getMessage());
@@ -404,5 +411,23 @@ class GutenbergService
             'core/template-part',
             'core/pattern',
         ];
+    }
+
+    /**
+     * Register extra block enhancements
+     *
+     * @return void
+     */
+    protected function registerBlockExtras(): void
+    {
+        if ($this->app->bound('gutenberg.extra_manager')) {
+            $extraManager = $this->app->make('gutenberg.extra_manager');
+
+            // Register Categories extra
+            $extraManager->register(ExtraCategories::class);
+
+            // Allow child themes or plugins to register additional block extras
+            do_action('jankx/gutenberg/register-block-extras', $extraManager, $this->app);
+        }
     }
 }
