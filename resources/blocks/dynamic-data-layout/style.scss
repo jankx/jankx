@@ -6,9 +6,9 @@
  */
 
 .wp-block-jankx-dynamic-data-layout {
-    
+
     // Reset list styles if rendered as ul
-    &[tagName="ul"], 
+    &[tagName="ul"],
     &.is-style-list,
     &:where(ul) {
         list-style: none;
@@ -19,19 +19,20 @@
     // Grid và Card layout - columns được áp dụng cho container bên trong
     &.dynamic-data-layout--grid,
     &.dynamic-data-layout--card {
+
         // CSS variables được truyền từ wrapper xuống container bên trong
         .post-type-layout-grid,
         .post-type-layout-card {
             display: grid;
             gap: var(--wp--preset--spacing--medium, 1.5rem);
-            
+
             // Sử dụng CSS variables từ wrapper hoặc từ chính element
             grid-template-columns: repeat(var(--columns-mobile, 1), 1fr);
-            
+
             @media (min-width: 768px) {
                 grid-template-columns: repeat(var(--columns-tablet, 2), 1fr);
             }
-            
+
             @media (min-width: 1024px) {
                 grid-template-columns: repeat(var(--columns-desktop, 3), 1fr);
             }
@@ -52,52 +53,54 @@
         position: relative;
         overflow: hidden;
         width: 100%;
-        
-        .carousel-container {
+
+        .carousel-container,
+        .embla__container,
+        .post-type-layout-carousel {
+            // Override parent inline style for responsive behavior
+            --slides-per-view: var(--carousel-columns-mobile, var(--columns-mobile, 1));
+
+            @media (min-width: 768px) {
+                --slides-per-view: var(--carousel-columns-tablet, var(--columns-tablet, 2));
+            }
+
+            @media (min-width: 1024px) {
+                --slides-per-view: var(--carousel-columns, var(--columns-desktop, 4));
+            }
+
             display: flex;
-            overflow-x: auto;
-            scroll-snap-type: x mandatory;
-            scroll-behavior: smooth;
-            -webkit-overflow-scrolling: touch;
+            // overflow-x: auto; // Embla doesn't use this, but it doesn't hurt non-embla
+            // scroll-snap-type: x mandatory; // Native
+
+            // For Embla/Standard consistency
             width: 100%;
             margin: 0;
             padding: 0 0 20px;
             list-style: none;
-            scrollbar-width: none; /* Hide scrollbar for Firefox */
-            -ms-overflow-style: none; /* Hide scrollbar for IE and Edge */
-            
-            /* Hide scrollbar for Chrome, Safari and Opera */
-            &::-webkit-scrollbar {
-                display: none;
-            }
-            
-            /* Carousel slides */
-            .carousel-slide {
+
+            // Shared structure for slides
+            .carousel-slide,
+            .embla__slide {
                 flex: 0 0 calc(100%/ var(--slides-per-view, 1));
                 width: calc(100% / var(--slides-per-view, 1));
                 max-width: calc(100% / var(--slides-per-view, 1));
-                scroll-snap-align: start;
                 padding: 0 calc(var(--space-between, 16px) / 2);
                 box-sizing: border-box;
-                
+                min-width: 0;
+
+                // Embla specific reset
+                transform: translate3d(0, 0, 0);
+
                 /* Ensure direct children take full width */
-                & > * {
+                &>* {
                     width: 100%;
                     height: 100%;
                 }
-                
-                /* Remove margin from first and last child */
-                &:first-child {
-                    padding-left: 0;
-                }
-                
-                &:last-child {
-                    padding-right: 0;
-                }
             }
-            
+
             /* Navigation buttons */
             .carousel-nav {
+                // ... (Keep existing nav styles if compatible, or just share basic styling)
                 position: absolute;
                 top: 50%;
                 transform: translateY(-50%);
@@ -113,33 +116,33 @@
                 z-index: 10;
                 box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
                 transition: all 0.3s ease;
-                
+
                 &:hover {
                     background: rgba(255, 255, 255, 1);
                     transform: translateY(-50%) scale(1.1);
                 }
-                
+
                 &.carousel-prev {
                     left: 10px;
                 }
-                
+
                 &.carousel-next {
                     right: 10px;
                 }
-                
+
                 svg {
                     width: 24px;
                     height: 24px;
                 }
             }
-            
+
             /* Pagination dots */
             .carousel-dots {
                 display: flex;
                 justify-content: center;
                 padding: 15px 0;
                 gap: 8px;
-                
+
                 .carousel-dot {
                     width: 10px;
                     height: 10px;
@@ -149,48 +152,21 @@
                     padding: 0;
                     cursor: pointer;
                     transition: all 0.3s ease;
-                    
+
                     &.is-active {
                         background: #000;
                         transform: scale(1.2);
                     }
-                    
+
                     &:focus {
                         outline: none;
                     }
                 }
             }
         }
-        
-        .carousel-slide {
-            flex: 0 0 calc(100%/ var(--slides-per-view, 1));
-            width: calc(100% / var(--slides-per-view, 1));
-            max-width: calc(100% / var(--slides-per-view, 1));
-            padding: 0 calc(var(--space-between, 16px) / 2);
-            min-width: 0;
-            scroll-snap-align: start;
-            height: auto;
-            display: flex;
-            flex-direction: column;
-            flex-shrink: 0;
-            
-            // Prevent image layout shift
-            img {
-                aspect-ratio: 16 / 9;
-                object-fit: cover;
-                width: 100%;
-                height: auto;
-                
-                @media (max-width: 768px) {
-                    aspect-ratio: 4 / 3;
-                }
-                
-                @media (max-width: 480px) {
-                    aspect-ratio: 1 / 1;
-                }
-            }
-        }
-        
+
+
+
         // Navigation buttons
         .carousel-nav {
             position: absolute;
@@ -207,27 +183,27 @@
             align-items: center;
             justify-content: center;
             transition: all 0.3s ease;
-            
+
             &:hover {
                 background: rgba(255, 255, 255, 1);
                 transform: translateY(-50%) scale(1.1);
             }
-            
+
             &.carousel-prev {
                 left: 10px;
             }
-            
+
             &.carousel-next {
                 right: 10px;
             }
-            
+
             svg {
                 width: 18px;
                 height: 18px;
                 fill: #333;
             }
         }
-        
+
         // Pagination dots
         .carousel-dots {
             position: absolute;
@@ -238,7 +214,7 @@
             gap: 8px;
             z-index: 10;
         }
-        
+
         .carousel-dot {
             width: 10px;
             height: 10px;
@@ -247,30 +223,31 @@
             border: none;
             cursor: pointer;
             transition: all 0.3s ease;
-            
+
             &:hover {
                 background: rgba(255, 255, 255, 0.8);
             }
-            
+
             &.is-active {
                 background: #fff;
                 transform: scale(1.2);
             }
         }
-        
+
         // Hide navigation when not needed
         &:not(.has-arrows) .carousel-nav {
             display: none;
         }
-        
+
         &:not(.has-dots) .carousel-dots {
             display: none;
         }
     }
-    
+
     // Support cho class-based column classes (fallback)
     // Classes này được thêm vào wrapper và CSS variables được truyền xuống
     &[class*="columns-"] {
+
         // Truyền CSS variables xuống container bên trong
         .post-type-layout-grid,
         .post-type-layout-card {
@@ -279,22 +256,55 @@
             gap: var(--wp--preset--spacing--medium, 1.5rem);
         }
     }
-    
+
     // Direct column classes support (nếu wrapper có classes trực tiếp)
-    &.columns-1 { --columns-desktop: 1; }
-    &.columns-2 { --columns-desktop: 2; }
-    &.columns-3 { --columns-desktop: 3; }
-    &.columns-4 { --columns-desktop: 4; }
-    &.columns-5 { --columns-desktop: 5; }
-    &.columns-6 { --columns-desktop: 6; }
-    
-    &.columns-tablet-1 { --columns-tablet: 1; }
-    &.columns-tablet-2 { --columns-tablet: 2; }
-    &.columns-tablet-3 { --columns-tablet: 3; }
-    &.columns-tablet-4 { --columns-tablet: 4; }
-    
-    &.columns-mobile-1 { --columns-mobile: 1; }
-    &.columns-mobile-2 { --columns-mobile: 2; }
+    &.columns-1 {
+        --columns-desktop: 1;
+    }
+
+    &.columns-2 {
+        --columns-desktop: 2;
+    }
+
+    &.columns-3 {
+        --columns-desktop: 3;
+    }
+
+    &.columns-4 {
+        --columns-desktop: 4;
+    }
+
+    &.columns-5 {
+        --columns-desktop: 5;
+    }
+
+    &.columns-6 {
+        --columns-desktop: 6;
+    }
+
+    &.columns-tablet-1 {
+        --columns-tablet: 1;
+    }
+
+    &.columns-tablet-2 {
+        --columns-tablet: 2;
+    }
+
+    &.columns-tablet-3 {
+        --columns-tablet: 3;
+    }
+
+    &.columns-tablet-4 {
+        --columns-tablet: 4;
+    }
+
+    &.columns-mobile-1 {
+        --columns-mobile: 1;
+    }
+
+    &.columns-mobile-2 {
+        --columns-mobile: 2;
+    }
 }
 
 // Support cho post-type-layout-grid trực tiếp (không có wrapper)
@@ -302,33 +312,66 @@
 .post-type-layout-card {
     display: grid;
     gap: var(--wp--preset--spacing--medium, 1.5rem);
-    
+
     // Sử dụng CSS variables từ chính element
     grid-template-columns: repeat(var(--columns-mobile, 1), 1fr);
-    
+
     @media (min-width: 768px) {
         grid-template-columns: repeat(var(--columns-tablet, 2), 1fr);
     }
-    
+
     @media (min-width: 1024px) {
         grid-template-columns: repeat(var(--columns-desktop, 3), 1fr);
     }
-    
+
     // Support cho column classes trực tiếp trên element
-    &.columns-1 { --columns-desktop: 1; }
-    &.columns-2 { --columns-desktop: 2; }
-    &.columns-3 { --columns-desktop: 3; }
-    &.columns-4 { --columns-desktop: 4; }
-    &.columns-5 { --columns-desktop: 5; }
-    &.columns-6 { --columns-desktop: 6; }
-    
-    &.columns-tablet-1 { --columns-tablet: 1; }
-    &.columns-tablet-2 { --columns-tablet: 2; }
-    &.columns-tablet-3 { --columns-tablet: 3; }
-    &.columns-tablet-4 { --columns-tablet: 4; }
-    
-    &.columns-mobile-1 { --columns-mobile: 1; }
-    &.columns-mobile-2 { --columns-mobile: 2; }
+    &.columns-1 {
+        --columns-desktop: 1;
+    }
+
+    &.columns-2 {
+        --columns-desktop: 2;
+    }
+
+    &.columns-3 {
+        --columns-desktop: 3;
+    }
+
+    &.columns-4 {
+        --columns-desktop: 4;
+    }
+
+    &.columns-5 {
+        --columns-desktop: 5;
+    }
+
+    &.columns-6 {
+        --columns-desktop: 6;
+    }
+
+    &.columns-tablet-1 {
+        --columns-tablet: 1;
+    }
+
+    &.columns-tablet-2 {
+        --columns-tablet: 2;
+    }
+
+    &.columns-tablet-3 {
+        --columns-tablet: 3;
+    }
+
+    &.columns-tablet-4 {
+        --columns-tablet: 4;
+    }
+
+    &.columns-mobile-1 {
+        --columns-mobile: 1;
+    }
+
+    &.columns-mobile-2 {
+        --columns-mobile: 2;
+    }
 }
 
 // Ensure color/background set on wrapper inheritance to child elements
@@ -339,6 +382,7 @@
 }
 
 .wp-block-jankx-dynamic-data-layout.has-background {
+
     /* background will be applied via inline style or preset background class */
     .post-type-layout-grid,
     .post-type-layout-card,

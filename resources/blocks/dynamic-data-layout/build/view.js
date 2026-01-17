@@ -2,10 +2,45 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
-/***/ "../node_modules/embla-carousel-autoplay/esm/embla-carousel-autoplay.esm.js":
-/*!**********************************************************************************!*\
-  !*** ../node_modules/embla-carousel-autoplay/esm/embla-carousel-autoplay.esm.js ***!
-  \**********************************************************************************/
+/***/ "./assets/js/jankx-carousel-common.js":
+/*!********************************************!*\
+  !*** ./assets/js/jankx-carousel-common.js ***!
+  \********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__),
+/* harmony export */   initJankxCarousel: () => (/* binding */ initJankxCarousel)
+/* harmony export */ });
+/* harmony import */ var _shared_components_JankxCarousel__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./../../shared/components/JankxCarousel */ "./shared/components/JankxCarousel.ts");
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_shared_components_JankxCarousel__WEBPACK_IMPORTED_MODULE_0__["default"]);
+const carouselInstances = new Map();
+function initJankxCarousel(selector, root = document) {
+  const carousels = root ? root.querySelectorAll(selector) : document.querySelectorAll(selector);
+  carousels.forEach(carousel => {
+    if (carousel._carouselInitialized) return;
+    const instance = new _shared_components_JankxCarousel__WEBPACK_IMPORTED_MODULE_0__["default"](carousel);
+    if (instance.embla) {
+      carouselInstances.set(carousel, instance);
+    }
+  });
+}
+if (typeof window !== 'undefined') {
+  window.JankxCarousel = {
+    init: initJankxCarousel,
+    instances: carouselInstances,
+    Carousel: _shared_components_JankxCarousel__WEBPACK_IMPORTED_MODULE_0__["default"]
+  };
+}
+
+/***/ }),
+
+/***/ "./node_modules/embla-carousel-autoplay/esm/embla-carousel-autoplay.esm.js":
+/*!*********************************************************************************!*\
+  !*** ./node_modules/embla-carousel-autoplay/esm/embla-carousel-autoplay.esm.js ***!
+  \*********************************************************************************/
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
@@ -203,41 +238,6 @@ function Autoplay(userOptions = {}) {
 }
 Autoplay.globalOptions = undefined;
 
-
-/***/ }),
-
-/***/ "./assets/js/jankx-carousel-common.js":
-/*!********************************************!*\
-  !*** ./assets/js/jankx-carousel-common.js ***!
-  \********************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__),
-/* harmony export */   initJankxCarousel: () => (/* binding */ initJankxCarousel)
-/* harmony export */ });
-/* harmony import */ var _shared_components_JankxCarousel__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./../../shared/components/JankxCarousel */ "./shared/components/JankxCarousel.ts");
-
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_shared_components_JankxCarousel__WEBPACK_IMPORTED_MODULE_0__["default"]);
-const carouselInstances = new Map();
-function initJankxCarousel(selector, root = document) {
-  const carousels = root ? root.querySelectorAll(selector) : document.querySelectorAll(selector);
-  carousels.forEach(carousel => {
-    if (carousel._carouselInitialized) return;
-    const instance = new _shared_components_JankxCarousel__WEBPACK_IMPORTED_MODULE_0__["default"](carousel);
-    if (instance.embla) {
-      carouselInstances.set(carousel, instance);
-    }
-  });
-}
-if (typeof window !== 'undefined') {
-  window.JankxCarousel = {
-    init: initJankxCarousel,
-    instances: carouselInstances,
-    Carousel: _shared_components_JankxCarousel__WEBPACK_IMPORTED_MODULE_0__["default"]
-  };
-}
 
 /***/ }),
 
@@ -1898,7 +1898,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (/* binding */ JankxCarousel)
 /* harmony export */ });
 /* harmony import */ var embla_carousel__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! embla-carousel */ "./node_modules/embla-carousel/esm/embla-carousel.esm.js");
-/* harmony import */ var embla_carousel_autoplay__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! embla-carousel-autoplay */ "../node_modules/embla-carousel-autoplay/esm/embla-carousel-autoplay.esm.js");
+/* harmony import */ var embla_carousel_autoplay__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! embla-carousel-autoplay */ "./node_modules/embla-carousel-autoplay/esm/embla-carousel-autoplay.esm.js");
 
 
 class JankxCarousel {

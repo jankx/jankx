@@ -226,7 +226,7 @@ module.exports = {
       plyr$: path.resolve(__dirname, '../node_modules/plyr/dist/plyr.js'),
       'plyr/src/js/plyr.js': path.resolve(__dirname, '../node_modules/plyr/dist/plyr.js'),
       plyr: path.resolve(__dirname, '../node_modules/plyr/dist/plyr.js'),
-      'embla-carousel-autoplay': path.resolve(__dirname, '../node_modules/embla-carousel-autoplay/esm/embla-carousel-autoplay.esm.js'),
+
     },
   },
   externals: {
