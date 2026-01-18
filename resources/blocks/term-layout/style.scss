@@ -1,0 +1,473 @@
+@use '../../scss/blocks/layout/layouts';
+
+/**
+ * Dynamic SSR Layout Block Styles - Vanilla JS Carousel
+ */
+.wp-block-jankx-dynamic-ssr-layout {
+
+    // Grid layout styles
+    &.view-type-layout-grid {
+        .wp-block-view {
+            display: flex;
+            flex-direction: column;
+            gap: var(--wp--preset--spacing--medium, 1.5rem);
+        }
+
+        // Grid container styles on wrapper
+        &.is-flex-container {
+            display: grid;
+            gap: var(--wp--preset--spacing--medium, 1.5rem);
+
+            // Use CSS variables from inline styles
+            grid-template-columns: repeat(var(--columns-mobile, 1), 1fr);
+
+            @media (min-width: 768px) {
+                grid-template-columns: repeat(var(--columns-tablet, 2), 1fr);
+            }
+
+            @media (min-width: 1024px) {
+                grid-template-columns: repeat(var(--columns-desktop, 3), 1fr);
+            }
+        }
+
+        // Grid container styles on inner container preview (editor AJAX)
+        .view-type-layout.view-type-layout-grid {
+            display: grid;
+            gap: var(--wp--preset--spacing--medium, 1.5rem);
+            grid-template-columns: repeat(var(--columns-mobile, 1), 1fr);
+
+            @media (min-width: 768px) {
+                grid-template-columns: repeat(var(--columns-tablet, 2), 1fr);
+            }
+
+            @media (min-width: 1024px) {
+                grid-template-columns: repeat(var(--columns-desktop, 3), 1fr);
+            }
+        }
+
+        // Support for column classes
+        &.columns-1 {
+            --columns-desktop: 1;
+        }
+
+        &.columns-2 {
+            --columns-desktop: 2;
+        }
+
+        &.columns-3 {
+            --columns-desktop: 3;
+        }
+
+        &.columns-4 {
+            --columns-desktop: 4;
+        }
+
+        &.columns-5 {
+            --columns-desktop: 5;
+        }
+
+        &.columns-6 {
+            --columns-desktop: 6;
+        }
+
+        &.columns-tablet-1 {
+            --columns-tablet: 1;
+        }
+
+        &.columns-tablet-2 {
+            --columns-tablet: 2;
+        }
+
+        &.columns-tablet-3 {
+            --columns-tablet: 3;
+        }
+
+        &.columns-tablet-4 {
+            --columns-tablet: 4;
+        }
+
+        &.columns-mobile-1 {
+            --columns-mobile: 1;
+        }
+
+        &.columns-mobile-2 {
+            --columns-mobile: 2;
+        }
+    }
+
+    // Horizontal layout styled as grid using responsive columns
+    &.view-type-layout-horizontal {
+        .wp-block-view {
+            display: flex;
+            flex-direction: column;
+            gap: var(--wp--preset--spacing--medium, 1.5rem);
+        }
+
+        // Apply grid on wrapper to align items per responsive columns
+        display: grid;
+        gap: var(--wp--preset--spacing--medium, 1.5rem);
+        grid-template-columns: repeat(var(--columns-mobile, 1), 1fr);
+
+        @media (min-width: 768px) {
+            grid-template-columns: repeat(var(--columns-tablet, 2), 1fr);
+        }
+
+        @media (min-width: 1024px) {
+            grid-template-columns: repeat(var(--columns-desktop, 3), 1fr);
+        }
+
+        // Inner container preview support (if renderer adds view-type classes)
+        .view-type-layout.view-type-layout-horizontal {
+            display: grid;
+            gap: var(--wp--preset--spacing--medium, 1.5rem);
+            grid-template-columns: repeat(var(--columns-mobile, 1), 1fr);
+
+            @media (min-width: 768px) {
+                grid-template-columns: repeat(var(--columns-tablet, 2), 1fr);
+            }
+
+            @media (min-width: 1024px) {
+                grid-template-columns: repeat(var(--columns-desktop, 3), 1fr);
+            }
+        }
+
+        // Support for column classes on wrapper
+        &.columns-1 {
+            --columns-desktop: 1;
+        }
+
+        &.columns-2 {
+            --columns-desktop: 2;
+        }
+
+        &.columns-3 {
+            --columns-desktop: 3;
+        }
+
+        &.columns-4 {
+            --columns-desktop: 4;
+        }
+
+        &.columns-5 {
+            --columns-desktop: 5;
+        }
+
+        &.columns-6 {
+            --columns-desktop: 6;
+        }
+
+        &.columns-tablet-1 {
+            --columns-tablet: 1;
+        }
+
+        &.columns-tablet-2 {
+            --columns-tablet: 2;
+        }
+
+        &.columns-tablet-3 {
+            --columns-tablet: 3;
+        }
+
+        &.columns-tablet-4 {
+            --columns-tablet: 4;
+        }
+
+        &.columns-mobile-1 {
+            --columns-mobile: 1;
+        }
+
+        &.columns-mobile-2 {
+            --columns-mobile: 2;
+        }
+    }
+
+    // List layout styles
+    &.view-type-layout-list {
+        .wp-block-view {
+            display: flex;
+            flex-direction: column;
+            gap: var(--wp--preset--spacing--medium, 1.5rem);
+            padding: var(--wp--preset--spacing--medium, 1.5rem);
+            border-bottom: 1px solid var(--wp--preset--color--border, #e0e0e0);
+
+            &:last-child {
+                border-bottom: none;
+            }
+        }
+    }
+
+    // Card layout styles  
+    &.view-type-layout-card {
+        .wp-block-view {
+            display: flex;
+            flex-direction: column;
+            background: var(--wp--preset--color--background, #fff);
+            border: 1px solid var(--wp--preset--color--border, #e0e0e0);
+            border-radius: var(--wp--preset--spacing--small, 8px);
+            padding: var(--wp--preset--spacing--medium, 1.5rem);
+            gap: var(--wp--preset--spacing--small, 8px);
+            transition: all 0.3s ease;
+
+            &:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            }
+        }
+
+        // Grid container for card layout (wrapper)
+        &.is-flex-container {
+            display: grid;
+            gap: var(--wp--preset--spacing--medium, 1.5rem);
+
+            // Use CSS variables from inline styles
+            grid-template-columns: repeat(var(--columns-mobile, 1), 1fr);
+
+            @media (min-width: 768px) {
+                grid-template-columns: repeat(var(--columns-tablet, 2), 1fr);
+            }
+
+            @media (min-width: 1024px) {
+                grid-template-columns: repeat(var(--columns-desktop, 3), 1fr);
+            }
+        }
+
+        // Grid container for card layout (inner container preview)
+        .view-type-layout.view-type-layout-card {
+            display: grid;
+            gap: var(--wp--preset--spacing--medium, 1.5rem);
+            grid-template-columns: repeat(var(--columns-mobile, 1), 1fr);
+
+            @media (min-width: 768px) {
+                grid-template-columns: repeat(var(--columns-tablet, 2), 1fr);
+            }
+
+            @media (min-width: 1024px) {
+                grid-template-columns: repeat(var(--columns-desktop, 3), 1fr);
+            }
+        }
+
+        // Support for column classes
+        &.columns-1 {
+            --columns-desktop: 1;
+        }
+
+        &.columns-2 {
+            --columns-desktop: 2;
+        }
+
+        &.columns-3 {
+            --columns-desktop: 3;
+        }
+
+        &.columns-4 {
+            --columns-desktop: 4;
+        }
+
+        &.columns-5 {
+            --columns-desktop: 5;
+        }
+
+        &.columns-6 {
+            --columns-desktop: 6;
+        }
+
+        &.columns-tablet-1 {
+            --columns-tablet: 1;
+        }
+
+        &.columns-tablet-2 {
+            --columns-tablet: 2;
+        }
+
+        &.columns-tablet-3 {
+            --columns-tablet: 3;
+        }
+
+        &.columns-tablet-4 {
+            --columns-tablet: 4;
+        }
+
+        &.columns-mobile-1 {
+            --columns-mobile: 1;
+        }
+
+        &.columns-mobile-2 {
+            --columns-mobile: 2;
+        }
+    }
+
+    // Default/fallback layout
+    &.view-type-layout-default {
+        .wp-block-view {
+            display: flex;
+            flex-direction: column;
+            gap: var(--wp--preset--spacing--small, 8px);
+            margin-bottom: var(--wp--preset--spacing--medium, 1.5rem);
+        }
+    }
+
+    // Carousel styles with CSS Scroll Snap
+    &.view-type-layout-carousel {
+        position: relative;
+        padding: 0 20px; // Add padding to prevent cut-off on sides
+
+        .carousel-container {
+            display: flex;
+            overflow: hidden;
+            gap: 0; // Gaps are handled by slide padding in Embla for better compatibility
+            padding: 10px 0;
+            margin: 0;
+            width: 100%;
+            min-height: 300px;
+            width: 100%;
+
+            @media (max-width: 768px) {
+                min-height: 250px;
+            }
+
+            @media (max-width: 480px) {
+                min-height: 200px;
+            }
+
+            // Hide scrollbar for cleaner look
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+
+            &::-webkit-scrollbar {
+                display: none;
+            }
+
+            // Add padding at the end to show the last item completely
+            &::after {
+                content: '';
+                flex: 0 0 20px;
+                height: 1px;
+                display: block;
+            }
+        }
+
+        // Embla integration: ensure proper viewport/track styling
+        .embla__viewport {
+            overflow: hidden;
+        }
+
+        .embla__container {
+            display: flex;
+            align-items: stretch;
+        }
+
+        .carousel-slide {
+            $slide-width: calc(100% / var(--slides-per-view, 1));
+
+            flex: 0 0 $slide-width;
+            width: $slide-width;
+            max-width: $slide-width;
+            padding-right: var(--space-between, 16px);
+            box-sizing: border-box;
+
+            min-width: 0;
+            height: auto;
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+
+            // Remove debug styles
+            border: none;
+            background: transparent;
+
+            // Prevent image layout shift
+            img {
+                aspect-ratio: 16 / 9;
+                object-fit: cover;
+                width: 100%;
+                height: auto;
+
+                @media (max-width: 768px) {
+                    aspect-ratio: 4 / 3;
+                }
+
+                @media (max-width: 480px) {
+                    aspect-ratio: 1 / 1;
+                }
+            }
+        }
+
+        // Navigation buttons
+        .carousel-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+
+            &:hover {
+                background: rgba(255, 255, 255, 1);
+                transform: translateY(-50%) scale(1.1);
+            }
+
+            &.carousel-prev {
+                left: 10px;
+            }
+
+            &.carousel-next {
+                right: 10px;
+            }
+
+            svg {
+                width: 18px;
+                height: 18px;
+                fill: #333;
+            }
+        }
+
+        // Pagination dots
+        .carousel-dots {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 8px;
+            z-index: 10;
+        }
+
+        .carousel-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.6);
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+
+            &:hover {
+                background: rgba(255, 255, 255, 0.8);
+            }
+
+            &.is-active {
+                background: #fff;
+                transform: scale(1.2);
+            }
+        }
+
+        // Hide navigation when not needed
+        &:not(.has-arrows) .carousel-nav {
+            display: none;
+        }
+
+        &:not(.has-dots) .carousel-dots {
+            display: none;
+        }
+    }
+
+
+}

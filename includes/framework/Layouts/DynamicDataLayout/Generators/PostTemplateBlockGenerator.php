@@ -30,7 +30,7 @@ class PostTemplateBlockGenerator extends AbstractContentGenerator
         $this->parentAttributes = $parentAttributes;
     }
 
-    protected function renderContent(WP_Query $query, array $options = []): string
+    protected function renderContent($query, array $options = []): string
     {
         $this->runtimeOptions = $options;
 

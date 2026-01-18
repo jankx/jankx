@@ -50,6 +50,8 @@ use Jankx\Gutenberg\Blocks\LanguageSwitcherBlock;
 use Jankx\Gutenberg\Blocks\PlyrPlayerBlock;
 use Jankx\Gutenberg\Extra\Categories as ExtraCategories;
 use Jankx\Gutenberg\Extra\PostTitle as ExtraPostTitle;
+use Jankx\Gutenberg\Blocks\TermLayoutBlock;
+use Jankx\Gutenberg\Blocks\TermLayoutTemplateBlock;
 
 /**
  * Gutenberg Service
@@ -182,6 +184,8 @@ class GutenbergService
         $this->repository->registerBlock(DividerBlock::class);
         $this->repository->registerBlock(LanguageSwitcherBlock::class);
         $this->repository->registerBlock(PlyrPlayerBlock::class);
+        $this->repository->registerBlock(TermLayoutBlock::class);
+        $this->repository->registerBlock(TermLayoutTemplateBlock::class);
     }
 
     /**

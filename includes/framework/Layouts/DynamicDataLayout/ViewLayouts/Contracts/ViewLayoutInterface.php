@@ -11,7 +11,7 @@ interface ViewLayoutInterface
     public function getTitle(): string;
     public function setOptions($options): self;
     public function getOptions(): array;
-    public function setQuery(WP_Query $query): self;
+    public function setQuery($query): self;
     public function setContentGenerator($generator): self;
     public function getContentGenerator();
     public function render(): string;

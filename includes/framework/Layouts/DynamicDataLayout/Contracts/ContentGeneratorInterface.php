@@ -8,7 +8,7 @@ interface ContentGeneratorInterface
 {
     public function setLayout(BlockTemplateLayoutInterface $layout): self;
     public function getLayout(): ?BlockTemplateLayoutInterface;
-    public function generate(WP_Query $query, array $options = []): string;
+    public function generate($query, array $options = []): string;
     public function generatePreview(array $options = []): array;
     public function getName(): string;
     public function getTitle(): string;

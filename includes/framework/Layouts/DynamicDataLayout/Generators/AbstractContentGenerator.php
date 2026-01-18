@@ -22,7 +22,7 @@ abstract class AbstractContentGenerator implements ContentGeneratorInterface
         return $this->layout;
     }
 
-    final public function generate(WP_Query $query, array $options = []): string
+    public function generate($query, array $options = []): string
     {
         return $this->renderContent($query, $options);
     }
@@ -32,7 +32,7 @@ abstract class AbstractContentGenerator implements ContentGeneratorInterface
         return $this->renderPreviewContent($options);
     }
 
-    abstract protected function renderContent(WP_Query $query, array $options = []): string;
+    abstract protected function renderContent($query, array $options = []): string;
     abstract protected function renderPreviewContent(array $options = []): array;
 }
 
