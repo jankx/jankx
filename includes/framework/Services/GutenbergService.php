@@ -50,6 +50,7 @@ use Jankx\Gutenberg\Blocks\LanguageSwitcherBlock;
 use Jankx\Gutenberg\Blocks\PlyrPlayerBlock;
 use Jankx\Gutenberg\Extra\Categories as ExtraCategories;
 use Jankx\Gutenberg\Extra\PostTitle as ExtraPostTitle;
+use Jankx\Gutenberg\Extra\PostContent as ExtraPostContent;
 use Jankx\Gutenberg\Blocks\TermLayoutBlock;
 use Jankx\Gutenberg\Blocks\TermLayoutTemplateBlock;
 use Jankx\Gutenberg\Blocks\SafeIframeBlock;
@@ -435,6 +436,9 @@ class GutenbergService
 
             // Register Post Title extra
             $extraManager->register(ExtraPostTitle::class);
+
+            // Register Post Content extra
+            $extraManager->register(ExtraPostContent::class);
 
             // Allow child themes or plugins to register additional block extras
             do_action('jankx/gutenberg/register-block-extras', $extraManager, $this->app);
