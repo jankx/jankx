@@ -52,6 +52,7 @@ use Jankx\Gutenberg\Extra\Categories as ExtraCategories;
 use Jankx\Gutenberg\Extra\PostTitle as ExtraPostTitle;
 use Jankx\Gutenberg\Blocks\TermLayoutBlock;
 use Jankx\Gutenberg\Blocks\TermLayoutTemplateBlock;
+use Jankx\Gutenberg\Blocks\SafeIframeBlock;
 
 /**
  * Gutenberg Service
@@ -186,6 +187,7 @@ class GutenbergService
         $this->repository->registerBlock(PlyrPlayerBlock::class);
         $this->repository->registerBlock(TermLayoutBlock::class);
         $this->repository->registerBlock(TermLayoutTemplateBlock::class);
+        $this->repository->registerBlock(SafeIframeBlock::class);
     }
 
     /**
