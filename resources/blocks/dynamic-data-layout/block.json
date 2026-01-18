@@ -55,11 +55,20 @@
     "postParentNotIn": "postParentNotIn",
     "customQueryId": "customQueryId"
   },
-  "usesContext": ["queryId", "postType"],
-  "allowedBlocks": ["jankx/dynamic-data-template"],
+  "usesContext": [
+    "queryId",
+    "postType"
+  ],
+  "allowedBlocks": [
+    "core/heading",
+    "jankx/dynamic-data-template"
+  ],
   "supports": {
     "html": false,
-    "align": ["wide", "full"],
+    "align": [
+      "wide",
+      "full"
+    ],
     "anchor": true,
     "innerBlocks": true,
     "spacing": {
@@ -211,7 +220,9 @@
     },
     "postStatus": {
       "type": "array",
-      "default": ["publish"]
+      "default": [
+        "publish"
+      ]
     },
     "postParent": {
       "type": "number",
@@ -236,12 +247,21 @@
     "paginationStyle": {
       "type": "string",
       "default": "numbers",
-      "enum": ["numbers", "simple", "arrows", "load-more"]
+      "enum": [
+        "numbers",
+        "simple",
+        "arrows",
+        "load-more"
+      ]
     },
     "paginationAlignment": {
       "type": "string",
       "default": "center",
-      "enum": ["left", "center", "right"]
+      "enum": [
+        "left",
+        "center",
+        "right"
+      ]
     },
     "showPaginationNumbers": {
       "type": "boolean",
@@ -282,17 +302,27 @@
     "carouselAlign": {
       "type": "string",
       "default": "start",
-      "enum": ["start", "center", "end"]
+      "enum": [
+        "start",
+        "center",
+        "end"
+      ]
     },
     "carouselAxis": {
       "type": "string",
       "default": "x",
-      "enum": ["x", "y"]
+      "enum": [
+        "x",
+        "y"
+      ]
     },
     "carouselDirection": {
       "type": "string",
       "default": "ltr",
-      "enum": ["ltr", "rtl"]
+      "enum": [
+        "ltr",
+        "rtl"
+      ]
     },
     "carouselStartIndex": {
       "type": "number",
@@ -317,7 +347,11 @@
     "carouselContainScroll": {
       "type": "string",
       "default": "trimSnaps",
-      "enum": ["false", "trimSnaps", "keepSnaps"]
+      "enum": [
+        "false",
+        "trimSnaps",
+        "keepSnaps"
+      ]
     },
     "carouselInViewThreshold": {
       "type": "number",
@@ -338,7 +372,12 @@
     "thumbnailPosition": {
       "type": "string",
       "default": "top",
-      "enum": ["top", "bottom", "left", "right"]
+      "enum": [
+        "top",
+        "bottom",
+        "left",
+        "right"
+      ]
     },
     "imageRatio": {
       "type": "string",

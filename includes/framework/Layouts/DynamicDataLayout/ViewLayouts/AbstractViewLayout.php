@@ -63,7 +63,7 @@ abstract class AbstractViewLayout implements ViewLayoutInterface
         return array_key_exists($key, $this->options) ? $this->options[$key] : $default;
     }
 
-    public function setQuery(WP_Query $query): self
+    public function setQuery($query): self
     {
         $this->query = $query;
         return $this;

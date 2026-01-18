@@ -3,6 +3,7 @@
 namespace Jankx\Gutenberg\Blocks;
 
 use Jankx\Gutenberg\Block;
+use Jankx\Gutenberg\Helpers\HeadingBlockHandler;
 use Jankx\Layouts\DynamicDataLayout\ViewLayouts\TaxonomyRenderer;
 use Jankx\Layouts\DynamicDataLayout\ViewLayouts\ViewLayoutManager;
 use Jankx\Layouts\DynamicDataLayout\ViewLayouts\ViewAttributeSanitizer;
@@ -11,6 +12,8 @@ use Jankx\Layouts\DynamicDataLayout\AttributeSanitizer;
 
 class TermLayoutBlock extends Block
 {
+    use HeadingBlockHandler;
+
     protected $blockId = 'jankx/term-layout';
     protected $rendererService;
 
@@ -42,9 +45,18 @@ class TermLayoutBlock extends Block
         $this->ensureServices();
 
         try {
+            // Extract and separate heading block from inner blocks
+            $innerBlocks = $this->separateInnerBlocks($block);
+            $headingBlock = $innerBlocks['heading'];
+
             $rendered = $this->rendererService->render($attributes, $content, $block);
+
+            // Build a quick query to check if we have results (for heading visibility)
+            $query = $this->buildQuickQuery($attributes);
+            $headingHtml = $this->renderHeadingBlock($headingBlock, $query);
+
             $wrapperAttrs = $this->buildWrapperAttributes($attributes);
-            return sprintf('<div %s>%s</div>', $wrapperAttrs, $rendered);
+            return sprintf('<div %s>%s%s</div>', $wrapperAttrs, $headingHtml, $rendered);
         } catch (\Exception $e) {
             if (defined('WP_DEBUG') && WP_DEBUG) {
                 return sprintf('<div class="term-layout-error">%s</div>', esc_html($e->getMessage()));
@@ -65,6 +77,29 @@ class TermLayoutBlock extends Block
     public function sanitizeTemplateBlock(array $templateBlock): array
     {
         return $templateBlock;
+    }
+
+    /**
+     * Build a quick query to check if we have results (for heading visibility)
+     *
+     * @param array $attributes Block attributes
+     * @return \WP_Term_Query
+     */
+    protected function buildQuickQuery(array $attributes): \WP_Term_Query
+    {
+        $taxonomy = $attributes['taxonomy'] ?? 'category';
+        $termsPerPage = (int) ($attributes['termsPerPage'] ?? 10);
+
+        $queryArgs = [
+            'taxonomy' => $taxonomy,
+            'hide_empty' => true,
+            'number' => $termsPerPage,
+        ];
+
+        // Apply filters
+        $queryArgs = apply_filters('jankx_term_layout_query_args', $queryArgs, $attributes);
+
+        return new \WP_Term_Query($queryArgs);
     }
 
     protected function buildWrapperAttributes($attributes)

@@ -3,6 +3,7 @@
 namespace Jankx\Gutenberg\Blocks;
 
 use Jankx\Gutenberg\Block;
+use Jankx\Gutenberg\Helpers\HeadingBlockHandler;
 use Jankx\Layouts\DynamicDataLayout\ViewLayouts\ViewLayoutManager;
 use Jankx\Layouts\DynamicDataLayout\ViewLayouts\ViewRenderer;
 use Jankx\Layouts\DynamicDataLayout\ViewLayouts\ViewAttributeSanitizer;
@@ -12,6 +13,8 @@ use Jankx\Services\DefaultThumbnailService;
 
 class DynamicSsrLayoutBlock extends Block
 {
+    use HeadingBlockHandler;
+
     protected $blockId = 'jankx/dynamic-ssr-layout';
 
     protected ?ViewLayoutManager $layoutManager = null;
@@ -323,12 +326,47 @@ class DynamicSsrLayoutBlock extends Block
                 }
             }
 
+            // Extract and separate heading block from inner blocks
+            $innerBlocks = $this->separateInnerBlocks($block);
+            $headingBlock = $innerBlocks['heading'];
+
             $rendered = $this->rendererService->render($attributes, $content, $block);
+
+            // Build a quick query to check if we have results (for heading visibility)
+            $query = $this->buildQuickQuery($attributes);
+            $headingHtml = $this->renderHeadingBlock($headingBlock, $query);
+
             $wrapperAttrs = $this->buildWrapperAttributes($attributes);
-            return sprintf('<div %s>%s</div>', $wrapperAttrs, $rendered);
+            return sprintf('<div %s>%s%s</div>', $wrapperAttrs, $headingHtml, $rendered);
         } catch (\Exception $e) {
             return sprintf('<div class="dynamic-ssr-layout-error">%s</div>', esc_html($e->getMessage()));
         }
+    }
+
+    /**
+     * Build a quick query to check if we have results (for heading visibility)
+     *
+     * @param array $attributes Block attributes
+     * @return \WP_Query
+     */
+    protected function buildQuickQuery(array $attributes): \WP_Query
+    {
+        $sanitizedAttributes = $this->attributeSanitizer->sanitize($attributes);
+
+        $postType = $sanitizedAttributes['postType'] ?? 'post';
+        $postsPerPage = (int) ($sanitizedAttributes['postsPerPage'] ?? 10);
+
+        $queryArgs = [
+            'post_type' => $postType,
+            'post_status' => 'publish',
+            'posts_per_page' => $postsPerPage,
+            'paged' => 1,
+        ];
+
+        // Apply filters
+        $queryArgs = apply_filters('jankx_view_layout_query_args', $queryArgs, $sanitizedAttributes);
+
+        return new \WP_Query($queryArgs);
     }
 
     protected function buildWrapperAttributes(array $attributes): string

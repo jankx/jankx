@@ -3,9 +3,11 @@
 namespace Jankx\Gutenberg\Blocks;
 
 use Jankx\Gutenberg\Block;
+use Jankx\Gutenberg\Helpers\HeadingBlockHandler;
 use Jankx\Layouts\DynamicDataLayout\BlockTemplateLayoutManager;
 use Jankx\Layouts\DynamicDataLayout\BlockTemplateRenderer;
 use Jankx\Layouts\DynamicDataLayout\BlockTemplateAttributeSanitizer;
+use Jankx\Layouts\DynamicDataLayout\BlockTemplateLayoutDecorator;
 use Jankx\Query\DynamicDataLayoutQueryHelper;
 use Jankx\Foundation\Application;
 use Jankx\Services\DefaultThumbnailService;
@@ -22,6 +24,8 @@ use Jankx\Services\DefaultThumbnailService;
  */
 class DynamicDataLayoutBlock extends Block
 {
+    use HeadingBlockHandler;
+
     protected $blockId = 'jankx/dynamic-data-layout';
 
     /**
@@ -276,12 +280,20 @@ class DynamicDataLayoutBlock extends Block
                 }
             }
 
+            // Extract and separate heading block from inner blocks
+            $innerBlocks = $this->separateInnerBlocks($block);
+            $headingBlock = $innerBlocks['heading'];
+
             $rendered = $this->rendererService->render($attributes, $content, $block);
+
+            // Build a quick query to check if we have results (for heading visibility)
+            $query = $this->buildQuickQuery($attributes);
+            $headingHtml = $this->renderHeadingBlock($headingBlock, $query);
 
             // Expose data attributes so other blocks (e.g., advanced-filters) can find and update this block via AJAX
             $wrapperAttrs = $this->buildWrapperAttributes($attributes);
 
-            return sprintf('<div %s>%s</div>', $wrapperAttrs, $rendered);
+            return sprintf('<div %s>%s%s</div>', $wrapperAttrs, $headingHtml, $rendered);
         } catch (\Exception $e) {
             return sprintf(
                 '<div class="dynamic-data-layout-error">%s</div>',
@@ -532,7 +544,8 @@ class DynamicDataLayoutBlock extends Block
         $attributes = $this->attributeSanitizer->sanitize($layoutName, $attributes, true);
 
         // Create layout decorator
-        $decorator = $this->layoutManager->createLayout($layoutName);
+        $layout = $this->layoutManager->createLayout($layoutName);
+        $decorator = new BlockTemplateLayoutDecorator($layout);
 
         // Build query
         $originalPreset = $attributes['queryPreset'] ?? 'custom';
@@ -656,6 +669,28 @@ class DynamicDataLayoutBlock extends Block
             return $decorator->buildQuery($attributes);
         }
     }
+
+    /**
+     * Build a quick query to check if we have results (for heading visibility)
+     *
+     * @param array $attributes Block attributes
+     * @return \WP_Query
+     */
+    protected function buildQuickQuery(array $attributes): \WP_Query
+    {
+        $sanitizedAttributes = $this->attributeSanitizer->sanitize($attributes);
+        $layoutName = $sanitizedAttributes['layout'] ?? 'grid';
+
+        $layout = $this->layoutManager->createLayout($layoutName);
+        $decorator = new BlockTemplateLayoutDecorator($layout);
+        $decorator->withAttributes($sanitizedAttributes);
+
+        $originalPreset = $sanitizedAttributes['queryPreset'] ?? 'custom';
+        $postType = $sanitizedAttributes['postType'] ?? 'post';
+
+        return $this->buildQueryForPreset($decorator, $sanitizedAttributes, $originalPreset, $postType);
+    }
+
 
     /**
      * Build wrapper attributes with data-* for AJAX/filter integrations

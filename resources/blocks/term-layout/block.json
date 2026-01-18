@@ -63,6 +63,7 @@
     "postType"
   ],
   "allowedBlocks": [
+    "core/heading",
     "jankx/term-layout-template"
   ],
   "supports": {
