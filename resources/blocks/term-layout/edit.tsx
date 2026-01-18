@@ -1350,7 +1350,7 @@ function Edit({ attributes, setAttributes, clientId, isSelected = false }: EditP
                                         {__('Add Term Layout Template to define item layout', 'jankx')}
                                     </div>
                                     <InnerBlocks
-                                        allowedBlocks={['jankx/term-layout-template']}
+                                        allowedBlocks={['jankx/term-layout-template', 'core/heading']}
                                         templateLock={false}
                                         renderAppender={InnerBlocks.ButtonBlockAppender}
                                     />
@@ -1359,7 +1359,7 @@ function Edit({ attributes, setAttributes, clientId, isSelected = false }: EditP
                         }
                         return (
                             <InnerBlocks
-                                allowedBlocks={['jankx/term-layout-template']}
+                                allowedBlocks={['jankx/term-layout-template', 'core/heading']}
                                 templateLock={false}
                                 renderAppender={InnerBlocks.DefaultBlockAppender}
                             />
@@ -1367,7 +1367,7 @@ function Edit({ attributes, setAttributes, clientId, isSelected = false }: EditP
                     })()
                 ) : (
                     <InnerBlocks
-                        allowedBlocks={['jankx/term-layout-template']}
+                        allowedBlocks={['jankx/term-layout-template', 'core/heading']}
                         templateLock={false}
                         renderAppender={InnerBlocks.DefaultBlockAppender}
                     />

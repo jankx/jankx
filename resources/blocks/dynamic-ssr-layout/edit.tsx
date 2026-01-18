@@ -14,7 +14,7 @@ import {
 import { useSelect } from '@wordpress/data';
 import { useCallback, useEffect, useState, useMemo, useRef } from '@wordpress/element';
 import type { CSSProperties } from 'react';
-type TokenLike = string | { value: string; [key: string]: unknown };
+type TokenLike = string | { value: string;[key: string]: unknown };
 import { ResponsiveControl, ResponsiveValue } from '../../shared/components';
 import './style.scss';
 import './editor.scss';
@@ -140,7 +140,7 @@ interface WordPressSelect {
 }
 
 declare global {
-    interface Window extends WordPressWindow {}
+    interface Window extends WordPressWindow { }
 }
 
 const normalizeQueryPresets = (rawPresets: unknown): QueryPresetOption[] => {
@@ -444,7 +444,7 @@ function Edit({ attributes, setAttributes, clientId, isSelected = false }: EditP
                         };
                     })
                     .filter((author): author is AuthorItem => author.id > 0 && author.name.length > 0);
-                
+
                 setAuthors(normalizedAuthors);
             } catch (error) {
                 setTaxonomies([]);
@@ -504,7 +504,7 @@ function Edit({ attributes, setAttributes, clientId, isSelected = false }: EditP
         ].join(' '),
     });
 
-    useEffect(() => {}, []);
+    useEffect(() => { }, []);
 
     const resolvedResponsiveColumns = (responsiveColumns && typeof responsiveColumns === 'object')
         ? responsiveColumns
@@ -536,7 +536,7 @@ function Edit({ attributes, setAttributes, clientId, isSelected = false }: EditP
     const publicPostTypes: Array<{ slug: string; name: string }> = Array.isArray((window as any).jankxPublicPostTypes)
         ? (window as any).jankxPublicPostTypes
         : [];
-    
+
     // Get layouts data from PHP
     const layoutsData: LayoutsData = normalizeLayoutsData(window.jankxDynamicSsrLayouts);
 
@@ -611,7 +611,7 @@ function Edit({ attributes, setAttributes, clientId, isSelected = false }: EditP
         ];
         const allOrderByOptions: OrderByOption[] = normalizeOrderByOptions(window.jankxQueryOptions?.orderBy, fallback);
         const filtered = allOrderByOptions
-            .filter((option: OrderByOption) => 
+            .filter((option: OrderByOption) =>
                 !option.postType || option.postType === postType
             )
             .map((option: OrderByOption) => ({
@@ -637,7 +637,7 @@ function Edit({ attributes, setAttributes, clientId, isSelected = false }: EditP
     const queryPresetOptions = useMemo(() => {
         const allPresets: QueryPresetOption[] = normalizedPresets;
         const filtered = allPresets
-            .filter((preset: QueryPresetOption) => 
+            .filter((preset: QueryPresetOption) =>
                 !preset.postType || preset.postType === postType
             );
         return filtered.map((preset: QueryPresetOption) => ({
@@ -647,7 +647,7 @@ function Edit({ attributes, setAttributes, clientId, isSelected = false }: EditP
         }));
     }, [postType, normalizedPresets]);
 
-    
+
     return (
         <>
             <InspectorControls>
@@ -713,7 +713,7 @@ function Edit({ attributes, setAttributes, clientId, isSelected = false }: EditP
                             help={queryPreset === 'default' ? __('Select post type for the main query', 'jankx') : undefined}
                         />
                     ) : null}
-                    
+
                     <ToggleControl
                         label={__('Multi Post Type', 'jankx')}
                         checked={useMultiPostType}
@@ -791,7 +791,7 @@ function Edit({ attributes, setAttributes, clientId, isSelected = false }: EditP
                                     onChange={(value: string) => {
                                         const allOrderByOptions: OrderByOption[] = window.jankxQueryOptions?.orderBy || [];
                                         const selectedOption = allOrderByOptions.find((opt: OrderByOption) => opt.value === value);
-                                        
+
                                         // Auto-set metaKey if option has metaKey property
                                         const updates: Partial<DynamicSsrLayoutAttributes> = { orderBy: value };
                                         if (selectedOption?.metaKey) {
@@ -801,7 +801,7 @@ function Edit({ attributes, setAttributes, clientId, isSelected = false }: EditP
                                                 updates.orderBy = 'meta_value_num';
                                             }
                                         }
-                                        
+
                                         setAttributes(updates);
                                     }}
                                     help={__('Sort posts by which criteria', 'jankx')}
@@ -821,7 +821,7 @@ function Edit({ attributes, setAttributes, clientId, isSelected = false }: EditP
 
                 {/* Query Parameters - Only show for custom preset */}
                 {queryPreset === 'custom' ? (
-                        <PanelBody title={__('Query Parameters', 'jankx')} initialOpen={false}>
+                    <PanelBody title={__('Query Parameters', 'jankx')} initialOpen={false}>
                         <RangeControl
                             label={__('Offset', 'jankx')}
                             value={offset}
@@ -1350,7 +1350,7 @@ function Edit({ attributes, setAttributes, clientId, isSelected = false }: EditP
                                         {__('Add Dynamic SSR Template to define item layout', 'jankx')}
                                     </div>
                                     <InnerBlocks
-                                        allowedBlocks={['jankx/dynamic-ssr-template']}
+                                        allowedBlocks={['jankx/dynamic-ssr-template', 'core/heading']}
                                         templateLock={false}
                                         renderAppender={InnerBlocks.ButtonBlockAppender}
                                     />
@@ -1359,7 +1359,7 @@ function Edit({ attributes, setAttributes, clientId, isSelected = false }: EditP
                         }
                         return (
                             <InnerBlocks
-                                allowedBlocks={['jankx/dynamic-ssr-template']}
+                                allowedBlocks={['jankx/dynamic-ssr-template', 'core/heading']}
                                 templateLock={false}
                                 renderAppender={InnerBlocks.DefaultBlockAppender}
                             />
@@ -1367,7 +1367,7 @@ function Edit({ attributes, setAttributes, clientId, isSelected = false }: EditP
                     })()
                 ) : (
                     <InnerBlocks
-                        allowedBlocks={['jankx/dynamic-ssr-template']}
+                        allowedBlocks={['jankx/dynamic-ssr-template', 'core/heading']}
                         templateLock={false}
                         renderAppender={InnerBlocks.DefaultBlockAppender}
                     />

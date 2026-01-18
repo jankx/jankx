@@ -1802,7 +1802,7 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                                     {__('Add Dynamic Data Template to define item layout', 'jankx')}
                                 </div>
                                 <InnerBlocks
-                                    allowedBlocks={['jankx/dynamic-data-template']}
+                                    allowedBlocks={['jankx/dynamic-data-template', 'core/heading']}
                                     templateLock={false}
                                     renderAppender={InnerBlocks.ButtonBlockAppender}
                                 />
@@ -1812,7 +1812,7 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
 
                     return (
                         <InnerBlocks
-                            allowedBlocks={['jankx/dynamic-data-template']}
+                            allowedBlocks={['jankx/dynamic-data-template', 'core/heading']}
                             templateLock={false}
                             renderAppender={InnerBlocks.DefaultBlockAppender}
                         />
