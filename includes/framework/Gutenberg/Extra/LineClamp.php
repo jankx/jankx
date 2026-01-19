@@ -20,13 +20,22 @@ namespace Jankx\Gutenberg\Extra;
  */
 class LineClamp extends AbstractBlockExtra
 {
-    /**
-     * @var string[]
-     */
-    protected $supportedBlocks = [
+    protected static $line_clamp_blocks = [
         'core/post-title',
         'woocommerce/product-title',
+        'core/heading'
+    ];
+
+    protected static $responsive_dimension_blocks = [
+        'core/group',
+        'core/columns',
+        'core/column',
+        'core/stack',
+        'core/row',
         'core/heading',
+        'core/paragraph',
+        'core/post-title',
+        'woocommerce/product-title'
     ];
 
     /**
@@ -42,17 +51,18 @@ class LineClamp extends AbstractBlockExtra
      */
     public function register(): void
     {
-        // Register attributes with high priority to ensure they are available
-        add_filter('register_block_type_args', [$this, 'registerLineClampAttribute'], 5, 2);
+        // Register attributes for all supported blocks
+        add_filter('register_block_type_args', [$this, 'registerExtraAttributes'], 5, 2);
 
-        // Hook into dynamic rendering for each supported block
-        foreach ($this->supportedBlocks as $blockName) {
-            add_filter("render_block_{$blockName}", [$this, 'handleLineClampRender'], 10, 2);
+        // Handle dynamic rendering for Line Clamp and Dimensions
+        $all_blocks = array_unique(array_merge(self::$line_clamp_blocks, self::$responsive_dimension_blocks));
+        foreach ($all_blocks as $block_name) {
+            add_filter("render_block_{$block_name}", [$this, 'handleExtraStylesRender'], 10, 2);
         }
     }
 
     /**
-     * Handle the dynamic rendering of line-clamp
+     * Handle the dynamic rendering of line-clamp and responsive dimensions
      *
      * This method injects the necessary CSS variables and class into the block HTML.
      *
@@ -60,75 +70,142 @@ class LineClamp extends AbstractBlockExtra
      * @param array  $block         The block's data including attributes.
      * @return string
      */
-    public function handleLineClampRender(string $block_content, array $block): string
+    public function handleExtraStylesRender($block_content, $block)
     {
-        $attrs = $block['attrs'] ?? [];
-        $clamp = $attrs['jankxLineClamp'] ?? null;
-        $clampTablet = $attrs['jankxLineClampTablet'] ?? null;
-        $clampMobile = $attrs['jankxLineClampMobile'] ?? null;
+        $attributes = $block['attrs'] ?? [];
+        $classes = [];
+        $styles = [];
 
-        // Skip if no line-clamp is set
-        if (is_null($clamp) && is_null($clampTablet) && is_null($clampMobile)) {
+        // 1. Handle Line Clamp
+        $has_clamp = !empty($attributes['jankxLineClamp']) || !empty($attributes['jankxLineClampTablet']) || !empty($attributes['jankxLineClampMobile']);
+        if ($has_clamp && in_array($block['blockName'], self::$line_clamp_blocks)) {
+            $classes[] = 'has-jankx-line-clamp';
+            if (isset($attributes['jankxLineClamp']))
+                $styles[] = "--jankx-line-clamp: {$attributes['jankxLineClamp']}";
+            if (isset($attributes['jankxLineClampTablet']))
+                $styles[] = "--jankx-line-clamp-tablet: {$attributes['jankxLineClampTablet']}";
+            if (isset($attributes['jankxLineClampMobile']))
+                $styles[] = "--jankx-line-clamp-mobile: {$attributes['jankxLineClampMobile']}";
+        }
+
+        // 2. Handle Responsive Dimensions
+        $has_dimensions = false;
+        if (in_array($block['blockName'], self::$responsive_dimension_blocks)) {
+            $mapping = [
+                'jankxPaddingDesktop' => '--jankx-padding-desktop',
+                'jankxPaddingTablet' => '--jankx-padding-tablet',
+                'jankxPaddingMobile' => '--jankx-padding-mobile',
+                'jankxMarginDesktop' => '--jankx-margin-desktop',
+                'jankxMarginTablet' => '--jankx-margin-tablet',
+                'jankxMarginMobile' => '--jankx-margin-mobile',
+                'jankxGapDesktop' => '--jankx-gap-desktop',
+                'jankxGapTablet' => '--jankx-gap-tablet',
+                'jankxGapMobile' => '--jankx-gap-mobile',
+                'jankxFlexOrderDesktop' => '--jankx-flex-order-desktop',
+                'jankxFlexOrderTablet' => '--jankx-flex-order-tablet',
+                'jankxFlexOrderMobile' => '--jankx-flex-order-mobile'
+            ];
+
+            foreach ($mapping as $attr => $var) {
+                if (isset($attributes[$attr])) {
+                    $has_dimensions = true;
+                    $value = $attributes[$attr] . (strpos($var, 'order') !== false ? '' : 'px');
+                    $styles[] = "{$var}: {$value}";
+                }
+            }
+
+            if ($has_dimensions) {
+                $classes[] = 'has-jankx-responsive-dimensions';
+                if (isset($attributes['jankxPaddingDesktop']) || isset($attributes['jankxPaddingTablet']) || isset($attributes['jankxPaddingMobile']))
+                    $classes[] = 'has-jankx-padding';
+                if (isset($attributes['jankxMarginDesktop']) || isset($attributes['jankxMarginTablet']) || isset($attributes['jankxMarginMobile']))
+                    $classes[] = 'has-jankx-margin';
+                if (isset($attributes['jankxGapDesktop']) || isset($attributes['jankxGapTablet']) || isset($attributes['jankxGapMobile']))
+                    $classes[] = 'has-jankx-gap';
+                if (isset($attributes['jankxFlexOrderDesktop']) || isset($attributes['jankxFlexOrderTablet']) || isset($attributes['jankxFlexOrderMobile']))
+                    $classes[] = 'has-jankx-flex-order';
+            }
+        }
+
+        if (empty($classes) && empty($styles)) {
             return $block_content;
         }
 
-        $extraClass = 'has-jankx-line-clamp';
-        $extraStyles = [];
+        // Inject classes and styles into the first tag (root element of the block)
+        $class_str = implode(' ', $classes);
+        $style_str = implode('; ', $styles);
 
-        if (!is_null($clamp)) {
-            $extraStyles[] = "--jankx-line-clamp: {$clamp}";
-        }
-        if (!is_null($clampTablet)) {
-            $extraStyles[] = "--jankx-line-clamp-tablet: {$clampTablet}";
-        }
-        if (!is_null($clampMobile)) {
-            $extraStyles[] = "--jankx-line-clamp-mobile: {$clampMobile}";
-        }
+        // Use regex for robust injection
+        if (preg_match('/^<([a-z0-9]+)([^>]*)>/i', $block_content, $matches)) {
+            $tag = $matches[1];
+            $attrs = $matches[2];
 
-        $styleString = implode(';', $extraStyles);
-
-        // 1. Inject Class
-        if (preg_match('/^<[a-z0-9]+[^>]*class=["\']([^"\']*)["\']/i', $block_content, $matches)) {
-            // Tag has existing class, append ours
-            if (strpos($matches[1], $extraClass) === false) {
-                $newClassAttr = $matches[1] . ' ' . $extraClass;
-                $block_content = substr_replace($block_content, $newClassAttr, strpos($block_content, $matches[1]), strlen($matches[1]));
+            // Add class
+            if (!empty($class_str)) {
+                if (preg_match('/class=["\']([^"\']*)["\']/', $attrs, $class_matches)) {
+                    $new_attrs = str_replace($class_matches[0], 'class="' . $class_matches[1] . ' ' . $class_str . '"', $attrs);
+                } else {
+                    $new_attrs = $attrs . ' class="' . $class_str . '"';
+                }
+                $attrs = $new_attrs; // Update attrs for style injection
             }
-        } else {
-            // Tag has no class, insert it
-            $block_content = preg_replace('/^<([a-z0-9]+)/i', '<$1 class="' . $extraClass . '"', $block_content);
-        }
 
-        // 2. Inject Style
-        if (preg_match('/^<[^>]*style=["\']([^"\']*)["\']/i', $block_content, $matches)) {
-            // Tag has existing style, append ours
-            $newStyleAttr = rtrim($matches[1], ';') . ';' . $styleString;
-            $block_content = substr_replace($block_content, $newStyleAttr, strpos($block_content, $matches[1]), strlen($matches[1]));
-        } else {
-            // Tag has no style, insert it after the tag name or after attributes
-            $block_content = preg_replace('/^<([a-z0-9]+[^>]*)/i', '$0 style="' . $styleString . '"', $block_content);
+
+            // Add style
+            if (!empty($styles)) {
+                if (preg_match('/style=["\']([^"\']*)["\']/', $attrs, $style_matches)) {
+                    $new_attrs = str_replace($style_matches[0], 'style="' . rtrim($style_matches[1], '; ') . '; ' . $style_str . '"', $attrs);
+                } else {
+                    $new_attrs = $attrs . ' style="' . $style_str . '"';
+                }
+                $attrs = $new_attrs; // Update attrs for final replacement
+            }
+
+            $block_content = '<' . $tag . $attrs . '>' . substr($block_content, strlen($matches[0]));
         }
 
         return $block_content;
     }
 
     /**
-     * Register the line-clamp attributes on the server side
+     * Register the line-clamp and responsive dimension attributes on the server side
      *
      * @param array  $args       The block registration arguments.
      * @param string $block_name The block name.
      * @return array
      */
-    public function registerLineClampAttribute(array $args, string $block_name): array
+    public function registerExtraAttributes($args, $block_name)
     {
-        if (in_array($block_name, $this->supportedBlocks)) {
-            if (!isset($args['attributes'])) {
-                $args['attributes'] = [];
-            }
+        if (!isset($args['attributes'])) {
+            $args['attributes'] = [];
+        }
+
+        if (in_array($block_name, self::$line_clamp_blocks)) {
             $args['attributes']['jankxLineClamp'] = ['type' => 'number'];
             $args['attributes']['jankxLineClampTablet'] = ['type' => 'number'];
             $args['attributes']['jankxLineClampMobile'] = ['type' => 'number'];
         }
+
+        if (in_array($block_name, self::$responsive_dimension_blocks)) {
+            $dimension_attrs = [
+                'jankxPaddingDesktop',
+                'jankxPaddingTablet',
+                'jankxPaddingMobile',
+                'jankxMarginDesktop',
+                'jankxMarginTablet',
+                'jankxMarginMobile',
+                'jankxGapDesktop',
+                'jankxGapTablet',
+                'jankxGapMobile',
+                'jankxFlexOrderDesktop',
+                'jankxFlexOrderTablet',
+                'jankxFlexOrderMobile'
+            ];
+            foreach ($dimension_attrs as $attr) {
+                $args['attributes'][$attr] = ['type' => 'number'];
+            }
+        }
+
         return $args;
     }
 
