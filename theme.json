@@ -11,7 +11,14 @@
 			"padding": true,
 			"margin": true,
 			"blockGap": true,
-			"units": ["px", "em", "rem", "%", "vw", "vh"],
+			"units": [
+				"px",
+				"em",
+				"rem",
+				"%",
+				"vw",
+				"vh"
+			],
 			"spacingScale": {
 				"steps": 7,
 				"operator": "+",
@@ -45,6 +52,11 @@
 					"color": "#503AA8",
 					"name": "Primary",
 					"slug": "primary"
+				},
+				{
+					"color": "#503AA8",
+					"name": "Link Color",
+					"slug": "link"
 				},
 				{
 					"color": "#FFEE58",
@@ -95,6 +107,7 @@
 		},
 		"elements": {
 			"link": {
+				"color": "var(--wp--preset--color--link)",
 				"typography": {
 					"textDecoration": "none"
 				}
@@ -126,7 +139,9 @@
 	"customTemplates": [
 		{
 			"name": "page-no-title",
-			"postTypes": ["page"],
+			"postTypes": [
+				"page"
+			],
 			"title": "Page No Title"
 		}
 	]

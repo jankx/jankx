@@ -51,6 +51,7 @@ use Jankx\Gutenberg\Blocks\PlyrPlayerBlock;
 use Jankx\Gutenberg\Extra\Categories as ExtraCategories;
 use Jankx\Gutenberg\Extra\PostTitle as ExtraPostTitle;
 use Jankx\Gutenberg\Extra\PostContent as ExtraPostContent;
+use Jankx\Gutenberg\Extra\CommentTemplate as ExtraCommentTemplate;
 use Jankx\Gutenberg\Blocks\TermLayoutBlock;
 use Jankx\Gutenberg\Blocks\TermLayoutTemplateBlock;
 use Jankx\Gutenberg\Blocks\SafeIframeBlock;
@@ -439,6 +440,9 @@ class GutenbergService
 
             // Register Post Content extra
             $extraManager->register(ExtraPostContent::class);
+
+            // Register Comment Template extra
+            $extraManager->register(ExtraCommentTemplate::class);
 
             // Allow child themes or plugins to register additional block extras
             do_action('jankx/gutenberg/register-block-extras', $extraManager, $this->app);
