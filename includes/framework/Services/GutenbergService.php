@@ -55,6 +55,7 @@ use Jankx\Gutenberg\Extra\CommentTemplate as ExtraCommentTemplate;
 use Jankx\Gutenberg\Blocks\TermLayoutBlock;
 use Jankx\Gutenberg\Blocks\TermLayoutTemplateBlock;
 use Jankx\Gutenberg\Blocks\SafeIframeBlock;
+use Jankx\Gutenberg\Extra\LineClamp as ExtraLineClamp;
 
 /**
  * Gutenberg Service
@@ -443,6 +444,9 @@ class GutenbergService
 
             // Register Comment Template extra
             $extraManager->register(ExtraCommentTemplate::class);
+
+            // Register Line Clamp extra
+            $extraManager->register(ExtraLineClamp::class);
 
             // Allow child themes or plugins to register additional block extras
             do_action('jankx/gutenberg/register-block-extras', $extraManager, $this->app);

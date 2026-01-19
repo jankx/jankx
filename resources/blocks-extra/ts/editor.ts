@@ -178,6 +178,24 @@ function initializeBlocksExtraEditor(): void {
     // Add CSS class to body for styling
     document.body.classList.add('jankx-blocks-extra-enabled');
     injectResponsiveDimensionsCSS();
+
+    // Add Line Clamp support
+    wp.hooks.addFilter(
+        'blocks.registerBlockType',
+        'jankx/blocks-extra/add-line-clamp-attributes',
+        addLineClampAttributes
+    );
+    wp.hooks.addFilter(
+        'editor.BlockEdit',
+        'jankx/blocks-extra/add-line-clamp-control',
+        addLineClampControl
+    );
+    wp.hooks.addFilter(
+        'blocks.getSaveContent.extraProps',
+        'jankx/blocks-extra/add-line-clamp-to-save',
+        addLineClampToSave
+    );
+    injectLineClampCSS();
 }
 
 // Initialize when DOM is ready
@@ -190,6 +208,129 @@ if (typeof wp !== 'undefined' && (wp as any).domReady) {
     } else {
         initializeBlocksExtraEditor();
     }
+}
+
+/**
+ * Line Clamp Support
+ * Adds line-clamp control to specific blocks (core/post-title, woocommerce/product-title, core/heading)
+ */
+
+const LINE_CLAMP_SUPPORTED_BLOCKS = [
+    'core/post-title',
+    'woocommerce/product-title',
+    'core/heading'
+] as const;
+
+/**
+ * Add line-clamp attributes to supported blocks
+ */
+function addLineClampAttributes(settings: any, name: string): any {
+    if (!LINE_CLAMP_SUPPORTED_BLOCKS.includes(name as any)) {
+        return settings;
+    }
+
+    return {
+        ...settings,
+        attributes: {
+            ...settings.attributes,
+            jankxLineClamp: {
+                type: 'number',
+                default: undefined
+            }
+        }
+    };
+}
+
+/**
+ * Add line-clamp control to block inspector
+ */
+function addLineClampControl(BlockEdit: wp.element.ComponentType<wp.blockEditor.BlockEditProps>) {
+    return function (props: any) {
+        const { name, attributes, setAttributes, isSelected } = props;
+
+        // Only apply to supported blocks
+        if (!LINE_CLAMP_SUPPORTED_BLOCKS.includes(name as any)) {
+            return wp.element.createElement(BlockEdit, props);
+        }
+
+        const blockEdit = wp.element.createElement(BlockEdit, props);
+
+        if (!isSelected) {
+            return blockEdit;
+        }
+
+        const lineClampControl = wp.element.createElement(
+            wp.blockEditor.InspectorControls,
+            { group: 'typography' },
+            wp.element.createElement(
+                wp.components.RangeControl,
+                {
+                    label: 'Line Clamp',
+                    value: attributes.jankxLineClamp,
+                    min: 1,
+                    max: 10,
+                    allowReset: true,
+                    onChange: (value?: number) => {
+                        setAttributes({
+                            jankxLineClamp: typeof value === 'number' ? value : undefined
+                        });
+                    },
+                    help: 'Giới hạn số dòng hiển thị. Nội dung vượt quá sẽ hiển thị dấu ...'
+                }
+            )
+        );
+
+        return [blockEdit, lineClampControl];
+    };
+}
+
+/**
+ * Add line-clamp CSS variable to save props
+ * This ensures the attribute is saved but HTML structure remains unchanged
+ */
+function addLineClampToSave(props: Record<string, any>, _blockType: any, attributes: Record<string, any>) {
+    const lineClamp = attributes.jankxLineClamp;
+
+    if (typeof lineClamp === 'number' && lineClamp > 0) {
+        const className = props.className
+            ? `${props.className} has-jankx-line-clamp`
+            : 'has-jankx-line-clamp';
+
+        const style = {
+            ...(props.style || {}),
+            '--jankx-line-clamp': lineClamp
+        };
+
+        return {
+            ...props,
+            className,
+            style
+        };
+    }
+
+    return props;
+}
+
+/**
+ * Inject CSS for line-clamp in editor
+ */
+function injectLineClampCSS() {
+    const STYLE_ID = 'jankx-line-clamp-css';
+    if (document.getElementById(STYLE_ID)) return;
+
+    const style = document.createElement('style');
+    style.id = STYLE_ID;
+    style.textContent = `
+        .has-jankx-line-clamp {
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            -webkit-line-clamp: var(--jankx-line-clamp, 3);
+            line-clamp: var(--jankx-line-clamp, 3);
+            text-overflow: ellipsis;
+        }
+    `;
+    document.head.appendChild(style);
 }
 
 // Export types for external use

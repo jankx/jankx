@@ -339,6 +339,9 @@ function initializeBlocksExtraFrontend(): void {
 
     // Inject responsive dimensions CSS
     injectResponsiveDimensionsCSS();
+
+    // Inject line-clamp CSS
+    injectLineClampCSS();
 }
 
 // Initialize when DOM is ready
@@ -416,6 +419,29 @@ function injectResponsiveDimensionsCSS(): void {
             .has-jankx-responsive-dimensions.has-jankx-flex-order {
                 order: var(--jankx-flex-order-mobile, var(--jankx-flex-order-tablet, var(--jankx-flex-order-desktop, initial)));
             }
+        }
+    `;
+    document.head.appendChild(style);
+}
+
+/**
+ * Inject line-clamp CSS
+ */
+function injectLineClampCSS(): void {
+    const STYLE_ID = 'jankx-line-clamp-css';
+    if (document.getElementById(STYLE_ID)) {
+        return;
+    }
+    const style = document.createElement('style');
+    style.id = STYLE_ID;
+    style.textContent = `
+        .has-jankx-line-clamp {
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            -webkit-line-clamp: var(--jankx-line-clamp, 3);
+            line-clamp: var(--jankx-line-clamp, 3);
+            text-overflow: ellipsis;
         }
     `;
     document.head.appendChild(style);
