@@ -236,6 +236,14 @@ function addLineClampAttributes(settings: any, name: string): any {
             jankxLineClamp: {
                 type: 'number',
                 default: undefined
+            },
+            jankxLineClampTablet: {
+                type: 'number',
+                default: undefined
+            },
+            jankxLineClampMobile: {
+                type: 'number',
+                default: undefined
             }
         }
     };
@@ -255,28 +263,67 @@ function addLineClampControl(BlockEdit: wp.element.ComponentType<wp.blockEditor.
 
         const blockEdit = wp.element.createElement(BlockEdit, props);
 
+        // Always call hooks at the top level
+        const [currentDevice, setCurrentDevice] = (wp.element as any).useState<Device>('desktop');
+
         if (!isSelected) {
             return blockEdit;
         }
+
+        const getClampValue = () => {
+            if (currentDevice === 'mobile') return attributes.jankxLineClampMobile;
+            if (currentDevice === 'tablet') return attributes.jankxLineClampTablet;
+            return attributes.jankxLineClamp;
+        };
+
+        const setClampValue = (value?: number) => {
+            const patch: any = {};
+            if (currentDevice === 'mobile') patch.jankxLineClampMobile = value;
+            else if (currentDevice === 'tablet') patch.jankxLineClampTablet = value;
+            else patch.jankxLineClamp = value;
+            setAttributes(patch);
+        };
 
         const lineClampControl = wp.element.createElement(
             wp.blockEditor.InspectorControls,
             { group: 'typography' },
             wp.element.createElement(
-                wp.components.RangeControl,
-                {
-                    label: 'Line Clamp',
-                    value: attributes.jankxLineClamp,
+                wp.components.PanelBody,
+                { title: 'Line Clamp (Responsive)', initialOpen: true },
+                wp.element.createElement(
+                    wp.components.ButtonGroup,
+                    { style: { marginBottom: '12px' } },
+                    wp.element.createElement(wp.components.Button, {
+                        isPressed: currentDevice === 'desktop',
+                        onClick: () => setCurrentDevice('desktop'),
+                        variant: currentDevice === 'desktop' ? 'primary' : 'secondary',
+                        size: 'small',
+                        title: 'Desktop'
+                    }, '🖥️'),
+                    wp.element.createElement(wp.components.Button, {
+                        isPressed: currentDevice === 'tablet',
+                        onClick: () => setCurrentDevice('tablet'),
+                        variant: currentDevice === 'tablet' ? 'primary' : 'secondary',
+                        size: 'small',
+                        title: 'Tablet'
+                    }, '📱'),
+                    wp.element.createElement(wp.components.Button, {
+                        isPressed: currentDevice === 'mobile',
+                        onClick: () => setCurrentDevice('mobile'),
+                        variant: currentDevice === 'mobile' ? 'primary' : 'secondary',
+                        size: 'small',
+                        title: 'Mobile'
+                    }, '📱'),
+                ),
+                wp.element.createElement(wp.components.RangeControl, {
+                    label: `Line Clamp (${currentDevice})`,
+                    value: getClampValue(),
                     min: 1,
                     max: 10,
                     allowReset: true,
-                    onChange: (value?: number) => {
-                        setAttributes({
-                            jankxLineClamp: typeof value === 'number' ? value : undefined
-                        });
-                    },
-                    help: 'Giới hạn số dòng hiển thị. Nội dung vượt quá sẽ hiển thị dấu ...'
-                }
+                    onChange: (value?: number) => setClampValue(typeof value === 'number' ? value : undefined),
+                    help: `Giới hạn số dòng hiển thị trên ${currentDevice}.`
+                })
             )
         );
 
@@ -289,17 +336,20 @@ function addLineClampControl(BlockEdit: wp.element.ComponentType<wp.blockEditor.
  * This ensures the attribute is saved but HTML structure remains unchanged
  */
 function addLineClampToSave(props: Record<string, any>, _blockType: any, attributes: Record<string, any>) {
-    const lineClamp = attributes.jankxLineClamp;
+    const { jankxLineClamp, jankxLineClampTablet, jankxLineClampMobile } = attributes;
 
-    if (typeof lineClamp === 'number' && lineClamp > 0) {
+    if (jankxLineClamp || jankxLineClampTablet || jankxLineClampMobile) {
         const className = props.className
             ? `${props.className} has-jankx-line-clamp`
             : 'has-jankx-line-clamp';
 
         const style = {
-            ...(props.style || {}),
-            '--jankx-line-clamp': lineClamp
+            ...(props.style || {})
         };
+
+        if (typeof jankxLineClamp === 'number') style['--jankx-line-clamp'] = jankxLineClamp;
+        if (typeof jankxLineClampTablet === 'number') style['--jankx-line-clamp-tablet'] = jankxLineClampTablet;
+        if (typeof jankxLineClampMobile === 'number') style['--jankx-line-clamp-mobile'] = jankxLineClampMobile;
 
         return {
             ...props,
@@ -325,9 +375,21 @@ function injectLineClampCSS() {
             display: -webkit-box;
             -webkit-box-orient: vertical;
             overflow: hidden;
-            -webkit-line-clamp: var(--jankx-line-clamp, 3);
-            line-clamp: var(--jankx-line-clamp, 3);
             text-overflow: ellipsis;
+            -webkit-line-clamp: var(--jankx-line-clamp, initial);
+            line-clamp: var(--jankx-line-clamp, initial);
+        }
+        @media (max-width: 1024px) {
+            .has-jankx-line-clamp {
+                -webkit-line-clamp: var(--jankx-line-clamp-tablet, var(--jankx-line-clamp, initial));
+                line-clamp: var(--jankx-line-clamp-tablet, var(--jankx-line-clamp, initial));
+            }
+        }
+        @media (max-width: 768px) {
+            .has-jankx-line-clamp {
+                -webkit-line-clamp: var(--jankx-line-clamp-mobile, var(--jankx-line-clamp-tablet, var(--jankx-line-clamp, initial)));
+                line-clamp: var(--jankx-line-clamp-mobile, var(--jankx-line-clamp-tablet, var(--jankx-line-clamp, initial)));
+            }
         }
     `;
     document.head.appendChild(style);
@@ -385,13 +447,16 @@ function addResponsiveDimensionsControls(BlockEdit: wp.element.ComponentType<wp.
             return wp.element.createElement(BlockEdit, props);
         }
         const blockEdit = wp.element.createElement(BlockEdit, props);
+
+        // Always call hooks at the top level
+        const [current, setCurrent] = (wp.element as any).useState<Device>('desktop');
+
         if (!isSelected) {
             return blockEdit;
         }
 
         // ToolsPanel integration: render one ToolsPanelItem under Dimensions
         const ToolsPanelItem = (wp.components as any).__experimentalToolsPanelItem;
-        const [current, setCurrent] = (wp.element as any).useState<Device>('desktop');
         const currentDevice = () => current;
         const getVal = (type: 'padding' | 'margin' | 'gap') => {
             const d = currentDevice();

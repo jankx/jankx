@@ -439,9 +439,21 @@ function injectLineClampCSS(): void {
             display: -webkit-box;
             -webkit-box-orient: vertical;
             overflow: hidden;
-            -webkit-line-clamp: var(--jankx-line-clamp, 3);
-            line-clamp: var(--jankx-line-clamp, 3);
             text-overflow: ellipsis;
+            -webkit-line-clamp: var(--jankx-line-clamp, initial);
+            line-clamp: var(--jankx-line-clamp, initial);
+        }
+        @media (max-width: 1024px) {
+            .has-jankx-line-clamp {
+                -webkit-line-clamp: var(--jankx-line-clamp-tablet, var(--jankx-line-clamp, initial));
+                line-clamp: var(--jankx-line-clamp-tablet, var(--jankx-line-clamp, initial));
+            }
+        }
+        @media (max-width: 768px) {
+            .has-jankx-line-clamp {
+                -webkit-line-clamp: var(--jankx-line-clamp-mobile, var(--jankx-line-clamp-tablet, var(--jankx-line-clamp, initial)));
+                line-clamp: var(--jankx-line-clamp-mobile, var(--jankx-line-clamp-tablet, var(--jankx-line-clamp, initial)));
+            }
         }
     `;
     document.head.appendChild(style);

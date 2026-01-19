@@ -50,6 +50,12 @@ class LineClamp extends AbstractBlockExtra
             $args['attributes']['jankxLineClamp'] = [
                 'type' => 'number',
             ];
+            $args['attributes']['jankxLineClampTablet'] = [
+                'type' => 'number',
+            ];
+            $args['attributes']['jankxLineClampMobile'] = [
+                'type' => 'number',
+            ];
         }
         return $args;
     }
