@@ -190,11 +190,6 @@ function initializeBlocksExtraEditor(): void {
         'jankx/blocks-extra/add-line-clamp-control',
         addLineClampControl
     );
-    wp.hooks.addFilter(
-        'blocks.getSaveContent.extraProps',
-        'jankx/blocks-extra/add-line-clamp-to-save',
-        addLineClampToSave
-    );
     injectLineClampCSS();
 }
 
@@ -329,36 +324,6 @@ function addLineClampControl(BlockEdit: wp.element.ComponentType<wp.blockEditor.
 
         return [blockEdit, lineClampControl];
     };
-}
-
-/**
- * Add line-clamp CSS variable to save props
- * This ensures the attribute is saved but HTML structure remains unchanged
- */
-function addLineClampToSave(props: Record<string, any>, _blockType: any, attributes: Record<string, any>) {
-    const { jankxLineClamp, jankxLineClampTablet, jankxLineClampMobile } = attributes;
-
-    if (jankxLineClamp || jankxLineClampTablet || jankxLineClampMobile) {
-        const className = props.className
-            ? `${props.className} has-jankx-line-clamp`
-            : 'has-jankx-line-clamp';
-
-        const style = {
-            ...(props.style || {})
-        };
-
-        if (typeof jankxLineClamp === 'number') style['--jankx-line-clamp'] = jankxLineClamp;
-        if (typeof jankxLineClampTablet === 'number') style['--jankx-line-clamp-tablet'] = jankxLineClampTablet;
-        if (typeof jankxLineClampMobile === 'number') style['--jankx-line-clamp-mobile'] = jankxLineClampMobile;
-
-        return {
-            ...props,
-            className,
-            style
-        };
-    }
-
-    return props;
 }
 
 /**
