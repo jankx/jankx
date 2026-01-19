@@ -1,0 +1,46 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "jankx/wrapper",
+    "version": "1.0.0",
+    "title": "Jankx Wrapper",
+    "category": "design",
+    "description": "A layout wrapper block with advanced responsive controls.",
+    "attributes": {
+        "paddingDesktop": {
+            "type": "number"
+        },
+        "paddingTablet": {
+            "type": "number"
+        },
+        "paddingMobile": {
+            "type": "number"
+        },
+        "marginDesktop": {
+            "type": "number"
+        },
+        "marginTablet": {
+            "type": "number"
+        },
+        "marginMobile": {
+            "type": "number"
+        },
+        "tagName": {
+            "type": "string",
+            "default": "div"
+        },
+        "maxWidth": {
+            "type": "string"
+        }
+    },
+    "supports": {
+        "html": false,
+        "anchor": true,
+        "spacing": {
+            "margin": false,
+            "padding": false
+        }
+    },
+    "editorScript": "file:./index.js",
+    "editorStyle": "file:./index.css"
+}

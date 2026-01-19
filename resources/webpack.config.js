@@ -203,10 +203,6 @@ module.exports = {
     'blocks/menu-builder/build/style': './blocks/menu-builder/style.scss',
     'blocks/menu-builder/build/editor': './blocks/menu-builder/editor.scss',
     'blocks/menu-builder/build/frontend': './blocks/menu-builder/frontend.js',
-
-    // Blocks Extra (global editor/frontend enhancements)
-    'blocks-extra/build/editor': './blocks-extra/ts/editor.ts',
-    'blocks-extra/build/frontend': './blocks-extra/ts/frontend.ts',
   },
   output: {
     path: path.resolve(__dirname),

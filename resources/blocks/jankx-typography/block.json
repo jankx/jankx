@@ -1,0 +1,44 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "jankx/typography",
+    "version": "1.0.0",
+    "title": "Jankx Typography",
+    "category": "design",
+    "description": "A wrapper for text elements with advanced typography and line-clamp controls.",
+    "attributes": {
+        "fontSizeDesktop": {
+            "type": "number"
+        },
+        "fontSizeTablet": {
+            "type": "number"
+        },
+        "fontSizeMobile": {
+            "type": "number"
+        },
+        "lineClampDesktop": {
+            "type": "number"
+        },
+        "lineClampTablet": {
+            "type": "number"
+        },
+        "lineClampMobile": {
+            "type": "number"
+        },
+        "textAlign": {
+            "type": "string"
+        },
+        "textColor": {
+            "type": "string"
+        }
+    },
+    "supports": {
+        "html": false,
+        "typography": {
+            "fontSize": false,
+            "lineHeight": false
+        }
+    },
+    "editorScript": "file:./index.js",
+    "editorStyle": "file:./index.css"
+}
