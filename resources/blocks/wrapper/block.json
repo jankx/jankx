@@ -3,7 +3,7 @@
     "apiVersion": 3,
     "name": "jankx/wrapper",
     "version": "1.0.0",
-    "title": "Jankx Wrapper",
+    "title": "Wrapper",
     "category": "design",
     "description": "A layout wrapper block with advanced responsive controls.",
     "attributes": {
@@ -25,12 +25,28 @@
         "marginMobile": {
             "type": "number"
         },
+        "hideOnDesktop": {
+            "type": "boolean",
+            "default": false
+        },
+        "hideOnTablet": {
+            "type": "boolean",
+            "default": false
+        },
+        "hideOnMobile": {
+            "type": "boolean",
+            "default": false
+        },
         "tagName": {
             "type": "string",
             "default": "div"
         },
         "maxWidth": {
             "type": "string"
+        },
+        "renderMode": {
+            "type": "string",
+            "default": "dynamic"
         }
     },
     "supports": {
@@ -41,6 +57,6 @@
             "padding": false
         }
     },
-    "editorScript": "file:./index.js",
-    "editorStyle": "file:./index.css"
+    "editorScript": "file:./build/index.js",
+    "editorStyle": "file:./build/index.css"
 }

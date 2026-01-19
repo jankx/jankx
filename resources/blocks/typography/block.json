@@ -3,7 +3,7 @@
     "apiVersion": 3,
     "name": "jankx/typography",
     "version": "1.0.0",
-    "title": "Jankx Typography",
+    "title": "Typography",
     "category": "design",
     "description": "A wrapper for text elements with advanced typography and line-clamp controls.",
     "attributes": {
@@ -39,6 +39,6 @@
             "lineHeight": false
         }
     },
-    "editorScript": "file:./index.js",
-    "editorStyle": "file:./index.css"
+    "editorScript": "file:./build/index.js",
+    "editorStyle": "file:./build/index.css"
 }

@@ -41,15 +41,6 @@ class GutenbergServiceProvider extends FrameworkGutenbergServiceProvider
 
         $gutenbergService = $app->make('gutenberg.service');
 
-        add_action('enqueue_block_editor_assets', function () use ($gutenbergService) {
-            $gutenbergService->enqueueBlocksExtraEditorAssets();
-        }, 10);
-
-        add_action('enqueue_block_assets', function () use ($gutenbergService) {
-            if (!is_admin()) {
-                $gutenbergService->enqueueBlocksExtraFrontendAssets();
-            }
-        }, 10);
 
         add_filter('use_block_editor_for_post_type', function ($use_block_editor, $post_type) {
             if ($post_type === 'video') {

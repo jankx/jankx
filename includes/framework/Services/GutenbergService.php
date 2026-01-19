@@ -56,6 +56,8 @@ use Jankx\Gutenberg\Blocks\TermLayoutBlock;
 use Jankx\Gutenberg\Blocks\TermLayoutTemplateBlock;
 use Jankx\Gutenberg\Blocks\SafeIframeBlock;
 use Jankx\Gutenberg\Extra\LineClamp as ExtraLineClamp;
+use Jankx\Gutenberg\Blocks\WrapperBlock;
+use Jankx\Gutenberg\Blocks\TypographyBlock;
 
 /**
  * Gutenberg Service
@@ -188,9 +190,10 @@ class GutenbergService
         $this->repository->registerBlock(DividerBlock::class);
         $this->repository->registerBlock(LanguageSwitcherBlock::class);
         $this->repository->registerBlock(PlyrPlayerBlock::class);
-        $this->repository->registerBlock(TermLayoutBlock::class);
         $this->repository->registerBlock(TermLayoutTemplateBlock::class);
         $this->repository->registerBlock(SafeIframeBlock::class);
+        $this->repository->registerBlock(WrapperBlock::class);
+        $this->repository->registerBlock(TypographyBlock::class);
     }
 
     /**

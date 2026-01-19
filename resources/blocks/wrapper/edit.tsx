@@ -1,0 +1,121 @@
+
+import { JankxInspector } from '../../js/components/jankx-inspector/JankxInspector';
+import { ResponsiveControl } from '../../js/components/jankx-inspector/ResponsiveControl';
+import { useBlockProps, InnerBlocks, InspectorControls } from '@wordpress/block-editor';
+import { PanelBody, RangeControl, SelectControl, ToggleControl } from '@wordpress/components';
+
+export default function Edit({ attributes, setAttributes }: any) {
+    const blockProps = useBlockProps({
+        className: 'jankx-wrapper-block',
+        style: {
+            '--jankx-padding-desktop': attributes.paddingDesktop ? `${attributes.paddingDesktop}px` : undefined,
+            '--jankx-padding-tablet': attributes.paddingTablet ? `${attributes.paddingTablet}px` : undefined,
+            '--jankx-padding-mobile': attributes.paddingMobile ? `${attributes.paddingMobile}px` : undefined,
+            '--jankx-margin-desktop': attributes.marginDesktop ? `${attributes.marginDesktop}px` : undefined,
+            '--jankx-margin-tablet': attributes.marginTablet ? `${attributes.marginTablet}px` : undefined,
+            '--jankx-margin-mobile': attributes.marginMobile ? `${attributes.marginMobile}px` : undefined,
+        } as any
+    });
+
+    return (
+        <div {...blockProps}>
+            <InspectorControls>
+                <JankxInspector
+                    tabs={[
+                        { name: 'general', title: 'Layout' },
+                        { name: 'responsive', title: 'Responsive' },
+                        { name: 'advanced', title: 'Advanced' }
+                    ]}
+                >
+                    {(tab) => {
+                        if (tab.name === 'general') {
+                            return (
+                                <PanelBody title="Basic Layout" initialOpen={true}>
+                                    <SelectControl
+                                        label="HTML Tag"
+                                        value={attributes.tagName}
+                                        options={[
+                                            { label: 'div', value: 'div' },
+                                            { label: 'section', value: 'section' },
+                                            { label: 'article', value: 'article' },
+                                            { label: 'aside', value: 'aside' },
+                                            { label: 'main', value: 'main' }
+                                        ]}
+                                        onChange={(tagName) => setAttributes({ tagName })}
+                                    />
+                                </PanelBody>
+                            );
+                        }
+                        if (tab.name === 'responsive') {
+                            return (
+                                <>
+                                    <PanelBody title="Padding" initialOpen={true}>
+                                        <ResponsiveControl label="Inner Space">
+                                            {(device) => (
+                                                <RangeControl
+                                                    value={device === 'desktop' ? attributes.paddingDesktop : device === 'tablet' ? attributes.paddingTablet : attributes.paddingMobile}
+                                                    onChange={(val) => {
+                                                        const key = device === 'desktop' ? 'paddingDesktop' : device === 'tablet' ? 'paddingTablet' : 'paddingMobile';
+                                                        setAttributes({ [key]: val });
+                                                    }}
+                                                    min={0}
+                                                    max={200}
+                                                />
+                                            )}
+                                        </ResponsiveControl>
+                                    </PanelBody>
+                                    <PanelBody title="Margin" initialOpen={false}>
+                                        <ResponsiveControl label="Outer Space">
+                                            {(device) => (
+                                                <RangeControl
+                                                    value={device === 'desktop' ? attributes.marginDesktop : device === 'tablet' ? attributes.marginTablet : attributes.marginMobile}
+                                                    onChange={(val) => {
+                                                        const key = device === 'desktop' ? 'marginDesktop' : device === 'tablet' ? 'marginTablet' : 'marginMobile';
+                                                        setAttributes({ [key]: val });
+                                                    }}
+                                                    min={0}
+                                                    max={200}
+                                                />
+                                            )}
+                                        </ResponsiveControl>
+                                    </PanelBody>
+                                    <PanelBody title="Visibility" initialOpen={false}>
+                                        <ToggleControl
+                                            label="Hide on Desktop"
+                                            checked={attributes.hideOnDesktop}
+                                            onChange={(hideOnDesktop) => setAttributes({ hideOnDesktop })}
+                                        />
+                                        <ToggleControl
+                                            label="Hide on Tablet"
+                                            checked={attributes.hideOnTablet}
+                                            onChange={(hideOnTablet) => setAttributes({ hideOnTablet })}
+                                        />
+                                        <ToggleControl
+                                            label="Hide on Mobile"
+                                            checked={attributes.hideOnMobile}
+                                            onChange={(hideOnMobile) => setAttributes({ hideOnMobile })}
+                                        />
+                                    </PanelBody>
+                                    <PanelBody title="Utilities" initialOpen={false}>
+                                        <SelectControl
+                                            label="Render Mode"
+                                            value={attributes.renderMode}
+                                            options={[
+                                                { label: 'Dynamic (SSR)', value: 'dynamic' },
+                                                { label: 'Static (CSR)', value: 'static' }
+                                            ]}
+                                            onChange={(renderMode) => setAttributes({ renderMode })}
+                                            help="Choose how this block should be rendered."
+                                        />
+                                    </PanelBody>
+                                </>
+                            );
+                        }
+                        return null;
+                    }}
+                </JankxInspector>
+            </InspectorControls>
+            <InnerBlocks />
+        </div>
+    );
+}

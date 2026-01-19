@@ -203,6 +203,8 @@ module.exports = {
     'blocks/menu-builder/build/style': './blocks/menu-builder/style.scss',
     'blocks/menu-builder/build/editor': './blocks/menu-builder/editor.scss',
     'blocks/menu-builder/build/frontend': './blocks/menu-builder/frontend.js',
+    'blocks/wrapper/build/index': './blocks/wrapper/index.tsx',
+    'blocks/typography/build/index': './blocks/typography/index.tsx',
   },
   output: {
     path: path.resolve(__dirname),
