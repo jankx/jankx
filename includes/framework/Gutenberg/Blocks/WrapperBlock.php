@@ -48,14 +48,26 @@ class WrapperBlock extends Block
             }
         }
 
-        $style_attr = !empty($styles) ? ' style="' . implode(';', $styles) . '"' : '';
-        $class_attr = ' class="' . implode(' ', $classes) . '"';
+        $class_string = implode(' ', $classes);
+        $block_id = 'jankx-wrapper-' . substr(md5(serialize($attributes)), 0, 8);
+
+        $style_rules = [];
+        if (!empty($styles)) {
+            $style_rules[] = implode(';', $styles);
+        }
+
+        $inline_css = sprintf(
+            '<style>.%s > * {%s}</style>',
+            $block_id,
+            !empty($style_rules) ? implode(';', $style_rules) . ' !important;' : ''
+        );
 
         return sprintf(
-            '<%1$s%2$s%3$s>%4$s</%1$s>',
+            '%s<%s class="%s %s">%s</%2$s>',
+            $inline_css,
             $tag,
-            $class_attr,
-            $style_attr,
+            $class_string,
+            $block_id,
             $content
         );
     }

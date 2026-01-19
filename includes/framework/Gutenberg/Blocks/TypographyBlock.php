@@ -36,13 +36,21 @@ class TypographyBlock extends Block
             $styles[] = "color: {$attributes['textColor']}";
         }
 
-        $style_attr = !empty($styles) ? ' style="' . implode(';', $styles) . '"' : '';
-        $class_attr = ' class="' . implode(' ', $classes) . '"';
+        $class_string = implode(' ', $classes);
+        $block_id = 'jankx-typo-' . substr(md5(serialize($attributes)), 0, 8);
+
+        $inline_css = "<style>.{$block_id} > * {";
+        if (!empty($styles)) {
+            $inline_css .= implode(';', $styles) . ' !important;';
+        }
+        $inline_css .= "display: -webkit-box !important;-webkit-box-orient: vertical !important;overflow: hidden !important;text-overflow: ellipsis !important;";
+        $inline_css .= "}</style>";
 
         return sprintf(
-            '<div%1$s%2$s>%3$s</div>',
-            $class_attr,
-            $style_attr,
+            '%s<div class="%s %s">%s</div>',
+            $inline_css,
+            $class_string,
+            $block_id,
             $content
         );
     }
