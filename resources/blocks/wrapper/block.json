@@ -6,6 +6,9 @@
     "title": "Wrapper",
     "category": "design",
     "description": "A layout wrapper block with advanced responsive controls.",
+    "providesContext": {
+        "jankx/wrapperId": "anchor"
+    },
     "attributes": {
         "paddingDesktop": {
             "type": "number"

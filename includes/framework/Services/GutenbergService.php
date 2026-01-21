@@ -58,6 +58,7 @@ use Jankx\Gutenberg\Blocks\SafeIframeBlock;
 use Jankx\Gutenberg\Extra\LineClamp as ExtraLineClamp;
 use Jankx\Gutenberg\Blocks\WrapperBlock;
 use Jankx\Gutenberg\Blocks\TypographyBlock;
+use Jankx\Gutenberg\Extra\ChildOrder as ExtraChildOrder;
 
 /**
  * Gutenberg Service
@@ -450,6 +451,9 @@ class GutenbergService
 
             // Register Line Clamp extra
             $extraManager->register(ExtraLineClamp::class);
+
+            // Register Child Order extra
+            $extraManager->register(ExtraChildOrder::class);
 
             // Allow child themes or plugins to register additional block extras
             do_action('jankx/gutenberg/register-block-extras', $extraManager, $this->app);

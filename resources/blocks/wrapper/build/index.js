@@ -8,7 +8,7 @@
   \***********************************/
 /***/ ((module) => {
 
-module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/wrapper","version":"1.0.0","title":"Wrapper","category":"design","description":"A layout wrapper block with advanced responsive controls.","attributes":{"paddingDesktop":{"type":"number"},"paddingTablet":{"type":"number"},"paddingMobile":{"type":"number"},"marginDesktop":{"type":"number"},"marginTablet":{"type":"number"},"marginMobile":{"type":"number"},"hideOnDesktop":{"type":"boolean","default":false},"hideOnTablet":{"type":"boolean","default":false},"hideOnMobile":{"type":"boolean","default":false},"tagName":{"type":"string","default":"div"},"maxWidth":{"type":"string"},"renderMode":{"type":"string","default":"dynamic"}},"supports":{"html":false,"anchor":true,"spacing":{"margin":false,"padding":false}},"editorScript":"file:./build/index.js","editorStyle":"file:./build/index.css"}');
+module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/wrapper","version":"1.0.0","title":"Wrapper","category":"design","description":"A layout wrapper block with advanced responsive controls.","providesContext":{"jankx/wrapperId":"anchor"},"attributes":{"paddingDesktop":{"type":"number"},"paddingTablet":{"type":"number"},"paddingMobile":{"type":"number"},"marginDesktop":{"type":"number"},"marginTablet":{"type":"number"},"marginMobile":{"type":"number"},"hideOnDesktop":{"type":"boolean","default":false},"hideOnTablet":{"type":"boolean","default":false},"hideOnMobile":{"type":"boolean","default":false},"tagName":{"type":"string","default":"div"},"maxWidth":{"type":"string"},"renderMode":{"type":"string","default":"dynamic"}},"supports":{"html":false,"anchor":true,"spacing":{"margin":false,"padding":false}},"editorScript":"file:./build/index.js","editorStyle":"file:./build/index.css"}');
 
 /***/ }),
 
@@ -202,7 +202,7 @@ function save({
   attributes
 }) {
   if (attributes.renderMode === 'dynamic') {
-    return null; // Let PHP handle rendering (SSR)
+    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_0__.InnerBlocks.Content, {});
   }
   const Tag = attributes.tagName || 'div';
   const blockProps = _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_0__.useBlockProps.save({

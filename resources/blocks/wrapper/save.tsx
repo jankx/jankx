@@ -2,10 +2,6 @@
 import { useBlockProps, InnerBlocks } from '@wordpress/block-editor';
 
 export default function save({ attributes }: any) {
-    if (attributes.renderMode === 'dynamic') {
-        return null; // Let PHP handle rendering (SSR)
-    }
-
     const Tag = attributes.tagName || 'div';
     const blockProps = useBlockProps.save({
         className: [

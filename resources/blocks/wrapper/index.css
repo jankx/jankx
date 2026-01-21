@@ -28,3 +28,20 @@
         display: none !important;
     }
 }
+
+/* Child Order Support */
+.jankx-order-applied {
+    order: var(--jankx-order-desktop) !important;
+}
+
+@media (max-width: 1024px) {
+    .jankx-order-applied {
+        order: var(--jankx-order-tablet, var(--jankx-order-desktop)) !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .jankx-order-applied {
+        order: var(--jankx-order-mobile, var(--jankx-order-tablet, var(--jankx-order-desktop))) !important;
+    }
+}
