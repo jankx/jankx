@@ -1,2 +1,2119 @@
-(()=>{"use strict";function t(t){return"number"==typeof t}function e(t){return"string"==typeof t}function n(t){return"boolean"==typeof t}function r(t){return"[object Object]"===Object.prototype.toString.call(t)}function o(t){return Math.abs(t)}function i(t){return Math.sign(t)}function s(t,e){return o(t-e)}function c(t){return f(t).map(Number)}function a(t){return t[u(t)]}function u(t){return Math.max(0,t.length-1)}function l(t,e){return e===u(t)}function d(t,e=0){return Array.from(Array(t),(t,n)=>e+n)}function f(t){return Object.keys(t)}function p(t,e){return[t,e].reduce((t,e)=>(f(e).forEach(n=>{const o=t[n],i=e[n],s=r(o)&&r(i);t[n]=s?p(o,i):i}),t),{})}function m(t,e){return void 0!==e.MouseEvent&&t instanceof e.MouseEvent}function g(){let t=[];const e={add:function(n,r,o,i={passive:!0}){let s;if("addEventListener"in n)n.addEventListener(r,o,i),s=()=>n.removeEventListener(r,o,i);else{const t=n;t.addListener(o),s=()=>t.removeListener(o)}return t.push(s),e},clear:function(){t=t.filter(t=>t())}};return e}function y(t=0,e=0){const n=o(t-e);function r(e){return e<t}function i(t){return t>e}function s(t){return r(t)||i(t)}return{length:n,max:e,min:t,constrain:function(n){return s(n)?r(n)?t:e:n},reachedAny:s,reachedMax:i,reachedMin:r,removeOffset:function(t){return n?t-n*Math.ceil((t-e)/n):t}}}function h(t,e,n){const{constrain:r}=y(0,t),i=t+1;let s=c(e);function c(t){return n?o((i+t)%i):r(t)}function a(){return s}function u(){return h(t,a(),n)}const l={get:a,set:function(t){return s=c(t),l},add:function(t){return u().set(a()+t)},clone:u};return l}function b(t,e,r,c,a,u,l,d,f,p,h,b,x,v,w,S,E,L,I){const{cross:O,direction:P}=t,D=["INPUT","SELECT","TEXTAREA"],M={passive:!1},T=g(),A=g(),F=y(50,225).constrain(v.measure(20)),k={mouse:300,touch:400},H={mouse:500,touch:600},q=w?43:25;let N=!1,_=0,z=0,V=!1,B=!1,C=!1,$=!1;function R(t){if(!m(t,c)&&t.touches.length>=2)return j(t);const e=u.readPoint(t),n=u.readPoint(t,O),r=s(e,_),o=s(n,z);if(!B&&!$){if(!t.cancelable)return j(t);if(B=r>o,!B)return j(t)}const i=u.pointerMove(t);r>S&&(C=!0),p.useFriction(.3).useDuration(.75),d.start(),a.add(P(i)),t.preventDefault()}function j(t){const e=h.byDistance(0,!1).index!==b.get(),n=u.pointerUp(t)*(w?H:k)[$?"mouse":"touch"],r=function(t,e){const n=b.add(-1*i(t)),r=h.byDistance(t,!w).distance;return w||o(t)<F?r:E&&e?.5*r:h.byIndex(n.get(),0).distance}(P(n),e),c=function(t,e){if(0===t||0===e)return 0;if(o(t)<=o(e))return 0;const n=s(o(t),o(e));return o(n/t)}(n,r),a=q-10*c,l=L+c/50;B=!1,V=!1,A.clear(),p.useDuration(a).useFriction(l),f.distance(r,!w),$=!1,x.emit("pointerUp")}function W(t){C&&(t.stopPropagation(),t.preventDefault(),C=!1)}return{init:function(t){if(!I)return;function o(o){(n(I)||I(t,o))&&function(t){const n=m(t,c);$=n,C=w&&n&&!t.buttons&&N,N=s(a.get(),l.get())>=2,n&&0!==t.button||function(t){const e=t.nodeName||"";return D.includes(e)}(t.target)||(V=!0,u.pointerDown(t),p.useFriction(0).useDuration(0),a.set(l),function(){const t=$?r:e;A.add(t,"touchmove",R,M).add(t,"touchend",j).add(t,"mousemove",R,M).add(t,"mouseup",j)}(),_=u.readPoint(t),z=u.readPoint(t,O),x.emit("pointerDown"))}(o)}const i=e;T.add(i,"dragstart",t=>t.preventDefault(),M).add(i,"touchmove",()=>{},M).add(i,"touchend",()=>{}).add(i,"touchstart",o).add(i,"mousedown",o).add(i,"touchcancel",j).add(i,"contextmenu",j).add(i,"click",W,!0)},destroy:function(){T.clear(),A.clear()},pointerDown:function(){return V}}}function x(t,e){let n,r;function i(t){return t.timeStamp}function s(n,r){const o="client"+("x"===(r||t.scroll)?"X":"Y");return(m(n,e)?n:n.touches[0])[o]}return{pointerDown:function(t){return n=t,r=t,s(t)},pointerMove:function(t){const e=s(t)-s(r),o=i(t)-i(n)>170;return r=t,o&&(n=t),e},pointerUp:function(t){if(!n||!r)return 0;const e=s(r)-s(n),c=i(t)-i(n),a=i(t)-i(r)>170,u=e/c;return c&&!a&&o(u)>.1?u:0},readPoint:s}}function v(t,e,r,i,s,c,a){const u=[t].concat(i);let l,d,f=[],p=!1;function m(t){return s.measureSize(a.measure(t))}return{init:function(s){c&&(d=m(t),f=i.map(m),l=new ResizeObserver(r=>{(n(c)||c(s,r))&&function(n){for(const r of n){if(p)return;const n=r.target===t,c=i.indexOf(r.target),a=n?d:f[c];if(o(m(n?t:i[c])-a)>=.5){s.reInit(),e.emit("resize");break}}}(r)}),r.requestAnimationFrame(()=>{u.forEach(t=>l.observe(t))}))},destroy:function(){p=!0,l&&l.disconnect()}}}function w(t,e,n,r,i){const s=i.measure(10),c=i.measure(50),a=y(.1,.99);let u=!1;function l(){return!u&&!!t.reachedAny(n.get())&&!!t.reachedAny(e.get())}return{shouldConstrain:l,constrain:function(i){if(!l())return;const u=t.reachedMin(e.get())?"min":"max",d=o(t[u]-e.get()),f=n.get()-e.get(),p=a.constrain(d/c);n.subtract(f*p),!i&&o(f)<s&&(n.set(t.constrain(n.get())),r.useDuration(25).useBaseFriction())},toggleActive:function(t){u=!t}}}function S(t,e,n,r){const o=e.min+.1,i=e.max+.1,{reachedMin:s,reachedMax:c}=y(o,i);return{loop:function(e){if(!function(t){return 1===t?c(n.get()):-1===t&&s(n.get())}(e))return;const o=t*(-1*e);r.forEach(t=>t.add(o))}}}function E(e){let n=e;function r(e){return t(e)?e:e.get()}return{get:function(){return n},set:function(t){n=r(t)},add:function(t){n+=r(t)},subtract:function(t){n-=r(t)}}}function L(t,e){const n="x"===t.scroll?function(t){return`translate3d(${t}px,0px,0px)`}:function(t){return`translate3d(0px,${t}px,0px)`},r=e.style;let o=null,i=!1;return{clear:function(){i||(r.transform="",e.getAttribute("style")||e.removeAttribute("style"))},to:function(e){if(i)return;const s=(c=t.direction(e),Math.round(100*c)/100);var c;s!==o&&(r.transform=n(s),o=s)},toggleActive:function(t){i=!t}}}function I(t,e,n,r,o,i,s,a,u){const l=c(o),d=c(o).reverse(),f=function(){const t=s[0];return g(m(d,t),n,!1)}().concat(function(){const t=e-s[0]-1;return g(m(l,t),-n,!0)}());function p(t,e){return t.reduce((t,e)=>t-o[e],e)}function m(t,e){return t.reduce((t,n)=>p(t,e)>0?t.concat([n]):t,[])}function g(o,s,c){const l=function(t){return i.map((n,o)=>({start:n-r[o]+.5+t,end:n+e-.5+t}))}(s);return o.map(e=>{const r=c?0:-n,o=c?n:0,i=c?"end":"start",s=l[e][i];return{index:e,loopPoint:s,slideLocation:E(-1),translate:L(t,u[e]),target:()=>a.get()>s?r:o}})}return{canLoop:function(){return f.every(({index:t})=>p(l.filter(e=>e!==t),e)<=.1)},clear:function(){f.forEach(t=>t.translate.clear())},loop:function(){f.forEach(t=>{const{target:e,translate:n,slideLocation:r}=t,o=e();o!==r.get()&&(n.to(o),r.set(o))})},loopPoints:f}}function O(t,e,r){let o,i=!1;return{init:function(s){r&&(o=new MutationObserver(t=>{i||(n(r)||r(s,t))&&function(t){for(const n of t)if("childList"===n.type){s.reInit(),e.emit("slidesChanged");break}}(t)}),o.observe(t,{childList:!0}))},destroy:function(){o&&o.disconnect(),i=!0}}}function P(r,p,m,P,D,M,T){const{align:A,axis:F,direction:k,startIndex:H,loop:q,duration:N,dragFree:_,dragThreshold:z,inViewThreshold:V,slidesToScroll:B,skipSnaps:C,containScroll:$,watchResize:R,watchSlides:j,watchDrag:W,watchFocus:U}=M,G={measure:function(t){const{offsetTop:e,offsetLeft:n,offsetWidth:r,offsetHeight:o}=t;return{top:e,right:n+r,bottom:e+o,left:n,width:r,height:o}}},Q=G.measure(p),X=m.map(G.measure),Y=function(t,e){const n="rtl"===e,r="y"===t,o=!r&&n?-1:1;return{scroll:r?"y":"x",cross:r?"x":"y",startEdge:r?"top":n?"right":"left",endEdge:r?"bottom":n?"left":"right",measureSize:function(t){const{height:e,width:n}=t;return r?e:n},direction:function(t){return t*o}}}(F,k),J=Y.measureSize(Q),K=function(t){return{measure:function(e){return t*(e/100)}}}(J),Z=function(t,n){const r={start:function(){return 0},center:function(t){return o(t)/2},end:o};function o(t){return n-t}return{measure:function(o,i){return e(t)?r[t](o):t(n,o,i)}}}(A,J),tt=!q&&!!$,et=q||!!$,{slideSizes:nt,slideSizesWithGaps:rt,startGap:ot,endGap:it}=function(t,e,n,r,i,s){const{measureSize:c,startEdge:u,endEdge:d}=t,f=n[0]&&i,p=function(){if(!f)return 0;const t=n[0];return o(e[u]-t[u])}(),m=function(){if(!f)return 0;const t=s.getComputedStyle(a(r));return parseFloat(t.getPropertyValue(`margin-${d}`))}(),g=n.map(c),y=n.map((t,e,n)=>{const r=!e,o=l(n,e);return r?g[e]+p:o?g[e]+m:n[e+1][u]-t[u]}).map(o);return{slideSizes:g,slideSizesWithGaps:y,startGap:p,endGap:m}}(Y,Q,X,m,et,D),st=function(e,n,r,i,s,l,d,f,p){const{startEdge:m,endEdge:g,direction:y}=e,h=t(r);return{groupSlides:function(t){return h?function(t,e){return c(t).filter(t=>t%e===0).map(n=>t.slice(n,n+e))}(t,r):function(t){return t.length?c(t).reduce((e,r,c)=>{const h=a(e)||0,b=0===h,x=r===u(t),v=s[m]-l[h][m],w=s[m]-l[r][g],S=!i&&b?y(d):0,E=o(w-(!i&&x?y(f):0)-(v+S));return c&&E>n+p&&e.push(r),x&&e.push(t.length),e},[]).map((e,n,r)=>{const o=Math.max(r[n-1]||0);return t.slice(o,e)}):[]}(t)}}}(Y,J,B,q,Q,X,ot,it,2),{snaps:ct,snapsAligned:at}=function(t,e,n,r,i){const{startEdge:s,endEdge:c}=t,{groupSlides:u}=i,l=u(r).map(t=>a(t)[c]-t[0][s]).map(o).map(e.measure),d=r.map(t=>n[s]-t[s]).map(t=>-o(t)),f=u(d).map(t=>t[0]).map((t,e)=>t+l[e]);return{snaps:d,snapsAligned:f}}(Y,Z,Q,X,st),ut=-a(ct)+a(rt),{snapsContained:lt,scrollContainLimit:dt}=function(t,e,n,r){const o=y(-e+t,0),i=n.map((t,e)=>{const{min:r,max:i}=o,s=o.constrain(t),c=!e,a=l(n,e);return c?i:a||u(r,s)?r:u(i,s)?i:s}).map(t=>parseFloat(t.toFixed(3))),c=function(){const t=i[0],e=a(i);return y(i.lastIndexOf(t),i.indexOf(e)+1)}();function u(t,e){return s(t,e)<=1}return{snapsContained:function(){if(e<=t+2)return[o.max];if("keepSnaps"===r)return i;const{min:n,max:s}=c;return i.slice(n,s)}(),scrollContainLimit:c}}(J,ut,at,$),ft=tt?lt:at,{limit:pt}=function(t,e,n){const r=e[0];return{limit:y(n?r-t:a(e),r)}}(ut,ft,q),mt=h(u(ft),H,q),gt=mt.clone(),yt=c(m),ht=function(t,e,n,r){const o=g(),i=1e3/60;let s=null,c=0,a=0;function u(t){if(!a)return;s||(s=t,n(),n());const o=t-s;for(s=t,c+=o;c>=i;)n(),c-=i;r(c/i),a&&(a=e.requestAnimationFrame(u))}function l(){e.cancelAnimationFrame(a),s=null,c=0,a=0}return{init:function(){o.add(t,"visibilitychange",()=>{t.hidden&&(s=null,c=0)})},destroy:function(){l(),o.clear()},start:function(){a||(a=e.requestAnimationFrame(u))},stop:l,update:n,render:r}}(P,D,()=>(({dragHandler:t,scrollBody:e,scrollBounds:n,options:{loop:r}})=>{r||n.constrain(t.pointerDown()),e.seek()})(At),t=>(({scrollBody:t,translate:e,location:n,offsetLocation:r,previousLocation:o,scrollLooper:i,slideLooper:s,dragHandler:c,animation:a,eventHandler:u,scrollBounds:l,options:{loop:d}},f)=>{const p=t.settled(),m=!l.shouldConstrain(),g=d?p:p&&m,y=g&&!c.pointerDown();y&&a.stop();const h=n.get()*f+o.get()*(1-f);r.set(h),d&&(i.loop(t.direction()),s.loop()),e.to(r.get()),y&&u.emit("settle"),g||u.emit("scroll")})(At,t)),bt=ft[mt.get()],xt=E(bt),vt=E(bt),wt=E(bt),St=E(bt),Et=function(t,e,n,r,s){let c=0,a=0,u=s,l=.68,d=t.get(),f=0;function p(t){return u=t,g}function m(t){return l=t,g}const g={direction:function(){return a},duration:function(){return u},velocity:function(){return c},seek:function(){const e=r.get()-t.get();let o=0;return u?(n.set(t),c+=e/u,c*=l,d+=c,t.add(c),o=d-f):(c=0,n.set(r),t.set(r),o=e),a=i(o),f=d,g},settled:function(){return o(r.get()-e.get())<.001},useBaseFriction:function(){return m(.68)},useBaseDuration:function(){return p(s)},useFriction:m,useDuration:p};return g}(xt,wt,vt,St,N),Lt=function(t,e,n,r,s){const{reachedAny:c,removeOffset:u,constrain:l}=r;function d(t){return t.concat().sort((t,e)=>o(t)-o(e))[0]}function f(e,r){const o=[e,e+n,e-n];if(!t)return e;if(!r)return d(o);const s=o.filter(t=>i(t)===r);return s.length?d(s):a(o)-n}return{byDistance:function(n,r){const i=s.get()+n,{index:a,distance:d}=function(n){const r=t?u(n):l(n),i=e.map((t,e)=>({diff:f(t-r,0),index:e})).sort((t,e)=>o(t.diff)-o(e.diff)),{index:s}=i[0];return{index:s,distance:r}}(i),p=!t&&c(i);return!r||p?{index:a,distance:n}:{index:a,distance:n+f(e[a]-d,0)}},byIndex:function(t,n){return{index:t,distance:f(e[t]-s.get(),n)}},shortcut:f}}(q,ft,ut,pt,St),It=function(t,e,n,r,o,i,s){function c(o){const c=o.distance,a=o.index!==e.get();i.add(c),c&&(r.duration()?t.start():(t.update(),t.render(1),t.update())),a&&(n.set(e.get()),e.set(o.index),s.emit("select"))}return{distance:function(t,e){c(o.byDistance(t,e))},index:function(t,n){const r=e.clone().set(t);c(o.byIndex(r.get(),n))}}}(ht,mt,gt,Et,Lt,St,T),Ot=function(t){const{max:e,length:n}=t;return{get:function(t){return n?(t-e)/-n:0}}}(pt),Pt=g(),Dt=function(t,e,n,r){const o={};let i,s=null,c=null,a=!1;return{init:function(){i=new IntersectionObserver(t=>{a||(t.forEach(t=>{const n=e.indexOf(t.target);o[n]=t}),s=null,c=null,n.emit("slidesInView"))},{root:t.parentElement,threshold:r}),e.forEach(t=>i.observe(t))},destroy:function(){i&&i.disconnect(),a=!0},get:function(t=!0){if(t&&s)return s;if(!t&&c)return c;const e=function(t){return f(o).reduce((e,n)=>{const r=parseInt(n),{isIntersecting:i}=o[r];return(t&&i||!t&&!i)&&e.push(r),e},[])}(t);return t&&(s=e),t||(c=e),e}}}(p,m,T,V),{slideRegistry:Mt}=function(t,e,n,r,o,i){const{groupSlides:s}=o,{min:c,max:f}=r;return{slideRegistry:function(){const r=s(i),o=!t||"keepSnaps"===e;return 1===n.length?[i]:o?r:r.slice(c,f).map((t,e,n)=>{const r=!e,o=l(n,e);return r?d(a(n[0])+1):o?d(u(i)-a(n)[0]+1,a(n)[0]):t})}()}}(tt,$,ft,dt,st,yt),Tt=function(e,r,o,i,s,c,a,u){const l={passive:!0,capture:!0};let d=0;function f(t){"Tab"===t.code&&(d=(new Date).getTime())}return{init:function(p){u&&(c.add(document,"keydown",f,!1),r.forEach((r,f)=>{c.add(r,"focus",r=>{(n(u)||u(p,r))&&function(n){if((new Date).getTime()-d>10)return;a.emit("slideFocusStart"),e.scrollLeft=0;const r=o.findIndex(t=>t.includes(n));t(r)&&(s.useDuration(0),i.index(r,0),a.emit("slideFocus"))}(f)},l)}))}}}(r,m,Mt,It,Et,Pt,T,U),At={ownerDocument:P,ownerWindow:D,eventHandler:T,containerRect:Q,slideRects:X,animation:ht,axis:Y,dragHandler:b(Y,r,P,D,St,x(Y,D),xt,ht,It,Et,Lt,mt,T,K,_,z,C,.68,W),eventStore:Pt,percentOfView:K,index:mt,indexPrevious:gt,limit:pt,location:xt,offsetLocation:wt,previousLocation:vt,options:M,resizeHandler:v(p,T,D,m,Y,R,G),scrollBody:Et,scrollBounds:w(pt,wt,St,Et,K),scrollLooper:S(ut,pt,wt,[xt,wt,vt,St]),scrollProgress:Ot,scrollSnapList:ft.map(Ot.get),scrollSnaps:ft,scrollTarget:Lt,scrollTo:It,slideLooper:I(Y,J,ut,nt,rt,ct,ft,wt,m),slideFocus:Tt,slidesHandler:O(p,T,j),slidesInView:Dt,slideIndexes:yt,slideRegistry:Mt,slidesToScroll:st,target:St,translate:L(Y,p)};return At}const D={align:"center",axis:"x",container:null,slides:null,containScroll:"trimSnaps",direction:"ltr",slidesToScroll:1,inViewThreshold:0,breakpoints:{},dragFree:!1,dragThreshold:10,loop:!1,skipSnaps:!1,duration:25,startIndex:0,active:!0,watchDrag:!0,watchResize:!0,watchSlides:!0,watchFocus:!0};function M(t){function e(t,e){return p(t,e||{})}return{mergeOptions:e,optionsAtMedia:function(n){const r=n.breakpoints||{},o=f(r).filter(e=>t.matchMedia(e).matches).map(t=>r[t]).reduce((t,n)=>e(t,n),{});return e(n,o)},optionsMediaQueries:function(e){return e.map(t=>f(t.breakpoints||{})).reduce((t,e)=>t.concat(e),[]).map(t.matchMedia)}}}function T(t,n,r){const o=t.ownerDocument,i=o.defaultView,s=M(i),c=function(t){let e=[];return{init:function(n,r){return e=r.filter(({options:e})=>!1!==t.optionsAtMedia(e).active),e.forEach(e=>e.init(n,t)),r.reduce((t,e)=>Object.assign(t,{[e.name]:e}),{})},destroy:function(){e=e.filter(t=>t.destroy())}}}(s),a=g(),u=function(){let t,e={};function n(t){return e[t]||[]}const r={init:function(e){t=e},emit:function(e){return n(e).forEach(n=>n(t,e)),r},off:function(t,o){return e[t]=n(t).filter(t=>t!==o),r},on:function(t,o){return e[t]=n(t).concat([o]),r},clear:function(){e={}}};return r}(),{mergeOptions:l,optionsAtMedia:d,optionsMediaQueries:f}=s,{on:p,off:m,emit:y}=u,h=F;let b,x,v,w,S=!1,E=l(D,T.globalOptions),L=l(E),I=[];function O(e){const n=P(t,v,w,o,i,e,u);return e.loop&&!n.slideLooper.canLoop()?O(Object.assign({},e,{loop:!1})):n}function A(n,r){S||(E=l(E,n),L=d(E),I=r||I,function(){const{container:n,slides:r}=L,o=e(n)?t.querySelector(n):n;v=o||t.children[0];const i=e(r)?v.querySelectorAll(r):r;w=[].slice.call(i||v.children)}(),b=O(L),f([E,...I.map(({options:t})=>t)]).forEach(t=>a.add(t,"change",F)),L.active&&(b.translate.to(b.location.get()),b.animation.init(),b.slidesInView.init(),b.slideFocus.init(N),b.eventHandler.init(N),b.resizeHandler.init(N),b.slidesHandler.init(N),b.options.loop&&b.slideLooper.loop(),v.offsetParent&&w.length&&b.dragHandler.init(N),x=c.init(N,I)))}function F(t,e){const n=q();k(),A(l({startIndex:n},t),e),u.emit("reInit")}function k(){b.dragHandler.destroy(),b.eventStore.clear(),b.translate.clear(),b.slideLooper.clear(),b.resizeHandler.destroy(),b.slidesHandler.destroy(),b.slidesInView.destroy(),b.animation.destroy(),c.destroy(),a.clear()}function H(t,e,n){L.active&&!S&&(b.scrollBody.useBaseFriction().useDuration(!0===e?0:L.duration),b.scrollTo.index(t,n||0))}function q(){return b.index.get()}const N={canScrollNext:function(){return b.index.add(1).get()!==q()},canScrollPrev:function(){return b.index.add(-1).get()!==q()},containerNode:function(){return v},internalEngine:function(){return b},destroy:function(){S||(S=!0,a.clear(),k(),u.emit("destroy"),u.clear())},off:m,on:p,emit:y,plugins:function(){return x},previousScrollSnap:function(){return b.indexPrevious.get()},reInit:h,rootNode:function(){return t},scrollNext:function(t){H(b.index.add(1).get(),t,-1)},scrollPrev:function(t){H(b.index.add(-1).get(),t,1)},scrollProgress:function(){return b.scrollProgress.get(b.offsetLocation.get())},scrollSnapList:function(){return b.scrollSnapList},scrollTo:H,selectedScrollSnap:q,slideNodes:function(){return w},slidesInView:function(){return b.slidesInView.get()},slidesNotInView:function(){return b.slidesInView.get(!1)}};return A(n,r),setTimeout(()=>u.emit("init"),0),N}T.globalOptions=void 0;const A={active:!0,breakpoints:{},delay:4e3,jump:!1,playOnInit:!0,stopOnFocusIn:!0,stopOnInteraction:!0,stopOnMouseEnter:!1,stopOnLastSnap:!1,rootNode:null};function F(t={}){let e,n,r,o,i=null,s=0,c=!1,a=!1,u=!1,l=!1;function d(){r||(m()?u=!0:(c||n.emit("autoplay:play"),function(){const{ownerWindow:t}=n.internalEngine();t.clearTimeout(s),s=t.setTimeout(x,o[n.selectedScrollSnap()]),i=(new Date).getTime(),n.emit("autoplay:timerset")}(),c=!0))}function f(){r||(c&&n.emit("autoplay:stop"),function(){const{ownerWindow:t}=n.internalEngine();t.clearTimeout(s),s=0,i=null,n.emit("autoplay:timerstopped")}(),c=!1)}function p(){if(m())return u=c,f();u&&d()}function m(){const{ownerDocument:t}=n.internalEngine();return"hidden"===t.visibilityState}function g(){a||f()}function y(){a||d()}function h(){a=!0,f()}function b(){a=!1,d()}function x(){const{index:t}=n.internalEngine(),r=t.clone().add(1).get(),o=n.scrollSnapList().length-1,i=e.stopOnLastSnap&&r===o;if(n.canScrollNext()?n.scrollNext(l):n.scrollTo(0,l),n.emit("autoplay:select"),i)return f();d()}return{name:"autoplay",options:t,init:function(i,s){n=i;const{mergeOptions:c,optionsAtMedia:a}=s,u=c(A,F.globalOptions),m=c(u,t);if(e=a(m),n.scrollSnapList().length<=1)return;l=e.jump,r=!1,o=function(t,e){const n=t.scrollSnapList();return"number"==typeof e?n.map(()=>e):e(n,t)}(n,e.delay);const{eventStore:x,ownerDocument:v}=n.internalEngine(),w=!!n.internalEngine().options.watchDrag,S=function(t,e){const n=t.rootNode();return e&&e(n)||n}(n,e.rootNode);x.add(v,"visibilitychange",p),w&&n.on("pointerDown",g),w&&!e.stopOnInteraction&&n.on("pointerUp",y),e.stopOnMouseEnter&&x.add(S,"mouseenter",h),e.stopOnMouseEnter&&!e.stopOnInteraction&&x.add(S,"mouseleave",b),e.stopOnFocusIn&&n.on("slideFocusStart",f),e.stopOnFocusIn&&!e.stopOnInteraction&&x.add(n.containerNode(),"focusout",d),e.playOnInit&&d()},destroy:function(){n.off("pointerDown",g).off("pointerUp",y).off("slideFocusStart",f),f(),r=!0,c=!1},play:function(t){void 0!==t&&(l=t),d()},stop:function(){c&&f()},reset:function(){c&&d()},isPlaying:function(){return c},timeUntilNext:function(){return i?o[n.selectedScrollSnap()]-((new Date).getTime()-i):null}}}F.globalOptions=void 0,document.addEventListener("DOMContentLoaded",()=>{document.querySelectorAll(".wp-block-jankx-swiper").forEach(t=>{const e=t.querySelector(".embla");e&&(async()=>{await new Promise(t=>setTimeout(t,100));const n=()=>{if(!t.classList.contains("fit-vh-minus-header"))return;const n=document.querySelector("header"),r=n?n.offsetHeight:0,o=window.innerHeight||document.documentElement.clientHeight,i=Math.max(0,o-r);t.style.setProperty("--swiper-height",`${i}px`),e.dataset.swiperHeight=`${i}`};n(),window.addEventListener("resize",n,{passive:!0}),window.addEventListener("orientationchange",n,{passive:!0});parseInt(e.dataset.slidesPerView);const r=(parseInt(e.dataset.slidesPerViewTablet),parseInt(e.dataset.slidesPerViewMobile),parseInt(e.dataset.spaceBetween)||30),o="true"===e.dataset.loop,i="true"===e.dataset.autoplay,s=parseInt(e.dataset.autoplayDelay)||3e3,c=parseInt(e.dataset.speed)||300,a="true"===e.dataset.navigation,u="true"===e.dataset.pagination,l=(window.innerWidth||document.documentElement.clientWidth,(e.querySelectorAll(".embla__slide").length?e.querySelectorAll(".embla__slide"):e.querySelectorAll(".swiper-slide")).length),d=(Math.min(r,16),Math.min(r,24),l>6?Math.min(c,400):c),f=i&&l<=10,p=Math.max(s,4e3),m=e.dataset.bannerStyle||"default",g=e.dataset.bannerTextColor||"#ffffff",y=e.dataset.bannerBackgroundColor||"rgba(0,0,0,0.5)",h=parseInt(e.dataset.bannerPadding)||20,b=parseInt(e.dataset.bannerBorderRadius)||0,x="true"===e.dataset.gradientOverlay,v=e.dataset.gradientColor||"#000000",w=parseFloat(e.dataset.gradientOpacity)||.7,S=parseInt(e.dataset.gradientHeight)||60,E=(t=>{const e=/^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(t);return e?{r:parseInt(e[1],16),g:parseInt(e[2],16),b:parseInt(e[3],16)}:{r:0,g:0,b:0}})(v);t.classList.add(`banner-style-${m}`),x&&t.classList.add("has-gradient-overlay"),t.style.setProperty("--banner-style",m),t.style.setProperty("--banner-text-color",g),t.style.setProperty("--banner-background-color",y),t.style.setProperty("--banner-padding",`${h}px`),t.style.setProperty("--banner-border-radius",`${b}px`),t.style.setProperty("--gradient-overlay-enabled",x?"1":"0"),t.style.setProperty("--gradient-color-r",E.r),t.style.setProperty("--gradient-color-g",E.g),t.style.setProperty("--gradient-color-b",E.b),t.style.setProperty("--gradient-opacity",w),t.style.setProperty("--gradient-height",`${S}%`),t.style.setProperty("--space-between",`${r}px`);const L=t.querySelector(".embla__button--next"),I=t.querySelector(".embla__button--prev"),O=t.querySelector(".embla__dots");e.classList.add("embla__viewport");const P=e.querySelector(".embla__container")||e.querySelector(".swiper-wrapper");P&&P.classList.add("embla__container");const D=f?[F({delay:p,stopOnInteraction:!0,stopOnMouseEnter:!0})]:[],M=T(e,{loop:o,duration:d,align:"start"},D);if(a&&L&&I&&(L.addEventListener("click",()=>{const t=M.selectedScrollSnap()+1;M.scrollTo(t,!0)},{passive:!0}),I.addEventListener("click",()=>{const t=M.selectedScrollSnap()-1;M.scrollTo(t,!0)},{passive:!0})),f){const t=M.plugins?.().autoplay;t&&e.addEventListener("pointerdown",()=>t.stop(),{passive:!0})}let A=[];const k=()=>{if(!u||!O)return;const t=M.slideNodes();O.innerHTML="",A=t.map((t,e)=>{const n=document.createElement("span");return n.className="embla__dot",n.style.display="inline-block",n.style.width="12px",n.style.height="12px",n.style.borderRadius="9999px",n.style.background="rgba(255,255,255,0.6)",n.style.opacity="0.6",n.style.margin="0 6px",n.style.cursor="pointer",n.style.transition="transform 0.2s ease, background 0.2s ease, opacity 0.2s ease, width 0.2s ease, height 0.2s ease",n.addEventListener("click",()=>M.scrollTo(e,!0),{passive:!0}),O.appendChild(n),n}),H(M.selectedScrollSnap())},H=t=>{A.forEach((e,n)=>{n===t?(e.classList.add("is-active"),e.style.background="rgba(255,255,255,0.95)",e.style.opacity="1",e.style.transform="scale(1.2)",e.style.width="16px",e.style.height="16px"):(e.classList.remove("is-active"),e.style.background="rgba(255,255,255,0.6)",e.style.opacity="0.6",e.style.transform="scale(1)",e.style.width="12px",e.style.height="12px")})};function q(t){const e=t.dataset.swiperHeight;!e||parseFloat(e)<=0?t.querySelectorAll(".embla-banner--circles, .embla-banner--square").forEach(t=>{t.style.removeProperty("width")}):t.querySelectorAll(".embla-banner--circles, .embla-banner--square").forEach(t=>{t.style.setProperty("width",`${e}px`,"important")})}k(),M.on("select",()=>{H(M.selectedScrollSnap()),q(e)}),M.on("reInit",()=>{k(),q(e)}),q(e)})()})})})();
+/******/ (() => { // webpackBootstrap
+/******/ 	"use strict";
+/******/ 	var __webpack_modules__ = ({
+
+/***/ "./node_modules/embla-carousel-autoplay/esm/embla-carousel-autoplay.esm.js":
+/*!*********************************************************************************!*\
+  !*** ./node_modules/embla-carousel-autoplay/esm/embla-carousel-autoplay.esm.js ***!
+  \*********************************************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ Autoplay)
+/* harmony export */ });
+const defaultOptions = {
+  active: true,
+  breakpoints: {},
+  delay: 4000,
+  jump: false,
+  playOnInit: true,
+  stopOnFocusIn: true,
+  stopOnInteraction: true,
+  stopOnMouseEnter: false,
+  stopOnLastSnap: false,
+  rootNode: null
+};
+function normalizeDelay(emblaApi, delay) {
+  const scrollSnaps = emblaApi.scrollSnapList();
+  if (typeof delay === 'number') {
+    return scrollSnaps.map(() => delay);
+  }
+  return delay(scrollSnaps, emblaApi);
+}
+function getAutoplayRootNode(emblaApi, rootNode) {
+  const emblaRootNode = emblaApi.rootNode();
+  return rootNode && rootNode(emblaRootNode) || emblaRootNode;
+}
+function Autoplay(userOptions = {}) {
+  let options;
+  let emblaApi;
+  let destroyed;
+  let delay;
+  let timerStartTime = null;
+  let timerId = 0;
+  let autoplayActive = false;
+  let mouseIsOver = false;
+  let playOnDocumentVisible = false;
+  let jump = false;
+  function init(emblaApiInstance, optionsHandler) {
+    emblaApi = emblaApiInstance;
+    const {
+      mergeOptions,
+      optionsAtMedia
+    } = optionsHandler;
+    const optionsBase = mergeOptions(defaultOptions, Autoplay.globalOptions);
+    const allOptions = mergeOptions(optionsBase, userOptions);
+    options = optionsAtMedia(allOptions);
+    if (emblaApi.scrollSnapList().length <= 1) return;
+    jump = options.jump;
+    destroyed = false;
+    delay = normalizeDelay(emblaApi, options.delay);
+    const {
+      eventStore,
+      ownerDocument
+    } = emblaApi.internalEngine();
+    const isDraggable = !!emblaApi.internalEngine().options.watchDrag;
+    const root = getAutoplayRootNode(emblaApi, options.rootNode);
+    eventStore.add(ownerDocument, 'visibilitychange', visibilityChange);
+    if (isDraggable) {
+      emblaApi.on('pointerDown', pointerDown);
+    }
+    if (isDraggable && !options.stopOnInteraction) {
+      emblaApi.on('pointerUp', pointerUp);
+    }
+    if (options.stopOnMouseEnter) {
+      eventStore.add(root, 'mouseenter', mouseEnter);
+    }
+    if (options.stopOnMouseEnter && !options.stopOnInteraction) {
+      eventStore.add(root, 'mouseleave', mouseLeave);
+    }
+    if (options.stopOnFocusIn) {
+      emblaApi.on('slideFocusStart', stopAutoplay);
+    }
+    if (options.stopOnFocusIn && !options.stopOnInteraction) {
+      eventStore.add(emblaApi.containerNode(), 'focusout', startAutoplay);
+    }
+    if (options.playOnInit) startAutoplay();
+  }
+  function destroy() {
+    emblaApi.off('pointerDown', pointerDown).off('pointerUp', pointerUp).off('slideFocusStart', stopAutoplay);
+    stopAutoplay();
+    destroyed = true;
+    autoplayActive = false;
+  }
+  function setTimer() {
+    const {
+      ownerWindow
+    } = emblaApi.internalEngine();
+    ownerWindow.clearTimeout(timerId);
+    timerId = ownerWindow.setTimeout(next, delay[emblaApi.selectedScrollSnap()]);
+    timerStartTime = new Date().getTime();
+    emblaApi.emit('autoplay:timerset');
+  }
+  function clearTimer() {
+    const {
+      ownerWindow
+    } = emblaApi.internalEngine();
+    ownerWindow.clearTimeout(timerId);
+    timerId = 0;
+    timerStartTime = null;
+    emblaApi.emit('autoplay:timerstopped');
+  }
+  function startAutoplay() {
+    if (destroyed) return;
+    if (documentIsHidden()) {
+      playOnDocumentVisible = true;
+      return;
+    }
+    if (!autoplayActive) emblaApi.emit('autoplay:play');
+    setTimer();
+    autoplayActive = true;
+  }
+  function stopAutoplay() {
+    if (destroyed) return;
+    if (autoplayActive) emblaApi.emit('autoplay:stop');
+    clearTimer();
+    autoplayActive = false;
+  }
+  function visibilityChange() {
+    if (documentIsHidden()) {
+      playOnDocumentVisible = autoplayActive;
+      return stopAutoplay();
+    }
+    if (playOnDocumentVisible) startAutoplay();
+  }
+  function documentIsHidden() {
+    const {
+      ownerDocument
+    } = emblaApi.internalEngine();
+    return ownerDocument.visibilityState === 'hidden';
+  }
+  function pointerDown() {
+    if (!mouseIsOver) stopAutoplay();
+  }
+  function pointerUp() {
+    if (!mouseIsOver) startAutoplay();
+  }
+  function mouseEnter() {
+    mouseIsOver = true;
+    stopAutoplay();
+  }
+  function mouseLeave() {
+    mouseIsOver = false;
+    startAutoplay();
+  }
+  function play(jumpOverride) {
+    if (typeof jumpOverride !== 'undefined') jump = jumpOverride;
+    startAutoplay();
+  }
+  function stop() {
+    if (autoplayActive) stopAutoplay();
+  }
+  function reset() {
+    if (autoplayActive) startAutoplay();
+  }
+  function isPlaying() {
+    return autoplayActive;
+  }
+  function next() {
+    const {
+      index
+    } = emblaApi.internalEngine();
+    const nextIndex = index.clone().add(1).get();
+    const lastIndex = emblaApi.scrollSnapList().length - 1;
+    const kill = options.stopOnLastSnap && nextIndex === lastIndex;
+    if (emblaApi.canScrollNext()) {
+      emblaApi.scrollNext(jump);
+    } else {
+      emblaApi.scrollTo(0, jump);
+    }
+    emblaApi.emit('autoplay:select');
+    if (kill) return stopAutoplay();
+    startAutoplay();
+  }
+  function timeUntilNext() {
+    if (!timerStartTime) return null;
+    const currentDelay = delay[emblaApi.selectedScrollSnap()];
+    const timePastSinceStart = new Date().getTime() - timerStartTime;
+    return currentDelay - timePastSinceStart;
+  }
+  const self = {
+    name: 'autoplay',
+    options: userOptions,
+    init,
+    destroy,
+    play,
+    stop,
+    reset,
+    isPlaying,
+    timeUntilNext
+  };
+  return self;
+}
+Autoplay.globalOptions = undefined;
+
+
+/***/ }),
+
+/***/ "./node_modules/embla-carousel/esm/embla-carousel.esm.js":
+/*!***************************************************************!*\
+  !*** ./node_modules/embla-carousel/esm/embla-carousel.esm.js ***!
+  \***************************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ EmblaCarousel)
+/* harmony export */ });
+function isNumber(subject) {
+  return typeof subject === 'number';
+}
+function isString(subject) {
+  return typeof subject === 'string';
+}
+function isBoolean(subject) {
+  return typeof subject === 'boolean';
+}
+function isObject(subject) {
+  return Object.prototype.toString.call(subject) === '[object Object]';
+}
+function mathAbs(n) {
+  return Math.abs(n);
+}
+function mathSign(n) {
+  return Math.sign(n);
+}
+function deltaAbs(valueB, valueA) {
+  return mathAbs(valueB - valueA);
+}
+function factorAbs(valueB, valueA) {
+  if (valueB === 0 || valueA === 0) return 0;
+  if (mathAbs(valueB) <= mathAbs(valueA)) return 0;
+  const diff = deltaAbs(mathAbs(valueB), mathAbs(valueA));
+  return mathAbs(diff / valueB);
+}
+function roundToTwoDecimals(num) {
+  return Math.round(num * 100) / 100;
+}
+function arrayKeys(array) {
+  return objectKeys(array).map(Number);
+}
+function arrayLast(array) {
+  return array[arrayLastIndex(array)];
+}
+function arrayLastIndex(array) {
+  return Math.max(0, array.length - 1);
+}
+function arrayIsLastIndex(array, index) {
+  return index === arrayLastIndex(array);
+}
+function arrayFromNumber(n, startAt = 0) {
+  return Array.from(Array(n), (_, i) => startAt + i);
+}
+function objectKeys(object) {
+  return Object.keys(object);
+}
+function objectsMergeDeep(objectA, objectB) {
+  return [objectA, objectB].reduce((mergedObjects, currentObject) => {
+    objectKeys(currentObject).forEach(key => {
+      const valueA = mergedObjects[key];
+      const valueB = currentObject[key];
+      const areObjects = isObject(valueA) && isObject(valueB);
+      mergedObjects[key] = areObjects ? objectsMergeDeep(valueA, valueB) : valueB;
+    });
+    return mergedObjects;
+  }, {});
+}
+function isMouseEvent(evt, ownerWindow) {
+  return typeof ownerWindow.MouseEvent !== 'undefined' && evt instanceof ownerWindow.MouseEvent;
+}
+function Alignment(align, viewSize) {
+  const predefined = {
+    start,
+    center,
+    end
+  };
+  function start() {
+    return 0;
+  }
+  function center(n) {
+    return end(n) / 2;
+  }
+  function end(n) {
+    return viewSize - n;
+  }
+  function measure(n, index) {
+    if (isString(align)) return predefined[align](n);
+    return align(viewSize, n, index);
+  }
+  const self = {
+    measure
+  };
+  return self;
+}
+function EventStore() {
+  let listeners = [];
+  function add(node, type, handler, options = {
+    passive: true
+  }) {
+    let removeListener;
+    if ('addEventListener' in node) {
+      node.addEventListener(type, handler, options);
+      removeListener = () => node.removeEventListener(type, handler, options);
+    } else {
+      const legacyMediaQueryList = node;
+      legacyMediaQueryList.addListener(handler);
+      removeListener = () => legacyMediaQueryList.removeListener(handler);
+    }
+    listeners.push(removeListener);
+    return self;
+  }
+  function clear() {
+    listeners = listeners.filter(remove => remove());
+  }
+  const self = {
+    add,
+    clear
+  };
+  return self;
+}
+function Animations(ownerDocument, ownerWindow, update, render) {
+  const documentVisibleHandler = EventStore();
+  const fixedTimeStep = 1000 / 60;
+  let lastTimeStamp = null;
+  let accumulatedTime = 0;
+  let animationId = 0;
+  function init() {
+    documentVisibleHandler.add(ownerDocument, 'visibilitychange', () => {
+      if (ownerDocument.hidden) reset();
+    });
+  }
+  function destroy() {
+    stop();
+    documentVisibleHandler.clear();
+  }
+  function animate(timeStamp) {
+    if (!animationId) return;
+    if (!lastTimeStamp) {
+      lastTimeStamp = timeStamp;
+      update();
+      update();
+    }
+    const timeElapsed = timeStamp - lastTimeStamp;
+    lastTimeStamp = timeStamp;
+    accumulatedTime += timeElapsed;
+    while (accumulatedTime >= fixedTimeStep) {
+      update();
+      accumulatedTime -= fixedTimeStep;
+    }
+    const alpha = accumulatedTime / fixedTimeStep;
+    render(alpha);
+    if (animationId) {
+      animationId = ownerWindow.requestAnimationFrame(animate);
+    }
+  }
+  function start() {
+    if (animationId) return;
+    animationId = ownerWindow.requestAnimationFrame(animate);
+  }
+  function stop() {
+    ownerWindow.cancelAnimationFrame(animationId);
+    lastTimeStamp = null;
+    accumulatedTime = 0;
+    animationId = 0;
+  }
+  function reset() {
+    lastTimeStamp = null;
+    accumulatedTime = 0;
+  }
+  const self = {
+    init,
+    destroy,
+    start,
+    stop,
+    update,
+    render
+  };
+  return self;
+}
+function Axis(axis, contentDirection) {
+  const isRightToLeft = contentDirection === 'rtl';
+  const isVertical = axis === 'y';
+  const scroll = isVertical ? 'y' : 'x';
+  const cross = isVertical ? 'x' : 'y';
+  const sign = !isVertical && isRightToLeft ? -1 : 1;
+  const startEdge = getStartEdge();
+  const endEdge = getEndEdge();
+  function measureSize(nodeRect) {
+    const {
+      height,
+      width
+    } = nodeRect;
+    return isVertical ? height : width;
+  }
+  function getStartEdge() {
+    if (isVertical) return 'top';
+    return isRightToLeft ? 'right' : 'left';
+  }
+  function getEndEdge() {
+    if (isVertical) return 'bottom';
+    return isRightToLeft ? 'left' : 'right';
+  }
+  function direction(n) {
+    return n * sign;
+  }
+  const self = {
+    scroll,
+    cross,
+    startEdge,
+    endEdge,
+    measureSize,
+    direction
+  };
+  return self;
+}
+function Limit(min = 0, max = 0) {
+  const length = mathAbs(min - max);
+  function reachedMin(n) {
+    return n < min;
+  }
+  function reachedMax(n) {
+    return n > max;
+  }
+  function reachedAny(n) {
+    return reachedMin(n) || reachedMax(n);
+  }
+  function constrain(n) {
+    if (!reachedAny(n)) return n;
+    return reachedMin(n) ? min : max;
+  }
+  function removeOffset(n) {
+    if (!length) return n;
+    return n - length * Math.ceil((n - max) / length);
+  }
+  const self = {
+    length,
+    max,
+    min,
+    constrain,
+    reachedAny,
+    reachedMax,
+    reachedMin,
+    removeOffset
+  };
+  return self;
+}
+function Counter(max, start, loop) {
+  const {
+    constrain
+  } = Limit(0, max);
+  const loopEnd = max + 1;
+  let counter = withinLimit(start);
+  function withinLimit(n) {
+    return !loop ? constrain(n) : mathAbs((loopEnd + n) % loopEnd);
+  }
+  function get() {
+    return counter;
+  }
+  function set(n) {
+    counter = withinLimit(n);
+    return self;
+  }
+  function add(n) {
+    return clone().set(get() + n);
+  }
+  function clone() {
+    return Counter(max, get(), loop);
+  }
+  const self = {
+    get,
+    set,
+    add,
+    clone
+  };
+  return self;
+}
+function DragHandler(axis, rootNode, ownerDocument, ownerWindow, target, dragTracker, location, animation, scrollTo, scrollBody, scrollTarget, index, eventHandler, percentOfView, dragFree, dragThreshold, skipSnaps, baseFriction, watchDrag) {
+  const {
+    cross: crossAxis,
+    direction
+  } = axis;
+  const focusNodes = ['INPUT', 'SELECT', 'TEXTAREA'];
+  const nonPassiveEvent = {
+    passive: false
+  };
+  const initEvents = EventStore();
+  const dragEvents = EventStore();
+  const goToNextThreshold = Limit(50, 225).constrain(percentOfView.measure(20));
+  const snapForceBoost = {
+    mouse: 300,
+    touch: 400
+  };
+  const freeForceBoost = {
+    mouse: 500,
+    touch: 600
+  };
+  const baseSpeed = dragFree ? 43 : 25;
+  let isMoving = false;
+  let startScroll = 0;
+  let startCross = 0;
+  let pointerIsDown = false;
+  let preventScroll = false;
+  let preventClick = false;
+  let isMouse = false;
+  function init(emblaApi) {
+    if (!watchDrag) return;
+    function downIfAllowed(evt) {
+      if (isBoolean(watchDrag) || watchDrag(emblaApi, evt)) down(evt);
+    }
+    const node = rootNode;
+    initEvents.add(node, 'dragstart', evt => evt.preventDefault(), nonPassiveEvent).add(node, 'touchmove', () => undefined, nonPassiveEvent).add(node, 'touchend', () => undefined).add(node, 'touchstart', downIfAllowed).add(node, 'mousedown', downIfAllowed).add(node, 'touchcancel', up).add(node, 'contextmenu', up).add(node, 'click', click, true);
+  }
+  function destroy() {
+    initEvents.clear();
+    dragEvents.clear();
+  }
+  function addDragEvents() {
+    const node = isMouse ? ownerDocument : rootNode;
+    dragEvents.add(node, 'touchmove', move, nonPassiveEvent).add(node, 'touchend', up).add(node, 'mousemove', move, nonPassiveEvent).add(node, 'mouseup', up);
+  }
+  function isFocusNode(node) {
+    const nodeName = node.nodeName || '';
+    return focusNodes.includes(nodeName);
+  }
+  function forceBoost() {
+    const boost = dragFree ? freeForceBoost : snapForceBoost;
+    const type = isMouse ? 'mouse' : 'touch';
+    return boost[type];
+  }
+  function allowedForce(force, targetChanged) {
+    const next = index.add(mathSign(force) * -1);
+    const baseForce = scrollTarget.byDistance(force, !dragFree).distance;
+    if (dragFree || mathAbs(force) < goToNextThreshold) return baseForce;
+    if (skipSnaps && targetChanged) return baseForce * 0.5;
+    return scrollTarget.byIndex(next.get(), 0).distance;
+  }
+  function down(evt) {
+    const isMouseEvt = isMouseEvent(evt, ownerWindow);
+    isMouse = isMouseEvt;
+    preventClick = dragFree && isMouseEvt && !evt.buttons && isMoving;
+    isMoving = deltaAbs(target.get(), location.get()) >= 2;
+    if (isMouseEvt && evt.button !== 0) return;
+    if (isFocusNode(evt.target)) return;
+    pointerIsDown = true;
+    dragTracker.pointerDown(evt);
+    scrollBody.useFriction(0).useDuration(0);
+    target.set(location);
+    addDragEvents();
+    startScroll = dragTracker.readPoint(evt);
+    startCross = dragTracker.readPoint(evt, crossAxis);
+    eventHandler.emit('pointerDown');
+  }
+  function move(evt) {
+    const isTouchEvt = !isMouseEvent(evt, ownerWindow);
+    if (isTouchEvt && evt.touches.length >= 2) return up(evt);
+    const lastScroll = dragTracker.readPoint(evt);
+    const lastCross = dragTracker.readPoint(evt, crossAxis);
+    const diffScroll = deltaAbs(lastScroll, startScroll);
+    const diffCross = deltaAbs(lastCross, startCross);
+    if (!preventScroll && !isMouse) {
+      if (!evt.cancelable) return up(evt);
+      preventScroll = diffScroll > diffCross;
+      if (!preventScroll) return up(evt);
+    }
+    const diff = dragTracker.pointerMove(evt);
+    if (diffScroll > dragThreshold) preventClick = true;
+    scrollBody.useFriction(0.3).useDuration(0.75);
+    animation.start();
+    target.add(direction(diff));
+    evt.preventDefault();
+  }
+  function up(evt) {
+    const currentLocation = scrollTarget.byDistance(0, false);
+    const targetChanged = currentLocation.index !== index.get();
+    const rawForce = dragTracker.pointerUp(evt) * forceBoost();
+    const force = allowedForce(direction(rawForce), targetChanged);
+    const forceFactor = factorAbs(rawForce, force);
+    const speed = baseSpeed - 10 * forceFactor;
+    const friction = baseFriction + forceFactor / 50;
+    preventScroll = false;
+    pointerIsDown = false;
+    dragEvents.clear();
+    scrollBody.useDuration(speed).useFriction(friction);
+    scrollTo.distance(force, !dragFree);
+    isMouse = false;
+    eventHandler.emit('pointerUp');
+  }
+  function click(evt) {
+    if (preventClick) {
+      evt.stopPropagation();
+      evt.preventDefault();
+      preventClick = false;
+    }
+  }
+  function pointerDown() {
+    return pointerIsDown;
+  }
+  const self = {
+    init,
+    destroy,
+    pointerDown
+  };
+  return self;
+}
+function DragTracker(axis, ownerWindow) {
+  const logInterval = 170;
+  let startEvent;
+  let lastEvent;
+  function readTime(evt) {
+    return evt.timeStamp;
+  }
+  function readPoint(evt, evtAxis) {
+    const property = evtAxis || axis.scroll;
+    const coord = `client${property === 'x' ? 'X' : 'Y'}`;
+    return (isMouseEvent(evt, ownerWindow) ? evt : evt.touches[0])[coord];
+  }
+  function pointerDown(evt) {
+    startEvent = evt;
+    lastEvent = evt;
+    return readPoint(evt);
+  }
+  function pointerMove(evt) {
+    const diff = readPoint(evt) - readPoint(lastEvent);
+    const expired = readTime(evt) - readTime(startEvent) > logInterval;
+    lastEvent = evt;
+    if (expired) startEvent = evt;
+    return diff;
+  }
+  function pointerUp(evt) {
+    if (!startEvent || !lastEvent) return 0;
+    const diffDrag = readPoint(lastEvent) - readPoint(startEvent);
+    const diffTime = readTime(evt) - readTime(startEvent);
+    const expired = readTime(evt) - readTime(lastEvent) > logInterval;
+    const force = diffDrag / diffTime;
+    const isFlick = diffTime && !expired && mathAbs(force) > 0.1;
+    return isFlick ? force : 0;
+  }
+  const self = {
+    pointerDown,
+    pointerMove,
+    pointerUp,
+    readPoint
+  };
+  return self;
+}
+function NodeRects() {
+  function measure(node) {
+    const {
+      offsetTop,
+      offsetLeft,
+      offsetWidth,
+      offsetHeight
+    } = node;
+    const offset = {
+      top: offsetTop,
+      right: offsetLeft + offsetWidth,
+      bottom: offsetTop + offsetHeight,
+      left: offsetLeft,
+      width: offsetWidth,
+      height: offsetHeight
+    };
+    return offset;
+  }
+  const self = {
+    measure
+  };
+  return self;
+}
+function PercentOfView(viewSize) {
+  function measure(n) {
+    return viewSize * (n / 100);
+  }
+  const self = {
+    measure
+  };
+  return self;
+}
+function ResizeHandler(container, eventHandler, ownerWindow, slides, axis, watchResize, nodeRects) {
+  const observeNodes = [container].concat(slides);
+  let resizeObserver;
+  let containerSize;
+  let slideSizes = [];
+  let destroyed = false;
+  function readSize(node) {
+    return axis.measureSize(nodeRects.measure(node));
+  }
+  function init(emblaApi) {
+    if (!watchResize) return;
+    containerSize = readSize(container);
+    slideSizes = slides.map(readSize);
+    function defaultCallback(entries) {
+      for (const entry of entries) {
+        if (destroyed) return;
+        const isContainer = entry.target === container;
+        const slideIndex = slides.indexOf(entry.target);
+        const lastSize = isContainer ? containerSize : slideSizes[slideIndex];
+        const newSize = readSize(isContainer ? container : slides[slideIndex]);
+        const diffSize = mathAbs(newSize - lastSize);
+        if (diffSize >= 0.5) {
+          emblaApi.reInit();
+          eventHandler.emit('resize');
+          break;
+        }
+      }
+    }
+    resizeObserver = new ResizeObserver(entries => {
+      if (isBoolean(watchResize) || watchResize(emblaApi, entries)) {
+        defaultCallback(entries);
+      }
+    });
+    ownerWindow.requestAnimationFrame(() => {
+      observeNodes.forEach(node => resizeObserver.observe(node));
+    });
+  }
+  function destroy() {
+    destroyed = true;
+    if (resizeObserver) resizeObserver.disconnect();
+  }
+  const self = {
+    init,
+    destroy
+  };
+  return self;
+}
+function ScrollBody(location, offsetLocation, previousLocation, target, baseDuration, baseFriction) {
+  let scrollVelocity = 0;
+  let scrollDirection = 0;
+  let scrollDuration = baseDuration;
+  let scrollFriction = baseFriction;
+  let rawLocation = location.get();
+  let rawLocationPrevious = 0;
+  function seek() {
+    const displacement = target.get() - location.get();
+    const isInstant = !scrollDuration;
+    let scrollDistance = 0;
+    if (isInstant) {
+      scrollVelocity = 0;
+      previousLocation.set(target);
+      location.set(target);
+      scrollDistance = displacement;
+    } else {
+      previousLocation.set(location);
+      scrollVelocity += displacement / scrollDuration;
+      scrollVelocity *= scrollFriction;
+      rawLocation += scrollVelocity;
+      location.add(scrollVelocity);
+      scrollDistance = rawLocation - rawLocationPrevious;
+    }
+    scrollDirection = mathSign(scrollDistance);
+    rawLocationPrevious = rawLocation;
+    return self;
+  }
+  function settled() {
+    const diff = target.get() - offsetLocation.get();
+    return mathAbs(diff) < 0.001;
+  }
+  function duration() {
+    return scrollDuration;
+  }
+  function direction() {
+    return scrollDirection;
+  }
+  function velocity() {
+    return scrollVelocity;
+  }
+  function useBaseDuration() {
+    return useDuration(baseDuration);
+  }
+  function useBaseFriction() {
+    return useFriction(baseFriction);
+  }
+  function useDuration(n) {
+    scrollDuration = n;
+    return self;
+  }
+  function useFriction(n) {
+    scrollFriction = n;
+    return self;
+  }
+  const self = {
+    direction,
+    duration,
+    velocity,
+    seek,
+    settled,
+    useBaseFriction,
+    useBaseDuration,
+    useFriction,
+    useDuration
+  };
+  return self;
+}
+function ScrollBounds(limit, location, target, scrollBody, percentOfView) {
+  const pullBackThreshold = percentOfView.measure(10);
+  const edgeOffsetTolerance = percentOfView.measure(50);
+  const frictionLimit = Limit(0.1, 0.99);
+  let disabled = false;
+  function shouldConstrain() {
+    if (disabled) return false;
+    if (!limit.reachedAny(target.get())) return false;
+    if (!limit.reachedAny(location.get())) return false;
+    return true;
+  }
+  function constrain(pointerDown) {
+    if (!shouldConstrain()) return;
+    const edge = limit.reachedMin(location.get()) ? 'min' : 'max';
+    const diffToEdge = mathAbs(limit[edge] - location.get());
+    const diffToTarget = target.get() - location.get();
+    const friction = frictionLimit.constrain(diffToEdge / edgeOffsetTolerance);
+    target.subtract(diffToTarget * friction);
+    if (!pointerDown && mathAbs(diffToTarget) < pullBackThreshold) {
+      target.set(limit.constrain(target.get()));
+      scrollBody.useDuration(25).useBaseFriction();
+    }
+  }
+  function toggleActive(active) {
+    disabled = !active;
+  }
+  const self = {
+    shouldConstrain,
+    constrain,
+    toggleActive
+  };
+  return self;
+}
+function ScrollContain(viewSize, contentSize, snapsAligned, containScroll, pixelTolerance) {
+  const scrollBounds = Limit(-contentSize + viewSize, 0);
+  const snapsBounded = measureBounded();
+  const scrollContainLimit = findScrollContainLimit();
+  const snapsContained = measureContained();
+  function usePixelTolerance(bound, snap) {
+    return deltaAbs(bound, snap) <= 1;
+  }
+  function findScrollContainLimit() {
+    const startSnap = snapsBounded[0];
+    const endSnap = arrayLast(snapsBounded);
+    const min = snapsBounded.lastIndexOf(startSnap);
+    const max = snapsBounded.indexOf(endSnap) + 1;
+    return Limit(min, max);
+  }
+  function measureBounded() {
+    return snapsAligned.map((snapAligned, index) => {
+      const {
+        min,
+        max
+      } = scrollBounds;
+      const snap = scrollBounds.constrain(snapAligned);
+      const isFirst = !index;
+      const isLast = arrayIsLastIndex(snapsAligned, index);
+      if (isFirst) return max;
+      if (isLast) return min;
+      if (usePixelTolerance(min, snap)) return min;
+      if (usePixelTolerance(max, snap)) return max;
+      return snap;
+    }).map(scrollBound => parseFloat(scrollBound.toFixed(3)));
+  }
+  function measureContained() {
+    if (contentSize <= viewSize + pixelTolerance) return [scrollBounds.max];
+    if (containScroll === 'keepSnaps') return snapsBounded;
+    const {
+      min,
+      max
+    } = scrollContainLimit;
+    return snapsBounded.slice(min, max);
+  }
+  const self = {
+    snapsContained,
+    scrollContainLimit
+  };
+  return self;
+}
+function ScrollLimit(contentSize, scrollSnaps, loop) {
+  const max = scrollSnaps[0];
+  const min = loop ? max - contentSize : arrayLast(scrollSnaps);
+  const limit = Limit(min, max);
+  const self = {
+    limit
+  };
+  return self;
+}
+function ScrollLooper(contentSize, limit, location, vectors) {
+  const jointSafety = 0.1;
+  const min = limit.min + jointSafety;
+  const max = limit.max + jointSafety;
+  const {
+    reachedMin,
+    reachedMax
+  } = Limit(min, max);
+  function shouldLoop(direction) {
+    if (direction === 1) return reachedMax(location.get());
+    if (direction === -1) return reachedMin(location.get());
+    return false;
+  }
+  function loop(direction) {
+    if (!shouldLoop(direction)) return;
+    const loopDistance = contentSize * (direction * -1);
+    vectors.forEach(v => v.add(loopDistance));
+  }
+  const self = {
+    loop
+  };
+  return self;
+}
+function ScrollProgress(limit) {
+  const {
+    max,
+    length
+  } = limit;
+  function get(n) {
+    const currentLocation = n - max;
+    return length ? currentLocation / -length : 0;
+  }
+  const self = {
+    get
+  };
+  return self;
+}
+function ScrollSnaps(axis, alignment, containerRect, slideRects, slidesToScroll) {
+  const {
+    startEdge,
+    endEdge
+  } = axis;
+  const {
+    groupSlides
+  } = slidesToScroll;
+  const alignments = measureSizes().map(alignment.measure);
+  const snaps = measureUnaligned();
+  const snapsAligned = measureAligned();
+  function measureSizes() {
+    return groupSlides(slideRects).map(rects => arrayLast(rects)[endEdge] - rects[0][startEdge]).map(mathAbs);
+  }
+  function measureUnaligned() {
+    return slideRects.map(rect => containerRect[startEdge] - rect[startEdge]).map(snap => -mathAbs(snap));
+  }
+  function measureAligned() {
+    return groupSlides(snaps).map(g => g[0]).map((snap, index) => snap + alignments[index]);
+  }
+  const self = {
+    snaps,
+    snapsAligned
+  };
+  return self;
+}
+function SlideRegistry(containSnaps, containScroll, scrollSnaps, scrollContainLimit, slidesToScroll, slideIndexes) {
+  const {
+    groupSlides
+  } = slidesToScroll;
+  const {
+    min,
+    max
+  } = scrollContainLimit;
+  const slideRegistry = createSlideRegistry();
+  function createSlideRegistry() {
+    const groupedSlideIndexes = groupSlides(slideIndexes);
+    const doNotContain = !containSnaps || containScroll === 'keepSnaps';
+    if (scrollSnaps.length === 1) return [slideIndexes];
+    if (doNotContain) return groupedSlideIndexes;
+    return groupedSlideIndexes.slice(min, max).map((group, index, groups) => {
+      const isFirst = !index;
+      const isLast = arrayIsLastIndex(groups, index);
+      if (isFirst) {
+        const range = arrayLast(groups[0]) + 1;
+        return arrayFromNumber(range);
+      }
+      if (isLast) {
+        const range = arrayLastIndex(slideIndexes) - arrayLast(groups)[0] + 1;
+        return arrayFromNumber(range, arrayLast(groups)[0]);
+      }
+      return group;
+    });
+  }
+  const self = {
+    slideRegistry
+  };
+  return self;
+}
+function ScrollTarget(loop, scrollSnaps, contentSize, limit, targetVector) {
+  const {
+    reachedAny,
+    removeOffset,
+    constrain
+  } = limit;
+  function minDistance(distances) {
+    return distances.concat().sort((a, b) => mathAbs(a) - mathAbs(b))[0];
+  }
+  function findTargetSnap(target) {
+    const distance = loop ? removeOffset(target) : constrain(target);
+    const ascDiffsToSnaps = scrollSnaps.map((snap, index) => ({
+      diff: shortcut(snap - distance, 0),
+      index
+    })).sort((d1, d2) => mathAbs(d1.diff) - mathAbs(d2.diff));
+    const {
+      index
+    } = ascDiffsToSnaps[0];
+    return {
+      index,
+      distance
+    };
+  }
+  function shortcut(target, direction) {
+    const targets = [target, target + contentSize, target - contentSize];
+    if (!loop) return target;
+    if (!direction) return minDistance(targets);
+    const matchingTargets = targets.filter(t => mathSign(t) === direction);
+    if (matchingTargets.length) return minDistance(matchingTargets);
+    return arrayLast(targets) - contentSize;
+  }
+  function byIndex(index, direction) {
+    const diffToSnap = scrollSnaps[index] - targetVector.get();
+    const distance = shortcut(diffToSnap, direction);
+    return {
+      index,
+      distance
+    };
+  }
+  function byDistance(distance, snap) {
+    const target = targetVector.get() + distance;
+    const {
+      index,
+      distance: targetSnapDistance
+    } = findTargetSnap(target);
+    const reachedBound = !loop && reachedAny(target);
+    if (!snap || reachedBound) return {
+      index,
+      distance
+    };
+    const diffToSnap = scrollSnaps[index] - targetSnapDistance;
+    const snapDistance = distance + shortcut(diffToSnap, 0);
+    return {
+      index,
+      distance: snapDistance
+    };
+  }
+  const self = {
+    byDistance,
+    byIndex,
+    shortcut
+  };
+  return self;
+}
+function ScrollTo(animation, indexCurrent, indexPrevious, scrollBody, scrollTarget, targetVector, eventHandler) {
+  function scrollTo(target) {
+    const distanceDiff = target.distance;
+    const indexDiff = target.index !== indexCurrent.get();
+    targetVector.add(distanceDiff);
+    if (distanceDiff) {
+      if (scrollBody.duration()) {
+        animation.start();
+      } else {
+        animation.update();
+        animation.render(1);
+        animation.update();
+      }
+    }
+    if (indexDiff) {
+      indexPrevious.set(indexCurrent.get());
+      indexCurrent.set(target.index);
+      eventHandler.emit('select');
+    }
+  }
+  function distance(n, snap) {
+    const target = scrollTarget.byDistance(n, snap);
+    scrollTo(target);
+  }
+  function index(n, direction) {
+    const targetIndex = indexCurrent.clone().set(n);
+    const target = scrollTarget.byIndex(targetIndex.get(), direction);
+    scrollTo(target);
+  }
+  const self = {
+    distance,
+    index
+  };
+  return self;
+}
+function SlideFocus(root, slides, slideRegistry, scrollTo, scrollBody, eventStore, eventHandler, watchFocus) {
+  const focusListenerOptions = {
+    passive: true,
+    capture: true
+  };
+  let lastTabPressTime = 0;
+  function init(emblaApi) {
+    if (!watchFocus) return;
+    function defaultCallback(index) {
+      const nowTime = new Date().getTime();
+      const diffTime = nowTime - lastTabPressTime;
+      if (diffTime > 10) return;
+      eventHandler.emit('slideFocusStart');
+      root.scrollLeft = 0;
+      const group = slideRegistry.findIndex(group => group.includes(index));
+      if (!isNumber(group)) return;
+      scrollBody.useDuration(0);
+      scrollTo.index(group, 0);
+      eventHandler.emit('slideFocus');
+    }
+    eventStore.add(document, 'keydown', registerTabPress, false);
+    slides.forEach((slide, slideIndex) => {
+      eventStore.add(slide, 'focus', evt => {
+        if (isBoolean(watchFocus) || watchFocus(emblaApi, evt)) {
+          defaultCallback(slideIndex);
+        }
+      }, focusListenerOptions);
+    });
+  }
+  function registerTabPress(event) {
+    if (event.code === 'Tab') lastTabPressTime = new Date().getTime();
+  }
+  const self = {
+    init
+  };
+  return self;
+}
+function Vector1D(initialValue) {
+  let value = initialValue;
+  function get() {
+    return value;
+  }
+  function set(n) {
+    value = normalizeInput(n);
+  }
+  function add(n) {
+    value += normalizeInput(n);
+  }
+  function subtract(n) {
+    value -= normalizeInput(n);
+  }
+  function normalizeInput(n) {
+    return isNumber(n) ? n : n.get();
+  }
+  const self = {
+    get,
+    set,
+    add,
+    subtract
+  };
+  return self;
+}
+function Translate(axis, container) {
+  const translate = axis.scroll === 'x' ? x : y;
+  const containerStyle = container.style;
+  let previousTarget = null;
+  let disabled = false;
+  function x(n) {
+    return `translate3d(${n}px,0px,0px)`;
+  }
+  function y(n) {
+    return `translate3d(0px,${n}px,0px)`;
+  }
+  function to(target) {
+    if (disabled) return;
+    const newTarget = roundToTwoDecimals(axis.direction(target));
+    if (newTarget === previousTarget) return;
+    containerStyle.transform = translate(newTarget);
+    previousTarget = newTarget;
+  }
+  function toggleActive(active) {
+    disabled = !active;
+  }
+  function clear() {
+    if (disabled) return;
+    containerStyle.transform = '';
+    if (!container.getAttribute('style')) container.removeAttribute('style');
+  }
+  const self = {
+    clear,
+    to,
+    toggleActive
+  };
+  return self;
+}
+function SlideLooper(axis, viewSize, contentSize, slideSizes, slideSizesWithGaps, snaps, scrollSnaps, location, slides) {
+  const roundingSafety = 0.5;
+  const ascItems = arrayKeys(slideSizesWithGaps);
+  const descItems = arrayKeys(slideSizesWithGaps).reverse();
+  const loopPoints = startPoints().concat(endPoints());
+  function removeSlideSizes(indexes, from) {
+    return indexes.reduce((a, i) => {
+      return a - slideSizesWithGaps[i];
+    }, from);
+  }
+  function slidesInGap(indexes, gap) {
+    return indexes.reduce((a, i) => {
+      const remainingGap = removeSlideSizes(a, gap);
+      return remainingGap > 0 ? a.concat([i]) : a;
+    }, []);
+  }
+  function findSlideBounds(offset) {
+    return snaps.map((snap, index) => ({
+      start: snap - slideSizes[index] + roundingSafety + offset,
+      end: snap + viewSize - roundingSafety + offset
+    }));
+  }
+  function findLoopPoints(indexes, offset, isEndEdge) {
+    const slideBounds = findSlideBounds(offset);
+    return indexes.map(index => {
+      const initial = isEndEdge ? 0 : -contentSize;
+      const altered = isEndEdge ? contentSize : 0;
+      const boundEdge = isEndEdge ? 'end' : 'start';
+      const loopPoint = slideBounds[index][boundEdge];
+      return {
+        index,
+        loopPoint,
+        slideLocation: Vector1D(-1),
+        translate: Translate(axis, slides[index]),
+        target: () => location.get() > loopPoint ? initial : altered
+      };
+    });
+  }
+  function startPoints() {
+    const gap = scrollSnaps[0];
+    const indexes = slidesInGap(descItems, gap);
+    return findLoopPoints(indexes, contentSize, false);
+  }
+  function endPoints() {
+    const gap = viewSize - scrollSnaps[0] - 1;
+    const indexes = slidesInGap(ascItems, gap);
+    return findLoopPoints(indexes, -contentSize, true);
+  }
+  function canLoop() {
+    return loopPoints.every(({
+      index
+    }) => {
+      const otherIndexes = ascItems.filter(i => i !== index);
+      return removeSlideSizes(otherIndexes, viewSize) <= 0.1;
+    });
+  }
+  function loop() {
+    loopPoints.forEach(loopPoint => {
+      const {
+        target,
+        translate,
+        slideLocation
+      } = loopPoint;
+      const shiftLocation = target();
+      if (shiftLocation === slideLocation.get()) return;
+      translate.to(shiftLocation);
+      slideLocation.set(shiftLocation);
+    });
+  }
+  function clear() {
+    loopPoints.forEach(loopPoint => loopPoint.translate.clear());
+  }
+  const self = {
+    canLoop,
+    clear,
+    loop,
+    loopPoints
+  };
+  return self;
+}
+function SlidesHandler(container, eventHandler, watchSlides) {
+  let mutationObserver;
+  let destroyed = false;
+  function init(emblaApi) {
+    if (!watchSlides) return;
+    function defaultCallback(mutations) {
+      for (const mutation of mutations) {
+        if (mutation.type === 'childList') {
+          emblaApi.reInit();
+          eventHandler.emit('slidesChanged');
+          break;
+        }
+      }
+    }
+    mutationObserver = new MutationObserver(mutations => {
+      if (destroyed) return;
+      if (isBoolean(watchSlides) || watchSlides(emblaApi, mutations)) {
+        defaultCallback(mutations);
+      }
+    });
+    mutationObserver.observe(container, {
+      childList: true
+    });
+  }
+  function destroy() {
+    if (mutationObserver) mutationObserver.disconnect();
+    destroyed = true;
+  }
+  const self = {
+    init,
+    destroy
+  };
+  return self;
+}
+function SlidesInView(container, slides, eventHandler, threshold) {
+  const intersectionEntryMap = {};
+  let inViewCache = null;
+  let notInViewCache = null;
+  let intersectionObserver;
+  let destroyed = false;
+  function init() {
+    intersectionObserver = new IntersectionObserver(entries => {
+      if (destroyed) return;
+      entries.forEach(entry => {
+        const index = slides.indexOf(entry.target);
+        intersectionEntryMap[index] = entry;
+      });
+      inViewCache = null;
+      notInViewCache = null;
+      eventHandler.emit('slidesInView');
+    }, {
+      root: container.parentElement,
+      threshold
+    });
+    slides.forEach(slide => intersectionObserver.observe(slide));
+  }
+  function destroy() {
+    if (intersectionObserver) intersectionObserver.disconnect();
+    destroyed = true;
+  }
+  function createInViewList(inView) {
+    return objectKeys(intersectionEntryMap).reduce((list, slideIndex) => {
+      const index = parseInt(slideIndex);
+      const {
+        isIntersecting
+      } = intersectionEntryMap[index];
+      const inViewMatch = inView && isIntersecting;
+      const notInViewMatch = !inView && !isIntersecting;
+      if (inViewMatch || notInViewMatch) list.push(index);
+      return list;
+    }, []);
+  }
+  function get(inView = true) {
+    if (inView && inViewCache) return inViewCache;
+    if (!inView && notInViewCache) return notInViewCache;
+    const slideIndexes = createInViewList(inView);
+    if (inView) inViewCache = slideIndexes;
+    if (!inView) notInViewCache = slideIndexes;
+    return slideIndexes;
+  }
+  const self = {
+    init,
+    destroy,
+    get
+  };
+  return self;
+}
+function SlideSizes(axis, containerRect, slideRects, slides, readEdgeGap, ownerWindow) {
+  const {
+    measureSize,
+    startEdge,
+    endEdge
+  } = axis;
+  const withEdgeGap = slideRects[0] && readEdgeGap;
+  const startGap = measureStartGap();
+  const endGap = measureEndGap();
+  const slideSizes = slideRects.map(measureSize);
+  const slideSizesWithGaps = measureWithGaps();
+  function measureStartGap() {
+    if (!withEdgeGap) return 0;
+    const slideRect = slideRects[0];
+    return mathAbs(containerRect[startEdge] - slideRect[startEdge]);
+  }
+  function measureEndGap() {
+    if (!withEdgeGap) return 0;
+    const style = ownerWindow.getComputedStyle(arrayLast(slides));
+    return parseFloat(style.getPropertyValue(`margin-${endEdge}`));
+  }
+  function measureWithGaps() {
+    return slideRects.map((rect, index, rects) => {
+      const isFirst = !index;
+      const isLast = arrayIsLastIndex(rects, index);
+      if (isFirst) return slideSizes[index] + startGap;
+      if (isLast) return slideSizes[index] + endGap;
+      return rects[index + 1][startEdge] - rect[startEdge];
+    }).map(mathAbs);
+  }
+  const self = {
+    slideSizes,
+    slideSizesWithGaps,
+    startGap,
+    endGap
+  };
+  return self;
+}
+function SlidesToScroll(axis, viewSize, slidesToScroll, loop, containerRect, slideRects, startGap, endGap, pixelTolerance) {
+  const {
+    startEdge,
+    endEdge,
+    direction
+  } = axis;
+  const groupByNumber = isNumber(slidesToScroll);
+  function byNumber(array, groupSize) {
+    return arrayKeys(array).filter(i => i % groupSize === 0).map(i => array.slice(i, i + groupSize));
+  }
+  function bySize(array) {
+    if (!array.length) return [];
+    return arrayKeys(array).reduce((groups, rectB, index) => {
+      const rectA = arrayLast(groups) || 0;
+      const isFirst = rectA === 0;
+      const isLast = rectB === arrayLastIndex(array);
+      const edgeA = containerRect[startEdge] - slideRects[rectA][startEdge];
+      const edgeB = containerRect[startEdge] - slideRects[rectB][endEdge];
+      const gapA = !loop && isFirst ? direction(startGap) : 0;
+      const gapB = !loop && isLast ? direction(endGap) : 0;
+      const chunkSize = mathAbs(edgeB - gapB - (edgeA + gapA));
+      if (index && chunkSize > viewSize + pixelTolerance) groups.push(rectB);
+      if (isLast) groups.push(array.length);
+      return groups;
+    }, []).map((currentSize, index, groups) => {
+      const previousSize = Math.max(groups[index - 1] || 0);
+      return array.slice(previousSize, currentSize);
+    });
+  }
+  function groupSlides(array) {
+    return groupByNumber ? byNumber(array, slidesToScroll) : bySize(array);
+  }
+  const self = {
+    groupSlides
+  };
+  return self;
+}
+function Engine(root, container, slides, ownerDocument, ownerWindow, options, eventHandler) {
+  // Options
+  const {
+    align,
+    axis: scrollAxis,
+    direction,
+    startIndex,
+    loop,
+    duration,
+    dragFree,
+    dragThreshold,
+    inViewThreshold,
+    slidesToScroll: groupSlides,
+    skipSnaps,
+    containScroll,
+    watchResize,
+    watchSlides,
+    watchDrag,
+    watchFocus
+  } = options;
+  // Measurements
+  const pixelTolerance = 2;
+  const nodeRects = NodeRects();
+  const containerRect = nodeRects.measure(container);
+  const slideRects = slides.map(nodeRects.measure);
+  const axis = Axis(scrollAxis, direction);
+  const viewSize = axis.measureSize(containerRect);
+  const percentOfView = PercentOfView(viewSize);
+  const alignment = Alignment(align, viewSize);
+  const containSnaps = !loop && !!containScroll;
+  const readEdgeGap = loop || !!containScroll;
+  const {
+    slideSizes,
+    slideSizesWithGaps,
+    startGap,
+    endGap
+  } = SlideSizes(axis, containerRect, slideRects, slides, readEdgeGap, ownerWindow);
+  const slidesToScroll = SlidesToScroll(axis, viewSize, groupSlides, loop, containerRect, slideRects, startGap, endGap, pixelTolerance);
+  const {
+    snaps,
+    snapsAligned
+  } = ScrollSnaps(axis, alignment, containerRect, slideRects, slidesToScroll);
+  const contentSize = -arrayLast(snaps) + arrayLast(slideSizesWithGaps);
+  const {
+    snapsContained,
+    scrollContainLimit
+  } = ScrollContain(viewSize, contentSize, snapsAligned, containScroll, pixelTolerance);
+  const scrollSnaps = containSnaps ? snapsContained : snapsAligned;
+  const {
+    limit
+  } = ScrollLimit(contentSize, scrollSnaps, loop);
+  // Indexes
+  const index = Counter(arrayLastIndex(scrollSnaps), startIndex, loop);
+  const indexPrevious = index.clone();
+  const slideIndexes = arrayKeys(slides);
+  // Animation
+  const update = ({
+    dragHandler,
+    scrollBody,
+    scrollBounds,
+    options: {
+      loop
+    }
+  }) => {
+    if (!loop) scrollBounds.constrain(dragHandler.pointerDown());
+    scrollBody.seek();
+  };
+  const render = ({
+    scrollBody,
+    translate,
+    location,
+    offsetLocation,
+    previousLocation,
+    scrollLooper,
+    slideLooper,
+    dragHandler,
+    animation,
+    eventHandler,
+    scrollBounds,
+    options: {
+      loop
+    }
+  }, alpha) => {
+    const shouldSettle = scrollBody.settled();
+    const withinBounds = !scrollBounds.shouldConstrain();
+    const hasSettled = loop ? shouldSettle : shouldSettle && withinBounds;
+    const hasSettledAndIdle = hasSettled && !dragHandler.pointerDown();
+    if (hasSettledAndIdle) animation.stop();
+    const interpolatedLocation = location.get() * alpha + previousLocation.get() * (1 - alpha);
+    offsetLocation.set(interpolatedLocation);
+    if (loop) {
+      scrollLooper.loop(scrollBody.direction());
+      slideLooper.loop();
+    }
+    translate.to(offsetLocation.get());
+    if (hasSettledAndIdle) eventHandler.emit('settle');
+    if (!hasSettled) eventHandler.emit('scroll');
+  };
+  const animation = Animations(ownerDocument, ownerWindow, () => update(engine), alpha => render(engine, alpha));
+  // Shared
+  const friction = 0.68;
+  const startLocation = scrollSnaps[index.get()];
+  const location = Vector1D(startLocation);
+  const previousLocation = Vector1D(startLocation);
+  const offsetLocation = Vector1D(startLocation);
+  const target = Vector1D(startLocation);
+  const scrollBody = ScrollBody(location, offsetLocation, previousLocation, target, duration, friction);
+  const scrollTarget = ScrollTarget(loop, scrollSnaps, contentSize, limit, target);
+  const scrollTo = ScrollTo(animation, index, indexPrevious, scrollBody, scrollTarget, target, eventHandler);
+  const scrollProgress = ScrollProgress(limit);
+  const eventStore = EventStore();
+  const slidesInView = SlidesInView(container, slides, eventHandler, inViewThreshold);
+  const {
+    slideRegistry
+  } = SlideRegistry(containSnaps, containScroll, scrollSnaps, scrollContainLimit, slidesToScroll, slideIndexes);
+  const slideFocus = SlideFocus(root, slides, slideRegistry, scrollTo, scrollBody, eventStore, eventHandler, watchFocus);
+  // Engine
+  const engine = {
+    ownerDocument,
+    ownerWindow,
+    eventHandler,
+    containerRect,
+    slideRects,
+    animation,
+    axis,
+    dragHandler: DragHandler(axis, root, ownerDocument, ownerWindow, target, DragTracker(axis, ownerWindow), location, animation, scrollTo, scrollBody, scrollTarget, index, eventHandler, percentOfView, dragFree, dragThreshold, skipSnaps, friction, watchDrag),
+    eventStore,
+    percentOfView,
+    index,
+    indexPrevious,
+    limit,
+    location,
+    offsetLocation,
+    previousLocation,
+    options,
+    resizeHandler: ResizeHandler(container, eventHandler, ownerWindow, slides, axis, watchResize, nodeRects),
+    scrollBody,
+    scrollBounds: ScrollBounds(limit, offsetLocation, target, scrollBody, percentOfView),
+    scrollLooper: ScrollLooper(contentSize, limit, offsetLocation, [location, offsetLocation, previousLocation, target]),
+    scrollProgress,
+    scrollSnapList: scrollSnaps.map(scrollProgress.get),
+    scrollSnaps,
+    scrollTarget,
+    scrollTo,
+    slideLooper: SlideLooper(axis, viewSize, contentSize, slideSizes, slideSizesWithGaps, snaps, scrollSnaps, offsetLocation, slides),
+    slideFocus,
+    slidesHandler: SlidesHandler(container, eventHandler, watchSlides),
+    slidesInView,
+    slideIndexes,
+    slideRegistry,
+    slidesToScroll,
+    target,
+    translate: Translate(axis, container)
+  };
+  return engine;
+}
+function EventHandler() {
+  let listeners = {};
+  let api;
+  function init(emblaApi) {
+    api = emblaApi;
+  }
+  function getListeners(evt) {
+    return listeners[evt] || [];
+  }
+  function emit(evt) {
+    getListeners(evt).forEach(e => e(api, evt));
+    return self;
+  }
+  function on(evt, cb) {
+    listeners[evt] = getListeners(evt).concat([cb]);
+    return self;
+  }
+  function off(evt, cb) {
+    listeners[evt] = getListeners(evt).filter(e => e !== cb);
+    return self;
+  }
+  function clear() {
+    listeners = {};
+  }
+  const self = {
+    init,
+    emit,
+    off,
+    on,
+    clear
+  };
+  return self;
+}
+const defaultOptions = {
+  align: 'center',
+  axis: 'x',
+  container: null,
+  slides: null,
+  containScroll: 'trimSnaps',
+  direction: 'ltr',
+  slidesToScroll: 1,
+  inViewThreshold: 0,
+  breakpoints: {},
+  dragFree: false,
+  dragThreshold: 10,
+  loop: false,
+  skipSnaps: false,
+  duration: 25,
+  startIndex: 0,
+  active: true,
+  watchDrag: true,
+  watchResize: true,
+  watchSlides: true,
+  watchFocus: true
+};
+function OptionsHandler(ownerWindow) {
+  function mergeOptions(optionsA, optionsB) {
+    return objectsMergeDeep(optionsA, optionsB || {});
+  }
+  function optionsAtMedia(options) {
+    const optionsAtMedia = options.breakpoints || {};
+    const matchedMediaOptions = objectKeys(optionsAtMedia).filter(media => ownerWindow.matchMedia(media).matches).map(media => optionsAtMedia[media]).reduce((a, mediaOption) => mergeOptions(a, mediaOption), {});
+    return mergeOptions(options, matchedMediaOptions);
+  }
+  function optionsMediaQueries(optionsList) {
+    return optionsList.map(options => objectKeys(options.breakpoints || {})).reduce((acc, mediaQueries) => acc.concat(mediaQueries), []).map(ownerWindow.matchMedia);
+  }
+  const self = {
+    mergeOptions,
+    optionsAtMedia,
+    optionsMediaQueries
+  };
+  return self;
+}
+function PluginsHandler(optionsHandler) {
+  let activePlugins = [];
+  function init(emblaApi, plugins) {
+    activePlugins = plugins.filter(({
+      options
+    }) => optionsHandler.optionsAtMedia(options).active !== false);
+    activePlugins.forEach(plugin => plugin.init(emblaApi, optionsHandler));
+    return plugins.reduce((map, plugin) => Object.assign(map, {
+      [plugin.name]: plugin
+    }), {});
+  }
+  function destroy() {
+    activePlugins = activePlugins.filter(plugin => plugin.destroy());
+  }
+  const self = {
+    init,
+    destroy
+  };
+  return self;
+}
+function EmblaCarousel(root, userOptions, userPlugins) {
+  const ownerDocument = root.ownerDocument;
+  const ownerWindow = ownerDocument.defaultView;
+  const optionsHandler = OptionsHandler(ownerWindow);
+  const pluginsHandler = PluginsHandler(optionsHandler);
+  const mediaHandlers = EventStore();
+  const eventHandler = EventHandler();
+  const {
+    mergeOptions,
+    optionsAtMedia,
+    optionsMediaQueries
+  } = optionsHandler;
+  const {
+    on,
+    off,
+    emit
+  } = eventHandler;
+  const reInit = reActivate;
+  let destroyed = false;
+  let engine;
+  let optionsBase = mergeOptions(defaultOptions, EmblaCarousel.globalOptions);
+  let options = mergeOptions(optionsBase);
+  let pluginList = [];
+  let pluginApis;
+  let container;
+  let slides;
+  function storeElements() {
+    const {
+      container: userContainer,
+      slides: userSlides
+    } = options;
+    const customContainer = isString(userContainer) ? root.querySelector(userContainer) : userContainer;
+    container = customContainer || root.children[0];
+    const customSlides = isString(userSlides) ? container.querySelectorAll(userSlides) : userSlides;
+    slides = [].slice.call(customSlides || container.children);
+  }
+  function createEngine(options) {
+    const engine = Engine(root, container, slides, ownerDocument, ownerWindow, options, eventHandler);
+    if (options.loop && !engine.slideLooper.canLoop()) {
+      const optionsWithoutLoop = Object.assign({}, options, {
+        loop: false
+      });
+      return createEngine(optionsWithoutLoop);
+    }
+    return engine;
+  }
+  function activate(withOptions, withPlugins) {
+    if (destroyed) return;
+    optionsBase = mergeOptions(optionsBase, withOptions);
+    options = optionsAtMedia(optionsBase);
+    pluginList = withPlugins || pluginList;
+    storeElements();
+    engine = createEngine(options);
+    optionsMediaQueries([optionsBase, ...pluginList.map(({
+      options
+    }) => options)]).forEach(query => mediaHandlers.add(query, 'change', reActivate));
+    if (!options.active) return;
+    engine.translate.to(engine.location.get());
+    engine.animation.init();
+    engine.slidesInView.init();
+    engine.slideFocus.init(self);
+    engine.eventHandler.init(self);
+    engine.resizeHandler.init(self);
+    engine.slidesHandler.init(self);
+    if (engine.options.loop) engine.slideLooper.loop();
+    if (container.offsetParent && slides.length) engine.dragHandler.init(self);
+    pluginApis = pluginsHandler.init(self, pluginList);
+  }
+  function reActivate(withOptions, withPlugins) {
+    const startIndex = selectedScrollSnap();
+    deActivate();
+    activate(mergeOptions({
+      startIndex
+    }, withOptions), withPlugins);
+    eventHandler.emit('reInit');
+  }
+  function deActivate() {
+    engine.dragHandler.destroy();
+    engine.eventStore.clear();
+    engine.translate.clear();
+    engine.slideLooper.clear();
+    engine.resizeHandler.destroy();
+    engine.slidesHandler.destroy();
+    engine.slidesInView.destroy();
+    engine.animation.destroy();
+    pluginsHandler.destroy();
+    mediaHandlers.clear();
+  }
+  function destroy() {
+    if (destroyed) return;
+    destroyed = true;
+    mediaHandlers.clear();
+    deActivate();
+    eventHandler.emit('destroy');
+    eventHandler.clear();
+  }
+  function scrollTo(index, jump, direction) {
+    if (!options.active || destroyed) return;
+    engine.scrollBody.useBaseFriction().useDuration(jump === true ? 0 : options.duration);
+    engine.scrollTo.index(index, direction || 0);
+  }
+  function scrollNext(jump) {
+    const next = engine.index.add(1).get();
+    scrollTo(next, jump, -1);
+  }
+  function scrollPrev(jump) {
+    const prev = engine.index.add(-1).get();
+    scrollTo(prev, jump, 1);
+  }
+  function canScrollNext() {
+    const next = engine.index.add(1).get();
+    return next !== selectedScrollSnap();
+  }
+  function canScrollPrev() {
+    const prev = engine.index.add(-1).get();
+    return prev !== selectedScrollSnap();
+  }
+  function scrollSnapList() {
+    return engine.scrollSnapList;
+  }
+  function scrollProgress() {
+    return engine.scrollProgress.get(engine.offsetLocation.get());
+  }
+  function selectedScrollSnap() {
+    return engine.index.get();
+  }
+  function previousScrollSnap() {
+    return engine.indexPrevious.get();
+  }
+  function slidesInView() {
+    return engine.slidesInView.get();
+  }
+  function slidesNotInView() {
+    return engine.slidesInView.get(false);
+  }
+  function plugins() {
+    return pluginApis;
+  }
+  function internalEngine() {
+    return engine;
+  }
+  function rootNode() {
+    return root;
+  }
+  function containerNode() {
+    return container;
+  }
+  function slideNodes() {
+    return slides;
+  }
+  const self = {
+    canScrollNext,
+    canScrollPrev,
+    containerNode,
+    internalEngine,
+    destroy,
+    off,
+    on,
+    emit,
+    plugins,
+    previousScrollSnap,
+    reInit,
+    rootNode,
+    scrollNext,
+    scrollPrev,
+    scrollProgress,
+    scrollSnapList,
+    scrollTo,
+    selectedScrollSnap,
+    slideNodes,
+    slidesInView,
+    slidesNotInView
+  };
+  activate(userOptions, userPlugins);
+  setTimeout(() => eventHandler.emit('init'), 0);
+  return self;
+}
+EmblaCarousel.globalOptions = undefined;
+
+
+/***/ })
+
+/******/ 	});
+/************************************************************************/
+/******/ 	// The module cache
+/******/ 	var __webpack_module_cache__ = {};
+/******/ 	
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/ 		// Check if module is in cache
+/******/ 		var cachedModule = __webpack_module_cache__[moduleId];
+/******/ 		if (cachedModule !== undefined) {
+/******/ 			return cachedModule.exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = __webpack_module_cache__[moduleId] = {
+/******/ 			// no module.id needed
+/******/ 			// no module.loaded needed
+/******/ 			exports: {}
+/******/ 		};
+/******/ 	
+/******/ 		// Execute the module function
+/******/ 		__webpack_modules__[moduleId](module, module.exports, __webpack_require__);
+/******/ 	
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/ 	
+/************************************************************************/
+/******/ 	/* webpack/runtime/define property getters */
+/******/ 	(() => {
+/******/ 		// define getter functions for harmony exports
+/******/ 		__webpack_require__.d = (exports, definition) => {
+/******/ 			for(var key in definition) {
+/******/ 				if(__webpack_require__.o(definition, key) && !__webpack_require__.o(exports, key)) {
+/******/ 					Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
+/******/ 				}
+/******/ 			}
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/hasOwnProperty shorthand */
+/******/ 	(() => {
+/******/ 		__webpack_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/make namespace object */
+/******/ 	(() => {
+/******/ 		// define __esModule on exports
+/******/ 		__webpack_require__.r = (exports) => {
+/******/ 			if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 				Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 			}
+/******/ 			Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/************************************************************************/
+var __webpack_exports__ = {};
+// This entry needs to be wrapped in an IIFE because it needs to be isolated against other modules in the chunk.
+(() => {
+/*!*******************************!*\
+  !*** ./blocks/swiper/view.js ***!
+  \*******************************/
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var embla_carousel__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! embla-carousel */ "./node_modules/embla-carousel/esm/embla-carousel.esm.js");
+/* harmony import */ var embla_carousel_autoplay__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! embla-carousel-autoplay */ "./node_modules/embla-carousel-autoplay/esm/embla-carousel-autoplay.esm.js");
+
+
+document.addEventListener('DOMContentLoaded', () => {
+  const swiperBlocks = document.querySelectorAll('.wp-block-jankx-swiper');
+  swiperBlocks.forEach(block => {
+    const container = block.querySelector('.embla');
+    if (!container) return;
+    const loadSwiper = async () => {
+      await new Promise(resolve => setTimeout(resolve, 100));
+      const applyViewportMinusHeader = () => {
+        if (!block.classList.contains('fit-vh-minus-header')) {
+          return;
+        }
+        const headerEl = document.querySelector('header');
+        const headerHeight = headerEl ? headerEl.offsetHeight : 0;
+        const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
+        const computed = Math.max(0, viewportHeight - headerHeight);
+        block.style.setProperty('--swiper-height', `${computed}px`);
+        container.dataset.swiperHeight = `${computed}`;
+      };
+      applyViewportMinusHeader();
+      window.addEventListener('resize', applyViewportMinusHeader, {
+        passive: true
+      });
+      window.addEventListener('orientationchange', applyViewportMinusHeader, {
+        passive: true
+      });
+      const slidesPerView = parseInt(container.dataset.slidesPerView) || 1;
+      const slidesPerViewTablet = parseInt(container.dataset.slidesPerViewTablet) || slidesPerView;
+      const slidesPerViewMobile = parseInt(container.dataset.slidesPerViewMobile) || slidesPerView;
+      const spaceBetween = parseInt(container.dataset.spaceBetween) || 30;
+      const loop = container.dataset.loop === 'true';
+      const autoplay = container.dataset.autoplay === 'true';
+      const autoplayDelay = parseInt(container.dataset.autoplayDelay) || 3000;
+      const speed = parseInt(container.dataset.speed) || 300;
+      const navigation = container.dataset.navigation === 'true';
+      const pagination = container.dataset.pagination === 'true';
+      const isMobileViewport = (window.innerWidth || document.documentElement.clientWidth) <= 768;
+      const slideNodes = container.querySelectorAll('.embla__slide').length ? container.querySelectorAll('.embla__slide') : container.querySelectorAll('.swiper-slide');
+      const slidesCount = slideNodes.length;
+      const spaceBetweenMobile = Math.min(spaceBetween, 16);
+      const spaceBetweenTablet = Math.min(spaceBetween, 24);
+      const adjustedSpeed = slidesCount > 6 ? Math.min(speed, 400) : speed;
+      const useAutoplay = autoplay && slidesCount <= 10;
+      const finalAutoplayDelay = Math.max(autoplayDelay, 4000);
+      const bannerStyle = container.dataset.bannerStyle || 'default';
+      const bannerTextColor = container.dataset.bannerTextColor || '#ffffff';
+      const bannerBackgroundColor = container.dataset.bannerBackgroundColor || 'rgba(0,0,0,0.5)';
+      const bannerPadding = parseInt(container.dataset.bannerPadding) || 20;
+      const bannerBorderRadius = parseInt(container.dataset.bannerBorderRadius) || 0;
+      const gradientOverlay = container.dataset.gradientOverlay === 'true';
+      const gradientColor = container.dataset.gradientColor || '#000000';
+      const gradientOpacity = parseFloat(container.dataset.gradientOpacity) || 0.7;
+      const gradientHeight = parseInt(container.dataset.gradientHeight) || 60;
+      const hexToRgb = hex => {
+        const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+        return result ? {
+          r: parseInt(result[1], 16),
+          g: parseInt(result[2], 16),
+          b: parseInt(result[3], 16)
+        } : {
+          r: 0,
+          g: 0,
+          b: 0
+        };
+      };
+      const gradientRgb = hexToRgb(gradientColor);
+      block.classList.add(`banner-style-${bannerStyle}`);
+      if (gradientOverlay) {
+        block.classList.add('has-gradient-overlay');
+      }
+      block.style.setProperty('--banner-style', bannerStyle);
+      block.style.setProperty('--banner-text-color', bannerTextColor);
+      block.style.setProperty('--banner-background-color', bannerBackgroundColor);
+      block.style.setProperty('--banner-padding', `${bannerPadding}px`);
+      block.style.setProperty('--banner-border-radius', `${bannerBorderRadius}px`);
+      block.style.setProperty('--gradient-overlay-enabled', gradientOverlay ? '1' : '0');
+      block.style.setProperty('--gradient-color-r', gradientRgb.r);
+      block.style.setProperty('--gradient-color-g', gradientRgb.g);
+      block.style.setProperty('--gradient-color-b', gradientRgb.b);
+      block.style.setProperty('--gradient-opacity', gradientOpacity);
+      block.style.setProperty('--gradient-height', `${gradientHeight}%`);
+      block.style.setProperty('--space-between', `${spaceBetween}px`);
+      const nextEl = block.querySelector('.embla__button--next');
+      const prevEl = block.querySelector('.embla__button--prev');
+      const paginationEl = block.querySelector('.embla__dots');
+      container.classList.add('embla__viewport');
+      const track = container.querySelector('.embla__container') || container.querySelector('.swiper-wrapper');
+      if (track) {
+        track.classList.add('embla__container');
+      }
+      const plugins = useAutoplay ? [(0,embla_carousel_autoplay__WEBPACK_IMPORTED_MODULE_1__["default"])({
+        delay: finalAutoplayDelay,
+        stopOnInteraction: true,
+        stopOnMouseEnter: true
+      })] : [];
+      const embla = (0,embla_carousel__WEBPACK_IMPORTED_MODULE_0__["default"])(container, {
+        loop: loop,
+        duration: adjustedSpeed,
+        align: 'start'
+      }, plugins);
+      if (navigation && nextEl && prevEl) {
+        nextEl.addEventListener('click', () => {
+          const nextIndex = embla.selectedScrollSnap() + 1;
+          embla.scrollTo(nextIndex, true);
+        }, {
+          passive: true
+        });
+        prevEl.addEventListener('click', () => {
+          const prevIndex = embla.selectedScrollSnap() - 1;
+          embla.scrollTo(prevIndex, true);
+        }, {
+          passive: true
+        });
+      }
+      if (useAutoplay) {
+        const ap = embla.plugins?.().autoplay;
+        if (ap) {
+          container.addEventListener('pointerdown', () => ap.stop(), {
+            passive: true
+          });
+        }
+      }
+      let bullets = [];
+      const setupPagination = () => {
+        if (!pagination || !paginationEl) return;
+        const slides = embla.slideNodes();
+        paginationEl.innerHTML = '';
+        bullets = slides.map((_, index) => {
+          const b = document.createElement('span');
+          b.className = 'embla__dot';
+          b.style.display = 'inline-block';
+          b.style.width = '12px';
+          b.style.height = '12px';
+          b.style.borderRadius = '9999px';
+          b.style.background = 'rgba(255,255,255,0.6)';
+          b.style.opacity = '0.6';
+          b.style.margin = '0 6px';
+          b.style.cursor = 'pointer';
+          b.style.transition = 'transform 0.2s ease, background 0.2s ease, opacity 0.2s ease, width 0.2s ease, height 0.2s ease';
+          b.addEventListener('click', () => embla.scrollTo(index, true), {
+            passive: true
+          });
+          paginationEl.appendChild(b);
+          return b;
+        });
+        setActiveBullet(embla.selectedScrollSnap());
+      };
+      const setActiveBullet = index => {
+        bullets.forEach((b, i) => {
+          if (i === index) {
+            b.classList.add('is-active');
+            b.style.background = 'rgba(255,255,255,0.95)';
+            b.style.opacity = '1';
+            b.style.transform = 'scale(1.2)';
+            b.style.width = '16px';
+            b.style.height = '16px';
+          } else {
+            b.classList.remove('is-active');
+            b.style.background = 'rgba(255,255,255,0.6)';
+            b.style.opacity = '0.6';
+            b.style.transform = 'scale(1)';
+            b.style.width = '12px';
+            b.style.height = '12px';
+          }
+        });
+      };
+      setupPagination();
+      embla.on('select', () => {
+        setActiveBullet(embla.selectedScrollSnap());
+        updateCircleBannerWidths(container);
+      });
+      embla.on('reInit', () => {
+        setupPagination();
+        updateCircleBannerWidths(container);
+      });
+      function updateCircleBannerWidths(swiperContainer) {
+        const swiperHeight = swiperContainer.dataset.swiperHeight;
+        if (!swiperHeight || parseFloat(swiperHeight) <= 0) {
+          const circleBanners = swiperContainer.querySelectorAll('.embla-banner--circles, .embla-banner--square');
+          circleBanners.forEach(banner => {
+            banner.style.removeProperty('width');
+          });
+          return;
+        }
+        const circleBanners = swiperContainer.querySelectorAll('.embla-banner--circles, .embla-banner--square');
+        circleBanners.forEach(banner => {
+          banner.style.setProperty('width', `${swiperHeight}px`, 'important');
+        });
+      }
+      updateCircleBannerWidths(container);
+    };
+    loadSwiper();
+  });
+});
+})();
+
+/******/ })()
+;
 //# sourceMappingURL=view.js.map
