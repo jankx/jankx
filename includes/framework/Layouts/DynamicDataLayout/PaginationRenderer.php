@@ -58,6 +58,11 @@ class PaginationRenderer
             return '';
         }
 
+        // Trigger on-demand CSS loading for pagination if WordPressBlock is available
+        if (class_exists(\Jankx\Gutenberg\Blocks\WordPressBlock::class)) {
+            \Jankx\Gutenberg\Blocks\WordPressBlock::enqueueLegacyAssets('pagination');
+        }
+
         $wrapper_classes = [
             'post-layout-pagination',
             'wp-block-query-pagination',

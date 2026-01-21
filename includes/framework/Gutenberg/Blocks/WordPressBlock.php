@@ -63,7 +63,7 @@ class WordPressBlock extends Block
         if ($type !== 'none' && !in_array($type, self::$calledComponents)) {
             self::$calledComponents[] = $type;
             // Trigger asset loading for this specific component
-            $this->enqueueLegacyAssets($type);
+            self::enqueueLegacyAssets($type);
         }
 
         $output = '';
@@ -96,7 +96,7 @@ class WordPressBlock extends Block
         );
     }
 
-    protected function enqueueLegacyAssets($type)
+    public static function enqueueLegacyAssets($type)
     {
         // On-demand asset loading logic
         // We can use wp_enqueue_style here; since it's called during render, 
@@ -104,7 +104,7 @@ class WordPressBlock extends Block
         // This is perfect for PageSpeed.
 
         $handle = "jankx-legacy-{$type}";
-        $css_content = $this->getLegacyComponentCSS($type);
+        $css_content = self::getLegacyComponentCSS($type);
 
         if (!empty($css_content)) {
             // If we want to strictly avoid style.css, we inject minimal inline CSS
@@ -119,14 +119,14 @@ class WordPressBlock extends Block
         // }, 20);
     }
 
-    protected function getLegacyComponentCSS($type)
+    public static function getLegacyComponentCSS($type)
     {
         // Return minimal CSS for each component to avoid global style.css
         $css = [
             'categories' => '.wp-legacy-categories { list-style: none; padding: 0; } .wp-legacy-categories li { margin-bottom: 5px; }',
             'archives' => '.wp-legacy-archives { list-style: none; padding: 0; }',
             'recent_comments' => '.widget_recent_comments ul { list-style: none; padding: 0; }',
-            'pagination' => '.wp-block-query-pagination { display: flex; align-items: center; justify-content: center; gap: 1rem; margin: 3rem 0; } .page-numbers { display: inline-flex; align-items: center; justify-content: center; min-width: 44px; height: 44px; padding: 0.5rem 0.75rem; border: 2px solid #e0e0e0; border-radius: 8px; background: white; color: #304254; text-decoration: none; font-weight: 500; font-size: 1rem; transition: all 0.3s ease; } .page-numbers.current { background: #ff5c00; border-color: #ff5c00; color: white; } .page-numbers:hover:not(.current) { border-color: #ff5c00; color: #ff5c00; }',
+            'pagination' => '.wp-block-query-pagination { display: flex; align-items: center; justify-content: center; gap: 1rem; margin: 2rem 0; } .wp-block-query-pagination ul.page-numbers { display: flex; list-style: none; padding: 0; margin: 0; gap: 0.5rem; flex-wrap: wrap; justify-content: center; } .page-numbers { display: inline-flex; align-items: center; justify-content: center; min-width: 40px; height: 40px; padding: 5px 10px; border: 1px solid #e0e0e0; border-radius: 4px; background: white; color: #333; text-decoration: none; font-size: 14px; transition: all 0.2s; } .page-numbers.current { background: #ff5c00; border-color: #ff5c00; color: white; } .page-numbers:hover:not(.current) { border-color: #ff5c00; color: #ff5c00; }',
         ];
 
         return $css[$type] ?? '';
