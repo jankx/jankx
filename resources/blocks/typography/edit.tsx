@@ -1,10 +1,10 @@
-
 import { JankxInspector } from '../../js/components/jankx-inspector/JankxInspector';
 import { ResponsiveControl } from '../../js/components/jankx-inspector/ResponsiveControl';
 import { useBlockProps, InnerBlocks, InspectorControls } from '@wordpress/block-editor';
 import { PanelBody, RangeControl, ColorPalette } from '@wordpress/components';
+import { useSelect } from '@wordpress/data';
 
-export default function Edit({ attributes, setAttributes }: any) {
+export default function Edit({ attributes, setAttributes, clientId }: any) {
     const blockProps = useBlockProps({
         className: 'jankx-typography-block',
         style: {
@@ -17,6 +17,11 @@ export default function Edit({ attributes, setAttributes }: any) {
             'color': attributes.textColor
         }
     });
+
+    const innerBlockCount = useSelect(
+        (select) => select('core/block-editor').getBlockCount(clientId),
+        [clientId]
+    );
 
     const ALLOWED_BLOCKS = [
         'core/paragraph',
@@ -96,7 +101,11 @@ export default function Edit({ attributes, setAttributes }: any) {
                     }}
                 </JankxInspector>
             </InspectorControls>
-            <InnerBlocks allowedBlocks={ALLOWED_BLOCKS} template={[['core/paragraph']]} />
+            <InnerBlocks
+                allowedBlocks={ALLOWED_BLOCKS}
+                template={[['core/paragraph']]}
+                renderAppender={innerBlockCount >= 1 ? false : InnerBlocks.ButtonBlockAppender}
+            />
         </div>
     );
 }
