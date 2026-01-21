@@ -60,6 +60,7 @@ use Jankx\Gutenberg\Extra\LineClamp as ExtraLineClamp;
 use Jankx\Gutenberg\Blocks\WrapperBlock;
 use Jankx\Gutenberg\Blocks\TypographyBlock;
 use Jankx\Gutenberg\Extra\ChildOrder as ExtraChildOrder;
+use Jankx\Gutenberg\Extra\ResponsiveVisibility as ExtraResponsiveVisibility;
 
 /**
  * Gutenberg Service
@@ -456,6 +457,9 @@ class GutenbergService
 
             // Register Child Order extra
             $extraManager->register(ExtraChildOrder::class);
+
+            // Register Responsive Visibility extra
+            $extraManager->register(ExtraResponsiveVisibility::class);
 
             // Allow child themes or plugins to register additional block extras
             do_action('jankx/gutenberg/register-block-extras', $extraManager, $this->app);

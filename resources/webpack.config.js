@@ -205,6 +205,7 @@ module.exports = {
     'blocks/menu-builder/build/frontend': './blocks/menu-builder/frontend.js',
     'blocks/wrapper/build/index': './blocks/wrapper/index.tsx',
     'assets/js/child-order': './js/filters/child-order.tsx',
+    'assets/js/responsive-visibility': './js/filters/responsive-visibility.tsx',
     'blocks/typography/build/index': './blocks/typography/index.tsx',
   },
   output: {
