@@ -2,10 +2,10 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
-/***/ "./node_modules/embla-carousel-autoplay/esm/embla-carousel-autoplay.esm.js":
-/*!*********************************************************************************!*\
-  !*** ./node_modules/embla-carousel-autoplay/esm/embla-carousel-autoplay.esm.js ***!
-  \*********************************************************************************/
+/***/ "../node_modules/embla-carousel-autoplay/esm/embla-carousel-autoplay.esm.js":
+/*!**********************************************************************************!*\
+  !*** ../node_modules/embla-carousel-autoplay/esm/embla-carousel-autoplay.esm.js ***!
+  \**********************************************************************************/
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
@@ -206,10 +206,10 @@ Autoplay.globalOptions = undefined;
 
 /***/ }),
 
-/***/ "./node_modules/embla-carousel/esm/embla-carousel.esm.js":
-/*!***************************************************************!*\
-  !*** ./node_modules/embla-carousel/esm/embla-carousel.esm.js ***!
-  \***************************************************************/
+/***/ "../node_modules/embla-carousel/esm/embla-carousel.esm.js":
+/*!****************************************************************!*\
+  !*** ../node_modules/embla-carousel/esm/embla-carousel.esm.js ***!
+  \****************************************************************/
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
@@ -1915,8 +1915,8 @@ var __webpack_exports__ = {};
   !*** ./blocks/swiper/view.js ***!
   \*******************************/
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var embla_carousel__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! embla-carousel */ "./node_modules/embla-carousel/esm/embla-carousel.esm.js");
-/* harmony import */ var embla_carousel_autoplay__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! embla-carousel-autoplay */ "./node_modules/embla-carousel-autoplay/esm/embla-carousel-autoplay.esm.js");
+/* harmony import */ var embla_carousel__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! embla-carousel */ "../node_modules/embla-carousel/esm/embla-carousel.esm.js");
+/* harmony import */ var embla_carousel_autoplay__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! embla-carousel-autoplay */ "../node_modules/embla-carousel-autoplay/esm/embla-carousel-autoplay.esm.js");
 
 
 document.addEventListener('DOMContentLoaded', () => {

@@ -21,11 +21,15 @@ import {
 	store as blockEditorStore,
 	useBlockEditingMode,
 } from '@wordpress/block-editor';
+import { useSelect, useDispatch } from '@wordpress/data';
+import { crop, edit as editIcon, link, linkOff, plus, external } from '@wordpress/icons';
+import { isBlobURL } from '@wordpress/blob';
 import {
 	PanelBody,
 	SelectControl,
 	RangeControl,
 	ToggleControl,
+	TextControl,
 	// Use ColorPalette to leverage Gutenberg theme color settings
 	ColorPicker,
 	ColorPalette,
@@ -37,9 +41,6 @@ import {
 	__experimentalToolsPanel as ToolsPanel,
 	__experimentalToolsPanelItem as ToolsPanelItem,
 } from '@wordpress/components';
-import { useSelect, useDispatch } from '@wordpress/data';
-import { crop, edit as editIcon, link, linkOff, plus } from '@wordpress/icons';
-import { isBlobURL } from '@wordpress/blob';
 
 /**
  * Internal dependencies
@@ -577,6 +578,7 @@ export default function edit({
             target={linkTarget}
             rel={rel}
             className="wp-block-jankx-advanced-image-box__link"
+            onClick={(e) => e.preventDefault()}
         >
             {imageElement}
         </a>
@@ -685,20 +687,18 @@ export default function edit({
 							onError={onUploadError}
 							name={!url ? __('Add image') : __('Replace')}
 						/>
+						<ToolbarButton
+							ref={linkButtonRef as any}
+							icon={link}
+							label={href ? __('Edit link', 'jankx') : __('Link', 'jankx')}
+							onClick={startEditing}
+							isPressed={!!href}
+						/>
 						{href && (
 							<ToolbarButton
-								ref={linkButtonRef as any}
 								icon={linkOff}
-								label={__('Unlink')}
+								label={__('Unlink', 'jankx')}
 								onClick={unlink}
-							/>
-						)}
-						{!href && (
-							<ToolbarButton
-								ref={linkButtonRef as any}
-								icon={link}
-								label={__('Link')}
-								onClick={startEditing}
 							/>
 						)}
 					</ToolbarGroup>
@@ -809,7 +809,39 @@ export default function edit({
 					/>
 				</PanelBody>
 
-				<PanelBody title={__('Overlay Settings')} initialOpen={false}>
+				<PanelBody title={__('Link Settings', 'jankx')} initialOpen={false}>
+					<TextControl
+						label={__('Link URL', 'jankx')}
+						value={href || ''}
+						onChange={(value) => setAttributes({ href: value })}
+						placeholder={__('https://…', 'jankx')}
+					/>
+					{href && (
+						<>
+							<ToggleControl
+								label={__('Open in new tab', 'jankx')}
+								checked={linkTarget === '_blank'}
+								onChange={onToggleOpenInNewTab}
+							/>
+							<TextControl
+								label={__('Link Rel', 'jankx')}
+								value={rel || ''}
+								onChange={(value) => setAttributes({ rel: value })}
+								help={__('Add rel attribute for SEO and security (e.g. nofollow).', 'jankx')}
+							/>
+							<Button
+								isDestructive
+								variant="link"
+								onClick={unlink}
+								style={{ marginTop: '8px' }}
+							>
+								{__('Remove Link', 'jankx')}
+							</Button>
+						</>
+					)}
+				</PanelBody>
+
+				<PanelBody title={__('Overlay Settings', 'jankx')} initialOpen={false}>
 					<ToggleControl
 						label={__('Show overlay on hover')}
 						checked={showOverlayOnHover}

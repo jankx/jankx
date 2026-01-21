@@ -2,176 +2,10 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
-/***/ "./assets/js/jankx-carousel-common.js":
-/*!********************************************!*\
-  !*** ./assets/js/jankx-carousel-common.js ***!
-  \********************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__),
-/* harmony export */   initJankxCarousel: () => (/* binding */ initJankxCarousel)
-/* harmony export */ });
-/* harmony import */ var _shared_components_JankxCarousel__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./../../shared/components/JankxCarousel */ "./shared/components/JankxCarousel.ts");
-
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_shared_components_JankxCarousel__WEBPACK_IMPORTED_MODULE_0__["default"]);
-const carouselInstances = new Map();
-function initJankxCarousel(selector, root = document) {
-  const carousels = root ? root.querySelectorAll(selector) : document.querySelectorAll(selector);
-  carousels.forEach(carousel => {
-    if (carousel._carouselInitialized) return;
-    const instance = new _shared_components_JankxCarousel__WEBPACK_IMPORTED_MODULE_0__["default"](carousel);
-    if (instance.embla) {
-      carouselInstances.set(carousel, instance);
-    }
-  });
-}
-if (typeof window !== 'undefined') {
-  window.JankxCarousel = {
-    init: initJankxCarousel,
-    instances: carouselInstances,
-    Carousel: _shared_components_JankxCarousel__WEBPACK_IMPORTED_MODULE_0__["default"]
-  };
-}
-
-/***/ }),
-
-/***/ "./assets/js/jankx-woocommerce-sorting.js":
-/*!************************************************!*\
-  !*** ./assets/js/jankx-woocommerce-sorting.js ***!
-  \************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   initWooCommerceSorting: () => (/* binding */ initWooCommerceSorting),
-/* harmony export */   updateDynamicBlocks: () => (/* binding */ updateDynamicBlocks)
-/* harmony export */ });
-/**
- * Shared logic for WooCommerce catalog sorting integration with dynamic layout blocks.
- * 
- * @param {Function} initializeCallback Callback to re-initialize block-specific features (like carousels)
- */
-function initWooCommerceSorting(initializeCallback) {
-  const sortingSelect = document.querySelector('.woocommerce-ordering .orderby');
-  if (!sortingSelect) return;
-
-  // WooCommerce usually submits the form on 'change'.
-  // We intercept the change event to perform AJAX update instead of full page reload.
-  sortingSelect.addEventListener('change', function (e) {
-    e.preventDefault();
-    e.stopPropagation();
-    const orderBy = this.value;
-    updateDynamicBlocks(orderBy, initializeCallback);
-
-    // Update URL without reload to keep state consistent for browser back/forward
-    const url = new URL(window.location.href);
-    url.searchParams.set('orderby', orderBy);
-    window.history.pushState({}, '', url);
-    return false;
-  });
-
-  // Also listen to the form submit just in case
-  const form = sortingSelect.closest('form');
-  if (form) {
-    form.addEventListener('submit', function (e) {
-      e.preventDefault();
-      const formData = new FormData(form);
-      const orderBy = formData.get('orderby');
-      updateDynamicBlocks(orderBy, initializeCallback);
-    });
-  }
-}
-
-/**
- * Update all dynamic layout blocks on the page
- * 
- * @param {string} orderBy The selection sort order
- * @param {Function} initializeCallback
- */
-function updateDynamicBlocks(orderBy, initializeCallback) {
-  const blocks = document.querySelectorAll('.wp-block-jankx-dynamic-data-layout, .wp-block-jankx-dynamic-ssr-layout');
-  blocks.forEach(block => {
-    const isSsr = block.classList.contains('wp-block-jankx-dynamic-ssr-layout');
-    const action = isSsr ? 'jankx_dynamic_ssr_layout_filter' : 'jankx_dynamic_data_layout_filter';
-
-    // Getting block attributes from data attributes
-    const blockId = block.dataset.blockId || block.dataset.queryId;
-    const postId = block.dataset.postId || window.jankx && window.jankx.post_id || 0;
-    if (!blockId) return;
-    block.classList.add('is-loading');
-    const data = new FormData();
-    data.append('action', action);
-    data.append('block_id', blockId);
-    data.append('post_id', postId);
-
-    // Construct filters with new orderby
-    const filters = {
-      orderby: orderBy
-    };
-    data.append('filters', JSON.stringify(filters));
-
-    // Resolve AJAX URL and Nonce from localized data
-    let ajaxUrl = '/wp-admin/admin-ajax.php';
-    let nonce = '';
-    if (isSsr) {
-      if (window.jankxDynamicSsrLayoutView) {
-        ajaxUrl = window.jankxDynamicSsrLayoutView.ajaxUrl || ajaxUrl;
-        nonce = window.jankxDynamicSsrLayoutView.nonce;
-      }
-    } else {
-      if (window.jankxDynamicDataLayoutView) {
-        ajaxUrl = window.jankxDynamicDataLayoutView.ajaxUrl || ajaxUrl;
-        nonce = window.jankxDynamicDataLayoutView.nonce;
-      }
-    }
-
-    // Global fallbacks if block-specific localization is missing
-    if (!nonce) {
-      nonce = window.jankx && window.jankx.nonce || '';
-    }
-    data.append('nonce', nonce);
-    fetch(ajaxUrl, {
-      method: 'POST',
-      body: data
-    }).then(res => res.json()).then(res => {
-      if (res.success && res.data.html) {
-        const temp = document.createElement('div');
-        temp.innerHTML = res.data.html;
-        const newBlock = temp.firstElementChild;
-        if (newBlock) {
-          block.replaceWith(newBlock);
-
-          // Re-initialize features
-          if (typeof initializeCallback === 'function') {
-            initializeCallback(newBlock);
-          }
-
-          // Standard re-init events
-          document.dispatchEvent(new CustomEvent('jankx:reinitialize-carousel', {
-            detail: {
-              element: newBlock
-            }
-          }));
-          if (window.initCarousel) {
-            window.initCarousel(newBlock);
-          }
-        }
-      }
-    }).catch(err => console.error('Jankx Dynamic Layout AJAX error:', err)).finally(() => {
-      const currentBlock = document.querySelector(`[data-block-id="${blockId}"]`);
-      if (currentBlock) currentBlock.classList.remove('is-loading');
-    });
-  });
-}
-
-/***/ }),
-
-/***/ "./node_modules/embla-carousel-autoplay/esm/embla-carousel-autoplay.esm.js":
-/*!*********************************************************************************!*\
-  !*** ./node_modules/embla-carousel-autoplay/esm/embla-carousel-autoplay.esm.js ***!
-  \*********************************************************************************/
+/***/ "../node_modules/embla-carousel-autoplay/esm/embla-carousel-autoplay.esm.js":
+/*!**********************************************************************************!*\
+  !*** ../node_modules/embla-carousel-autoplay/esm/embla-carousel-autoplay.esm.js ***!
+  \**********************************************************************************/
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
@@ -372,10 +206,10 @@ Autoplay.globalOptions = undefined;
 
 /***/ }),
 
-/***/ "./node_modules/embla-carousel/esm/embla-carousel.esm.js":
-/*!***************************************************************!*\
-  !*** ./node_modules/embla-carousel/esm/embla-carousel.esm.js ***!
-  \***************************************************************/
+/***/ "../node_modules/embla-carousel/esm/embla-carousel.esm.js":
+/*!****************************************************************!*\
+  !*** ../node_modules/embla-carousel/esm/embla-carousel.esm.js ***!
+  \****************************************************************/
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
@@ -2018,6 +1852,172 @@ EmblaCarousel.globalOptions = undefined;
 
 /***/ }),
 
+/***/ "./assets/js/jankx-carousel-common.js":
+/*!********************************************!*\
+  !*** ./assets/js/jankx-carousel-common.js ***!
+  \********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__),
+/* harmony export */   initJankxCarousel: () => (/* binding */ initJankxCarousel)
+/* harmony export */ });
+/* harmony import */ var _shared_components_JankxCarousel__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./../../shared/components/JankxCarousel */ "./shared/components/JankxCarousel.ts");
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_shared_components_JankxCarousel__WEBPACK_IMPORTED_MODULE_0__["default"]);
+const carouselInstances = new Map();
+function initJankxCarousel(selector, root = document) {
+  const carousels = root ? root.querySelectorAll(selector) : document.querySelectorAll(selector);
+  carousels.forEach(carousel => {
+    if (carousel._carouselInitialized) return;
+    const instance = new _shared_components_JankxCarousel__WEBPACK_IMPORTED_MODULE_0__["default"](carousel);
+    if (instance.embla) {
+      carouselInstances.set(carousel, instance);
+    }
+  });
+}
+if (typeof window !== 'undefined') {
+  window.JankxCarousel = {
+    init: initJankxCarousel,
+    instances: carouselInstances,
+    Carousel: _shared_components_JankxCarousel__WEBPACK_IMPORTED_MODULE_0__["default"]
+  };
+}
+
+/***/ }),
+
+/***/ "./assets/js/jankx-woocommerce-sorting.js":
+/*!************************************************!*\
+  !*** ./assets/js/jankx-woocommerce-sorting.js ***!
+  \************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   initWooCommerceSorting: () => (/* binding */ initWooCommerceSorting),
+/* harmony export */   updateDynamicBlocks: () => (/* binding */ updateDynamicBlocks)
+/* harmony export */ });
+/**
+ * Shared logic for WooCommerce catalog sorting integration with dynamic layout blocks.
+ * 
+ * @param {Function} initializeCallback Callback to re-initialize block-specific features (like carousels)
+ */
+function initWooCommerceSorting(initializeCallback) {
+  const sortingSelect = document.querySelector('.woocommerce-ordering .orderby');
+  if (!sortingSelect) return;
+
+  // WooCommerce usually submits the form on 'change'.
+  // We intercept the change event to perform AJAX update instead of full page reload.
+  sortingSelect.addEventListener('change', function (e) {
+    e.preventDefault();
+    e.stopPropagation();
+    const orderBy = this.value;
+    updateDynamicBlocks(orderBy, initializeCallback);
+
+    // Update URL without reload to keep state consistent for browser back/forward
+    const url = new URL(window.location.href);
+    url.searchParams.set('orderby', orderBy);
+    window.history.pushState({}, '', url);
+    return false;
+  });
+
+  // Also listen to the form submit just in case
+  const form = sortingSelect.closest('form');
+  if (form) {
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      const formData = new FormData(form);
+      const orderBy = formData.get('orderby');
+      updateDynamicBlocks(orderBy, initializeCallback);
+    });
+  }
+}
+
+/**
+ * Update all dynamic layout blocks on the page
+ * 
+ * @param {string} orderBy The selection sort order
+ * @param {Function} initializeCallback
+ */
+function updateDynamicBlocks(orderBy, initializeCallback) {
+  const blocks = document.querySelectorAll('.wp-block-jankx-dynamic-data-layout, .wp-block-jankx-dynamic-ssr-layout');
+  blocks.forEach(block => {
+    const isSsr = block.classList.contains('wp-block-jankx-dynamic-ssr-layout');
+    const action = isSsr ? 'jankx_dynamic_ssr_layout_filter' : 'jankx_dynamic_data_layout_filter';
+
+    // Getting block attributes from data attributes
+    const blockId = block.dataset.blockId || block.dataset.queryId;
+    const postId = block.dataset.postId || window.jankx && window.jankx.post_id || 0;
+    if (!blockId) return;
+    block.classList.add('is-loading');
+    const data = new FormData();
+    data.append('action', action);
+    data.append('block_id', blockId);
+    data.append('post_id', postId);
+
+    // Construct filters with new orderby
+    const filters = {
+      orderby: orderBy
+    };
+    data.append('filters', JSON.stringify(filters));
+
+    // Resolve AJAX URL and Nonce from localized data
+    let ajaxUrl = '/wp-admin/admin-ajax.php';
+    let nonce = '';
+    if (isSsr) {
+      if (window.jankxDynamicSsrLayoutView) {
+        ajaxUrl = window.jankxDynamicSsrLayoutView.ajaxUrl || ajaxUrl;
+        nonce = window.jankxDynamicSsrLayoutView.nonce;
+      }
+    } else {
+      if (window.jankxDynamicDataLayoutView) {
+        ajaxUrl = window.jankxDynamicDataLayoutView.ajaxUrl || ajaxUrl;
+        nonce = window.jankxDynamicDataLayoutView.nonce;
+      }
+    }
+
+    // Global fallbacks if block-specific localization is missing
+    if (!nonce) {
+      nonce = window.jankx && window.jankx.nonce || '';
+    }
+    data.append('nonce', nonce);
+    fetch(ajaxUrl, {
+      method: 'POST',
+      body: data
+    }).then(res => res.json()).then(res => {
+      if (res.success && res.data.html) {
+        const temp = document.createElement('div');
+        temp.innerHTML = res.data.html;
+        const newBlock = temp.firstElementChild;
+        if (newBlock) {
+          block.replaceWith(newBlock);
+
+          // Re-initialize features
+          if (typeof initializeCallback === 'function') {
+            initializeCallback(newBlock);
+          }
+
+          // Standard re-init events
+          document.dispatchEvent(new CustomEvent('jankx:reinitialize-carousel', {
+            detail: {
+              element: newBlock
+            }
+          }));
+          if (window.initCarousel) {
+            window.initCarousel(newBlock);
+          }
+        }
+      }
+    }).catch(err => console.error('Jankx Dynamic Layout AJAX error:', err)).finally(() => {
+      const currentBlock = document.querySelector(`[data-block-id="${blockId}"]`);
+      if (currentBlock) currentBlock.classList.remove('is-loading');
+    });
+  });
+}
+
+/***/ }),
+
 /***/ "./shared/components/JankxCarousel.ts":
 /*!********************************************!*\
   !*** ./shared/components/JankxCarousel.ts ***!
@@ -2028,8 +2028,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ JankxCarousel)
 /* harmony export */ });
-/* harmony import */ var embla_carousel__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! embla-carousel */ "./node_modules/embla-carousel/esm/embla-carousel.esm.js");
-/* harmony import */ var embla_carousel_autoplay__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! embla-carousel-autoplay */ "./node_modules/embla-carousel-autoplay/esm/embla-carousel-autoplay.esm.js");
+/* harmony import */ var embla_carousel__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! embla-carousel */ "../node_modules/embla-carousel/esm/embla-carousel.esm.js");
+/* harmony import */ var embla_carousel_autoplay__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! embla-carousel-autoplay */ "../node_modules/embla-carousel-autoplay/esm/embla-carousel-autoplay.esm.js");
 
 
 class JankxCarousel {
