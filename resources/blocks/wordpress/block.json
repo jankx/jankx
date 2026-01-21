@@ -1,0 +1,32 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "jankx/wordpress",
+    "version": "1.0.0",
+    "title": "WordPress Legacy",
+    "category": "theme",
+    "description": "Smartly handle WordPress legacy features and on-demand assets.",
+    "attributes": {
+        "legacyType": {
+            "type": "string",
+            "default": "none"
+        },
+        "contentId": {
+            "type": "string"
+        },
+        "extraParams": {
+            "type": "object",
+            "default": {}
+        },
+        "disableGlobalStyle": {
+            "type": "boolean",
+            "default": false
+        }
+    },
+    "supports": {
+        "html": false,
+        "anchor": true
+    },
+    "editorScript": "file:./build/index.js",
+    "editorStyle": "file:./build/index.css"
+}

@@ -42,6 +42,7 @@ use Jankx\Gutenberg\Blocks\TableRowBlock;
 use Jankx\Gutenberg\Blocks\TestimonialsBlock;
 use Jankx\Gutenberg\Blocks\FacebookPageBlock;
 use Jankx\Gutenberg\Blocks\TestimonialBlock;
+use Jankx\Gutenberg\Blocks\WordPressBlock;
 use Jankx\Gutenberg\Blocks\StarRatingBlock;
 use Jankx\Gutenberg\Blocks\FloatingMessengersBlock;
 use Jankx\Gutenberg\Blocks\StickyBoxBlock;
@@ -195,6 +196,7 @@ class GutenbergService
         $this->repository->registerBlock(SafeIframeBlock::class);
         $this->repository->registerBlock(WrapperBlock::class);
         $this->repository->registerBlock(TypographyBlock::class);
+        $this->repository->registerBlock(WordPressBlock::class);
     }
 
     /**
