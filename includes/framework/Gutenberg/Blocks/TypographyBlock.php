@@ -10,9 +10,8 @@ class TypographyBlock extends Block
 
     public function render($attributes, $content = '', $block = null)
     {
-        $classes = ['has-jankx-typography'];
-        if (isset($attributes['className'])) {
-            $classes[] = $attributes['className'];
+        if (empty($content)) {
+            return $content;
         }
 
         $styles = [];
@@ -36,21 +35,47 @@ class TypographyBlock extends Block
             $styles[] = "color: {$attributes['textColor']}";
         }
 
-        $class_string = implode(' ', $classes);
-        $block_id = 'jankx-typo-' . substr(md5(serialize($attributes)), 0, 8);
+        $style_attr = !empty($styles) ? implode('; ', $styles) . ';' : '';
+        $trimmed_content = ltrim($content);
 
-        $inline_css = "<style>.{$block_id} > * {";
-        if (!empty($styles)) {
-            $inline_css .= implode(';', $styles) . ' !important;';
+        // Try to inject into the first tag of the child block (e.g. h2, p)
+        if (preg_match('/^<([a-z0-9]+)([^>]*)>/is', $trimmed_content, $matches)) {
+            $tag_name = $matches[1];
+            $tag_attrs = $matches[2];
+
+            // 1. Add Class 'has-jankx-typography'
+            if (preg_match('/class=["\']([^"\']*)["\']/i', $tag_attrs, $class_matches)) {
+                $existing_classes = $class_matches[1];
+                if (strpos($existing_classes, 'has-jankx-typography') === false) {
+                    $new_classes = $existing_classes . ' has-jankx-typography';
+                    $tag_attrs = str_replace($class_matches[0], 'class="' . esc_attr(trim($new_classes)) . '"', $tag_attrs);
+                }
+            } else {
+                $tag_attrs .= ' class="has-jankx-typography"';
+            }
+
+            // 2. Add Styles (Variables)
+            if (!empty($style_attr)) {
+                if (preg_match('/style=["\']([^"\']*)["\']/i', $tag_attrs, $style_matches)) {
+                    $existing_style = $style_matches[1];
+                    $new_style = rtrim(trim($existing_style), ';') . '; ' . $style_attr;
+                    $tag_attrs = str_replace($style_matches[0], 'style="' . esc_attr(trim($new_style)) . '"', $tag_attrs);
+                } else {
+                    $tag_attrs .= ' style="' . esc_attr(trim($style_attr)) . '"';
+                }
+            }
+
+            $new_opening_tag = "<{$tag_name}{$tag_attrs}>";
+            $pos = strpos($content, $matches[0]);
+            if ($pos !== false) {
+                return substr_replace($content, $new_opening_tag, $pos, strlen($matches[0]));
+            }
         }
-        $inline_css .= "display: -webkit-box !important;-webkit-box-orient: vertical !important;overflow: hidden !important;text-overflow: ellipsis !important;";
-        $inline_css .= "}</style>";
 
+        // Fallback: wrap in a single div if injection into child tag fails
         return sprintf(
-            '%s<div class="%s %s">%s</div>',
-            $inline_css,
-            $class_string,
-            $block_id,
+            '<div class="has-jankx-typography" style="%s">%s</div>',
+            esc_attr($style_attr),
             $content
         );
     }
