@@ -34,27 +34,16 @@ class BlockTemplateRenderer
         $sanitizedAttributes = $this->attributeSanitizer->sanitize($attributes);
 
         $layoutName = $sanitizedAttributes['layout'] ?? 'grid';
-        $postType = $sanitizedAttributes['postType'] ?? 'post';
-        $postsPerPage = (int) ($sanitizedAttributes['postsPerPage'] ?? 10);
-        $paged = (int) ($sanitizedAttributes['paged'] ?? (get_query_var('paged') ?: (get_query_var('page') ?: 1)));
+        $layout = $this->layoutManager->createLayout($layoutName);
+        $decorator = new BlockTemplateLayoutDecorator($layout);
 
-        $queryArgs = [
-            'post_type' => $postType,
-            'post_status' => 'publish',
-            'posts_per_page' => $postsPerPage,
-            'paged' => $paged,
-        ];
-
-        // Apply filters
-        $queryArgs = apply_filters('jankx_block_template_query_args', $queryArgs, $sanitizedAttributes);
-
-        $query = new \WP_Query($queryArgs);
+        // Build robust query using LayoutQueryBuilder (via Decorator)
+        $query = $decorator->buildQuery($sanitizedAttributes);
 
         if (!$query->have_posts()) {
             return $this->renderEmptyState($sanitizedAttributes);
         }
 
-        $layout = $this->layoutManager->createLayout($layoutName);
         $layout->setQuery($query);
         $layout->setOptions($sanitizedAttributes);
 

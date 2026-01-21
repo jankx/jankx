@@ -51,6 +51,8 @@ class ViewAttributeSanitizer
         $sanitized['showAuthor'] = $this->sanitizeBooleanValue($attributes, 'showAuthor', false);
         $sanitized['showEmptyMessage'] = $this->sanitizeBooleanValue($attributes, 'showEmptyMessage', true);
         $sanitized['includeStickyPosts'] = $this->sanitizeBooleanValue($attributes, 'includeStickyPosts', false);
+        $sanitized['enablePagination'] = $this->sanitizeBooleanValue($attributes, 'enablePagination', false);
+        $sanitized['showPaginationNumbers'] = $this->sanitizeBooleanValue($attributes, 'showPaginationNumbers', true);
 
         // Sanitize string values
         $sanitized['imageSize'] = $this->sanitizeImageSize($attributes['imageSize'] ?? 'large');
@@ -59,6 +61,32 @@ class ViewAttributeSanitizer
         $sanitized['className'] = $this->sanitizeClassName($attributes['className'] ?? '');
         // Image ratio (e.g., "16/9") used by some layouts
         $sanitized['imageRatio'] = $this->sanitizeImageRatio($attributes['imageRatio'] ?? '');
+
+        // Pagination strings
+        $sanitized['paginationStyle'] = $this->sanitizeText($attributes['paginationStyle'] ?? 'numbers');
+        $sanitized['paginationAlignment'] = $this->sanitizeText($attributes['paginationAlignment'] ?? 'center');
+        $sanitized['paginationPrevText'] = $this->sanitizeText($attributes['paginationPrevText'] ?? '');
+        $sanitized['paginationNextText'] = $this->sanitizeText($attributes['paginationNextText'] ?? '');
+
+        // Query attributes
+        $sanitized['queryPreset'] = $this->sanitizeText($attributes['queryPreset'] ?? 'custom');
+        $sanitized['orderBy'] = $this->sanitizeText($attributes['orderBy'] ?? 'date');
+        $sanitized['order'] = $this->sanitizeText($attributes['order'] ?? 'DESC');
+        $sanitized['keyword'] = $this->sanitizeText($attributes['keyword'] ?? '');
+        $sanitized['queryId'] = $this->sanitizeText($attributes['queryId'] ?? '');
+        $sanitized['metaKey'] = $this->sanitizeText($attributes['metaKey'] ?? '');
+        $sanitized['metaType'] = $this->sanitizeText($attributes['metaType'] ?? '');
+        $sanitized['customQueryId'] = $this->sanitizeText($attributes['customQueryId'] ?? '');
+
+        // Array attributes
+        $sanitized['taxQuery'] = is_array($attributes['taxQuery'] ?? null) ? $attributes['taxQuery'] : [];
+        $sanitized['metaQuery'] = is_array($attributes['metaQuery'] ?? null) ? $attributes['metaQuery'] : [];
+        $sanitized['authorIn'] = is_array($attributes['authorIn'] ?? null) ? $attributes['authorIn'] : [];
+        $sanitized['authorNotIn'] = is_array($attributes['authorNotIn'] ?? null) ? $attributes['authorNotIn'] : [];
+        $sanitized['postIn'] = is_array($attributes['postIn'] ?? null) ? $attributes['postIn'] : [];
+        $sanitized['postNotIn'] = is_array($attributes['postNotIn'] ?? null) ? $attributes['postNotIn'] : [];
+        $sanitized['postStatus'] = is_array($attributes['postStatus'] ?? null) ? $attributes['postStatus'] : ['publish'];
+        $sanitized['postTypes'] = is_array($attributes['postTypes'] ?? null) ? $attributes['postTypes'] : [];
 
         // Overlay icon options
         $sanitized['overlayIcon'] = $this->sanitizeText($attributes['overlayIcon'] ?? '');

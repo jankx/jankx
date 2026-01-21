@@ -31,12 +31,12 @@ class ViewRenderer
     public function render(array $attributes, string $content = '', $block = null): string
     {
         $sanitizedAttributes = $this->attributeSanitizer->sanitize($attributes);
-        
+
         $layoutName = $sanitizedAttributes['layout'] ?? 'grid';
         $postType = $sanitizedAttributes['postType'] ?? 'post';
         $postsPerPage = (int) ($sanitizedAttributes['postsPerPage'] ?? 10);
-        $paged = (int) ($sanitizedAttributes['paged'] ?? 1);
-        
+        $paged = (int) ($sanitizedAttributes['paged'] ?? (get_query_var('paged') ?: (get_query_var('page') ?: 1)));
+
         $queryArgs = [
             'post_type' => $postType,
             'post_status' => 'publish',
@@ -46,9 +46,9 @@ class ViewRenderer
 
         // Apply filters
         $queryArgs = apply_filters('jankx_view_layout_query_args', $queryArgs, $sanitizedAttributes);
-        
+
         $query = new \WP_Query($queryArgs);
-        
+
         if (!$query->have_posts()) {
             return $this->renderEmptyState($sanitizedAttributes);
         }
@@ -69,6 +69,10 @@ class ViewRenderer
         }
 
         $renderedContent = $layout->render();
+
+        if (!empty($sanitizedAttributes['enablePagination']) && $renderedContent !== '' && $query->max_num_pages > 1) {
+            $renderedContent .= \Jankx\Layouts\DynamicDataLayout\PaginationRenderer::render($content, $query, $sanitizedAttributes);
+        }
 
         // Enqueue carousel assets if needed
         if ($this->carouselAssetsCallback && $layoutName === 'carousel') {

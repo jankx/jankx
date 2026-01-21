@@ -51,12 +51,32 @@ class BlockTemplateAttributeSanitizer
         $sanitized['showAuthor'] = $this->sanitizeBooleanValue($attributes, 'showAuthor', false);
         $sanitized['showEmptyMessage'] = $this->sanitizeBooleanValue($attributes, 'showEmptyMessage', true);
         $sanitized['includeStickyPosts'] = $this->sanitizeBooleanValue($attributes, 'includeStickyPosts', false);
+        $sanitized['enablePagination'] = $this->sanitizeBooleanValue($attributes, 'enablePagination', false);
+        $sanitized['showPaginationNumbers'] = $this->sanitizeBooleanValue($attributes, 'showPaginationNumbers', true);
 
         // Sanitize string values
         $sanitized['imageSize'] = $this->sanitizeImageSize($attributes['imageSize'] ?? 'large');
         $sanitized['thumbnailPosition'] = $this->sanitizeThumbnailPosition($attributes['thumbnailPosition'] ?? 'top');
         $sanitized['emptyMessage'] = $this->sanitizeText($attributes['emptyMessage'] ?? __('No posts found.', 'jankx'));
         $sanitized['className'] = $this->sanitizeClassName($attributes['className'] ?? '');
+        $sanitized['queryPreset'] = sanitize_text_field($attributes['queryPreset'] ?? 'custom');
+        $sanitized['paginationStyle'] = sanitize_text_field($attributes['paginationStyle'] ?? 'numbers');
+        $sanitized['paginationAlignment'] = sanitize_text_field($attributes['paginationAlignment'] ?? 'center');
+        $sanitized['paginationPrevText'] = sanitize_text_field($attributes['paginationPrevText'] ?? '');
+        $sanitized['paginationNextText'] = sanitize_text_field($attributes['paginationNextText'] ?? '');
+        $sanitized['orderBy'] = sanitize_text_field($attributes['orderBy'] ?? 'date');
+        $sanitized['order'] = sanitize_text_field($attributes['order'] ?? 'DESC');
+        $sanitized['keyword'] = sanitize_text_field($attributes['keyword'] ?? '');
+        $sanitized['queryId'] = sanitize_text_field($attributes['queryId'] ?? '');
+
+        // Sanitize arrays/complex values
+        $sanitized['taxQuery'] = is_array($attributes['taxQuery'] ?? null) ? $attributes['taxQuery'] : [];
+        $sanitized['metaQuery'] = is_array($attributes['metaQuery'] ?? null) ? $attributes['metaQuery'] : [];
+        $sanitized['authorIn'] = is_array($attributes['authorIn'] ?? null) ? $attributes['authorIn'] : [];
+        $sanitized['authorNotIn'] = is_array($attributes['authorNotIn'] ?? null) ? $attributes['authorNotIn'] : [];
+        $sanitized['postIn'] = is_array($attributes['postIn'] ?? null) ? $attributes['postIn'] : [];
+        $sanitized['postNotIn'] = is_array($attributes['postNotIn'] ?? null) ? $attributes['postNotIn'] : [];
+        $sanitized['postStatus'] = is_array($attributes['postStatus'] ?? null) ? $attributes['postStatus'] : ['publish'];
 
         // Carousel specific options
         if ($sanitized['layout'] === 'carousel') {
