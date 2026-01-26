@@ -4,8 +4,17 @@
  * @param {Function} initializeCallback Callback to re-initialize block-specific features (like carousels)
  */
 export function initWooCommerceSorting(initializeCallback) {
+    // If already initialized, just update the callback if needed (or skip)
+    if (window._jankxSortingInitialized) return;
+
     const sortingSelect = document.querySelector('.woocommerce-ordering .orderby');
     if (!sortingSelect) return;
+
+    // Only intercept if there are Jankx dynamic blocks on the page
+    const blocks = document.querySelectorAll('.wp-block-jankx-dynamic-data-layout, .wp-block-jankx-dynamic-ssr-layout');
+    if (blocks.length === 0) return;
+
+    window._jankxSortingInitialized = true;
 
     // WooCommerce usually submits the form on 'change'.
     // We intercept the change event to perform AJAX update instead of full page reload.

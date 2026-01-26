@@ -54,9 +54,6 @@ class DynamicDataLayoutBlock extends Block
         // Enqueue editor scripts with localized data
         add_action('enqueue_block_editor_assets', [$this, 'enqueueEditorAssets'], 20);
 
-        // Enqueue frontend scripts (view.js)
-        add_action('wp_enqueue_scripts', [$this, 'enqueueFrontendAssets']);
-
         // Filter block attributes to ensure queryId is always valid
         // This runs before WordPress processes providesContext
         add_filter('render_block_data', [$this, 'normalizeBlockAttributes'], 10, 1);
@@ -223,6 +220,9 @@ class DynamicDataLayoutBlock extends Block
      */
     public function render($attributes, $content = '', $block = null)
     {
+        // Enqueue frontend assets only when block is rendered
+        $this->enqueueFrontendAssets();
+
         // Ensure queryId is set and valid (required for providesContext)
         // queryId must be a non-empty scalar value (string or number), not null, empty string, or array
         if (

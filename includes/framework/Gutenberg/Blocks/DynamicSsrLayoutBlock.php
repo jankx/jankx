@@ -24,7 +24,6 @@ class DynamicSsrLayoutBlock extends Block
     public function init()
     {
         add_action('enqueue_block_editor_assets', [$this, 'enqueueEditorAssets'], 20);
-        add_action('wp_enqueue_scripts', [$this, 'enqueueFrontendAssets']);
         add_filter('render_block_data', [$this, 'normalizeBlockAttributes'], 10, 1);
         add_filter('jankx_dynamic_ssr_layout_filter_update', [$this, 'handleFilterUpdate'], 10, 2);
         add_filter('jankx_dynamic_ssr_layout_get_block_attributes', [$this, 'handleGetBlockAttributes'], 10, 3);
@@ -273,6 +272,9 @@ class DynamicSsrLayoutBlock extends Block
 
     public function render($attributes, $content = '', $block = null)
     {
+        // Enqueue frontend assets only when block is rendered
+        $this->enqueueFrontendAssets();
+
         if (
             !isset($attributes['queryId']) ||
             !is_scalar($attributes['queryId']) ||
