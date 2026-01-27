@@ -9,6 +9,11 @@ class MasonryLayout extends BlockTemplateLayout
     protected $name = 'masonry';
     protected $title = 'Masonry Layout';
 
+    public function getIcon(): string
+    {
+        return 'dashicons-layout';
+    }
+
     public function renderDefault(): string
     {
         if (!$this->query || !$this->query->have_posts()) {

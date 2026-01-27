@@ -64,7 +64,8 @@
   ],
   "allowedBlocks": [
     "core/heading",
-    "jankx/dynamic-ssr-template"
+    "jankx/dynamic-ssr-template",
+    "jankx/layout-switcher"
   ],
   "supports": {
     "html": false,

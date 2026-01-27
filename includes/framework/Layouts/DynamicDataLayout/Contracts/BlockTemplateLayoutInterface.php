@@ -25,5 +25,6 @@ interface BlockTemplateLayoutInterface
     // Additional methods for compatibility
     public function withQuery(WP_Query $query): self;
     public function withAttributes(array $attributes): self;
+    public function getIcon(): string;
     public function getLayout(): self;
 }

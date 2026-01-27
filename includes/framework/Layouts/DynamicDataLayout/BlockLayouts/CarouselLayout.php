@@ -9,6 +9,11 @@ class CarouselLayout extends BlockTemplateLayout
     protected $name = 'carousel';
     protected $title = 'Carousel Layout';
 
+    public function getIcon(): string
+    {
+        return 'dashicons-images-alt2';
+    }
+
     public function renderDefault(): string
     {
         if (!$this->query || !$this->query->have_posts()) {

@@ -48,6 +48,7 @@ use Jankx\Gutenberg\Blocks\FloatingMessengersBlock;
 use Jankx\Gutenberg\Blocks\StickyBoxBlock;
 use Jankx\Gutenberg\Blocks\DividerBlock;
 use Jankx\Gutenberg\Blocks\LanguageSwitcherBlock;
+use Jankx\Gutenberg\Blocks\LayoutSwitcherBlock;
 use Jankx\Gutenberg\Blocks\PlyrPlayerBlock;
 use Jankx\Gutenberg\Extra\Categories as ExtraCategories;
 use Jankx\Gutenberg\Extra\PostTitle as ExtraPostTitle;
@@ -192,6 +193,7 @@ class GutenbergService
         $this->repository->registerBlock(StickyBoxBlock::class);
         $this->repository->registerBlock(DividerBlock::class);
         $this->repository->registerBlock(LanguageSwitcherBlock::class);
+        $this->repository->registerBlock(LayoutSwitcherBlock::class);
         $this->repository->registerBlock(PlyrPlayerBlock::class);
         $this->repository->registerBlock(TermLayoutTemplateBlock::class);
         $this->repository->registerBlock(SafeIframeBlock::class);

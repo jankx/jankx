@@ -61,7 +61,8 @@
   ],
   "allowedBlocks": [
     "core/heading",
-    "jankx/dynamic-data-template"
+    "jankx/dynamic-data-template",
+    "jankx/layout-switcher"
   ],
   "supports": {
     "html": false,

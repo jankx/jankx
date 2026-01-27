@@ -9,6 +9,11 @@ class GridLayout extends BlockTemplateLayout
     protected $name = 'grid';
     protected $title = 'Grid Layout';
 
+    public function getIcon(): string
+    {
+        return 'dashicons-grid-view';
+    }
+
     public function renderDefault(): string
     {
         if (!$this->query || !$this->query->have_posts()) {

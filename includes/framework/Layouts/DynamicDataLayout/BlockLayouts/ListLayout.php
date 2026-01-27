@@ -9,6 +9,11 @@ class ListLayout extends BlockTemplateLayout
     protected $name = 'list';
     protected $title = 'List Layout';
 
+    public function getIcon(): string
+    {
+        return 'dashicons-list-view';
+    }
+
     public function renderDefault(): string
     {
         if (!$this->query || !$this->query->have_posts()) {

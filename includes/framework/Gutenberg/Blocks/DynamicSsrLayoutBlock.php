@@ -477,76 +477,28 @@ class DynamicSsrLayoutBlock extends Block
 
         $layoutManager = $this->getLayoutManager();
 
+        $layoutManager = $this->getLayoutManager();
+
         $post_types = get_post_types(['public' => true], 'objects');
         $layouts_by_post_type = [];
-        foreach ($post_types as $post_type => $post_type_obj) {
-            $rawLayouts = $layoutManager->getLayoutsForPostType($post_type);
-            $normalizedLayouts = [];
-            if (is_array($rawLayouts)) {
-                foreach ($rawLayouts as $key => $value) {
-                    if (is_array($value) && isset($value['name'])) {
-                        $normalizedLayouts[] = [
-                            'name' => $value['name'],
-                            'title' => isset($value['title']) ? $value['title'] : ucfirst(str_replace('-', ' ', $value['name'])),
-                            'postType' => $post_type,
-                        ];
-                    } else {
-                        $layoutName = is_string($key) ? $key : (is_string($value) ? $value : '');
-                        if ($layoutName === '') {
-                            continue;
-                        }
-                        try {
-                            $layoutInstance = $layoutManager->createLayout($layoutName);
-                            $normalizedLayouts[] = [
-                                'name' => $layoutInstance->getName(),
-                                'title' => $layoutInstance->getTitle(),
-                                'postType' => $post_type,
-                            ];
-                        } catch (\Throwable $e) {
-                            $normalizedLayouts[] = [
-                                'name' => $layoutName,
-                                'title' => ucfirst(str_replace('-', ' ', $layoutName)),
-                                'postType' => $post_type,
-                            ];
-                        }
-                    }
-                }
-            }
-            $layouts_by_post_type[$post_type] = $normalizedLayouts;
+
+        $all_layouts = $layoutManager->getAvailableLayouts();
+        $structured_layouts = [];
+        foreach ($all_layouts as $name => $class) {
+            $layoutInstance = $layoutManager->createLayout($name);
+            $structured_layouts[$name] = [
+                'name' => $name,
+                'title' => $layoutInstance->getTitle(),
+                'icon' => $layoutInstance->getIcon(),
+            ];
         }
 
-        $commonLayoutsRaw = $layoutManager->getCommonLayouts();
-        $commonLayouts = [];
-        if (is_array($commonLayoutsRaw)) {
-            foreach ($commonLayoutsRaw as $key => $value) {
-                if (is_array($value) && isset($value['name'])) {
-                    $commonLayouts[] = [
-                        'name' => $value['name'],
-                        'title' => isset($value['title']) ? $value['title'] : ucfirst(str_replace('-', ' ', $value['name'])),
-                        'postType' => 'common',
-                    ];
-                } else {
-                    $layoutName = is_string($key) ? $key : (is_string($value) ? $value : '');
-                    if ($layoutName === '') {
-                        continue;
-                    }
-                    try {
-                        $layoutInstance = $layoutManager->createLayout($layoutName);
-                        $commonLayouts[] = [
-                            'name' => $layoutInstance->getName(),
-                            'title' => $layoutInstance->getTitle(),
-                            'postType' => 'common',
-                        ];
-                    } catch (\Throwable $e) {
-                        $commonLayouts[] = [
-                            'name' => $layoutName,
-                            'title' => ucfirst(str_replace('-', ' ', $layoutName)),
-                            'postType' => 'common',
-                        ];
-                    }
-                }
-            }
+        foreach ($post_types as $post_type => $post_type_obj) {
+            $layouts_by_post_type[$post_type] = $structured_layouts;
         }
+
+        $common_layouts_names = ['grid', 'list', 'card'];
+        $commonLayouts = array_intersect_key($structured_layouts, array_flip($common_layouts_names));
 
         $layouts_payload = [
             'layoutsByPostType' => $layouts_by_post_type,
@@ -609,6 +561,7 @@ class DynamicSsrLayoutBlock extends Block
         $this->ensureServices();
         $layoutName = $attributes['layout'] ?? 'grid';
         $attributes = \Jankx\Query\DynamicDataLayoutQueryHelper::applyFiltersToAttributes($attributes, $filters);
+        $layoutName = $attributes['layout'] ?? $layoutName;
         $attributes = $this->attributeSanitizer->sanitize($attributes);
         $rendered = $this->rendererService->render($attributes, '', null);
         $wrapperAttrs = $this->buildWrapperAttributes($attributes);

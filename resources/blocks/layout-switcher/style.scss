@@ -1,0 +1,79 @@
+.jankx-layout-switcher {
+    margin-bottom: 20px;
+
+    .layout-options {
+        display: flex;
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        gap: 10px;
+
+        li.layout-option {
+            button {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 40px;
+                height: 40px;
+                background: #f0f0f0;
+                border: 1px solid #ddd;
+                border-radius: 4px;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                padding: 0;
+                color: #555;
+
+                &:hover {
+                    background: #e0e0e0;
+                    color: #000;
+                }
+
+                .dashicons {
+                    font-size: 20px;
+                    width: 20px;
+                    height: 20px;
+                }
+            }
+
+            &.is-active {
+                button {
+                    background: #007cba;
+                    border-color: #007cba;
+                    color: #fff;
+                }
+            }
+        }
+    }
+
+    &.is-loading {
+        opacity: 0.5;
+        pointer-events: none;
+    }
+}
+
+.wp-block-jankx-dynamic-data-layout,
+.wp-block-jankx-dynamic-ssr-layout {
+    &.is-loading {
+        opacity: 0.6;
+        position: relative;
+        min-height: 100px;
+
+        &::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 30px;
+            height: 30px;
+            margin: -15px 0 0 -15px;
+            border: 2px solid rgba(0,0,0,0.1);
+            border-top-color: #007cba;
+            border-radius: 50%;
+            animation: jankx-spinner 0.6s linear infinite;
+        }
+    }
+}
+
+@keyframes jankx-spinner {
+    to { transform: rotate(360deg); }
+}

@@ -187,6 +187,11 @@ class DynamicDataLayoutQueryHelper
                 continue;
             }
 
+            if ($key === 'layout' && $value !== '') {
+                $attributes['layout'] = sanitize_text_field($value);
+                continue;
+            }
+
             if ($key === 'author' && $value !== '') {
                 $author_ids = is_array($value) ? $value : [$value];
                 $author_in = array_merge($author_in, array_map('intval', $author_ids));

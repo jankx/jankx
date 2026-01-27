@@ -417,9 +417,23 @@ class DynamicDataLayoutBlock extends Block
         $post_types = get_post_types(['public' => true], 'objects');
         $layouts_by_post_type = [];
 
-        foreach ($post_types as $post_type => $post_type_obj) {
-            $layouts_by_post_type[$post_type] = $layoutManager->getLayoutsForPostType($post_type);
+        $all_layouts = $layoutManager->getAvailableLayouts();
+        $structured_layouts = [];
+        foreach ($all_layouts as $name => $class) {
+            $layoutInstance = $layoutManager->createLayout($name);
+            $structured_layouts[$name] = [
+                'name' => $name,
+                'title' => $layoutInstance->getTitle(),
+                'icon' => $layoutInstance->getIcon(),
+            ];
         }
+
+        foreach ($post_types as $post_type => $post_type_obj) {
+            $layouts_by_post_type[$post_type] = $structured_layouts;
+        }
+
+        $common_layouts_names = ['grid', 'list', 'card'];
+        $commonLayouts = array_intersect_key($structured_layouts, array_flip($common_layouts_names));
 
         // Localize layouts data
         wp_localize_script(
@@ -427,7 +441,7 @@ class DynamicDataLayoutBlock extends Block
             'jankxDynamicDataLayouts',
             [
                 'layoutsByPostType' => $layouts_by_post_type,
-                'commonLayouts' => $layoutManager->getCommonLayouts(),
+                'commonLayouts' => $commonLayouts,
             ]
         );
 
@@ -539,6 +553,7 @@ class DynamicDataLayoutBlock extends Block
 
         // Apply filters to attributes
         $attributes = DynamicDataLayoutQueryHelper::applyFiltersToAttributes($attributes, $filters);
+        $layoutName = $attributes['layout'] ?? $layoutName;
 
         // Sanitize attributes
         $attributes = $this->attributeSanitizer->sanitize($layoutName, $attributes, true);

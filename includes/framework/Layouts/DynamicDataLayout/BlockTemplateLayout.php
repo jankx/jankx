@@ -43,6 +43,11 @@ abstract class BlockTemplateLayout implements BlockTemplateLayoutInterface
         return $this->title;
     }
 
+    public function getIcon(): string
+    {
+        return 'dashicons-layout';
+    }
+
     public function setOptions($options): self
     {
         $this->options = array_merge($this->options, (array) $options);
