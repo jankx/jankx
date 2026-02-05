@@ -6,6 +6,8 @@ class ViewMasonryLayout extends AbstractViewLayout
 {
     protected $name = 'masonry';
     protected $title = 'Masonry Layout';
+    protected $icon = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h7v5H3z"/><path d="M14 3h7v9h-7z"/><path d="M14 16h7v5h-7z"/><path d="M3 12h7v9H3z"/></svg>';
+
 
     public function renderDefault(): string
     {

@@ -9,6 +9,8 @@ interface ViewLayoutInterface
 {
     public function getName(): string;
     public function getTitle(): string;
+    public function getIcon(): string;
+
     public function setOptions($options): self;
     public function getOptions(): array;
     public function setQuery($query): self;
