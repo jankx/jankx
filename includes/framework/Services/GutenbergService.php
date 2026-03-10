@@ -195,6 +195,7 @@ class GutenbergService
         $this->repository->registerBlock(LanguageSwitcherBlock::class);
         $this->repository->registerBlock(LayoutSwitcherBlock::class);
         $this->repository->registerBlock(PlyrPlayerBlock::class);
+        $this->repository->registerBlock(TermLayoutBlock::class);
         $this->repository->registerBlock(TermLayoutTemplateBlock::class);
         $this->repository->registerBlock(SafeIframeBlock::class);
         $this->repository->registerBlock(WrapperBlock::class);
