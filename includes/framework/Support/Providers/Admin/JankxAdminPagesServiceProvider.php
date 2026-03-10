@@ -12,12 +12,33 @@ class JankxAdminPagesServiceProvider extends ServiceProvider
 {
     protected $app;
 
+    public function shouldLoadAdmin(): bool
+    {
+        return true;
+    }
+
+    public function shouldLoadFrontend(): bool
+    {
+        return false;
+    }
+
+    public function shouldLoadAjax(): bool
+    {
+        return false;
+    }
+
+    public function shouldLoadCron(): bool
+    {
+        return false;
+    }
+
+    public function shouldLoadRest(): bool
+    {
+        return false;
+    }
+
     public function register(Application $app)
     {
-        if (!is_admin()) {
-            return;
-        }
-
         $this->app = $app;
 
         // Register AdminPageService
@@ -28,10 +49,6 @@ class JankxAdminPagesServiceProvider extends ServiceProvider
 
     public function boot(Application $app)
     {
-        if (!is_admin()) {
-            return;
-        }
-
         // Register admin menu
         add_action('admin_menu', [$this, 'registerAdminMenu']);
 

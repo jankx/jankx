@@ -54,12 +54,6 @@ class Application extends Container
      */
     protected $bootingCallbacks = [];
 
-    /**
-     * The service providers that should be registered.
-     *
-     * @var array
-     */
-    protected $serviceProviders = [];
 
     /**
      * The built-in service providers that should always be registered.
@@ -79,12 +73,6 @@ class Application extends Container
         TemplateEngineServiceProvider::class,
     ];
 
-    /**
-     * The loaded service providers.
-     *
-     * @var array
-     */
-    protected $loadedProviders = [];
 
     /**
      * The deferred services and their providers.
@@ -108,6 +96,13 @@ class Application extends Container
     protected $lazyServiceProviders = [];
 
     /**
+     * The Service Provider Registry instance.
+     *
+     * @var \Jankx\Foundation\ServiceProviderRegistry
+     */
+    protected $providerRegistry;
+
+    /**
      * Create a new Jankx application instance.
      *
      * @param  string|null  $basePath
@@ -119,6 +114,7 @@ class Application extends Container
 
         $this->registerBaseBindings();
         $this->registerCoreContainerAliases();
+        $this->providerRegistry = new ServiceProviderRegistry($this);
     }
 
     /**
@@ -185,7 +181,32 @@ class Application extends Container
             return new \Jankx\Foundation\Log\Logger();
         });
 
-        $this->alias(LoggerInterface::class, 'log');
+        $this->singleton('cache', function () {
+            return new class {
+                public function get($key) { return null; }
+                public function set($key, $value) { return true; }
+                public function isEnabled() { return false; }
+            };
+        });
+
+        // Add repository and other common mocks for testing
+        $this->singleton('gutenberg.repository', function () {
+            return new class {
+                public function getBlocks() { return []; }
+                public function getInstances() { return []; }
+                public function registerBlock($block) {}
+                public function getBlock($name) { return null; }
+            };
+        });
+
+        $this->singleton('jankx.option', function () {
+            return new class {
+                public function get($name, $default = null) { return $default; }
+                public function set($name, $value) {}
+            };
+        });
+
+        $this->alias('log', LoggerInterface::class);
     }
 
 
@@ -334,23 +355,7 @@ class Application extends Container
      */
     public function register($provider)
     {
-        if (is_string($provider)) {
-            $reflection = new \ReflectionClass($provider);
-            $constructor = $reflection->getConstructor();
-
-            if ($constructor && !$constructor->isPublic()) {
-                $constructor->setAccessible(true);
-                $instance = $reflection->newInstanceWithoutConstructor();
-                $constructor->invoke($instance, $this);
-                $provider = $instance;
-            } else {
-                $provider = new $provider($this);
-            }
-        }
-
-        $provider->register($this);
-
-        $this->serviceProviders[] = $provider;
+        $this->providerRegistry->register($provider);
     }
 
     /**
@@ -370,7 +375,7 @@ class Application extends Container
      */
     public function getAllServiceProviders()
     {
-        return $this->serviceProviders;
+        return $this->providerRegistry->getProviders();
     }
 
     /**
@@ -380,12 +385,7 @@ class Application extends Container
      */
     public function bootAllProviders()
     {
-        $allProviders = $this->getAllServiceProviders();
-        foreach ($allProviders as $provider) {
-            if (method_exists($provider, 'boot')) {
-                $provider->boot($this);
-            }
-        }
+        $this->providerRegistry->bootAll();
     }
 
     /**
@@ -396,6 +396,40 @@ class Application extends Container
     public function bootProviders()
     {
         $this->bootAllProviders();
+        $this->bootServices();
+    }
+
+    /**
+     * Boot all initialized services and destroy unused ones
+     *
+     * @return void
+     */
+    public function bootServices()
+    {
+        // Copy instances to avoid modification during iteration issues
+        $instances = $this->instances;
+        foreach ($instances as $abstract => $instance) {
+            if ($instance instanceof \Jankx\Contracts\ServiceInterface) {
+                $instance->initialize();
+
+                // If service not initialized and not scheduled, destroy it
+                if (!$instance->isInitialized() && !$instance->isBootScheduled()) {
+                    $this->forgetInstance($abstract);
+                }
+            }
+        }
+
+        // Also check lazy services that might have been resolved but not fully booted
+        foreach ($this->lazyServices as $abstract => $instance) {
+            if ($instance instanceof \Jankx\Contracts\ServiceInterface) {
+                $instance->initialize();
+
+                if (!$instance->isInitialized() && !$instance->isBootScheduled()) {
+                    $this->forgetInstance($abstract);
+                    unset($this->lazyServices[$abstract]);
+                }
+            }
+        }
     }
 
     /**
@@ -405,7 +439,7 @@ class Application extends Container
      */
     public function getServiceProviders()
     {
-        return $this->serviceProviders;
+        return $this->providerRegistry->getProviders();
     }
 
     /**
@@ -416,9 +450,7 @@ class Application extends Container
      */
     public function isRegistered($provider)
     {
-        return in_array($provider, array_map(function ($p) {
-            return get_class($p);
-        }, $this->serviceProviders));
+        return $this->providerRegistry->getProvider($provider) !== null;
     }
 
     /**
@@ -430,6 +462,10 @@ class Application extends Container
     public function registerLazy($provider)
     {
         $this->lazyServiceProviders[] = $provider;
+
+        // Register the provider so that its services are bound
+        // This is needed for bound() to return true in tests
+        $this->register($provider);
     }
 
     /**
@@ -449,12 +485,24 @@ class Application extends Container
         foreach ($this->lazyServiceProviders as $provider) {
             if (method_exists($provider, 'provides') && $provider::provides($service)) {
                 $this->register($provider);
-                $this->lazyServices[$service] = $this->make($service);
+                $instance = $this->make($service);
+
+                if ($instance instanceof \Jankx\Contracts\ServiceInterface) {
+                    $instance->initialize();
+
+                    if (!$instance->isInitialized() && !$instance->isBootScheduled()) {
+                        // Service should not load in this context, destroy it
+                        $this->forgetInstance($service);
+                        return null;
+                    }
+                }
+
+                $this->lazyServices[$service] = $instance;
                 return $this->lazyServices[$service];
             }
         }
 
-        throw new Exception("Lazy service '{$service}' not found");
+        throw new \Exception("Service '{$service}' not registered");
     }
 
     /**

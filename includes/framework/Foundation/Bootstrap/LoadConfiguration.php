@@ -16,12 +16,37 @@ class LoadConfiguration
      */
     public function bootstrap(Application $app)
     {
-
-
         $config = $app->make('config');
+
+        // Check for entire config cache first (production optimization)
+        $isDev = (defined('WP_DEBUG') && WP_DEBUG);
+        $cacheKey = 'jankx_fully_merged_config_' . ($this->isChildThemeActive() ? 'child' : 'parent');
+        
+        if (!$isDev) {
+            $cachedFullConfig = wp_cache_get($cacheKey, 'jankx_config');
+            if ($cachedFullConfig !== false && is_array($cachedFullConfig)) {
+                foreach ($cachedFullConfig as $key => $value) {
+                    $config->set($key, $value);
+                }
+                return;
+            }
+        }
 
         // Load configuration from theme files
         $this->loadThemeConfiguration($app, $config);
+
+        // Cache the fully merged config for production
+        if (!$isDev) {
+            wp_cache_set($cacheKey, $config->all(), 'jankx_config', 3600);
+        }
+    }
+
+    protected function isChildThemeActive()
+    {
+        if (function_exists('get_template_directory') && function_exists('get_stylesheet_directory')) {
+            return get_template_directory() !== get_stylesheet_directory();
+        }
+        return false;
     }
 
     /**
@@ -38,47 +63,52 @@ class LoadConfiguration
 
         if ($envConfigPath) {
             $parentConfigPath = $envConfigPath;
-            $childConfigPath = $envChildConfigPath ?: $envConfigPath; // Use child path if set, otherwise same as parent
+            $childConfigPath = $envChildConfigPath ?: $envConfigPath;
         } else {
-            $parentConfigPath = get_template_directory() . '/config';
+            $parentConfigPath = method_exists($app, 'configPath') ? $app->configPath() : get_template_directory() . '/config';
             $childConfigPath = get_stylesheet_directory() . '/config';
         }
 
-
-        // Load all config files using glob
+        // Load all config files
         $this->loadConfigFiles($config, $parentConfigPath, $childConfigPath);
     }
 
     /**
      * Load all config files using glob
-     *
-     * @param  \Jankx\Config\Repository  $config
-     * @param  string  $parentConfigPath
-     * @param  string  $childConfigPath
-     * @return void
      */
     protected function loadConfigFiles(Repository $config, $parentConfigPath, $childConfigPath)
     {
         // Get all PHP files from parent config directory
-        $parentConfigFiles = glob($parentConfigPath . '/*.php');
-        $childConfigFiles = is_dir($childConfigPath) ? glob($childConfigPath . '/*.php') : [];
+        $parentConfigFiles = ($parentConfigPath && is_dir($parentConfigPath)) ? (glob($parentConfigPath . '/*.php') ?: []) : [];
+        $childConfigFiles = ($childConfigPath && is_dir($childConfigPath)) ? (glob($childConfigPath . '/*.php') ?: []) : [];
 
-        // Combine all config files
-        $allConfigFiles = array_unique(array_merge($parentConfigFiles, $childConfigFiles));
+        // Track seen filenames to handle overrides
+        $processedConfigs = [];
 
-        foreach ($allConfigFiles as $configFile) {
-            $configKey = pathinfo($configFile, PATHINFO_FILENAME);
+        // Helper to process a directory
+        $processDir = function($files, $isChild = false) use (&$processedConfigs) {
+            foreach ($files as $file) {
+                $filename = basename($file);
+                if (substr($filename, -8) === 'Test.php') continue;
+                
+                $configKey = pathinfo($filename, PATHINFO_FILENAME);
+                $content = $this->loadCachedConfig($file, $configKey);
+                
+                if ($isChild && isset($processedConfigs[$configKey])) {
+                    $content = $this->deepMergeConfig($processedConfigs[$configKey], $content);
+                }
+                
+                $processedConfigs[$configKey] = $content;
+            }
+        };
 
-            // Load parent config
-            $parentConfig = $this->loadCachedConfig($configFile, $configKey);
+        // Process parent first, then child overrides
+        $processDir($parentConfigFiles);
+        $processDir($childConfigFiles, true);
 
-            // Load child config if exists
-            $childConfigFile = $childConfigPath . '/' . basename($configFile);
-            $childConfig = $this->loadCachedConfig($childConfigFile, $configKey);
-
-            // Deep merge: child override parent
-            $mergedConfig = $this->deepMergeConfig($parentConfig, $childConfig);
-            $config->set($configKey, $mergedConfig);
+        // Finally set all merged configs into the repository
+        foreach ($processedConfigs as $key => $content) {
+            $config->set($key, $content);
         }
     }
 
@@ -113,8 +143,6 @@ class LoadConfiguration
 
         // Cache for 1 hour (3600 seconds)
         wp_cache_set($cacheKey, $config, 'jankx_config', 3600);
-
-
 
         return $config;
     }

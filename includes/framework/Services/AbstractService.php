@@ -22,6 +22,16 @@ abstract class AbstractService implements ServiceInterface
      */
     protected $name;
 
+    /**
+     * @var array
+     */
+    protected $scopes = ['global'];
+
+    /**
+     * @var bool
+     */
+    protected $bootScheduled = false;
+
     public function __construct(Application $app)
     {
         $this->app = $app;
@@ -35,7 +45,7 @@ abstract class AbstractService implements ServiceInterface
      */
     public function initialize(): void
     {
-        if ($this->initialized) {
+        if ($this->initialized || $this->bootScheduled) {
             return;
         }
 
@@ -44,13 +54,90 @@ abstract class AbstractService implements ServiceInterface
             return;
         }
 
-        // 2. shouldLoad context: Check if the service should be loaded in the current environment
+        // 2. Check context and scopes
+        $currentContext = $this->getLoadingContext();
+        $isGlobal = in_array('global', $this->scopes);
+
+        if (!$isGlobal && !in_array($currentContext, $this->scopes)) {
+            return;
+        }
+
+        // 3. shouldLoad context: Fine-grained check
         if (!$this->shouldLoadInContext()) {
+            return;
+        }
+
+        // 4. Boot immediately if global or if current context matches and is direct boot
+        if ($isGlobal || $this->shouldBootImmediately($currentContext)) {
+            $this->boot();
+            $this->initialized = true;
+        } else {
+            // Schedule boot via hooks
+            $this->bootScheduled = true;
+            $this->registerContextBootHook($currentContext);
+        }
+    }
+
+    /**
+     * Check if service should boot immediately in the current context
+     *
+     * @param string $context
+     * @return bool
+     */
+    protected function shouldBootImmediately(string $context): bool
+    {
+        if ($context === 'cli' || $context === 'cron' || $context === 'ajax' || $context === 'rest') {
+            return true;
+        }
+
+        // For frontend, if we are already at or after the 'wp' action
+        if ($context === 'frontend' && did_action('wp')) {
+            return true;
+        }
+
+        // For admin, if we are already at or after 'admin_init'
+        if ($context === 'admin' && did_action('admin_init')) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Register hook to boot service in the correct context
+     *
+     * @param string $context
+     * @return void
+     */
+    protected function registerContextBootHook(string $context): void
+    {
+        switch ($context) {
+            case 'frontend':
+                add_action('wp', [$this, 'bootFromHook']);
+                break;
+            case 'admin':
+                add_action('admin_init', [$this, 'bootFromHook']);
+                break;
+            case 'rest':
+                add_action('rest_api_init', [$this, 'bootFromHook']);
+                break;
+        }
+    }
+
+    /**
+     * Boot the service from a WordPress hook
+     *
+     * @return void
+     */
+    public function bootFromHook(): void
+    {
+        if ($this->initialized) {
             return;
         }
 
         $this->boot();
         $this->initialized = true;
+        $this->bootScheduled = false;
     }
 
     /**
@@ -61,6 +148,16 @@ abstract class AbstractService implements ServiceInterface
     public function isInitialized(): bool
     {
         return $this->initialized;
+    }
+
+    /**
+     * Check if service has been scheduled to boot
+     *
+     * @return bool
+     */
+    public function isBootScheduled(): bool
+    {
+        return $this->bootScheduled;
     }
 
     /**
