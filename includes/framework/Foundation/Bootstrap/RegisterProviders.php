@@ -23,6 +23,23 @@ class RegisterProviders
             $config->get('app.providers', [])
         );
 
+        // Load providers by context
+        if ($app->has('kernel')) {
+            $kernel = $app->make('kernel');
+            $context = $kernel->getContext();
+            $kernelProviders = $config->get("providers.{$context}", []);
+            if (!empty($kernelProviders)) {
+                $providers = array_merge($providers, $kernelProviders);
+            }
+        } else {
+            // Fallback for tests or when kernel is not yet registered
+            if (is_admin()) {
+                $providers = array_merge($providers, $config->get('providers.http.admin', []));
+            } else {
+                $providers = array_merge($providers, $config->get('providers.http.frontend', []));
+            }
+        }
+
         $providers = apply_filters('jankx.foundation.providers', $providers);
         $providers = array_unique($providers);
 

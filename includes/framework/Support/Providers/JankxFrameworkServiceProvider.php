@@ -11,66 +11,54 @@ class JankxFrameworkServiceProvider extends ServiceProvider
 {
     public function register(Application $app)
     {
-        // Đăng ký framework version
-        $app->singleton('jankx.version', function ($app) {
-            $composerFile = dirname(dirname(dirname(dirname(__DIR__)))) . '/composer.json';
-            if (file_exists($composerFile)) {
-                $composerData = json_decode(file_get_contents($composerFile), true);
-                if (isset($composerData['version'])) {
-                    return $composerData['version'];
-                }
-            }
-            return '2.0.0';
+        // Đăng ký framework version from Application constant
+        $app->singleton('jankx.version', function () {
+            return Application::VERSION;
         });
 
         // Đăng ký framework name
-        $app->singleton('jankx.name', function ($app) {
+        $app->singleton('jankx.name', function () {
             return 'Jankx';
         });
 
         // Đăng ký framework description
-        $app->singleton('jankx.description', function ($app) {
-            return 'Jankx is a powerful WordPress theme framework. High performance, compatible, easy to use and develop';
+        $app->singleton('jankx.description', function () {
+            return 'Jankx is a powerful WordPress theme framework.';
         });
 
         // Đăng ký framework environment
-        $app->singleton('jankx.environment', function ($app) {
-            if (defined('WP_DEBUG') && WP_DEBUG) {
-                return 'development';
-            }
-            return 'production';
+        $app->singleton('jankx.environment', function () {
+            return (defined('WP_DEBUG') && WP_DEBUG) ? 'development' : 'production';
         });
 
-        // Đăng ký framework paths
-        $app->singleton('jankx.paths', function ($app) {
-            $basePath = dirname(dirname(dirname(dirname(__DIR__))));
-            return [
-                'base' => $basePath,
-                'includes' => $basePath . '/includes',
-                'app' => $basePath . '/app',
-                'resources' => $basePath . '/resources',
-                'assets' => $basePath . '/assets',
-            ];
-        });
+        // Đăng ký framework paths (calculating once)
+        $basePath = $app->basePath();
+        $paths = [
+            'base' => $basePath,
+            'includes' => $basePath . '/includes',
+            'app' => $basePath . '/app',
+            'resources' => $basePath . '/resources',
+            'assets' => $basePath . '/assets',
+        ];
+        $app->instance('jankx.paths', $paths);
 
-        // Đăng ký framework URLs
-        $app->singleton('jankx.urls', function ($app) {
-            $templateUrl = get_template_directory_uri();
-            return [
-                'base' => $templateUrl,
-                'includes' => $templateUrl . '/includes',
-                'app' => $templateUrl . '/app',
-                'resources' => $templateUrl . '/resources',
-                'assets' => $templateUrl . '/assets',
-            ];
-        });
+        // Đăng ký framework URLs (calculating once)
+        $templateUrl = get_template_directory_uri();
+        $urls = [
+            'base' => $templateUrl,
+            'includes' => $templateUrl . '/includes',
+            'app' => $templateUrl . '/app',
+            'resources' => $templateUrl . '/resources',
+            'assets' => $templateUrl . '/assets',
+        ];
+        $app->instance('jankx.urls', $urls);
 
-        // Đăng ký Jankx facade
-        $app->singleton('jankx.facade', function ($app) {
+        // Đăng ký Jankx facade as lazy singleton
+        $app->singleton('jankx.facade', function () {
             return new \Jankx\Jankx();
         });
 
-        // Đăng ký Framework service
+        // Đăng ký Framework service as lazy singleton
         $app->singleton('framework', function ($app) {
             return new \Jankx\Services\FrameworkService($app);
         });

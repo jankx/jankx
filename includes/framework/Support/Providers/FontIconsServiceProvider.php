@@ -35,19 +35,26 @@ class FontIconsServiceProvider extends ServiceProvider
 
     public function boot(Application $app)
     {
-        // Register default icons
-        add_action('init', [$this, 'registerDefaultIcons'], 5);
+        $context = $this->getLoadingContext();
 
-        // Action hook để register thêm icons
-        add_action('jankx_register_font_icons', [$this, 'registerAdditionalIcons']);
+        // Core registration needed by both frontend and admin
+        if (in_array($context, ['frontend', 'admin'])) {
+            // Register default icons
+            add_action('init', [$this, 'registerDefaultIcons'], 5);
 
-        // Auto-load active icon types
-        add_action('wp_enqueue_scripts', [$this, 'autoLoadActiveIcons']);
-        add_action('admin_enqueue_scripts', [$this, 'autoLoadActiveIcons']);
+            // Action hook để register thêm icons
+            add_action('jankx_register_font_icons', [$this, 'registerAdditionalIcons']);
 
-        // Schedule auto-update
-        add_action('init', [$this, 'scheduleAutoUpdate']);
-        add_action('jankx_icons_auto_update', [$this, 'autoUpdateIcons']);
+            // Auto-load active icon types
+            add_action('wp_enqueue_scripts', [$this, 'autoLoadActiveIcons']);
+            add_action('admin_enqueue_scripts', [$this, 'autoLoadActiveIcons']);
+        }
+
+        // Only schedule/run updates in cron or admin context occasionally
+        if ($context === 'cron' || ($context === 'admin' && !wp_doing_ajax())) {
+            add_action('init', [$this, 'scheduleAutoUpdate']);
+            add_action('jankx_icons_auto_update', [$this, 'autoUpdateIcons']);
+        }
     }
 
     public function registerAdminMenu()

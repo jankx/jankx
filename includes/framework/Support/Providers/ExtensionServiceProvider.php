@@ -68,42 +68,73 @@ class ExtensionServiceProvider extends ServiceProvider
         // Get extension manager instance
         $extensionManager = $this->app->make('extension.manager');
 
-        // Load extensions from parent theme
-        $this->loadExtensionsFromDirectory(
-            $extensionManager,
-            $this->app->basePath('/extensions')
-        );
+        // Check cache for extension data
+        $cacheKey = 'jankx_extensions_' . ($this->isChildThemeActive() ? 'child' : 'parent');
+        $cachedData = wp_cache_get($cacheKey, 'jankx_framework');
 
-        // Load extensions from child theme (if exists)
-        if (is_child_theme()) {
-            $this->loadExtensionsFromDirectory(
-                $extensionManager,
-                get_stylesheet_directory() . '/extensions'
-            );
-        }
-    }
-
-    /**
-     * Load extensions from specific directory
-     */
-    protected function loadExtensionsFromDirectory($extensionManager, $extensionsDir)
-    {
-        if (!is_dir($extensionsDir)) {
+        if ($cachedData !== false && is_array($cachedData)) {
+            $this->loadExtensionsFromCache($extensionManager, $cachedData);
             return;
         }
 
+        $extensionData = [];
+
+        // Load extensions from parent theme
+        $parentExtensions = $this->findExtensionsInDirectory($this->app->basePath('/extensions'));
+        $extensionData['parent'] = $parentExtensions;
+
+        // Load extensions from child theme (if exists)
+        if ($this->isChildThemeActive()) {
+            $childExtensions = $this->findExtensionsInDirectory(get_stylesheet_directory() . '/extensions');
+            $extensionData['child'] = $childExtensions;
+        }
+
+        // Cache the found extension data
+        wp_cache_set($cacheKey, $extensionData, 'jankx_framework', 3600);
+
+        // Process found extensions
+        $this->processExtensions($extensionManager, $extensionData);
+    }
+
+    protected function findExtensionsInDirectory($extensionsDir)
+    {
+        if (!is_dir($extensionsDir)) {
+            return [];
+        }
+
+        $extensions = [];
         $extensionDirs = glob($extensionsDir . '/*', GLOB_ONLYDIR);
 
         foreach ($extensionDirs as $extensionDir) {
-            $extensionName = basename($extensionDir);
             $manifestFile = $extensionDir . '/manifest.json';
-
-                    // Only load extensions that have manifest.json
             if (file_exists($manifestFile)) {
-                $this->loadExtensionFromManifest($extensionManager, $extensionName, $manifestFile, $extensionsDir);
+                $extensions[basename($extensionDir)] = [
+                    'path' => $extensionDir,
+                    'manifest' => $manifestFile
+                ];
             }
         }
+        return $extensions;
     }
+
+    protected function processExtensions($extensionManager, $data)
+    {
+        // Parent extensions
+        foreach ($data['parent'] ?? [] as $name => $info) {
+            $this->loadExtensionFromManifest($extensionManager, $name, $info['manifest'], dirname($info['path']));
+        }
+
+        // Child extensions (overriding parent)
+        foreach ($data['child'] ?? [] as $name => $info) {
+            $this->loadExtensionFromManifest($extensionManager, $name, $info['manifest'], dirname($info['path']));
+        }
+    }
+
+    protected function loadExtensionsFromCache($extensionManager, $data)
+    {
+        $this->processExtensions($extensionManager, $data);
+    }
+
 
     /**
      * Load a specific extension from manifest

@@ -59,21 +59,40 @@ class ApplicationTest extends TestCase
         $provider = new class ($this->app) extends \Jankx\Support\Providers\ServiceProvider {
             public $booted = false;
 
-            public function register($app)
-            {
-                // Register services
-            }
-
             public function boot($app)
             {
                 $this->booted = true;
+            }
+
+            public function shouldLoad(): bool
+            {
+                return true;
             }
         };
 
         $this->app->register($provider);
         $this->app->bootProviders();
 
-        $this->assertTrue($provider->booted);
+        $this->assertTrue($provider->isBooted());
+    }
+
+    public function testApplicationCanBootServicesAndForgetUnusedOnes()
+    {
+        $service = new class ($this->app) extends \Jankx\Services\AbstractService {
+            public $booted = false;
+            public function shouldLoad(): bool {
+                return false;
+            }
+            protected function boot(): void {
+                $this->booted = true;
+            }
+        };
+
+        $this->app->instance(get_class($service), $service);
+        $this->app->bootServices();
+
+        $this->assertFalse($service->isInitialized());
+        $this->assertFalse($this->app->bound(get_class($service)));
     }
 
     public function testApplicationCanResolveAliases()

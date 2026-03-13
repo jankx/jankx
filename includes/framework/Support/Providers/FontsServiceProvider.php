@@ -17,6 +17,12 @@ class FontsServiceProvider extends ServiceProvider
 
     public function boot(Application $app)
     {
+        $context = $this->getLoadingContext();
+
+        // Skip for background/non-ui requests
+        if (in_array($context, ['cli', 'cron', 'rest'])) {
+            return;
+        }
 
         $fontsService = $app->make(FontsService::class);
 
@@ -30,32 +36,33 @@ class FontsServiceProvider extends ServiceProvider
             return $fontsService->injectFontsIntoThemeJson($themeJson);
         }, 10, 1);
 
-        // Đăng ký fonts với frontend
-        add_action('wp_enqueue_scripts', function () use ($fontsService) {
-            $activeFonts = $fontsService->getAllFonts();
-            foreach ($activeFonts as $font) {
-                $fontsService->enqueueFont($font->toArray());
-            }
-        });
+        // Frontend specific
+        if ($context === 'frontend') {
+            add_action('wp_enqueue_scripts', function () use ($fontsService) {
+                $activeFonts = $fontsService->getAllFonts();
+                foreach ($activeFonts as $font) {
+                    $fontsService->enqueueFont($font->toArray());
+                }
+            });
+        }
 
-        // Đăng ký fonts với admin
-        add_action('admin_enqueue_scripts', function () use ($fontsService) {
-            $activeFonts = $fontsService->getAllFonts();
-            foreach ($activeFonts as $font) {
-                $fontsService->enqueueFont($font->toArray());
-            }
-        });
+        // Admin specific
+        if ($context === 'admin') {
+            add_action('admin_enqueue_scripts', function () use ($fontsService) {
+                $activeFonts = $fontsService->getAllFonts();
+                foreach ($activeFonts as $font) {
+                    $fontsService->enqueueFont($font->toArray());
+                }
+            });
 
-        // Đăng ký fonts với Gutenberg editor
-        add_action('enqueue_block_editor_assets', function () use ($fontsService) {
-            $fontsService->enqueueGutenbergFonts();
-        }, 5);
-
-        // Đăng ký fonts với Gutenberg editor (block assets) - chỉ trong admin
-        add_action('enqueue_block_assets', function () use ($fontsService) {
-            if (is_admin()) {
+            // Đăng ký fonts với Gutenberg editor
+            add_action('enqueue_block_editor_assets', function () use ($fontsService) {
                 $fontsService->enqueueGutenbergFonts();
-            }
-        }, 5);
+            }, 5);
+
+            add_action('enqueue_block_assets', function () use ($fontsService) {
+                $fontsService->enqueueGutenbergFonts();
+            }, 5);
+        }
     }
 }

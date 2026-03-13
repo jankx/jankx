@@ -17,10 +17,19 @@ class ContentLayoutServiceProvider extends ServiceProvider
 
     public function boot(Application $app)
     {
+        $context = $this->getLoadingContext();
+        if (in_array($context, ['cron', 'cli'])) {
+            return;
+        }
+
         $manager = $app->make(ContentLayoutManager::class);
 
         // Register default layouts via PHP array
-        $defaultLayouts = $this->getDefaultLayouts();
+        static $defaultLayouts = null;
+        if ($defaultLayouts === null) {
+            $defaultLayouts = $this->getDefaultLayouts();
+        }
+
         foreach ($defaultLayouts as $layoutData) {
             $manager->register($layoutData);
         }

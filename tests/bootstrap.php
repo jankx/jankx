@@ -6,6 +6,22 @@
  * This file is loaded before running tests to set up the testing environment.
  */
 
+if (!class_exists('WP_CLI_Command')) {
+    class WP_CLI_Command {}
+}
+
+if (!class_exists('WP_CLI')) {
+    class WP_CLI {
+        public static function log($message) {}
+        public static function error($message, $die = true) { if ($die) throw new \Exception($message); }
+        public static function success($message) {}
+        public static function add_command($name, $class) {}
+        public static function line($message) {}
+        public static function warning($message) {}
+        public static function debug($message, $group = false) {}
+    }
+}
+
 // Define WordPress constants for testing
 if (!defined('ABSPATH')) {
     define('ABSPATH', dirname(__FILE__) . '/../');
@@ -31,14 +47,34 @@ if (!defined('WP_LANG_DIR')) {
 if (!function_exists('get_stylesheet_directory')) {
     function get_stylesheet_directory()
     {
-        return dirname(__FILE__) . '/../themes/bookix-child';
+        if (isset($GLOBALS['test_child_theme_path'])) {
+            return $GLOBALS['test_child_theme_path'];
+        }
+        return dirname(__FILE__) . '/..';
     }
 }
 
 if (!function_exists('get_template_directory')) {
     function get_template_directory()
     {
-        return dirname(__FILE__) . '/../themes/bookix';
+        if (isset($GLOBALS['test_parent_theme_path'])) {
+            return $GLOBALS['test_parent_theme_path'];
+        }
+        return dirname(__FILE__) . '/..';
+    }
+}
+
+if (!function_exists('get_template_directory_uri')) {
+    function get_template_directory_uri()
+    {
+        return 'http://example.com/wp-content/themes/jankx';
+    }
+}
+
+if (!function_exists('get_stylesheet_directory_uri')) {
+    function get_stylesheet_directory_uri()
+    {
+        return 'http://example.com/wp-content/themes/jankx-child';
     }
 }
 
@@ -70,6 +106,34 @@ if (!function_exists('apply_filters')) {
     }
 }
 
+if (!function_exists('remove_action')) {
+    function remove_action($tag, $callback, $priority = 10)
+    {
+        return true;
+    }
+}
+
+if (!function_exists('remove_all_actions')) {
+    function remove_all_actions($tag, $priority = false)
+    {
+        return true;
+    }
+}
+
+if (!function_exists('remove_filter')) {
+    function remove_filter($tag, $callback, $priority = 10)
+    {
+        return true;
+    }
+}
+
+if (!function_exists('remove_all_filters')) {
+    function remove_all_filters($tag, $priority = false)
+    {
+        return true;
+    }
+}
+
 if (!function_exists('add_menu_page')) {
     function add_menu_page($page_title, $menu_title, $capability, $menu_slug, $function = '', $icon_url = '', $position = null)
     {
@@ -87,7 +151,31 @@ if (!function_exists('add_submenu_page')) {
 if (!function_exists('get_option')) {
     function get_option($option, $default = false)
     {
+        if (isset($GLOBALS['options'][$option])) {
+            return $GLOBALS['options'][$option];
+        }
         return $default;
+    }
+}
+
+if (!function_exists('add_shortcode')) {
+    function add_shortcode($tag, $callback)
+    {
+        return true;
+    }
+}
+
+if (!function_exists('do_shortcode')) {
+    function do_shortcode($content, $ignore_html = false)
+    {
+        return $content;
+    }
+}
+
+if (!function_exists('shortcode_exists')) {
+    function shortcode_exists($tag)
+    {
+        return false;
     }
 }
 
@@ -129,6 +217,9 @@ if (!function_exists('wp_safe_redirect')) {
 if (!function_exists('is_admin')) {
     function is_admin()
     {
+        if (isset($GLOBALS['mock_is_admin'])) {
+            return (bool) $GLOBALS['mock_is_admin'];
+        }
         return true;
     }
 }
@@ -137,6 +228,109 @@ if (!function_exists('is_ajax')) {
     function is_ajax()
     {
         return false;
+    }
+}
+
+if (!function_exists('wp_doing_ajax')) {
+    function wp_doing_ajax()
+    {
+        return false;
+    }
+}
+
+if (!function_exists('wp_doing_cron')) {
+    function wp_doing_cron()
+    {
+        return false;
+    }
+}
+
+if (!function_exists('wp_cache_get')) {
+    function wp_cache_get($key, $group = '', $force = false, &$found = null)
+    {
+        $found = false;
+        return false;
+    }
+}
+
+if (!function_exists('wp_cache_set')) {
+    function wp_cache_set($key, $data, $group = '', $expire = 0)
+    {
+        return true;
+    }
+}
+
+if (!function_exists('wp_cache_delete')) {
+    function wp_cache_delete($key, $group = '')
+    {
+        return true;
+    }
+}
+
+if (!function_exists('wp_cache_flush_group')) {
+    function wp_cache_flush_group($group)
+    {
+        return true;
+    }
+}
+
+if (!function_exists('wp_cache_add')) {
+    function wp_cache_add($key, $data, $group = '', $expire = 0)
+    {
+        return true;
+    }
+}
+
+if (!function_exists('did_action')) {
+    function did_action($tag)
+    {
+        return 0;
+    }
+}
+
+if (!function_exists('wp_get_theme')) {
+    function wp_get_theme($stylesheet = null)
+    {
+        return new class($stylesheet) {
+            private $stylesheet;
+            public function __construct($stylesheet = null) {
+                $this->stylesheet = $stylesheet ?? get_stylesheet();
+            }
+            public function get($key) { return ''; }
+            public function exists() { return true; }
+            public function get_stylesheet() { return $this->stylesheet; }
+            public function get_template() { return get_template(); }
+        };
+    }
+}
+
+if (!function_exists('get_template')) {
+    function get_template()
+    {
+        if (isset($GLOBALS['test_parent_theme_path'])) {
+            return basename($GLOBALS['test_parent_theme_path']);
+        }
+        return 'bookix';
+    }
+}
+
+if (!function_exists('get_stylesheet')) {
+    function get_stylesheet()
+    {
+        if (isset($GLOBALS['test_child_theme_path'])) {
+            return basename($GLOBALS['test_child_theme_path']);
+        }
+        return 'bookix-child';
+    }
+}
+
+if (!function_exists('is_child_theme')) {
+    function is_child_theme()
+    {
+        if (isset($GLOBALS['mock_is_child_theme'])) {
+            return (bool) $GLOBALS['mock_is_child_theme'];
+        }
+        return get_template_directory() !== get_stylesheet_directory();
     }
 }
 
@@ -200,6 +394,20 @@ if (!function_exists('esc_url')) {
     }
 }
 
+if (!function_exists('wp_kses_post')) {
+    function wp_kses_post($data)
+    {
+        return $data;
+    }
+}
+
+if (!function_exists('wp_trim_words')) {
+    function wp_trim_words($text, $num_words = 55, $more = null)
+    {
+        return $text;
+    }
+}
+
 if (!function_exists('wp_style_is')) {
     function wp_style_is($handle, $status = 'registered')
     {
@@ -218,6 +426,13 @@ if (!function_exists('wp_unslash')) {
     function wp_unslash($value)
     {
         return stripslashes($value);
+    }
+}
+
+if (!function_exists('sanitize_file_name')) {
+    function sanitize_file_name($filename)
+    {
+        return strtolower(preg_replace('/[^a-zA-Z0-9_\-]/', '-', $filename));
     }
 }
 
@@ -379,8 +594,27 @@ if (!function_exists('wp_upload_dir')) {
 if (!function_exists('wp_mkdir_p')) {
     function wp_mkdir_p($target)
     {
-        return mkdir($target, 0755, true);
+        if (is_dir($target)) {
+            return true;
+        }
+        return @mkdir($target, 0755, true);
     }
+}
+
+if (!function_exists('wp_is_post_autosave')) {
+    function wp_is_post_autosave($post_id) { return false; }
+}
+
+if (!function_exists('wp_is_post_revision')) {
+    function wp_is_post_revision($post_id) { return false; }
+}
+
+if (!function_exists('clean_post_cache')) {
+    function clean_post_cache($post_id) { return true; }
+}
+
+if (!function_exists('get_post_status')) {
+    function get_post_status($post_id) { return 'publish'; }
 }
 
 if (!function_exists('wp_is_writable')) {
@@ -421,6 +655,24 @@ if (!function_exists('wp_handle_sideload')) {
             'type' => $file['type'],
             'error' => false,
         );
+    }
+}
+
+if (!function_exists('pll_current_language')) {
+    function pll_current_language() {
+        if (isset($GLOBALS['mock_pll_current_language'])) {
+            return $GLOBALS['mock_pll_current_language'];
+        }
+        return 'vi';
+    }
+}
+
+if (!function_exists('pll_the_languages')) {
+    function pll_the_languages($args) {
+        if (isset($GLOBALS['mock_pll_languages'])) {
+            return $GLOBALS['mock_pll_languages'];
+        }
+        return [];
     }
 }
 
@@ -466,6 +718,32 @@ if (!function_exists('wp_upload_dir')) {
         );
     }
 }
+if (!defined('HOUR_IN_SECONDS')) {
+    define('HOUR_IN_SECONDS', 3600);
+}
+
+if (!function_exists('get_transient')) {
+    function get_transient($transient) {
+        if (isset($GLOBALS['transients'][$transient])) {
+            return $GLOBALS['transients'][$transient];
+        }
+        return false;
+    }
+}
+
+if (!function_exists('set_transient')) {
+    function set_transient($transient, $value, $expiration = 0) {
+        $GLOBALS['transients'][$transient] = $value;
+        return true;
+    }
+}
+
+if (!function_exists('delete_transient')) {
+    function delete_transient($transient) {
+        unset($GLOBALS['transients'][$transient]);
+        return true;
+    }
+}
 
 // Load Composer autoloader
 $autoloader = dirname(__FILE__) . '/../vendor/autoload.php';
@@ -481,4 +759,4 @@ ini_set('display_errors', 1);
 date_default_timezone_set('UTC');
 
 // Load test helpers
-require_once dirname(__FILE__) . '/helpers/TestCase.php';
+require_once dirname(__FILE__) . '/Helpers/TestCase.php';

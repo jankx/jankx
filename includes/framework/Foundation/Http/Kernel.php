@@ -52,6 +52,8 @@ abstract class Kernel implements KernelInterface
     public function __construct(Application $app)
     {
         $this->app = $app;
+
+        $this->app->instance('kernel', $this);
     }
 
     /**

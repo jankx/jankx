@@ -73,4 +73,11 @@ interface ServiceInterface
      * @return bool
      */
     public function shouldLoadAjax(): bool;
+
+    /**
+     * Check if service has been scheduled to boot
+     *
+     * @return bool
+     */
+    public function isBootScheduled(): bool;
 }
