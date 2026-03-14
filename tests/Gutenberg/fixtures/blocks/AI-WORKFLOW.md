@@ -16,13 +16,29 @@ This folder contains the metadata and tools necessary for an AI model to autonom
 **Path**: `tests/Gutenberg/fixtures/blocks/output-references/`
 **Use case**: Look at these files to see the expected HTML output for different block configurations. This helps in writing CSS selectors that match the framework's output.
 
-### 4. Rendering Sandbox
-**Command**: `php scripts/render-sandbox.php <block-name> <json-attributes>`
-**Use case**: Before submitting a change, run this to see if the block renders as you expect.
-**Example**: 
-```bash
-php scripts/render-sandbox.php 'jankx/advanced-button' '{"text":"Click Me", "triggerType":"button"}'
-```
+### 4. Visual Preview Tool
+**Command**: `php scripts/generate-visual-preview.php <block-name> <json-attributes>`
+**Use case**: Generates a full HTML page with CSS variables to compare against a design image.
+
+## 🎨 Visual Matching Protocol (From Image to Code)
+
+When you receive a design image, follow these steps:
+
+1. **Color Extraction**: Identify hex codes in the image. Map them to the closest token in `design-tokens.json`.
+   - *Example*: Design has a dark purple button -> Found `#503AA8` in `design-tokens.json` as `primary` -> Use `var(--wp--preset--color--primary)`.
+
+2. **Block Selection**:
+   - Background Image with Text? -> Use `jankx/swiper-banner`.
+   - Grid of features? -> Use `jankx/dynamic-data-layout` with `grid` layout.
+   - Fancy Button? -> Use `jankx/advanced-button`.
+
+3. **Attribute Calibration**:
+   - Adjust spacing (padding/margin) using the `spacing` tokens.
+   - Set alignment and typography based on the visual hierarchy in the image.
+
+4. **Self-Verification**:
+   - Run `generate-visual-preview.php`.
+   - Compare the output HTML structure/classes against the `output-references`.
 
 ## 🚀 Generating a Theme
 
