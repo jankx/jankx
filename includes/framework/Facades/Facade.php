@@ -104,6 +104,47 @@ abstract class Facade
     }
 
     /**
+     * Initiate a mock expectation on the facade.
+     *
+     * @return \Mockery\Expectation
+     */
+    public static function shouldReceive()
+    {
+        $name = static::getFacadeAccessor();
+
+        $instance = static::isMock()
+            ? static::$resolvedInstance[$name]
+            : static::createFreshMockInstance();
+
+        return $instance->shouldReceive(...func_get_args());
+    }
+
+    /**
+     * Create a fresh mock instance for the facade.
+     *
+     * @return \Mockery\MockInterface
+     */
+    protected static function createFreshMockInstance()
+    {
+        $name = static::getFacadeAccessor();
+
+        return static::$resolvedInstance[$name] = \Mockery::mock();
+    }
+
+    /**
+     * Determine if a mock is set as the setup instance of the facade.
+     *
+     * @return bool
+     */
+    protected static function isMock()
+    {
+        $name = static::getFacadeAccessor();
+
+        return isset(static::$resolvedInstance[$name]) &&
+               static::$resolvedInstance[$name] instanceof \Mockery\MockInterface;
+    }
+
+    /**
      * Handle dynamic, static calls to the object.
      *
      * @param  string  $method

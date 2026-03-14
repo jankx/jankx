@@ -14947,6 +14947,14 @@
                         "masonry",
                         "carousel"
                     ]
+                },
+                "displayType": {
+                    "type": "string",
+                    "default": "icons"
+                },
+                "alignment": {
+                    "type": "string",
+                    "default": "left"
                 }
             },
             "editorScript": "file:./build/index.js",
@@ -14961,7 +14969,9 @@
                         "list",
                         "masonry",
                         "carousel"
-                    ]
+                    ],
+                    "displayType": "icons",
+                    "alignment": "left"
                 },
                 "html_file": "jankx--layout-switcher--default.html"
             }

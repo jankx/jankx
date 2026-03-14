@@ -538,6 +538,9 @@ if (!function_exists('translate_nooped_plural')) {
 if (!function_exists('render_block')) {
     function render_block($block)
     {
+        if (isset($block['blockName'])) {
+            return sprintf('<!-- %s -->', $block['blockName']);
+        }
         return '';
     }
 }
@@ -756,6 +759,34 @@ if (!function_exists('delete_transient')) {
     function delete_transient($transient) {
         unset($GLOBALS['transients'][$transient]);
         return true;
+    }
+}
+
+if (!function_exists('is_singular')) {
+    function is_singular($post_types = '') {
+        return false;
+    }
+}
+
+if (!function_exists('get_permalink')) {
+    function get_permalink($post = 0, $leavename = false) {
+        return 'http://example.com/permalink';
+    }
+}
+
+if (!function_exists('get_the_ID')) {
+    function get_the_ID() {
+        return 1;
+    }
+}
+
+if (!function_exists('get_block_wrapper_attributes')) {
+    function get_block_wrapper_attributes($extra_attributes = []) {
+        $attributes = '';
+        foreach ($extra_attributes as $name => $value) {
+            $attributes .= sprintf(' %s="%s"', esc_attr($name), esc_attr($value));
+        }
+        return $attributes;
     }
 }
 

@@ -15,6 +15,33 @@ use WP_Block;
 abstract class BlockTestCase extends TestCase
 {
     /**
+     * Set up the test environment
+     */
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        // Initialize application container if not already set
+        $app = \Jankx\Foundation\Application::getInstance();
+        if (!$app) {
+            $app = new \Jankx\Foundation\Application();
+        }
+
+        // Set Facade application
+        \Jankx\Facades\Facade::setFacadeApplication($app);
+
+        // Bind blocks path to container so blocks can resolve their metadata
+        $blocksPath = $app->basePath('resources/blocks');
+        $app->instance('blocks.path', $blocksPath);
+
+        // Register necessary bindings for block testing
+        $app->singleton('gutenberg.repository', function () {
+            return new class {
+                public function getBlockPath($class) { return null; }
+            };
+        });
+    }
+    /**
      * Create a mock WP_Block instance
      * 
      * @param array $attributes Block attributes
