@@ -196,6 +196,7 @@ class Application extends Container
                 public function getInstances() { return []; }
                 public function registerBlock($block) {}
                 public function getBlock($name) { return null; }
+                public function getBlockPath($name) { return null; }
             };
         });
 

@@ -45,17 +45,12 @@ class LayoutSwitcherBlock extends Block
     {
         $this->enqueueFrontendAssets();
 
-        // Get context from parent block (DynamicDataLayout or DynamicSsrLayout)
+        // Get context from parent block
         $queryId = $block->context['queryId'] ?? '';
         $postType = $block->context['postType'] ?? 'post';
         $currentLayout = $block->context['displayLayout'] ?? 'grid';
 
-        if (empty($queryId)) {
-            // In editor or if not placed inside a DDL block, we might not have a queryId
-            // but we should still show something if it's the editor
-            if (is_admin()) {
-                return '<div class="jankx-layout-switcher-placeholder">Layout Switcher (Place inside Dynamic Data Layout)</div>';
-            }
+        if (empty($queryId) && !is_admin()) {
             return '';
         }
 
@@ -63,36 +58,56 @@ class LayoutSwitcherBlock extends Block
         $availableLayouts = $layoutManager->getLayoutsForPostType($postType);
 
         if (empty($availableLayouts)) {
+            if (is_admin()) {
+                return '<div class="jankx-layout-switcher-placeholder">No layouts available for this post type.</div>';
+            }
             return '';
         }
 
-        $supportedLayoutNames = $attributes['supportedLayouts'] ?? array_keys($availableLayouts);
+        $supportedLayoutNames = $attributes['supportedLayouts'] ?? [];
+        if (empty($supportedLayoutNames)) {
+            $supportedLayoutNames = array_keys($availableLayouts);
+        }
         
-        // Filter layouts to only include those supported by this switcher instance
+        // Filter layouts
         $layoutsToShow = array_intersect_key($availableLayouts, array_flip($supportedLayoutNames));
 
         if (empty($layoutsToShow)) {
             return '';
         }
 
+        $displayType = $attributes['displayType'] ?? 'icons'; // icons, labels, both
+        $alignment = $attributes['alignment'] ?? 'left';
+
         ob_start();
         ?>
-        <div class="jankx-layout-switcher" data-target-query-id="<?php echo esc_attr($queryId); ?>">
+        <div class="jankx-layout-switcher layout-switcher--align-<?php echo esc_attr($alignment); ?> layout-switcher--type-<?php echo esc_attr($displayType); ?>" 
+             data-target-query-id="<?php echo esc_attr($queryId); ?>">
             <ul class="layout-options">
-                <?php foreach ($layoutsToShow as $name => $class): ?>
+                <?php foreach ($layoutsToShow as $name => $info): ?>
                     <?php 
                         $layoutInstance = $layoutManager->createLayout($name);
                         $icon = $layoutInstance->getIcon();
                         $title = $layoutInstance->getTitle();
                         $activeClass = ($currentLayout === $name) ? 'is-active' : '';
                     ?>
-                    <li class="layout-option <?php echo esc_attr($activeClass); ?>" data-layout="<?php echo esc_attr($name); ?>" title="<?php echo esc_attr($title); ?>">
-                        <button type="button" aria-label="<?php echo esc_attr($title); ?>">
-                            <?php if (strpos($icon, 'dashicons-') === 0): ?>
-                                <span class="dashicons <?php echo esc_attr($icon); ?>"></span>
-                            <?php else: ?>
-                                <?php echo $icon; // Assume it's SVG or HTML ?>
+                    <li class="layout-option <?php echo esc_attr($activeClass); ?>" data-layout="<?php echo esc_attr($name); ?>">
+                        <button type="button" aria-pressed="<?php echo ($currentLayout === $name) ? 'true' : 'false'; ?>">
+                            <?php if ($displayType !== 'labels'): ?>
+                                <span class="layout-icon">
+                                    <?php if (strpos($icon, 'dashicons-') === 0): ?>
+                                        <span class="dashicons <?php echo esc_attr($icon); ?>"></span>
+                                    <?php else: ?>
+                                        <?php echo $icon; // SVG/HTML ?>
+                                    <?php endif; ?>
+                                </span>
                             <?php endif; ?>
+                            
+                            <?php if ($displayType !== 'icons'): ?>
+                                <span class="layout-label"><?php echo esc_html($title); ?></span>
+                            <?php endif; ?>
+                            
+                            <span class="screen-reader-text"><?php echo esc_html($title); ?></span>
                         </button>
                     </li>
                 <?php endforeach; ?>

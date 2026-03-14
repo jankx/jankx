@@ -26,6 +26,14 @@
                 "masonry",
                 "carousel"
             ]
+        },
+        "displayType": {
+            "type": "string",
+            "default": "icons"
+        },
+        "alignment": {
+            "type": "string",
+            "default": "left"
         }
     },
     "editorScript": "file:./build/index.js",

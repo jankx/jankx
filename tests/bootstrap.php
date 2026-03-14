@@ -22,6 +22,20 @@ if (!class_exists('WP_CLI')) {
     }
 }
 
+if (!class_exists('WP_Block')) {
+    class WP_Block {
+        public $attributes;
+        public $context;
+        public $inner_blocks;
+        public $inner_html;
+        public $inner_content;
+        public function __construct($block) {
+            $this->attributes = $block['attrs'] ?? [];
+            $this->context = $block['context'] ?? [];
+        }
+    }
+}
+
 // Define WordPress constants for testing
 if (!defined('ABSPATH')) {
     define('ABSPATH', dirname(__FILE__) . '/../');

@@ -1,75 +1,102 @@
 .jankx-layout-switcher {
     margin-bottom: 20px;
 
+    &.layout-switcher--align-center .layout-options { justify-content: center; }
+    &.layout-switcher--align-right  .layout-options { justify-content: flex-end; }
+
     .layout-options {
         display: flex;
         list-style: none;
         padding: 0;
         margin: 0;
-        gap: 10px;
+        gap: 8px;
 
         li.layout-option {
             button {
-                display: flex;
+                display: inline-flex;
                 align-items: center;
                 justify-content: center;
-                width: 40px;
-                height: 40px;
-                background: #f0f0f0;
-                border: 1px solid #ddd;
-                border-radius: 4px;
+                gap: 8px;
+                min-height: 40px;
+                padding: 8px 12px;
+                background: #fff;
+                border: 1px solid #e2e8f0;
+                border-radius: 6px;
                 cursor: pointer;
-                transition: all 0.3s ease;
-                padding: 0;
-                color: #555;
+                transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+                color: #64748b;
+                font-size: 14px;
+                font-weight: 500;
 
                 &:hover {
-                    background: #e0e0e0;
-                    color: #000;
+                    background: #f8fafc;
+                    border-color: #cbd5e1;
+                    color: #1e293b;
+                    transform: translateY(-1px);
+                    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
                 }
 
-                .dashicons {
+                .layout-icon {
+                    display: flex;
+                    align-items: center;
                     font-size: 20px;
-                    width: 20px;
-                    height: 20px;
                 }
             }
 
             &.is-active {
                 button {
-                    background: #007cba;
-                    border-color: #007cba;
+                    background: #2563eb;
+                    border-color: #2563eb;
                     color: #fff;
+                    box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2);
                 }
             }
         }
     }
 
+    &.layout-switcher--type-icons {
+        .layout-option button {
+            width: 40px;
+            padding: 0;
+        }
+    }
+
     &.is-loading {
-        opacity: 0.5;
+        opacity: 0.6;
         pointer-events: none;
     }
 }
 
+// Add these to global or theme scss if possible
 .wp-block-jankx-dynamic-data-layout,
 .wp-block-jankx-dynamic-ssr-layout {
     &.is-loading {
-        opacity: 0.6;
         position: relative;
-        min-height: 100px;
+        pointer-events: none;
+        
+        &::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: rgba(255,255,255,0.5);
+            z-index: 10;
+            backdrop-filter: blur(2px);
+            border-radius: inherit;
+        }
 
         &::after {
             content: "";
             position: absolute;
             top: 50%;
             left: 50%;
-            width: 30px;
-            height: 30px;
-            margin: -15px 0 0 -15px;
-            border: 2px solid rgba(0,0,0,0.1);
-            border-top-color: #007cba;
+            width: 40px;
+            height: 40px;
+            margin: -20px 0 0 -20px;
+            border: 3px solid #e2e8f0;
+            border-top-color: #2563eb;
             border-radius: 50%;
-            animation: jankx-spinner 0.6s linear infinite;
+            z-index: 11;
+            animation: jankx-spinner 0.8s linear infinite;
         }
     }
 }

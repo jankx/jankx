@@ -1,10 +1,23 @@
 .jankx-layout-switcher-edit {
-    border: 1px dashed #ccc;
-    padding: 10px;
-    background: #f9f9f9;
+    padding: 15px;
+    background: #fff;
+    border: 1px dashed #cbd5e1;
+    border-radius: 8px;
 
     .components-placeholder {
         min-height: auto;
-        padding: 10px;
+        padding: 20px;
+        background: transparent;
+        border: none;
+    }
+
+    &.layout-switcher--align-center {
+        display: flex;
+        justify-content: center;
+    }
+
+    &.layout-switcher--align-right {
+        display: flex;
+        justify-content: flex-end;
     }
 }
