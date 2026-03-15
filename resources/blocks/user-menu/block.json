@@ -1,0 +1,42 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "jankx/user-menu",
+    "title": "User Menu",
+    "category": "jankx",
+    "icon": "admin-users",
+    "description": "Hiển thị menu người dùng với trạng thái đăng nhập/đăng xuất và dropdown thông tin cá nhân.",
+    "textdomain": "jankx",
+    "attributes": {
+        "showRegister": {
+            "type": "boolean",
+            "default": true
+        },
+        "showLogin": {
+            "type": "boolean",
+            "default": true
+        },
+        "showUserName": {
+            "type": "boolean",
+            "default": false
+        },
+        "greetingText": {
+            "type": "string",
+            "default": "Xin chào,"
+        },
+        "avatarSize": {
+            "type": "number",
+            "default": 35
+        }
+    },
+    "supports": {
+        "html": false,
+        "spacing": {
+            "margin": true,
+            "padding": true
+        },
+        "typography": {
+            "fontSize": true
+        }
+    }
+}

@@ -50,6 +50,7 @@ use Jankx\Gutenberg\Blocks\DividerBlock;
 use Jankx\Gutenberg\Blocks\LanguageSwitcherBlock;
 use Jankx\Gutenberg\Blocks\LayoutSwitcherBlock;
 use Jankx\Gutenberg\Blocks\HumanReadablePostDateBlock;
+use Jankx\Gutenberg\Blocks\UserMenuBlock;
 use Jankx\Gutenberg\Blocks\PlyrPlayerBlock;
 use Jankx\Gutenberg\Extra\Categories as ExtraCategories;
 use Jankx\Gutenberg\Extra\PostTitle as ExtraPostTitle;
@@ -202,6 +203,7 @@ class GutenbergService
         $this->repository->registerBlock(WrapperBlock::class);
         $this->repository->registerBlock(TypographyBlock::class);
         $this->repository->registerBlock(HumanReadablePostDateBlock::class);
+        $this->repository->registerBlock(UserMenuBlock::class);
         $this->repository->registerBlock(WordPressBlock::class);
     }
 
