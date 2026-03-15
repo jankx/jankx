@@ -11,7 +11,7 @@ namespace Jankx\Extensions;
 use Jankx\Contracts\Extension\ExtensionInterface;
 use Jankx\Facades\App;
 
-abstract class Extension implements ExtensionInterface
+abstract class AbstractExtension implements ExtensionInterface
 {
     protected $name;
     protected $version;
@@ -127,6 +127,54 @@ abstract class Extension implements ExtensionInterface
     public function set_extension_url(string $url): void
     {
         $this->extension_url = $url;
+    }
+
+    /**
+     * Get extension path
+     */
+    public function get_extension_path(): string
+    {
+        return $this->extension_path ?? '';
+    }
+
+    /**
+     * Get extension URL
+     */
+    public function get_extension_url(): string
+    {
+        return $this->extension_url ?? '';
+    }
+
+    /**
+     * Get extension version
+     */
+    public function get_version(): string
+    {
+        return $this->version ?? ($this->manifest_data['version'] ?? '1.0.0');
+    }
+
+    /**
+     * Check if extension has update
+     */
+    public function has_update(): bool
+    {
+        return false;
+    }
+
+    /**
+     * Get extension requirements
+     */
+    public function get_requirements(): array
+    {
+        return $this->manifest_data['requirements'] ?? [];
+    }
+
+    /**
+     * Validate extension
+     */
+    public function validate(): bool
+    {
+        return true;
     }
 
     /**

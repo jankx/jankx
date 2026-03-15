@@ -94,7 +94,7 @@ class Jankx_Framework
                 $kernel = new RestApiKernel($this->app);
                 break;
 
-            case 'dashboard':
+            case 'admin':
                 $kernel = new DashboardKernel($this->app);
                 break;
 

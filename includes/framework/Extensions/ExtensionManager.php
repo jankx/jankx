@@ -37,7 +37,6 @@ class ExtensionManager implements ExtensionManagerInterface
      */
     private function init()
     {
-        add_action('init', [$this, 'load_extensions']);
         add_action('jankx/gutenberg/register-blocks', [$this, 'register_extension_blocks']);
     }
 
@@ -99,7 +98,7 @@ class ExtensionManager implements ExtensionManagerInterface
         $extension_dir = dirname($manifestFile);
 
         // Determine if this is a child theme extension
-        $is_child_theme_extension = strpos($extensionsDir, get_stylesheet_directory()) === 0;
+        $is_child_theme_extension = is_child_theme() && strpos($extensionsDir, get_stylesheet_directory()) === 0;
 
         // Load the caller file
         $caller_file = $extension_dir . '/' . $caller['file'];
@@ -120,7 +119,7 @@ class ExtensionManager implements ExtensionManagerInterface
 
         if (class_exists($class_name)) {
             $extension = new $class_name();
-            if ($extension instanceof Extension) {
+            if ($extension instanceof AbstractExtension) {
                 // Set extension path and URL
                 $extension->set_extension_path($extension_dir);
                 $extension->set_extension_url($this->get_extension_url($extension_dir));
@@ -180,12 +179,22 @@ class ExtensionManager implements ExtensionManagerInterface
         return $this->extensions;
     }
 
+    public function add_extension(string $name, ExtensionInterface $extension): void
+    {
+        $this->extensions[$name] = $extension;
+    }
+
     /**
      * Get active extensions
      */
     public function get_active_extensions(): array
     {
         return $this->active_extensions;
+    }
+
+    public function add_active_extension(string $name, ExtensionInterface $extension): void
+    {
+        $this->active_extensions[$name] = $extension;
     }
 
     /**
@@ -233,6 +242,16 @@ class ExtensionManager implements ExtensionManagerInterface
     public function has_extension_id(string $extensionId): bool
     {
         return isset($this->extension_ids[$extensionId]);
+    }
+
+    public function get_extension_ids(): array
+    {
+        return $this->extension_ids;
+    }
+
+    public function set_extension_id(string $id, string $path): void
+    {
+        $this->extension_ids[$id] = $path;
     }
 
     /**
@@ -304,14 +323,6 @@ class ExtensionManager implements ExtensionManagerInterface
     }
 
     /**
-     * Get extension IDs mapping
-     */
-    public function get_extension_ids(): array
-    {
-        return $this->extension_ids;
-    }
-
-    /**
      * Get extension path by ID
      */
     public function get_extension_path_by_id(string $extensionId): ?string
@@ -372,10 +383,10 @@ class ExtensionManager implements ExtensionManagerInterface
     public function get_extension_locations()
     {
         $locations = [
-            'parent' => get_template_directory() . '/includes/extensions',
+            'parent' => get_template_directory() . '/extensions',
         ];
         if (is_child_theme()) {
-            $locations['child'] = get_stylesheet_directory() . '/includes/extensions';
+            $locations['child'] = get_stylesheet_directory() . '/extensions';
         }
 
         return $locations;
@@ -386,7 +397,7 @@ class ExtensionManager implements ExtensionManagerInterface
      */
     public function can_install_to_child_theme()
     {
-        return is_child_theme() && is_writable(get_stylesheet_directory() . '/includes');
+        return is_child_theme() && is_writable(get_stylesheet_directory());
     }
 
     /**
@@ -398,7 +409,7 @@ class ExtensionManager implements ExtensionManagerInterface
             return false;
         }
 
-        $child_extensions_dir = get_stylesheet_directory() . '/includes/extensions';
+        $child_extensions_dir = get_stylesheet_directory() . '/extensions';
 
         // Create extensions directory if not exists
         if (!is_dir($child_extensions_dir)) {
@@ -412,7 +423,7 @@ class ExtensionManager implements ExtensionManagerInterface
         }
 
         // If extension exists in parent theme, copy from there
-        $parent_extension_path = get_template_directory() . '/includes/extensions/' . $extension_name;
+        $parent_extension_path = get_template_directory() . '/extensions/' . $extension_name;
         if (is_dir($parent_extension_path)) {
             $destination = $child_extensions_dir . '/' . $extension_name;
             return $this->copy_directory($parent_extension_path, $destination);

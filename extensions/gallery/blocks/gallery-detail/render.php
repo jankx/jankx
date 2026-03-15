@@ -39,7 +39,7 @@ function jankx_gallery_detail_render($attributes = [], $content = '', $block = n
     $images = [];
     if ($post_id) {
         $showFeaturedImage = isset($attributes['showFeaturedImage']) ? (bool)$attributes['showFeaturedImage'] : true;
-        $images = \Jankx\Features\Gallery\GalleryServiceProvider::getGallery($post_id, $imageSize, $thumbSize, $showFeaturedImage);
+        $images = \Jankx\Extensions\GalleryExtension::getGallery($post_id, $imageSize, $thumbSize, $showFeaturedImage);
     }
     if (empty($images) && $isEditorRequest) {
         $attachments = get_posts([

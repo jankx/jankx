@@ -6,9 +6,11 @@
  * @package Jankx\Extensions
  */
 
-namespace Jankx\Extensions;
+namespace Jankx\Services;
 
 use Jankx\Contracts\Extension\ExtensionServiceInterface;
+use Jankx\Extensions\ExtensionManager;
+use Jankx\Extensions\AbstractExtension;
 
 class ExtensionService implements ExtensionServiceInterface
 {
@@ -105,7 +107,7 @@ class ExtensionService implements ExtensionServiceInterface
     /**
      * Check if extension should be loaded based on filters
      */
-    private function shouldLoadExtension(string $extensionName, Extension $extension): bool
+    private function shouldLoadExtension(string $extensionName, AbstractExtension $extension): bool
     {
         // Apply global filters
         $shouldLoad = apply_filters('jankx/extension/should_load', true, $extensionName, $extension);

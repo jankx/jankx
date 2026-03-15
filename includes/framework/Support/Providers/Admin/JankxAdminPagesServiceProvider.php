@@ -66,72 +66,59 @@ class JankxAdminPagesServiceProvider extends ServiceProvider
     {
         $adminPages = $this->app->make('jankx.admin-pages');
         $pages = $adminPages->getAllPages();
-        $mainPage = $pages['jankx-settings'] ?? reset($pages);
 
-        if (!$mainPage) {
-            return;
+        // Detect Theme Options
+        $themeOptions = null;
+        $themeOptionsArgs = null;
+        if ($this->app->has('theme-options')) {
+            $themeOptions = $this->app->make('theme-options');
+            if ($themeOptions && method_exists($themeOptions, 'getMenuArgs')) {
+                $themeOptionsArgs = $themeOptions->getMenuArgs();
+            }
         }
 
-        // Main menu
+        // Determine Main Page (Default to Theme Options if available)
+        $mainPageId = $themeOptionsArgs['page_slug'] ?? 'jankx-settings';
+        $mainPageTitle = $themeOptionsArgs['page_title'] ?? ($pages['jankx-settings']['title'] ?? 'Jankx Dashboard');
+
+        // Register Main Menu
         add_menu_page(
-            $mainPage['title'], // Page title
-            Config::get('app.menu_title', 'Jankx'), // Menu title
-            'manage_options', // Capability
-            $mainPage['id'], // Menu slug
-            [$this, 'renderSubPage'], // Callback
-            'dashicons-art', // Icon
-            Config::get('app.menu_position', 59) // Position
+            $mainPageTitle,
+            Config::get('app.menu_title', 'Jankx'),
+            'manage_options',
+            $mainPageId,
+            $themeOptions ? [$themeOptions, 'renderOptionsPage'] : [$this, 'renderSubPage'],
+            'dashicons-art',
+            Config::get('app.menu_position', 59)
         );
 
-        // Register all pages as submenus (including the first one to make it appear as sub item)
-        foreach ($pages as $page) {
+        // Register Theme Options as first submenu if it is the main page
+        if ($themeOptionsArgs) {
             add_submenu_page(
-                $mainPage['id'], // Parent slug
-                $page['title'], // Page title
-                $page['menu_title'], // Menu title
-                $page['capability'], // Capability
-                $page['id'], // Menu slug
-                [$this, 'renderSubPage'], // Callback,
-                $page['position']
+                $mainPageId,
+                $themeOptionsArgs['page_title'],
+                $themeOptionsArgs['menu_title'],
+                $themeOptionsArgs['page_permissions'] ?? 'manage_options',
+                $themeOptionsArgs['page_slug'],
+                [$themeOptions, 'renderOptionsPage']
             );
         }
 
-        // Tích hợp Theme Options từ ThemeOptionsService
-        $this->integrateThemeOptions();
-    }
-
-    /**
-     * Tích hợp Theme Options từ ThemeOptionsService
-     */
-    protected function integrateThemeOptions()
-    {
-        try {
-            if (!$this->app->has('theme-options')) {
-                return;
-            }
-            $themeOptions = $this->app->make('theme-options');
-            if ($themeOptions && method_exists($themeOptions, 'getMenuArgs')) {
-                $menuArgs = $themeOptions->getMenuArgs();
-
-                // Thay đổi parent slug để làm submenu của Jankx
-                $pages = $this->app->make('jankx.admin-pages')->getAllPages();
-                $mainPageId = isset($pages['jankx-settings']) ? 'jankx-settings' : key($pages);
-
-                // Đăng ký Theme Options như submenu của Jankx
-                add_submenu_page(
-                    $mainPageId, // Parent slug
-                    $menuArgs['page_title'] ?? 'Theme Options',
-                    $menuArgs['menu_title'] ?? 'Theme Options',
-                    $menuArgs['page_permissions'] ?? 'manage_options',
-                    $menuArgs['page_slug'] ?? 'jankx-theme-options',
-                    [$themeOptions, 'renderOptionsPage'],
-                    40
-                );
-            }
-        } catch (\Exception $e) {
-            // Silence errors
+        // Register other pages as submenus
+        foreach ($pages as $page) {
+            add_submenu_page(
+                $mainPageId,
+                $page['title'],
+                $page['menu_title'],
+                $page['capability'],
+                $page['id'],
+                [$this, 'renderSubPage'],
+                $page['position']
+            );
         }
     }
+
+
 
     /**
      * Render sub pages

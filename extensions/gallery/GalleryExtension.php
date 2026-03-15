@@ -1,21 +1,20 @@
 <?php
 
-namespace Jankx\Features\Gallery;
+namespace Jankx\Extensions;
 
-use Jankx\Support\Providers\ServiceProvider;
-use Jankx\Foundation\Application;
+use Jankx\Extensions\AbstractExtension;
 use Jankx\Facades\Config;
 
-class GalleryServiceProvider extends ServiceProvider
+class GalleryExtension extends AbstractExtension
 {
-    public function register(Application $app)
+    public function init(): void
     {
+        // Initialization logic if any
     }
 
-    public function boot(Application $app)
+    public function register_hooks(): void
     {
         add_action('init', [$this, 'registerBlocks']);
-
         add_action('add_meta_boxes', [$this, 'registerMetabox']);
         add_action('save_post', [$this, 'saveGallery']);
         add_action('admin_enqueue_scripts', [$this, 'enqueueScripts']);
@@ -23,7 +22,10 @@ class GalleryServiceProvider extends ServiceProvider
 
     public function registerBlocks()
     {
-        register_block_type(__DIR__ . '/blocks/gallery-detail');
+        if (\WP_Block_Type_Registry::get_instance()->is_registered('jankx/gallery-detail')) {
+            return;
+        }
+        register_block_type($this->extension_path . '/blocks/gallery-detail');
     }
 
     public function registerMetabox()
@@ -111,14 +113,14 @@ class GalleryServiceProvider extends ServiceProvider
             wp_enqueue_media();
             wp_enqueue_script(
                 'jankx-gallery',
-                get_template_directory_uri() . '/features/gallery/assets/js/gallery.js',
+                $this->extension_url . '/assets/js/gallery.js',
                 ['jquery', 'jquery-ui-sortable'],
                 '1.0.0',
                 true
             );
             wp_enqueue_style(
                 'jankx-gallery',
-                get_template_directory_uri() . '/features/gallery/assets/css/gallery.css',
+                $this->extension_url . '/assets/css/gallery.css',
                 [],
                 '1.0.0'
             );

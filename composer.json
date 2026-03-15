@@ -34,7 +34,6 @@
       "Jankx\\Features\\": "./features",
       "Jankx\\Features\\Metrics\\": "./features/metrics",
       "Jankx\\Features\\ContentTemplates\\": "./features/content-templates",
-      "Jankx\\Features\\Gallery\\": "./features/gallery",
       "Jankx\\Features\\CustomBlocks\\": "./features/custom-blocks",
       "App\\": "./includes/app"
     }
@@ -44,8 +43,7 @@
       "Tests\\": "./tests"
     }
   },
-  "scripts": {
-  },
+  "scripts": {},
   "suggest": {
     "monolog/monolog": "Allows more advanced logging of the application flow",
     "jankx/dashboard-framework": "Official option framework for Jankx theme"
