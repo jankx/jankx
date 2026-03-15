@@ -1,8 +1,207 @@
 <!-- wp:template-part {"slug":"header"} /-->
 
-<!-- wp:group {"tagName":"main","style":{"spacing":{"margin":{"top":"var:preset|spacing|60"}}},"layout":{"type":"constrained"}} -->
-<main class="wp-block-group" style="margin-top:var(--wp--preset--spacing--60)">
-    implement later
+<!-- wp:group {"tagName":"main","align":"full","style":{"spacing":{"padding":{"top":"30px","bottom":"60px"}}},"backgroundColor":"light-bg","layout":{"type":"constrained"}} -->
+<main class="wp-block-group alignfull has-light-bg-background-color has-background"
+    style="padding-top:30px;padding-bottom:60px">
+
+    <!-- Hero Section -->
+    <!-- wp:group {"align":"wide","layout":{"type":"constrained"}} -->
+    <div class="wp-block-group alignwide">
+        <!-- wp:columns {"style":{"spacing":{"blockGap":{"top":"20px","left":"20px"}}}} -->
+        <div class="wp-block-columns">
+            <!-- wp:column {"width":"66.66%"} -->
+            <div class="wp-block-column" style="flex-basis:66.66%">
+                <!-- wp:jankx/dynamic-data-layout {"postType":"post","layout":"grid","columns":1,"postsPerPage":1,"queryPreset":"custom"} -->
+                <div class="wp-block-jankx-dynamic-data-layout" data-layout="grid" data-columns="1">
+                    <!-- wp:jankx/dynamic-data-template {"templateLayout":"hero-overlay"} -->
+                    <div class="wp-block-jankx-dynamic-data-template">
+                        <!-- wp:post-featured-image {"isLink":true} /-->
+                        <!-- wp:group {"style":{"spacing":{"padding":{"top":"4px","bottom":"4px","left":"12px","right":"12px"},"margin":{"bottom":"15px"}},"border":{"radius":"4px"},"color":{"background":"var:preset|color|primary"}}} -->
+                        <div class="wp-block-group has-background"
+                            style="border-radius:4px;background-color:var(--wp--preset--color--primary);padding-top:4px;padding-bottom:4px;padding-left:12px;padding-right:12px;width:fit-content;margin-bottom:15px">
+                            <!-- wp:post-terms {"term":"category","style":{"typography":{"fontSize":"11px","fontWeight":"800","textTransform":"uppercase"}},"textColor":"base"} /-->
+                        </div>
+                        <!-- /wp:group -->
+                        <!-- wp:post-title {"isLink":true,"style":{"typography":{"fontSize":"32px","fontWeight":"800","fontFamily":"var:preset|font-family|montserrat"}},"textColor":"base"} /-->
+                        <!-- wp:post-date {"style":{"typography":{"fontSize":"12px"}},"textColor":"base"} /-->
+                    </div>
+                    <!-- /wp:jankx/dynamic-data-template -->
+                </div>
+                <!-- /wp:jankx/dynamic-data-layout -->
+            </div>
+            <!-- /wp:column -->
+
+            <!-- wp:column {"width":"33.33%"} -->
+            <div class="wp-block-column" style="flex-basis:33.33%">
+                <!-- wp:jankx/dynamic-data-layout {"postType":"post","layout":"grid","columns":1,"postsPerPage":2, "offset":1,"queryPreset":"custom"} -->
+                <div class="wp-block-jankx-dynamic-data-layout" data-layout="grid" data-columns="1">
+                    <!-- wp:jankx/dynamic-data-template {"templateLayout":"hero-overlay","style":{"spacing":{"margin":{"bottom":"20px"}}}} -->
+                    <div class="wp-block-jankx-dynamic-data-template" style="margin-bottom:20px">
+                        <!-- wp:post-featured-image {"isLink":true} /-->
+                        <!-- wp:group {"style":{"spacing":{"padding":{"top":"2px","bottom":"2px","left":"8px","right":"8px"},"margin":{"bottom":"10px"}},"border":{"radius":"3px"},"color":{"background":"var:preset|color|primary"}}} -->
+                        <div class="wp-block-group has-background"
+                            style="border-radius:3px;background-color:var(--wp--preset--color--primary);padding-top:2px;padding-bottom:2px;padding-left:8px;padding-right:8px;width:fit-content;margin-bottom:10px">
+                            <!-- wp:post-terms {"term":"category","style":{"typography":{"fontSize":"9px","fontWeight":"800","textTransform":"uppercase"}},"textColor":"base"} /-->
+                        </div>
+                        <!-- /wp:group -->
+                        <!-- wp:post-title {"isLink":true,"style":{"typography":{"fontSize":"18px","fontWeight":"700","fontFamily":"var:preset|font-family|montserrat"}},"textColor":"base"} /-->
+                        <!-- wp:post-date {"style":{"typography":{"fontSize":"11px"}},"textColor":"base"} /-->
+                    </div>
+                    <!-- /wp:jankx/dynamic-data-template -->
+                </div>
+                <!-- /wp:jankx/dynamic-data-layout -->
+            </div>
+            <!-- /wp:column -->
+        </div>
+        <!-- /wp:columns -->
+    </div>
+    <!-- /wp:group -->
+
+    <!-- Section: Recommended -->
+    <!-- wp:group {"align":"wide","layout":{"type":"constrained"},"style":{"spacing":{"margin":{"top":"40px"}}}} -->
+    <div class="wp-block-group alignwide" style="margin-top:40px">
+        <!-- wp:heading {"level":2,"style":{"typography":{"fontWeight":"800","fontSize":"22px"}}} -->
+        <h2 class="wp-block-heading" style="font-size:22px;font-weight:800">Tin nên đọc hôm nay</h2>
+        <!-- /wp:heading -->
+
+        <!-- wp:jankx/dynamic-data-layout {"postType":"post","layout":"grid","columns":4,"postsPerPage":4,"offset":3} -->
+        <div class="wp-block-jankx-dynamic-data-layout" data-layout="grid" data-columns="4">
+            <!-- wp:jankx/dynamic-data-template {"style":{"spacing":{"padding":{"bottom":"20px"}}}} -->
+            <div class="wp-block-jankx-dynamic-data-template" style="padding-bottom:20px">
+                <!-- wp:post-featured-image {"isLink":true,"aspectRatio":"16/9","style":{"border":{"radius":"10px"},"spacing":{"margin":{"bottom":"12px"}}}} /-->
+                <!-- wp:group {"style":{"spacing":{"padding":{"top":"2px","bottom":"2px","left":"8px","right":"8px"},"margin":{"bottom":"10px"}},"border":{"radius":"3px"},"color":{"background":"var:preset|color|primary"}}} -->
+                <div class="wp-block-group has-background"
+                    style="border-radius:3px;background-color:var(--wp--preset--color--primary);padding-top:2px;padding-bottom:2px;padding-left:8px;padding-right:8px;width:fit-content;margin-bottom:10px">
+                    <!-- wp:post-terms {"term":"category","style":{"typography":{"fontSize":"10px","fontWeight":"800","textTransform":"uppercase"}},"textColor":"base"} /-->
+                </div>
+                <!-- /wp:group -->
+                <!-- wp:post-title {"isLink":true,"style":{"typography":{"fontSize":"16px","fontWeight":"700","lineHeight":"1.4"}}} /-->
+                <!-- wp:post-excerpt {"excerptLength":15,"style":{"typography":{"fontSize":"13px"},"spacing":{"margin":{"top":"8px"}}}} /-->
+                <!-- wp:post-date {"style":{"typography":{"fontSize":"12px"}},"textColor":"dark-text"} /-->
+            </div>
+            <!-- /wp:jankx/dynamic-data-template -->
+        </div>
+        <!-- /wp:jankx/dynamic-data-layout -->
+    </div>
+    <!-- /wp:group -->
+
+    <!-- Section: Awards -->
+    <!-- wp:group {"align":"wide","layout":{"type":"constrained"},"style":{"spacing":{"margin":{"top":"40px"}}}} -->
+    <div class="wp-block-group alignwide" style="margin-top:40px">
+        <!-- wp:heading {"level":2,"style":{"typography":{"fontWeight":"800","fontSize":"22px"}}} -->
+        <h2 class="wp-block-heading" style="font-size:22px;font-weight:800">Giải thưởng</h2>
+        <!-- /wp:heading -->
+
+        <!-- wp:jankx/dynamic-data-layout {"postType":"post","layout":"grid","columns":3,"postsPerPage":3} -->
+        <div class="wp-block-jankx-dynamic-data-layout" data-layout="grid" data-columns="3">
+            <!-- wp:jankx/dynamic-data-template {"overlayIcon":"dashicons-awards","overlayIconPosition":"top-right","overlayIconSize":32,"overlayIconColor":"#FFD700","overlayIconBackground":"rgba(0,0,0,0.7)"} -->
+            <div class="wp-block-jankx-dynamic-data-template">
+                <!-- wp:post-featured-image {"isLink":true,"aspectRatio":"16/9","style":{"border":{"radius":"12px"}}} /-->
+                <!-- wp:post-title {"isLink":true,"style":{"typography":{"fontSize":"18px","fontWeight":"700","margin":{"top":"15px"}}}} /-->
+                <!-- wp:paragraph {"style":{"typography":{"fontSize":"16px","fontWeight":"800"}},"textColor":"primary"} -->
+                <p class="has-primary-color has-text-color" style="font-size:16px;font-weight:800">$2,000,000</p>
+                <!-- /wp:paragraph -->
+            </div>
+            <!-- /wp:jankx/dynamic-data-template -->
+        </div>
+        <!-- /wp:jankx/dynamic-data-layout -->
+    </div>
+    <!-- /wp:group -->
+
+    <!-- Section: Tin mới (Latest News) -->
+    <!-- wp:group {"align":"wide","layout":{"type":"constrained"},"style":{"spacing":{"margin":{"top":"40px"}}}} -->
+    <div class="wp-block-group alignwide" style="margin-top:40px">
+        <!-- wp:heading {"level":2,"style":{"typography":{"fontWeight":"800","fontSize":"22px"}}} -->
+        <h2 class="wp-block-heading" style="font-size:22px;font-weight:800">Tin mới</h2>
+        <!-- /wp:heading -->
+
+        <!-- wp:columns {"style":{"spacing":{"blockGap":{"top":"30px","left":"30px"}}}} -->
+        <div class="wp-block-columns">
+            <!-- Left side: Large post -->
+            <!-- wp:column {"width":"66.66%"} -->
+            <div class="wp-block-column" style="flex-basis:66.66%">
+                <!-- wp:jankx/dynamic-data-layout {"postType":"post","layout":"grid","columns":1,"postsPerPage":1,"offset":7} -->
+                <div class="wp-block-jankx-dynamic-data-layout" data-layout="grid" data-columns="1">
+                    <!-- wp:jankx/dynamic-data-template -->
+                    <div class="wp-block-jankx-dynamic-data-template">
+                        <!-- wp:post-featured-image {"isLink":true,"aspectRatio":"16/9","style":{"border":{"radius":"12px"},"spacing":{"margin":{"bottom":"15px"}}}} /-->
+                        <!-- wp:group {"style":{"spacing":{"padding":{"top":"2px","bottom":"2px","left":"8px","right":"8px"},"margin":{"bottom":"10px"}},"border":{"radius":"3px"},"color":{"background":"var:preset|color|primary"}}} -->
+                        <div class="wp-block-group has-background"
+                            style="border-radius:3px;background-color:var(--wp--preset--color--primary);padding-top:2px;padding-bottom:2px;padding-left:8px;padding-right:8px;width:fit-content;margin-bottom:10px">
+                            <!-- wp:post-terms {"term":"category","style":{"typography":{"fontSize":"10px","fontWeight":"800","textTransform":"uppercase"}},"textColor":"base"} /-->
+                        </div>
+                        <!-- /wp:group -->
+                        <!-- wp:post-title {"isLink":true,"style":{"typography":{"fontSize":"26px","fontWeight":"800"}}} /-->
+                        <!-- wp:post-excerpt {"excerptLength":30} /-->
+                        <!-- wp:post-date /-->
+                    </div>
+                    <!-- /wp:jankx/dynamic-data-template -->
+                </div>
+                <!-- /wp:jankx/dynamic-data-layout -->
+            </div>
+            <!-- /wp:column -->
+
+            <!-- Right side: List of posts -->
+            <!-- wp:column {"width":"33.33%"} -->
+            <div class="wp-block-column" style="flex-basis:33.33%">
+                <!-- wp:jankx/dynamic-data-layout {"postType":"post","layout":"grid","columns":1,"postsPerPage":4,"offset":8} -->
+                <div class="wp-block-jankx-dynamic-data-layout" data-layout="grid" data-columns="1">
+                    <!-- wp:jankx/dynamic-data-template -->
+                    <div class="wp-block-jankx-dynamic-data-template">
+                        <!-- wp:group {"layout":{"type":"flex","flexWrap":"nowrap","verticalAlignment":"top"},"style":{"spacing":{"margin":{"bottom":"25px"}}}} -->
+                        <div class="wp-block-group" style="margin-bottom:25px">
+                            <!-- wp:post-featured-image {"width":120,"height":80,"isLink":true,"style":{"border":{"radius":"8px"},"spacing":{"margin":{"top":"0","bottom":"0","left":"0","right":"0"}}}} /-->
+                            <!-- wp:group {"style":{"spacing":{"padding":{"left":"20px"}}}} -->
+                            <div class="wp-block-group" style="padding-left:20px">
+                                <!-- wp:group {"style":{"spacing":{"padding":{"top":"1px","bottom":"1px","left":"5px","right":"5px"},"margin":{"bottom":"6px","top":"0"}},"border":{"radius":"2px"},"color":{"background":"var:preset|color|primary"}}} -->
+                                <div class="wp-block-group has-background"
+                                    style="border-radius:2px;background-color:var(--wp--preset--color--primary);padding-top:1px;padding-bottom:1px;padding-left:5px;padding-right:5px;width:fit-content;margin-bottom:6px;margin-top:0">
+                                    <!-- wp:post-terms {"term":"category","style":{"typography":{"fontSize":"9px","fontWeight":"800"}},"textColor":"base"} /-->
+                                </div>
+                                <!-- /wp:group -->
+                                <!-- wp:post-title {"isLink":true,"style":{"typography":{"fontSize":"14px","fontWeight":"700","lineHeight":"1.4"},"spacing":{"margin":{"top":"0"}}}} /-->
+                            </div>
+                            <!-- /wp:group -->
+                        </div>
+                        <!-- /wp:group -->
+                    </div>
+                    <!-- /wp:jankx/dynamic-data-template -->
+                </div>
+                <!-- /wp:jankx/dynamic-data-layout -->
+            </div>
+            <!-- /wp:column -->
+        </div>
+        <!-- /wp:columns -->
+    </div>
+    <!-- /wp:group -->
+
+    <!-- Section: Xem thêm (Read More) -->
+    <!-- wp:group {"align":"wide","layout":{"type":"constrained"},"style":{"spacing":{"margin":{"top":"60px"}}}} -->
+    <div class="wp-block-group alignwide" style="margin-top:60px">
+        <!-- wp:heading {"level":2,"style":{"typography":{"fontWeight":"800","fontSize":"22px"}}} -->
+        <h2 class="wp-block-heading" style="font-size:22px;font-weight:800">Xem thêm</h2>
+        <!-- /wp:heading -->
+
+        <!-- wp:jankx/dynamic-data-layout {"postType":"post","layout":"grid","columns":4,"postsPerPage":12,"offset":12} -->
+        <div class="wp-block-jankx-dynamic-data-layout" data-layout="grid" data-columns="4">
+            <!-- wp:jankx/dynamic-data-template {"style":{"spacing":{"padding":{"bottom":"30px"}}}} -->
+            <div class="wp-block-jankx-dynamic-data-template" style="padding-bottom:30px">
+                <!-- wp:post-featured-image {"isLink":true,"aspectRatio":"16/9","style":{"border":{"radius":"10px"},"spacing":{"margin":{"bottom":"12px"}}}} /-->
+                <!-- wp:group {"style":{"spacing":{"padding":{"top":"2px","bottom":"2px","left":"8px","right":"8px"},"margin":{"bottom":"10px"}},"border":{"radius":"3px"},"color":{"background":"var:preset|color|primary"}}} -->
+                <div class="wp-block-group has-background"
+                    style="border-radius:3px;background-color:var(--wp--preset--color--primary);padding-top:2px;padding-bottom:2px;padding-left:8px;padding-right:8px;width:fit-content;margin-bottom:10px">
+                    <!-- wp:post-terms {"term":"category","style":{"typography":{"fontSize":"10px","fontWeight":"800","textTransform":"uppercase"}},"textColor":"base"} /-->
+                </div>
+                <!-- /wp:group -->
+                <!-- wp:post-title {"isLink":true,"style":{"typography":{"fontSize":"15px","fontWeight":"700","lineHeight":"1.4"}}} /-->
+                <!-- wp:post-date {"style":{"typography":{"fontSize":"11px"}},"textColor":"dark-text"} /-->
+            </div>
+            <!-- /wp:jankx/dynamic-data-template -->
+        </div>
+        <!-- /wp:jankx/dynamic-data-layout -->
+    </div>
+    <!-- /wp:group -->
+
 </main>
 <!-- /wp:group -->
 

@@ -4,8 +4,8 @@
 	"settings": {
 		"appearanceTools": true,
 		"layout": {
-			"contentSize": "calc(100% - 200px)",
-			"wideSize": "calc(100% - 200px)"
+			"contentSize": "1200px",
+			"wideSize": "1400px"
 		},
 		"spacing": {
 			"padding": true,
@@ -18,78 +18,94 @@
 				"%",
 				"vw",
 				"vh"
-			],
-			"spacingScale": {
-				"steps": 7,
-				"operator": "+",
-				"increment": 0.5,
-				"mediumStep": 1.5
-			},
-			"spacingSizes": [
-				{
-					"size": "40px",
-					"slug": "40",
-					"name": "40"
-				}
 			]
 		},
 		"color": {
 			"defaultDuotone": false,
-			"defaultGradients": false,
+			"defaultGradients": true,
 			"defaultPalette": false,
 			"palette": [
 				{
+					"slug": "base",
 					"color": "#FFFFFF",
-					"name": "Base",
-					"slug": "base"
+					"name": "Base (White)"
 				},
 				{
-					"color": "#111111",
-					"name": "Contrast",
-					"slug": "contrast"
+					"slug": "contrast",
+					"color": "#0d1117",
+					"name": "Contrast (Dark)"
 				},
 				{
-					"color": "#503AA8",
-					"name": "Primary",
-					"slug": "primary"
+					"slug": "primary",
+					"color": "#007bff",
+					"name": "Primary (Gaming Blue)"
 				},
 				{
-					"color": "#503AA8",
-					"name": "Link Color",
-					"slug": "link"
+					"slug": "secondary",
+					"color": "#e83e8c",
+					"name": "Secondary (Esports Pink)"
 				},
 				{
-					"color": "#FFEE58",
-					"name": "Accent 1",
-					"slug": "accent-1"
+					"slug": "accent-game",
+					"color": "#17a2b8",
+					"name": "Game Accent (Cyan)"
 				},
 				{
-					"color": "#F6CFF4",
-					"name": "Accent 2",
-					"slug": "accent-2"
+					"slug": "light-bg",
+					"color": "#F9FAFB",
+					"name": "Light Background"
 				},
 				{
-					"color": "#503AA8",
-					"name": "Accent 3",
-					"slug": "accent-3"
-				},
+					"slug": "dark-text",
+					"color": "#111827",
+					"name": "Dark Text"
+				}
+			],
+			"gradients": [
 				{
-					"color": "#686868",
-					"name": "Accent 4",
-					"slug": "accent-4"
-				},
-				{
-					"color": "#FBFAF3",
-					"name": "Accent 5",
-					"slug": "accent-5"
+					"name": "Hero Overlay",
+					"gradient": "linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.6) 50%, transparent 100%)",
+					"slug": "hero-overlay"
 				}
 			]
 		},
 		"typography": {
 			"customFontSize": true,
 			"dropCap": true,
-			"fontFamily": true,
-			"fontSize": true,
+			"fontFamilies": [
+				{
+					"fontFamily": "\"Inter\", -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Oxygen, Ubuntu, Cantarell, \"Open Sans\", \"Helvetica Neue\", sans-serif",
+					"name": "Inter",
+					"slug": "inter"
+				},
+				{
+					"fontFamily": "\"Montserrat\", sans-serif",
+					"name": "Montserrat",
+					"slug": "montserrat"
+				}
+			],
+			"fontSizes": [
+				{
+					"name": "Small",
+					"size": "13px",
+					"slug": "small"
+				},
+				{
+					"name": "Normal",
+					"size": "16px",
+					"slug": "normal"
+				},
+				{
+					"name": "Medium",
+					"size": "20px",
+					"slug": "medium"
+				},
+				{
+					"name": "Large",
+					"size": "32px",
+					"slug": "large"
+				}
+			],
 			"fontStyle": true,
 			"fontWeight": true,
 			"letterSpacing": true,
@@ -101,15 +117,47 @@
 		}
 	},
 	"styles": {
+		"color": {
+			"background": "var(--wp--preset--color--light-bg)",
+			"text": "var(--wp--preset--color--dark-text)"
+		},
 		"typography": {
+			"fontFamily": "var(--wp--preset--font-family--inter)",
 			"fontSize": "16px",
-			"lineHeight": "1.5"
+			"lineHeight": "1.6"
 		},
 		"elements": {
 			"link": {
-				"color": "var(--wp--preset--color--link)",
+				"color": {
+					"text": "var(--wp--preset--color--dark-text)"
+				},
 				"typography": {
 					"textDecoration": "none"
+				},
+				":hover": {
+					"color": {
+						"text": "var(--wp--preset--color--primary)"
+					}
+				}
+			},
+			"h1": {
+				"typography": {
+					"fontFamily": "var(--wp--preset--font-family--montserrat)",
+					"fontWeight": "800"
+				}
+			},
+			"h2": {
+				"typography": {
+					"fontFamily": "var(--wp--preset--font-family--montserrat)",
+					"fontWeight": "700",
+					"textTransform": "uppercase",
+					"letterSpacing": "1px"
+				}
+			},
+			"h3": {
+				"typography": {
+					"fontFamily": "var(--wp--preset--font-family--montserrat)",
+					"fontWeight": "700"
 				}
 			}
 		}
@@ -124,25 +172,6 @@
 			"area": "footer",
 			"name": "footer",
 			"title": "Footer"
-		},
-		{
-			"area": "header",
-			"name": "offcanvas",
-			"title": "Offcanvas"
-		},
-		{
-			"area": "uncategorized",
-			"name": "sidebar",
-			"title": "Sidebar"
-		}
-	],
-	"customTemplates": [
-		{
-			"name": "page-no-title",
-			"postTypes": [
-				"page"
-			],
-			"title": "Page No Title"
 		}
 	]
 }

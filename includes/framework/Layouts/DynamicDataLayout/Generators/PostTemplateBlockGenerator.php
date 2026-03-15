@@ -130,6 +130,7 @@ class PostTemplateBlockGenerator extends AbstractContentGenerator
             }
 
             $output = '';
+            $contentOutput = '';
             foreach ($innerBlocks as $innerBlock) {
                 $normalizedBlock = [
                     'blockName' => $innerBlock['blockName'] ?? '',
@@ -153,7 +154,20 @@ class PostTemplateBlockGenerator extends AbstractContentGenerator
                 // Fix missing styles: Apply render_block filters to ensure block supports are applied
                 $blockHtml = apply_filters('render_block', $blockHtml, $normalizedBlock, $blockInstance);
 
-                // Inject overlay only when targeting featured image
+                // Handle Premium Overlay Layout if requested via attribute
+                if (($attrs['templateLayout'] ?? '') === 'hero-overlay') {
+                    if (in_array($normalizedBlock['blockName'], ['core/post-featured-image', 'jankx/advanced-image-box'], true)) {
+                        $blockHtml = str_replace('<img ', '<img style="width:100%;height:100%;object-fit:cover;display:block;" ', $blockHtml);
+                        $output .= sprintf('<div class="hero-image-wrapper" style="position:absolute;top:0;left:0;width:100%;height:100%;z-index:1;">%s</div>', $blockHtml);
+                        continue;
+                    } else {
+                        // Build context for content
+                        $contentOutput .= $blockHtml;
+                        continue;
+                    }
+                }
+
+                // Inject overlay only when targeting featured image (Standard Overlay)
                 if (
                     $overlayTarget === 'featured-image'
                     && ($overlayIcon || $overlayImage || $overlayText)
@@ -177,8 +191,28 @@ class PostTemplateBlockGenerator extends AbstractContentGenerator
                 $output .= $blockHtml;
             }
 
+            // If Hero Overlay mode, construct the final premium box
+            if (($attrs['templateLayout'] ?? '') === 'hero-overlay') {
+                // Ensure the box has a background even if image is missing
+                $output = sprintf(
+                    '<div class="premium-hero-box" style="position:relative;overflow:hidden;min-height:350px;height:100%%;display:flex;align-items:flex-end;border-radius:12px;background:#111;">
+                        %s
+                        <div class="premium-hero-content" style="position:relative;z-index:10;width:100%%;padding:40px 30px;background:linear-gradient(to top, rgba(0,0,0,1) 0%%, rgba(0,0,0,0.5) 50%%, transparent 100%%);pointer-events:none;">
+                            <div style="pointer-events:auto;">%s</div>
+                        </div>
+                    </div>',
+                    $output, // This contains the image wrapper with z-index 1
+                    $contentOutput
+                );
+            }
+
             // Build wrapper styles and classes for the template item
             $wrapperStyle = $this->buildTemplateItemStyle($attrs);
+
+            // For Hero Overlay, we need the item itself to be the container
+            if (($attrs['templateLayout'] ?? '') === 'hero-overlay') {
+                $wrapperStyle = rtrim($wrapperStyle, ';') . '; position:relative; overflow:hidden;';
+            }
             $wrapperClasses = $this->buildTemplateItemClasses($attrs);
 
             // If we have styles or classes to apply, wrap the output

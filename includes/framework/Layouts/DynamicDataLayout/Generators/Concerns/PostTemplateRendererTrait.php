@@ -17,12 +17,10 @@ trait PostTemplateRendererTrait
         $templateAttrs = $this->templateBlock['attrs'] ?? [];
         $itemInlineStyle = '';
         if (!empty($templateAttrs['style']) && is_array($templateAttrs['style']) && function_exists('wp_style_engine_get_styles')) {
-            $spacing = $templateAttrs['style']['spacing'] ?? null;
-            if (!empty($spacing) && is_array($spacing)) {
-                $styles = wp_style_engine_get_styles(['spacing' => $spacing]);
-                if (!empty($styles['css'])) {
-                    $itemInlineStyle = trim($styles['css']);
-                }
+            $styleConfig = $templateAttrs['style'];
+            $styles = wp_style_engine_get_styles($styleConfig);
+            if (!empty($styles['css'])) {
+                $itemInlineStyle = trim($styles['css']);
             }
         }
         $styleAttr = $itemInlineStyle !== '' ? sprintf(' style="%s"', esc_attr($itemInlineStyle)) : '';
