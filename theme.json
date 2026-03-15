@@ -5,7 +5,7 @@
 		"appearanceTools": true,
 		"layout": {
 			"contentSize": "1200px",
-			"wideSize": "1400px"
+			"wideSize": "1320px"
 		},
 		"spacing": {
 			"padding": true,
@@ -37,7 +37,7 @@
 				},
 				{
 					"slug": "primary",
-					"color": "#007bff",
+					"color": "#3B82F6",
 					"name": "Primary (Gaming Blue)"
 				},
 				{
@@ -59,12 +59,17 @@
 					"slug": "dark-text",
 					"color": "#111827",
 					"name": "Dark Text"
+				},
+				{
+					"slug": "grey-text",
+					"color": "#6B7280",
+					"name": "Grey Text"
 				}
 			],
 			"gradients": [
 				{
 					"name": "Hero Overlay",
-					"gradient": "linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.6) 50%, transparent 100%)",
+					"gradient": "linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.4) 50%, transparent 100%)",
 					"slug": "hero-overlay"
 				}
 			]
@@ -87,22 +92,22 @@
 			"fontSizes": [
 				{
 					"name": "Small",
-					"size": "13px",
+					"size": "12px",
 					"slug": "small"
 				},
 				{
 					"name": "Normal",
-					"size": "16px",
+					"size": "15px",
 					"slug": "normal"
 				},
 				{
 					"name": "Medium",
-					"size": "20px",
+					"size": "18px",
 					"slug": "medium"
 				},
 				{
 					"name": "Large",
-					"size": "32px",
+					"size": "28px",
 					"slug": "large"
 				}
 			],
@@ -123,7 +128,7 @@
 		},
 		"typography": {
 			"fontFamily": "var(--wp--preset--font-family--inter)",
-			"fontSize": "16px",
+			"fontSize": "15px",
 			"lineHeight": "1.6"
 		},
 		"elements": {
@@ -149,9 +154,8 @@
 			"h2": {
 				"typography": {
 					"fontFamily": "var(--wp--preset--font-family--montserrat)",
-					"fontWeight": "700",
-					"textTransform": "uppercase",
-					"letterSpacing": "1px"
+					"fontWeight": "800",
+					"letterSpacing": "0.5px"
 				}
 			},
 			"h3": {
