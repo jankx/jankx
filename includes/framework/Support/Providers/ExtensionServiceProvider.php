@@ -35,6 +35,9 @@ class ExtensionServiceProvider extends ServiceProvider
         // Boot Theme Extension Manager (active theme's extensions/ dir)
         $this->app->make('theme_extension.manager');
 
+        // Boot Extension Service so its AJAX handlers (jankx_toggle_extension, etc.) are registered
+        $this->app->make('extension.service');
+
         // Register AJAX handlers for the marketplace (lazy - marketplace boots on demand)
         add_action('wp_ajax_jankx_install_extension', [$this, 'ajaxInstallExtension']);
         add_action('wp_ajax_jankx_check_theme_update', [$this, 'ajaxCheckThemeUpdate']);

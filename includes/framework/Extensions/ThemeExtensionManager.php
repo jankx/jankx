@@ -26,6 +26,12 @@ class ThemeExtensionManager
     protected $extensions = [];
 
     /**
+     * Registry of extensions that are disabled (enabled=false) — stores manifest path + data.
+     * @var array
+     */
+    protected $disabledManifests = [];
+
+    /**
      * Constructor
      */
     private function __construct()
@@ -135,12 +141,23 @@ class ThemeExtensionManager
             return false;
         }
 
+        // If 'enabled' is explicitly false, skip completely — don't instantiate
+        if (isset($manifestData['enabled']) && $manifestData['enabled'] === false) {
+            // Track it so toggle AJAX can re-enable it later
+            $this->disabledManifests[$extensionName] = [
+                'dir'      => $extensionDir,
+                'manifest' => $manifestData,
+                'path'     => $manifestFile,
+            ];
+            return false;
+        }
+
         // SMART LOADING: Check if we should load this extension in current context
         $loadDecision = $this->shouldLoadInCurrentContext($extensionName, $manifestData);
         
         if ($loadDecision === 'late') {
             $this->lateLoadQueue[$extensionName] = [
-                'dir' => $extensionDir,
+                'dir'      => $extensionDir,
                 'manifest' => $manifestData
             ];
             return false;
@@ -152,9 +169,7 @@ class ThemeExtensionManager
 
         // Check if extension with this name already loaded to support overriding
         if (isset($this->extensions[$extensionName])) {
-            // If we are loading from child theme and existing is from parent, we allow override
-            // For now, let's just skip if already loaded to prevent duplicate hooks
-             return true; 
+            return true;
         }
 
         return $this->executeExtensionLoad($extensionName, $extensionDir, $manifestData);
@@ -207,16 +222,23 @@ class ThemeExtensionManager
                             $globalManager->add_extension($name, $extension);
                             $extensionId = $manifest['extension_id'] ?? $name;
                             $globalManager->set_extension_id($extensionId, $dir);
-                            if ($extension->is_active()) {
-                                $globalManager->add_active_extension($name, $extension);
-                            }
                         }
                     } catch (\Exception $e) {
                         // Global manager might not be ready yet
                     }
 
-                    if (isset($caller['method']) && method_exists($extension, $caller['method'])) {
-                        $extension->{$caller['method']}($caller['args'] ?? []);
+                    // Check if we should actually activate (run hooks)
+                    // 'enabled' = user's toggle state; 'auto_activate' = default boot intent
+                    $isEnabled = isset($manifest['enabled'])
+                        ? (bool)$manifest['enabled']
+                        : (isset($manifest['auto_activate']) ? (bool)$manifest['auto_activate'] : false);
+                    if ($isEnabled) {
+                        if (isset($caller['method']) && method_exists($extension, $caller['method'])) {
+                            $extension->{$caller['method']}($caller['args'] ?? []);
+                        }
+                        $extension->activate();
+                    } else {
+                        $extension->deactivate();
                     }
 
                     do_action('jankx/theme_extension/loaded', $name, $extension);
@@ -267,13 +289,7 @@ class ThemeExtensionManager
      */
     protected function shouldLoadInCurrentContext(string $name, array $manifest)
     {
-        // 1. Check if explicitly disabled in settings
-        $disabled = get_option('jankx_disabled_theme_extensions', []);
-        if (in_array($name, $disabled)) {
-            return false;
-        }
-
-        // 2. Queue for late load if there are conditional logic
+        // 1. Queue for late load if there are conditional logic
         if (isset($manifest['conditions']) && !is_admin()) {
             return 'late';
         }
@@ -388,5 +404,15 @@ class ThemeExtensionManager
     public function getExtensions(): array
     {
         return $this->extensions;
+    }
+
+    /**
+     * Get disabled extension manifests (enabled=false)
+     *
+     * @return array  [ extensionName => ['dir'=>..., 'manifest'=>..., 'path'=>...] ]
+     */
+    public function getDisabledManifests(): array
+    {
+        return $this->disabledManifests;
     }
 }

@@ -78,8 +78,8 @@ class JankxAdminPagesServiceProvider extends ServiceProvider
         }
 
         // Determine Main Page (Default to Theme Options if available)
-        $mainPageId = $themeOptionsArgs['page_slug'] ?? 'jankx-settings';
-        $mainPageTitle = $themeOptionsArgs['page_title'] ?? ($pages['jankx-settings']['title'] ?? 'Jankx Dashboard');
+        $mainPageId = $themeOptionsArgs['page_slug'] ?? 'jankx-extensions';
+        $mainPageTitle = $themeOptionsArgs['page_title'] ?? ($pages['jankx-extensions']['title'] ?? 'Jankx Extensions');
 
         // Register Main Menu
         add_menu_page(

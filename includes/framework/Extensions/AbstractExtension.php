@@ -21,11 +21,11 @@ abstract class AbstractExtension implements ExtensionInterface
     protected $extension_url;
     protected $is_active = true;
     protected $is_child_theme_extension = false;
+    protected $hooks_registered = false;
     protected $manifest_data = [];
     public function __construct()
     {
         $this->init();
-        $this->register_hooks();
     }
 
     /**
@@ -67,6 +67,10 @@ abstract class AbstractExtension implements ExtensionInterface
     public function activate(): bool
     {
         $this->is_active = true;
+        if (!$this->hooks_registered) {
+            $this->register_hooks();
+            $this->hooks_registered = true;
+        }
         do_action('jankx/extension/activated', $this->name);
         return true;
     }
