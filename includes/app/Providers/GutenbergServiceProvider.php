@@ -39,6 +39,10 @@ class GutenbergServiceProvider extends FrameworkGutenbergServiceProvider
     {
         parent::boot($app);
 
+        if (apply_filters('jankx/gutenberg/enabled', true) === false) {
+            return;
+        }
+
         $gutenbergService = $app->make('gutenberg.service');
 
 

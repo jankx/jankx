@@ -45,6 +45,9 @@ class MarketplaceManager
         // Hook into WordPress update mechanism for theme updates
         // Only if we have cached update data (non-blocking)
         add_filter('pre_set_site_transient_update_themes', [$this, 'injectCachedThemeUpdate']);
+
+        // Background update check
+        add_action('jankx_refresh_theme_update_cache', [$this, 'fetchThemeCoreUpdate']);
     }
 
     /**
@@ -79,38 +82,60 @@ class MarketplaceManager
 
     /**
      * Get all available extensions from the Hub
-     * Endpoint: GET /api/extensions
+     * Endpoint: GET /api/extensions?locale=xx&page=x&per_page=x
      *
+     * @param int $page
+     * @param int $per_page
      * @return array
      */
-    public function getAvailableExtensions(): array
+    public function getAvailableExtensions(int $page = 1, int $per_page = 12): array
     {
-        $cache_key = 'jankx_marketplace_extensions';
+        $locale = $this->getLocale();
+        $cache_key = sprintf('jankx_marketplace_extensions_%s_p%d_s%d', $locale, $page, $per_page);
         $cached = get_transient($cache_key);
         if ($cached !== false) {
             return $cached;
         }
 
-        $response = wp_remote_get($this->buildUrl('api/extensions'), [
+        $api_url = add_query_arg([
+            'locale'   => $locale,
+            'page'     => $page,
+            'per_page' => $per_page,
+        ], $this->buildUrl('api/extensions'));
+
+        $response = wp_remote_get($api_url, [
             'timeout' => 15,
             'headers' => ['Accept' => 'application/json'],
         ]);
 
         if (is_wp_error($response)) {
             Log::error('Marketplace: Failed to fetch extensions - ' . $response->get_error_message());
-            return [];
+            return ['data' => [], 'pagination' => []];
         }
 
         $data = json_decode(wp_remote_retrieve_body($response), true);
         if (!is_array($data)) {
-            return [];
+            return ['data' => [], 'pagination' => []];
         }
 
-        // Hub may return a root array or {extensions: [...]}
-        $extensions = isset($data['extensions']) ? $data['extensions'] : $data;
+        // The Hub returns { data: [...], pagination: {...} }
+        // Ensure we always return this structure for consistency
+        if (!isset($data['data'])) {
+            $data = [
+                'data' => isset($data['extensions']) ? $data['extensions'] : $data,
+                'pagination' => [
+                    'page' => $page,
+                    'per_page' => $per_page,
+                    'total' => count(isset($data['extensions']) ? $data['extensions'] : $data),
+                    'total_pages' => 1,
+                    'has_next' => false,
+                    'has_prev' => false
+                ]
+            ];
+        }
 
-        set_transient($cache_key, $extensions, HOUR_IN_SECONDS);
-        return $extensions;
+        set_transient($cache_key, $data, HOUR_IN_SECONDS);
+        return $data;
     }
 
     // =========================================================================
@@ -119,25 +144,27 @@ class MarketplaceManager
 
     /**
      * Resolve the best compatible version for a specific extension
-     * Endpoint: GET /api/extensions/{slug}/resolve?jankx_version=&php_version=
+     * Endpoint: GET /api/extensions/{slug}/resolve?jankx_version=&php_version=&locale=
      *
      * @param string $slug Extension slug (e.g. jankx-seo)
      * @return array|\WP_Error
      */
     public function resolveExtension(string $slug)
     {
-        $cache_key = 'jankx_resolve_' . sanitize_key($slug);
+        $locale = $this->getLocale();
+        $cache_key = 'jankx_resolve_' . sanitize_key($slug) . '_' . $locale;
         $cached = get_transient($cache_key);
         if ($cached !== false) {
             return $cached;
         }
 
         $api_url = sprintf(
-            '%s/api/extensions/%s/resolve?jankx_version=%s&php_version=%s',
+            '%s/api/extensions/%s/resolve?jankx_version=%s&php_version=%s&locale=%s',
             self::HUB_URL,
             urlencode($slug),
             urlencode($this->getJankxVersion()),
-            urlencode(phpversion())
+            urlencode(phpversion()),
+            urlencode($locale)
         );
 
         $response = wp_remote_get($api_url, [
@@ -269,7 +296,10 @@ class MarketplaceManager
      */
     public function fetchThemeCoreUpdate()
     {
-        $response = wp_remote_get($this->buildUrl('api/theme/latest'), [
+        $locale = $this->getLocale();
+        $api_url = add_query_arg('locale', $locale, $this->buildUrl('api/theme/latest'));
+
+        $response = wp_remote_get($api_url, [
             'timeout' => 10,
             'headers' => ['Accept' => 'application/json'],
         ]);
@@ -298,9 +328,18 @@ class MarketplaceManager
         return $this->injectCachedThemeUpdate($transient);
     }
 
+    //Section 4 Helpers
     // =========================================================================
-    // Helpers
-    // =========================================================================
+
+    /**
+     * Get the current user's locale (first part, e.g. 'en', 'vi')
+     */
+    public function getLocale(): string
+    {
+        $locale = get_user_locale();
+        $parts  = explode('_', $locale);
+        return strtolower($parts[0]);
+    }
 
     /**
      * Get current Jankx version
