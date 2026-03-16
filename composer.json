@@ -32,7 +32,6 @@
     "psr-4": {
       "Jankx\\": "./includes/framework",
       "Jankx\\Features\\": "./features",
-      "Jankx\\Features\\Metrics\\": "./features/metrics",
       "Jankx\\Features\\ContentTemplates\\": "./features/content-templates",
       "Jankx\\Features\\CustomBlocks\\": "./features/custom-blocks",
       "App\\": "./includes/app"

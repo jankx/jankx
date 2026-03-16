@@ -263,7 +263,7 @@ class PostViewService
         // Enqueue the frontend script
         wp_enqueue_script(
             'jankx-views-frontend',
-            get_template_directory_uri() . '/features/metrics/blocks/views/frontend.js',
+            apply_filters('jankx/metrics/asset_url', get_template_directory_uri() . '/features/metrics') . '/blocks/views/frontend.js',
             array(), // No dependencies - vanilla JS
             '1.0.0',
             true
