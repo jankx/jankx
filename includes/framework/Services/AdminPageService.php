@@ -582,12 +582,18 @@ class AdminPageService
      */
     public function renderMarketplacePage($page)
     {
+        $currentPage = isset($_GET['paged']) ? max(1, (int)$_GET['paged']) : 1;
+        $marketplace = $this->app->make('extension.marketplace');
+
         if (isset($_GET['force_refresh'])) {
-            delete_transient('jankx_marketplace_extensions');
+            $locale = method_exists($marketplace, 'getLocale') ? $marketplace->getLocale() : 'en';
+            delete_transient(sprintf('jankx_marketplace_extensions_%s_p%d_s12', $locale, $currentPage));
+            delete_transient('jankx_theme_update_check');
         }
 
-        $marketplace = $this->app->make('extension.marketplace');
-        $extensions  = $marketplace->getAvailableExtensions();
+        $result      = $marketplace->getAvailableExtensions($currentPage);
+        $extensions  = $result['data'] ?? [];
+        $pagination  = $result['pagination'] ?? [];
 
         // Read from transient ONLY - never block on live API
         $cachedUpdate = get_transient('jankx_theme_update_check');
@@ -596,6 +602,7 @@ class AdminPageService
         $nonce = wp_create_nonce('jankx_marketplace_nonce');
         ?>
         <div class="jankx-marketplace-modern">
+            <div id="jankx-install-notice" style="display:none; margin-bottom:20px;" class="notice"></div>
             <header class="marketplace-header">
                 <div class="header-content">
                     <h1><?php _e('Thư viện Extension', 'jankx'); ?></h1>
@@ -618,7 +625,7 @@ class AdminPageService
             </nav>
 
             <div class="jankx-extension-grid">
-                <?php if (empty($extensions)): ?>
+                <?php if (empty($extensions) && !is_array($extensions)): ?>
                     <div class="empty-state">
                         <div class="empty-icon"><span class="dashicons dashicons-store"></span></div>
                         <h3><?php _e('Không tìm thấy extension nào', 'jankx'); ?></h3>
@@ -638,8 +645,20 @@ class AdminPageService
                             <div class="card-body">
                                 <div class="extension-head">
                                         <div class="extension-icon">
-                                            <?php if (!empty($ext['icon'])): ?>
+                                            <?php if (!empty($ext['icon_svg'])): ?>
+                                                <div class="svg-icon-wrapper">
+                                                    <?php echo $ext['icon_svg']; ?>
+                                                </div>
+                                            <?php elseif (!empty($ext['icon'])): ?>
                                                 <img src="<?php echo esc_url($ext['icon']); ?>" alt="<?php echo esc_attr($ext['name']); ?>">
+                                            <?php elseif (!empty($ext['icon_name'])):
+                                                // Map "Blocks" or other names to Dashicons
+                                                $dashicon = 'dashicons-' . strtolower($ext['icon_name']);
+                                                $bg_color = $ext['icon_color'] ?? '#3b82f6';
+                                            ?>
+                                                <div class="default-icon" style="background: <?php echo esc_attr($bg_color); ?>;">
+                                                    <span class="dashicons <?php echo esc_attr($dashicon); ?>"></span>
+                                                </div>
                                             <?php else:
                                                 $iconData = $this->getRandomGradient($slug);
                                             ?>
@@ -706,15 +725,27 @@ class AdminPageService
             </div>
 
             <div class="marketplace-pagination">
-                <button class="page-nav prev disabled"><span class="dashicons dashicons-arrow-left-alt2"></span></button>
-                <div class="page-numbers">
-                    <span class="page-number active">1</span>
-                    <span class="page-number">2</span>
-                    <span class="page-number">3</span>
-                    <span class="page-dots">...</span>
-                    <span class="page-number">10</span>
-                </div>
-                <button class="page-nav next"><span class="dashicons dashicons-arrow-right-alt2"></span></button>
+                <?php if (!empty($pagination)): ?>
+                    <a href="<?php echo $pagination['has_prev'] ? add_query_arg('paged', $currentPage - 1) : '#'; ?>"
+                       class="page-nav prev <?php echo !$pagination['has_prev'] ? 'disabled' : ''; ?>">
+                        <span class="dashicons dashicons-arrow-left-alt2"></span>
+                    </a>
+                    <div class="page-numbers">
+                        <?php
+                        $total_pages = $pagination['total_pages'] ?? 1;
+                        for ($i = 1; $i <= $total_pages; $i++):
+                            $is_active = ($i === $currentPage);
+                        ?>
+                            <a href="<?php echo add_query_arg('paged', $i); ?>" class="page-number <?php echo $is_active ? 'active' : ''; ?>">
+                                <?php echo $i; ?>
+                            </a>
+                        <?php endfor; ?>
+                    </div>
+                    <a href="<?php echo $pagination['has_next'] ? add_query_arg('paged', $currentPage + 1) : '#'; ?>"
+                       class="page-nav next <?php echo !$pagination['has_next'] ? 'disabled' : ''; ?>">
+                        <span class="dashicons dashicons-arrow-right-alt2"></span>
+                    </a>
+                <?php endif; ?>
             </div>
 
             <footer class="marketplace-footer">
@@ -846,6 +877,23 @@ class AdminPageService
             }
 
             .extension-icon img { width: 100%; height: 100%; object-fit: cover; }
+            .svg-icon-wrapper {
+                width: 100%;
+                height: 100%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background: #f1f5f9;
+                padding: 12px;
+                box-sizing: border-box;
+            }
+            .svg-icon-wrapper svg {
+                width: 100%;
+                height: 100%;
+                display: block;
+                max-width: 100%;
+                max-height: 100%;
+            }
             .default-icon {
                 width: 100%; height: 100%;
                 display: flex; align-items: center; justify-content: center;
@@ -1021,18 +1069,31 @@ class AdminPageService
                 }, function(res) {
                     if (res.success) {
                         $notice.removeClass('notice-error').addClass('notice-success')
-                               .html('<p>' + res.data.message + '</p>').show();
+                               .html('<p><strong><?php echo esc_js(__('Success:', 'jankx')); ?></strong> ' + res.data.message + '</p>').show();
                         $btn.text('<?php echo esc_js(__('Đã cài đặt', 'jankx')); ?>');
                         $btn.addClass('installed').prop('disabled', true).css('background', '#10b981');
+                        $('html, body').animate({ scrollTop: $notice.offset().top - 80 }, 400);
                     } else {
+                        var errMsg = (res.data && res.data.message)
+                            ? res.data.message
+                            : '<?php echo esc_js(__('Cài đặt thất bại.', 'jankx')); ?>';
                         $notice.removeClass('notice-success').addClass('notice-error')
-                               .html('<p>' + (res.data ? res.data.message : '<?php echo esc_js(__('Cài đặt thất bại.', 'jankx')); ?>') + '</p>').show();
+                               .html('<p><strong><?php echo esc_js(__('Error:', 'jankx')); ?></strong> ' + errMsg + '</p>').show();
                         $btn.removeClass('loading').prop('disabled', false).text('<?php echo esc_js(__('Cài đặt ngay', 'jankx')); ?>');
+                        $('html, body').animate({ scrollTop: $notice.offset().top - 80 }, 400);
                     }
-                }).fail(function() {
+                }).fail(function(xhr) {
+                    var errMsg = '<?php echo esc_js(__('Lỗi kết nối. Vui lòng thử lại.', 'jankx')); ?>';
+                    try {
+                        var parsed = JSON.parse(xhr.responseText);
+                        if (parsed && parsed.data && parsed.data.message) {
+                            errMsg = parsed.data.message;
+                        }
+                    } catch(e) {}
                     $notice.removeClass('notice-success').addClass('notice-error')
-                           .html('<p><?php echo esc_js(__('Lỗi kết nối. Vui lòng thử lại.', 'jankx')); ?></p>').show();
+                           .html('<p><strong><?php echo esc_js(__('Error:', 'jankx')); ?></strong> ' + errMsg + '</p>').show();
                     $btn.removeClass('loading').prop('disabled', false).text('<?php echo esc_js(__('Cài đặt ngay', 'jankx')); ?>');
+                    $('html, body').animate({ scrollTop: $notice.offset().top - 80 }, 400);
                 });
             });
 

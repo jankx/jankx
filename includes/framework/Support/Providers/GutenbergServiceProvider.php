@@ -48,6 +48,21 @@ class GutenbergServiceProvider extends ServiceProvider
      */
     public function boot(Application $app)
     {
+        // Allow disabling Gutenberg entirely via filter
+        if (apply_filters('jankx/gutenberg/enabled', true) === false) {
+            add_filter('use_block_editor_for_post', '__return_false', 999);
+            add_filter('use_block_editor_for_post_type', '__return_false', 999);
+
+            // Disable block templates and theme support
+            add_action('after_setup_theme', function () {
+                remove_theme_support('block-templates');
+                remove_theme_support('block-template-parts');
+                remove_theme_support('core-block-patterns');
+                remove_theme_support('widgets-block-editor');
+            }, 20);
+
+            return;
+        }
 
         // Register blocks path
         $app->bind('blocks.path', function ($app) {
