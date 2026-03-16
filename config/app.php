@@ -16,6 +16,7 @@ return [
         Jankx\Support\Providers\TemplateEngineServiceProvider::class,
         Jankx\Support\Providers\ThemeServiceProvider::class,
         Jankx\Support\Providers\WordPressCliServiceProvider::class,
+        Jankx\Support\Providers\ExtensionServiceProvider::class,
 
         App\Providers\GutenbergServiceProvider::class,
         App\Providers\LanguageSwitcherServiceProvider::class,
