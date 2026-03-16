@@ -251,13 +251,13 @@ class CustomBlocksServiceProvider extends ServiceProvider
         }
         wp_enqueue_style(
             'jankx-timeline-admin',
-            get_template_directory_uri() . '/features/custom-blocks/metabox-timeline/assets/css/admin.css',
+            get_template_directory_uri() . '/features/custom-blocks/blocks/metabox-timeline/assets/admin/css/admin.css',
             [],
             '1.0.0'
         );
         wp_enqueue_script(
             'jankx-timeline-admin',
-            get_template_directory_uri() . '/features/custom-blocks/metabox-timeline/assets/js/admin.js',
+            get_template_directory_uri() . '/features/custom-blocks/blocks/metabox-timeline/assets/admin/js/admin.js',
             ['jquery'],
             '1.0.0',
             true
