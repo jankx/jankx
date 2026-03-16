@@ -1,141 +1,53 @@
 <?php
+namespace Jankx\Extensions;
 
-namespace Jankx\Features\CustomBlocks;
-
-use Jankx\Support\Providers\ServiceProvider;
-use Jankx\Foundation\Application;
+use Jankx\Extensions\AbstractExtension;
 use Jankx\Facades\Config;
 
-class CustomBlocksServiceProvider extends ServiceProvider
+class TimelineExtension extends AbstractExtension
 {
-    public function register(Application $app)
+    public function init(): void
     {
-        // Register services if needed
     }
 
-    public function boot(Application $app)
+    public function register_hooks(): void
     {
-        add_action('init', [$this, 'registerBlocks']);
+        add_action('init', [$this, 'registerBlock']);
         add_action('add_meta_boxes', [$this, 'registerTimelineMetabox']);
         add_action('save_post', [$this, 'saveTimelineMetabox']);
         add_action('admin_enqueue_scripts', [$this, 'enqueueTimelineAssets']);
-        add_action('add_meta_boxes', [$this, 'registerPerUnitMetabox']);
-        add_action('save_post', [$this, 'savePerUnitMetabox']);
     }
 
-    public function registerBlocks()
+    public function registerBlock()
     {
-        register_block_type(__DIR__ . '/blocks/custom-price');
-        register_block_type(__DIR__ . '/blocks/per-unit');
-        register_block_type(__DIR__ . '/blocks/metabox-timeline');
+        register_block_type($this->get_extension_path() . '/block');
     }
 
     protected function isTimelineEnabled(): bool
     {
-        $enabled = Config::get('custom_blocks.timeline.enabled', null);
+        $enabled = Config::get('timeline.enabled', null);
         if ($enabled === null) {
-            $enabled = Config::get('app.custom_blocks.timeline.enabled', false);
+            $enabled = Config::get('app.timeline.enabled', true);
         }
         return (bool) $enabled;
     }
 
     protected function getTimelinePostTypes(): array
     {
-        $postTypes = Config::get('custom_blocks.timeline.post_types', null);
+        $postTypes = Config::get('timeline.post_types', null);
         if ($postTypes === null) {
-            $postTypes = Config::get('app.custom_blocks.timeline.post_types', []);
+            $postTypes = Config::get('app.timeline.post_types', ['post']);
         }
         return is_array($postTypes) ? $postTypes : [];
     }
 
     protected function isTimelineImageEnabled(): bool
     {
-        $imageEnabled = Config::get('custom_blocks.timeline.image_enabled', null);
+        $imageEnabled = Config::get('timeline.image_enabled', null);
         if ($imageEnabled === null) {
-            $imageEnabled = Config::get('app.custom_blocks.timeline.image_enabled', false);
+            $imageEnabled = Config::get('app.timeline.image_enabled', true);
         }
         return (bool) $imageEnabled;
-    }
-
-    protected function isPerUnitEnabled(): bool
-    {
-        $enabled = Config::get('custom_blocks.per_unit.enabled', null);
-        if ($enabled === null) {
-            $enabled = Config::get('app.custom_blocks.per_unit.enabled', false);
-        }
-        return (bool) $enabled;
-    }
-
-    protected function getPerUnitPostTypes(): array
-    {
-        $postTypes = Config::get('custom_blocks.per_unit.post_types', null);
-        if ($postTypes === null) {
-            $postTypes = Config::get('app.custom_blocks.per_unit.post_types', []);
-        }
-        return is_array($postTypes) ? $postTypes : [];
-    }
-
-    protected function getPerUnitMetaKey(): string
-    {
-        $metaKey = Config::get('custom_blocks.per_unit.meta_key', null);
-        if ($metaKey === null) {
-            $metaKey = Config::get('app.custom_blocks.per_unit.meta_key', '_unit');
-        }
-        return is_string($metaKey) ? $metaKey : '_unit';
-    }
-
-    public function registerPerUnitMetabox()
-    {
-        if (!$this->isPerUnitEnabled()) {
-            return;
-        }
-        $postTypes = $this->getPerUnitPostTypes();
-        if (empty($postTypes)) {
-            return;
-        }
-        foreach ($postTypes as $postType) {
-            add_meta_box(
-                'jankx_per_unit',
-                __('Per Unit', 'jankx'),
-                [$this, 'renderPerUnitMetabox'],
-                $postType,
-                'side',
-                'default'
-            );
-        }
-    }
-
-    public function renderPerUnitMetabox($post)
-    {
-        wp_nonce_field('jankx_per_unit_save', 'jankx_per_unit_nonce');
-        $metaKey = $this->getPerUnitMetaKey();
-        $value = get_post_meta($post->ID, $metaKey, true);
-        echo '<div class="jankx-per-unit-metabox">';
-        echo '<label for="jankx_per_unit_value">' . esc_html__('Unit (ví dụ: kg, gói, lít)', 'jankx') . '</label>';
-        echo '<input type="text" id="jankx_per_unit_value" name="jankx_per_unit_value" value="' . esc_attr(is_string($value) ? $value : '') . '" class="widefat">';
-        echo '</div>';
-    }
-
-    public function savePerUnitMetabox($post_id)
-    {
-        if (!isset($_POST['jankx_per_unit_nonce']) || !wp_verify_nonce($_POST['jankx_per_unit_nonce'], 'jankx_per_unit_save')) {
-            return;
-        }
-        if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
-            return;
-        }
-        if (!current_user_can('edit_post', $post_id)) {
-            return;
-        }
-        $metaKey = $this->getPerUnitMetaKey();
-        if (isset($_POST['jankx_per_unit_value'])) {
-            $value = sanitize_text_field($_POST['jankx_per_unit_value']);
-            if ($value === '') {
-                delete_post_meta($post_id, $metaKey);
-            } else {
-                update_post_meta($post_id, $metaKey, $value);
-            }
-        }
     }
 
     public function registerTimelineMetabox()
@@ -219,7 +131,6 @@ class CustomBlocksServiceProvider extends ServiceProvider
                 $title = isset($item['title']) ? sanitize_text_field($item['title']) : '';
                 $description = isset($item['description']) ? sanitize_textarea_field($item['description']) : '';
                 $image = isset($item['image']) ? intval($item['image']) : 0;
-                // Save item if at least one meaningful field is provided
                 if ($time || $title || $description || ($this->isTimelineImageEnabled() && $image > 0)) {
                     $data = [
                         'time' => $time,
@@ -251,27 +162,16 @@ class CustomBlocksServiceProvider extends ServiceProvider
         }
         wp_enqueue_style(
             'jankx-timeline-admin',
-            get_template_directory_uri() . '/features/custom-blocks/blocks/metabox-timeline/assets/admin/css/admin.css',
+            $this->get_extension_url() . '/block/assets/admin/css/admin.css',
             [],
             '1.0.0'
         );
         wp_enqueue_script(
             'jankx-timeline-admin',
-            get_template_directory_uri() . '/features/custom-blocks/blocks/metabox-timeline/assets/admin/js/admin.js',
+            $this->get_extension_url() . '/block/assets/admin/js/admin.js',
             ['jquery'],
             '1.0.0',
             true
         );
-    }
-
-    public function getPostTypeBadgeLabels($labels)
-    {
-        $custom = [
-            'product' => 'Sản phẩm',
-        ];
-        if (is_array($labels)) {
-            return array_merge($labels, $custom);
-        }
-        return $custom;
     }
 }

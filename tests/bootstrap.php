@@ -1,4 +1,9 @@
 <?php
+// Load Composer autoloader first for Brain Monkey/Patchwork
+$autoloader = dirname(__FILE__) . '/../vendor/autoload.php';
+if (file_exists($autoloader)) {
+    require_once $autoloader;
+}
 
 /**
  * PHPUnit Bootstrap File
@@ -92,6 +97,7 @@ if (!function_exists('get_stylesheet_directory_uri')) {
     }
 }
 
+/*
 if (!function_exists('add_action')) {
     function add_action($hook, $callback, $priority = 10, $accepted_args = 1)
     {
@@ -147,6 +153,7 @@ if (!function_exists('remove_all_filters')) {
         return true;
     }
 }
+*/
 
 if (!function_exists('add_menu_page')) {
     function add_menu_page($page_title, $menu_title, $capability, $menu_slug, $function = '', $icon_url = '', $position = null)
@@ -798,6 +805,25 @@ if (file_exists($autoloader)) {
 
 // Set error reporting for testing
 error_reporting(E_ALL);
+
+// Register extension autoloader for tests
+spl_autoload_register(function ($class) {
+    if (strpos($class, 'Jankx\\Extensions\\') === 0) {
+        $name = str_replace('Jankx\\Extensions\\', '', $class);
+        $dirName = strtolower(preg_replace('/(?<!^)[A-Z]/', '-$0', str_replace('Extension', '', $name)));
+        
+        $file = dirname(__FILE__) . '/../extensions/' . $dirName . '/' . $name . '.php';
+        if (file_exists($file)) {
+            require_once $file;
+        }
+    } elseif (strpos($class, 'Jankx\\Features\\Metrics\\') === 0) {
+        $relativeClass = str_replace('Jankx\\Features\\Metrics\\', '', $class);
+        $file = dirname(__FILE__) . '/../extensions/metrics/' . str_replace('\\', '/', $relativeClass) . '.php';
+        if (file_exists($file)) {
+            require_once $file;
+        }
+    }
+});
 ini_set('display_errors', 1);
 
 // Set timezone for testing

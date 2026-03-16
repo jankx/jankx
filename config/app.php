@@ -33,7 +33,6 @@ return [
         App\Providers\WordPress\AdminThumbnailColumnStyleServiceProvider::class,
         App\Providers\ImageSizeServiceProvider::class,
 
-        Jankx\Features\CustomBlocks\CustomBlocksServiceProvider::class,
     ],
     'aliases' => [
         'cache' => ['\Jankx\Services\CacheService'],
