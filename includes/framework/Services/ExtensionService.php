@@ -227,46 +227,50 @@ class ExtensionService implements ExtensionServiceInterface
     }
 
     /**
-     * Update auto_activate in manifest.json
+     * Update extension enabled status in manifest.json
      */
     protected function updateAutoActivate(string $extensionName, bool $value): bool
     {
-        $extension = $this->extensionManager->get_extension($extensionName);
         $manifestPath = null;
+        $extension = $this->extensionManager->get_extension($extensionName);
 
         if ($extension) {
             $manifestPath = $extension->get_extension_path() . '/manifest.json';
         } else {
-            // Extension might be disabled (not instantiated) — check disabledManifests
+            // Check ThemeExtensionManager for disabled extensions
             try {
                 $themeExtManager = \Jankx\Facades\App::make('theme_extension.manager');
                 $disabledManifests = $themeExtManager->getDisabledManifests();
                 if (isset($disabledManifests[$extensionName])) {
                     $manifestPath = $disabledManifests[$extensionName]['path'];
+                } else {
+                    // Also check if it's already active but maybe not in the global manager?
+                    $activeThemeExts = $themeExtManager->getExtensions();
+                    if (isset($activeThemeExts[$extensionName])) {
+                        $manifestPath = $activeThemeExts[$extensionName]->get_extension_path() . '/manifest.json';
+                    }
                 }
-            } catch (\Exception $e) {
-                // ignore
-            }
+            } catch (\Exception $e) {}
         }
 
         if (!$manifestPath || !file_exists($manifestPath)) {
             return false;
         }
 
-        $manifest = json_decode(file_get_contents($manifestPath), true);
-        $manifest['enabled'] = $value;
-
-        $json  = json_encode($manifest, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
-        $saved = file_put_contents($manifestPath, $json);
-
-        if ($saved !== false) {
-            if ($extension) {
-                $value ? $extension->activate() : $extension->deactivate();
-            }
-            return true;
+        if (!is_writable($manifestPath)) {
+            return false;
         }
 
-        return false;
+        $manifest = json_decode(file_get_contents($manifestPath), true);
+        if (!$manifest) {
+            return false;
+        }
+
+        $manifest['enabled'] = $value;
+        $json = json_encode($manifest, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+
+        // Use LOCK_EX to handle potential concurrency or locking issues
+        return file_put_contents($manifestPath, $json, LOCK_EX) !== false;
     }
 
     /**
@@ -439,35 +443,59 @@ class ExtensionService implements ExtensionServiceInterface
         }
 
         $extensionName = sanitize_text_field($_POST['extension'] ?? '');
-
         if (empty($extensionName)) {
             wp_send_json_error(['message' => 'Extension name is required']);
             return;
         }
 
+        // Try to find the extension to determine current state
+        $isActive = false;
         $extension = $this->extensionManager->get_extension($extensionName);
-        if (!$extension) {
-            $allExtensions = array_keys($this->extensionManager->get_extensions());
+        $manifestPath = null;
+
+        if ($extension) {
+            $isActive = $extension->is_active();
+            $manifestPath = $extension->get_extension_path() . '/manifest.json';
+        } else {
+            // Check ThemeExtensionManager
+            try {
+                $themeExtManager = \Jankx\Facades\App::make('theme_extension.manager');
+                $disabledEx = $themeExtManager->getDisabledManifests();
+                if (isset($disabledEx[$extensionName])) {
+                    $isActive = false;
+                    $manifestPath = $disabledEx[$extensionName]['path'];
+                } else {
+                    $activeThemeExts = $themeExtManager->getExtensions();
+                    if (isset($activeThemeExts[$extensionName])) {
+                        $isActive = true;
+                        $manifestPath = $activeThemeExts[$extensionName]->get_extension_path() . '/manifest.json';
+                    }
+                }
+            } catch (\Exception $e) {}
+        }
+
+        if (!$manifestPath) {
+            wp_send_json_error(['message' => sprintf('Extension "%s" not found.', $extensionName)]);
+            return;
+        }
+
+        if (!is_writable($manifestPath)) {
             wp_send_json_error([
-                'message' => sprintf('Extension "%s" not found. Available: %s', $extensionName, implode(', ', $allExtensions))
+                'message' => 'File manifest.json is not writable. Please check file permissions.',
+                'path'    => $manifestPath
             ]);
             return;
         }
 
-        $success = $this->toggleExtension($extensionName);
+        $success = $this->updateAutoActivate($extensionName, !$isActive);
 
         if ($success) {
             wp_send_json_success([
-                'message' => 'Extension toggled successfully',
-                'status'  => $this->getExtensionStatus($extensionName),
+                'message' => 'Extension status updated successfully in manifest.json.',
             ]);
         } else {
-            $manifestPath = $extension->get_extension_path() . '/manifest.json';
-            $writable = is_writable($manifestPath);
             wp_send_json_error([
-                'message'   => 'Failed to toggle extension',
-                'manifest'  => $manifestPath,
-                'writable'  => $writable,
+                'message' => 'Failed to update manifest.json. The file might be locked or corrupted.',
             ]);
         }
     }

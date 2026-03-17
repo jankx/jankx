@@ -504,8 +504,9 @@ class AdminPageService
                     if (res.success) {
                         location.reload();
                     } else {
+                        var errMsg = (res.data && res.data.message) ? res.data.message : (res.data || 'Error');
                         $notice.removeClass('notice-success').addClass('notice-error')
-                               .html('<p>' + (res.data || 'Error') + '</p>').show();
+                               .html('<p>' + errMsg + '</p>').show();
                         $btn.removeClass('loading').prop('disabled', false);
                     }
                 }).fail(function() {

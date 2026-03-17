@@ -233,12 +233,29 @@ class ThemeExtensionManager
                         ? (bool)$manifest['enabled']
                         : (isset($manifest['auto_activate']) ? (bool)$manifest['auto_activate'] : false);
                     if ($isEnabled) {
-                        if (isset($caller['method']) && method_exists($extension, $caller['method'])) {
-                            $extension->{$caller['method']}($caller['args'] ?? []);
-                        }
+                        // NOTE: Do NOT call $caller['method'] directly here.
+                        // activate() already calls register_hooks() internally and
+                        // guards against double execution via $hooks_registered flag.
+                        // Calling the method here AND activate() would register all
+                        // hooks twice (e.g. duplicate admin menus).
                         $extension->activate();
                     } else {
                         $extension->deactivate();
+                    }
+
+                    // ----------------------------------------------------------
+                    // Lifecycle: on_install()
+                    // Run exactly once when the extension is first encountered.
+                    // Uses a WP option as a persistent flag so it never runs again
+                    // even across page loads / site migrates.
+                    // ----------------------------------------------------------
+                    $installFlag = 'jankx_ext_installed_' . $name;
+                    $installedVersion = get_option($installFlag, false);
+                    $currentVersion   = $manifest['version'] ?? '1.0.0';
+                    if ($installedVersion === false || $installedVersion !== $currentVersion) {
+                        // First install OR version upgrade → run install()
+                        $extension->install();
+                        update_option($installFlag, $currentVersion, false /* not autoload */);
                     }
 
                     do_action('jankx/theme_extension/loaded', $name, $extension);
