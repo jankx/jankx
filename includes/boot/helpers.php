@@ -51,3 +51,22 @@ if (!function_exists('jankx_get_the_block_template_html')) {
         return TemplateHelper::getTheBlockTemplateHtml();
     }
 }
+
+/**
+ * Render Extension Icon from Jankx Hub (SVG mandatory)
+ *
+ * @param array|object $extension The extension data from Hub
+ */
+if (!function_exists('jankx_render_hub_icon')) {
+    function jankx_render_hub_icon($extension) {
+        $extension = (array) $extension;
+        if (!empty($extension['icon_svg'])) {
+            // Internal Hub SVGs are trusted but we wrap them for styling
+            echo '<span class="jankx-hub-icon">' . $extension['icon_svg'] . '</span>';
+        } elseif (!empty($extension['icon'])) {
+            // Fallback for older formats
+            echo '<img src="' . esc_url($extension['icon']) . '" alt="' . esc_attr($extension['name'] ?? '') . '" class="jankx-hub-icon-img" />';
+        }
+    }
+}
+

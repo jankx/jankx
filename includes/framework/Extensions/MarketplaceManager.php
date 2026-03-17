@@ -33,8 +33,8 @@ class MarketplaceManager
      */
     public function __construct()
     {
-        // Register update hook on admin_init only (not on every request)
-        add_action('admin_init', [$this, 'registerHooks']);
+        // Register hooks immediately to catch activation events
+        $this->registerHooks();
     }
 
     /**
@@ -48,6 +48,14 @@ class MarketplaceManager
 
         // Background update check
         add_action('jankx_refresh_theme_update_cache', [$this, 'fetchThemeCoreUpdate']);
+
+        // Ping Hub on activation
+        add_action('after_switch_theme', [$this, 'pingHub']);
+
+        // Periodic ping (weekly check)
+        if (!get_transient('jankx_theme_pinged')) {
+            add_action('admin_init', [$this, 'pingHub']);
+        }
     }
 
     /**
@@ -326,6 +334,43 @@ class MarketplaceManager
     public function checkThemeUpdate($transient)
     {
         return $this->injectCachedThemeUpdate($transient);
+    }
+
+    /**
+     * Send heartbeat to Hub (activation + periodic)
+     * Endpoint: POST /api/theme/ping
+     */
+    public function pingHub()
+    {
+        // Don't ping on local development if disabled (optional)
+        if (defined('WP_DEBUG') && WP_DEBUG && !apply_filters('jankx/marketplace/ping_local', false)) {
+            // Uncomment to disable pinging on localhost during dev
+            // return;
+        }
+
+        $api_url = $this->buildUrl('api/theme/ping');
+        
+        $response = wp_remote_post($api_url, [
+            'timeout' => 15,
+            'headers' => [
+                'Content-Type' => 'application/json',
+                'Accept'       => 'application/json'
+            ],
+            'body'    => wp_json_encode([
+                'domain'      => home_url(),
+                'version'     => $this->getJankxVersion(),
+                'wp_version'  => get_bloginfo('version'),
+                'php_version' => PHP_VERSION,
+                'locale'      => get_locale(),
+            ]),
+        ]);
+
+        if (is_wp_error($response)) {
+            Log::debug('Marketplace: Ping failed - ' . $response->get_error_message());
+        } else {
+            // Set transient to avoid over-pinging (weekly)
+            set_transient('jankx_theme_pinged', time(), WEEK_IN_SECONDS);
+        }
     }
 
     //Section 4 Helpers
