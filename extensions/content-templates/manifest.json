@@ -1,0 +1,13 @@
+{
+    "name": "Content Templates",
+    "version": "1.0.0",
+    "description": "Automatically insert content from HTML templates when creating new posts.",
+    "author": "Jankx Team",
+    "extension_id": "content-templates",
+    "caller": {
+        "file": "ContentTemplateExtension.php",
+        "class": "Jankx\\Extensions\\ContentTemplateExtension",
+        "method": "register_hooks"
+    },
+    "auto_activate": true
+}

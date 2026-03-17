@@ -1,9 +1,26 @@
 <?php
 
-namespace Jankx\Features\ContentTemplates\Services;
+namespace Jankx\Extensions;
 
-class ContentTemplateService
+use Jankx\Extensions\AbstractExtension;
+use Jankx\Multilingual\MultilingualFactory;
+
+class ContentTemplateExtension extends AbstractExtension
 {
+    public function init(): void
+    {
+        // Initialization logic if needed
+    }
+
+    public function register_hooks(): void
+    {
+        // Filter default content when creating new post
+        add_filter('default_content', [$this, 'filterDefaultContent'], 10, 2);
+
+        // Hook into wp_insert_post to set default content for auto-draft posts
+        add_action('wp_insert_post', [$this, 'setDefaultContent'], 10, 3);
+    }
+
     /**
      * Find template file in child theme first, then parent theme
      * Supports multilingual templates: {post-type}-{lang}.html
@@ -17,7 +34,7 @@ class ContentTemplateService
         $templateNames = [$sanitizedPostType . '.html'];
 
         // Add language-specific template if multilingual plugin is active
-        $currentLang = \Jankx\Multilingual\MultilingualFactory::getCurrentLanguage();
+        $currentLang = MultilingualFactory::getCurrentLanguage();
         if ($currentLang) {
             // Priority: {post-type}-{lang}.html first, then {post-type}.html
             array_unshift($templateNames, $sanitizedPostType . '-' . $currentLang . '.html');
@@ -65,7 +82,7 @@ class ContentTemplateService
      * Filter default content for new post
      *
      * @param string $content Default post content
-     * @param WP_Post $post Post object
+     * @param \WP_Post $post Post object
      * @return string
      */
     public function filterDefaultContent($content, $post)
@@ -96,7 +113,7 @@ class ContentTemplateService
      * Set default content for auto-draft post when it's first created
      *
      * @param int $postId
-     * @param WP_Post $post
+     * @param \WP_Post $post
      * @param bool $update
      */
     public function setDefaultContent($postId, $post, $update)
@@ -148,17 +165,4 @@ class ContentTemplateService
         // Clear cache
         clean_post_cache($postId);
     }
-
-    /**
-     * Initialize hooks
-     */
-    public function init()
-    {
-        // Filter default content when creating new post
-        add_filter('default_content', [$this, 'filterDefaultContent'], 10, 2);
-
-        // Hook into wp_insert_post to set default content for auto-draft posts
-        add_action('wp_insert_post', [$this, 'setDefaultContent'], 10, 3);
-    }
 }
-

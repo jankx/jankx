@@ -412,57 +412,76 @@ class AdminPageService
         $extensions        = $extensionManager->get_extensions();           // active/loaded
         $disabledManifests = $themeExtManager->getDisabledManifests();      // disabled (not instantiated)
 
-        $total = count($extensions) + count($disabledManifests);
-        $nonce = wp_create_nonce('jankx_extension_manager_nonce');
+        $totalActive   = count($extensions);
+        $totalInactive = count($disabledManifests);
+        $total         = $totalActive + $totalInactive;
+        $nonce         = wp_create_nonce('jankx_extension_manager_nonce');
+
+        $status = isset($_GET['extension_status']) ? $_GET['extension_status'] : 'all';
         ?>
-        <div class="jankx-extensions-page" style="max-width:1200px; margin-top:20px;">
-            <div class="extensions-header" style="margin-bottom:20px; display:flex; justify-content:space-between; align-items:center;">
-                <p><?php _e('Manage your installed Jankx extensions. You can activate or deactivate them to control theme features.', 'jankx'); ?></p>
-                <div class="extension-stats">
-                    <span class="status-badge" style="background:#f0f0f1; padding:4px 10px; border-radius:4px; font-size:12px; border:1px solid #ccd0d4;">
-                        <?php printf(__('Total: %d', 'jankx'), $total); ?>
-                    </span>
-                </div>
-            </div>
+        <div class="jankx-extensions-page">
+            <div id="jankx-extension-notice" style="display:none; margin: 10px 0 15px;" class="notice"></div>
 
-            <div id="jankx-extension-notice" style="display:none; margin-bottom:15px;" class="notice"></div>
+            <ul class="subsubsub">
+                <li class="all"><a href="<?php echo admin_url('admin.php?page=jankx-extensions'); ?>" class="<?php echo $status == 'all' ? 'current' : ''; ?>"><?php _e('All', 'jankx'); ?> <span class="count">(<?php echo $total; ?>)</span></a> |</li>
+                <li class="active"><a href="<?php echo add_query_arg('extension_status', 'active'); ?>" class="<?php echo $status == 'active' ? 'current' : ''; ?>"><?php _e('Active', 'jankx'); ?> <span class="count">(<?php echo $totalActive; ?>)</span></a> |</li>
+                <li class="inactive"><a href="<?php echo add_query_arg('extension_status', 'inactive'); ?>" class="<?php echo $status == 'inactive' ? 'current' : ''; ?>"><?php _e('Inactive', 'jankx'); ?> <span class="count">(<?php echo $totalInactive; ?>)</span></a></li>
+            </ul>
 
-            <div class="jankx-extension-list" style="display:grid; grid-template-columns: 1fr; gap:15px;">
-                <?php if (empty($extensions) && empty($disabledManifests)): ?>
-                    <div class="card" style="text-align:center; padding:50px;">
-                        <span class="dashicons dashicons-admin-plugins" style="font-size:48px; width:48px; height:48px; color:#ccc;"></span>
-                        <p><?php _e('No extensions found. Visit the Marketplace to install some!', 'jankx'); ?></p>
-                        <a href="<?php echo admin_url('admin.php?page=jankx-marketplace'); ?>" class="button button-primary"><?php _e('Go to Marketplace', 'jankx'); ?></a>
-                    </div>
-                <?php else: ?>
-                    <?php /* --- Active (loaded) extensions --- */ ?>
-                    <?php foreach ($extensions as $name => $extension):
-                        $info     = $extension->get_info();
-                        $isActive = $extension->is_active();
-                    ?>
-                        <?php $this->renderExtensionRow($name, $info, $isActive, $nonce); ?>
-                    <?php endforeach; ?>
+            <table class="wp-list-table widefat plugins">
+                <thead>
+                    <tr>
+                        <th scope="col" id="name" class="manage-column column-name column-primary"><?php _e('Extension', 'jankx'); ?></th>
+                        <th scope="col" id="description" class="manage-column column-description"><?php _e('Description', 'jankx'); ?></th>
+                    </tr>
+                </thead>
 
-                    <?php /* --- Disabled extensions (not instantiated) --- */ ?>
-                    <?php foreach ($disabledManifests as $name => $data):
-                        $m = $data['manifest'];
-                        $info = [
-                            'name'                    => $m['name']        ?? $name,
-                            'version'                 => $m['version']     ?? '1.0.0',
-                            'description'             => $m['description'] ?? '',
-                            'author'                  => $m['author']      ?? 'Jankx Team',
-                            'is_child_theme_extension'=> false,
-                        ];
-                    ?>
-                        <?php $this->renderExtensionRow($name, $info, false, $nonce); ?>
-                    <?php endforeach; ?>
-                <?php endif; ?>
-            </div>
+                <tbody id="the-list">
+                    <?php if (empty($extensions) && empty($disabledManifests)): ?>
+                        <tr class="no-items">
+                            <td class="colspanchange" colspan="2"><?php _e('No extensions found.', 'jankx'); ?></td>
+                        </tr>
+                    <?php else: ?>
+                        <?php
+                        /* --- Active (loaded) extensions --- */
+                        if ($status === 'all' || $status === 'active'):
+                            foreach ($extensions as $name => $extension):
+                                $info     = $extension->get_info();
+                                $this->renderExtensionRow($name, $info, true, $nonce);
+                            endforeach;
+                        endif;
+
+                        /* --- Disabled extensions (not instantiated) --- */
+                        if ($status === 'all' || $status === 'inactive'):
+                            foreach ($disabledManifests as $name => $data):
+                                $m = $data['manifest'];
+                                $info = [
+                                    'name'                    => $m['name']        ?? $name,
+                                    'version'                 => $m['version']     ?? '1.0.0',
+                                    'description'             => $m['description'] ?? '',
+                                    'author'                  => $m['author']      ?? 'Jankx Team',
+                                    'is_child_theme_extension'=> false,
+                                ];
+                                $this->renderExtensionRow($name, $info, false, $nonce);
+                            endforeach;
+                        endif;
+                        ?>
+                    <?php endif; ?>
+                </tbody>
+
+                <tfoot>
+                    <tr>
+                        <th scope="col" class="manage-column column-name column-primary"><?php _e('Extension', 'jankx'); ?></th>
+                        <th scope="col" class="manage-column column-description"><?php _e('Description', 'jankx'); ?></th>
+                    </tr>
+                </tfoot>
+            </table>
         </div>
 
         <style>
-            .jankx-extension-list .extension-item.is-inactive { opacity:0.8; }
+            .wp-list-table .plugin-title strong { display: block; margin-bottom: 0.2em; font-size: 14px; }
             .toggle-extension.loading { opacity:0.6; cursor:not-allowed; }
+            .jankx-extensions-page .wp-list-table.plugins td { vertical-align: top; }
         </style>
 
         <script>
@@ -531,49 +550,46 @@ class AdminPageService
      */
     protected function renderExtensionRow(string $name, array $info, bool $isActive, string $nonce): void
     {
+        $statusClass = $isActive ? 'active' : 'inactive';
         ?>
-        <div class="card extension-item <?php echo $isActive ? 'is-active' : 'is-inactive'; ?>"
-             style="display:flex; align-items:center; padding:15px;
-                    border-left:4px solid <?php echo $isActive ? '#00a32a' : '#d63638'; ?>;
-                    background:#fff; border-top:1px solid #ccd0d4; border-right:1px solid #ccd0d4;
-                    border-bottom:1px solid #ccd0d4; box-shadow:0 1px 1px rgba(0,0,0,.04);
-                    <?php echo $isActive ? '' : 'opacity:0.75;'; ?>">
-
-            <div class="extension-icon" style="margin-right:20px; color:<?php echo $isActive ? '#00a32a' : '#646970'; ?>;">
-                <span class="dashicons dashicons-admin-plugins" style="font-size:32px; width:32px; height:32px;"></span>
-            </div>
-
-            <div class="extension-main" style="flex-grow:1;">
-                <h3 style="margin:0 0 5px 0; font-size:16px;">
-                    <?php echo esc_html($info['name'] ?? $name); ?>
-                    <span style="font-weight:normal; font-size:12px; color:#666; margin-left:10px;">v<?php echo esc_html($info['version'] ?? '1.0.0'); ?></span>
-                    <?php if (!$isActive): ?>
-                        <span style="margin-left:8px; background:#fce8e8; color:#d63638; padding:1px 6px; border-radius:3px; font-size:11px; font-weight:normal;"><?php _e('Inactive', 'jankx'); ?></span>
+        <tr class="<?php echo $statusClass; ?>" data-slug="<?php echo esc_attr($name); ?>">
+            <td class="plugin-title column-primary">
+                <strong><?php echo esc_html($info['name'] ?? $name); ?></strong>
+                <div class="row-actions visible">
+                    <?php if ($isActive): ?>
+                        <span class="deactivate">
+                            <a href="javascript:void(0);" class="toggle-extension" data-extension="<?php echo esc_attr($name); ?>" data-nonce="<?php echo esc_attr($nonce); ?>">
+                                <?php _e('Deactivate', 'jankx'); ?>
+                            </a> |
+                        </span>
+                    <?php else: ?>
+                        <span class="activate">
+                            <a href="javascript:void(0);" class="toggle-extension" data-extension="<?php echo esc_attr($name); ?>" data-nonce="<?php echo esc_attr($nonce); ?>">
+                                <?php _e('Activate', 'jankx'); ?>
+                            </a> |
+                        </span>
                     <?php endif; ?>
-                </h3>
-                <p style="margin:0; font-size:13px; color:#646970; line-height:1.4;"><?php echo esc_html($info['description'] ?? ''); ?></p>
-                <div class="extension-meta" style="margin-top:5px; font-size:11px; color:#888;">
-                    <span><?php printf(__('Author: %s', 'jankx'), esc_html($info['author'] ?? 'Jankx Team')); ?></span>
+                    <span class="delete">
+                        <a href="javascript:void(0);" class="delete-extension" data-extension="<?php echo esc_attr($name); ?>" data-nonce="<?php echo esc_attr($nonce); ?>" style="color: #d63638;">
+                            <?php _e('Delete', 'jankx'); ?>
+                        </a>
+                    </span>
+                </div>
+                <button type="button" class="toggle-row"><span class="screen-reader-text"><?php _e('Show more details'); ?></span></button>
+            </td>
+            <td class="column-description desc">
+                <div class="plugin-description">
+                    <p><?php echo esc_html($info['description'] ?? ''); ?></p>
+                </div>
+                <div class="<?php echo $statusClass; ?> second plugin-version-author-uri">
+                    <?php printf(__('Version %s', 'jankx'), esc_html($info['version'] ?? '1.0.0')); ?> |
+                    <?php printf(__('By %s', 'jankx'), esc_html($info['author'] ?? 'Jankx Team')); ?>
                     <?php if (!empty($info['is_child_theme_extension'])): ?>
-                        <span style="margin-left:15px; background:#e5f5fa; color:#005e7e; padding:1px 6px; border-radius:3px;"><?php _e('Child Theme', 'jankx'); ?></span>
+                        | <span class="jankx-child-badge" style="background:#e5f5fa; color:#005e7e; padding:1px 6px; border-radius:3px; font-size: 11px;"><?php _e('Child Theme', 'jankx'); ?></span>
                     <?php endif; ?>
                 </div>
-            </div>
-
-            <div class="extension-actions" style="margin-left:20px; display:flex; gap:8px;">
-                <button class="button <?php echo $isActive ? 'button-secondary' : 'button-primary'; ?> toggle-extension"
-                        data-extension="<?php echo esc_attr($name); ?>"
-                        data-nonce="<?php echo esc_attr($nonce); ?>">
-                    <?php echo $isActive ? __('Deactivate', 'jankx') : __('Activate', 'jankx'); ?>
-                </button>
-                <button class="button button-link-delete delete-extension"
-                        style="color:#d63638;"
-                        data-extension="<?php echo esc_attr($name); ?>"
-                        data-nonce="<?php echo esc_attr($nonce); ?>">
-                    <?php _e('Delete', 'jankx'); ?>
-                </button>
-            </div>
-        </div>
+            </td>
+        </tr>
         <?php
     }
 
