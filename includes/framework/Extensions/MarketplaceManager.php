@@ -3,7 +3,7 @@
  * Marketplace Manager for Jankx Theme Framework
  *
  * Handles integration with the Jankx Extensions Hub.
- * API Base: https://jankx-systems.pages.dev
+ * API Base: https://jankx.pages.dev
  *
  * @package Jankx\Extensions
  * @since 2.0.0
@@ -20,7 +20,7 @@ class MarketplaceManager
      * Hub Base URL
      * @var string
      */
-    const HUB_URL = 'https://jankx-systems.pages.dev';
+    const HUB_URL = 'https://jankx.pages.dev';
 
     /**
      * Cached Jankx version to avoid multiple lookups
