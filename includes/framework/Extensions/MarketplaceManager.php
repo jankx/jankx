@@ -342,10 +342,33 @@ class MarketplaceManager
      */
     public function pingHub()
     {
-        // Don't ping on local development if disabled (optional)
-        if (defined('WP_DEBUG') && WP_DEBUG && !apply_filters('jankx/marketplace/ping_local', false)) {
-            // Uncomment to disable pinging on localhost during dev
-            // return;
+        $domain = home_url();
+        $host   = parse_url($domain, PHP_URL_HOST);
+
+        // Define local/development domain patterns
+        $local_patterns = [
+            'localhost',
+            '127.0.0.1',
+            '::1',
+        ];
+
+        // Check for common local TLDs
+        $is_local = false;
+        foreach ($local_patterns as $pattern) {
+            if ($host === $pattern) {
+                $is_local = true;
+                break;
+            }
+        }
+
+        if (!$is_local && (strpos($host, '.local') !== false || strpos($host, '.test') !== false)) {
+            $is_local = true;
+        }
+
+        // Apply filter to allow customization or manual override
+        if (apply_filters('jankx/marketplace/skip_ping', $is_local, $host)) {
+            Log::debug(sprintf('Marketplace: Skipping ping for local domain: %s', $host));
+            return;
         }
 
         $api_url = $this->buildUrl('api/theme/ping');
@@ -357,7 +380,7 @@ class MarketplaceManager
                 'Accept'       => 'application/json'
             ],
             'body'    => wp_json_encode([
-                'domain'      => home_url(),
+                'domain'      => $domain,
                 'version'     => $this->getJankxVersion(),
                 'wp_version'  => get_bloginfo('version'),
                 'php_version' => PHP_VERSION,
