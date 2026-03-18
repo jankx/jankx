@@ -4,21 +4,63 @@ namespace Jankx\Support\Providers;
 
 use Jankx\Foundation\Application;
 use Jankx\Layouts\ContentLayout\ContentLayoutManager;
+use Jankx\Layouts\DynamicDataLayout\LayoutRegistry;
+use Jankx\Layouts\DynamicDataLayout\BlockTemplateLayoutManager;
+use Jankx\Layouts\DynamicDataLayout\BlockTemplateLayoutFactory;
+use Jankx\Services\ViewService;
 use Jankx\Support\Providers\ServiceProvider;
 
+/**
+ * Content Layout Service Provider
+ * 
+ * Manages the registration and wiring of layout-related services:
+ * - ContentLayoutManager (Legacy support)
+ * - LayoutRegistry (Modern Registry)
+ * - BlockTemplateLayoutManager (Layout service)
+ * - ViewService (Template rendering)
+ */
 class ContentLayoutServiceProvider extends ServiceProvider
 {
+    /**
+     * Register services
+     * 
+     * @param Application $app
+     */
     public function register(Application $app)
     {
+        // 1. Register View Service for template rendering
+        $app->singleton(ViewService::class, function ($app) {
+            return new ViewService($app);
+        });
+        $app->alias(ViewService::class, 'view');
+
+        // 2. Register Layout Registry (Strategy manager)
+        $app->singleton(LayoutRegistry::class, function () {
+            return new LayoutRegistry();
+        });
+        $app->alias(LayoutRegistry::class, 'jankx.layout.registry');
+
+        // 3. Register Block Template Layout Manager
+        $app->singleton(BlockTemplateLayoutManager::class, function ($app) {
+            return new BlockTemplateLayoutManager($app->make(LayoutRegistry::class));
+        });
+        $app->alias(BlockTemplateLayoutManager::class, 'jankx.block_layout_manager');
+
+        // 4. Legacy: Content Layout Manager
         $app->singleton(ContentLayoutManager::class, function () {
             return ContentLayoutManager::getInstance();
         });
 
-        $app->singleton(\Jankx\Layouts\DynamicDataLayout\BlockTemplateLayoutManager::class, function () {
-            return \Jankx\Layouts\DynamicDataLayout\BlockTemplateLayoutManager::getInstance();
+        $app->singleton(\Jankx\Layouts\DynamicDataLayout\BlockTemplateLayoutManager::class, function ($app) {
+           return $app->make(BlockTemplateLayoutManager::class);
         });
     }
 
+    /**
+     * Bootstrap services
+     * 
+     * @param Application $app
+     */
     public function boot(Application $app)
     {
         $context = $this->getLoadingContext();
@@ -26,22 +68,39 @@ class ContentLayoutServiceProvider extends ServiceProvider
             return;
         }
 
+        // Initialize core layouts in the Registry
+        $this->registerCoreLayouts($app->make(LayoutRegistry::class));
+
+        // Legacy: Register default layouts in ContentLayoutManager
         $manager = $app->make(ContentLayoutManager::class);
-
-        // Register default layouts via PHP array
-        static $defaultLayouts = null;
-        if ($defaultLayouts === null) {
-            $defaultLayouts = $this->getDefaultLayouts();
-        }
-
+        $defaultLayouts = $this->getDefaultLayouts();
         foreach ($defaultLayouts as $layoutData) {
             $manager->register($layoutData);
         }
         
-        // Hook to allow other plugins/themes to register layouts
         do_action('jankx/layout/content-layout/register', $manager);
     }
 
+    /**
+     * Dynamically register core layouts into the modern Registry
+     * 
+     * @param LayoutRegistry $registry
+     */
+    protected function registerCoreLayouts(LayoutRegistry $registry): void
+    {
+        // We can reuse the init logic from the Factory during transition, 
+        // or register them manually here. Let's do a mix to ensure compatibility.
+        BlockTemplateLayoutFactory::init();
+        $layouts = BlockTemplateLayoutFactory::getRegisteredLayouts();
+
+        foreach ($layouts as $name => $class) {
+            $registry->register($name, $class);
+        }
+    }
+
+    /**
+     * Default layouts for legacy ContentLayoutManager
+     */
     protected function getDefaultLayouts()
     {
         return [
@@ -155,3 +214,4 @@ class ContentLayoutServiceProvider extends ServiceProvider
         ];
     }
 }
+

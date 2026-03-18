@@ -14,6 +14,11 @@ class GridLayout extends BlockTemplateLayout
         return 'dashicons-grid-view';
     }
 
+    /**
+     * Render the grid layout using ViewService
+     * 
+     * @return string
+     */
     public function renderDefault(): string
     {
         if (!$this->query || !$this->query->have_posts()) {
@@ -36,7 +41,7 @@ class GridLayout extends BlockTemplateLayout
             }
         }
 
-        $ul_classes = [
+        $ulClasses = [
             'post-type-layout-grid',
             'is-flex-container',
             'columns-' . max(1, $columns),
@@ -44,26 +49,19 @@ class GridLayout extends BlockTemplateLayout
             'columns-mobile-' . max(1, $columnsMobile),
         ];
         if ($hasImageRatio) {
-            $ul_classes[] = 'has-image-ratio';
+            $ulClasses[] = 'has-image-ratio';
         }
 
-        ob_start();
-        ?>
-        <ul class="<?php echo esc_attr(implode(' ', $ul_classes)); ?>"
-            style="<?php echo esc_attr(sprintf('--columns-desktop: %d; --columns-tablet: %d; --columns-mobile: %d; %s', $columns, $columnsTablet, $columnsMobile, $ratioStyle)); ?>">
-            <?php
-            while ($this->query->have_posts()) {
-                $this->query->the_post();
-                $itemClasses = $this->buildItemClasses();
-                echo '<li class="' . esc_attr($itemClasses) . '">';
-                echo $this->renderPostItem();
-                echo '</li>';
-            }
-            wp_reset_postdata();
-            ?>
-        </ul>
-        <?php
-        return (string) ob_get_clean();
+        return $this->renderView('post-layout/grid', [
+            'query' => $this->query,
+            'layout' => $this,
+            'ul_classes' => $ulClasses,
+            'columns' => $columns,
+            'columns_tablet' => $columnsTablet,
+            'columns_mobile' => $columnsMobile,
+            'ratio_style' => $ratioStyle,
+            'item_classes' => $this->buildItemClasses()
+        ]);
     }
 
     public function renderDefaultPreview(): array

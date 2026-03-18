@@ -3,64 +3,92 @@
 namespace Jankx\Layouts\DynamicDataLayout;
 
 use Jankx\Layouts\DynamicDataLayout\Contracts\BlockTemplateLayoutInterface;
-use Jankx\Layouts\DynamicDataLayout\BlockTemplateLayoutFactory;
+use Jankx\Layouts\DynamicDataLayout\LayoutRegistry;
 
+/**
+ * Block Template Layout Manager
+ * 
+ * High-level service that manages dynamic data layouts via the LayoutRegistry.
+ * Replaces static instance access with dependency injection.
+ */
 class BlockTemplateLayoutManager
 {
-    protected static $instance = null;
-    protected $layouts = [];
+    /**
+     * @var LayoutRegistry
+     */
+    protected $registry;
 
-    public static function getInstance(): self
+    /**
+     * Constructor using Dependency Injection
+     * 
+     * @param LayoutRegistry $registry
+     */
+    public function __construct(LayoutRegistry $registry)
     {
-        if (self::$instance === null) {
-            self::$instance = new self();
-        }
-        return self::$instance;
+        $this->registry = $registry;
     }
 
     /**
-     * Set the layout manager instance (useful for testing)
-     *
-     * @param BlockTemplateLayoutManager|null $instance
-     * @return void
+     * Create a specific layout instance
+     * 
+     * @param string $layoutName
+     * @param array $options Optional initial options
+     * @return BlockTemplateLayoutInterface
      */
-    public static function setInstance(?self $instance): void
+    public function createLayout(string $layoutName, array $options = []): BlockTemplateLayoutInterface
     {
-        self::$instance = $instance;
+        return $this->registry->resolve($layoutName, $options);
     }
 
-    public function __construct()
-    {
-        BlockTemplateLayoutFactory::init();
-        $this->layouts = BlockTemplateLayoutFactory::getRegisteredLayouts();
-    }
-
-    public function createLayout(string $layoutName): BlockTemplateLayoutInterface
-    {
-        return BlockTemplateLayoutFactory::create($layoutName);
-    }
-
+    /**
+     * Get all registered layouts from the registry
+     * 
+     * @return array [name => class]
+     */
     public function getAvailableLayouts(): array
     {
-        return $this->layouts;
+        return $this->registry->all();
     }
 
+    /**
+     * Get names of all registered layouts
+     * 
+     * @return array
+     */
     public function getLayoutNames(): array
     {
-        return BlockTemplateLayoutFactory::getLayoutNames();
+        return $this->registry->getNames();
     }
 
+    /**
+     * Check if a specific layout name is registered
+     * 
+     * @param string $layoutName
+     * @return bool
+     */
     public function hasLayout(string $layoutName): bool
     {
-        return BlockTemplateLayoutFactory::hasLayout($layoutName);
+        return $this->registry->has($layoutName);
     }
 
+    /**
+     * Dynamically register a new layout
+     * 
+     * @param string $name
+     * @param string $class
+     * @return void
+     */
     public function registerLayout(string $name, string $class): void
     {
-        BlockTemplateLayoutFactory::register($name, $class);
-        $this->layouts = BlockTemplateLayoutFactory::getRegisteredLayouts();
+        $this->registry->register($name, $class);
     }
 
+    /**
+     * Get supported options for a layout
+     * 
+     * @param string $layoutName
+     * @return array
+     */
     public function getLayoutOptions(string $layoutName): array
     {
         if (!$this->hasLayout($layoutName)) {
@@ -71,6 +99,12 @@ class BlockTemplateLayoutManager
         return $layout->getSupportedOptions();
     }
 
+    /**
+     * Get full settings definition for a layout
+     * 
+     * @param string $layoutName
+     * @return array
+     */
     public function getLayoutSettingsDefinition(string $layoutName): array
     {
         if (!$this->hasLayout($layoutName)) {
@@ -81,15 +115,21 @@ class BlockTemplateLayoutManager
         return $layout->getSettingsDefinition();
     }
 
+    /**
+     * Render a layout by name
+     * 
+     * @param string $layoutName
+     * @param array $options
+     * @param mixed $query Optional WP_Query
+     * @return string
+     */
     public function renderLayout(string $layoutName, array $options = [], $query = null): string
     {
         if (!$this->hasLayout($layoutName)) {
             return '';
         }
 
-        $layout = $this->createLayout($layoutName);
-        $layout->setOptions($options);
-
+        $layout = $this->createLayout($layoutName, $options);
         if ($query) {
             $layout->setQuery($query);
         }
@@ -97,30 +137,45 @@ class BlockTemplateLayoutManager
         return $layout->render();
     }
 
+    /**
+     * Get preview structure for a layout
+     * 
+     * @param string $layoutName
+     * @param array $options
+     * @return array
+     */
     public function renderLayoutPreview(string $layoutName, array $options = []): array
     {
         if (!$this->hasLayout($layoutName)) {
             return [];
         }
 
-        $layout = $this->createLayout($layoutName);
-        $layout->setOptions($options);
-
+        $layout = $this->createLayout($layoutName, $options);
         return $layout->renderPreview();
     }
 
+    /**
+     * Get layouts available for post types (currently all)
+     * 
+     * @param string $postType
+     * @return array
+     */
     public function getLayoutsForPostType(string $postType): array
     {
-        // Return all available layouts for BlockTemplate (they work with any post type)
         return $this->getAvailableLayouts();
     }
 
+    /**
+     * Get the most commonly used layouts
+     * 
+     * @return array
+     */
     public function getCommonLayouts(): array
     {
-        // Return common layouts that work well with most content
         $commonLayouts = ['grid', 'list', 'card', 'carousel', 'masonry'];
         $availableLayouts = $this->getAvailableLayouts();
         
         return array_intersect_key($availableLayouts, array_flip($commonLayouts));
     }
 }
+
