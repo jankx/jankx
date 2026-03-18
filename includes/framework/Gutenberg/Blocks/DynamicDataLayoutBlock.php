@@ -499,25 +499,20 @@ class DynamicDataLayoutBlock extends Block
         $post_types[] = 'common'; // Add common context
 
         foreach ($post_types as $post_type) {
-            $layouts = $post_type === 'common'
+            $layouts = ($post_type === 'common')
                 ? $layoutManager->getCommonLayouts()
                 : $layoutManager->getLayoutsForPostType($post_type);
 
-            foreach ($layouts as $layoutInfo) {
-                $layoutName = $layoutInfo['name'] ?? '';
+            foreach ($layouts as $layoutName => $layoutClass) {
                 if (empty($layoutName)) {
                     continue;
                 }
 
                 try {
                     $layout = $layoutManager->createLayout($layoutName);
-
                     if ($layout) {
-                        $layoutInstance = $layout->getLayout();
-                        if ($layoutInstance && method_exists($layoutInstance, 'getHtmlStructure')) {
-                            $key = $post_type === 'common' ? $layoutName : "{$post_type}_{$layoutName}";
-                            $structures[$key] = $layoutInstance->getHtmlStructure([]);
-                        }
+                        $key = "{$post_type}_{$layoutName}";
+                        $structures[$key] = $layout->getHtmlStructure([]);
                     }
                 } catch (\Exception $e) {
                     continue;

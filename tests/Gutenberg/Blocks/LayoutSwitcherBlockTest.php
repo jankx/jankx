@@ -29,12 +29,13 @@ class LayoutSwitcherBlockTest extends BlockTestCase
         $this->block = new LayoutSwitcherBlock();
         
         // Mock BlockTemplateLayoutManager
-        $this->layoutManagerMock = Mockery::mock('alias:' . BlockTemplateLayoutManager::class);
-        $this->layoutManagerMock->shouldReceive('getInstance')->andReturn($this->layoutManagerMock);
+        $this->layoutManagerMock = Mockery::mock(BlockTemplateLayoutManager::class);
+        BlockTemplateLayoutManager::setInstance($this->layoutManagerMock);
     }
 
     protected function tearDown(): void
     {
+        BlockTemplateLayoutManager::setInstance(null);
         Mockery::close();
         parent::tearDown();
     }

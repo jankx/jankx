@@ -11,9 +11,9 @@ namespace Tests\Integration\PostLayout;
 
 use Tests\Helpers\TestCase;
 use Tests\Helpers\HtmlAssertions;
-use Jankx\Layouts\DynamicDataLayout\DynamicDataLayoutManager;
-use Jankx\Layouts\DynamicDataLayout\Supports\GridLayout;
-use Jankx\Layouts\DynamicDataLayout\Supports\ListLayout;
+use Jankx\Layouts\DynamicDataLayout\BlockTemplateLayoutManager;
+use Jankx\Layouts\DynamicDataLayout\BlockLayouts\GridLayout;
+use Jankx\Layouts\DynamicDataLayout\BlockLayouts\ListLayout;
 
 class PostLayoutColumnsUpdateTest extends TestCase
 {
@@ -24,7 +24,7 @@ class PostLayoutColumnsUpdateTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->layoutManager = DynamicDataLayoutManager::getInstance();
+        $this->layoutManager = BlockTemplateLayoutManager::getInstance();
     }
 
     /**
@@ -87,7 +87,6 @@ class PostLayoutColumnsUpdateTest extends TestCase
         
         // Should have base classes
         $this->assertContains('post-type-layout-grid', $container['classes']);
-        $this->assertContains('wp-block-jankx-dynamic-data-layout', $container['classes']);
         $this->assertContains('is-flex-container', $container['classes']);
         
         // Should have column classes

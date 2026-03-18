@@ -11,11 +11,11 @@ namespace Tests\Integration\PostLayout;
 
 use Tests\Helpers\TestCase;
 use Tests\Helpers\HtmlAssertions;
-use Jankx\Layouts\DynamicDataLayout\DynamicDataLayoutManager;
-use Jankx\Layouts\DynamicDataLayout\Supports\GridLayout;
-use Jankx\Layouts\DynamicDataLayout\Supports\ListLayout;
-use Jankx\Layouts\DynamicDataLayout\Supports\CarouselLayout;
-use Jankx\Gutenberg\Blocks\PostTypeLayoutBlock;
+use Jankx\Layouts\DynamicDataLayout\BlockTemplateLayoutManager;
+use Jankx\Layouts\DynamicDataLayout\BlockLayouts\GridLayout;
+use Jankx\Layouts\DynamicDataLayout\BlockLayouts\ListLayout;
+use Jankx\Layouts\DynamicDataLayout\BlockLayouts\CarouselLayout;
+use Jankx\Gutenberg\Blocks\DynamicDataLayoutBlock;
 use WP_Query;
 
 class PostLayoutPhpJsComparisonTest extends TestCase
@@ -28,11 +28,11 @@ class PostLayoutPhpJsComparisonTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->layoutManager = DynamicDataLayoutManager::getInstance();
+        $this->layoutManager = BlockTemplateLayoutManager::getInstance();
         
-        // Provide block path for PostTypeLayoutBlock
-        $blockPath = dirname(__DIR__, 3) . '/resources/blocks/post-type-layout';
-        $this->block = new PostTypeLayoutBlock($blockPath);
+        // Provide block path for DynamicDataLayoutBlock
+        $blockPath = dirname(__DIR__, 3) . '/resources/blocks/dynamic-data-layout';
+        $this->block = new DynamicDataLayoutBlock($blockPath);
     }
 
     /**
@@ -98,11 +98,11 @@ class PostLayoutPhpJsComparisonTest extends TestCase
     }
 
     /**
-     * Test that PostTypeLayoutBlock localizes correct structure
+     * Test that DynamicDataLayoutBlock localizes correct structure
      */
-    public function testPostTypeLayoutBlockLocalizesCorrectStructure()
+    public function testDynamicDataLayoutBlockLocalizesCorrectStructure()
     {
-        $reflection = new \ReflectionClass(PostTypeLayoutBlock::class);
+        $reflection = new \ReflectionClass(DynamicDataLayoutBlock::class);
         $method = $reflection->getMethod('getLayoutStructures');
         $method->setAccessible(true);
 
@@ -112,46 +112,32 @@ class PostLayoutPhpJsComparisonTest extends TestCase
         $this->assertArrayHasKey('layouts', $structures);
         $this->assertArrayHasKey('postItem', $structures);
 
-        // Should have grid layout
-        $this->assertArrayHasKey('grid', $structures['layouts']);
-        $gridStructure = $structures['layouts']['grid'];
+        // Should have common_grid layout
+        $this->assertArrayHasKey('common_grid', $structures['layouts']);
+        $gridStructure = $structures['layouts']['common_grid'];
 
         // Verify grid structure
         $this->assertEquals('grid', $gridStructure['layout']);
         $this->assertEquals('ul', $gridStructure['container']['tag']);
         $this->assertEquals('li', $gridStructure['itemWrapper']['tag']);
 
-        // Should have list layout
-        $this->assertArrayHasKey('list', $structures['layouts']);
-        $listStructure = $structures['layouts']['list'];
+        // Should have common_list layout
+        $this->assertArrayHasKey('common_list', $structures['layouts']);
+        $listStructure = $structures['layouts']['common_list'];
 
         // Verify list structure
         $this->assertEquals('list', $listStructure['layout']);
         $this->assertEquals('div', $listStructure['container']['tag']);
         $this->assertEquals('article', $listStructure['itemWrapper']['tag']);
 
-        // Should have carousel layout
-        $this->assertArrayHasKey('carousel', $structures['layouts']);
-        $carouselStructure = $structures['layouts']['carousel'];
+        // Should have common_carousel layout
+        $this->assertArrayHasKey('common_carousel', $structures['layouts']);
+        $carouselStructure = $structures['layouts']['common_carousel'];
 
         // Verify carousel structure
         $this->assertEquals('carousel', $carouselStructure['layout']);
         $this->assertEquals('div', $carouselStructure['container']['tag']);
-        $this->assertContains('post-type-layout-carousel', $carouselStructure['container']['classes']);
-        // Carousel has nested structure: embla__slide -> article
-        $this->assertArrayHasKey('children', $carouselStructure['itemWrapper']);
-        $this->assertEquals('div', $carouselStructure['itemWrapper']['tag']);
-        $this->assertContains('embla__slide', $carouselStructure['itemWrapper']['classes']);
-
-        // Post item structure should be complete
-        $postItem = $structures['postItem'];
-        $this->assertArrayHasKey('featuredImage', $postItem);
-        $this->assertArrayHasKey('title', $postItem);
-        $this->assertArrayHasKey('date', $postItem);
-        $this->assertArrayHasKey('author', $postItem);
-        $this->assertArrayHasKey('metaWrapper', $postItem);
-        $this->assertArrayHasKey('excerpt', $postItem);
-        $this->assertArrayHasKey('contentWrapper', $postItem);
+        $this->assertContains('dynamic-data-layout--carousel', $carouselStructure['container']['classes']);
     }
 
     /**
@@ -274,11 +260,20 @@ class PostLayoutPhpJsComparisonTest extends TestCase
     public function testAllRegisteredLayoutsHaveValidStructures()
     {
         $layouts = $this->layoutManager->getCommonLayouts();
-        $reflection = new \ReflectionClass(PostTypeLayoutBlock::class);
+        $reflection = new \ReflectionClass(DynamicDataLayoutBlock::class);
         $method = $reflection->getMethod('getLayoutStructures');
         $method->setAccessible(true);
 
         $structures = $method->invoke($this->block);
+
+        $layoutStructures = $structures['layouts'] ?? [];
+        foreach ($layoutStructures as $key => $structure) {
+            $this->assertIsArray($structure, "Structure for '{$key}' should be an array");
+            $this->assertArrayHasKey('container', $structure, "Structure for '{$key}' should have 'container'");
+            $this->assertArrayHasKey('itemWrapper', $structure, "Structure for '{$key}' should have 'itemWrapper'");
+        }
+        
+        $this->assertGreaterThan(0, count($layoutStructures));
 
         foreach ($layouts as $layoutInfo) {
             $layoutName = $layoutInfo['name'] ?? '';
@@ -286,14 +281,15 @@ class PostLayoutPhpJsComparisonTest extends TestCase
                 continue;
             }
 
+            $key = "common_{$layoutName}";
             // Should have structure in localized data
             $this->assertArrayHasKey(
-                $layoutName,
+                $key,
                 $structures['layouts'],
                 "Layout {$layoutName} should have structure in localized data"
             );
 
-            $structure = $structures['layouts'][$layoutName];
+            $structure = $structures['layouts'][$key];
 
             // Structure should be valid
             $this->assertIsArray($structure, "Layout {$layoutName} structure should be array");

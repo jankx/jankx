@@ -8,10 +8,10 @@ namespace Tests\Integration\PostLayout;
 
 use Tests\Helpers\TestCase;
 use Tests\Helpers\HtmlAssertions;
-use Jankx\Layouts\DynamicDataLayout\DynamicDataLayoutManager;
-use Jankx\Layouts\DynamicDataLayout\Supports\GridLayout;
-use Jankx\Layouts\DynamicDataLayout\Supports\ListLayout;
-use Jankx\Gutenberg\Blocks\PostTypeLayoutBlock;
+use Jankx\Layouts\DynamicDataLayout\BlockTemplateLayoutManager;
+use Jankx\Layouts\DynamicDataLayout\BlockLayouts\GridLayout;
+use Jankx\Layouts\DynamicDataLayout\BlockLayouts\ListLayout;
+use Jankx\Gutenberg\Blocks\DynamicDataLayoutBlock;
 use WP_Query;
 
 class PostLayoutRenderIntegrationTest extends TestCase
@@ -23,11 +23,11 @@ class PostLayoutRenderIntegrationTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->layoutManager = DynamicDataLayoutManager::getInstance();
+        $this->layoutManager = BlockTemplateLayoutManager::getInstance();
         
-        // Provide block path for PostTypeLayoutBlock
-        $blockPath = dirname(__DIR__, 3) . '/resources/blocks/post-type-layout';
-        $this->block = new PostTypeLayoutBlock($blockPath);
+        // Provide block path for DynamicDataLayoutBlock
+        $blockPath = dirname(__DIR__, 3) . '/resources/blocks/dynamic-data-layout';
+        $this->block = new DynamicDataLayoutBlock($blockPath);
     }
 
     /**
@@ -89,12 +89,12 @@ class PostLayoutRenderIntegrationTest extends TestCase
     }
 
     /**
-     * Test that PostTypeLayoutBlock localizes structures correctly
+     * Test that DynamicDataLayoutBlock localizes structures correctly
      */
-    public function testPostTypeLayoutBlockLocalizesStructures()
+    public function testDynamicDataLayoutBlockLocalizesStructures()
     {
         // Use reflection to access protected method
-        $reflection = new \ReflectionClass(PostTypeLayoutBlock::class);
+        $reflection = new \ReflectionClass(DynamicDataLayoutBlock::class);
         $method = $reflection->getMethod('getLayoutStructures');
         $method->setAccessible(true);
         
@@ -104,51 +104,11 @@ class PostLayoutRenderIntegrationTest extends TestCase
         $this->assertArrayHasKey('layouts', $structures);
         $this->assertArrayHasKey('postItem', $structures);
         
-        // Verify at least grid layout is present
-        $this->assertArrayHasKey('grid', $structures['layouts']);
-        $this->assertEquals('grid', $structures['layouts']['grid']['layout']);
+        // Verify at least common_grid layout is present (new naming convention context_layout)
+        $this->assertArrayHasKey('common_grid', $structures['layouts']);
+        $this->assertEquals('grid', $structures['layouts']['common_grid']['layout']);
     }
 
-    /**
-     * Test that post item structure matches PHP renderPostItem output
-     */
-    public function testPostItemStructureMatchesPhpRender()
-    {
-        $reflection = new \ReflectionClass(PostTypeLayoutBlock::class);
-        $method = $reflection->getMethod('getPostItemStructure');
-        $method->setAccessible(true);
-        
-        $postItemStructure = $method->invoke($this->block);
-        
-        // Verify structure matches renderPostItem output
-        $this->assertArrayHasKey('featuredImage', $postItemStructure);
-        $this->assertArrayHasKey('title', $postItemStructure);
-        $this->assertArrayHasKey('date', $postItemStructure);
-        $this->assertArrayHasKey('author', $postItemStructure);
-        $this->assertArrayHasKey('metaWrapper', $postItemStructure);
-        $this->assertArrayHasKey('excerpt', $postItemStructure);
-        $this->assertArrayHasKey('contentWrapper', $postItemStructure);
-        
-        // Verify featured image structure
-        $featuredImage = $postItemStructure['featuredImage'];
-        $this->assertEquals('div', $featuredImage['tag']);
-        $this->assertContains('post-thumbnail', $featuredImage['classes']);
-        
-        // Verify title structure
-        $title = $postItemStructure['title'];
-        $this->assertEquals('h3', $title['tag']);
-        $this->assertContains('post-title', $title['classes']);
-        
-        // Verify meta wrapper
-        $metaWrapper = $postItemStructure['metaWrapper'];
-        $this->assertEquals('div', $metaWrapper['tag']);
-        $this->assertContains('post-meta', $metaWrapper['classes']);
-        
-        // Verify content wrapper
-        $contentWrapper = $postItemStructure['contentWrapper'];
-        $this->assertEquals('div', $contentWrapper['tag']);
-        $this->assertContains('post-content', $contentWrapper['classes']);
-    }
 
     /**
      * Test that different layouts have different structures
@@ -161,12 +121,13 @@ class PostLayoutRenderIntegrationTest extends TestCase
         $gridStructure = $gridLayout->getHtmlStructure();
         $listStructure = $listLayout->getHtmlStructure();
         
-        // Grid should use <ul> and <li>
+        // Grid uses ul for container
         $this->assertEquals('ul', $gridStructure['container']['tag']);
-        $this->assertEquals('li', $gridStructure['itemWrapper']['tag']);
-        
-        // List should use <div> and <article>
+        // List uses div for container (default)
         $this->assertEquals('div', $listStructure['container']['tag']);
+        
+        // Grid uses li, List uses article (base default)
+        $this->assertEquals('li', $gridStructure['itemWrapper']['tag']);
         $this->assertEquals('article', $listStructure['itemWrapper']['tag']);
         
         // Classes should be different

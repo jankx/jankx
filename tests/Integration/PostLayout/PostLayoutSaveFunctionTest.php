@@ -10,7 +10,7 @@
 namespace Tests\Integration\PostLayout;
 
 use Tests\Helpers\TestCase;
-use Jankx\Gutenberg\Blocks\PostTypeLayoutBlock;
+use Jankx\Gutenberg\Blocks\DynamicDataLayoutBlock;
 use Jankx\Layouts\DynamicDataLayout\DynamicDataLayoutManager;
 
 class PostLayoutSaveFunctionTest extends TestCase
@@ -21,11 +21,11 @@ class PostLayoutSaveFunctionTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->layoutManager = DynamicDataLayoutManager::getInstance();
+        // $this->layoutManager = DynamicDataLayoutManager::getInstance(); // This might be outdated too
         
-        // Provide block path for PostTypeLayoutBlock
-        $blockPath = dirname(__DIR__, 3) . '/resources/blocks/post-type-layout';
-        $this->block = new PostTypeLayoutBlock($blockPath);
+        // Provide block path for DynamicDataLayoutBlock
+        $blockPath = dirname(__DIR__, 3) . '/resources/blocks/dynamic-data-layout';
+        $this->block = new DynamicDataLayoutBlock($blockPath);
     }
 
     /**
@@ -33,10 +33,10 @@ class PostLayoutSaveFunctionTest extends TestCase
      */
     public function testBlockHasRenderCallback()
     {
-        $reflection = new \ReflectionClass(PostTypeLayoutBlock::class);
+        $reflection = new \ReflectionClass(DynamicDataLayoutBlock::class);
         $this->assertTrue(
             method_exists($this->block, 'render'),
-            'PostTypeLayoutBlock should have render method for render_callback'
+            'DynamicDataLayoutBlock should have render method for render_callback'
         );
     }
 
@@ -45,20 +45,20 @@ class PostLayoutSaveFunctionTest extends TestCase
      */
     public function testBlockCanExtractTemplateBlockFromParsedBlock()
     {
-        $reflection = new \ReflectionClass(PostTypeLayoutBlock::class);
+        $reflection = new \ReflectionClass(DynamicDataLayoutBlock::class);
         $method = $reflection->getMethod('extractTemplateBlockFromParsedBlock');
         $method->setAccessible(true);
 
         // Mock parsed block structure with innerBlocks
         $parsedBlock = [
-            'blockName' => 'jankx/post-type-layout',
+            'blockName' => 'jankx/dynamic-data-layout',
             'attrs' => [
                 'layout' => 'grid',
                 'columns' => 3,
             ],
             'innerBlocks' => [
                 [
-                    'blockName' => 'jankx/post-layout-template',
+                    'blockName' => 'jankx/dynamic-data-template',
                     'attrs' => [],
                     'innerBlocks' => [
                         [
@@ -77,7 +77,7 @@ class PostLayoutSaveFunctionTest extends TestCase
         $templateBlock = $method->invoke($this->block, $parsedBlock);
 
         $this->assertIsArray($templateBlock);
-        $this->assertEquals('jankx/post-layout-template', $templateBlock['blockName']);
+        $this->assertEquals('jankx/dynamic-data-template', $templateBlock['blockName']);
         $this->assertArrayHasKey('innerBlocks', $templateBlock);
         $this->assertCount(2, $templateBlock['innerBlocks']);
     }
@@ -105,7 +105,7 @@ class PostLayoutSaveFunctionTest extends TestCase
      */
     public function testBlockLocalizesStructuresForJavaScript()
     {
-        $reflection = new \ReflectionClass(PostTypeLayoutBlock::class);
+        $reflection = new \ReflectionClass(DynamicDataLayoutBlock::class);
         $method = $reflection->getMethod('getLayoutStructures');
         $method->setAccessible(true);
 
@@ -115,9 +115,9 @@ class PostLayoutSaveFunctionTest extends TestCase
         $this->assertArrayHasKey('layouts', $structures);
         $this->assertArrayHasKey('postItem', $structures);
         
-        // Should have at least grid and list layouts
-        $this->assertArrayHasKey('grid', $structures['layouts']);
-        $this->assertArrayHasKey('list', $structures['layouts']);
+        // Should have at least grid and list layouts (prefixed with common or post type)
+        $this->assertArrayHasKey('common_grid', $structures['layouts']);
+        $this->assertArrayHasKey('common_list', $structures['layouts']);
     }
 
     /**

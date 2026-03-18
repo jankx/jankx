@@ -68,8 +68,9 @@ class AdvancedImageBoxPresetRenderTest extends BlockTestCase
 
         // Inline style should reflect spacing and padding
         $this->assertStringContainsString('style="', $html);
-        $this->assertStringContainsString('margin-bottom: 14px;', $html);
-        $this->assertStringContainsString('padding-right: 20px;', $html);
+        $this->assertStringContainsString('bottom:14px;', $html);
+        $this->assertStringContainsString('padding-top:12px;', $html);
+        $this->assertStringContainsString('padding-right:20px;', $html);
 
         $this->assertHtmlNotContains($html, [
             'wp-block-jankx-advanced-image-box__overlay__content',

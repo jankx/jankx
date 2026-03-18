@@ -9,10 +9,10 @@ namespace Tests\Support\Blocks\PostLayout;
 use Tests\Helpers\TestCase;
 use Tests\Helpers\HtmlAssertions;
 use Jankx\Layouts\DynamicDataLayout\PostLayout;
-use Jankx\Layouts\DynamicDataLayout\Supports\GridLayout;
-use Jankx\Layouts\DynamicDataLayout\Supports\ListLayout;
-use Jankx\Layouts\DynamicDataLayout\Supports\CarouselLayout;
-use Jankx\Layouts\DynamicDataLayout\DynamicDataLayoutManager;
+use Jankx\Layouts\DynamicDataLayout\BlockLayouts\GridLayout;
+use Jankx\Layouts\DynamicDataLayout\BlockLayouts\ListLayout;
+use Jankx\Layouts\DynamicDataLayout\BlockLayouts\CarouselLayout;
+use Jankx\Layouts\DynamicDataLayout\BlockTemplateLayoutManager;
 
 class PostLayoutStructureTest extends TestCase
 {
@@ -22,7 +22,7 @@ class PostLayoutStructureTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->layoutManager = DynamicDataLayoutManager::getInstance();
+        $this->layoutManager = BlockTemplateLayoutManager::getInstance();
     }
 
     public function testPostLayoutHasGetHtmlStructureMethod()
@@ -187,13 +187,13 @@ class PostLayoutStructureTest extends TestCase
             }
 
             try {
-                $decorator = $this->layoutManager->createLayout($layoutName, []);
+                $decorator = $this->layoutManager->createLayout($layoutName, 'post', []);
                 $layout = $decorator->getLayout();
                 
                 if ($layout && method_exists($layout, 'getHtmlStructure')) {
                     $structure = $layout->getHtmlStructure();
-                    
-                    $this->assertIsArray($structure, "Layout {$layoutName} should return array structure");
+                    $this->assertIsArray($structure, "Layout '{$layoutName}' structure should be an array");
+                    $this->assertNotEmpty($structure, "Layout '{$layoutName}' structure should not be empty");
                     $this->assertArrayHasKey('layout', $structure);
                     $this->assertArrayHasKey('container', $structure);
                     $this->assertEquals($layoutName, $structure['layout']);
@@ -295,7 +295,11 @@ class PostLayoutStructureTest extends TestCase
             'showFeaturedImage' => true,
         ]);
         
-        $this->assertArrayHasKey('itemWrapper', $structure);
+        $this->assertArrayHasKey('children', $structure['container']);
+        $this->assertArrayHasKey('children', $structure['itemWrapper']);
+        $this->assertEquals('div', $structure['itemWrapper']['tag']);
+        $this->assertEquals('article', $structure['itemWrapper']['children'][0]['tag']);
+        
         $itemWrapper = $structure['itemWrapper'];
         $this->assertEquals('div', $itemWrapper['tag']);
         $this->assertContains('embla__slide', $itemWrapper['classes']);

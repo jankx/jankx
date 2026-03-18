@@ -51,9 +51,8 @@ class LanguageSwitcherBlock extends Block
         $displayType = $attributes['displayType'] ?? 'dropdown';
         $className = $attributes['className'] ?? '';
 
-        // Check if Polylang is active
         if (!function_exists('pll_the_languages')) {
-            return $this->renderPlaceholder();
+            return $this->renderPlaceholder() . ' (P1)';
         }
 
         // Get available languages with current page URLs
@@ -62,7 +61,7 @@ class LanguageSwitcherBlock extends Block
         $languages = $languageService->getLanguages(true); // true = get URLs for current page translations
 
         if (empty($languages)) {
-            return $this->renderPlaceholder();
+            return $this->renderPlaceholder() . ' (P2)';
         }
 
         // Build wrapper classes

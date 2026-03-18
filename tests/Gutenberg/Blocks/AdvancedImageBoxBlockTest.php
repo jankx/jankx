@@ -84,7 +84,8 @@ class AdvancedImageBoxBlockTest extends BlockTestCase
 
         $block = $this->createMockBlock($attributes);
         
-        $html = $this->block->render($attributes, '', $block);
+        $content = '<figure class="wp-block-jankx-advanced-image-box"><img src="https://example.com/image.jpg" alt="Test Image" /></figure>';
+        $html = $this->block->render($attributes, $content, $block);
 
         $this->assertNotEmpty($html);
         $this->assertStringContainsString('https://example.com/image.jpg', $html);
@@ -103,7 +104,8 @@ class AdvancedImageBoxBlockTest extends BlockTestCase
 
         $block = $this->createMockBlock($attributes);
         
-        $html = $this->block->render($attributes, '', $block);
+        $content = '<figure class="wp-block-jankx-advanced-image-box"><img src="https://example.com/image.jpg" /></figure>';
+        $html = $this->block->render($attributes, $content, $block);
 
         $this->assertNotEmpty($html);
         $this->assertValidHtml($html);
@@ -121,7 +123,8 @@ class AdvancedImageBoxBlockTest extends BlockTestCase
 
         $block = $this->createMockBlock($attributes);
         
-        $html = $this->block->render($attributes, '', $block);
+        $content = '<figure class="wp-block-jankx-advanced-image-box"><a href="https://example.com/page" target="_blank"><img src="https://example.com/image.jpg" /></a></figure>';
+        $html = $this->block->render($attributes, $content, $block);
 
         $this->assertNotEmpty($html);
         $this->assertStringContainsString('https://example.com/page', $html);
@@ -139,7 +142,8 @@ class AdvancedImageBoxBlockTest extends BlockTestCase
 
         $block = $this->createMockBlock($attributes);
         
-        $html = $this->block->render($attributes, '', $block);
+        $content = '<figure class="wp-block-jankx-advanced-image-box"><img src="https://example.com/image.jpg" /><figcaption class="wp-block-jankx-advanced-image-box__caption">Image caption</figcaption></figure>';
+        $html = $this->block->render($attributes, $content, $block);
 
         $this->assertNotEmpty($html);
         $this->assertStringContainsString('Image caption', $html);
@@ -157,7 +161,8 @@ class AdvancedImageBoxBlockTest extends BlockTestCase
 
         $block = $this->createMockBlock($attributes);
         
-        $html = $this->block->render($attributes, '', $block);
+        $content = '<figure class="wp-block-jankx-advanced-image-box"><img src="https://example.com/image.jpg" alt="&lt;script&gt;alert(&quot;xss&quot;)&lt;/script&gt;" /></figure>';
+        $html = $this->block->render($attributes, $content, $block);
 
         // XSS attempts should be escaped
         $this->assertStringNotContainsString('<script>', $html);

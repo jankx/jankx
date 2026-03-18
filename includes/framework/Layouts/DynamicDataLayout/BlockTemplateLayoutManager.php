@@ -18,6 +18,17 @@ class BlockTemplateLayoutManager
         return self::$instance;
     }
 
+    /**
+     * Set the layout manager instance (useful for testing)
+     *
+     * @param BlockTemplateLayoutManager|null $instance
+     * @return void
+     */
+    public static function setInstance(?self $instance): void
+    {
+        self::$instance = $instance;
+    }
+
     private function __construct()
     {
         BlockTemplateLayoutFactory::init();
@@ -107,7 +118,7 @@ class BlockTemplateLayoutManager
     public function getCommonLayouts(): array
     {
         // Return common layouts that work well with most content
-        $commonLayouts = ['grid', 'list', 'card'];
+        $commonLayouts = ['grid', 'list', 'card', 'carousel', 'masonry'];
         $availableLayouts = $this->getAvailableLayouts();
         
         return array_intersect_key($availableLayouts, array_flip($commonLayouts));

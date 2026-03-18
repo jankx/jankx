@@ -26,9 +26,16 @@ class LanguageSwitcherBlockTest extends BlockTestCase
         
         // Mock LanguageSwitcherService
         $this->languageServiceMock = Mockery::mock(LanguageSwitcherService::class);
-        App::shouldReceive('make')
-            ->with(LanguageSwitcherService::class)
-            ->andReturn($this->languageServiceMock);
+        $app = \Jankx\Foundation\Application::getInstance();
+        $app->instance(LanguageSwitcherService::class, $this->languageServiceMock);
+
+        // Add default expectations to prevent BadMethodCallException
+        $this->languageServiceMock->shouldReceive('getLanguages')
+            ->byDefault()
+            ->andReturn([]);
+        $this->languageServiceMock->shouldReceive('getCurrentLanguage')
+            ->byDefault()
+            ->andReturn([]);
     }
 
     protected function tearDown(): void

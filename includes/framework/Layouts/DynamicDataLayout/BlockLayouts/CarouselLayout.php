@@ -275,4 +275,77 @@ class CarouselLayout extends BlockTemplateLayout
             ],
         ];
     }
+
+    protected function getContainerStructure(array $options): array
+    {
+        $structure = parent::getContainerStructure($options);
+        $structure['classes'][] = 'carousel';
+        $structure['classes'][] = 'dynamic-data-layout--carousel';
+        $structure['classes'][] = 'post-type-layout-carousel';
+        
+        $slidesPerView = (int) ($options['slidesPerView'] ?? ($options['columns'] ?? 1));
+        
+        // Embla specific attributes
+        $structure['attributes']['data-embla-carousel'] = ''; 
+        $structure['attributes']['data-slides-per-view'] = (string)$slidesPerView;
+        $structure['attributes']['data-space-between'] = (string)($options['spaceBetween'] ?? 16);
+        
+        if (!empty($options['loop']) || !empty($options['carouselLoop'])) {
+            $structure['attributes']['data-loop'] = 'true';
+        }
+        if (!empty($options['autoplay']) || !empty($options['carouselAutoplay'])) {
+            $structure['attributes']['data-autoplay'] = 'true';
+        }
+        if (!empty($options['autoplayDelay']) || !empty($options['carouselAutoplayDelay'])) {
+            $structure['attributes']['data-autoplay-delay'] = (string)($options['autoplayDelay'] ?? $options['carouselAutoplayDelay']);
+        }
+        
+        $structure['attributes']['data-align'] = $options['carouselAlign'] ?? 'start';
+        $structure['attributes']['data-contain-scroll'] = $options['carouselContainScroll'] ?? 'trimSnaps';
+        $structure['attributes']['data-axis'] = $options['carouselAxis'] ?? 'x';
+        $structure['attributes']['data-direction'] = $options['carouselDirection'] ?? 'ltr';
+        $structure['attributes']['data-duration'] = (string)($options['carouselDuration'] ?? 25);
+        $structure['attributes']['data-slides-to-scroll'] = (string)($options['slidesToScroll'] ?? 1);
+        $structure['attributes']['data-start-index'] = (string)($options['carouselStartIndex'] ?? 0);
+        $structure['attributes']['data-drag-threshold'] = (string)($options['carouselDragThreshold'] ?? 10);
+        
+        if (isset($options['carouselInViewThreshold'])) {
+            $structure['attributes']['data-in-view-threshold'] = (string)$options['carouselInViewThreshold'];
+        }
+        if (!empty($options['carouselDragFree'])) {
+            $structure['attributes']['data-drag-free'] = 'true';
+        }
+        if (!empty($options['carouselSkipSnaps'])) {
+            $structure['attributes']['data-skip-snaps'] = 'true';
+        }
+        
+        // Add embla viewport and container
+        $structure['children'] = [
+            [
+                'tag' => 'div',
+                'classes' => ['carousel-viewport', 'embla__viewport'],
+                'children' => [
+                    [
+                        'tag' => 'div',
+                        'classes' => ['carousel-container', 'embla__container'],
+                    ],
+                ],
+            ],
+        ];
+        
+        return $structure;
+    }
+
+    protected function getItemWrapperStructure(array $options): array
+    {
+        // For carousel, items are wrapped in carousel-slide div (which corresponds to embla__slide)
+        // and then they contain the standard post article
+        return [
+            'tag' => 'div',
+            'classes' => ['carousel-slide', 'embla__slide'],
+            'children' => [
+                parent::getItemWrapperStructure($options),
+            ],
+        ];
+    }
 }

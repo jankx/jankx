@@ -124,4 +124,28 @@ class GridLayout extends BlockTemplateLayout
 
         return $classes;
     }
+
+    protected function getContainerStructure(array $options): array
+    {
+        $structure = parent::getContainerStructure($options);
+        $structure['tag'] = 'ul';
+        $structure['classes'][] = 'is-flex-container';
+        
+        // Ensure columns-tablet and columns-mobile are present in classes if defined
+        if (!empty($options['columnsTablet'])) {
+            $structure['classes'][] = 'columns-tablet-' . intval($options['columnsTablet']);
+        }
+        if (!empty($options['columnsMobile'])) {
+            $structure['classes'][] = 'columns-mobile-' . intval($options['columnsMobile']);
+        }
+        
+        return $structure;
+    }
+
+    protected function getItemWrapperStructure(array $options): array
+    {
+        $structure = parent::getItemWrapperStructure($options);
+        $structure['tag'] = 'li';
+        return $structure;
+    }
 }
