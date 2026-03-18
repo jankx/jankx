@@ -31,7 +31,24 @@ class LanguageSwitcherBlock extends Block
      */
     protected $attributes = [];
 
+    /**
+     * Language service
+     *
+     * @var \App\Services\LanguageSwitcherService
+     */
+    protected $languageService;
 
+    /**
+     * Constructor
+     *
+     * @param LanguageSwitcherService $languageService
+     * @param string|null $blockPath
+     */
+    public function __construct(LanguageSwitcherService $languageService, $blockPath = null)
+    {
+        parent::__construct($blockPath);
+        $this->languageService = $languageService;
+    }
 
     /**
      * Render the block content
@@ -56,9 +73,7 @@ class LanguageSwitcherBlock extends Block
         }
 
         // Get available languages with current page URLs
-        /** @var LanguageSwitcherService $languageService */
-        $languageService = App::make(LanguageSwitcherService::class);
-        $languages = $languageService->getLanguages(true); // true = get URLs for current page translations
+        $languages = $this->languageService->getLanguages(true); // true = get URLs for current page translations
 
         if (empty($languages)) {
             return $this->renderPlaceholder() . ' (P2)';
@@ -114,9 +129,7 @@ class LanguageSwitcherBlock extends Block
     protected function renderDropdown($languages, $showFlags, $showNames, $showCurrent)
     {
         // Get current language data
-        /** @var LanguageSwitcherService $languageService */
-        $languageService = App::make(LanguageSwitcherService::class);
-        $currentLangData = $languageService->getCurrentLanguage();
+        $currentLangData = $this->languageService->getCurrentLanguage();
         $currentLangData = apply_filters(
             'jankx/languages/current-language/data',
             $currentLangData
@@ -220,9 +233,7 @@ class LanguageSwitcherBlock extends Block
     protected function renderList($languages, $showFlags, $showNames, $showCurrent)
     {
         // Get current language data consistently
-        /** @var LanguageSwitcherService $languageService */
-        $languageService = App::make(LanguageSwitcherService::class);
-        $currentLangData = $languageService->getCurrentLanguage();
+        $currentLangData = $this->languageService->getCurrentLanguage();
 
         // Validate current language data
         if (!is_array($currentLangData) || empty($currentLangData['code'])) {
@@ -290,9 +301,7 @@ class LanguageSwitcherBlock extends Block
     protected function renderFlags($languages, $showFlags, $showNames, $showCurrent)
     {
         // Get current language data consistently
-        /** @var LanguageSwitcherService $languageService */
-        $languageService = App::make(LanguageSwitcherService::class);
-        $currentLangData = $languageService->getCurrentLanguage();
+        $currentLangData = $this->languageService->getCurrentLanguage();
 
         // Validate current language data
         if (!is_array($currentLangData) || empty($currentLangData['code'])) {

@@ -23,6 +23,16 @@ class AdminPageService
     protected function registerDefaultPages()
     {
         $this->addPage([
+            'id' => 'jankx-dashboard',
+            'title' => __('Jankx Dashboard', 'jankx'),
+            'menu_title' => __('Dashboard', 'jankx'),
+            'capability' => 'manage_options',
+            'callback' => [$this, 'renderDashboardPage'],
+            'icon' => 'dashicons-performance',
+            'position' => 10
+        ]);
+
+        $this->addPage([
             'id' => 'jankx-extensions',
             'title' => __('Managed Extensions', 'jankx'),
             'menu_title' => __('Extensions', 'jankx'),

@@ -45,6 +45,11 @@ class JankxAdminPagesServiceProvider extends ServiceProvider
         $app->singleton('jankx.admin-pages', function ($app) {
             return new AdminPageService($app);
         });
+
+        // Register FormHandler
+        $app->singleton(\Jankx\Admin\Handlers\FormHandler::class, function ($app) {
+            return new \Jankx\Admin\Handlers\FormHandler($app);
+        });
     }
 
     public function boot(Application $app)
@@ -62,58 +67,99 @@ class JankxAdminPagesServiceProvider extends ServiceProvider
     /**
      * Đăng ký admin menu chính cho Jankx Framework
      */
+    /**
+     * Register main admin menu for Jankx Framework
+     */
     public function registerAdminMenu()
     {
         $adminPages = $this->app->make('jankx.admin-pages');
         $pages = $adminPages->getAllPages();
 
-        // Detect Theme Options
-        $themeOptions = null;
-        $themeOptionsArgs = null;
-        if ($this->app->has('theme-options')) {
-            $themeOptions = $this->app->make('theme-options');
-            if ($themeOptions && method_exists($themeOptions, 'getMenuArgs')) {
-                $themeOptionsArgs = $themeOptions->getMenuArgs();
-            }
-        }
-
-        // Determine Main Page (Default to Theme Options if available)
-        $mainPageId = $themeOptionsArgs['page_slug'] ?? 'jankx-extensions';
-        $mainPageTitle = $themeOptionsArgs['page_title'] ?? ($pages['jankx-extensions']['title'] ?? 'Jankx Extensions');
-
-        // Register Main Menu
+        // 1. Register Jankx Dashboard (Main Top-Level)
+        $dashboardId = 'jankx-dashboard';
         add_menu_page(
-            $mainPageTitle,
-            Config::get('app.menu_title', 'Jankx'),
+            __('Jankx Dashboard', 'jankx'),
+            __('Jankx Admin', 'jankx'),
             'manage_options',
-            $mainPageId,
-            $themeOptions ? [$themeOptions, 'renderOptionsPage'] : [$this, 'renderSubPage'],
+            $dashboardId,
+            [$this, 'renderSubPage'],
             'dashicons-art',
             Config::get('app.menu_position', 59)
         );
 
-        // Register Theme Options as first submenu if it is the main page
-        if ($themeOptionsArgs) {
-            add_submenu_page(
-                $mainPageId,
-                $themeOptionsArgs['page_title'],
-                $themeOptionsArgs['menu_title'],
-                $themeOptionsArgs['page_permissions'] ?? 'manage_options',
-                $themeOptionsArgs['page_slug'],
-                [$themeOptions, 'renderOptionsPage']
+        // Submenu: Dashboard
+        add_submenu_page(
+            $dashboardId,
+            __('Jankx Dashboard', 'jankx'),
+            __('Dashboard', 'jankx'),
+            'manage_options',
+            $dashboardId,
+            [$this, 'renderSubPage']
+        );
+
+        // 2. Promote Extensions to Top Level
+        if (isset($pages['jankx-extensions'])) {
+            $ext = $pages['jankx-extensions'];
+            add_menu_page(
+                $ext['title'],
+                $ext['menu_title'],
+                $ext['capability'],
+                $ext['id'],
+                $ext['callback'],
+                $ext['icon'],
+                60
             );
         }
 
-        // Register other pages as submenus
+        // 3. Promote Marketplace to Top Level
+        if (isset($pages['jankx-marketplace'])) {
+            $market = $pages['jankx-marketplace'];
+            add_menu_page(
+                $market['title'],
+                $market['menu_title'],
+                $market['capability'],
+                $market['id'],
+                $market['callback'],
+                $market['icon'],
+                61
+            );
+        }
+
+        // 4. Register Theme Options as Submenu under Dashboard
+        if ($this->app->has('theme-options')) {
+            $themeOptions = $this->app->make('theme-options');
+            if ($themeOptions && method_exists($themeOptions, 'getMenuArgs')) {
+                $args = $themeOptions->getMenuArgs();
+                add_submenu_page(
+                    $dashboardId,
+                    $args['page_title'],
+                    $args['menu_title'],
+                    $args['page_permissions'] ?? 'manage_options',
+                    $args['page_slug'],
+                    [$themeOptions, 'renderOptionsPage']
+                );
+            }
+        }
+
+        // 5. Register other submenus under Dashboard
+        uasort($pages, function ($a, $b) {
+            return ($a['position'] ?? 50) <=> ($b['position'] ?? 50);
+        });
+
+        $topLevelPages = ['jankx-dashboard', 'jankx-extensions', 'jankx-marketplace'];
+
         foreach ($pages as $page) {
+            if (in_array($page['id'], $topLevelPages)) {
+                continue; // Already registered or promoted
+            }
+
             add_submenu_page(
-                $mainPageId,
+                $dashboardId,
                 $page['title'],
                 $page['menu_title'],
                 $page['capability'],
                 $page['id'],
-                [$this, 'renderSubPage'],
-                $page['position']
+                [$this, 'renderSubPage']
             );
         }
     }
@@ -160,41 +206,8 @@ class JankxAdminPagesServiceProvider extends ServiceProvider
      */
     public function handlePageRequests()
     {
-        // Handle form submissions if needed
-        if ($_POST && isset($_POST['jankx_action'])) {
-            $this->handleFormSubmission($_POST);
-        }
-    }
-
-    /**
-     * Handle form submissions
-     */
-    protected function handleFormSubmission($data)
-    {
-        $action = $data['jankx_action'] ?? '';
-
-        switch ($action) {
-            case 'save_image_sizes':
-                $this->handleSaveImageSizes($data);
-                break;
-        }
-    }
-
-    /**
-     * Handle saving enabled image sizes
-     */
-    protected function handleSaveImageSizes($data)
-    {
-        if (!wp_verify_nonce($data['jankx_utilities_nonce'] ?? '', 'jankx_save_utilities')) {
-            wp_die('Security check failed');
-        }
-
-        $enabled_sizes = $data['enabled_sizes'] ?? [];
-        update_option('jankx_enabled_image_sizes', $enabled_sizes);
-
-        add_action('admin_notices', function () {
-            echo '<div class="notice notice-success is-dismissible"><p>Image size settings saved.</p></div>';
-        });
+        $handler = $this->app->make(\Jankx\Admin\Handlers\FormHandler::class);
+        $handler->handleRequests();
     }
 
     /**

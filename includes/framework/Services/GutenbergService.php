@@ -97,13 +97,11 @@ class GutenbergService
         foreach ($this->getBlocks() as $blockClass => $initialized) {
             $block = $initialized
                 ? $this->repository->getBlock($blockClass)
-                : new $blockClass();
+                : $this->app->make($blockClass);
 
             $this->repository->registerBlock($block);
         }
     }
-
-
 
     /**
      * Initialize Gutenberg blocks and patterns
@@ -122,10 +120,14 @@ class GutenbergService
 
             foreach ($instances as $blockName => $block) {
                 try {
-                    // Init block
-                    if (method_exists($block, 'init')) {
-                        call_user_func([$block, 'init']);
+                    // Boot block (Modern lifecycle)
+                    if (method_exists($block, 'boot')) {
+                        $block->boot();
+                    } elseif (method_exists($block, 'init')) {
+                        // Fallback for legacy blocks
+                        $block->init();
                     }
+
                     $block->register();
                     $registeredCount++;
                 } catch (\Exception $e) {

@@ -221,10 +221,12 @@ class MarketplaceManager
     }
 
     /**
-     * Download ZIP from GitHub Releases and extract to theme's extensions/ dir
+     * Download ZIP and extract intelligently to the extensions directory
      */
     protected function downloadAndInstall(string $slug, string $downloadUrl)
     {
+        global $wp_filesystem;
+
         if (!function_exists('download_url')) {
             require_once ABSPATH . 'wp-admin/includes/file.php';
         }
@@ -237,32 +239,94 @@ class MarketplaceManager
 
         /** @var ThemeExtensionManager $extensionManager */
         $extensionManager = App::make('theme_extension.manager');
-        $targetDir = $extensionManager->getExtensionsDir() . '/' . $slug;
+        $extensionsParentDir = $extensionManager->getExtensionsDir(true);
+        $finalTargetDir = $extensionsParentDir . '/' . $slug;
 
         // Ensure WP_Filesystem is available
         require_once ABSPATH . 'wp-admin/includes/file.php';
-        WP_Filesystem();
-
-        if (!is_dir($targetDir)) {
-            wp_mkdir_p($targetDir);
+        if (empty($wp_filesystem)) {
+            WP_Filesystem();
         }
 
-        $unzipped = unzip_file($tmpFile, $targetDir);
+        // Create a unique temporary directory for extraction
+        $tempExtractDir = $extensionsParentDir . '/tmp_' . $slug . '_' . time();
+        if (!$wp_filesystem->mkdir($tempExtractDir)) {
+            @unlink($tmpFile);
+            return new \WP_Error('jankx_temp_dir_failed', 'Failed to create temporary extraction directory.');
+        }
+
+        $unzipped = unzip_file($tmpFile, $tempExtractDir);
         @unlink($tmpFile);
 
         if (is_wp_error($unzipped)) {
+            $wp_filesystem->delete($tempExtractDir, true);
             Log::error("Marketplace: Unzip failed for {$slug} - " . $unzipped->get_error_message());
             return $unzipped;
         }
 
-        // Invalidate resolve cache so next check picks up installed version
+        // Search for manifest.json recursively within the temp directory
+        $manifestDir = $this->findManifestDirectory($tempExtractDir);
+        if (!$manifestDir) {
+            $wp_filesystem->delete($tempExtractDir, true);
+            return new \WP_Error('jankx_no_manifest', 'Could not find manifest.json in the extension package.');
+        }
+
+        // Ensure final target directory is empty
+        if ($wp_filesystem->exists($finalTargetDir)) {
+            $wp_filesystem->delete($finalTargetDir, true);
+        }
+
+        // Move the correct content directory to final destination
+        $moved = $wp_filesystem->move($manifestDir, $finalTargetDir, true);
+
+        // Cleanup temp extraction directory
+        $wp_filesystem->delete($tempExtractDir, true);
+
+        if (!$moved) {
+            return new \WP_Error('jankx_move_failed', 'Failed to move extension files to destination.');
+        }
+
+        // Invalidate resolve cache
         delete_transient('jankx_resolve_' . sanitize_key($slug));
 
-        // Try to load the newly installed extension immediately
-        $extensionManager->loadExtension($targetDir);
+        // Load the extension immediately
+        $extensionManager->loadExtension($finalTargetDir);
 
-        do_action('jankx/marketplace/extension_installed', $slug, $targetDir);
+        do_action('jankx/marketplace/extension_installed', $slug, $finalTargetDir);
         return true;
+    }
+
+    /**
+     * Find the directory containing manifest.json within a path
+     *
+     * @param string $path
+     * @return string|false
+     */
+    protected function findManifestDirectory(string $path)
+    {
+        global $wp_filesystem;
+
+        $dirList = $wp_filesystem->dirlist($path);
+        if (empty($dirList)) {
+            return false;
+        }
+
+        // 1. Check current level
+        if (isset($dirList['manifest.json'])) {
+            return $path;
+        }
+
+        // 2. Check depth-first subdirectories (excluding __MACOSX)
+        foreach ($dirList as $item) {
+            if ($item['type'] === 'd' && $item['name'] !== '__MACOSX') {
+                $found = $this->findManifestDirectory($path . '/' . $item['name']);
+                if ($found) {
+                    return $found;
+                }
+            }
+        }
+
+        return false;
     }
 
     // =========================================================================

@@ -29,7 +29,7 @@ class BlockTemplateLayoutManager
         self::$instance = $instance;
     }
 
-    private function __construct()
+    public function __construct()
     {
         BlockTemplateLayoutFactory::init();
         $this->layouts = BlockTemplateLayoutFactory::getRegisteredLayouts();

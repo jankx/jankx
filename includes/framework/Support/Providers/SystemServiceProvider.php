@@ -8,6 +8,7 @@ use Jankx\Services\CacheService;
 use Jankx\Facades\User;
 use Jankx\Facades\Cache;
 use Jankx\Helper\Environment;
+use Jankx\Managers\UrlManager;
 
 /**
  * System Service Provider
@@ -43,6 +44,11 @@ class SystemServiceProvider extends ServiceProvider
         // Register User Service
         $app->singleton('user', function (Application $app) {
             return new UserService($app);
+        });
+
+        // Register Url Manager
+        $app->singleton(UrlManager::class, function () {
+            return new UrlManager();
         });
 
         // Register facades

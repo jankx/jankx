@@ -22,10 +22,11 @@ class LanguageSwitcherBlockTest extends BlockTestCase
     {
         parent::setUp();
         
-        $this->block = new LanguageSwitcherBlock();
-        
         // Mock LanguageSwitcherService
         $this->languageServiceMock = Mockery::mock(LanguageSwitcherService::class);
+
+        $this->block = new LanguageSwitcherBlock($this->languageServiceMock);
+        
         $app = \Jankx\Foundation\Application::getInstance();
         $app->instance(LanguageSwitcherService::class, $this->languageServiceMock);
 
@@ -51,7 +52,7 @@ class LanguageSwitcherBlockTest extends BlockTestCase
 
     protected function createBlockInstance(): LanguageSwitcherBlock
     {
-        return new LanguageSwitcherBlock();
+        return new LanguageSwitcherBlock($this->languageServiceMock);
     }
 
     protected function getDefaultAttributes(): array

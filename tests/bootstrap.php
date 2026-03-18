@@ -206,6 +206,7 @@ if (!function_exists('_e')) { function _e($t, $d = 'default') { echo $t; } }
 if (!function_exists('wp_json_encode')) { function wp_json_encode($d) { return json_encode($d); } }
 if (!function_exists('is_admin')) { function is_admin() { return isset($GLOBALS['mock_is_admin']) ? (bool)$GLOBALS['mock_is_admin'] : true; } }
 if (!function_exists('wp_doing_ajax')) { function wp_doing_ajax() { return false; } }
+if (!function_exists('wp_doing_cron')) { function wp_doing_cron() { return false; } }
 if (!function_exists('get_block_wrapper_attributes')) {
     function get_block_wrapper_attributes($extra = []) {
         $out = ''; foreach ($extra as $k => $v) $out .= sprintf(' %s="%s"', esc_attr($k), esc_attr($v));
@@ -213,10 +214,48 @@ if (!function_exists('get_block_wrapper_attributes')) {
     }
 }
 if (!function_exists('wp_style_is')) { function wp_style_is($h, $s = 'registered') { return false; } }
+if (!function_exists('wp_create_nonce')) { function wp_create_nonce($action = -1) { return 'mock-nonce'; } }
+if (!function_exists('sanitize_html_class')) { function sanitize_html_class($class, $fallback = '') { return preg_replace('/[^a-zA-Z0-9_-]/', '', $class) ?: $fallback; } }
+if (!function_exists('get_theme_file_path')) { function get_theme_file_path($path = '') { return ABSPATH . ltrim($path, '/'); } }
+
+if (!function_exists('wp_get_theme')) {
+    function wp_get_theme() {
+        return new class {
+            public function get($key) { return 'Mock Theme'; }
+            public function exists() { return true; }
+            public function parent() { return false; }
+            public function get_screenshot() { return false; }
+            public function get_stylesheet() { return 'jankx'; }
+            public function get_template() { return 'jankx'; }
+        };
+    }
+}
+
+if (!function_exists('get_avatar')) { function get_avatar($id, $size = 96) { return sprintf('<img src="avatar-%s.png" class="avatar avatar-%d" />', $id, $size); } }
+if (!function_exists('get_author_posts_url')) { function get_author_posts_url($id) { return "http://example.com/author/{$id}"; } }
+if (!function_exists('get_users')) { function get_users($args = []) { return []; } }
+if (!function_exists('wp_check_filetype')) { function wp_check_filetype($f, $m = null) { return ['ext' => 'png', 'type' => 'image/png']; } }
 
 // Polylang Mocks
+if (!function_exists('get_template')) { function get_template() { return 'jankx'; } }
+if (!function_exists('get_stylesheet')) { function get_stylesheet() { return 'jankx'; } }
+if (!function_exists('is_child_theme')) { function is_child_theme() { return false; } }
+
 if (!function_exists('pll_the_languages')) {
     function pll_the_languages($args = []) {
+        $languages = [
+            'en' => (object)[
+                'id' => 1, 'slug' => 'en', 'name' => 'English', 'url' => '#en', 'flag' => 'en.png', 'current_lang' => true,
+            ],
+            'vi' => (object)[
+                'id' => 2, 'slug' => 'vi', 'name' => 'Vietnamese', 'url' => '#vi', 'flag' => 'vi.png', 'current_lang' => false,
+            ],
+        ];
+
+        if ($args['raw'] ?? false) {
+            return $languages;
+        }
+
         $output = '<ul class="pll-language-switcher-list"><li>English</li><li>Tiếng Việt</li></ul>';
         if (($args['echo'] ?? 1)) echo $output;
         return $output;
