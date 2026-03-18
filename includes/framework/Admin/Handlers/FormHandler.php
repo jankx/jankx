@@ -42,23 +42,38 @@ class FormHandler
             return;
         }
 
-        $action = $_POST['jankx_action'];
+        // Sanitize action and inputs
+        $action = sanitize_key($_POST['jankx_action']);
+        $data   = $this->sanitizeRequestData($_POST);
 
         try {
             switch ($action) {
                 case 'save_image_sizes':
-                    $this->handleSaveImageSizes($_POST);
+                    $this->handleSaveImageSizes($data);
                     break;
                 
                 // Allow other components to add their own handlers via action
                 default:
-                    do_action("jankx/admin/handle_action/{$action}", $_POST, $this->app);
+                    do_action("jankx/admin/handle_action/{$action}", $data, $this->app);
                     break;
             }
         } catch (\Exception $e) {
             Log::error("Admin Form Handler: Action '{$action}' failed - " . $e->getMessage());
             wp_die('An error occurred while processing your request.');
         }
+    }
+
+    /**
+     * Sanitize input data recursively
+     * 
+     * @param array $data
+     * @return array
+     */
+    protected function sanitizeRequestData(array $data): array
+    {
+        return map_deep($data, function ($value) {
+            return is_string($value) ? sanitize_text_field($value) : $value;
+        });
     }
 
     /**

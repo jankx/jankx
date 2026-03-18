@@ -15,6 +15,11 @@ abstract class ServiceProvider implements ServiceProviderContract
     protected $app;
 
     /**
+     * @var string
+     */
+    protected static $cachedContext;
+
+    /**
      * @var bool
      */
     protected $booted = false;
@@ -116,51 +121,55 @@ abstract class ServiceProvider implements ServiceProviderContract
      */
     protected function getLoadingContext(): string
     {
+        if (static::$cachedContext !== null) {
+            return static::$cachedContext;
+        }
+
         if ($this->app->has('kernel')) {
             $kernel = $this->app->make('kernel');
             $context = $kernel->getContext();
 
             if (in_array($context, ['wp-cli', 'cli'])) {
-                return 'cli';
+                return static::$cachedContext = 'cli';
             }
             if (in_array($context, ['wp-cron', 'cron'])) {
-                return 'cron';
+                return static::$cachedContext = 'cron';
             }
             if (in_array($context, ['admin-ajax', 'ajax'])) {
-                return 'ajax';
+                return static::$cachedContext = 'ajax';
             }
             if (in_array($context, ['rest-api', 'rest'])) {
-                return 'rest';
+                return static::$cachedContext = 'rest';
             }
             if (in_array($context, ['dashboard', 'admin'])) {
-                return 'admin';
+                return static::$cachedContext = 'admin';
             }
             if ($context === 'frontend') {
-                return 'frontend';
+                return static::$cachedContext = 'frontend';
             }
         }
 
         if (defined('WP_CLI') && WP_CLI) {
-            return 'cli';
+            return static::$cachedContext = 'cli';
         }
 
         if (wp_doing_ajax()) {
-            return 'ajax';
+            return static::$cachedContext = 'ajax';
         }
 
         if (wp_doing_cron()) {
-            return 'cron';
+            return static::$cachedContext = 'cron';
         }
 
         if (defined('REST_REQUEST') && REST_REQUEST) {
-            return 'rest';
+            return static::$cachedContext = 'rest';
         }
 
         if (is_admin()) {
-            return 'admin';
+            return static::$cachedContext = 'admin';
         }
 
-        return 'frontend';
+        return static::$cachedContext = 'frontend';
     }
 
     /**

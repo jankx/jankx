@@ -100,24 +100,40 @@ class ThemeExtensionManager
      */
     public function loadActiveThemeExtensions()
     {
-        // 1. Scan Parent Theme extensions
-        $parentExtensionsDir = get_template_directory() . '/extensions';
-        if (is_dir($parentExtensionsDir)) {
-            $parentDirs = glob($parentExtensionsDir . '/*', GLOB_ONLYDIR);
-            foreach ($parentDirs as $dir) {
-                $this->loadExtension($dir);
+        $cacheKey = 'jankx_extensions_dirs_' . get_stylesheet();
+        $extensionDirs = get_transient($cacheKey);
+
+        if ($extensionDirs === false || (defined('WP_DEBUG') && WP_DEBUG)) {
+            $extensionDirs = [];
+
+            // 1. Scan Parent Theme extensions
+            $parentExtensionsDir = get_template_directory() . '/extensions';
+            if (is_dir($parentExtensionsDir)) {
+                $parentDirs = glob($parentExtensionsDir . '/*', GLOB_ONLYDIR);
+                if ($parentDirs) {
+                    $extensionDirs = array_merge($extensionDirs, $parentDirs);
+                }
+            }
+
+            // 2. Scan Child Theme extensions (if active)
+            if (is_child_theme()) {
+                $childExtensionsDir = get_stylesheet_directory() . '/extensions';
+                if (is_dir($childExtensionsDir) && $childExtensionsDir !== $parentExtensionsDir) {
+                    $childDirs = glob($childExtensionsDir . '/*', GLOB_ONLYDIR);
+                    if ($childDirs) {
+                        $extensionDirs = array_merge($extensionDirs, $childDirs);
+                    }
+                }
+            }
+
+            // Cache for 24 hours if not in debug
+            if (!defined('WP_DEBUG') || !WP_DEBUG) {
+                set_transient($cacheKey, $extensionDirs, DAY_IN_SECONDS);
             }
         }
 
-        // 2. Scan Child Theme extensions (if active)
-        if (is_child_theme()) {
-            $childExtensionsDir = get_stylesheet_directory() . '/extensions';
-            if (is_dir($childExtensionsDir) && $childExtensionsDir !== $parentExtensionsDir) {
-                $childDirs = glob($childExtensionsDir . '/*', GLOB_ONLYDIR);
-                foreach ($childDirs as $dir) {
-                    $this->loadExtension($dir);
-                }
-            }
+        foreach ($extensionDirs as $dir) {
+            $this->loadExtension($dir);
         }
     }
 

@@ -112,14 +112,14 @@ class FontIconsServiceProvider extends ServiceProvider
     protected function enqueueIconCss($cssUrl, $type)
     {
         $sanitizedType = sanitize_title($type);
+        $handle        = "jankx-icon-{$sanitizedType}";
 
-        add_action('wp_head', function () use ($cssUrl, $sanitizedType) {
-            echo "<link rel=\"stylesheet\" id=\"jankx-icon-{$sanitizedType}-css\" href=\"{$cssUrl}\" media=\"all\" />\n";
-        });
-
-        add_action('admin_head', function () use ($cssUrl, $sanitizedType) {
-            echo "<link rel=\"stylesheet\" id=\"jankx-icon-{$sanitizedType}-css\" href=\"{$cssUrl}\" media=\"all\" />\n";
-        });
+        wp_enqueue_style(
+            $handle,
+            $cssUrl,
+            [],
+            null
+        );
     }
 
 

@@ -67,10 +67,18 @@ class Application extends Container
         ThemeOptionsServiceProvider::class,
         JankxAdminPagesServiceProvider::class,
         ExtensionServiceProvider::class,
-        FontsServiceProvider::class,
-        FontIconsServiceProvider::class,
         ContentLayoutServiceProvider::class,
         TemplateEngineServiceProvider::class,
+    ];
+
+    /**
+     * The service providers that should be lazy loaded.
+     * 
+     * @var array
+     */
+    protected $lazyProviders = [
+        FontsServiceProvider::class,
+        FontIconsServiceProvider::class,
     ];
 
 
@@ -115,6 +123,23 @@ class Application extends Container
         $this->registerBaseBindings();
         $this->registerCoreContainerAliases();
         $this->providerRegistry = new ServiceProviderRegistry($this);
+
+        // Register lazy providers
+        $this->registerLazyProviders();
+    }
+
+    /**
+     * Register lazy service providers
+     * 
+     * @return void
+     */
+    protected function registerLazyProviders(): void
+    {
+        if (isset($this->lazyProviders)) {
+            foreach ($this->lazyProviders as $provider) {
+                $this->registerLazy($provider);
+            }
+        }
     }
 
     /**

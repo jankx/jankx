@@ -35,6 +35,7 @@ class ThemeOptionsServiceProvider extends ServiceProvider
 
                 $themeOptions->init();
             } catch (\Exception $e) {
+                error_log('Theme Options Error: ' . $e->getMessage());
             }
         }, 10);
 
