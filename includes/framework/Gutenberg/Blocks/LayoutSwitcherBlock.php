@@ -24,13 +24,27 @@ class LayoutSwitcherBlock extends Block
     protected $blockId = 'jankx/layout-switcher';
 
     /**
-     * Get layout manager instance
-     *
-     * @return BlockTemplateLayoutManager
+     * @var BlockTemplateLayoutManager
      */
-    protected function getLayoutManager(): BlockTemplateLayoutManager
+    protected $layoutManager;
+
+    /**
+     * @var UrlManager
+     */
+    protected $urlManager;
+
+    /**
+     * Constructor
+     *
+     * @param BlockTemplateLayoutManager $layoutManager
+     * @param UrlManager $urlManager
+     * @param string|null $blockPath
+     */
+    public function __construct(BlockTemplateLayoutManager $layoutManager, UrlManager $urlManager, $blockPath = null)
     {
-        return BlockTemplateLayoutManager::getInstance();
+        parent::__construct($blockPath);
+        $this->layoutManager = $layoutManager;
+        $this->urlManager = $urlManager;
     }
 
     /**
@@ -54,8 +68,7 @@ class LayoutSwitcherBlock extends Block
             return '';
         }
 
-        $layoutManager = $this->getLayoutManager();
-        $availableLayouts = $layoutManager->getLayoutsForPostType($postType);
+        $availableLayouts = $this->layoutManager->getLayoutsForPostType($postType);
 
         if (empty($availableLayouts)) {
             if (is_admin()) {
@@ -86,7 +99,7 @@ class LayoutSwitcherBlock extends Block
             <ul class="layout-options">
                 <?php foreach ($layoutsToShow as $name => $info): ?>
                     <?php 
-                        $layoutInstance = $layoutManager->createLayout($name);
+                        $layoutInstance = $this->layoutManager->createLayout($name);
                         $icon = $layoutInstance->getIcon();
                         $title = $layoutInstance->getTitle();
                         $activeClass = ($currentLayout === $name) ? 'is-active' : '';
@@ -129,7 +142,7 @@ class LayoutSwitcherBlock extends Block
         }
 
         $handle = 'jankx-layout-switcher-view';
-        $script_url = (new UrlManager())->blockAsset('layout-switcher/build/view.js');
+        $script_url = $this->urlManager->blockAsset('layout-switcher/build/view.js');
         $asset_file = $this->blockPath . '/build/view.asset.php';
         
         $dependencies = ['jquery'];

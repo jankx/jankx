@@ -42,7 +42,7 @@ class ThemeOptionsService
     public function __construct(Application $app)
     {
         $this->app = $app;
-        $this->optionsPath = get_stylesheet_directory() . '/resources/options';
+        $this->optionsPath = Config::get('app.paths.options', get_stylesheet_directory() . '/resources/options');
 
         // Set framework từ config
         try {
@@ -53,6 +53,7 @@ class ThemeOptionsService
                 }
             }
         } catch (\Exception $e) {
+            Log::error('Theme Options: Error setting framework - ' . $e->getMessage());
         }
 
         $this->loadOptionsData();
@@ -137,6 +138,7 @@ class ThemeOptionsService
                 }
             }
         } catch (\Exception $e) {
+            Log::error('Theme Options: Error loading options data - ' . $e->getMessage());
         }
     }
 
@@ -192,6 +194,7 @@ class ThemeOptionsService
             // Gọi createSections trên adapter
             $this->adapter->createSections($optionsReader);
         } catch (\Exception $e) {
+            Log::error('Theme Options: Error creating sections - ' . $e->getMessage());
         }
     }
 

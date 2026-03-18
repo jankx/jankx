@@ -45,6 +45,11 @@ class JankxAdminPagesServiceProvider extends ServiceProvider
         $app->singleton('jankx.admin-pages', function ($app) {
             return new AdminPageService($app);
         });
+
+        // Register FormHandler
+        $app->singleton(\Jankx\Admin\Handlers\FormHandler::class, function ($app) {
+            return new \Jankx\Admin\Handlers\FormHandler($app);
+        });
     }
 
     public function boot(Application $app)
@@ -160,41 +165,8 @@ class JankxAdminPagesServiceProvider extends ServiceProvider
      */
     public function handlePageRequests()
     {
-        // Handle form submissions if needed
-        if ($_POST && isset($_POST['jankx_action'])) {
-            $this->handleFormSubmission($_POST);
-        }
-    }
-
-    /**
-     * Handle form submissions
-     */
-    protected function handleFormSubmission($data)
-    {
-        $action = $data['jankx_action'] ?? '';
-
-        switch ($action) {
-            case 'save_image_sizes':
-                $this->handleSaveImageSizes($data);
-                break;
-        }
-    }
-
-    /**
-     * Handle saving enabled image sizes
-     */
-    protected function handleSaveImageSizes($data)
-    {
-        if (!wp_verify_nonce($data['jankx_utilities_nonce'] ?? '', 'jankx_save_utilities')) {
-            wp_die('Security check failed');
-        }
-
-        $enabled_sizes = $data['enabled_sizes'] ?? [];
-        update_option('jankx_enabled_image_sizes', $enabled_sizes);
-
-        add_action('admin_notices', function () {
-            echo '<div class="notice notice-success is-dismissible"><p>Image size settings saved.</p></div>';
-        });
+        $handler = $this->app->make(\Jankx\Admin\Handlers\FormHandler::class);
+        $handler->handleRequests();
     }
 
     /**

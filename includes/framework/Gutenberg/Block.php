@@ -39,25 +39,75 @@ abstract class Block implements BlockInterface
         return $this->blockId;
     }
 
-     /**
+    /**
      * Constructor
      *
      * @param string|null $blockPath Path to the directory containing block.json
-     * @throws \RuntimeException When block path cannot be resolved
      */
     public function __construct($blockPath = null)
     {
-        // Resolve blockPath if not provided
-        if (!$blockPath) {
-            $blockPath = $this->resolveBlockPathFromContainer();
-            if (!$blockPath) {
-                throw new \RuntimeException(
-                    sprintf('Cannot resolve block path for block ID: %s', $this->getBlockId())
-                );
-            }
+        $this->blockPath = $blockPath;
+    }
+
+    /**
+     * Set block path
+     *
+     * @param string $path
+     * @return void
+     */
+    public function setBlockPath(string $path): void
+    {
+        $this->blockPath = $path;
+    }
+
+    /**
+     * Boot block and initialize its components
+     *
+     * @return void
+     */
+    public function boot(): void
+    {
+        if (!$this->blockPath) {
+            $this->blockPath = $this->resolveBlockPathFromContainer();
         }
 
-        $this->blockPath = $blockPath;
+        $this->registerHooks();
+
+        if (is_admin()) {
+            $this->registerEditorAssets();
+        } else {
+            $this->registerFrontendAssets();
+        }
+    }
+
+    /**
+     * Register WordPress hooks for this block
+     *
+     * @return void
+     */
+    protected function registerHooks(): void
+    {
+        // Override in child classes to register actions/filters
+    }
+
+    /**
+     * Register assets for the block editor
+     *
+     * @return void
+     */
+    protected function registerEditorAssets(): void
+    {
+        // Override in child classes to enqueue editor scripts/styles
+    }
+
+    /**
+     * Register assets for the frontend
+     *
+     * @return void
+     */
+    protected function registerFrontendAssets(): void
+    {
+        // Override in child classes to enqueue frontend scripts/styles
     }
 
     public function register(): void

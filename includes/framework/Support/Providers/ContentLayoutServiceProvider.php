@@ -13,6 +13,10 @@ class ContentLayoutServiceProvider extends ServiceProvider
         $app->singleton(ContentLayoutManager::class, function () {
             return ContentLayoutManager::getInstance();
         });
+
+        $app->singleton(\Jankx\Layouts\DynamicDataLayout\BlockTemplateLayoutManager::class, function () {
+            return \Jankx\Layouts\DynamicDataLayout\BlockTemplateLayoutManager::getInstance();
+        });
     }
 
     public function boot(Application $app)
