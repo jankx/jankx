@@ -45,8 +45,7 @@ abstract class BaseLayoutDataParser implements LayoutDataParserInterface
         if (!empty($dynamicCss)) {
             \Jankx\Facades\App::make('asset.resolver')->addInlineCss(
                 $dynamicCss, 
-                \Jankx\Services\AssetResolver::INSTANCE, 
-                $this->id
+                \Jankx\Services\AssetResolver::INSTANCE
             );
         }
 
