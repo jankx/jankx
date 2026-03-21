@@ -6,15 +6,13 @@ use Jankx\Layouts\ContentLayout\Contracts\ContentLayoutContract;
 
 class ContentLayoutManager
 {
-    protected static $instance;
     protected $layouts = [];
 
-    public static function getInstance()
+    /**
+     * Constructor
+     */
+    public function __construct()
     {
-        if (is_null(self::$instance)) {
-            self::$instance = new self();
-        }
-        return self::$instance;
     }
 
     public function register($layout)

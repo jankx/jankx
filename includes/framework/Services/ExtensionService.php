@@ -231,6 +231,19 @@ class ExtensionService implements ExtensionServiceInterface
     /**
      * Update extension enabled status in manifest.json
      */
+    protected function getFilesystem()
+    {
+        global $wp_filesystem;
+        if (empty($wp_filesystem)) {
+            require_once ABSPATH . 'wp-admin/includes/file.php';
+            WP_Filesystem();
+        }
+        return $wp_filesystem;
+    }
+
+    /**
+     * Update extension enabled status in manifest.json
+     */
     protected function updateAutoActivate(string $extensionName, bool $value): bool
     {
         $manifestPath = null;
@@ -255,15 +268,21 @@ class ExtensionService implements ExtensionServiceInterface
             } catch (\Exception $e) {}
         }
 
-        if (!$manifestPath || !file_exists($manifestPath)) {
+        if (!$manifestPath) {
             return false;
         }
 
-        if (!is_writable($manifestPath)) {
+        $wp_filesystem = $this->getFilesystem();
+        if (!$wp_filesystem->exists($manifestPath)) {
             return false;
         }
 
-        $manifest = json_decode(file_get_contents($manifestPath), true);
+        if (!$wp_filesystem->is_writable($manifestPath)) {
+            return false;
+        }
+
+        $manifestJson = $wp_filesystem->get_contents($manifestPath);
+        $manifest = json_decode($manifestJson, true);
         if (!$manifest) {
             return false;
         }
@@ -271,8 +290,7 @@ class ExtensionService implements ExtensionServiceInterface
         $manifest['enabled'] = $value;
         $json = json_encode($manifest, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
 
-        // Use LOCK_EX to handle potential concurrency or locking issues
-        return file_put_contents($manifestPath, $json, LOCK_EX) !== false;
+        return $wp_filesystem->put_contents($manifestPath, $json, FS_CHMOD_FILE);
     }
 
     /**
@@ -547,25 +565,10 @@ class ExtensionService implements ExtensionServiceInterface
              return;
         }
 
-        $this->recursiveDelete($extensionPath);
+        $wp_filesystem = $this->getFilesystem();
+        $wp_filesystem->delete($extensionPath, true);
 
         wp_send_json_success(['message' => 'Extension deleted successfully']);
-    }
-
-    /**
-     * Recursively delete a directory
-     */
-    private function recursiveDelete($dir)
-    {
-        if (!is_dir($dir)) {
-            return;
-        }
-
-        $files = array_diff(scandir($dir), ['.', '..']);
-        foreach ($files as $file) {
-            (is_dir("$dir/$file")) ? $this->recursiveDelete("$dir/$file") : unlink("$dir/$file");
-        }
-        return rmdir($dir);
     }
 
      /**

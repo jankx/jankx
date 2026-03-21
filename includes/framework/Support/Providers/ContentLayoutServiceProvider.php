@@ -48,7 +48,7 @@ class ContentLayoutServiceProvider extends ServiceProvider
 
         // 4. Legacy: Content Layout Manager
         $app->singleton(ContentLayoutManager::class, function () {
-            return ContentLayoutManager::getInstance();
+            return new ContentLayoutManager();
         });
 
         $app->singleton(\Jankx\Layouts\DynamicDataLayout\BlockTemplateLayoutManager::class, function ($app) {

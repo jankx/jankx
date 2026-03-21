@@ -48,7 +48,7 @@ class TemplateEngineServiceProvider extends ServiceProvider
         $this->registerWordPressFilters($app);
 
         $app->singleton(ViewLayoutManager::class, function (Application $app) {
-            return ViewLayoutManager::getInstance();
+            return new ViewLayoutManager($app);
         });
     }
 

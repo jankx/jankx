@@ -7,20 +7,22 @@ use Jankx\Layouts\DynamicDataLayout\ViewLayouts\ViewLayoutFactory;
 
 class ViewLayoutManager
 {
-    protected static $instance = null;
+    /**
+     * @var \Jankx\Foundation\Application
+     */
+    protected $app;
+
     protected $layouts = [];
     protected $registered = false;
 
-    public static function getInstance(): self
+    /**
+     * Constructor
+     * 
+     * @param \Jankx\Foundation\Application|null $app
+     */
+    public function __construct(\Jankx\Foundation\Application $app = null)
     {
-        if (self::$instance === null) {
-            self::$instance = new self();
-        }
-        return self::$instance;
-    }
-
-    private function __construct()
-    {
+        $this->app = $app;
         ViewLayoutFactory::init();
     }
 
