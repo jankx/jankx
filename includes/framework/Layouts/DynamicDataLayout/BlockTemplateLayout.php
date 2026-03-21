@@ -6,6 +6,10 @@ use Jankx\Layouts\DynamicDataLayout\Contracts\BlockTemplateLayoutInterface;
 use Jankx\Layouts\DynamicDataLayout\Contracts\ContentGeneratorInterface;
 use Jankx\Layouts\DynamicDataLayout\Generators\PostTemplateBlockGenerator;
 use Jankx\Gutenberg\Blocks\DynamicDataTemplateBlock;
+use Jankx\Layouts\DynamicDataLayout\Contracts\LayoutDataParserInterface;
+use Jankx\Layouts\DynamicDataLayout\Parsers\DefaultLayoutDataParser;
+use Jankx\Layouts\DynamicDataLayout\Parsers\GridLayoutDataParser;
+use Jankx\Layouts\DynamicDataLayout\Parsers\CarouselLayoutDataParser;
 use Jankx\Services\ViewService;
 use WP_Query;
 
@@ -13,7 +17,7 @@ use WP_Query;
  * Abstract Block Template Layout
  * 
  * Foundation for all data-driven layouts in the framework.
- * Uses ViewService for rendering and supports Strategy pattern via Generators.
+ * Uses ViewService for rendering and supports standardized data parsing via Parsers.
  */
 abstract class BlockTemplateLayout implements BlockTemplateLayoutInterface
 {
@@ -123,6 +127,41 @@ abstract class BlockTemplateLayout implements BlockTemplateLayoutInterface
     public function getContentGenerator()
     {
         return $this->contentGenerator;
+    }
+
+    /**
+     * Get a standardized data package for templates or JSON responses.
+     * Implements the Strategy Pattern via DataParsers.
+     * 
+     * @return array
+     */
+    public function getTemplateData(): array
+    {
+        $parser = $this->getParser();
+        $data = $parser->parse();
+
+        // Inject the query into data
+        $data['query'] = $this->query;
+
+        return apply_filters("jankx/layout/{$this->name}/data", $data, $this);
+    }
+
+    /**
+     * Resolve the appropriate parser for this layout.
+     * 
+     * @return LayoutDataParserInterface
+     */
+    protected function getParser(): LayoutDataParserInterface
+    {
+        $parsers = apply_filters('jankx/layout/parsers', [
+            'grid' => GridLayoutDataParser::class,
+            'carousel' => CarouselLayoutDataParser::class,
+            'masonry' => \Jankx\Layouts\DynamicDataLayout\Parsers\MasonryLayoutDataParser::class,
+        ], $this);
+
+        $parserClass = $parsers[$this->name] ?? DefaultLayoutDataParser::class;
+
+        return new $parserClass($this);
     }
 
     public function hasCustomGenerator(): bool
@@ -313,7 +352,7 @@ abstract class BlockTemplateLayout implements BlockTemplateLayoutInterface
         return $this->viewService->render($view, $args);
     }
 
-    protected function buildItemClasses(): string
+    public function buildItemClasses(): string
     {
         $classes = get_post_class(['jankx-loop-item']);
         $templateBlock = $this->getOption('postTemplate');
@@ -360,6 +399,7 @@ abstract class BlockTemplateLayout implements BlockTemplateLayoutInterface
         // Fallback to internal logic 
         return $this->renderDefaultPostItem($data);
     }
+
 
     /**
      * Internal fallback for post item rendering

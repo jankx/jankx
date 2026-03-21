@@ -25,43 +25,7 @@ class GridLayout extends BlockTemplateLayout
             return '';
         }
 
-        $columns = (int) $this->getOption('columns', 3);
-        $columnsTablet = (int) $this->getOption('columnsTablet', 2);
-        $columnsMobile = (int) $this->getOption('columnsMobile', 1);
-
-        $hasImageRatio = false;
-        $imageRatio = $this->getOption('imageRatio', '');
-        $ratioStyle = '';
-        if (is_string($imageRatio) && strpos($imageRatio, '/') !== false) {
-            [$w, $h] = array_map('floatval', explode('/', $imageRatio, 2));
-            if ($w > 0 && $h > 0) {
-                $percent = ($h / $w) * 100.0;
-                $ratioStyle = sprintf('--jankx-image-ratio: %.4f%%;', $percent);
-                $hasImageRatio = true;
-            }
-        }
-
-        $ulClasses = [
-            'post-type-layout-grid',
-            'is-flex-container',
-            'columns-' . max(1, $columns),
-            'columns-tablet-' . max(1, $columnsTablet),
-            'columns-mobile-' . max(1, $columnsMobile),
-        ];
-        if ($hasImageRatio) {
-            $ulClasses[] = 'has-image-ratio';
-        }
-
-        return $this->renderView('post-layout/grid', [
-            'query' => $this->query,
-            'layout' => $this,
-            'ul_classes' => $ulClasses,
-            'columns' => $columns,
-            'columns_tablet' => $columnsTablet,
-            'columns_mobile' => $columnsMobile,
-            'ratio_style' => $ratioStyle,
-            'item_classes' => $this->buildItemClasses()
-        ]);
+        return $this->renderView('post-layout/grid', $this->getTemplateData());
     }
 
     public function renderDefaultPreview(): array

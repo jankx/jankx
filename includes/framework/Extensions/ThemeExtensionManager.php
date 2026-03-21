@@ -16,9 +16,9 @@ use Jankx\Facades\Log;
 class ThemeExtensionManager
 {
     /**
-     * @var ThemeExtensionManager
+     * @var \Jankx\Foundation\Application
      */
-    private static $instance = null;
+    protected $app;
 
     /**
      * @var array
@@ -33,23 +33,13 @@ class ThemeExtensionManager
 
     /**
      * Constructor
+     * 
+     * @param \Jankx\Foundation\Application $app
      */
-    private function __construct()
+    public function __construct(\Jankx\Foundation\Application $app)
     {
+        $this->app = $app;
         $this->init();
-    }
-
-    /**
-     * Get singleton instance
-     *
-     * @return ThemeExtensionManager
-     */
-    public static function getInstance(): self
-    {
-        if (self::$instance === null) {
-            self::$instance = new self();
-        }
-        return self::$instance;
     }
 
     /**

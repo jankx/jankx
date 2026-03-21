@@ -41,10 +41,12 @@ class ExtensionService implements ExtensionServiceInterface
 
     /**
      * Constructor
+     * 
+     * @param ExtensionManager $extensionManager
      */
-    public function __construct()
+    public function __construct(ExtensionManager $extensionManager)
     {
-        $this->extensionManager = ExtensionManager::getInstance();
+        $this->extensionManager = $extensionManager;
         $this->loadExtensionSettings();
         $this->init();
     }
