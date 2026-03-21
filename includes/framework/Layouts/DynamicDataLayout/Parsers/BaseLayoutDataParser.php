@@ -19,6 +19,11 @@ abstract class BaseLayoutDataParser implements LayoutDataParserInterface
     protected $layout;
 
     /**
+     * @var string
+     */
+    protected $id;
+
+    /**
      * Constructor
      * 
      * @param BlockTemplateLayoutInterface $layout
@@ -26,6 +31,7 @@ abstract class BaseLayoutDataParser implements LayoutDataParserInterface
     public function __construct(BlockTemplateLayoutInterface $layout)
     {
         $this->layout = $layout;
+        $this->id = \Jankx\Facades\App::make('asset.resolver')->generateUniqueId('jkx-layout');
     }
 
     /**
@@ -35,11 +41,46 @@ abstract class BaseLayoutDataParser implements LayoutDataParserInterface
      */
     protected function getCommonData(): array
     {
+        $dynamicCss = $this->generateDynamicCss();
+        if (!empty($dynamicCss)) {
+            \Jankx\Facades\App::make('asset.resolver')->addInlineCss(
+                $dynamicCss, 
+                \Jankx\Services\AssetResolver::INSTANCE, 
+                $this->id
+            );
+        }
+
         return [
+            'id' => $this->id,
             'name' => $this->layout->getName(),
             'options' => $this->layout->getOptions(),
             'layout' => $this->layout,
         ];
+    }
+
+    /**
+     * Generate dynamic CSS for this specific layout instance
+     * 
+     * Child classes should override this to provide custom logic.
+     * 
+     * @return string
+     */
+    protected function generateDynamicCss(): string
+    {
+        $css = [];
+        $options = $this->layout->getOptions();
+
+        // Common: Aspect Ratio (Anti-CLS)
+        $imageRatio = $options['imageRatio'] ?? null;
+        if ($imageRatio && strpos($imageRatio, '/') !== false) {
+            [$w, $h] = array_map('floatval', explode('/', $imageRatio));
+            if ($w > 0 && $h > 0) {
+                $percent = ($h / $w) * 100.0;
+                $css[] = "#{$this->id} { --jankx-image-ratio: {$percent}%; }";
+            }
+        }
+
+        return implode("\n", $css);
     }
 
     /**

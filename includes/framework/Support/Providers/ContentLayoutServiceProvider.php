@@ -34,6 +34,12 @@ class ContentLayoutServiceProvider extends ServiceProvider
         });
         $app->alias(ViewService::class, 'view');
 
+        // 2. Register Asset Resolver for CSS/JS management
+        $app->singleton(AssetResolver::class, function ($app) {
+            return new AssetResolver($app);
+        });
+        $app->alias(AssetResolver::class, 'asset.resolver');
+
         // 2. Register Layout Registry (Strategy manager)
         $app->singleton(LayoutRegistry::class, function () {
             return new LayoutRegistry();
@@ -70,6 +76,19 @@ class ContentLayoutServiceProvider extends ServiceProvider
 
         // Initialize core layouts in the Registry
         $this->registerCoreLayouts($app->make(LayoutRegistry::class));
+
+        // 3. Register Core Layout Styles (Anti-CLS & Layout Base)
+        $assetResolver = $app->make(\Jankx\Services\AssetResolver::class);
+        $coreLayoutCss = "
+            .is-flex-container { display: flex; flex-wrap: wrap; list-style: none; padding: 0; margin: 0; gap: var(--jankx-grid-gap, 1.5rem); }
+            .has-image-ratio { position: relative; width: 100%; overflow: hidden; background: #f0f0f0; }
+            .has-image-ratio::before { content: ''; display: block; padding-top: var(--jankx-image-ratio, 56.25%); transition: padding-top 0.3s ease; }
+            .has-image-ratio img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; }
+            .columns-1 > * { flex: 0 0 100%; max-width: 100%; }
+            .columns-2 > * { flex: 0 0 calc(50% - var(--jankx-grid-gap, 1.5rem) / 2); max-width: calc(50% - var(--jankx-grid-gap, 1.5rem) / 2); }
+            .columns-3 > * { flex: 0 0 calc(33.333% - var(--jankx-grid-gap, 1.5rem) * 2 / 3); max-width: calc(33.333% - var(--jankx-grid-gap, 1.5rem) * 2 / 3); }
+        ";
+        $assetResolver->addInlineCss($coreLayoutCss, \Jankx\Services\AssetResolver::CORE_LAYOUT);
 
         // Legacy: Register default layouts in ContentLayoutManager
         $manager = $app->make(ContentLayoutManager::class);

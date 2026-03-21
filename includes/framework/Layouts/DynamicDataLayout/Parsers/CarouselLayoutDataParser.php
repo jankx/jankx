@@ -37,10 +37,17 @@ class CarouselLayoutDataParser extends DefaultLayoutDataParser
             'carousel',
         ];
 
-        $navBaseStyle = 'position:absolute;top:50%;transform:translateY(-50%);width:44px;height:44px;background:rgba(0,0,0,0.7);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;z-index:2;border:none;';
-        $prevStyle = $navBaseStyle . 'left:10px;';
-        $nextStyle = $navBaseStyle . 'right:10px;';
-        $dotsStyle = 'position:absolute;bottom:12px;left:50%;transform:translateX(-50%);display:flex;gap:8px;z-index:2;';
+        // Move hardcoded styles to Dynamic CSS for better performance and deduplication
+        $carouselTypeCss = "
+            .carousel-arrow { position:absolute;top:50%;transform:translateY(-50%);width:44px;height:44px;background:rgba(0,0,0,0.7);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;z-index:2;border:none; cursor: pointer; transition: 0.3s ease; }
+            .carousel-arrow-prev { left:10px; }
+            .carousel-arrow-next { right:10px; }
+            .carousel-dots { position:absolute;bottom:12px;left:50%;transform:translateX(-50%);display:flex;gap:8px;z-index:2; }
+        ";
+        \Jankx\Facades\App::make('asset.resolver')->addInlineCss(
+            $carouselTypeCss, 
+            \Jankx\Services\AssetResolver::LAYOUT_TYPE
+        );
 
         if ($showArrows) {
             $carouselClasses[] = 'has-arrows';
@@ -65,10 +72,7 @@ class CarouselLayoutDataParser extends DefaultLayoutDataParser
         $data['carousel_classes'] = $carouselClasses;
         $data['data_attributes'] = $data_attributes;
         $data['show_arrows'] = $showArrows;
-        $data['prev_style'] = $prevStyle;
-        $data['next_style'] = $nextStyle;
         $data['show_dots'] = $showDots;
-        $data['dots_style'] = $dotsStyle;
 
         return $data;
     }

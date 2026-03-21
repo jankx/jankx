@@ -5,7 +5,7 @@
  * @var int $columns
  */
 ?>
-<div class="wp-block-jankx-dynamic-data-layout post-type-layout-masonry columns-<?php echo esc_attr(max(1, $columns)); ?>">
+<div id="<?php echo esc_attr($id); ?>" class="wp-block-jankx-dynamic-data-layout post-type-layout-masonry columns-<?php echo esc_attr(max(1, $columns)); ?>">
     <?php
     while ($query->have_posts()) {
         $query->the_post();
