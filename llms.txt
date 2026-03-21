@@ -12,6 +12,7 @@ Jankx Framework là một WordPress theme framework mạnh mẽ, hiện đại v
 - **Text Domain**: jankx
 - **Yêu cầu PHP**: >= 7.4
 - **License**: GPL-3.0-or-later
+- **AI Spec**: [docs/AI_GENERATION_SPEC.md](docs/AI_GENERATION_SPEC.md) - Hướng dẫn cho AI model tự động tạo theme và components.
 
 ## Triết lý phát triển
 
@@ -206,11 +207,14 @@ $url = Url::asset('css/style.css');
 - `Url::image()` - Image URL
 - `Url::wordpress()` - WordPress URLs
 
-**Asset Service** (`Jankx\Services\AssetService`):
-- Enqueue stylesheets
-- Enqueue scripts
-- Asset versioning
-- Dependency management
+**Asset Service** (`Jankx\Services\AssetResolver`):
+- Enqueue stylesheets and scripts
+- **Dynamic CSS Management** (3-Level System): 
+    - `CORE_LAYOUT`: Base design tokens like grid/flex containers, image ratio foundations.
+    - `LAYOUT_TYPE`: Styles shared by a type of layout (e.g. all carousel navigation).
+    - `INSTANCE`: Style unique to a specific block instance (e.g. unique IDs).
+- **Deduplication**: Uses MD5 hashing of CSS content to ensure identical code called multiple times is only printed once.
+- **Dependency Management**: Ensures `CORE_LAYOUT` always prints before `INSTANCE` styles to prevent "Specificity War".
 
 **Configuration Repository** (`Jankx\Framework\Config\Repository`):
 - Load config files từ `config/` directory
