@@ -14,21 +14,35 @@ use Jankx\Contracts\BlockInterface;
  * @package Jankx\Gutenberg\Blocks
  * @since 2.0.0
  */
+/**
+ * Gutenberg Repository
+ *
+ * This class manages storage of Gutenberg blocks and patterns in the Jankx Framework.
+ * Uses the Application container to resolve block instances lazily.
+ *
+ * @package Jankx\Gutenberg\Blocks
+ * @since 2.0.0
+ */
 class GutenbergRepository
 {
     /**
-     * Registered blocks
+     * @var \Jankx\Foundation\Application
+     */
+    protected $app;
+
+    /**
+     * Registered blocks metadata (class or name)
      *
      * @var array
      */
     protected $blocks = [];
 
     /**
-     * Block instances
-     *
+     * Block directory paths
+     * 
      * @var array
      */
-    protected $instances = [];
+    protected $blockPaths = [];
 
     /**
      * Registered patterns
@@ -38,63 +52,58 @@ class GutenbergRepository
     protected $patterns = [];
 
     /**
-     * Pattern instances
-     *
-     * @var array
-     */
-    protected $patternInstances = [];
-
-    protected $blockPaths = [];
-
-    /**
      * Constructor
+     * 
+     * @param \Jankx\Foundation\Application $app
      */
-    public function __construct()
+    public function __construct(\Jankx\Foundation\Application $app)
     {
-        // Repository is ready for block storage
+        $this->app = $app;
     }
 
     /**
      * Register a block
      *
-     * @param string|Block $blockClass Block class name or instance
+     * @param string|BlockInterface $blockClass Block class name or instance
      * @param string|null $blockPath Block directory path
      * @return void
      */
     public function registerBlock($blockClass, $blockPath = null)
     {
+        $className = is_object($blockClass) ? get_class($blockClass) : $blockClass;
+
         if (is_object($blockClass)) {
             if (!$blockClass instanceof BlockInterface) {
                 throw new Exception('Block class must be an instance of ' . BlockInterface::class);
             }
-            // inited
-            $this->blocks[get_class($blockClass)] = true;
-            $this->instances[get_class($blockClass)] = $blockClass;
+            // If instance is already provided, ensure it's registered in container
+            $this->app->instance($className, $blockClass);
+        }
 
-            // Store block path if provided
-            if ($blockPath) {
-                $this->blockPaths[get_class($blockClass)] = $blockPath;
-            }
-        } else {
-            // not inited
-            $this->blocks[$blockClass] = false;
+        $this->blocks[$className] = true;
 
-            // Store block path if provided
-            if ($blockPath) {
-                $this->blockPaths[$blockClass] = $blockPath;
-            }
+        if ($blockPath) {
+            $this->blockPaths[$className] = $blockPath;
         }
     }
 
     /**
-     * Get block instance
+     * Get block instance (Lazy resolving via container)
      *
-     * @param string $blockName Block name
-     * @return Block|null
+     * @param string $blockName Block class name
+     * @return BlockInterface|null
      */
     public function getBlock($blockName)
     {
-        return $this->instances[$blockName] ?? null;
+        if (!$this->hasBlock($blockName)) {
+            return null;
+        }
+
+        try {
+            return $this->app->make($blockName);
+        } catch (\Exception $e) {
+            return null;
+        }
     }
 
     /**
@@ -109,27 +118,17 @@ class GutenbergRepository
     }
 
     /**
-     * Get all registered blocks
+     * Get all registered block names
      *
      * @return array
      */
     public function getBlocks()
     {
-        return $this->blocks;
+        return array_keys($this->blocks);
     }
 
     /**
-     * Get all block instances
-     *
-     * @return array
-     */
-    public function getInstances()
-    {
-        return $this->instances;
-    }
-
-    /**
-     * Check if block exists
+     * Check if block is registered
      *
      * @param string $blockName Block name
      * @return bool
@@ -150,30 +149,26 @@ class GutenbergRepository
     }
 
     /**
-     * Clear all blocks
+     * Clear all block registrations
      *
      * @return void
      */
     public function clear()
     {
         $this->blocks = [];
-        $this->instances = [];
+        $this->blockPaths = [];
     }
 
     /**
      * Remove a specific block
      *
-     * @param string $blockName Block name
+     * @param string $blockName Block class name
      * @return void
      */
     public function removeBlock($blockName)
     {
-        if (isset($this->blocks[$blockName])) {
-            unset($this->blocks[$blockName]);
-        }
-
-        if (isset($this->instances[$blockName])) {
-            unset($this->instances[$blockName]);
-        }
+        unset($this->blocks[$blockName]);
+        unset($this->blockPaths[$blockName]);
     }
 }
+

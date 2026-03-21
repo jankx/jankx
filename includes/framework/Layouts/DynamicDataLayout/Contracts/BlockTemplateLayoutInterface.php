@@ -13,6 +13,7 @@ interface BlockTemplateLayoutInterface
     public function setQuery(WP_Query $query): self;
     public function setContentGenerator($generator): self;
     public function getContentGenerator();
+    public function getTemplateData(): array;
     public function render(): string;
     public function renderDefault(): string;
     public function renderPreview(): array;

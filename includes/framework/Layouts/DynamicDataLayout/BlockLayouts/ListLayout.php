@@ -20,19 +20,7 @@ class ListLayout extends BlockTemplateLayout
             return '';
         }
 
-        ob_start();
-        ?>
-        <div class="wp-block-jankx-dynamic-data-layout post-type-layout-list">
-            <?php
-            while ($this->query->have_posts()) {
-                $this->query->the_post();
-                echo $this->renderPostItem();
-            }
-            wp_reset_postdata();
-            ?>
-        </div>
-        <?php
-        return (string) ob_get_clean();
+        return $this->renderView('post-layout/list', $this->getTemplateData());
     }
 
     public function renderDefaultPreview(): array

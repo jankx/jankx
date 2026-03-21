@@ -20,21 +20,7 @@ class MasonryLayout extends BlockTemplateLayout
             return '';
         }
 
-        $columns = (int) $this->getOption('columns', 3);
-
-        ob_start();
-        ?>
-        <div class="wp-block-jankx-dynamic-data-layout post-type-layout-masonry columns-<?php echo esc_attr(max(1, $columns)); ?>">
-            <?php
-            while ($this->query->have_posts()) {
-                $this->query->the_post();
-                echo $this->renderPostItem();
-            }
-            wp_reset_postdata();
-            ?>
-        </div>
-        <?php
-        return (string) ob_get_clean();
+        return $this->renderView('post-layout/masonry', $this->getTemplateData());
     }
 
     public function renderDefaultPreview(): array

@@ -14,28 +14,30 @@ use Jankx\Facades\Log;
 
 class ExtensionManager implements ExtensionManagerInterface
 {
-    private static $instance = null;
-    private $extensions = [];
-    private $active_extensions = [];
-    private $extension_ids = [];
+    /**
+     * @var \Jankx\Foundation\Application
+     */
+    protected $app;
 
-    private function __construct()
+    protected $extensions = [];
+    protected $active_extensions = [];
+    protected $extension_ids = [];
+
+    /**
+     * Constructor
+     * 
+     * @param \Jankx\Foundation\Application $app
+     */
+    public function __construct(\Jankx\Foundation\Application $app)
     {
+        $this->app = $app;
         $this->init();
-    }
-
-    public static function getInstance(): self
-    {
-        if (self::$instance === null) {
-            self::$instance = new self();
-        }
-        return self::$instance;
     }
 
     /**
      * Initialize extension manager
      */
-    private function init()
+    protected function init()
     {
         add_action('jankx/gutenberg/register-blocks', [$this, 'register_extension_blocks']);
     }

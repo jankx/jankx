@@ -11,7 +11,7 @@
 
 namespace Jankx\Extensions;
 
-use Jankx\Facades\App;
+use Jankx\Foundation\Application;
 use Jankx\Facades\Log;
 
 class MarketplaceManager
@@ -23,6 +23,11 @@ class MarketplaceManager
     const HUB_URL = 'https://jankx.pages.dev';
 
     /**
+     * @var Application
+     */
+    protected $app;
+
+    /**
      * Cached Jankx version to avoid multiple lookups
      * @var string|null
      */
@@ -30,9 +35,13 @@ class MarketplaceManager
 
     /**
      * Constructor
+     * 
+     * @param Application $app
      */
-    public function __construct()
+    public function __construct(Application $app)
     {
+        $this->app = $app;
+
         // Register hooks immediately to catch activation events
         $this->registerHooks();
     }
@@ -480,7 +489,7 @@ class MarketplaceManager
     {
         if ($this->jankxVersion === null) {
             try {
-                $this->jankxVersion = App::make('jankx.version') ?? '2.0.0';
+                $this->jankxVersion = $this->app->make('jankx.version') ?? '2.0.0';
             } catch (\Exception $e) {
                 $this->jankxVersion = defined('JANKX_VERSION') ? JANKX_VERSION : '2.0.0';
             }

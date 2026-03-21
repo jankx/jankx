@@ -101,24 +101,24 @@ class ExtensionServiceProvider extends ServiceProvider
     {
         // Register Extension Manager as singleton
         $this->app->singleton('extension.manager', function ($app) {
-            return ExtensionManager::getInstance();
+            return new ExtensionManager($app);
         });
 
         // Register Theme Extension Manager
         $this->app->singleton('theme_extension.manager', function ($app) {
-            return ThemeExtensionManager::getInstance();
+            return new ThemeExtensionManager($app);
         });
 
         // Register Marketplace Manager
         $this->app->singleton('extension.marketplace', function ($app) {
-            return new MarketplaceManager();
+            return new MarketplaceManager($app);
         });
 
 
 
         // Register Extension Service
         $this->app->singleton('extension.service', function ($app) {
-            return new ExtensionService();
+            return new ExtensionService($app->make('extension.manager'));
         });
 
 

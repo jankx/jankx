@@ -214,24 +214,6 @@ class Application extends Container
             };
         });
 
-        // Add repository and other common mocks for testing
-        $this->singleton('gutenberg.repository', function () {
-            return new class {
-                public function getBlocks() { return []; }
-                public function getInstances() { return []; }
-                public function registerBlock($block) {}
-                public function getBlock($name) { return null; }
-                public function getBlockPath($name) { return null; }
-            };
-        });
-
-        $this->singleton('jankx.option', function () {
-            return new class {
-                public function get($name, $default = null) { return $default; }
-                public function set($name, $value) {}
-            };
-        });
-
         $this->alias('log', LoggerInterface::class);
     }
 
