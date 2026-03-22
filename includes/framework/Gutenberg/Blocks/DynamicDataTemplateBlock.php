@@ -46,7 +46,7 @@ class DynamicDataTemplateBlock extends Block
     protected function getContentLoopLayoutManager(): ContentLoopLayoutManager
     {
         if ($this->contentLoopLayoutManager === null) {
-            $this->contentLoopLayoutManager = ContentLoopLayoutManager::getInstance();
+            $this->contentLoopLayoutManager = \Jankx\Foundation\Application::getInstance()->make(ContentLoopLayoutManager::class);
         }
         return $this->contentLoopLayoutManager;
     }
@@ -58,7 +58,7 @@ class DynamicDataTemplateBlock extends Block
      */
     protected function getBlockTemplateLayoutManager(): BlockTemplateLayoutManager
     {
-        return BlockTemplateLayoutManager::getInstance();
+        return \Jankx\Foundation\Application::getInstance()->make(BlockTemplateLayoutManager::class);
     }
 
     /**
@@ -80,7 +80,7 @@ class DynamicDataTemplateBlock extends Block
      */
     public function enqueueEditorAssets()
     {
-        $manager = ContentLayoutManager::getInstance();
+        $manager = \Jankx\Foundation\Application::getInstance()->make(ContentLayoutManager::class);
         $presets = $manager->getForJs();
         wp_add_inline_script(
             'wp-block-editor',

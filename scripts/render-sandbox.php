@@ -22,9 +22,10 @@ $app->instance('blocks.path', $app->basePath('resources/blocks'));
 require_once ABSPATH . 'tests/bootstrap-mocks.php';
 
 // Register the repository
-$app->singleton('gutenberg.repository', function () {
-    return new \Jankx\Gutenberg\GutenbergRepository();
+$app->singleton('gutenberg.repository', function ($app) {
+    return new \Jankx\Gutenberg\GutenbergRepository($app);
 });
+
 
 // Load services
 $service = new \Jankx\Services\GutenbergService($app);

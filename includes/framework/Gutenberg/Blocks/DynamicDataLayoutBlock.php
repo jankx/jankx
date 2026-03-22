@@ -193,7 +193,7 @@ class DynamicDataLayoutBlock extends Block
     protected function getLayoutManager(): BlockTemplateLayoutManager
     {
         if ($this->layoutManager === null) {
-            $this->layoutManager = BlockTemplateLayoutManager::getInstance();
+            $this->layoutManager = Application::getInstance()->make(BlockTemplateLayoutManager::class);
         }
         return $this->layoutManager;
     }

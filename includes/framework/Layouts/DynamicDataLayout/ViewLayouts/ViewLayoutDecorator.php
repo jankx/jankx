@@ -22,7 +22,7 @@ class ViewLayoutDecorator
     {
         $this->applyGeneratorFromFilters($attributes);
 
-        $layoutManager = ViewLayoutManager::getInstance();
+        $layoutManager = \Jankx\Foundation\Application::getInstance()->make(ViewLayoutManager::class);
         $resolver = new ViewAttributeSanitizer($layoutManager);
         $options = $resolver->sanitize($attributes);
         $this->layout->setOptions($options);

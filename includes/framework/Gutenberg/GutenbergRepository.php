@@ -118,13 +118,34 @@ class GutenbergRepository
     }
 
     /**
-     * Get all registered block names
+     * Get all registered block names (class names)
      *
      * @return array
      */
     public function getBlocks()
     {
         return array_keys($this->blocks);
+    }
+
+    /**
+     * Get all block instances resolved via the container
+     *
+     * @return BlockInterface[]
+     */
+    public function getInstances(): array
+    {
+        $instances = [];
+        foreach (array_keys($this->blocks) as $className) {
+            try {
+                $instance = $this->app->make($className);
+                if ($instance instanceof \Jankx\Contracts\BlockInterface) {
+                    $instances[$className] = $instance;
+                }
+            } catch (\Exception $e) {
+                // skip unresolvable blocks
+            }
+        }
+        return $instances;
     }
 
     /**

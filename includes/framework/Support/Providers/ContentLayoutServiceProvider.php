@@ -7,7 +7,11 @@ use Jankx\Layouts\ContentLayout\ContentLayoutManager;
 use Jankx\Layouts\DynamicDataLayout\LayoutRegistry;
 use Jankx\Layouts\DynamicDataLayout\BlockTemplateLayoutManager;
 use Jankx\Layouts\DynamicDataLayout\BlockTemplateLayoutFactory;
+use Jankx\Layouts\DynamicDataLayout\ViewLayouts\ViewLayoutManager;
+use Jankx\Layouts\DynamicDataLayout\ContentLoopLayoutManager;
+use Jankx\Layouts\DynamicDataLayout\DynamicDataLayoutManager;
 use Jankx\Services\ViewService;
+use Jankx\Services\AssetResolver;
 use Jankx\Support\Providers\ServiceProvider;
 
 /**
@@ -41,8 +45,8 @@ class ContentLayoutServiceProvider extends ServiceProvider
         $app->alias(AssetResolver::class, 'asset.resolver');
 
         // 2. Register Layout Registry (Strategy manager)
-        $app->singleton(LayoutRegistry::class, function () {
-            return new LayoutRegistry();
+        $app->singleton(LayoutRegistry::class, function ($app) {
+            return new LayoutRegistry($app);
         });
         $app->alias(LayoutRegistry::class, 'jankx.layout.registry');
 
@@ -57,9 +61,22 @@ class ContentLayoutServiceProvider extends ServiceProvider
             return new ContentLayoutManager();
         });
 
-        $app->singleton(\Jankx\Layouts\DynamicDataLayout\BlockTemplateLayoutManager::class, function ($app) {
-           return $app->make(BlockTemplateLayoutManager::class);
+        // 5. Register View Layout Manager
+        $app->singleton(ViewLayoutManager::class, function ($app) {
+            return new ViewLayoutManager($app);
         });
+
+        // 6. Register Content Loop Layout Manager
+        $app->singleton(ContentLoopLayoutManager::class, function ($app) {
+            return ContentLoopLayoutManager::getInstance();
+        });
+
+        // 7. Register Dynamic Data Layout Manager
+        $app->singleton(DynamicDataLayoutManager::class, function ($app) {
+            return DynamicDataLayoutManager::getInstance();
+        });
+
+
     }
 
     /**

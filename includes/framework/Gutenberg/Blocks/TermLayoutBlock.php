@@ -28,7 +28,7 @@ class TermLayoutBlock extends Block
     protected function ensureServices()
     {
         if ($this->rendererService === null) {
-            $layoutManager = ViewLayoutManager::getInstance();
+            $layoutManager = \Jankx\Foundation\Application::getInstance()->make(ViewLayoutManager::class);
             $attributeSanitizer = new ViewAttributeSanitizer($layoutManager);
 
             $this->rendererService = new TaxonomyRenderer(
@@ -132,7 +132,7 @@ class TermLayoutBlock extends Block
             $script_handle = $registered_block->editor_script;
         }
 
-        $layoutManager = ViewLayoutManager::getInstance();
+        $layoutManager = \Jankx\Foundation\Application::getInstance()->make(ViewLayoutManager::class);
 
         $taxonomies = get_taxonomies(['public' => true], 'objects');
         $layouts_by_taxonomy = [];

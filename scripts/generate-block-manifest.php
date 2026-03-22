@@ -20,9 +20,10 @@ require_once ABSPATH . 'tests/bootstrap-mocks.php';
 $app->instance('blocks.path', $app->basePath('resources/blocks'));
 
 // Use real repository
-$app->singleton('gutenberg.repository', function () {
-    return new \Jankx\Gutenberg\GutenbergRepository();
+$app->singleton('gutenberg.repository', function ($app) {
+    return new \Jankx\Gutenberg\GutenbergRepository($app);
 });
+
 
 
 $generator = new BlockManifestGenerator($app);

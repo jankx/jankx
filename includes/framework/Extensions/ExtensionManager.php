@@ -10,7 +10,9 @@ namespace Jankx\Extensions;
 
 use Jankx\Contracts\Extension\ExtensionInterface;
 use Jankx\Contracts\Extension\ExtensionManagerInterface;
+use Jankx\Facades\App;
 use Jankx\Facades\Log;
+
 
 class ExtensionManager implements ExtensionManagerInterface
 {
@@ -24,6 +26,16 @@ class ExtensionManager implements ExtensionManagerInterface
     protected $extension_ids = [];
 
     /**
+     * Get singleton instance via the Application container.
+     *
+     * @return static
+     */
+    public static function getInstance(): self
+    {
+        return App::make('extension.manager');
+    }
+
+    /**
      * Constructor
      * 
      * @param \Jankx\Foundation\Application $app
@@ -33,6 +45,7 @@ class ExtensionManager implements ExtensionManagerInterface
         $this->app = $app;
         $this->init();
     }
+
 
     /**
      * Initialize extension manager

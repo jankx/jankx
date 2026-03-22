@@ -27,13 +27,13 @@ class DynamicSsrTemplateBlock extends Block
 
     protected function getViewLayoutManager(): ViewLayoutManager
     {
-        return ViewLayoutManager::getInstance();
+        return \Jankx\Foundation\Application::getInstance()->make(ViewLayoutManager::class);
     }
 
     protected function getContentLoopLayoutManager(): ContentLoopLayoutManager
     {
         if ($this->contentLoopLayoutManager === null) {
-            $this->contentLoopLayoutManager = ContentLoopLayoutManager::getInstance();
+            $this->contentLoopLayoutManager = \Jankx\Foundation\Application::getInstance()->make(ContentLoopLayoutManager::class);
         }
         return $this->contentLoopLayoutManager;
     }
@@ -219,7 +219,7 @@ class DynamicSsrTemplateBlock extends Block
         ];
 
         try {
-            $layoutManager = DynamicDataLayoutManager::getInstance();
+            $layoutManager = \Jankx\Foundation\Application::getInstance()->make(DynamicDataLayoutManager::class);
             $sanitizer = new AttributeSanitizer($layoutManager);
             $sanitized = $sanitizer->sanitize($layoutName, $baseAttributes, true);
 
