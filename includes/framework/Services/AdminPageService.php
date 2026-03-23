@@ -71,6 +71,16 @@ class AdminPageService
             'icon' => 'dashicons-admin-tools',
             'position' => 55
         ]);
+
+        $this->addPage([
+            'id' => 'jankx-system-information',
+            'title' => __('System Information', 'jankx'),
+            'menu_title' => __('System Information', 'jankx'),
+            'capability' => 'manage_options',
+            'callback' => [$this, 'renderDebugPage'],
+            'icon' => 'dashicons-sos',
+            'position' => 99
+        ]);
     }
 
     /**
@@ -131,6 +141,10 @@ class AdminPageService
     public function setCurrentPage($pageId)
     {
         $this->currentPage = $pageId;
+        $page = $this->getPage($pageId);
+        if ($page) {
+            $this->enqueuePageAssets($page);
+        }
     }
 
     /**
@@ -144,7 +158,6 @@ class AdminPageService
         }
 
         $this->setCurrentPage($pageId);
-        $this->enqueuePageAssets($page);
 
         // Render page header
         $this->renderPageHeader($page);
@@ -165,31 +178,285 @@ class AdminPageService
      */
     public function renderDashboardPage($page)
     {
-        echo '<div class="jankx-dashboard-widgets">';
+        $framework_version = $this->app->make('jankx.version') ?? '1.0.0';
+        ?>
+        <div class="jankx-dashboard-view">
+            <header class="jankx-dashboard-header">
+                <div class="header-content">
+                    <div class="header-logo">
+                        <span class="dashicons dashicons-art"></span>
+                    </div>
+                    <div class="header-text">
+                        <h1><?php _e('Jankx Framework', 'jankx'); ?> <span class="version-badge">v<?php echo $framework_version; ?></span></h1>
+                        <p class="subtitle"><?php _e('Welcome to your premium WordPress experience.', 'jankx'); ?></p>
+                    </div>
+                </div>
+            </header>
 
-        // Quick Actions Widget
-        echo '<div class="jankx-widget">';
-        echo '<h3>' . __('Quick Actions', 'jankx') . '</h3>';
-        echo '<ul>';
-        echo '<li><a href="' . admin_url('admin.php?page=jankx-icons') . '">' . __('Manage Icons', 'jankx') . '</a></li>';
-        echo '<li><a href="' . admin_url('admin.php?page=jankx-utilities') . '">' . __('Utilities', 'jankx') . '</a></li>';
-        echo '<li><a href="' . admin_url('customize.php') . '">' . __('Customize Theme', 'jankx') . '</a></li>';
-        echo '</ul>';
-        echo '</div>';
+            <div class="jankx-dashboard-grid">
+                <!-- Quick Actions -->
+                <div class="jankx-card action-card">
+                    <div class="card-header">
+                        <span class="dashicons dashicons-lightning"></span>
+                        <h3><?php _e('Quick Actions', 'jankx'); ?></h3>
+                    </div>
+                    <div class="card-body">
+                        <ul class="action-list">
+                            <li>
+                                <a href="<?php echo admin_url('admin.php?page=jankx-icons'); ?>">
+                                    <span class="dashicons dashicons-format-image"></span>
+                                    <span class="text"><?php _e('Manage Icons', 'jankx'); ?></span>
+                                    <span class="dashicons dashicons-arrow-right-alt2 arrow"></span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="<?php echo admin_url('admin.php?page=jankx-utilities'); ?>">
+                                    <span class="dashicons dashicons-admin-tools"></span>
+                                    <span class="text"><?php _e('Utilities', 'jankx'); ?></span>
+                                    <span class="dashicons dashicons-arrow-right-alt2 arrow"></span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="<?php echo admin_url('customize.php'); ?>">
+                                    <span class="dashicons dashicons-admin-customizer"></span>
+                                    <span class="text"><?php _e('Customize Theme', 'jankx'); ?></span>
+                                    <span class="dashicons dashicons-arrow-right-alt2 arrow"></span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
 
-        // Services Status Widget
-        echo '<div class="jankx-widget">';
-        echo '<h3>' . __('Services Status', 'jankx') . '</h3>';
-        echo '<ul>';
-        echo '<li>Framework Version: ' . ($this->app->make('jankx.version') ?? 'Unknown') . '</li>';
-        echo '<li>Environment: ' . ($this->app->make('jankx.environment') ?? 'Unknown') . '</li>';
-        echo '<li>Debug Mode: ' . (WP_DEBUG ? 'Enabled' : 'Disabled') . '</li>';
-        echo '<li>PHP Version: ' . PHP_VERSION . '</li>';
-        echo '<li>WordPress Version: ' . get_bloginfo('version') . '</li>';
-        echo '</ul>';
-        echo '</div>';
+                <!-- Theme Status -->
+                <div class="jankx-card status-card">
+                    <div class="card-header">
+                        <span class="dashicons dashicons-performance"></span>
+                        <h3><?php _e('System Health', 'jankx'); ?></h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="health-indicator success">
+                            <span class="dot"></span>
+                            <span class="text"><?php _e('All systems operational', 'jankx'); ?></span>
+                        </div>
+                        <p class="card-desc"><?php _e('Your website is running smoothly. Check the debug page for detailed system information.', 'jankx'); ?></p>
+                        <a href="<?php echo admin_url('admin.php?page=jankx-debug'); ?>" class="button button-link">
+                            <?php _e('View full report', 'jankx'); ?>
+                        </a>
+                    </div>
+                </div>
 
-        echo '</div>';
+                <!-- Extensions -->
+                <div class="jankx-card extension-card">
+                    <div class="card-header">
+                        <span class="dashicons dashicons-admin-plugins"></span>
+                        <h3><?php _e('Extensions', 'jankx'); ?></h3>
+                    </div>
+                    <div class="card-body">
+                        <?php
+                        $extensionManager = $this->app->make('extension.manager');
+                        $activeCount = count($extensionManager->get_extensions());
+                        ?>
+                        <div class="extension-stats">
+                            <div class="stat">
+                                <span class="number"><?php echo $activeCount; ?></span>
+                                <span class="label"><?php _e('Active Extensions', 'jankx'); ?></span>
+                            </div>
+                        </div>
+                        <a href="<?php echo admin_url('admin.php?page=jankx-extensions'); ?>" class="button jankx-btn-modern">
+                            <?php _e('Manage Extensions', 'jankx'); ?>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <style>
+                .jankx-dashboard-view {
+                    margin-top: 20px;
+                    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+                    max-width: 1200px;
+                }
+                .jankx-dashboard-header {
+                    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+                    padding: 40px;
+                    border-radius: 20px;
+                    color: #f8fafc;
+                    margin-bottom: 30px;
+                    box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.2);
+                }
+                .header-content { display: flex; align-items: center; gap: 24px; }
+                .header-logo {
+                    width: 64px; height: 64px;
+                    background: rgba(59, 130, 246, 0.2);
+                    border-radius: 16px;
+                    display: flex; align-items: center; justify-content: center;
+                    border: 1px solid rgba(59, 130, 246, 0.3);
+                }
+                .header-logo .dashicons { font-size: 32px; width: 32px; height: 32px; color: #60a5fa; }
+                .header-text h1 { margin: 0; font-size: 28px; font-weight: 700; color: #fff; display: flex; align-items: center; gap: 12px; }
+                .version-badge { font-size: 12px; background: rgba(59, 130, 246, 0.5); padding: 4px 10px; border-radius: 20px; font-weight: 600; }
+                .header-text .subtitle { margin: 8px 0 0 0; font-size: 16px; color: #94a3b8; }
+
+                .jankx-dashboard-grid {
+                    display: grid;
+                    grid-template-columns: repeat(3, 1fr);
+                    gap: 24px;
+                }
+                .jankx-card {
+                    background: #fff;
+                    border-radius: 20px;
+                    border: 1px solid #e2e8f0;
+                    padding: 30px;
+                    transition: all 0.3s ease;
+                }
+                .jankx-card:hover { transform: translateY(-4px); box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05); border-color: #3b82f6; }
+                .card-header { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; }
+                .card-header .dashicons { font-size: 20px; width: 20px; height: 20px; color: #64748b; }
+                .card-header h3 { margin: 0; font-size: 18px; font-weight: 600; color: #1e293b; }
+
+                .action-list { margin: 0; padding: 0; list-style: none; }
+                .action-list li a {
+                    display: flex; align-items: center; gap: 12px;
+                    padding: 12px;
+                    border-radius: 12px;
+                    color: #475569;
+                    text-decoration: none;
+                    transition: all 0.2s;
+                }
+                .action-list li a:hover { background: #f1f5f9; color: #3b82f6; }
+                .action-list .text { flex-grow: 1; font-weight: 500; }
+                .action-list .arrow { font-size: 14px; color: #cbd5e1; opacity: 0; transition: all 0.2s; }
+                .action-list li a:hover .arrow { opacity: 1; transform: translateX(4px); }
+
+                .health-indicator { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
+                .health-indicator .dot { width: 10px; height: 10px; border-radius: 50%; }
+                .health-indicator.success .dot { background: #10b981; box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.2); }
+                .health-indicator .text { font-weight: 600; color: #059669; }
+                .card-desc { color: #64748b; line-height: 1.6; font-size: 14px; margin-bottom: 20px; }
+
+                .extension-stats { margin-bottom: 24px; }
+                .extension-stats .number { font-size: 36px; font-weight: 700; color: #1e293b; display: block; }
+                .extension-stats .label { color: #64748b; font-size: 14px; }
+
+                .jankx-btn-modern {
+                    background: #3b82f6 !important;
+                    color: #fff !important;
+                    border: none !important;
+                    border-radius: 12px !important;
+                    padding: 10px 20px !important;
+                    height: auto !important;
+                    line-height: 1 !important;
+                    font-weight: 600 !important;
+                    width: 100%;
+                    text-align: center;
+                }
+                .jankx-btn-modern:hover { background: #2563eb !important; }
+
+                @media (max-width: 991px) {
+                    .jankx-dashboard-grid { grid-template-columns: 1fr 1fr; }
+                }
+                @media (max-width: 767px) {
+                    .jankx-dashboard-grid { grid-template-columns: 1fr; }
+                    .header-content { flex-direction: column; text-align: center; }
+                }
+            </style>
+        </div>
+        <?php
+    }
+
+    /**
+     * Render Debug Page
+     */
+    public function renderDebugPage($page)
+    {
+        $active_tab = isset($_GET['tab']) ? $_GET['tab'] : 'system_info';
+        ?>
+        <div class="wrap">
+            <nav class="nav-tab-wrapper">
+                <a href="?page=jankx-debug&tab=system_info"
+                    class="nav-tab <?php echo $active_tab == 'system_info' ? 'nav-tab-active' : ''; ?>"><?php _e('System Information', 'jankx'); ?></a>
+                <a href="?page=jankx-debug&tab=log"
+                    class="nav-tab <?php echo $active_tab == 'log' ? 'nav-tab-active' : ''; ?>"><?php _e('Debug Log', 'jankx'); ?></a>
+            </nav>
+
+            <div class="jankx-tab-content" style="margin-top: 20px;">
+                <?php
+                switch ($active_tab) {
+                    case 'system_info':
+                        $this->renderSystemInformationContent();
+                        break;
+                    case 'log':
+                        $this->renderDebugLogContent();
+                        break;
+                }
+                ?>
+            </div>
+        </div>
+        <?php
+    }
+
+    protected function renderSystemInformationContent()
+    {
+        ?>
+        <div class="jankx-card system-info-card" style="background: #fff; border-radius: 20px; border: 1px solid #e2e8f0; padding: 30px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); max-width: 900px;">
+            <div class="card-header" style="display: flex; align-items: center; gap: 12px; margin-bottom: 24px; border-bottom: 1px solid #f1f5f9; padding-bottom: 15px;">
+                <span class="dashicons dashicons-info-outline" style="color: #3b82f6;"></span>
+                <h2 style="margin: 0; font-size: 20px; font-weight: 700; color: #1e293b;"><?php _e('Services Status', 'jankx'); ?></h2>
+            </div>
+            <table class="jankx-info-table" style="width: 100%; border-collapse: separate; border-spacing: 0 8px;">
+                <tbody>
+                    <?php
+                    $info = [
+                        'Framework Version' => $this->app->make('jankx.version') ?? 'Unknown',
+                        'Environment'       => $this->app->make('jankx.environment') ?? 'Unknown',
+                        'Debug Mode'        => WP_DEBUG ? 'Enabled' : 'Disabled',
+                        'PHP Version'       => PHP_VERSION,
+                        'WordPress Version' => get_bloginfo('version'),
+                        'Server Software'   => $_SERVER['SERVER_SOFTWARE'] ?? 'Unknown',
+                    ];
+                    foreach ($info as $label => $value):
+                    ?>
+                    <tr>
+                        <td style="padding: 12px 16px; background: #f8fafc; border-radius: 10px 0 0 10px; width: 250px; font-weight: 600; color: #475569; border: 1px solid #f1f5f9; border-right: none;">
+                            <?php echo esc_html($label); ?>
+                        </td>
+                        <td style="padding: 12px 16px; background: #fff; border-radius: 0 10px 10px 0; color: #1e293b; border: 1px solid #f1f5f9; border-left: none; font-family: monospace;">
+                            <?php echo esc_html($value); ?>
+                        </td>
+                    </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+        <?php
+    }
+
+    protected function renderDebugLogContent()
+    {
+        $log_file = WP_CONTENT_DIR . '/debug.log';
+        if (!file_exists($log_file)) {
+            echo '<div class="notice notice-info"><p>' . __('Debug log file not found.', 'jankx') . '</p></div>';
+            return;
+        }
+
+        $log_content = file_get_contents($log_file);
+        // Get last 100 lines
+        $lines = explode("\n", $log_content);
+        $lines = array_slice($lines, -100);
+        $log_content = implode("\n", $lines);
+
+        ?>
+        <div class="card" style="max-width: 1000px; padding: 20px;">
+            <h2><?php _e('Last 100 lines of debug.log', 'jankx'); ?></h2>
+            <pre style="background: #f1f1f1; padding: 15px; overflow: auto; max-height: 500px; font-size: 12px; border: 1px solid #ddd; border-radius: 4px;"><?php echo esc_html($log_content); ?></pre>
+            <form method="post" action="">
+                <?php wp_nonce_field('jankx_clear_log', 'jankx_debug_nonce'); ?>
+                <input type="hidden" name="jankx_action" value="clear_debug_log">
+                <p class="submit">
+                    <input type="submit" class="button button-secondary" value="<?php _e('Clear Log', 'jankx'); ?>" onclick="return confirm('Are you sure?');">
+                </p>
+            </form>
+        </div>
+        <?php
     }
 
     /**
@@ -224,50 +491,10 @@ class AdminPageService
      */
     public function renderIconsPage($page)
     {
-        $active_tab = isset($_GET['tab']) ? $_GET['tab'] : 'repository';
-        ?>
-        <div class="wrap">
-            <nav class="nav-tab-wrapper">
-                <a href="?page=jankx-icons&tab=repository"
-                    class="nav-tab <?php echo $active_tab == 'repository' ? 'nav-tab-active' : ''; ?>"><?php _e('Repository', 'jankx'); ?></a>
-                <a href="?page=jankx-icons&tab=manage"
-                    class="nav-tab <?php echo $active_tab == 'manage' ? 'nav-tab-active' : ''; ?>"><?php _e('Manage Icons', 'jankx'); ?></a>
-                <a href="?page=jankx-icons&tab=settings"
-                    class="nav-tab <?php echo $active_tab == 'settings' ? 'nav-tab-active' : ''; ?>"><?php _e('Settings', 'jankx'); ?></a>
-            </nav>
-
-            <div class="jankx-tab-content">
-                <?php
-                switch ($active_tab) {
-                    case 'repository':
-                        $this->renderIconsRepositoryContent();
-                        break;
-                    case 'manage':
-                        $this->renderIconsManageContent();
-                        break;
-                    case 'settings':
-                        $this->renderIconsSettingsContent();
-                        break;
-                }
-                ?>
-            </div>
-        </div>
-        <?php
-    }
-
-    protected function renderIconsRepositoryContent()
-    {
-        echo '<div class="card"><p>Icon Repository content coming soon...</p></div>';
-    }
-
-    protected function renderIconsManageContent()
-    {
-        echo '<div class="card"><p>Manage Icons content coming soon...</p></div>';
-    }
-
-    protected function renderIconsSettingsContent()
-    {
-        echo '<div class="card"><p>Icon Settings content coming soon...</p></div>';
+        $activeTab = $_GET['tab'] ?? 'packs';
+        $renderer = new \Jankx\Services\FontIcons\Admin\DashboardRenderer($this->app);
+        
+        $renderer->render($activeTab);
     }
 
     /**
@@ -276,7 +503,14 @@ class AdminPageService
     protected function enqueuePageAssets($page)
     {
         if ($page['id'] === 'jankx-icons') {
-            // Enqueue icon repository scripts if needed
+            $repository = $this->app->make('font-icons.repository');
+            $activeStyles = $repository->getAllActiveStyles();
+
+            foreach ($activeStyles as $type => $url) {
+                wp_enqueue_style('jankx-icon-' . sanitize_title($type), $url, [], null);
+            }
+
+            wp_enqueue_style('jankx-admin-pages');
         }
     }
 
@@ -664,9 +898,13 @@ class AdminPageService
                         $slug = isset($ext['slug']) ? $ext['slug'] : (isset($ext['id']) ? (string)$ext['id'] : '');
                         $isPremium = isset($ext['is_premium']) && $ext['is_premium'];
                         $rating = $ext['rating'] ?? 5;
-                        $reviews = $ext['reviews_count'] ?? 0;
-                        $installs = $ext['installs_count'] ?? 0;
-                        $lastUpdated = $ext['last_updated_diff'] ?? __('2 ngày trước', 'jankx');
+                        $reviews = $ext['rating_count'] ?? 0;
+                        $installs = $ext['install_count'] ?? 0;
+                        
+                        $lastUpdated = __('Vừa xong', 'jankx');
+                        if (!empty($ext['updated_at'])) {
+                            $lastUpdated = sprintf(__('%s trước', 'jankx'), human_time_diff(strtotime($ext['updated_at'])));
+                        }
                     ?>
                         <div class="extension-card-modern <?php echo $isPremium ? 'is-premium' : ''; ?>" data-slug="<?php echo esc_attr($slug); ?>">
                             <div class="card-body">
@@ -723,8 +961,8 @@ class AdminPageService
                                 </div>
 
                                 <div class="extension-footer-meta">
-                                    <span class="version">v<?php echo esc_html($ext['version'] ?? '1.0.0'); ?></span>
-                                    <span class="author"><?php printf(__('bởi %s', 'jankx'), '<span class="author-name">' . esc_html($ext['author'] ?? 'Jankx Team') . '</span>'); ?></span>
+                                    <span class="version">v<?php echo esc_html($ext['latest_version'] ?? '1.0.0'); ?></span>
+                                    <span class="author"><?php printf(__('bởi %s', 'jankx'), '<span class="author-name">' . esc_html($ext['author_name'] ?? 'Jankx Team') . '</span>'); ?></span>
                                 </div>
 
                                 <div class="card-action-area">

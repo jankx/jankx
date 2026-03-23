@@ -8,7 +8,8 @@ use Jankx\Facades\Config;
 use Jankx\Services\FontIcons\IconRepository;
 use Jankx\Services\FontIcons\IconRenderer;
 use Jankx\Services\FontIcons\IconTransformerService;
-use Jankx\Facades\FontIcons;
+use Jankx\Services\FontIcons\Manager as FontIconsManager;
+use Jankx\Facades\Icon;
 
 class FontIconsServiceProvider extends ServiceProvider
 {
@@ -30,6 +31,10 @@ class FontIconsServiceProvider extends ServiceProvider
 
         $app->singleton('font-icons.transformer', function ($app) {
             return new IconTransformerService($app);
+        });
+
+        $app->singleton('font-icons.manager', function ($app) {
+            return new FontIconsManager($app);
         });
     }
 
@@ -55,6 +60,11 @@ class FontIconsServiceProvider extends ServiceProvider
             add_action('init', [$this, 'scheduleAutoUpdate']);
             add_action('jankx_icons_auto_update', [$this, 'autoUpdateIcons']);
         }
+
+        if (in_array($context, ['admin', 'ajax'])) {
+            $ajaxHandler = new \Jankx\Services\FontIcons\Admin\AjaxHandler($app);
+            $ajaxHandler->init();
+        }
     }
 
     public function registerAdminMenu()
@@ -75,13 +85,13 @@ class FontIconsServiceProvider extends ServiceProvider
     public function registerDefaultIcons()
     {
         // Register FontAwesome (không auto-load)
-        if (!FontIcons::has('fontawesome')) {
-            FontIcons::fontAwesome('6.5.1', false);
+        if (!Icon::has('fontawesome')) {
+            Icon::fontAwesome('6.5.1', false);
         }
 
         // Register Material Icons (auto-load)
-        if (!FontIcons::has('material')) {
-            FontIcons::materialIcons(true);
+        if (!Icon::has('material')) {
+            Icon::materialIcons(true);
         }
     }
 

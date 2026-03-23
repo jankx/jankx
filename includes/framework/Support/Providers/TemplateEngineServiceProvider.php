@@ -70,6 +70,31 @@ class TemplateEngineServiceProvider extends ServiceProvider
             $latte->addFilter('wp_kses_post', 'wp_kses_post');
             $latte->addFilter('wp_trim_words', 'wp_trim_words');
             
+            // WordPress Translation functions
+            $latte->addFilter('__', '__');
+            $latte->addFilter('_e', '_e');
+            $latte->addFilter('_x', '_x');
+            
+            // URL & Utility functions
+            $latte->addFilter('get_permalink', 'get_permalink');
+            $latte->addFilter('get_term_link', 'get_term_link');
+            $latte->addFilter('get_post_meta', 'get_post_meta');
+            $latte->addFilter('get_option', 'get_option');
+            
+            // Image functions
+            $latte->addFilter('get_the_post_thumbnail_url', 'get_the_post_thumbnail_url');
+            $latte->addFilter('wp_get_attachment_image_src', 'wp_get_attachment_image_src');
+
+            // Add Icon system integration
+            if (function_exists('jankx_icon')) {
+                $latte->addFilter('icon', 'jankx_icon');
+                
+                // Also add as function for {icon '...'} syntax
+                if (method_exists($latte, 'addFunction')) {
+                    $latte->addFunction('icon', 'jankx_icon');
+                }
+            }
+            
         } catch (\Exception $e) {
         }
     }

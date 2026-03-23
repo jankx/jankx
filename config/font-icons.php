@@ -26,6 +26,7 @@ return array (
         3 => 'light',
         4 => 'thin',
       ),
+      'render_type' => 'prefix',
     ),
     'material' =>
     array (
@@ -45,6 +46,7 @@ return array (
         3 => 'sharp',
         4 => 'two-tone',
       ),
+      'render_type' => 'content',
     ),
   ),
   'admin_settings' =>
@@ -82,5 +84,9 @@ return array (
     'lazy_loading' => true,
     'preload_critical' => true,
     'cache_duration' => 86400,
+  ),
+  'storage' =>
+  array (
+    'type' => 'sqlite', // Options: 'json', 'sqlite'
   ),
 );

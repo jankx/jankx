@@ -70,3 +70,18 @@ if (!function_exists('jankx_render_hub_icon')) {
     }
 }
 
+/**
+ * Render font icon
+ * 
+ * @param string $iconName The name of the icon
+ * @param string $type The icon set (default: fontawesome)
+ * @param array $attributes Additional HTML attributes
+ * @return string The rendered icon HTML
+ */
+if (!function_exists('jankx_icon')) {
+    function jankx_icon($iconName, $type = 'fontawesome', $attributes = [])
+    {
+        return \Jankx\Facades\Icon::render($iconName, $type, $attributes);
+    }
+}
+

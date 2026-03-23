@@ -13,9 +13,15 @@ class IconRepository
     protected $activeTypes = [];
     protected $app;
 
+    protected $storage;
+
     public function __construct(Application $app)
     {
         $this->app = $app;
+        
+        $storageType = Config::get('font-icons.storage.type', 'json');
+        $this->storage = \Jankx\Services\FontIcons\Storage\StorageFactory::create($storageType);
+        
         $this->loadActiveTypes();
         $this->loadIconTypes();
     }
@@ -40,29 +46,31 @@ class IconRepository
     {
         $this->iconTypes = [];
 
-        // Lấy config từ database thay vì config file
-        $iconTypes = get_option('jankx_font_icons_config', []);
-        foreach ($iconTypes as $type => $typeConfig) {
+        // Lấy config từ database và merge với config file
+        $dbConfig = get_option('jankx_font_icons_config', []);
+        $fileConfig = Config::get('font-icons.icon_types', []);
+        
+        $mergedConfig = array_merge($fileConfig, $dbConfig);
+
+        foreach ($mergedConfig as $type => $typeConfig) {
             if ($typeConfig['enabled']) {
-                $this->iconTypes[$type] = $this->loadIconTypeData($type, $typeConfig);
+                $data = $this->loadIconTypeData($type, $typeConfig);
+                $this->iconTypes[$type] = $data ?: ['config' => $typeConfig, 'icons' => []];
             }
         }
     }
 
     protected function loadIconTypeData($type, $config)
     {
-        // Lấy cache file path từ URL hash
+        // Lấy storage key (hiện tại là MD5 của CSS URL)
         $cssUrl = $config['css_url'] ?? '';
-        if ($cssUrl) {
-            $cacheFile = $this->getCacheFilePath($cssUrl);
+        $storageKey = $cssUrl ? md5($cssUrl) : $type;
 
-            if (file_exists($cacheFile)) {
-                $data = json_decode(file_get_contents($cacheFile), true);
-                if ($data) {
-                    $data['config'] = $config;
-                    return $data;
-                }
-            }
+        $data = $this->storage->retrieve($storageKey);
+        
+        if ($data) {
+            $data['config'] = $config;
+            return $data;
         }
 
         return null;
@@ -202,6 +210,9 @@ class IconRepository
 
     public function clearCache()
     {
+        // Clear storage data
+        $this->storage->clear();
+
         // Clear WordPress object cache for icons
         wp_cache_flush_group('jankx_font_icons');
 
@@ -255,22 +266,58 @@ class IconRepository
 
     public function getTypeConfig($type)
     {
-        $iconTypes = get_option('jankx_font_icons_config', []);
+        $iconTypes = $this->getAllTypes();
         return $iconTypes[$type] ?? null;
     }
 
     public function getAllTypes()
     {
-        return get_option('jankx_font_icons_config', []);
+        $dbConfig = get_option('jankx_font_icons_config', []);
+        $fileConfig = Config::get('font-icons.icon_types', []);
+        
+        return array_replace_recursive($fileConfig, $dbConfig);
+    }
+
+    public function resolveCssUrl($type, $config = null)
+    {
+        if (!$config) {
+            $allTypes = $this->getAllTypes();
+            $config = $allTypes[$type] ?? [];
+        }
+
+        $cssUrl = $config['css_url'] ?? '';
+        if (!$cssUrl && isset($config['cdn_url'])) {
+            $version = $config['version'] ?? 'latest';
+            $cssUrl = str_replace('{version}', $version, $config['cdn_url']);
+        }
+
+        return $cssUrl;
+    }
+
+    public function getAllActiveStyles()
+    {
+        $styles = [];
+        $allTypes = $this->getAllTypes();
+        
+        foreach ($allTypes as $type => $config) {
+            if ($config['enabled'] ?? false) {
+                $url = $this->resolveCssUrl($type, $config);
+                if ($url) {
+                    $styles[$type] = $url;
+                }
+            }
+        }
+        
+        return $styles;
     }
 
     public function getEnabledTypes()
     {
-        $iconTypes = get_option('jankx_font_icons_config', []);
+        $allTypes = $this->getAllTypes();
         $enabled = [];
 
-        foreach ($iconTypes as $type => $config) {
-            if ($config['enabled']) {
+        foreach ($allTypes as $type => $config) {
+            if ($config['enabled'] ?? false) {
                 $enabled[$type] = $config;
             }
         }
@@ -303,19 +350,23 @@ class IconRepository
                 throw new \Exception('Invalid CSS URL provided');
             }
 
-            // Tạo hash từ URL để làm cache key
-            $urlHash = md5($cssUrl);
-            $cacheFile = $this->getCacheFilePath($cssUrl);
+            // Kiểm tra config hiện tại để tránh update database liên tục mỗi lần load trang
+            $currentConfig = get_option('jankx_font_icons_config', []);
+            $storageKey = md5($cssUrl);
+            $jsonData = $this->storage->retrieve($storageKey);
 
-            // Kiểm tra cache
-            if (file_exists($cacheFile)) {
-                $jsonData = json_decode(file_get_contents($cacheFile), true);
-            } else {
-                // Fetch CSS và transform
+            if (isset($currentConfig[$iconType]) && $currentConfig[$iconType]['css_url'] === $cssUrl && $jsonData) {
+                return [
+                    'success' => true,
+                    'message' => 'Icon set already registered and cached.',
+                    'data' => $jsonData
+                ];
+            }
+
+            // Nếu chưa có trong storage thì fetch và transform
+            if (!$jsonData) {
                 $jsonData = $this->fetchAndTransformCss($cssUrl, $iconType, $transformer);
-
-                // Lưu cache
-                $this->saveCacheFile($jsonData, $cacheFile);
+                $this->storage->store($storageKey, $jsonData);
             }
 
             // Cập nhật config
@@ -423,12 +474,12 @@ class IconRepository
     /**
      * Cập nhật icon type config
      */
-    protected function updateIconTypeConfig($iconType, $jsonData, $cssUrl, $displayName = null, $autoLoad = false, $transformer = null)
+    protected function updateIconTypeConfig($iconType, $jsonData, $cssUrl, $displayName = null, $autoLoad = false, $transformer = null, $renderType = 'prefix')
     {
         // Lấy config hiện tại
         $config = get_option('jankx_font_icons_config', []);
 
-        // Tạo config mới
+        // Tạo config mới (Không bao gồm mảng 'icons' lớn để tránh làm nặng database option)
         $newConfig = [
             'enabled' => true,
             'auto_load' => $autoLoad,
@@ -439,10 +490,11 @@ class IconRepository
             'prefixes' => $jsonData['prefixes'] ?? [$iconType],
             'total_icons' => count($jsonData['icons']),
             'transformer_class' => $transformer ? get_class($transformer) : null,
-            'imported_at' => current_time('mysql')
+            'imported_at' => current_time('mysql'),
+            'render_type' => $renderType,
         ];
 
-        // Cập nhật config
+        // Cập nhật config và đồng thời xóa field 'icons' cũ nếu có (ở các phiên bản code cũ)
         $config[$iconType] = $newConfig;
         update_option('jankx_font_icons_config', $config);
     }
@@ -464,8 +516,14 @@ class IconRepository
         $config = get_option('jankx_font_icons_config', []);
 
         if (isset($config[$iconType])) {
+            $cssUrl = $config[$iconType]['css_url'] ?? '';
             unset($config[$iconType]);
             update_option('jankx_font_icons_config', $config);
+
+            // Xóa data khỏi storage
+            if ($cssUrl) {
+                $this->storage->remove(md5($cssUrl));
+            }
 
             // Reload icon types
             $this->loadIconTypes();
@@ -487,7 +545,7 @@ class IconRepository
             'enabled_types' => 0,
             'auto_load_types' => 0,
             'total_icons' => 0,
-            'cache_files' => 0
+            'storage' => $this->storage->getStats()
         ];
 
         foreach ($config as $type => $typeConfig) {
@@ -498,12 +556,6 @@ class IconRepository
                 $stats['auto_load_types']++;
             }
             $stats['total_icons'] += $typeConfig['total_icons'] ?? 0;
-        }
-
-        // Đếm cache files
-        $cacheDir = $this->getCacheDirectory();
-        if (is_dir($cacheDir)) {
-            $stats['cache_files'] = count(glob($cacheDir . '/*.json'));
         }
 
         return $stats;
