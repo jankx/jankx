@@ -1,11 +1,11 @@
 <?php
 
 return [
-    'name' => 'Jankx Framework',
-    'menu_title' => 'Jankx Dashboard',
-    'admin_page_title' => 'Jankx Framework',
+    'name' => 'JANKX PRO',
+    'menu_title' => 'JANKX PRO',
+    'admin_page_title' => 'JANKX PRO',
     'menu_position' => 59,
-    'version' => '2.0.0',
+    'version' => '1.0.0',
     'providers' => [
         Jankx\Support\Providers\AjaxServiceProvider::class,
         Jankx\Support\Providers\AssetServiceProvider::class,
@@ -17,6 +17,7 @@ return [
         Jankx\Support\Providers\ThemeServiceProvider::class,
         Jankx\Support\Providers\WordPressCliServiceProvider::class,
         Jankx\Support\Providers\ExtensionServiceProvider::class,
+        Jankx\Support\Providers\EnvatoServiceProvider::class,
 
         App\Providers\GutenbergServiceProvider::class,
         App\Providers\LanguageSwitcherServiceProvider::class,

@@ -78,8 +78,8 @@ class JankxAdminPagesServiceProvider extends ServiceProvider
         // 1. Register Jankx Dashboard (Main Top-Level)
         $dashboardId = 'jankx-dashboard';
         add_menu_page(
-            __('Jankx Dashboard', 'jankx'),
-            __('Jankx Admin', 'jankx'),
+            Config::get('app.admin_page_title', __('Jankx Dashboard', 'jankx')),
+            Config::get('app.menu_title', __('Jankx Admin', 'jankx')),
             'manage_options',
             $dashboardId,
             [$this, 'renderSubPage'],

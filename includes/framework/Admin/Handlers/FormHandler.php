@@ -55,6 +55,14 @@ class FormHandler
                 case 'clear_debug_log':
                     $this->handleClearDebugLog($data);
                     break;
+
+                case 'activate_license':
+                    $this->handleActivateLicense($data);
+                    break;
+
+                case 'deactivate_license':
+                    $this->handleDeactivateLicense($data);
+                    break;
                 
                 // Allow other components to add their own handlers via action
                 default:
@@ -65,6 +73,65 @@ class FormHandler
             Log::error("Admin Form Handler: Action '{$action}' failed - " . $e->getMessage());
             wp_die('An error occurred while processing your request.');
         }
+    }
+
+    /**
+     * Handle license activation
+     */
+    protected function handleActivateLicense(array $data): void
+    {
+        if (!wp_verify_nonce($data['jankx_license_nonce'] ?? '', 'jankx_activate_license')) {
+            wp_die(__('Security check failed', 'jankx'));
+        }
+
+        if (!current_user_can('manage_options')) {
+            wp_die(__('You do not have permission to perform this action.', 'jankx'));
+        }
+
+        $purchaseCode = $data['purchase_code'] ?? '';
+        $licenseManager = $this->app->make('license');
+        $result = $licenseManager->activate($purchaseCode);
+
+        if (is_wp_error($result)) {
+            $message = $result->get_error_message();
+            add_action('admin_notices', function () use ($message) {
+                printf(
+                    '<div class="notice notice-error is-dismissible"><p>%s</p></div>',
+                    esc_html($message)
+                );
+            });
+        } else {
+            add_action('admin_notices', function () {
+                printf(
+                    '<div class="notice notice-success is-dismissible"><p>%s</p></div>',
+                    esc_html__('Theme JANKX PRO activated successfully!', 'jankx')
+                );
+            });
+        }
+    }
+
+    /**
+     * Handle license deactivation
+     */
+    protected function handleDeactivateLicense(array $data): void
+    {
+        if (!wp_verify_nonce($data['jankx_license_nonce'] ?? '', 'jankx_deactivate_license')) {
+            wp_die(__('Security check failed', 'jankx'));
+        }
+
+        if (!current_user_can('manage_options')) {
+            wp_die(__('You do not have permission to perform this action.', 'jankx'));
+        }
+
+        $licenseManager = $this->app->make('license');
+        $licenseManager->deactivate();
+
+        add_action('admin_notices', function () {
+            printf(
+                '<div class="notice notice-info is-dismissible"><p>%s</p></div>',
+                esc_html__('License deactivated.', 'jankx')
+            );
+        });
     }
 
     /**

@@ -17,10 +17,16 @@ use Jankx\Facades\Log;
 class MarketplaceManager
 {
     /**
-     * Hub Base URL
+     * Hub Base URL (Free)
      * @var string
      */
-    const HUB_URL = 'https://jankx.pages.dev';
+    const FREE_HUB_URL = 'https://jankx.pages.dev';
+
+    /**
+     * Hub Base URL (Purchase)
+     * @var string
+     */
+    const PURCHASE_HUB_URL = 'https://optilarity.top';
 
     /**
      * @var Application
@@ -378,7 +384,7 @@ class MarketplaceManager
     public function fetchThemeCoreUpdate()
     {
         $locale = $this->getLocale();
-        $api_url = add_query_arg('locale', $locale, $this->buildUrl('api/theme/latest'));
+        $api_url = add_query_arg('locale', $locale, $this->buildUrl('api/theme/latest', 'purchase'));
 
         $response = wp_remote_get($api_url, [
             'timeout' => 10,
@@ -444,7 +450,7 @@ class MarketplaceManager
             return;
         }
 
-        $api_url = $this->buildUrl('api/theme/ping');
+        $api_url = $this->buildUrl('api/theme/ping', 'purchase');
         
         $response = wp_remote_post($api_url, [
             'timeout' => 15,
@@ -500,9 +506,10 @@ class MarketplaceManager
     /**
      * Build full URL from endpoint path
      */
-    protected function buildUrl(string $endpoint): string
+    protected function buildUrl(string $endpoint, $hubType = 'free'): string
     {
-        $base = apply_filters('jankx/marketplace/hub_url', self::HUB_URL);
+        $base = ($hubType === 'purchase') ? self::PURCHASE_HUB_URL : self::FREE_HUB_URL;
+        $base = apply_filters("jankx/marketplace/{$hubType}_hub_url", $base);
         return rtrim($base, '/') . '/' . ltrim($endpoint, '/');
     }
 }

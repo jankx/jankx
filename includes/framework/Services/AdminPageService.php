@@ -17,7 +17,7 @@ class AdminPageService
         $this->registerDefaultPages();
         $this->registerShortcodes();
 
-        add_action('wp_dashboard_setup', [$this, 'registerDashboardWidgets']);
+        add_action('wp_dashboard_setup', [$this, 'registerDashboardWidgets'], 5);
         add_action('admin_enqueue_scripts', [$this, 'enqueueDashboardAssets']);
     }
 
@@ -36,9 +36,20 @@ class AdminPageService
      */
     public function registerDashboardWidgets()
     {
+        $license = $this->app->make('license');
+        $isActivated = $license->isActivated();
+
+        if (!$isActivated) {
+            wp_add_dashboard_widget(
+                'jankx_license_widget',
+                __('JANKX PRO Activation Required', 'jankx'),
+                [$this, 'renderLicenseWidget']
+            );
+        }
+
         wp_add_dashboard_widget(
             'jankx_dashboard_widget',
-            __('Jankx Framework News & Status', 'jankx'),
+            __('JANKX PRO News & Status', 'jankx'),
             [$this, 'renderMainDashboardWidget']
         );
 
@@ -46,10 +57,41 @@ class AdminPageService
         global $wp_meta_boxes;
         
         $dashboard = $wp_meta_boxes['dashboard']['normal']['core'];
-        $jankx_widget = ['jankx_dashboard_widget' => $dashboard['jankx_dashboard_widget']];
-        unset($dashboard['jankx_dashboard_widget']);
+        $new_order = [];
         
-        $wp_meta_boxes['dashboard']['normal']['core'] = array_merge($jankx_widget, $dashboard);
+        if (isset($dashboard['jankx_dashboard_widget'])) {
+            $new_order['jankx_dashboard_widget'] = $dashboard['jankx_dashboard_widget'];
+            unset($dashboard['jankx_dashboard_widget']);
+        }
+        
+        if (isset($dashboard['jankx_license_widget'])) {
+            $new_order['jankx_license_widget'] = $dashboard['jankx_license_widget'];
+            unset($dashboard['jankx_license_widget']);
+        }
+        
+        $wp_meta_boxes['dashboard']['normal']['core'] = array_merge($new_order, $dashboard);
+    }
+
+    /**
+     * Render License Activation Widget
+     */
+    public function renderLicenseWidget()
+    {
+        ?>
+        <div class="jankx-license-widget-content" style="padding: 15px; background: #fff; border-left: 4px solid #ef4444; border-radius: 8px;">
+            <div style="display: flex; align-items: flex-start; gap: 12px; margin-bottom: 12px;">
+                <span class="dashicons dashicons-shield-plugins" style="color: #ef4444; font-size: 24px; width: 24px; height: 24px;"></span>
+                <div>
+                    <h4 style="margin: 0 0 5px 0; font-size: 15px; font-weight: 700; color: #1e293b;"><?php _e('Activate JANKX PRO', 'jankx'); ?></h4>
+                    <p style="margin: 0; font-size: 13px; color: #64748b; line-height: 1.5;"><?php _e('Kích hoạt theme JANKX PRO để nhận các bản cập nhật tự động, truy cập kho extension premium và nhận hỗ trợ kỹ thuật từ đội ngũ phát triển.', 'jankx'); ?></p>
+                </div>
+            </div>
+            <div style="display: flex; gap: 10px;">
+                <a href="<?php echo admin_url('admin.php?page=jankx-license'); ?>" class="button button-primary" style="background: #3b82f6; border: none; border-radius: 8px; font-weight: 600;"><?php _e('Kích hoạt ngay', 'jankx'); ?></a>
+                <a href="https://optilarity.top" target="_blank" class="button" style="border-radius: 8px;"><?php _e('Mua bản quyền', 'jankx'); ?></a>
+            </div>
+        </div>
+        <?php
     }
 
     /**
@@ -62,7 +104,7 @@ class AdminPageService
         <div class="jankx-dashboard-widget-content">
             <div class="jankx-widget-header" style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid #eee;">
                 <span class="dashicons dashicons-art" style="color: #3b82f6;"></span>
-                <strong>Jankx Framework v<?php echo esc_html($version); ?></strong>
+                <strong>JANKX PRO v<?php echo esc_html($version); ?></strong>
                 <span style="margin-left: auto; font-size: 11px; background: #dcfce7; color: #166534; padding: 2px 8px; border-radius: 10px;"><?php _e('Operational', 'jankx'); ?></span>
             </div>
             
@@ -209,13 +251,24 @@ class AdminPageService
     {
         $this->addPage([
             'id' => 'jankx-dashboard',
-            'title' => __('Jankx Dashboard', 'jankx'),
+            'title' => __('JANKX PRO Dashboard', 'jankx'),
             'subtitle' => __('Dahboard cho website của bạn với các thông tin hệ thống và các tiện ích quản lý nhanh.', 'jankx'),
             'menu_title' => __('Dashboard', 'jankx'),
             'capability' => 'manage_options',
             'callback' => [$this, 'renderDashboardPage'],
             'icon' => 'dashicons-performance',
             'position' => 10
+        ]);
+
+        $this->addPage([
+            'id' => 'jankx-license',
+            'title' => __('Theme Activation', 'jankx'),
+            'subtitle' => __('Activate your JANKX PRO license to receive automatic updates and premium support.', 'jankx'),
+            'menu_title' => __('Theme Activation', 'jankx'),
+            'capability' => 'manage_options',
+            'callback' => [$this, 'renderLicensePage'],
+            'icon' => 'dashicons-shield-plugins',
+            'position' => 15
         ]);
 
         $this->addPage([
@@ -364,6 +417,63 @@ class AdminPageService
         $this->renderPageFooter($page);
     }
 
+
+    /**
+     * Lấy 3 extension nổi bật đã cài đặt trên website hiện tại
+     */
+    protected function getFeaturedExtensions($limit = 3)
+    {
+        $extensionManager = $this->app->make('extension.manager');
+        $allExtensions = $extensionManager->get_extensions();
+
+        if (empty($allExtensions)) {
+            return [];
+        }
+
+        $featured = [];
+        foreach ($allExtensions as $slug => $extension) {
+            $info = $extension->get_info();
+            $manifest = $extension->get_manifest_data();
+            
+            // Determine icon
+            $icon_svg = $manifest['icon_svg'] ?? '';
+            $icon_url = '';
+            
+            if (empty($icon_svg)) {
+                $ext_path = $extension->get_extension_path();
+                $ext_url = $extension->get_extension_url();
+                
+                if (file_exists($ext_path . '/assets/icon.svg')) {
+                    $icon_svg = file_get_contents($ext_path . '/assets/icon.svg');
+                } elseif (file_exists($ext_path . '/assets/icon.png')) {
+                    $icon_url = $ext_url . '/assets/icon.png';
+                } elseif (file_exists($ext_path . '/icon.png')) {
+                    $icon_url = $ext_url . '/icon.png';
+                }
+            }
+
+            $featured[] = [
+                'slug' => $slug,
+                'name' => $info['name'] ?? $slug,
+                'version' => $info['version'] ?? '1.0.0',
+                'active' => $info['active'] ?? false,
+                'icon_svg' => $icon_svg,
+                'icon' => $icon_url,
+                'install_count' => 0, // Not applicable for local
+            ];
+
+            if (count($featured) >= $limit + 5) break; // Get a bit more to filter if needed
+        }
+
+        // Ưu tiên các extension đang active
+        usort($featured, function($a, $b) {
+            if ($a['active'] === $b['active']) return 0;
+            return $a['active'] ? -1 : 1;
+        });
+
+        return array_slice($featured, 0, $limit);
+    }
+
     /**
      * Render trang Dashboard
      */
@@ -400,6 +510,17 @@ class AdminPageService
                                     <span class="dashicons dashicons-arrow-right-alt2 arrow"></span>
                                 </a>
                             </li>
+                            <?php
+                            $license = $this->app->make('license');
+                            if (!$license->isActivated()) : ?>
+                            <li>
+                                <a href="<?php echo admin_url('admin.php?page=jankx-license'); ?>" style="color: #ef4444;">
+                                    <span class="dashicons dashicons-shield-plugins"></span>
+                                    <span class="text"><?php _e('Activate License', 'jankx'); ?></span>
+                                    <span class="dashicons dashicons-arrow-right-alt2 arrow"></span>
+                                </a>
+                            </li>
+                            <?php endif; ?>
                         </ul>
                     </div>
                 </div>
@@ -426,25 +547,65 @@ class AdminPageService
                 <div class="jankx-card extension-card">
                     <div class="card-header">
                         <span class="dashicons dashicons-admin-plugins"></span>
-                        <h3><?php _e('Extensions', 'jankx'); ?></h3>
+                        <h3><?php _e('Installed Extensions', 'jankx'); ?></h3>
+                        <a href="<?php echo admin_url('admin.php?page=jankx-extensions'); ?>" class="header-link"><?php _e('Manage All', 'jankx'); ?></a>
                     </div>
                     <div class="card-body">
                         <?php
-                        $extensionManager = $this->app->make('extension.manager');
-                        $activeCount = count($extensionManager->get_extensions());
-                        ?>
-                        <div class="extension-stats">
-                            <div class="stat">
-                                <span class="number"><?php echo $activeCount; ?></span>
-                                <span class="label"><?php _e('Active Extensions', 'jankx'); ?></span>
+                        $featured = $this->getFeaturedExtensions(3);
+                        if (!empty($featured)) : ?>
+                            <div class="featured-extensions-list">
+                                <?php foreach ($featured as $ext) : ?>
+                                <div class="featured-ext-item">
+                                    <div class="ext-icon">
+                                        <?php if (!empty($ext['icon_svg'])) : ?>
+                                            <?php echo $ext['icon_svg']; ?>
+                                        <?php elseif (!empty($ext['icon'])) : ?>
+                                            <img src="<?php echo esc_url($ext['icon']); ?>" alt="">
+                                        <?php else : ?>
+                                            <span class="dashicons dashicons-admin-plugins"></span>
+                                        <?php endif; ?>
+                                    </div>
+                                    <div class="ext-info">
+                                        <h4><?php echo esc_html($ext['name'] ?? 'Unknown'); ?></h4>
+                                        <div class="ext-meta">
+                                            <span class="version"><span class="dashicons dashicons-tag"></span> v<?php echo esc_html($ext['version'] ?? '1.0.0'); ?></span>
+                                            <?php if (!empty($ext['active'])) : ?>
+                                                <span class="status-badge installed"><?php _e('Active', 'jankx'); ?></span>
+                                            <?php else : ?>
+                                                <span class="status-badge inactive" style="background:#f1f5f9; color:#64748b;"><?php _e('Inactive', 'jankx'); ?></span>
+                                            <?php endif; ?>
+                                        </div>
+                                    </div>
+                                </div>
+                                <?php endforeach; ?>
                             </div>
+                        <?php else : ?>
+                            <p class="card-desc"><?php _e('Bạn chưa cài đặt bất kỳ extension nào cho theme.', 'jankx'); ?></p>
+                        <?php endif; ?>
+                        
+                        <div style="margin-top: 20px;">
+                            <a href="<?php echo admin_url('admin.php?page=jankx-marketplace'); ?>" class="button jankx-btn-modern">
+                                <?php _e('Explore Marketplace', 'jankx'); ?>
+                            </a>
                         </div>
-                        <a href="<?php echo admin_url('admin.php?page=jankx-extensions'); ?>" class="button jankx-btn-modern">
-                            <?php _e('Manage Extensions', 'jankx'); ?>
-                        </a>
                     </div>
                 </div>
             </div>
+
+            <style>
+                .featured-extensions-list { display: flex; flex-direction: column; gap: 15px; margin-bottom: 20px; }
+                .featured-ext-item { display: flex; align-items: center; gap: 12px; padding: 10px; border-radius: 12px; background: #f8fafc; border: 1px solid #e2e8f0; transition: all 0.2s; }
+                .featured-ext-item:hover { transform: translateX(5px); border-color: #3b82f6; background: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+                .featured-ext-item .ext-icon { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; background: #fff; border-radius: 10px; border: 1px solid #f1f5f9; flex-shrink: 0; padding: 8px; }
+                .featured-ext-item .ext-icon img, .featured-ext-item .ext-icon svg { width: 100%; height: 100%; object-fit: contain; }
+                .featured-ext-item .ext-info h4 { margin: 0 0 4px 0; font-size: 14px; font-weight: 600; color: #1e293b; }
+                .featured-ext-item .ext-meta { display: flex; align-items: center; gap: 10px; font-size: 11px; color: #94a3b8; }
+                .featured-ext-item .ext-meta .installs { display: flex; align-items: center; gap: 4px; }
+                .featured-ext-item .ext-meta .dashicons { font-size: 12px; width: 12px; height: 12px; }
+                .status-badge.installed { color: #10b981; font-weight: 700; background: #d1fae5; padding: 1px 6px; border-radius: 4px; text-transform: uppercase; font-size: 9px; }
+                .card-header .header-link { font-size: 12px; font-weight: 600; color: #3b82f6; text-decoration: none; margin-left: auto; }
+            </style>
 
             <!-- Jankx News Portal -->
             <div class="jankx-news-portal-section">
@@ -546,7 +707,6 @@ class AdminPageService
 
                 /* Styles moved to renderNewsWidget for reuse */
             </style>
-        </div>
         <?php
     }
 
@@ -695,9 +855,147 @@ class AdminPageService
         ?>
         </div> <!-- .jankx-universal-content -->
         <footer class="jankx-admin-footer">
-            <p>&copy; <?php echo date('Y'); ?> Jankx Framework. Made with <span class="dashicons dashicons-heart" style="color: #ef4444; font-size: 14px; width: 14px; height: 14px;"></span> by Puleeno.</p>
+            <p>&copy; <?php echo date('Y'); ?> JANKX PRO. Made with <span class="dashicons dashicons-heart" style="color: #ef4444; font-size: 14px; width: 14px; height: 14px;"></span> by Puleeno.</p>
         </footer>
         </div> <!-- .jankx-admin-page-container -->
+        <?php
+    }
+
+    /**
+     * Render Theme Activation (License) Page
+     */
+    public function renderLicensePage($page)
+    {
+        $license = $this->app->make('license');
+        $isActivated = $license->isActivated();
+        $licenseData = $license->getLicenseData();
+        ?>
+        <div class="jankx-license-page">
+            <div class="jankx-card license-hero-card">
+                <div class="card-body">
+                    <div class="license-status-header <?php echo $isActivated ? 'activated' : 'not-activated'; ?>">
+                        <div class="status-icon">
+                            <span class="dashicons <?php echo $isActivated ? 'dashicons-shield-plugins' : 'dashicons-warning'; ?>"></span>
+                        </div>
+                        <div class="status-text">
+                            <h3><?php echo $isActivated ? __('JANKX PRO Activated', 'jankx') : __('Activate JANKX PRO', 'jankx'); ?></h3>
+                            <p><?php echo $isActivated 
+                                ? sprintf(__('Thank you for purchasing JANKX PRO! Your site is receiving automatic updates.', 'jankx'))
+                                : __('Enter your Envato Purchase Code to unlock all pro features and automatic updates.', 'jankx'); ?></p>
+                        </div>
+                        <?php if ($isActivated) : ?>
+                            <div class="status-badge activated"><?php _e('Active License', 'jankx'); ?></div>
+                        <?php endif; ?>
+                    </div>
+
+                    <?php if (!$isActivated) : ?>
+                        <form method="post" action="" class="license-activation-form">
+                            <?php wp_nonce_field('jankx_activate_license', 'jankx_license_nonce'); ?>
+                            <input type="hidden" name="jankx_action" value="activate_license">
+                            
+                            <div class="form-group">
+                                <label for="purchase_code"><?php _e('Envato Purchase Code', 'jankx'); ?></label>
+                                <div class="input-with-button">
+                                    <input type="text" id="purchase_code" name="purchase_code" placeholder="e.g. 12345678-abcd-1234-efgh-1234567890ab" required>
+                                    <button type="submit" class="button jankx-btn-primary"><?php _e('Activate Now', 'jankx'); ?></button>
+                                </div>
+                                <p class="help-text"><?php printf(__('You can find your purchase code in your %s.', 'jankx'), '<a href="https://help.market.envato.com/hc/en-us/articles/202822600-Where-Is-My-Purchase-Code-" target="_blank">Envato Download page</a>'); ?></p>
+                            </div>
+                        </form>
+                    <?php else : ?>
+                        <div class="license-details-grid">
+                            <div class="detail-item">
+                                <span class="label"><?php _e('Purchase Code', 'jankx'); ?></span>
+                                <span class="value"><code>****************<?php echo substr($licenseData['purchase_code'], -8); ?></code></span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="label"><?php _e('Buyer', 'jankx'); ?></span>
+                                <span class="value"><?php echo esc_html($licenseData['buyer'] ?? 'N/A'); ?></span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="label"><?php _e('License Type', 'jankx'); ?></span>
+                                <span class="value"><?php echo esc_html($licenseData['license_type'] ?? 'Regular'); ?></span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="label"><?php _e('Activated On', 'jankx'); ?></span>
+                                <span class="value"><?php echo date_i18n(get_option('date_format'), $licenseData['activation_date']); ?></span>
+                            </div>
+                        </div>
+
+                        <form method="post" action="" class="license-deactivation-form" style="margin-top: 30px; border-top: 1px solid #f1f5f9; padding-top: 20px;">
+                            <?php wp_nonce_field('jankx_deactivate_license', 'jankx_license_nonce'); ?>
+                            <input type="hidden" name="jankx_action" value="deactivate_license">
+                            <button type="submit" class="button button-link" style="color: #ef4444; text-decoration: none;" onclick="return confirm('Are you sure you want to deactivate JANKX PRO?');">
+                                <?php _e('Deactivate License', 'jankx'); ?>
+                            </button>
+                        </form>
+                    <?php endif; ?>
+                </div>
+            </div>
+
+            <div class="license-info-grid">
+                <div class="jankx-card info-card">
+                    <div class="card-header">
+                        <span class="dashicons dashicons-update"></span>
+                        <h3><?php _e('Automatic Updates', 'jankx'); ?></h3>
+                    </div>
+                    <div class="card-body">
+                        <p><?php _e('Get the latest features, security patches and performance improvements directly in your WordPress dashboard.', 'jankx'); ?></p>
+                    </div>
+                </div>
+                <div class="jankx-card info-card">
+                    <div class="card-header">
+                        <span class="dashicons dashicons-welcome-learn-more"></span>
+                        <h3><?php _e('Premium Support', 'jankx'); ?></h3>
+                    </div>
+                    <div class="card-body">
+                        <p><?php _e('Need help with JANKX PRO? Our support team is ready to assist you with any questions or issues you might have.', 'jankx'); ?></p>
+                        <a href="https://optilarity.top/support" target="_blank" class="button"><?php _e('Contact Support', 'jankx'); ?></a>
+                    </div>
+                </div>
+            </div>
+
+            <style>
+                .license-hero-card { overflow: hidden; }
+                .license-status-header { display: flex; align-items: center; gap: 30px; margin-bottom: 40px; }
+                .status-icon {
+                    width: 80px; height: 80px; border-radius: 20px;
+                    display: flex; align-items: center; justify-content: center;
+                }
+                .not-activated .status-icon { background: #fee2e2; color: #ef4444; }
+                .activated .status-icon { background: #dcfce7; color: #10b981; }
+                .status-icon .dashicons { font-size: 40px; width: 40px; height: 40px; }
+                
+                .status-text h3 { margin: 0 0 10px 0; font-size: 24px; font-weight: 700; }
+                .status-text p { margin: 0; color: #64748b; font-size: 16px; }
+                
+                .status-badge { margin-left: auto; padding: 6px 16px; border-radius: 20px; font-weight: 600; font-size: 14px; }
+                .status-badge.activated { background: #10b981; color: #fff; }
+
+                .license-activation-form { background: #f8fafc; padding: 30px; border-radius: 20px; border: 1px solid #e2e8f0; }
+                .form-group label { display: block; margin-bottom: 12px; font-weight: 600; color: #1e293b; }
+                .input-with-button { display: flex; gap: 12px; }
+                .input-with-button input { flex-grow: 1; padding: 12px 16px; border-radius: 12px; border: 1px solid #cbd5e1; font-size: 16px; min-height: 48px; }
+                .input-with-button .button { padding: 0 24px !important; }
+                .help-text { margin-top: 15px; font-size: 13px; color: #94a3b8; }
+                .help-text a { color: #3b82f6; text-decoration: none; }
+
+                .license-details-grid {
+                    display: grid;
+                    grid-template-columns: repeat(2, 1fr);
+                    gap: 24px;
+                    background: #f8fafc;
+                    padding: 30px;
+                    border-radius: 20px;
+                }
+                .detail-item .label { display: block; font-size: 12px; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; }
+                .detail-item .value { font-size: 16px; font-weight: 600; color: #1e293b; }
+                .detail-item code { background: #fff; padding: 2px 6px; border-radius: 4px; border: 1px solid #e2e8f0; }
+
+                .license-info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 24px; }
+                .info-card .card-header { margin-bottom: 15px; }
+            </style>
+        </div>
         <?php
     }
 
