@@ -170,9 +170,9 @@ class AdminPageService
     {
         $news_data = $this->getPortalNews($limit, $type);
         
-        // Cần đảm bảo CSS được load nếu dùng ngoài frontend
+        // Luôn render Common Styles nếu ở ngoài frontend để đảm bảo giao diện
         if (!is_admin()) {
-            $this->renderPortalFrontendStyles();
+            $this->renderCommonStyles();
         }
 
         if (empty($news_data)) : ?>
@@ -200,37 +200,6 @@ class AdminPageService
                 <?php endforeach; ?>
             </div>
         <?php endif;
-    }
-
-    protected function renderPortalFrontendStyles()
-    {
-        ?>
-        <style>
-            .news-portal-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; font-family: sans-serif; }
-            .news-card {
-                display: flex; flex-direction: column; background: #fff; border: 1px solid #e2e8f0;
-                border-radius: 16px; padding: 20px; text-decoration: none; color: #1e293b;
-                transition: all 0.25s ease; border-top: 4px solid #e2e8f0;
-            }
-            .news-card:hover { transform: translateY(-3px); box-shadow: 0 12px 24px -8px rgba(0,0,0,0.1); border-color: #3b82f6; }
-            .news-card--announcement { border-top-color: #8b5cf6; }
-            .news-card--release      { border-top-color: #10b981; }
-            .news-card--tutorial     { border-top-color: #f59e0b; }
-            .news-card--news         { border-top-color: #3b82f6; }
-            .news-badge {
-                display: inline-block; font-size: 11px; font-weight: 700; text-transform: uppercase;
-                padding: 3px 8px; border-radius: 20px; background: #f1f5f9; color: #64748b; margin-bottom: 10px; width: fit-content;
-            }
-            .news-card--announcement .news-badge { background: #ede9fe; color: #7c3aed; }
-            .news-card--release .news-badge      { background: #d1fae5; color: #059669; }
-            .news-card--tutorial .news-badge     { background: #fef3c7; color: #d97706; }
-            .news-card--news .news-badge         { background: #dbeafe; color: #2563eb; }
-            .news-title { margin: 0 0 8px 0; font-size: 15px; font-weight: 600; line-height: 1.4; color: #1e293b; }
-            .news-excerpt { margin: 0 0 12px 0; font-size: 13px; color: #64748b; line-height: 1.6; flex: 1; }
-            .news-date { font-size: 12px; color: #94a3b8; margin-top: auto; }
-            @media (max-width: 767px) { .news-portal-grid { grid-template-columns: 1fr; } }
-        </style>
-        <?php
     }
 
     /**
@@ -790,6 +759,82 @@ class AdminPageService
                 color: #64748b;
                 font-size: 13px;
                 text-align: center;
+            }
+
+            /* Jankx News Portal Styles */
+            .news-portal-grid {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 20px;
+                margin-top: 20px;
+            }
+            .news-card {
+                display: flex;
+                flex-direction: column;
+                background: #fff;
+                border: 1px solid #e2e8f0;
+                border-radius: 16px;
+                padding: 20px;
+                text-decoration: none;
+                color: #1e293b;
+                transition: all 0.25s ease;
+                border-top: 4px solid #e2e8f0;
+            }
+            .news-card:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 12px 24px -8px rgba(15, 23, 42, 0.1);
+                border-color: #3b82f6;
+                color: #3b82f6;
+            }
+            .news-card--announcement { border-top-color: #8b5cf6; }
+            .news-card--release      { border-top-color: #10b981; }
+            .news-card--tutorial     { border-top-color: #f59e0b; }
+            .news-card--news         { border-top-color: #3b82f6; }
+
+            .news-badge {
+                display: inline-block;
+                font-size: 11px;
+                font-weight: 700;
+                text-transform: uppercase;
+                padding: 3px 8px;
+                border-radius: 20px;
+                background: #f1f5f9;
+                color: #64748b;
+                margin-bottom: 12px;
+                width: fit-content;
+                line-height: 1;
+            }
+            .news-card--announcement .news-badge { background: #ede9fe; color: #7c3aed; }
+            .news-card--release .news-badge      { background: #d1fae5; color: #059669; }
+            .news-card--tutorial .news-badge     { background: #fef3c7; color: #d97706; }
+            .news-card--news .news-badge         { background: #dbeafe; color: #2563eb; }
+
+            .news-title {
+                margin: 0 0 10px 0;
+                font-size: 16px;
+                font-weight: 700;
+                line-height: 1.4;
+                color: #1e293b;
+            }
+            .news-excerpt {
+                margin: 0 0 15px 0;
+                font-size: 13px;
+                color: #64748b;
+                line-height: 1.6;
+                flex: 1;
+            }
+            .news-date {
+                font-size: 12px;
+                color: #94a3b8;
+                font-weight: 500;
+                margin-top: auto;
+            }
+
+            @media (max-width: 1024px) {
+                .news-portal-grid { grid-template-columns: repeat(2, 1fr); }
+            }
+            @media (max-width: 767px) {
+                .news-portal-grid { grid-template-columns: 1fr; }
             }
 
             @media (max-width: 767px) {
