@@ -7,14 +7,14 @@ class StorageFactory
     /**
      * Create appropriate storage instance based on system availability
      */
-    public static function create($dbPath = null, $cacheDir = null)
+    public static function create($type = 'json', $options = [])
     {
-        // Ưu tiên SQLite nếu extension đã được cài đặt
-        if (extension_loaded('sqlite3')) {
+        if ($type === 'sqlite' && extension_loaded('sqlite3')) {
+            $dbPath = isset($options['db_path']) ? $options['db_path'] : null;
             return new SqliteStorage($dbPath);
         }
 
-        // Fallback về JSON files
+        $cacheDir = isset($options['cache_dir']) ? $options['cache_dir'] : null;
         return new JsonStorage($cacheDir);
     }
 }

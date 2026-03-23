@@ -18,7 +18,7 @@ class SqliteStorage implements IconStorageInterface
     protected function getDefaultDbPath()
     {
         $uploadDir = wp_upload_dir();
-        return $uploadDir['basedir'] . '/jankx/icons.db';
+        return $uploadDir['basedir'] . '/jankx/icons/db.sqlite3';
     }
 
     protected function ensureDirectoryExists()

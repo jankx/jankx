@@ -19,8 +19,9 @@ class IconRepository
     {
         $this->app = $app;
         
-        $storageType = Config::get('font-icons.storage.type', 'json');
-        $this->storage = \Jankx\Services\FontIcons\Storage\StorageFactory::create($storageType);
+        $storageConfig = Config::get('font-icons.storage', []);
+        $storageType = $storageConfig['type'] ?? 'json';
+        $this->storage = \Jankx\Services\FontIcons\Storage\StorageFactory::create($storageType, $storageConfig);
         
         $this->loadActiveTypes();
         $this->loadIconTypes();
