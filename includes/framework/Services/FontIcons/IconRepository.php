@@ -342,7 +342,7 @@ class IconRepository
     /**
      * Import font icon từ CSS URL
      */
-    public function importFromCssUrl($cssUrl, $iconType, $displayName = null, $autoLoad = false, $transformer = null)
+    public function importFromCssUrl($cssUrl, $iconType, $displayName = null, $autoLoad = false, $transformer = null, $version = null)
     {
         try {
             // Validate URL
@@ -367,7 +367,8 @@ class IconRepository
                 $displayName, 
                 $autoLoad, 
                 $transformer, 
-                $jsonData['render_type'] ?? 'prefix'
+                $jsonData['render_type'] ?? 'prefix',
+                $version
             );
 
             // Reload icon types
@@ -472,7 +473,7 @@ class IconRepository
     /**
      * Cập nhật icon type config
      */
-    protected function updateIconTypeConfig($iconType, $jsonData, $cssUrl, $displayName = null, $autoLoad = false, $transformer = null, $renderType = 'prefix')
+    protected function updateIconTypeConfig($iconType, $jsonData, $cssUrl, $displayName = null, $autoLoad = false, $transformer = null, $renderType = 'prefix', $version = null)
     {
         // Lấy config hiện tại
         $config = get_option('jankx_font_icons_config', []);
@@ -483,7 +484,7 @@ class IconRepository
             'auto_load' => $autoLoad,
             'css_url' => $cssUrl,
             'display_name' => $displayName ?: ucfirst($iconType),
-            'version' => $jsonData['version'] ?? '1.0.0',
+            'version' => $version ?: ($jsonData['version'] ?? '1.0.0'),
             'font_family' => $jsonData['font_family'] ?? 'Unknown',
             'prefixes' => $jsonData['prefixes'] ?? [$iconType],
             'total_icons' => count($jsonData['icons']),

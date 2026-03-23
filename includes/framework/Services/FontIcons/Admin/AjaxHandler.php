@@ -80,8 +80,15 @@ class AjaxHandler
                 wp_send_json_error(['message' => __('CSS URL not configured for this set.', 'jankx')]);
             }
 
-            // Thực hiện import để update data
-            $result = $repository->importFromCssUrl($cssUrl, $type, $config['display_name'], $config['auto_load']);
+            // Thực hiện import để update data, truyền version từ config
+            $result = $repository->importFromCssUrl(
+                $cssUrl, 
+                $type, 
+                $config['display_name'], 
+                $config['auto_load'], 
+                null, 
+                $config['version'] ?? null
+            );
 
             if ($result['success']) {
                 wp_send_json_success(['message' => __('Icon set updated successfully.', 'jankx')]);
