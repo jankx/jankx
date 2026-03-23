@@ -1,6 +1,7 @@
 # Jankx Framework
 
-[![Jankx CI](https://github.com/jankx/jankx/actions/workflows/ci.yml/badge.svg)](https://github.com/jankx/jankx/actions/workflows/ci.yml)
+[![Jankx CI](https://github.com/jankx/jankx-pro/actions/workflows/ci.yml/badge.svg?branch=v2)](https://github.com/jankx/jankx-pro/actions/workflows/ci.yml?query=branch%3Av2)
+[![codecov](https://codecov.io/gh/jankx/jankx-pro/branch/v2/graph/badge.svg)](https://codecov.io/gh/jankx/jankx-pro)
 
 Jankx is a powerful WordPress theme framework. High performance, compatible, easy to use and develop.
 

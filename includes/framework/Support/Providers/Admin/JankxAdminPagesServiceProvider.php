@@ -185,18 +185,28 @@ class JankxAdminPagesServiceProvider extends ServiceProvider
      */
     public function enqueueAdminStyles()
     {
+        $pageId = $_GET['page'] ?? '';
+        $adminPages = $this->app->make('jankx.admin-pages');
+        
+        if ($pageId) {
+            $adminPages->setCurrentPage($pageId);
+        }
+
         $screen = get_current_screen();
-        if (strpos($screen->id, 'jankx') !== false) {
+        if ($screen && strpos($screen->id, 'jankx') !== false) {
             try {
-                $baseUrl = $this->app->make('jankx.urls')['base'];
-                wp_enqueue_style(
-                    'jankx-admin-pages',
-                    $baseUrl . '/resources/assets/css/admin-pages.css',
-                    [],
-                    $this->app->make('jankx.version') ?? '1.0.0'
-                );
+                $urls = $this->app->make('jankx.urls');
+                $baseUrl = $urls['base'] ?? '';
+                if ($baseUrl) {
+                    wp_enqueue_style(
+                        'jankx-admin-pages',
+                        $baseUrl . '/resources/assets/css/admin-pages.css',
+                        [],
+                        $this->app->make('jankx.version') ?? '1.0.0'
+                    );
+                }
             } catch (\Exception $e) {
-                // Ignore if base URL not setup
+                // Ignore if base URL or version not setup
             }
         }
     }

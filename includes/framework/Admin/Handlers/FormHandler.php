@@ -52,6 +52,10 @@ class FormHandler
                     $this->handleSaveImageSizes($data);
                     break;
                 
+                case 'clear_debug_log':
+                    $this->handleClearDebugLog($data);
+                    break;
+                
                 // Allow other components to add their own handlers via action
                 default:
                     do_action("jankx/admin/handle_action/{$action}", $data, $this->app);
@@ -99,6 +103,35 @@ class FormHandler
             printf(
                 '<div class="notice notice-success is-dismissible"><p>%s</p></div>',
                 esc_html__('Image size settings saved.', 'jankx')
+            );
+        });
+    }
+
+    /**
+     * Handle clearing the debug log file
+     * 
+     * @param array $data Form data
+     * @return void
+     */
+    protected function handleClearDebugLog(array $data): void
+    {
+        if (!wp_verify_nonce($data['jankx_debug_nonce'] ?? '', 'jankx_clear_log')) {
+            wp_die(__('Security check failed', 'jankx'));
+        }
+
+        if (!current_user_can('manage_options')) {
+            wp_die(__('You do not have permission to perform this action.', 'jankx'));
+        }
+
+        $log_file = WP_CONTENT_DIR . '/debug.log';
+        if (file_exists($log_file)) {
+            file_put_contents($log_file, '');
+        }
+
+        add_action('admin_notices', function () {
+            printf(
+                '<div class="notice notice-success is-dismissible"><p>%s</p></div>',
+                esc_html__('Debug log cleared.', 'jankx')
             );
         });
     }

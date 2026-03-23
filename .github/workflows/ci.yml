@@ -23,7 +23,7 @@ jobs:
         with:
           php-version: ${{ matrix.php }}
           extensions: mbstring, intl, igbinary, bcmath, curl, gd, zip
-          coverage: none
+          coverage: xdebug
 
       - name: Get Composer Cache Directory
         id: composer-cache
@@ -40,8 +40,14 @@ jobs:
         run: composer install --prefer-dist --no-progress --no-suggest
 
       - name: Run PHPUnit
-        run: vendor/bin/phpunit
-        continue-on-error: true # Work in progress, let's see errors without failing the main task
+        run: vendor/bin/phpunit --coverage-clover coverage.xml
+
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          file: ./coverage.xml
+          fail_ci_if_error: false
 
   build-assets:
     name: Build Assets
