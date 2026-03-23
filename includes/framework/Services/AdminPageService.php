@@ -73,7 +73,7 @@ class AdminPageService
         ]);
 
         $this->addPage([
-            'id' => 'jankx-system-information',
+            'id' => 'jankx-debug',
             'title' => __('System Information', 'jankx'),
             'menu_title' => __('System Information', 'jankx'),
             'capability' => 'manage_options',
@@ -527,93 +527,316 @@ class AdminPageService
         }
 
         ?>
-        <div class="jankx-utilities-page">
-            <div class="card">
-                <h2><?php _e('Media Settings', 'jankx'); ?></h2>
-                <p><?php _e('Enable or disable specific image sizes. Unchecked sizes will be filtered out site-wide.', 'jankx'); ?>
-                </p>
+        <div class="jankx-utilities-modern">
+            <header class="utilities-header">
+                <div class="header-content">
+                    <div class="header-icon">
+                        <span class="dashicons dashicons-admin-tools"></span>
+                    </div>
+                    <div class="header-text">
+                        <h1><?php _e('Jankx Utilities', 'jankx'); ?></h1>
+                        <p class="subtitle"><?php _e('Optimize your website performance and manage system-wide settings.', 'jankx'); ?></p>
+                    </div>
+                </div>
+            </header>
 
-                <form method="post" action="">
-                    <?php wp_nonce_field('jankx_save_utilities', 'jankx_utilities_nonce'); ?>
-                    <input type="hidden" name="jankx_action" value="save_image_sizes">
+            <div class="utilities-grid">
+                <div class="utility-card main-card">
+                    <div class="card-header">
+                        <div class="card-header-title">
+                            <span class="dashicons dashicons-images-alt2"></span>
+                            <h3><?php _e('Media Optimization', 'jankx'); ?></h3>
+                        </div>
+                        <div class="card-header-action">
+                            <label class="select-all-label">
+                                <input type="checkbox" id="cb-select-all-1" <?php checked(count($enabled_sizes) === count($all_sizes)); ?>>
+                                <span><?php _e('Select All', 'jankx'); ?></span>
+                            </label>
+                        </div>
+                    </div>
 
-                    <table class="wp-list-table widefat fixed striped">
-                        <thead>
-                            <tr>
-                                <th class="manage-column column-cb check-column">
-                                    <label class="screen-reader-text" for="cb-select-all-1"><?php _e('Select All'); ?></label>
-                                    <input id="cb-select-all-1" type="checkbox" <?php checked(count($enabled_sizes) === count($all_sizes)); ?>>
-                                </th>
-                                <th><?php _e('Size Name', 'jankx'); ?></th>
-                                <th><?php _e('Dimensions', 'jankx'); ?></th>
-                                <th><?php _e('Crop', 'jankx'); ?></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php foreach ($all_sizes as $name => $size): ?>
-                                <tr>
-                                    <th scope="row" class="check-column">
-                                        <input type="checkbox" name="enabled_sizes[]" value="<?php echo esc_attr($name); ?>" <?php checked(in_array($name, $enabled_sizes)); ?>>
-                                    </th>
-                                    <td>
-                                        <strong><?php echo esc_html($name); ?></strong>
-                                    </td>
-                                    <td>
-                                        <?php echo esc_html($size['width'] . ' x ' . $size['height']); ?>
-                                    </td>
-                                    <td>
-                                        <?php echo esc_html($size['crop'] ? __('Yes') : __('No')); ?>
-                                    </td>
-                                </tr>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
+                    <div class="card-body">
+                        <p class="section-desc"><?php _e('Enable or disable specific image sizes. Unused image sizes consume disk space and slow down your site. Disabling them will prevent WordPress from generating these sizes for new uploads.', 'jankx'); ?></p>
 
-                    <p class="submit">
-                        <input type="submit" name="submit" id="submit" class="button button-primary"
-                            value="<?php _e('Save Changes'); ?>">
-                    </p>
-                </form>
+                        <form method="post" action="" id="jankx-utilities-form">
+                            <?php wp_nonce_field('jankx_save_utilities', 'jankx_utilities_nonce'); ?>
+                            <input type="hidden" name="jankx_action" value="save_image_sizes">
+
+                            <div class="image-sizes-grid">
+                                <?php foreach ($all_sizes as $name => $size):
+                                    $is_enabled = in_array($name, $enabled_sizes);
+                                ?>
+                                    <div class="size-item <?php echo $is_enabled ? 'is-active' : ''; ?>">
+                                        <div class="size-info">
+                                            <div class="size-name"><?php echo esc_html(ucwords(str_replace(['_', '-'], ' ', $name))); ?></div>
+                                            <div class="size-meta">
+                                                <span class="dimension"><?php echo esc_html($size['width'] . ' × ' . $size['height']); ?></span>
+                                                <span class="dot"></span>
+                                                <span class="crop-status"><?php echo $size['crop'] ? __('Crop: Yes', 'jankx') : __('Crop: No', 'jankx'); ?></span>
+                                            </div>
+                                            <div class="size-slug"><code><?php echo esc_html($name); ?></code></div>
+                                        </div>
+                                        <div class="size-toggle">
+                                            <label class="jankx-switch">
+                                                <input type="checkbox" name="enabled_sizes[]" value="<?php echo esc_attr($name); ?>" <?php checked($is_enabled); ?>>
+                                                <span class="slider round"></span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                <?php endforeach; ?>
+                            </div>
+
+                            <div class="card-footer">
+                                <button type="submit" name="submit" id="submit" class="jankx-btn-save">
+                                    <span class="dashicons dashicons-saved"></span>
+                                    <?php _e('Save Media Settings', 'jankx'); ?>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="utility-sidebar">
+                    <div class="utility-card sidebar-card">
+                        <div class="card-header">
+                            <div class="card-header-title">
+                                <span class="dashicons dashicons-performance"></span>
+                                <h3><?php _e('System Actions', 'jankx'); ?></h3>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <ul class="quick-actions">
+                                <li>
+                                    <div class="action-info">
+                                        <strong><?php _e('Regenerate Thumbnails', 'jankx'); ?></strong>
+                                        <span><?php _e('Fix broken images and create new sizes.', 'jankx'); ?></span>
+                                    </div>
+                                    <button class="action-btn" title="<?php _e('Requires plugin', 'jankx'); ?>" disabled>
+                                        <span class="dashicons dashicons-update"></span>
+                                    </button>
+                                </li>
+                                <li>
+                                    <div class="action-info">
+                                        <strong><?php _e('Clear Image Cache', 'jankx'); ?></strong>
+                                        <span><?php _e('Remove transient image metadata.', 'jankx'); ?></span>
+                                    </div>
+                                    <button class="action-btn">
+                                        <span class="dashicons dashicons-trash"></span>
+                                    </button>
+                                </li>
+                                <li>
+                                    <div class="action-info">
+                                        <strong><?php _e('Export Settings', 'jankx'); ?></strong>
+                                        <span><?php _e('Download your configuration.', 'jankx'); ?></span>
+                                    </div>
+                                    <button class="action-btn">
+                                        <span class="dashicons dashicons-download"></span>
+                                    </button>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="utility-card help-card">
+                        <div class="card-body">
+                            <div class="help-content">
+                                <span class="dashicons dashicons-editor-help"></span>
+                                <h4><?php _e('Need Help?', 'jankx'); ?></h4>
+                                <p><?php _e('Check our documentation for advanced media optimization tips.', 'jankx'); ?></p>
+                                <a href="#" class="help-link"><?php _e('Read Docs', 'jankx'); ?> →</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
+
+        <style>
+            @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+            .jankx-utilities-modern {
+                font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+                margin: 20px 20px 0 0;
+                color: #1e293b;
+            }
+
+            .utilities-header {
+                background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+                padding: 40px;
+                border-radius: 24px;
+                color: #f8fafc;
+                margin-bottom: 30px;
+                box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.1);
+            }
+
+            .header-content { display: flex; align-items: center; gap: 24px; }
+            .header-icon {
+                width: 64px; height: 64px;
+                background: rgba(59, 130, 246, 0.2);
+                border-radius: 18px;
+                display: flex; align-items: center; justify-content: center;
+                border: 1px solid rgba(59, 130, 246, 0.3);
+            }
+            .header-icon .dashicons { font-size: 32px; width: 32px; height: 32px; color: #60a5fa; }
+            .header-text h1 { margin: 0; font-size: 28px; font-weight: 700; color: #fff; }
+            .header-text .subtitle { margin: 8px 0 0 0; font-size: 16px; color: #94a3b8; }
+
+            .utilities-grid {
+                display: grid;
+                grid-template-columns: 1fr 340px;
+                gap: 24px;
+            }
+
+            .utility-card {
+                background: #fff;
+                border-radius: 20px;
+                border: 1px solid #e2e8f0;
+                overflow: hidden;
+                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            }
+
+            .card-header {
+                padding: 24px 30px;
+                border-bottom: 1px solid #f1f5f9;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            .card-header-title { display: flex; align-items: center; gap: 12px; }
+            .card-header-title .dashicons { color: #3b82f6; font-size: 20px; width: 20px; height: 20px; }
+            .card-header-title h3 { margin: 0; font-size: 18px; font-weight: 600; color: #0f172a; }
+
+            .select-all-label {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                font-size: 13px;
+                font-weight: 500;
+                color: #64748b;
+                cursor: pointer;
+            }
+
+            .card-body { padding: 30px; }
+            .section-desc { margin-top: 0; margin-bottom: 24px; color: #64748b; font-size: 14px; line-height: 1.6; }
+
+            .image-sizes-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+                gap: 16px;
+                margin-bottom: 30px;
+            }
+
+            .size-item {
+                padding: 20px;
+                background: #f8fafc;
+                border: 1px solid #e2e8f0;
+                border-radius: 16px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                transition: all 0.2s;
+            }
+
+            .size-item:hover { border-color: #cbd5e1; background: #f1f5f9; }
+            .size-item.is-active { border-color: #3b82f6; background: #eff6ff; }
+
+            .size-name { font-weight: 600; color: #0f172a; margin-bottom: 4px; }
+            .size-meta { font-size: 12px; color: #64748b; display: flex; align-items: center; gap: 6px; }
+            .size-meta .dot { width: 3px; height: 3px; background: #cbd5e1; border-radius: 50%; }
+            .size-slug { margin-top: 8px; }
+            .size-slug code { background: #fff; border: 1px solid #e2e8f0; padding: 2px 6px; border-radius: 4px; font-size: 11px; color: #3b82f6; }
+
+            /* Switch UI */
+            .jankx-switch { position: relative; display: inline-block; width: 44px; height: 24px; }
+            .jankx-switch input { opacity: 0; width: 0; height: 0; }
+            .slider {
+                position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
+                background-color: #cbd5e1; transition: .4s;
+            }
+            .slider:before {
+                position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px;
+                background-color: white; transition: .4s;
+            }
+            input:checked + .slider { background-color: #3b82f6; }
+            input:focus + .slider { box-shadow: 0 0 1px #3b82f6; }
+            input:checked + .slider:before { transform: translateX(20px); }
+            .slider.round { border-radius: 24px; }
+            .slider.round:before { border-radius: 50%; }
+
+            .card-footer {
+                padding-top: 24px;
+                border-top: 1px solid #f1f5f9;
+                display: flex;
+                justify-content: flex-end;
+            }
+
+            .jankx-btn-save {
+                background: #3b82f6;
+                color: #fff;
+                border: none;
+                border-radius: 12px;
+                padding: 12px 24px;
+                font-weight: 600;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                transition: background 0.2s;
+            }
+            .jankx-btn-save:hover { background: #2563eb; }
+            .jankx-btn-save .dashicons { font-size: 18px; width: 18px; height: 18px; }
+
+            /* Sidebar */
+            .utility-sidebar { display: flex; flex-direction: column; gap: 24px; }
+            .quick-actions { list-style: none; margin: 0; padding: 0; }
+            .quick-actions li {
+                display: flex; justify-content: space-between; align-items: center;
+                padding: 12px 0; border-bottom: 1px solid #f1f5f9;
+            }
+            .quick-actions li:last-child { border-bottom: none; }
+            .action-info strong { display: block; font-size: 14px; color: #0f172a; }
+            .action-info span { font-size: 12px; color: #64748b; }
+            .action-btn {
+                background: #f1f5f9; border: none; border-radius: 8px; width: 32px; height: 32px;
+                display: flex; align-items: center; justify-content: center; cursor: pointer;
+                color: #64748b; transition: all 0.2s;
+            }
+            .action-btn:hover:not(:disabled) { background: #e2e8f0; color: #0f172a; }
+            .action-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+            .help-card { background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); color: #fff; border: none; }
+            .help-content { text-align: center; }
+            .help-content .dashicons { font-size: 32px; width: 32px; height: 32px; margin-bottom: 12px; opacity: 0.8; }
+            .help-content h4 { margin: 0 0 8px 0; font-size: 18px; }
+            .help-content p { margin: 0 0 16px 0; font-size: 14px; opacity: 0.9; line-height: 1.5; }
+            .help-link { color: #fff; text-decoration: none; font-weight: 600; font-size: 14px; }
+            .help-link:hover { text-decoration: underline; }
+
+            @media (max-width: 1024px) {
+                .utilities-grid { grid-template-columns: 1fr; }
+                .utility-sidebar { grid-row: 1; }
+            }
+        </style>
+
         <script>
             jQuery(document).ready(function ($) {
+                // Select all functionality
                 $('#cb-select-all-1').click(function () {
-                    $('input[name="enabled_sizes[]"]').prop('checked', this.checked);
+                    $('.jankx-switch input[name="enabled_sizes[]"]').prop('checked', this.checked).trigger('change');
+                });
+
+                // Update row styling on change
+                $('.jankx-switch input').on('change', function() {
+                    var $item = $(this).closest('.size-item');
+                    if (this.checked) {
+                        $item.addClass('is-active');
+                    } else {
+                        $item.removeClass('is-active');
+                    }
                 });
             });
         </script>
-        <style>
-            .jankx-utilities-page .card {
-                max-width: 800px;
-                padding: 20px;
-                background: #fff;
-                margin-top: 20px;
-                border: 1px solid #ccd0d4;
-                box-shadow: 0 1px 1px rgba(0, 0, 0, .04);
-            }
-
-            .jankx-dashboard-widgets {
-                display: flex;
-                flex-wrap: wrap;
-                gap: 20px;
-                margin-top: 20px;
-            }
-
-            .jankx-widget {
-                background: #fff;
-                border: 1px solid #ccd0d4;
-                padding: 15px;
-                min-width: 300px;
-                box-shadow: 0 1px 1px rgba(0, 0, 0, .04);
-            }
-
-            .jankx-widget h3 {
-                margin-top: 0;
-                border-bottom: 1px solid #eee;
-                padding-bottom: 10px;
-            }
-        </style>
         <?php
     }
 

@@ -223,7 +223,10 @@ class IconRepository
         return true;
     }
 
-    public function refreshIconData()
+    /**
+     * Refresh the repository cache
+     */
+    public function refreshCache()
     {
         // Reload icon types
         $this->loadIconTypes();
