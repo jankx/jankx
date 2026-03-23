@@ -15,6 +15,222 @@ class AdminPageService
     {
         $this->app = $app;
         $this->registerDefaultPages();
+        $this->registerShortcodes();
+
+        add_action('wp_dashboard_setup', [$this, 'registerDashboardWidgets']);
+        add_action('admin_enqueue_scripts', [$this, 'enqueueDashboardAssets']);
+    }
+
+    /**
+     * Enqueue assets cho Dashboard chính
+     */
+    public function enqueueDashboardAssets($hook)
+    {
+        if ('index.php' === $hook) {
+            wp_enqueue_style('jankx-dashboard-fonts', 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap', [], null);
+        }
+    }
+
+    /**
+     * Đăng ký Dashboard Widgets
+     */
+    public function registerDashboardWidgets()
+    {
+        wp_add_dashboard_widget(
+            'jankx_dashboard_widget',
+            __('Jankx Framework News & Status', 'jankx'),
+            [$this, 'renderMainDashboardWidget']
+        );
+
+        // Move to top
+        global $wp_meta_boxes;
+        
+        $dashboard = $wp_meta_boxes['dashboard']['normal']['core'];
+        $jankx_widget = ['jankx_dashboard_widget' => $dashboard['jankx_dashboard_widget']];
+        unset($dashboard['jankx_dashboard_widget']);
+        
+        $wp_meta_boxes['dashboard']['normal']['core'] = array_merge($jankx_widget, $dashboard);
+    }
+
+    /**
+     * Nội dung của Dashboard Widget chính
+     */
+    public function renderMainDashboardWidget()
+    {
+        $version = $this->app->make('jankx.version') ?? '1.0.0';
+        ?>
+        <div class="jankx-dashboard-widget-content">
+            <div class="jankx-widget-header" style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid #eee;">
+                <span class="dashicons dashicons-art" style="color: #3b82f6;"></span>
+                <strong>Jankx Framework v<?php echo esc_html($version); ?></strong>
+                <span style="margin-left: auto; font-size: 11px; background: #dcfce7; color: #166534; padding: 2px 8px; border-radius: 10px;"><?php _e('Operational', 'jankx'); ?></span>
+            </div>
+            
+            <p style="font-size: 13px; color: #64748b;"><?php _e('Chào mừng bạn quay trở lại! Dưới đây là các bản cập nhật mới nhất từ Jankx Portal:', 'jankx'); ?></p>
+            
+            <div class="jankx-widget-news-wrapper" style="margin: 15px 0;">
+                <?php $this->renderNewsWidget(3); ?>
+            </div>
+
+            <div class="jankx-widget-footer" style="padding-top: 10px; border-top: 1px solid #eee; display: flex; gap: 15px;">
+                <a href="<?php echo admin_url('admin.php?page=jankx-dashboard'); ?>" class="button button-primary"><?php _e('Jankx Dashboard', 'jankx'); ?></a>
+                <a href="<?php echo admin_url('admin.php?page=jankx-theme-options'); ?>" class="button"><?php _e('Theme Options', 'jankx'); ?></a>
+            </div>
+
+            <style>
+                #jankx_dashboard_widget .inside { padding: 0; margin-top: 0; }
+                .jankx-dashboard-widget-content { 
+                    padding: 15px; 
+                    font-family: 'Inter', sans-serif;
+                }
+                
+                /* News Grid & Cards for Widget */
+                #jankx_dashboard_widget .news-portal-grid { 
+                    display: grid; 
+                    grid-template-columns: 1fr; 
+                    gap: 12px; 
+                }
+                #jankx_dashboard_widget .news-card {
+                    display: flex; flex-direction: column; background: #fff; border: 1px solid #e2e8f0;
+                    border-radius: 12px; padding: 12px; text-decoration: none; color: #1e293b;
+                    transition: all 0.2s ease; border-top: 3px solid #cbd5e1;
+                }
+                #jankx_dashboard_widget .news-card:hover { border-color: #3b82f6; background: #f8fafc; }
+                #jankx_dashboard_widget .news-card--announcement { border-top-color: #8b5cf6; }
+                #jankx_dashboard_widget .news-card--release      { border-top-color: #10b981; }
+                #jankx_dashboard_widget .news-card--tutorial     { border-top-color: #f59e0b; }
+                #jankx_dashboard_widget .news-card--news         { border-top-color: #3b82f6; }
+                
+                #jankx_dashboard_widget .news-badge {
+                    display: inline-block; font-size: 9px; font-weight: 700; text-transform: uppercase;
+                    padding: 2px 6px; border-radius: 10px; background: #f1f5f9; color: #64748b; margin-bottom: 6px; width: fit-content;
+                }
+                #jankx_dashboard_widget .news-card--announcement .news-badge { background: #ede9fe; color: #7c3aed; }
+                #jankx_dashboard_widget .news-card--release .news-badge      { background: #d1fae5; color: #059669; }
+                #jankx_dashboard_widget .news-title { font-size: 13px; font-weight: 600; line-height: 1.4; color: #1e293b; margin: 0; }
+                #jankx_dashboard_widget .news-excerpt, #jankx_dashboard_widget .news-date { display: none; }
+            </style>
+        </div>
+        <?php
+    }
+
+    /**
+     * Đăng ký các shortcode của Jankx
+     */
+    protected function registerShortcodes()
+    {
+        add_shortcode('jankx_news', function ($atts) {
+            $atts = shortcode_atts([
+                'limit' => 5,
+                'type'  => '',
+            ], $atts);
+
+            ob_start();
+            $this->renderNewsWidget((int)$atts['limit'], $atts['type']);
+            return ob_get_clean();
+        });
+    }
+
+    /**
+     * Lấy dữ liệu tin tức từ API với Cache
+     */
+    protected function getPortalNews($limit = 6, $type = '')
+    {
+        $cache_key = 'jankx_portal_news_v1_' . md5($limit . $type);
+        $news_data = get_transient($cache_key);
+
+        if (false === $news_data) {
+            $api_url = 'https://jankx.pages.dev/api/portal/news';
+            $url = add_query_arg([
+                'limit' => $limit,
+                'type'  => $type,
+            ], $api_url);
+
+            $response = wp_remote_get($url, [
+                'timeout'   => 5,
+                'sslverify' => false,
+            ]);
+
+            if (!is_wp_error($response) && wp_remote_retrieve_response_code($response) === 200) {
+                $body = json_decode(wp_remote_retrieve_body($response), true);
+                $news_data = (!empty($body['status']) && $body['status'] === 'success') ? $body['data'] : [];
+            } else {
+                $news_data = [];
+            }
+            set_transient($cache_key, $news_data, 4 * HOUR_IN_SECONDS);
+        }
+
+        return $news_data;
+    }
+
+    /**
+     * Render News Widget (Dùng cho cả Dashboard và Shortcode)
+     */
+    public function renderNewsWidget($limit = 6, $type = '')
+    {
+        $news_data = $this->getPortalNews($limit, $type);
+        
+        // Cần đảm bảo CSS được load nếu dùng ngoài frontend
+        if (!is_admin()) {
+            $this->renderPortalFrontendStyles();
+        }
+
+        if (empty($news_data)) : ?>
+            <div class="news-portal-empty">
+                <span class="dashicons dashicons-cloud"></span>
+                <p><?php _e('Không thể tải tin tức lúc này. Vui lòng thử lại sau.', 'jankx'); ?></p>
+                <a href="https://jankx.pages.dev/news" target="_blank" class="button"><?php _e('Xem trên Jankx Hub', 'jankx'); ?></a>
+            </div>
+        <?php else : ?>
+            <div class="news-portal-grid">
+                <?php foreach ($news_data as $item) :
+                    $slug    = $item['slug'] ?? $item['id'];
+                    $url     = "https://jankx.pages.dev/news/{$slug}";
+                    $date    = date_i18n(get_option('date_format'), strtotime($item['created_at']));
+                    $excerpt = mb_substr(strip_tags($item['content'] ?? ''), 0, 120);
+                    $item_type = strtolower($item['type'] ?? 'news');
+                    $labels  = ['announcement' => 'Thông báo', 'release' => 'Phiên bản', 'tutorial' => 'Hướng dẫn', 'news' => 'Tin tức'];
+                ?>
+                <a href="<?php echo esc_url($url); ?>" target="_blank" rel="noopener" class="news-card news-card--<?php echo esc_attr($item_type); ?>">
+                    <span class="news-badge"><?php echo esc_html($labels[$item_type] ?? ucfirst($item_type)); ?></span>
+                    <h4 class="news-title"><?php echo esc_html($item['title']); ?></h4>
+                    <p class="news-excerpt"><?php echo esc_html($excerpt); ?>...</p>
+                    <time class="news-date"><?php echo esc_html($date); ?></time>
+                </a>
+                <?php endforeach; ?>
+            </div>
+        <?php endif;
+    }
+
+    protected function renderPortalFrontendStyles()
+    {
+        ?>
+        <style>
+            .news-portal-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; font-family: sans-serif; }
+            .news-card {
+                display: flex; flex-direction: column; background: #fff; border: 1px solid #e2e8f0;
+                border-radius: 16px; padding: 20px; text-decoration: none; color: #1e293b;
+                transition: all 0.25s ease; border-top: 4px solid #e2e8f0;
+            }
+            .news-card:hover { transform: translateY(-3px); box-shadow: 0 12px 24px -8px rgba(0,0,0,0.1); border-color: #3b82f6; }
+            .news-card--announcement { border-top-color: #8b5cf6; }
+            .news-card--release      { border-top-color: #10b981; }
+            .news-card--tutorial     { border-top-color: #f59e0b; }
+            .news-card--news         { border-top-color: #3b82f6; }
+            .news-badge {
+                display: inline-block; font-size: 11px; font-weight: 700; text-transform: uppercase;
+                padding: 3px 8px; border-radius: 20px; background: #f1f5f9; color: #64748b; margin-bottom: 10px; width: fit-content;
+            }
+            .news-card--announcement .news-badge { background: #ede9fe; color: #7c3aed; }
+            .news-card--release .news-badge      { background: #d1fae5; color: #059669; }
+            .news-card--tutorial .news-badge     { background: #fef3c7; color: #d97706; }
+            .news-card--news .news-badge         { background: #dbeafe; color: #2563eb; }
+            .news-title { margin: 0 0 8px 0; font-size: 15px; font-weight: 600; line-height: 1.4; color: #1e293b; }
+            .news-excerpt { margin: 0 0 12px 0; font-size: 13px; color: #64748b; line-height: 1.6; flex: 1; }
+            .news-date { font-size: 12px; color: #94a3b8; margin-top: auto; }
+            @media (max-width: 767px) { .news-portal-grid { grid-template-columns: 1fr; } }
+        </style>
+        <?php
     }
 
     /**
@@ -270,48 +486,7 @@ class AdminPageService
                         <?php _e('Xem tất cả', 'jankx'); ?> →
                     </a>
                 </div>
-                <?php
-                $cache_key = 'jankx_portal_news_v1';
-                $news_data = get_transient($cache_key);
-                if (false === $news_data) {
-                    $response = wp_remote_get('https://jankx.pages.dev/api/portal/news?limit=6', [
-                        'timeout'   => 5,
-                        'sslverify' => false,
-                    ]);
-                    if (!is_wp_error($response) && wp_remote_retrieve_response_code($response) === 200) {
-                        $body = json_decode(wp_remote_retrieve_body($response), true);
-                        $news_data = (!empty($body['status']) && $body['status'] === 'success') ? $body['data'] : [];
-                    } else {
-                        $news_data = [];
-                    }
-                    set_transient($cache_key, $news_data, 4 * HOUR_IN_SECONDS);
-                }
-                ?>
-                <?php if (empty($news_data)) : ?>
-                    <div class="news-portal-empty">
-                        <span class="dashicons dashicons-cloud"></span>
-                        <p><?php _e('Không thể tải tin tức lúc này. Vui lòng thử lại sau.', 'jankx'); ?></p>
-                        <a href="https://jankx.pages.dev/news" target="_blank" class="button"><?php _e('Xem trên Jankx Hub', 'jankx'); ?></a>
-                    </div>
-                <?php else : ?>
-                    <div class="news-portal-grid">
-                        <?php foreach ($news_data as $item) :
-                            $slug    = $item['slug'] ?? $item['id'];
-                            $url     = "https://jankx.pages.dev/news/{$slug}";
-                            $date    = date_i18n(get_option('date_format'), strtotime($item['created_at']));
-                            $excerpt = mb_substr(strip_tags($item['content'] ?? ''), 0, 120);
-                            $type    = strtolower($item['type'] ?? 'news');
-                            $labels  = ['announcement' => 'Thông báo', 'release' => 'Phiên bản', 'tutorial' => 'Hướng dẫn', 'news' => 'Tin tức'];
-                        ?>
-                        <a href="<?php echo esc_url($url); ?>" target="_blank" rel="noopener" class="news-card news-card--<?php echo esc_attr($type); ?>">
-                            <span class="news-badge"><?php echo esc_html($labels[$type] ?? ucfirst($type)); ?></span>
-                            <h4 class="news-title"><?php echo esc_html($item['title']); ?></h4>
-                            <p class="news-excerpt"><?php echo esc_html($excerpt); ?>...</p>
-                            <time class="news-date"><?php echo esc_html($date); ?></time>
-                        </a>
-                        <?php endforeach; ?>
-                    </div>
-                <?php endif; ?>
+                <?php $this->renderNewsWidget(6); ?>
             </div>
 
             <style>
@@ -361,119 +536,46 @@ class AdminPageService
                 /* === News Portal === */
                 .jankx-news-portal-section {
                     margin-top: 36px;
+                    border-top: 1px solid #e2e8f0;
+                    padding-top: 30px;
                 }
                 .news-portal-header {
                     display: flex;
                     align-items: center;
-                    gap: 10px;
-                    margin-bottom: 20px;
-                }
-                .news-portal-header .dashicons {
-                    color: #f97316;
-                    font-size: 22px;
-                    width: 22px;
-                    height: 22px;
+                    gap: 12px;
+                    margin-bottom: 24px;
                 }
                 .news-portal-header h2 {
                     margin: 0;
                     font-size: 20px;
                     font-weight: 700;
                     color: #1e293b;
-                    flex: 1;
+                    flex-grow: 1;
+                }
+                .news-portal-header .dashicons {
+                    color: #3b82f6;
+                    font-size: 24px;
+                    width: 24px;
+                    height: 24px;
                 }
                 .news-portal-see-all {
-                    font-size: 13px;
+                    font-size: 14px;
                     font-weight: 600;
                     color: #3b82f6;
                     text-decoration: none;
                 }
-                .news-portal-see-all:hover { text-decoration: underline; }
-
-                .news-portal-grid {
-                    display: grid;
-                    grid-template-columns: repeat(3, 1fr);
-                    gap: 20px;
+                .news-portal-see-all:hover {
+                    text-decoration: underline;
                 }
 
-                .news-card {
-                    display: flex;
-                    flex-direction: column;
-                    background: #fff;
-                    border: 1px solid #e2e8f0;
-                    border-radius: 16px;
-                    padding: 20px;
-                    text-decoration: none;
-                    color: inherit;
-                    transition: all 0.25s ease;
-                    border-top: 4px solid #e2e8f0;
+                @media (max-width: 991px) {
+                    .jankx-dashboard-grid { grid-template-columns: 1fr 1fr; }
                 }
-                .news-card:hover {
-                    transform: translateY(-3px);
-                    box-shadow: 0 12px 24px -8px rgba(0,0,0,0.1);
-                    border-color: #3b82f6;
-                    border-top-color: #3b82f6;
-                    color: inherit;
+                @media (max-width: 767px) {
+                    .jankx-dashboard-grid { grid-template-columns: 1fr; }
                 }
-                .news-card--announcement { border-top-color: #8b5cf6; }
-                .news-card--release      { border-top-color: #10b981; }
-                .news-card--tutorial     { border-top-color: #f59e0b; }
-                .news-card--news         { border-top-color: #3b82f6; }
 
-                .news-badge {
-                    display: inline-block;
-                    font-size: 11px;
-                    font-weight: 700;
-                    text-transform: uppercase;
-                    letter-spacing: 0.5px;
-                    padding: 3px 8px;
-                    border-radius: 20px;
-                    background: #f1f5f9;
-                    color: #64748b;
-                    margin-bottom: 10px;
-                    width: fit-content;
-                }
-                .news-card--announcement .news-badge { background: #ede9fe; color: #7c3aed; }
-                .news-card--release .news-badge      { background: #d1fae5; color: #059669; }
-                .news-card--tutorial .news-badge     { background: #fef3c7; color: #d97706; }
-                .news-card--news .news-badge         { background: #dbeafe; color: #2563eb; }
-
-                .news-title {
-                    margin: 0 0 8px 0;
-                    font-size: 15px;
-                    font-weight: 600;
-                    color: #1e293b;
-                    line-height: 1.4;
-                    display: -webkit-box;
-                    -webkit-line-clamp: 2;
-                    -webkit-box-orient: vertical;
-                    overflow: hidden;
-                }
-                .news-excerpt {
-                    margin: 0 0 12px 0;
-                    font-size: 13px;
-                    color: #64748b;
-                    line-height: 1.6;
-                    flex: 1;
-                    display: -webkit-box;
-                    -webkit-line-clamp: 3;
-                    -webkit-box-orient: vertical;
-                    overflow: hidden;
-                }
-                .news-date {
-                    font-size: 12px;
-                    color: #94a3b8;
-                    font-weight: 500;
-                    margin-top: auto;
-                }
-                .news-portal-empty {
-                    text-align: center;
-                    padding: 40px;
-                    background: #f8fafc;
-                    border-radius: 16px;
-                    border: 1px dashed #cbd5e1;
-                    color: #64748b;
-                }
-                .news-portal-empty .dashicons { font-size: 36px; width: 36px; height: 36px; color: #cbd5e1; }
+                /* Styles moved to renderNewsWidget for reuse */
             </style>
         </div>
         <?php
