@@ -25,6 +25,7 @@ class AdminPageService
         $this->addPage([
             'id' => 'jankx-dashboard',
             'title' => __('Jankx Dashboard', 'jankx'),
+            'subtitle' => __('Dahboard cho website của bạn với các thông tin hệ thống và các tiện ích quản lý nhanh.', 'jankx'),
             'menu_title' => __('Dashboard', 'jankx'),
             'capability' => 'manage_options',
             'callback' => [$this, 'renderDashboardPage'],
@@ -35,6 +36,7 @@ class AdminPageService
         $this->addPage([
             'id' => 'jankx-extensions',
             'title' => __('Managed Extensions', 'jankx'),
+            'subtitle' => __('Quản lý các phần mở rộng chức năng cho Jankx Framework.', 'jankx'),
             'menu_title' => __('Extensions', 'jankx'),
             'capability' => 'manage_options',
             'callback' => [$this, 'renderExtensionsPage'],
@@ -45,6 +47,7 @@ class AdminPageService
         $this->addPage([
             'id' => 'jankx-marketplace',
             'title' => __('Extension Marketplace', 'jankx'),
+            'subtitle' => __('Khám phá và cài đặt hàng trăm tiện ích mở rộng từ cộng đồng Jankx.', 'jankx'),
             'menu_title' => __('Marketplace', 'jankx'),
             'capability' => 'manage_options',
             'callback' => [$this, 'renderMarketplacePage'],
@@ -55,6 +58,7 @@ class AdminPageService
         $this->addPage([
             'id' => 'jankx-icons',
             'title' => __('Icon Repository', 'jankx'),
+            'subtitle' => __('Thư viện biểu tượng tập trung cho theme và các nội dung website.', 'jankx'),
             'menu_title' => __('Icon Repository', 'jankx'),
             'capability' => 'manage_options',
             'callback' => [$this, 'renderIconsPage'],
@@ -65,6 +69,7 @@ class AdminPageService
         $this->addPage([
             'id' => 'jankx-utilities',
             'title' => __('Utilities', 'jankx'),
+            'subtitle' => __('Các công cụ tối ưu hệ thống, hình ảnh và cấu hình nâng cao.', 'jankx'),
             'menu_title' => __('Utilities', 'jankx'),
             'capability' => 'manage_options',
             'callback' => [$this, 'renderUtilitiesPage'],
@@ -75,6 +80,7 @@ class AdminPageService
         $this->addPage([
             'id' => 'jankx-debug',
             'title' => __('System Information', 'jankx'),
+            'subtitle' => __('Thông tin chi tiết về môi trường máy chủ và nhật ký lỗi hệ thống.', 'jankx'),
             'menu_title' => __('System Information', 'jankx'),
             'capability' => 'manage_options',
             'callback' => [$this, 'renderDebugPage'],
@@ -178,21 +184,7 @@ class AdminPageService
      */
     public function renderDashboardPage($page)
     {
-        $framework_version = $this->app->make('jankx.version') ?? '1.0.0';
         ?>
-        <div class="jankx-dashboard-view">
-            <header class="jankx-dashboard-header">
-                <div class="header-content">
-                    <div class="header-logo">
-                        <span class="dashicons dashicons-art"></span>
-                    </div>
-                    <div class="header-text">
-                        <h1><?php _e('Jankx Framework', 'jankx'); ?> <span class="version-badge">v<?php echo $framework_version; ?></span></h1>
-                        <p class="subtitle"><?php _e('Welcome to your premium WordPress experience.', 'jankx'); ?></p>
-                    </div>
-                </div>
-            </header>
-
             <div class="jankx-dashboard-grid">
                 <!-- Quick Actions -->
                 <div class="jankx-card action-card">
@@ -323,49 +315,11 @@ class AdminPageService
             </div>
 
             <style>
-                .jankx-dashboard-view {
-                    margin-top: 20px;
-                    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
-                    max-width: 1200px;
-                }
-                .jankx-dashboard-header {
-                    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-                    padding: 40px;
-                    border-radius: 20px;
-                    color: #f8fafc;
-                    margin-bottom: 30px;
-                    box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.2);
-                }
-                .header-content { display: flex; align-items: center; gap: 24px; }
-                .header-logo {
-                    width: 64px; height: 64px;
-                    background: rgba(59, 130, 246, 0.2);
-                    border-radius: 16px;
-                    display: flex; align-items: center; justify-content: center;
-                    border: 1px solid rgba(59, 130, 246, 0.3);
-                }
-                .header-logo .dashicons { font-size: 32px; width: 32px; height: 32px; color: #60a5fa; }
-                .header-text h1 { margin: 0; font-size: 28px; font-weight: 700; color: #fff; display: flex; align-items: center; gap: 12px; }
-                .version-badge { font-size: 12px; background: rgba(59, 130, 246, 0.5); padding: 4px 10px; border-radius: 20px; font-weight: 600; }
-                .header-text .subtitle { margin: 8px 0 0 0; font-size: 16px; color: #94a3b8; }
-
                 .jankx-dashboard-grid {
                     display: grid;
                     grid-template-columns: repeat(3, 1fr);
                     gap: 24px;
                 }
-                .jankx-card {
-                    background: #fff;
-                    border-radius: 20px;
-                    border: 1px solid #e2e8f0;
-                    padding: 30px;
-                    transition: all 0.3s ease;
-                }
-                .jankx-card:hover { transform: translateY(-4px); box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05); border-color: #3b82f6; }
-                .card-header { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; }
-                .card-header .dashicons { font-size: 20px; width: 20px; height: 20px; color: #64748b; }
-                .card-header h3 { margin: 0; font-size: 18px; font-weight: 600; color: #1e293b; }
-
                 .action-list { margin: 0; padding: 0; list-style: none; }
                 .action-list li a {
                     display: flex; align-items: center; gap: 12px;
@@ -404,15 +358,6 @@ class AdminPageService
                 }
                 .jankx-btn-modern:hover { background: #2563eb !important; }
 
-                @media (max-width: 991px) {
-                    .jankx-dashboard-grid { grid-template-columns: 1fr 1fr; }
-                }
-                @media (max-width: 767px) {
-                    .jankx-dashboard-grid { grid-template-columns: 1fr; }
-                    .header-content { flex-direction: column; text-align: center; }
-                    .news-portal-grid { grid-template-columns: 1fr; }
-                }
-
                 /* === News Portal === */
                 .jankx-news-portal-section {
                     margin-top: 36px;
@@ -448,9 +393,6 @@ class AdminPageService
                     display: grid;
                     grid-template-columns: repeat(3, 1fr);
                     gap: 20px;
-                }
-                @media (max-width: 991px) {
-                    .news-portal-grid { grid-template-columns: repeat(2, 1fr); }
                 }
 
                 .news-card {
@@ -544,7 +486,6 @@ class AdminPageService
     {
         $active_tab = isset($_GET['tab']) ? $_GET['tab'] : 'system_info';
         ?>
-        <div class="wrap">
             <nav class="nav-tab-wrapper">
                 <a href="?page=jankx-debug&tab=system_info"
                     class="nav-tab <?php echo $active_tab == 'system_info' ? 'nav-tab-active' : ''; ?>"><?php _e('System Information', 'jankx'); ?></a>
@@ -552,7 +493,7 @@ class AdminPageService
                     class="nav-tab <?php echo $active_tab == 'log' ? 'nav-tab-active' : ''; ?>"><?php _e('Debug Log', 'jankx'); ?></a>
             </nav>
 
-            <div class="jankx-tab-content" style="margin-top: 20px;">
+            <div class="jankx-tab-content modern-tabs-content" style="margin-top: 30px;">
                 <?php
                 switch ($active_tab) {
                     case 'system_info':
@@ -564,17 +505,32 @@ class AdminPageService
                 }
                 ?>
             </div>
-        </div>
+            <style>
+                .nav-tab-wrapper { border-bottom: none; margin-bottom: 0; padding-top: 0; }
+                .nav-tab {
+                    border: none;
+                    background: #f1f5f9;
+                    margin-left: 0;
+                    margin-right: 10px;
+                    padding: 10px 20px;
+                    border-radius: 12px;
+                    font-weight: 600;
+                    color: #64748b;
+                    transition: all 0.2s;
+                }
+                .nav-tab:hover { background: #e2e8f0; color: #1e293b; }
+                .nav-tab-active, .nav-tab-active:hover { background: #3b82f6 !important; color: #fff !important; }
+            </style>
         <?php
     }
 
     protected function renderSystemInformationContent()
     {
         ?>
-        <div class="jankx-card system-info-card" style="background: #fff; border-radius: 20px; border: 1px solid #e2e8f0; padding: 30px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); max-width: 900px;">
-            <div class="card-header" style="display: flex; align-items: center; gap: 12px; margin-bottom: 24px; border-bottom: 1px solid #f1f5f9; padding-bottom: 15px;">
-                <span class="dashicons dashicons-info-outline" style="color: #3b82f6;"></span>
-                <h2 style="margin: 0; font-size: 20px; font-weight: 700; color: #1e293b;"><?php _e('Services Status', 'jankx'); ?></h2>
+        <div class="jankx-card system-info-card">
+            <div class="card-header">
+                <span class="dashicons dashicons-info-outline"></span>
+                <h3><?php _e('Services Status', 'jankx'); ?></h3>
             </div>
             <table class="jankx-info-table" style="width: 100%; border-collapse: separate; border-spacing: 0 8px;">
                 <tbody>
@@ -638,8 +594,26 @@ class AdminPageService
      */
     protected function renderPageHeader($page)
     {
-        echo '<div class="wrap">';
-        echo '<h1>' . esc_html($page['title']) . '</h1>';
+        $framework_version = $this->app->make('jankx.version') ?? '1.0.0';
+        $icon = $page['icon'] ?? 'dashicons-admin-generic';
+        $subtitle = $page['subtitle'] ?? __('Premium WordPress experience by Jankx Framework.', 'jankx');
+        
+        echo '<div class="jankx-admin-page-container">';
+        $this->renderCommonStyles();
+        ?>
+        <header class="jankx-universal-header">
+            <div class="header-content">
+                <div class="header-icon">
+                    <span class="dashicons <?php echo esc_attr($icon); ?>"></span>
+                </div>
+                <div class="header-text">
+                    <h1><?php echo esc_html($page['title']); ?> <span class="version-badge">v<?php echo $framework_version; ?></span></h1>
+                    <p class="subtitle"><?php echo esc_html($subtitle); ?></p>
+                </div>
+            </div>
+        </header>
+        <div class="jankx-universal-content">
+        <?php
     }
 
     /**
@@ -647,7 +621,80 @@ class AdminPageService
      */
     protected function renderPageFooter($page)
     {
-        echo '</div>'; // Close .wrap
+        ?>
+        </div> <!-- .jankx-universal-content -->
+        <footer class="jankx-admin-footer">
+            <p>&copy; <?php echo date('Y'); ?> Jankx Framework. Made with <span class="dashicons dashicons-heart" style="color: #ef4444; font-size: 14px; width: 14px; height: 14px;"></span> by Puleeno.</p>
+        </footer>
+        </div> <!-- .jankx-admin-page-container -->
+        <?php
+    }
+
+    protected function renderCommonStyles()
+    {
+        ?>
+        <style>
+            @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+            .jankx-admin-page-container {
+                font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+                margin: 20px 20px 20px 0;
+                color: #1e293b;
+            }
+
+            .jankx-universal-header {
+                background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+                padding: 40px;
+                border-radius: 24px;
+                color: #f8fafc;
+                margin-bottom: 30px;
+                box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.1);
+            }
+
+            .jankx-universal-header .header-content { display: flex; align-items: center; gap: 24px; }
+            .jankx-universal-header .header-icon {
+                width: 64px; height: 64px;
+                background: rgba(59, 130, 246, 0.2);
+                border-radius: 18px;
+                display: flex; align-items: center; justify-content: center;
+                border: 1px solid rgba(59, 130, 246, 0.3);
+            }
+            .jankx-universal-header .header-icon .dashicons { font-size: 32px; width: 32px; height: 32px; color: #60a5fa; }
+            .jankx-universal-header .header-text h1 { margin: 0; font-size: 28px; font-weight: 700; color: #fff; display: flex; align-items: center; gap: 12px; }
+            .jankx-universal-header .version-badge { font-size: 12px; background: rgba(59, 130, 246, 0.5); padding: 4px 10px; border-radius: 20px; font-weight: 600; }
+            .jankx-universal-header .header-text .subtitle { margin: 8px 0 0 0; font-size: 16px; color: #94a3b8; }
+
+            .jankx-universal-content { min-height: 400px; }
+
+            /* Card Standard */
+            .jankx-card {
+                background: #fff;
+                border-radius: 20px;
+                border: 1px solid #e2e8f0;
+                padding: 30px;
+                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+                transition: all 0.3s ease;
+                margin-bottom: 24px;
+            }
+            .jankx-card:hover { transform: translateY(-4px); box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); border-color: #3b82f6; }
+            .card-header { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; }
+            .card-header .dashicons { font-size: 20px; width: 20px; height: 20px; color: #3b82f6; }
+            .card-header h3 { margin: 0; font-size: 18px; font-weight: 600; color: #1e293b; }
+
+            .jankx-admin-footer {
+                margin-top: 50px;
+                padding-top: 20px;
+                border-top: 1px solid #e2e8f0;
+                color: #64748b;
+                font-size: 13px;
+                text-align: center;
+            }
+
+            @media (max-width: 767px) {
+                .jankx-universal-header .header-content { flex-direction: column; text-align: center; }
+            }
+        </style>
+        <?php
     }
 
     /**
@@ -701,21 +748,9 @@ class AdminPageService
         }
 
         ?>
-        <div class="jankx-utilities-modern">
-            <header class="utilities-header">
-                <div class="header-content">
-                    <div class="header-icon">
-                        <span class="dashicons dashicons-admin-tools"></span>
-                    </div>
-                    <div class="header-text">
-                        <h1><?php _e('Jankx Utilities', 'jankx'); ?></h1>
-                        <p class="subtitle"><?php _e('Optimize your website performance and manage system-wide settings.', 'jankx'); ?></p>
-                    </div>
-                </div>
-            </header>
-
+        <div class="jankx-utilities-grid-wrapper">
             <div class="utilities-grid">
-                <div class="utility-card main-card">
+                <div class="utility-card main-card jankx-card">
                     <div class="card-header">
                         <div class="card-header-title">
                             <span class="dashicons dashicons-images-alt2"></span>
@@ -771,7 +806,7 @@ class AdminPageService
                 </div>
 
                 <div class="utility-sidebar">
-                    <div class="utility-card sidebar-card">
+                    <div class="utility-card sidebar-card jankx-card">
                         <div class="card-header">
                             <div class="card-header-title">
                                 <span class="dashicons dashicons-performance"></span>
@@ -811,7 +846,7 @@ class AdminPageService
                         </div>
                     </div>
 
-                    <div class="utility-card help-card">
+                    <div class="utility-card help-card jankx-card">
                         <div class="card-body">
                             <div class="help-content">
                                 <span class="dashicons dashicons-editor-help"></span>
@@ -826,60 +861,11 @@ class AdminPageService
         </div>
 
         <style>
-            @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-
-            .jankx-utilities-modern {
-                font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-                margin: 20px 20px 0 0;
-                color: #1e293b;
-            }
-
-            .utilities-header {
-                background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-                padding: 40px;
-                border-radius: 24px;
-                color: #f8fafc;
-                margin-bottom: 30px;
-                box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.1);
-            }
-
-            .header-content { display: flex; align-items: center; gap: 24px; }
-            .header-icon {
-                width: 64px; height: 64px;
-                background: rgba(59, 130, 246, 0.2);
-                border-radius: 18px;
-                display: flex; align-items: center; justify-content: center;
-                border: 1px solid rgba(59, 130, 246, 0.3);
-            }
-            .header-icon .dashicons { font-size: 32px; width: 32px; height: 32px; color: #60a5fa; }
-            .header-text h1 { margin: 0; font-size: 28px; font-weight: 700; color: #fff; }
-            .header-text .subtitle { margin: 8px 0 0 0; font-size: 16px; color: #94a3b8; }
-
             .utilities-grid {
                 display: grid;
                 grid-template-columns: 1fr 340px;
                 gap: 24px;
             }
-
-            .utility-card {
-                background: #fff;
-                border-radius: 20px;
-                border: 1px solid #e2e8f0;
-                overflow: hidden;
-                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-            }
-
-            .card-header {
-                padding: 24px 30px;
-                border-bottom: 1px solid #f1f5f9;
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-            }
-
-            .card-header-title { display: flex; align-items: center; gap: 12px; }
-            .card-header-title .dashicons { color: #3b82f6; font-size: 20px; width: 20px; height: 20px; }
-            .card-header-title h3 { margin: 0; font-size: 18px; font-weight: 600; color: #0f172a; }
 
             .select-all-label {
                 display: flex;
@@ -972,24 +958,24 @@ class AdminPageService
             .action-info strong { display: block; font-size: 14px; color: #0f172a; }
             .action-info span { font-size: 12px; color: #64748b; }
             .action-btn {
-                background: #f1f5f9; border: none; border-radius: 8px; width: 32px; height: 32px;
-                display: flex; align-items: center; justify-content: center; cursor: pointer;
-                color: #64748b; transition: all 0.2s;
+                background: #f1f5f9; border: none; border-radius: 8px; padding: 8px; color: #64748b; cursor: pointer; transition: all 0.2s;
             }
-            .action-btn:hover:not(:disabled) { background: #e2e8f0; color: #0f172a; }
+            .action-btn:hover:not(:disabled) { background: #e2e8f0; color: #3b82f6; }
             .action-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
-            .help-card { background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); color: #fff; border: none; }
             .help-content { text-align: center; }
-            .help-content .dashicons { font-size: 32px; width: 32px; height: 32px; margin-bottom: 12px; opacity: 0.8; }
-            .help-content h4 { margin: 0 0 8px 0; font-size: 18px; }
-            .help-content p { margin: 0 0 16px 0; font-size: 14px; opacity: 0.9; line-height: 1.5; }
-            .help-link { color: #fff; text-decoration: none; font-weight: 600; font-size: 14px; }
-            .help-link:hover { text-decoration: underline; }
+            .help-content .dashicons { font-size: 48px; width: 48px; height: 48px; color: #3b82f6; margin-bottom: 16px; }
+            .help-content h4 { margin: 0 0 8px 0; font-size: 18px; font-weight: 600; }
+            .help-content p { font-size: 14px; color: #64748b; margin-bottom: 16px; }
+            .help-link { color: #3b82f6; text-decoration: none; font-weight: 600; font-size: 14px; }
 
-            @media (max-width: 1024px) {
+            @media (max-width: 1200px) {
                 .utilities-grid { grid-template-columns: 1fr; }
-                .utility-sidebar { grid-row: 1; }
+                .utility-sidebar { flex-direction: row; }
+                .sidebar-card, .help-card { flex: 1; }
+            }
+            @media (max-width: 767px) {
+                .utility-sidebar { flex-direction: column; }
             }
         </style>
 

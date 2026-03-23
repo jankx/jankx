@@ -16,26 +16,26 @@ class DashboardRenderer
     public function render($activeTab = 'packs')
     {
         ?>
-        <div class="jankx-admin-page jankx-icons-page">
+        <div class="jankx-tab-navigation">
             <nav class="nav-tab-wrapper">
                 <a href="?page=jankx-icons&tab=packs"
                     class="nav-tab <?php echo $activeTab == 'packs' ? 'nav-tab-active' : ''; ?>"><?php _e('Icon Pack', 'jankx'); ?></a>
                 <a href="?page=jankx-icons&tab=settings"
                     class="nav-tab <?php echo $activeTab == 'settings' ? 'nav-tab-active' : ''; ?>"><?php _e('Settings', 'jankx'); ?></a>
             </nav>
+        </div>
 
-            <div class="jankx-tab-content modern-content">
-                <?php
-                switch ($activeTab) {
-                    case 'packs':
-                        $this->renderPacksContent();
-                        break;
-                    case 'settings':
-                        $this->renderSettingsContent();
-                        break;
-                }
-                ?>
-            </div>
+        <div class="jankx-tab-content modern-tabs-content" style="margin-top: 30px;">
+            <?php
+            switch ($activeTab) {
+                case 'packs':
+                    $this->renderPacksContent();
+                    break;
+                case 'settings':
+                    $this->renderSettingsContent();
+                    break;
+            }
+            ?>
         </div>
         <?php
     }
