@@ -58,4 +58,13 @@ return [
             'icon' => 'dashicons-share',
         ],
     ],
+    [
+        'id' => 'preset',
+        'name' => 'Preset & Layout',
+        'args' => [
+            'description' => 'Chọn preset giao diện và bố cục trang',
+            'priority' => 7,
+            'icon' => 'dashicons-layout',
+        ],
+    ],
 ];

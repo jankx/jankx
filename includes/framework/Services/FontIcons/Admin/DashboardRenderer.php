@@ -394,7 +394,7 @@ class DashboardRenderer
                             <td>
                                 <select name="jankx_default_icon_set">
                                     <?php 
-                                    $repository = \Jankx\Application::getInstance()->make('font-icons.repository');
+                                    $repository = $this->app->make('font-icons.repository');
                                     $allConfigs = $repository->getAllTypes();
                                     foreach ($allConfigs as $type => $config) : ?>
                                         <option value="<?php echo esc_attr($type); ?>" <?php selected(get_option('jankx_default_icon_set', 'material'), $type); ?>>
