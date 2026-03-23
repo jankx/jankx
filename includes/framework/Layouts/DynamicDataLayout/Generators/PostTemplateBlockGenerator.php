@@ -158,7 +158,7 @@ class PostTemplateBlockGenerator extends AbstractContentGenerator
                 if (($attrs['templateLayout'] ?? '') === 'hero-overlay') {
                     if (in_array($normalizedBlock['blockName'], ['core/post-featured-image', 'jankx/advanced-image-box'], true)) {
                         $blockHtml = str_replace('<img ', '<img style="width:100%;height:100%;object-fit:cover;display:block;" ', $blockHtml);
-                        $output .= sprintf('<div class="hero-image-wrapper" style="position:absolute;top:0;left:0;width:100%;height:100%;z-index:1;">%s</div>', $blockHtml);
+                        $output .= sprintf('<div class="hero-image-wrapper" style="position:absolute;top:0;left:0;width:100%%;height:100%%;z-index:1;">%s</div>', $blockHtml);
                         continue;
                     } else {
                         // Build context for content
