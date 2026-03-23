@@ -4,8 +4,7 @@ namespace Jankx\Services\FontIcons;
 
 use Jankx\Foundation\Application;
 use Jankx\Services\FontIcons\Transformers\CssToJsonTransformer;
-use Jankx\Services\FontIcons\Transformers\FontAwesomeTransformer;
-use Jankx\Services\FontIcons\Transformers\MaterialIconsTransformer;
+use Jankx\Services\FontIcons\Transformers\GenericIconTransformer;
 use Jankx\Facades\Config;
 
 class IconTransformerService
@@ -23,7 +22,7 @@ class IconTransformerService
     protected function registerTransformers()
     {
         $this->transformers = [
-            'fontawesome' => new FontAwesomeTransformer(),
+            'fontawesome' => new GenericIconTransformer('fontawesome'),
         ];
     }
 

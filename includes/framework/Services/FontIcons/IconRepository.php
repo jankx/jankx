@@ -350,27 +350,25 @@ class IconRepository
                 throw new \Exception('Invalid CSS URL provided');
             }
 
-            // Kiểm tra config hiện tại để tránh update database liên tục mỗi lần load trang
-            $currentConfig = get_option('jankx_font_icons_config', []);
             $storageKey = md5($cssUrl);
             $jsonData = $this->storage->retrieve($storageKey);
 
-            if (isset($currentConfig[$iconType]) && $currentConfig[$iconType]['css_url'] === $cssUrl && $jsonData) {
-                return [
-                    'success' => true,
-                    'message' => 'Icon set already registered and cached.',
-                    'data' => $jsonData
-                ];
-            }
-
-            // Nếu chưa có trong storage thì fetch và transform
+            // Fetch and transform if not in storage
             if (!$jsonData) {
                 $jsonData = $this->fetchAndTransformCss($cssUrl, $iconType, $transformer);
                 $this->storage->store($storageKey, $jsonData);
             }
 
             // Cập nhật config
-            $this->updateIconTypeConfig($iconType, $jsonData, $cssUrl, $displayName, $autoLoad, $transformer);
+            $this->updateIconTypeConfig(
+                $iconType, 
+                $jsonData, 
+                $cssUrl, 
+                $displayName, 
+                $autoLoad, 
+                $transformer, 
+                $jsonData['render_type'] ?? 'prefix'
+            );
 
             // Reload icon types
             $this->loadIconTypes();

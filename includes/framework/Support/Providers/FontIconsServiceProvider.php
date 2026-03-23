@@ -61,10 +61,20 @@ class FontIconsServiceProvider extends ServiceProvider
             add_action('jankx_icons_auto_update', [$this, 'autoUpdateIcons']);
         }
 
+        if ($context === 'admin') {
+            add_action('admin_init', [$this, 'registerSettings']);
+        }
+
         if (in_array($context, ['admin', 'ajax'])) {
             $ajaxHandler = new \Jankx\Services\FontIcons\Admin\AjaxHandler($app);
             $ajaxHandler->init();
         }
+    }
+
+    public function registerSettings()
+    {
+        register_setting('jankx_icons_settings', 'jankx_default_icon_set');
+        register_setting('jankx_icons_settings', 'jankx_icons_cdn');
     }
 
     public function registerAdminMenu()

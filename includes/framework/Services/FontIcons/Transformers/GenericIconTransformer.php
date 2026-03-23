@@ -9,14 +9,17 @@ class GenericIconTransformer extends CssToJsonTransformer
 {
     protected $iconType;
 
-    public function __construct()
+    public function __construct($iconType = 'generic')
     {
-        // iconType is now passed directly to the transform method
+        parent::__construct($iconType);
+        $this->iconType = $iconType;
     }
 
-    public function transform($css, $iconType)
+    /**
+     * Transform CSS content thành JSON data
+     */
+    public function transform($css)
     {
-        $this->iconType = $iconType;
         $icons = $this->parseCssForIcons($css);
 
         return [
@@ -24,7 +27,7 @@ class GenericIconTransformer extends CssToJsonTransformer
             'prefixes' => $this->extractPrefixes($css),
             'icons' => $icons,
             'categories' => $this->extractCategories($icons),
-            'render_type' => ($iconType === 'material') ? 'content' : 'prefix',
+            'render_type' => ($this->iconType === 'material') ? 'content' : 'prefix',
         ];
     }
 
@@ -38,8 +41,8 @@ class GenericIconTransformer extends CssToJsonTransformer
         // Note: In PHP single-quoted string, \\\\ results in a literal \\ for the regex engine
         // which matches a single literal backslash in the input CSS text.
         $patterns = [
-            // Matches .icon-name:before { content: "\f123"; }
-            '/\\.([a-zA-Z0-9-_]+):{1,2}(?:before|after)\s*\{[^}]*content:\s*["\']?\\\\([0-9a-fA-F]{3,6})["\']?/i',
+            // Matches .icon-name:before { content: "\f123"; } or content: \f123;
+            '/\\.([a-zA-Z0-9-_]+):{1,2}(?:before|after)\s*\{[^}]*content:\s*["\']?(?:\\\\|\\\\\\\\)?([0-9a-fA-F]{2,6})["\']?/i',
         ];
 
         foreach ($patterns as $pattern) {
