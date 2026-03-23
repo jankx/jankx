@@ -124,14 +124,24 @@ class FormHandler
         }
 
         $licenseManager = $this->app->make('license');
-        $licenseManager->deactivate();
+        $result = $licenseManager->deactivate();
 
-        add_action('admin_notices', function () {
-            printf(
-                '<div class="notice notice-info is-dismissible"><p>%s</p></div>',
-                esc_html__('License deactivated.', 'jankx')
-            );
-        });
+        if (is_wp_error($result)) {
+            $message = $result->get_error_message();
+            add_action('admin_notices', function () use ($message) {
+                printf(
+                    '<div class="notice notice-error is-dismissible"><p>%s</p></div>',
+                    esc_html($message)
+                );
+            });
+        } else {
+            add_action('admin_notices', function () {
+                printf(
+                    '<div class="notice notice-info is-dismissible"><p>%s</p></div>',
+                    esc_html__('License deactivated.', 'jankx')
+                );
+            });
+        }
     }
 
     /**

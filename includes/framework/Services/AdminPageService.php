@@ -920,6 +920,26 @@ class AdminPageService
                                 <span class="label"><?php _e('Activated On', 'jankx'); ?></span>
                                 <span class="value"><?php echo date_i18n(get_option('date_format'), $licenseData['activation_date']); ?></span>
                             </div>
+                            <div class="detail-item transfers-item" style="grid-column: span 2; border-top: 1px dashed #e2e8f0; padding-top: 20px;">
+                                <span class="label"><?php _e('Domain Transfers', 'jankx'); ?></span>
+                                <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 8px;">
+                                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                                        <span class="value"><?php echo (int)($licenseData['deactivations_count'] ?? 0); ?> / <?php echo (int)($licenseData['max_deactivations'] ?? 2); ?> <?php _e('used', 'jankx'); ?></span>
+                                        <span style="font-size: 12px; color: #64748b;"><?php _e('Limit for domain changes', 'jankx'); ?></span>
+                                    </div>
+                                    <div style="width: 100%; height: 8px; background: #e2e8f0; border-radius: 4px; overflow: hidden;">
+                                        <?php 
+                                        $count = (int)($licenseData['deactivations_count'] ?? 0);
+                                        $max = (int)($licenseData['max_deactivations'] ?? 2);
+                                        $percent = $max > 0 ? min(100, ($count / $max) * 100) : 0;
+                                        ?>
+                                        <div style="width: <?php echo $percent; ?>%; height: 100%; background: <?php echo $percent > 85 ? '#ef4444' : '#10b981'; ?>; transition: width 0.3s ease;"></div>
+                                    </div>
+                                    <p style="font-size: 11px; color: #94a3b8; margin: 4px 0 0 0;">
+                                        <?php _e('When you deactivate your license on a domain to move to another, this count increases.', 'jankx'); ?>
+                                    </p>
+                                </div>
+                            </div>
                         </div>
 
                         <form method="post" action="" class="license-deactivation-form" style="margin-top: 30px; border-top: 1px solid #f1f5f9; padding-top: 20px;">

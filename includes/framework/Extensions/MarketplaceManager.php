@@ -13,6 +13,7 @@ namespace Jankx\Extensions;
 
 use Jankx\Foundation\Application;
 use Jankx\Facades\Log;
+use Jankx\Facades\App;
 
 class MarketplaceManager
 {
@@ -27,6 +28,11 @@ class MarketplaceManager
      * @var string
      */
     const PURCHASE_HUB_URL = 'https://optilarity.top';
+
+    /**
+     * Default Hub Base URL
+     */
+    const HUB_URL = self::FREE_HUB_URL;
 
     /**
      * @var Application

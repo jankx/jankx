@@ -68,9 +68,10 @@ class EnvatoManager
         $response = wp_remote_post($hubUrl, [
             'timeout' => 20,
             'body'    => [
-                'purchase_code' => $purchaseCode,
+                'license_key'   => $purchaseCode,
+                'email'         => get_option('admin_email'),
                 'domain'        => home_url(),
-                'item_id'       => apply_filters('jankx/envato/item_id', ''), // To be filled with ThemeForest Item ID
+                'item_id'       => apply_filters('jankx/envato/item_id', ''), 
                 'theme'         => 'jankx-pro'
             ]
         ]);
@@ -88,7 +89,9 @@ class EnvatoManager
                 'activation_date' => time(),
                 'buyer'         => $body['buyer'] ?? '',
                 'license_type'  => $body['license'] ?? '',
-                'supported_until' => $body['supported_until'] ?? ''
+                'supported_until' => $body['supported_until'] ?? '',
+                'deactivations_count' => $body['deactivations_count'] ?? 0,
+                'max_deactivations' => $body['max_deactivations'] ?? 2
             ];
             
             update_option(self::OPTION_KEY, $licenseData);
@@ -107,6 +110,28 @@ class EnvatoManager
      */
     public function deactivate()
     {
+        $data = $this->getLicenseData();
+        if ($data && !empty($data['purchase_code'])) {
+            $hubUrl = apply_filters('jankx/envato/hub_url_deactivate', 'https://optilarity.top/api/license/deactivate');
+            
+            $response = wp_remote_post($hubUrl, [
+                'timeout' => 15,
+                'body'    => [
+                    'license_key' => $data['purchase_code'],
+                    'email'       => get_option('admin_email'),
+                    'domain'      => home_url(),
+                ]
+            ]);
+
+            if (!is_wp_error($response)) {
+                $body = json_decode(wp_remote_retrieve_body($response), true);
+                if (isset($body['success']) && !$body['success']) {
+                    return new \WP_Error('deactivation_failed', $body['message'] ?? __('Server rejected deactivation.', 'jankx'));
+                }
+            }
+        }
+
         delete_option(self::OPTION_KEY);
+        return true;
     }
 }
