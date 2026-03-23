@@ -121,7 +121,6 @@ class DashboardRenderer
                                 <div class="card-actions">
                                     <div class="primary-actions">
                                         <a href="<?php echo add_query_arg('pack', $type); ?>" class="button button-small button-primary"><?php _e('View Icons', 'jankx'); ?></a>
-                                        <button class="button button-small jankx-edit-config" data-type="<?php echo esc_attr($type); ?>"><?php _e('Edit Config', 'jankx'); ?></button>
                                         <button class="button button-small jankx-update-css" data-type="<?php echo esc_attr($type); ?>"><?php _e('Update CSS', 'jankx'); ?></button>
                                     </div>
                                     <div class="control-actions">
@@ -394,8 +393,14 @@ class DashboardRenderer
                             <th><?php _e('Default Icon Set', 'jankx'); ?></th>
                             <td>
                                 <select name="jankx_default_icon_set">
-                                    <option value="fontawesome">FontAwesome</option>
-                                    <option value="material">Material Icons</option>
+                                    <?php 
+                                    $repository = \Jankx\Application::getInstance()->make('font-icons.repository');
+                                    $allConfigs = $repository->getAllTypes();
+                                    foreach ($allConfigs as $type => $config) : ?>
+                                        <option value="<?php echo esc_attr($type); ?>" <?php selected(get_option('jankx_default_icon_set', 'material'), $type); ?>>
+                                            <?php echo esc_html($config['display_name'] ?? $type); ?>
+                                        </option>
+                                    <?php endforeach; ?>
                                 </select>
                             </td>
                         </tr>

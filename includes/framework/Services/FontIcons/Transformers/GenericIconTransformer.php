@@ -23,6 +23,7 @@ class GenericIconTransformer extends CssToJsonTransformer
         $icons = $this->parseCssForIcons($css);
 
         return [
+            'version' => $this->extractVersion($css),
             'font_family' => $this->extractFontFamily($css),
             'prefixes' => $this->extractPrefixes($css),
             'icons' => $icons,
@@ -117,6 +118,20 @@ class GenericIconTransformer extends CssToJsonTransformer
     protected function generateDescription($iconName)
     {
         return ucfirst(str_replace('-', ' ', $iconName)) . ' icon';
+    }
+
+    /**
+     * Extract version từ CSS comments
+     */
+    protected function extractVersion($css)
+    {
+        // Thường version nằm trong comment header: /*! v1.2.3 ... */
+        preg_match('/v?([0-9]+\.[0-9]+\.[0-9]+)/i', substr($css, 0, 1000), $matches);
+        if (!empty($matches[1])) {
+            return $matches[1];
+        }
+
+        return '1.0.0';
     }
 
     /**
