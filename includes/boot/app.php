@@ -22,5 +22,8 @@ if (!defined('ABSPATH')) {
 
 $app = new Application(get_template_directory());
 
+// Register Optilarity Service Provider for Membership and License
+$app->register(\App\Providers\OptilarityServiceProvider::class);
+
 // Return the application instance
 return $app;

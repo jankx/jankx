@@ -63,6 +63,10 @@ class FormHandler
                 case 'deactivate_license':
                     $this->handleDeactivateLicense($data);
                     break;
+
+                case 'disconnect_membership':
+                    $this->handleDisconnectMembership($data);
+                    break;
                 
                 // Allow other components to add their own handlers via action
                 default:
@@ -88,12 +92,14 @@ class FormHandler
             wp_die(__('You do not have permission to perform this action.', 'jankx'));
         }
 
-        $purchaseCode = $data['purchase_code'] ?? '';
-        $licenseManager = $this->app->make('license');
-        $result = $licenseManager->activate($purchaseCode);
+        $licenseKey = $data['license_key'] ?? '';
+        $email = $data['email'] ?? '';
+        
+        $licenseService = $this->app->make('license');
+        $result = $licenseService->verify($licenseKey, $email);
 
-        if (is_wp_error($result)) {
-            $message = $result->get_error_message();
+        if (!$result['success']) {
+            $message = $result['message'] ?? __('Activation failed.', 'jankx');
             add_action('admin_notices', function () use ($message) {
                 printf(
                     '<div class="notice notice-error is-dismissible"><p>%s</p></div>',
@@ -104,7 +110,7 @@ class FormHandler
             add_action('admin_notices', function () {
                 printf(
                     '<div class="notice notice-success is-dismissible"><p>%s</p></div>',
-                    esc_html__('Theme JANKX PRO activated successfully!', 'jankx')
+                    esc_html__('Theme JANKX PRO activated successfully via Optilarity!', 'jankx')
                 );
             });
         }
@@ -123,25 +129,39 @@ class FormHandler
             wp_die(__('You do not have permission to perform this action.', 'jankx'));
         }
 
-        $licenseManager = $this->app->make('license');
-        $result = $licenseManager->deactivate();
+        $licenseService = $this->app->make('license');
+        $result = $licenseService->deactivate();
 
-        if (is_wp_error($result)) {
-            $message = $result->get_error_message();
-            add_action('admin_notices', function () use ($message) {
-                printf(
-                    '<div class="notice notice-error is-dismissible"><p>%s</p></div>',
-                    esc_html($message)
-                );
-            });
-        } else {
-            add_action('admin_notices', function () {
-                printf(
-                    '<div class="notice notice-info is-dismissible"><p>%s</p></div>',
-                    esc_html__('License deactivated.', 'jankx')
-                );
-            });
+        add_action('admin_notices', function () {
+            printf(
+                '<div class="notice notice-info is-dismissible"><p>%s</p></div>',
+                esc_html__('License deactivated.', 'jankx')
+            );
+        });
+    }
+
+    /**
+     * Handle membership disconnection
+     */
+    protected function handleDisconnectMembership(array $data): void
+    {
+        if (!wp_verify_nonce($data['jankx_membership_nonce'] ?? '', 'jankx_disconnect_membership')) {
+            wp_die(__('Security check failed', 'jankx'));
         }
+
+        if (!current_user_can('manage_options')) {
+            wp_die(__('You do not have permission to perform this action.', 'jankx'));
+        }
+
+        $membershipService = $this->app->make('membership');
+        $membershipService->disconnect();
+
+        add_action('admin_notices', function () {
+            printf(
+                '<div class="notice notice-info is-dismissible"><p>%s</p></div>',
+                esc_html__('Membership disconnected.', 'jankx')
+            );
+        });
     }
 
     /**

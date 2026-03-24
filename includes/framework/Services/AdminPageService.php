@@ -272,6 +272,17 @@ class AdminPageService
         ]);
 
         $this->addPage([
+            'id' => 'jankx-membership',
+            'title' => __('Membership', 'jankx'),
+            'subtitle' => __('Connect your Optilarity account to unlock premium templates and services.', 'jankx'),
+            'menu_title' => __('Membership', 'jankx'),
+            'capability' => 'manage_options',
+            'callback' => [$this, 'renderMembershipPage'],
+            'icon' => 'dashicons-admin-users',
+            'position' => 16
+        ]);
+
+        $this->addPage([
             'id' => 'jankx-extensions',
             'title' => __('Managed Extensions', 'jankx'),
             'subtitle' => __('Quản lý các phần mở rộng chức năng cho Jankx Framework.', 'jankx'),
@@ -866,9 +877,9 @@ class AdminPageService
      */
     public function renderLicensePage($page)
     {
-        $license = $this->app->make('license');
-        $isActivated = $license->isActivated();
-        $licenseData = $license->getLicenseData();
+        $licenseService = $this->app->make('license');
+        $isActivated = $licenseService->isActivated();
+        $licenseData = $licenseService->getLicenseData();
         ?>
         <div class="jankx-license-page">
             <div class="jankx-card license-hero-card">
@@ -880,8 +891,8 @@ class AdminPageService
                         <div class="status-text">
                             <h3><?php echo $isActivated ? __('JANKX PRO Activated', 'jankx') : __('Activate JANKX PRO', 'jankx'); ?></h3>
                             <p><?php echo $isActivated 
-                                ? sprintf(__('Thank you for purchasing JANKX PRO! Your site is receiving automatic updates.', 'jankx'))
-                                : __('Enter your Envato Purchase Code to unlock all pro features and automatic updates.', 'jankx'); ?></p>
+                                ? sprintf(__('Thank you for using JANKX PRO! Your site is authorized via Optilarity.', 'jankx'))
+                                : __('Enter your Optilarity License Key and Email to activate JANKX PRO.', 'jankx'); ?></p>
                         </div>
                         <?php if ($isActivated) : ?>
                             <div class="status-badge activated"><?php _e('Active License', 'jankx'); ?></div>
@@ -893,52 +904,39 @@ class AdminPageService
                             <?php wp_nonce_field('jankx_activate_license', 'jankx_license_nonce'); ?>
                             <input type="hidden" name="jankx_action" value="activate_license">
                             
-                            <div class="form-group">
-                                <label for="purchase_code"><?php _e('Envato Purchase Code', 'jankx'); ?></label>
-                                <div class="input-with-button">
-                                    <input type="text" id="purchase_code" name="purchase_code" placeholder="e.g. 12345678-abcd-1234-efgh-1234567890ab" required>
-                                    <button type="submit" class="button jankx-btn-primary"><?php _e('Activate Now', 'jankx'); ?></button>
+                            <div class="form-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                                <div class="form-group">
+                                    <label for="license_key"><?php _e('License Key', 'jankx'); ?></label>
+                                    <input type="text" id="license_key" name="license_key" placeholder="YOUR-LICENSE-KEY" style="width: 100%; padding: 12px 16px; border-radius: 12px; border: 1px solid #cbd5e1; font-size: 16px; min-height: 48px;" required>
                                 </div>
-                                <p class="help-text"><?php printf(__('You can find your purchase code in your %s.', 'jankx'), '<a href="https://help.market.envato.com/hc/en-us/articles/202822600-Where-Is-My-Purchase-Code-" target="_blank">Envato Download page</a>'); ?></p>
+                                <div class="form-group">
+                                    <label for="email"><?php _e('Email Address', 'jankx'); ?></label>
+                                    <input type="email" id="email" name="email" placeholder="customer@email.com" style="width: 100%; padding: 12px 16px; border-radius: 12px; border: 1px solid #cbd5e1; font-size: 16px; min-height: 48px;" required>
+                                </div>
                             </div>
+                            
+                            <div style="margin-top: 20px;">
+                                <button type="submit" class="button jankx-btn-primary" style="background: #3b82f6; color: #fff; border: none; padding: 12px 30px; border-radius: 12px; font-weight: 600; cursor: pointer;"><?php _e('Activate Now', 'jankx'); ?></button>
+                            </div>
+                            <p class="help-text"><?php printf(__('Manage your licenses at %s.', 'jankx'), '<a href="https://optilarity.top" target="_blank">Optilarity Portal</a>'); ?></p>
                         </form>
                     <?php else : ?>
                         <div class="license-details-grid">
                             <div class="detail-item">
-                                <span class="label"><?php _e('Purchase Code', 'jankx'); ?></span>
-                                <span class="value"><code>****************<?php echo substr($licenseData['purchase_code'], -8); ?></code></span>
+                                <span class="label"><?php _e('License Key', 'jankx'); ?></span>
+                                <span class="value"><code><?php echo esc_html($licenseData['key'] ?? '****'); ?></code></span>
                             </div>
                             <div class="detail-item">
-                                <span class="label"><?php _e('Buyer', 'jankx'); ?></span>
-                                <span class="value"><?php echo esc_html($licenseData['buyer'] ?? 'N/A'); ?></span>
+                                <span class="label"><?php _e('Email', 'jankx'); ?></span>
+                                <span class="value"><?php echo esc_html($licenseData['email'] ?? 'N/A'); ?></span>
                             </div>
                             <div class="detail-item">
-                                <span class="label"><?php _e('License Type', 'jankx'); ?></span>
-                                <span class="value"><?php echo esc_html($licenseData['license_type'] ?? 'Regular'); ?></span>
+                                <span class="label"><?php _e('Status', 'jankx'); ?></span>
+                                <span class="value" style="color: #10b981;"><?php echo strtoupper(esc_html($licenseData['status'] ?? 'Active')); ?></span>
                             </div>
                             <div class="detail-item">
-                                <span class="label"><?php _e('Activated On', 'jankx'); ?></span>
-                                <span class="value"><?php echo date_i18n(get_option('date_format'), $licenseData['activation_date']); ?></span>
-                            </div>
-                            <div class="detail-item transfers-item" style="grid-column: span 2; border-top: 1px dashed #e2e8f0; padding-top: 20px;">
-                                <span class="label"><?php _e('Domain Transfers', 'jankx'); ?></span>
-                                <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 8px;">
-                                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                                        <span class="value"><?php echo (int)($licenseData['deactivations_count'] ?? 0); ?> / <?php echo (int)($licenseData['max_deactivations'] ?? 2); ?> <?php _e('used', 'jankx'); ?></span>
-                                        <span style="font-size: 12px; color: #64748b;"><?php _e('Limit for domain changes', 'jankx'); ?></span>
-                                    </div>
-                                    <div style="width: 100%; height: 8px; background: #e2e8f0; border-radius: 4px; overflow: hidden;">
-                                        <?php 
-                                        $count = (int)($licenseData['deactivations_count'] ?? 0);
-                                        $max = (int)($licenseData['max_deactivations'] ?? 2);
-                                        $percent = $max > 0 ? min(100, ($count / $max) * 100) : 0;
-                                        ?>
-                                        <div style="width: <?php echo $percent; ?>%; height: 100%; background: <?php echo $percent > 85 ? '#ef4444' : '#10b981'; ?>; transition: width 0.3s ease;"></div>
-                                    </div>
-                                    <p style="font-size: 11px; color: #94a3b8; margin: 4px 0 0 0;">
-                                        <?php _e('When you deactivate your license on a domain to move to another, this count increases.', 'jankx'); ?>
-                                    </p>
-                                </div>
+                                <span class="label"><?php _e('Updates Domain', 'jankx'); ?></span>
+                                <span class="value"><?php echo esc_html($licenseData['domain'] ?? parse_url(get_site_url(), PHP_URL_HOST)); ?></span>
                             </div>
                         </div>
 
@@ -950,28 +948,6 @@ class AdminPageService
                             </button>
                         </form>
                     <?php endif; ?>
-                </div>
-            </div>
-
-            <div class="license-info-grid">
-                <div class="jankx-card info-card">
-                    <div class="card-header">
-                        <span class="dashicons dashicons-update"></span>
-                        <h3><?php _e('Automatic Updates', 'jankx'); ?></h3>
-                    </div>
-                    <div class="card-body">
-                        <p><?php _e('Get the latest features, security patches and performance improvements directly in your WordPress dashboard.', 'jankx'); ?></p>
-                    </div>
-                </div>
-                <div class="jankx-card info-card">
-                    <div class="card-header">
-                        <span class="dashicons dashicons-welcome-learn-more"></span>
-                        <h3><?php _e('Premium Support', 'jankx'); ?></h3>
-                    </div>
-                    <div class="card-body">
-                        <p><?php _e('Need help with JANKX PRO? Our support team is ready to assist you with any questions or issues you might have.', 'jankx'); ?></p>
-                        <a href="https://optilarity.top/support" target="_blank" class="button"><?php _e('Contact Support', 'jankx'); ?></a>
-                    </div>
                 </div>
             </div>
 
@@ -994,9 +970,6 @@ class AdminPageService
 
                 .license-activation-form { background: #f8fafc; padding: 30px; border-radius: 20px; border: 1px solid #e2e8f0; }
                 .form-group label { display: block; margin-bottom: 12px; font-weight: 600; color: #1e293b; }
-                .input-with-button { display: flex; gap: 12px; }
-                .input-with-button input { flex-grow: 1; padding: 12px 16px; border-radius: 12px; border: 1px solid #cbd5e1; font-size: 16px; min-height: 48px; }
-                .input-with-button .button { padding: 0 24px !important; }
                 .help-text { margin-top: 15px; font-size: 13px; color: #94a3b8; }
                 .help-text a { color: #3b82f6; text-decoration: none; }
 
@@ -1011,9 +984,102 @@ class AdminPageService
                 .detail-item .label { display: block; font-size: 12px; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; }
                 .detail-item .value { font-size: 16px; font-weight: 600; color: #1e293b; }
                 .detail-item code { background: #fff; padding: 2px 6px; border-radius: 4px; border: 1px solid #e2e8f0; }
+            </style>
+        </div>
+        <?php
+    }
 
-                .license-info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 24px; }
-                .info-card .card-header { margin-bottom: 15px; }
+    public function renderMembershipPage($page)
+    {
+        $membershipService = $this->app->make('membership');
+        $isActivated = $membershipService->isActivated();
+        $plan = $membershipService->getPlan();
+        $redirectUri = admin_url('index.php?state=jankx_auth');
+        $authUrl = $membershipService->getAuthorizeUrl($redirectUri);
+        ?>
+        <div class="jankx-membership-page">
+            <div class="jankx-card membership-hero-card">
+                <div class="card-body">
+                    <div class="membership-status-header <?php echo $isActivated ? 'activated' : 'not-activated'; ?>">
+                        <div class="status-icon">
+                            <span class="dashicons <?php echo $isActivated ? 'dashicons-admin-users' : 'dashicons-id-alt'; ?>"></span>
+                        </div>
+                        <div class="status-text">
+                            <h3><?php echo $isActivated ? sprintf(__('Membership Plan: %s', 'jankx'), $plan['name']) : __('Connect Optilarity Membership', 'jankx'); ?></h3>
+                            <p><?php echo $isActivated 
+                                ? sprintf(__('Your %s is active until %s.', 'jankx'), $plan['name'], $plan['expires_at'] ?? 'N/A')
+                                : __('Connect your account to access the Template Library and Premium Assets.', 'jankx'); ?></p>
+                        </div>
+                    </div>
+
+                    <?php if (!$isActivated) : ?>
+                        <div class="membership-connect-section" style="background: #f8fafc; padding: 40px; border-radius: 24px; text-align: center; border: 1px dashed #cbd5e1;">
+                            <div style="margin-bottom: 24px;">
+                                <span class="dashicons dashicons-cloud" style="font-size: 48px; width: 48px; height: 48px; color: #94a3b8;"></span>
+                            </div>
+                            <h4 style="margin: 0 0 10px 0;"><?php _e('Ready to unlock premium content?', 'jankx'); ?></h4>
+                            <p style="color: #64748b; margin-bottom: 30px;"><?php _e('You will be redirected to optilarity.top to authorize this website.', 'jankx'); ?></p>
+                            <a href="<?php echo esc_url($authUrl); ?>" class="button jankx-btn-primary" style="background: #8b5cf6; color: #fff; border: none; padding: 14px 40px; border-radius: 12px; font-weight: 700; height: auto; line-height: 1;"><?php _e('Connect with OAuth2', 'jankx'); ?></a>
+                        </div>
+                    <?php else : ?>
+                        <div class="membership-details-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; background: #f8fafc; padding: 24px; border-radius: 20px;">
+                            <div class="detail-item">
+                                <span class="label"><?php _e('Plan Name', 'jankx'); ?></span>
+                                <span class="value"><?php echo esc_html($plan['name']); ?></span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="label"><?php _e('Plan Slug', 'jankx'); ?></span>
+                                <span class="value"><code><?php echo esc_html($plan['slug']); ?></code></span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="label"><?php _e('Expires At', 'jankx'); ?></span>
+                                <span class="value"><?php echo esc_html($plan['expires_at'] ?? 'Never'); ?></span>
+                            </div>
+                        </div>
+
+                        <form method="post" action="" class="membership-disconnect-form" style="margin-top: 30px; border-top: 1px solid #f1f5f9; padding-top: 20px;">
+                            <?php wp_nonce_field('jankx_disconnect_membership', 'jankx_membership_nonce'); ?>
+                            <input type="hidden" name="jankx_action" value="disconnect_membership">
+                            <button type="submit" class="button button-link" style="color: #ef4444; text-decoration: none;" onclick="return confirm('Are you sure you want to disconnect?');">
+                                <?php _e('Disconnect Account', 'jankx'); ?>
+                            </button>
+                        </form>
+                    <?php endif; ?>
+                </div>
+            </div>
+
+            <div class="membership-benefits-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 24px;">
+                <div class="jankx-card benefit-card" style="text-align: center;">
+                    <span class="dashicons dashicons-layout" style="color: #8b5cf6; margin-bottom: 12px; font-size: 32px; width: 32px; height: 32px;"></span>
+                    <h4 style="margin: 0 0 8px 0;"><?php _e('Template Library', 'jankx'); ?></h4>
+                    <p style="font-size: 13px; color: #64748b; margin: 0;"><?php _e('Access 500+ premium layouts.', 'jankx'); ?></p>
+                </div>
+                <div class="jankx-card benefit-card" style="text-align: center;">
+                    <span class="dashicons dashicons-images-alt" style="color: #ec4899; margin-bottom: 12px; font-size: 32px; width: 32px; height: 32px;"></span>
+                    <h4 style="margin: 0 0 8px 0;"><?php _e('Stock Assets', 'jankx'); ?></h4>
+                    <p style="font-size: 13px; color: #64748b; margin: 0;"><?php _e('Import high-quality assets.', 'jankx'); ?></p>
+                </div>
+                <div class="jankx-card benefit-card" style="text-align: center;">
+                    <span class="dashicons dashicons-plugins-checked" style="color: #10b981; margin-bottom: 12px; font-size: 32px; width: 32px; height: 32px;"></span>
+                    <h4 style="margin: 0 0 8px 0;"><?php _e('Cloud Sync', 'jankx'); ?></h4>
+                    <p style="font-size: 13px; color: #64748b; margin: 0;"><?php _e('Sync your settings.', 'jankx'); ?></p>
+                </div>
+            </div>
+
+            <style>
+                .membership-status-header { display: flex; align-items: center; gap: 30px; margin-bottom: 40px; }
+                .membership-status-header .status-icon {
+                    width: 70px; height: 70px; border-radius: 20px;
+                    display: flex; align-items: center; justify-content: center;
+                    background: #f1f5f9; color: #64748b;
+                }
+                .membership-status-header.activated .status-icon { background: #ede9fe; color: #8b5cf6; }
+                .membership-status-header .status-icon .dashicons { font-size: 32px; width: 32px; height: 32px; }
+                .membership-status-header h3 { margin: 0 0 8px 0; font-size: 22px; }
+                .membership-status-header p { margin: 0; color: #94a3b8; }
+                
+                .detail-item .label { display: block; font-size: 11px; color: #94a3b8; text-transform: uppercase; margin-bottom: 6px; }
+                .detail-item .value { font-size: 16px; font-weight: 700; color: #1e293b; }
             </style>
         </div>
         <?php
