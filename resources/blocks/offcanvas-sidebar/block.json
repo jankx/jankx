@@ -1,15 +1,26 @@
 {
     "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
     "name": "jankx/offcanvas-sidebar",
     "title": "Offcanvas Sidebar",
     "category": "jankx",
     "icon": "menu",
     "description": "Create animated offcanvas sidebar with multiple transition effects",
-    "keywords": ["sidebar", "offcanvas", "menu", "navigation", "animation", "transition"],
+    "keywords": [
+        "sidebar",
+        "offcanvas",
+        "menu",
+        "navigation",
+        "animation",
+        "transition"
+    ],
     "textdomain": "jankx",
     "supports": {
         "html": false,
-        "align": ["wide", "full"],
+        "align": [
+            "wide",
+            "full"
+        ],
         "color": {
             "background": true,
             "gradients": true,
@@ -62,8 +73,19 @@
             "jankx/offcanvas-sidebar"
         ],
         "template": [
-            ["core/heading", { "level": 3, "content": "Sidebar Content" }],
-            ["core/paragraph", { "content": "Add your content here using any available blocks." }]
+            [
+                "core/heading",
+                {
+                    "level": 3,
+                    "content": "Sidebar Content"
+                }
+            ],
+            [
+                "core/paragraph",
+                {
+                    "content": "Add your content here using any available blocks."
+                }
+            ]
         ],
         "templateLock": false
     },

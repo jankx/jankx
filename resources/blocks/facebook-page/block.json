@@ -1,15 +1,24 @@
 {
   "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
   "name": "jankx/facebook-page",
   "title": "Facebook Page",
   "category": "jankx",
   "icon": "share",
   "description": "Nhúng Facebook Page Plugin với tùy chọn tabs, kích thước, và hiển thị.",
-  "keywords": ["facebook", "page", "social", "fanpage"],
+  "keywords": [
+    "facebook",
+    "page",
+    "social",
+    "fanpage"
+  ],
   "textdomain": "jankx",
   "supports": {
     "html": false,
-    "align": ["wide", "full"],
+    "align": [
+      "wide",
+      "full"
+    ],
     "spacing": {
       "margin": true,
       "padding": true
@@ -57,4 +66,3 @@
   "style": "file:./build/style.css",
   "editorStyle": "file:./build/editor.css"
 }
-

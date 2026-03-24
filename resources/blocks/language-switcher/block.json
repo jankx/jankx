@@ -1,15 +1,24 @@
 {
     "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
     "name": "jankx/language-switcher",
     "title": "Language Switcher",
     "category": "jankx",
     "icon": "translation",
     "description": "Display language switcher for Polylang plugin",
-    "keywords": ["language", "polylang", "switcher", "multilingual"],
+    "keywords": [
+        "language",
+        "polylang",
+        "switcher",
+        "multilingual"
+    ],
     "textdomain": "jankx",
     "supports": {
         "html": false,
-        "align": ["wide", "full"],
+        "align": [
+            "wide",
+            "full"
+        ],
         "spacing": {
             "margin": true,
             "padding": true

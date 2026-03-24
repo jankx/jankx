@@ -1,14 +1,24 @@
 {
-    "apiVersion": 2,
+    "apiVersion": 3,
     "name": "jankx/offcanvas-trigger",
     "title": "Offcanvas Trigger",
     "category": "jankx",
     "icon": "button",
     "description": "A trigger button to open offcanvas sidebar",
-    "keywords": ["button", "trigger", "sidebar", "offcanvas", "menu"],
+    "keywords": [
+        "button",
+        "trigger",
+        "sidebar",
+        "offcanvas",
+        "menu"
+    ],
     "supports": {
         "html": false,
-        "align": ["left", "center", "right"],
+        "align": [
+            "left",
+            "center",
+            "right"
+        ],
         "spacing": {
             "margin": true,
             "padding": true

@@ -4,19 +4,29 @@ namespace App\Services;
 
 use Jankx\Foundation\Application;
 use Jankx\Services\AbstractService;
+use Optilarity\Sdk\OptilaritySdk;
+use Optilarity\Sdk\Exceptions\ApiException;
 
+/**
+ * Jankx Membership Service
+ *
+ * Thin wrapper around OptilaritySdk::membership().
+ * Responsible only for persisting OAuth2 tokens/plan to WordPress options.
+ */
 class MembershipService extends AbstractService
 {
-    protected $client;
-    protected $clientId = 'jankx_client';
-    protected $clientSecret = 'jankx_secret';
-    protected $tokenOptionName = 'jankx_membership_token';
-    protected $planOptionName = 'jankx_membership_plan';
+    protected OptilaritySdk $sdk;
 
-    public function __construct(Application $app, OptilarityClient $client)
+    protected string $clientId     = 'jankx_client';
+    protected string $clientSecret = 'jankx_secret';
+
+    protected string $tokenOptionName = 'jankx_membership_token';
+    protected string $planOptionName  = 'jankx_membership_plan';
+
+    public function __construct(Application $app, OptilaritySdk $sdk)
     {
         parent::__construct($app);
-        $this->client = $client;
+        $this->sdk  = $sdk;
         $this->name = 'membership';
 
         if (defined('OPTILARITY_CLIENT_ID')) {
@@ -27,89 +37,113 @@ class MembershipService extends AbstractService
         }
     }
 
-    protected function boot(): void
+    protected function boot(): void {}
+
+    // ─────────────────────────────────────────────────────────────
+    // OAuth2 flow
+    // ─────────────────────────────────────────────────────────────
+
+    /**
+     * Build the authorization URL to redirect the user to Optilarity.
+     */
+    public function getAuthorizeUrl(string $redirectUri): string
     {
-        // Initial boot logic if needed
+        return $this->sdk->membership()->authorizeUrl(
+            $this->clientId,
+            $redirectUri,
+            ['membership:read']
+        );
     }
 
-    public function getAuthorizeUrl($redirectUri)
+    /**
+     * Exchange an authorization code for an access token, then fetch the plan.
+     */
+    public function exchangeToken(string $code, string $redirectUri): array
     {
-        $params = [
-            'client_id' => $this->clientId,
-            'redirect_uri' => $redirectUri,
-            'response_type' => 'code',
-            'scope' => 'membership',
-        ];
+        try {
+            $response = $this->sdk->membership()->exchangeCode(
+                $this->clientId,
+                $this->clientSecret,
+                $code,
+                $redirectUri
+            );
+        } catch (ApiException $e) {
+            return ['success' => false, 'message' => $e->getMessage()];
+        }
 
-        return $this->client->getBaseUrl() . '/oauth/authorize?' . http_build_query($params);
-    }
-
-    public function exchangeToken($code, $redirectUri)
-    {
-        $response = $this->client->post('/oauth/token', [
-            'grant_type' => 'authorization_code',
-            'client_id' => $this->clientId,
-            'client_secret' => $this->clientSecret,
-            'code' => $code,
-            'redirect_uri' => $redirectUri,
-        ]);
-
-        if ($response['success'] && isset($response['access_token'])) {
+        if (!empty($response['access_token'])) {
             update_option($this->tokenOptionName, $response['access_token']);
             return $this->checkMembership();
         }
 
-        return $response;
+        return ['success' => false, 'message' => __('Token exchange failed.', 'jankx')];
     }
 
-    public function checkMembership()
+    /**
+     * Fetch the current membership plan and persist it locally.
+     */
+    public function checkMembership(): array
     {
         $token = get_option($this->tokenOptionName);
         if (!$token) {
             return ['success' => false, 'message' => __('No access token found.', 'jankx')];
         }
 
-        $response = $this->client->get('/api/me/membership', [
-            'Authorization' => 'Bearer ' . $token,
-        ]);
+        try {
+            $response = $this->sdk->membership()->plan($token);
+        } catch (ApiException $e) {
+            return ['success' => false, 'message' => $e->getMessage()];
+        }
 
-        if ($response['success']) {
+        if (!empty($response['success']) && isset($response['plan'])) {
             update_option($this->planOptionName, $response['plan']);
         }
 
         return $response;
     }
 
-    public function getPlan()
+    // ─────────────────────────────────────────────────────────────
+    // Status helpers
+    // ─────────────────────────────────────────────────────────────
+
+    public function getPlan(): ?array
     {
-        return get_option($this->planOptionName);
+        return get_option($this->planOptionName) ?: null;
     }
 
-    public function hasActiveMembership()
+    public function getPlanSlug(): string
+    {
+        return $this->getPlan()['slug'] ?? 'free';
+    }
+
+    public function hasActiveMembership(): bool
     {
         $plan = $this->getPlan();
-        if (!$plan) {
-            return false;
-        }
-
-        return isset($plan['status']) && $plan['status'] === 'active';
+        return $plan && ($plan['status'] ?? '') === 'active';
     }
 
-    public function isActivated()
+    public function isActivated(): bool
     {
         return $this->hasActiveMembership();
     }
 
-    public function disconnect()
+    /**
+     * Revoke token remotely, then clear local options.
+     */
+    public function disconnect(): bool
     {
+        $token = get_option($this->tokenOptionName);
+        if ($token) {
+            try {
+                $this->sdk->membership()->revoke($this->clientId, $this->clientSecret, $token);
+            } catch (ApiException) {
+                // Best-effort remote revoke; always clear locally.
+            }
+        }
+
         delete_option($this->tokenOptionName);
         delete_option($this->planOptionName);
-        return true;
-    }
 
-    public function getPlanSlug()
-    {
-        $plan = $this->getPlan();
-        return $plan['slug'] ?? 'free';
+        return true;
     }
 }

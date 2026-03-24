@@ -1,18 +1,28 @@
 {
   "$schema": "https://schemas.wp.org/trunk/block.json",
-  "apiVersion": 2,
+  "apiVersion": 3,
   "name": "jankx/star-rating",
   "title": "Star Rating",
   "category": "jankx",
   "icon": "star-filled",
   "description": "Display star rating from various sources (WooCommerce, Meta, Crawler, Manual).",
-  "keywords": ["rating", "star", "review", "score"],
+  "keywords": [
+    "rating",
+    "star",
+    "review",
+    "score"
+  ],
   "textdomain": "jankx",
   "attributes": {
     "ratingSource": {
       "type": "string",
       "default": "manual",
-      "enum": ["manual", "woocommerce", "meta", "crawler"]
+      "enum": [
+        "manual",
+        "woocommerce",
+        "meta",
+        "crawler"
+      ]
     },
     "manualRating": {
       "type": "number",
@@ -41,7 +51,10 @@
     "iconType": {
       "type": "string",
       "default": "text",
-      "enum": ["text", "svg"]
+      "enum": [
+        "text",
+        "svg"
+      ]
     },
     "svgFull": {
       "type": "string",
@@ -74,7 +87,11 @@
   },
   "supports": {
     "html": false,
-    "align": ["left", "center", "right"],
+    "align": [
+      "left",
+      "center",
+      "right"
+    ],
     "spacing": {
       "margin": true,
       "padding": true

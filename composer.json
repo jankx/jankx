@@ -19,7 +19,8 @@
     "jankx/option-adapter": "*",
     "jankx/dashboard-framework": "*",
     "latte/latte": "^2.11|^3.0",
-    "jankx/gutenberg-controls": "*"
+    "jankx/gutenberg-controls": "*",
+    "optilarity/optilarity-sdk": "dev-main"
   },
   "require-dev": {
     "phpunit/phpunit": "^9.5|^10.0",

@@ -4,40 +4,49 @@ namespace App\Services;
 
 use Jankx\Foundation\Application;
 use Jankx\Services\AbstractService;
+use Optilarity\Sdk\OptilaritySdk;
+use Optilarity\Sdk\Exceptions\ApiException;
 
+/**
+ * Jankx License Service
+ *
+ * Thin wrapper around OptilaritySdk::license().
+ * Responsible only for persisting results to WordPress options.
+ */
 class LicenseService extends AbstractService
 {
-    protected $client;
-    protected $licenseOptionName = 'jankx_license';
-    protected $licenseStatusOptionName = 'jankx_license_status';
+    protected OptilaritySdk $sdk;
 
-    public function __construct(Application $app, OptilarityClient $client)
+    protected string $licenseOptionName       = 'jankx_license';
+    protected string $licenseStatusOptionName  = 'jankx_license_status';
+
+    public function __construct(Application $app, OptilaritySdk $sdk)
     {
         parent::__construct($app);
-        $this->client = $client;
+        $this->sdk  = $sdk;
         $this->name = 'license';
     }
 
-    protected function boot(): void
+    protected function boot(): void {}
+
+    // ─────────────────────────────────────────────────────────────
+    // Public API
+    // ─────────────────────────────────────────────────────────────
+
+    /**
+     * Activate a license key and persist the result.
+     */
+    public function verify(string $licenseKey, string $email): array
     {
-        // Scheduled ping check can happen here
-    }
+        try {
+            $response = $this->sdk->license()->activate($licenseKey, $email);
+        } catch (ApiException $e) {
+            return ['success' => false, 'message' => $e->getMessage()];
+        }
 
-    public function verify($licenseKey, $email)
-    {
-        $domain = parse_url(get_site_url(), PHP_URL_HOST);
-        $version = wp_get_theme()->get('Version');
-
-        $response = $this->client->post('/api/license/verify', [
-            'license_key' => $licenseKey,
-            'email' => $email,
-            'domain' => $domain,
-            'version' => $version,
-        ]);
-
-        if ($response['success']) {
+        if (!empty($response['success'])) {
             update_option($this->licenseOptionName, [
-                'key' => $licenseKey,
+                'key'   => $licenseKey,
                 'email' => $email,
             ]);
             update_option($this->licenseStatusOptionName, $response);
@@ -46,66 +55,88 @@ class LicenseService extends AbstractService
         return $response;
     }
 
-    public function ping()
+    /**
+     * Ping the API to confirm the stored license is still valid.
+     */
+    public function ping(): array
     {
         $license = get_option($this->licenseOptionName);
-        if (!$license || !isset($license['key'])) {
+        if (empty($license['key'])) {
             return ['success' => false, 'message' => __('No license found.', 'jankx')];
         }
 
-        $domain = parse_url(get_site_url(), PHP_URL_HOST);
-        return $this->client->post('/api/theme/ping', [
-            'license_key' => $license['key'],
-            'domain' => $domain,
-        ]);
+        try {
+            return $this->sdk->license()->ping($license['key']);
+        } catch (ApiException $e) {
+            return ['success' => false, 'message' => $e->getMessage()];
+        }
     }
 
-    public function getLatestVersion()
+    /**
+     * Check for an available theme update.
+     */
+    public function getLatestVersion(): array
     {
-        return $this->client->get('/api/theme/latest');
+        $license = get_option($this->licenseOptionName, []);
+        $version = wp_get_theme()->get('Version');
+
+        try {
+            return $this->sdk->license()->checkUpdates($license['key'] ?? '', $version);
+        } catch (ApiException $e) {
+            return ['success' => false, 'message' => $e->getMessage()];
+        }
     }
 
-    public function isLicensed()
+    /**
+     * Remove all activation data (local deactivation).
+     */
+    public function deactivate(): bool
     {
-        $status = get_option($this->licenseStatusOptionName);
-        if (!$status) {
-            return false;
+        $license = get_option($this->licenseOptionName);
+
+        if (!empty($license['key'])) {
+            try {
+                $this->sdk->license()->deactivate($license['key']);
+            } catch (ApiException) {
+                // Best-effort remote deactivation; always clear local data.
+            }
         }
 
-        return $status['success'] ?? false;
+        delete_option($this->licenseOptionName);
+        delete_option($this->licenseStatusOptionName);
+
+        return true;
     }
 
-    public function canUpdate()
+    // ─────────────────────────────────────────────────────────────
+    // Status helpers
+    // ─────────────────────────────────────────────────────────────
+
+    public function isLicensed(): bool
     {
         $status = get_option($this->licenseStatusOptionName);
-        return $status['can_update'] ?? false;
+        return (bool)($status['success'] ?? false);
     }
 
-    public function isActivated()
+    public function isActivated(): bool
     {
         return $this->isLicensed();
     }
 
-    public function getLicenseData()
+    public function canUpdate(): bool
     {
         $status = get_option($this->licenseStatusOptionName);
-        $license = get_option($this->licenseOptionName);
-
-        if (!$status) {
-            return [];
-        }
-
-        return array_merge((array)$status, (array)$license);
+        return (bool)($status['can_update'] ?? false);
     }
 
-    public function deactivate()
+    public function getLicenseData(): array
     {
-        delete_option($this->licenseOptionName);
-        delete_option($this->licenseStatusOptionName);
-        return true;
+        $status  = (array)(get_option($this->licenseStatusOptionName) ?: []);
+        $license = (array)(get_option($this->licenseOptionName) ?: []);
+        return array_merge($status, $license);
     }
 
-    public function getLicensedProducts()
+    public function getLicensedProducts(): array
     {
         $status = get_option($this->licenseStatusOptionName);
         return $status['licensed_products'] ?? [];
