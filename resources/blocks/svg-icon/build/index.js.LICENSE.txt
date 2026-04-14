@@ -3,3 +3,219 @@
 	Licensed under the MIT License (MIT), see
 	http://jedwatson.github.io/classnames
 */
+
+/*! ../../utils */
+
+/*! ../lib/index.js */
+
+/*! ../lib/possibleStandardNamesOptimized */
+
+/*! ./../../icons */
+
+/*! ./../../icons/bolt */
+
+/*! ./../../utils */
+
+/*! ./../quick-inserter */
+
+/*! ./amazon */
+
+/*! ./attributes-to-props */
+
+/*! ./bandcamp */
+
+/*! ./behance */
+
+/*! ./block.json */
+
+/*! ./chain */
+
+/*! ./codepen */
+
+/*! ./components */
+
+/*! ./constants */
+
+/*! ./content-header */
+
+/*! ./custom-inserter */
+
+/*! ./deviantart */
+
+/*! ./dimension-control */
+
+/*! ./display-messages */
+
+/*! ./dom-to-react */
+
+/*! ./domparser */
+
+/*! ./dribbble */
+
+/*! ./dropbox */
+
+/*! ./edit */
+
+/*! ./etsy */
+
+/*! ./facebook */
+
+/*! ./feed */
+
+/*! ./fivehundredpx */
+
+/*! ./flickr */
+
+/*! ./foursquare */
+
+/*! ./github */
+
+/*! ./goodreads */
+
+/*! ./google */
+
+/*! ./icon-dropzone */
+
+/*! ./icon-functions */
+
+/*! ./icon-grid */
+
+/*! ./icon-placeholder */
+
+/*! ./icons */
+
+/*! ./icons/bolt */
+
+/*! ./inserter */
+
+/*! ./instagram */
+
+/*! ./lastfm */
+
+/*! ./linkedin */
+
+/*! ./mail */
+
+/*! ./mastodon */
+
+/*! ./medium */
+
+/*! ./meetup */
+
+/*! ./node.js */
+
+/*! ./parse-icon */
+
+/*! ./parse-media */
+
+/*! ./patreon */
+
+/*! ./pinterest */
+
+/*! ./pocket */
+
+/*! ./quick-inserter */
+
+/*! ./reddit */
+
+/*! ./reddit-solid */
+
+/*! ./save */
+
+/*! ./sidebar */
+
+/*! ./skype */
+
+/*! ./snapchat */
+
+/*! ./soundcloud */
+
+/*! ./spotify */
+
+/*! ./telegram */
+
+/*! ./threads */
+
+/*! ./tiktok */
+
+/*! ./tumblr */
+
+/*! ./twitch */
+
+/*! ./twitter */
+
+/*! ./utilities */
+
+/*! ./utils */
+
+/*! ./utils/hooks */
+
+/*! ./vimeo */
+
+/*! ./vk */
+
+/*! ./whatsapp */
+
+/*! ./wordpress */
+
+/*! ./wordpress/social */
+
+/*! ./wordpress/temp */
+
+/*! ./x */
+
+/*! ./yelp */
+
+/*! ./youtube */
+
+/*! @wordpress/blob */
+
+/*! @wordpress/block-editor */
+
+/*! @wordpress/blocks */
+
+/*! @wordpress/components */
+
+/*! @wordpress/compose */
+
+/*! @wordpress/data */
+
+/*! @wordpress/element */
+
+/*! @wordpress/hooks */
+
+/*! @wordpress/i18n */
+
+/*! @wordpress/icons */
+
+/*! @wordpress/keycodes */
+
+/*! @wordpress/primitives */
+
+/*! classnames */
+
+/*! domelementtype */
+
+/*! domhandler */
+
+/*! html-dom-parser */
+
+/*! html-react-parser */
+
+/*! inline-style-parser */
+
+/*! lodash */
+
+/*! react */
+
+/*! react-property */
+
+/*! react/jsx-runtime */
+
+/*! style-to-js */
+
+/*! style-to-object */
+
+/*!***********************************!*\
+  !*** ./blocks/svg-icon/index.tsx ***!
+  \***********************************/

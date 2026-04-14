@@ -2,7 +2,7 @@ const path = require('path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const RemoveEmptyScriptsPlugin = require('webpack-remove-empty-scripts');
 const DependencyExtractionWebpackPlugin = require('@wordpress/dependency-extraction-webpack-plugin');
-
+const TerserPlugin = require('terser-webpack-plugin');
 
 
 
@@ -171,7 +171,17 @@ module.exports = {
     assetModuleFilename: 'blocks/[name]/build/[name][ext]',
   },
   optimization: {
-    splitChunks: false
+    splitChunks: false,
+    minimize: true,
+    minimizer: [
+      new TerserPlugin({
+        terserOptions: {
+          compress: {
+            drop_console: true,
+          },
+        },
+      }),
+    ],
   },
   resolve: {
     extensions: ['.ts', '.tsx', '.js', '.jsx', '.scss', '.css'],

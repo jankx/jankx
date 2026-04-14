@@ -3,3 +3,35 @@
 	Licensed under the MIT License (MIT), see
 	http://jedwatson.github.io/classnames
 */
+
+/*! ./block.json */
+
+/*! ./edit */
+
+/*! ./save */
+
+/*! @wordpress/block-editor */
+
+/*! @wordpress/blocks */
+
+/*! @wordpress/components */
+
+/*! @wordpress/data */
+
+/*! @wordpress/element */
+
+/*! @wordpress/i18n */
+
+/*! @wordpress/icons */
+
+/*! @wordpress/keycodes */
+
+/*! @wordpress/primitives */
+
+/*! classnames */
+
+/*! react/jsx-runtime */
+
+/*!******************************************!*\
+  !*** ./blocks/advanced-button/index.tsx ***!
+  \******************************************/
