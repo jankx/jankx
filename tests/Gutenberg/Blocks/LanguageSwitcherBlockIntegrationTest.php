@@ -3,7 +3,7 @@
 namespace Tests\Gutenberg\Blocks;
 
 use Tests\Gutenberg\BlockIntegrationTestCase;
-use Jankx\Gutenberg\Blocks\LanguageSwitcherBlock;
+use Jankx\Extensions\LanguageSwitcher\Blocks\LanguageSwitcherBlock;
 
 /**
  * Integration tests for LanguageSwitcherBlock

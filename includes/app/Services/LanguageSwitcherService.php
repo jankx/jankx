@@ -100,6 +100,10 @@ class LanguageSwitcherService extends AbstractService
         $ret = [];
         foreach ($languages as $lang) {
             $langData = $this->processingLanguageData($lang);
+            if (empty($langData)) {
+                continue;
+            }
+
             if ($langData['code'] === $this->currentLanguageCode) {
                 $this->currentLanguage = $langData;
             }

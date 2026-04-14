@@ -14,6 +14,38 @@ use Jankx\Layouts\DynamicDataLayout\LayoutRegistry;
 class BlockTemplateLayoutManager
 {
     /**
+     * Singleton instance for test compatibility
+     * @var static
+     * @deprecated Use dependency injection instead
+     */
+    protected static $instance;
+
+    /**
+     * Get singleton instance
+     * 
+     * @deprecated Use dependency injection
+     * @return static
+     */
+    public static function getInstance()
+    {
+        if (!static::$instance) {
+            static::$instance = new static(new LayoutRegistry());
+        }
+        return static::$instance;
+    }
+
+    /**
+     * Set singleton instance (for testing)
+     * 
+     * @param static|null $instance
+     * @return void
+     */
+    public static function setInstance($instance)
+    {
+        static::$instance = $instance;
+    }
+
+    /**
      * @var LayoutRegistry
      */
     protected $registry;

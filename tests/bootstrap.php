@@ -3,6 +3,24 @@
  * PHPUnit Bootstrap File for Jankx Theme
  */
 
+// Define common WP functions first to ensure they are available for all components
+if (!function_exists('wp_upload_dir')) {
+    function wp_upload_dir($time = null, $create_dir = true, $refresh_cache = false) {
+        return [
+            'path' => '/tmp/uploads',
+            'url' => 'http://example.com/wp-content/uploads',
+            'subdir' => '',
+            'basedir' => '/tmp/uploads',
+            'baseurl' => 'http://example.com/wp-content/uploads',
+            'error' => false,
+        ];
+    }
+}
+if (!function_exists('wp_mkdir_p')) { function wp_mkdir_p($path) { return true; } }
+if (!function_exists('wp_normalize_path')) { function wp_normalize_path($path) { return str_replace('\\', '/', $path); } }
+if (!function_exists('get_template_directory_uri')) { function get_template_directory_uri() { return 'http://example.com/wp-content/themes/jankx'; } }
+if (!function_exists('get_user_meta')) { function get_user_meta($u, $k = '', $s = false) { if ($k === 'description') return 'Test Bio'; return $s ? '' : []; } }
+
 // Load Composer autoloader
 $autoloader = dirname(__FILE__) . '/../vendor/autoload.php';
 if (file_exists($autoloader)) {
@@ -235,19 +253,6 @@ if (!function_exists('get_avatar')) { function get_avatar($id, $size = 96) { ret
 if (!function_exists('get_author_posts_url')) { function get_author_posts_url($id) { return "http://example.com/author/{$id}"; } }
 if (!function_exists('get_users')) { function get_users($args = []) { return []; } }
 if (!function_exists('wp_check_filetype')) { function wp_check_filetype($f, $m = null) { return ['ext' => 'png', 'type' => 'image/png']; } }
-if (!function_exists('wp_upload_dir')) {
-    function wp_upload_dir($time = null, $create_dir = true, $refresh_cache = false) {
-        return [
-            'path' => '/tmp/uploads',
-            'url' => 'http://example.com/wp-content/uploads',
-            'subdir' => '',
-            'basedir' => '/tmp/uploads',
-            'baseurl' => 'http://example.com/wp-content/uploads',
-            'error' => false,
-        ];
-    }
-}
-if (!function_exists('wp_mkdir_p')) { function wp_mkdir_p($path) { return true; } }
 
 // Polylang Mocks
 if (!function_exists('get_template')) { function get_template() { return 'jankx'; } }
