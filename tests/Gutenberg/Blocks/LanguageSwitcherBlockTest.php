@@ -3,7 +3,7 @@
 namespace Tests\Gutenberg\Blocks;
 
 use Tests\Gutenberg\Blocks\BlockTestCase;
-use Jankx\Gutenberg\Blocks\LanguageSwitcherBlock;
+use Jankx\Extensions\LanguageSwitcher\Blocks\LanguageSwitcherBlock;
 use App\Services\LanguageSwitcherService;
 use Jankx\Facades\App;
 use Mockery;

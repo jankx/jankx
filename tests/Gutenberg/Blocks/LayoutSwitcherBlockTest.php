@@ -16,6 +16,7 @@ class LayoutSwitcherBlockTest extends BlockTestCase
 {
     protected LayoutSwitcherBlock $block;
     protected $layoutManagerMock;
+    protected $urlManagerMock;
 
     protected function setUp(): void
     {
@@ -26,10 +27,12 @@ class LayoutSwitcherBlockTest extends BlockTestCase
             return dirname(__DIR__, 3) . '/resources/blocks';
         });
 
-        $this->block = new LayoutSwitcherBlock();
-        
-        // Mock BlockTemplateLayoutManager
+        // Mock BlockTemplateLayoutManager and UrlManager
         $this->layoutManagerMock = Mockery::mock(BlockTemplateLayoutManager::class);
+        $this->urlManagerMock = Mockery::mock(\Jankx\Managers\UrlManager::class);
+        
+        $this->block = new LayoutSwitcherBlock($this->layoutManagerMock, $this->urlManagerMock);
+        
         BlockTemplateLayoutManager::setInstance($this->layoutManagerMock);
     }
 
@@ -47,7 +50,7 @@ class LayoutSwitcherBlockTest extends BlockTestCase
 
     protected function createBlockInstance(): LayoutSwitcherBlock
     {
-        return new LayoutSwitcherBlock();
+        return new LayoutSwitcherBlock($this->layoutManagerMock, $this->urlManagerMock);
     }
 
     protected function getDefaultAttributes(): array

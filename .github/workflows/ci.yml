@@ -11,8 +11,9 @@ jobs:
     name: PHP Tests (PHP ${{ matrix.php }})
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
-        php: [ '7.4', '8.0', '8.1', '8.2' ]
+        php: [ '8.0', '8.1', '8.2', '8.3', '8.4' ]
 
     steps:
       - name: Checkout
@@ -22,8 +23,9 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
-          extensions: mbstring, intl, igbinary, bcmath, curl, gd, zip
+          extensions: mbstring, intl, igbinary, bcmath, curl, gd, zip, mysqli, sqlite3
           coverage: xdebug
+          tools: composer:v2
 
       - name: Get Composer Cache Directory
         id: composer-cache
@@ -37,20 +39,23 @@ jobs:
           restore-keys: ${{ runner.os }}-composer-
 
       - name: Install Composer dependencies
-        run: composer install --prefer-dist --no-progress --no-suggest
+        run: composer install --prefer-dist --no-progress --no-interaction --ignore-platform-reqs
 
       - name: Run PHPUnit
-        run: vendor/bin/phpunit --coverage-clover coverage.xml
+        run: |
+          chmod +x vendor/bin/phpunit
+          vendor/bin/phpunit --coverage-clover coverage.xml
 
       - name: Upload coverage reports to Codecov
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          file: ./coverage.xml
+          files: ./coverage.xml
           fail_ci_if_error: false
 
   build-assets:
     name: Build Assets
+    needs: php-tests
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -63,10 +68,10 @@ jobs:
           cache: 'npm'
 
       - name: Install NPM dependencies
-        run: npm install
+        run: npm ci --no-interaction
 
       - name: Build Production Assets
-        run: npm run production
+        run: npm run production --no-interaction
 
       - name: Lint JS (if available)
         run: if npm run lint -- --help > /dev/null 2>&1; then npm run lint; else echo "No lint script found"; fi

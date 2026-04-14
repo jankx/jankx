@@ -235,6 +235,19 @@ if (!function_exists('get_avatar')) { function get_avatar($id, $size = 96) { ret
 if (!function_exists('get_author_posts_url')) { function get_author_posts_url($id) { return "http://example.com/author/{$id}"; } }
 if (!function_exists('get_users')) { function get_users($args = []) { return []; } }
 if (!function_exists('wp_check_filetype')) { function wp_check_filetype($f, $m = null) { return ['ext' => 'png', 'type' => 'image/png']; } }
+if (!function_exists('wp_upload_dir')) {
+    function wp_upload_dir($time = null, $create_dir = true, $refresh_cache = false) {
+        return [
+            'path' => '/tmp/uploads',
+            'url' => 'http://example.com/wp-content/uploads',
+            'subdir' => '',
+            'basedir' => '/tmp/uploads',
+            'baseurl' => 'http://example.com/wp-content/uploads',
+            'error' => false,
+        ];
+    }
+}
+if (!function_exists('wp_mkdir_p')) { function wp_mkdir_p($path) { return true; } }
 
 // Polylang Mocks
 if (!function_exists('get_template')) { function get_template() { return 'jankx'; } }
@@ -278,9 +291,31 @@ if (!function_exists('register_rest_route')) { function register_rest_route($n, 
 // Autoloader for Jankx components
 spl_autoload_register(function ($class) {
     if (strpos($class, 'Jankx\\Extensions\\') === 0) {
-        $name = str_replace('Jankx\\Extensions\\', '', $class);
-        $file = dirname(__FILE__) . '/../extensions/' . strtolower(preg_replace('/(?<!^)[A-Z]/', '-$0', str_replace('Extension', '', $name))) . '/' . $name . '.php';
-        if (file_exists($file)) require_once $file;
+        $relativeClass = substr($class, 17); // Remove Jankx\Extensions\
+        $parts = explode('\\', $relativeClass);
+        if (count($parts) >= 1) {
+            $extensionSlug = strtolower(preg_replace('/(?<!^)[A-Z]/', '-$0', $parts[0]));
+            if ($extensionSlug === 'language-switcher' || $extensionSlug === 'menu-builder') {
+                // Handle complex cases where the folder name was already hyphenated
+            }
+            
+            // Try different possible paths for the extension
+            $baseDir = dirname(__FILE__) . '/../extensions/' . $extensionSlug;
+            
+            // Standard location: extensions/slug/includes/...
+            $standardFile = $baseDir . '/includes/' . implode('/', array_slice($parts, 1)) . '.php';
+            if (file_exists($standardFile)) {
+                require_once $standardFile;
+                return;
+            }
+
+            // Fallback for main extension class: extensions/slug/ClassName.php
+            $fallbackFile = $baseDir . '/' . end($parts) . '.php';
+            if (file_exists($fallbackFile)) {
+                require_once $fallbackFile;
+                return;
+            }
+        }
     }
 });
 
