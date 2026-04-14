@@ -262,10 +262,10 @@ if (!function_exists('is_child_theme')) { function is_child_theme() { return fal
 if (!function_exists('pll_the_languages')) {
     function pll_the_languages($args = []) {
         $languages = [
-            'en' => (object)[
+            'en' => [
                 'id' => 1, 'slug' => 'en', 'name' => 'English', 'url' => '#en', 'flag' => 'en.png', 'current_lang' => true,
             ],
-            'vi' => (object)[
+            'vi' => [
                 'id' => 2, 'slug' => 'vi', 'name' => 'Vietnamese', 'url' => '#vi', 'flag' => 'vi.png', 'current_lang' => false,
             ],
         ];
@@ -280,6 +280,15 @@ if (!function_exists('pll_the_languages')) {
     }
 }
 if (!function_exists('pll_current_language')) { function pll_current_language() { return 'en'; } }
+
+// Missing WP mocks for TemplateEngineServiceProvider
+if (!function_exists('wp_kses_post')) { function wp_kses_post($t) { return $t; } }
+if (!function_exists('wp_trim_words')) { function wp_trim_words($t, $n = 55, $m = '') { return $t; } }
+if (!function_exists('_x')) { function _x($t, $c, $d = 'default') { return $t; } }
+if (!function_exists('get_term_link')) { function get_term_link($t, $taxonomy = '') { return '#'; } }
+if (!function_exists('get_post_meta')) { function get_post_meta($p, $k = '', $s = false) { return $s ? '' : []; } }
+if (!function_exists('get_the_post_thumbnail_url')) { function get_the_post_thumbnail_url($p = 0, $s = 'post-thumbnail') { return ''; } }
+if (!function_exists('wp_get_attachment_image_src')) { function wp_get_attachment_image_src($a, $s = 'thumbnail', $i = false) { return false; } }
 
 // Post Types
 if (!function_exists('get_post_types')) {
@@ -300,9 +309,6 @@ spl_autoload_register(function ($class) {
         $parts = explode('\\', $relativeClass);
         if (count($parts) >= 1) {
             $extensionSlug = strtolower(preg_replace('/(?<!^)[A-Z]/', '-$0', $parts[0]));
-            if ($extensionSlug === 'language-switcher' || $extensionSlug === 'menu-builder') {
-                // Handle complex cases where the folder name was already hyphenated
-            }
             
             // Try different possible paths for the extension
             $baseDir = dirname(__FILE__) . '/../extensions/' . $extensionSlug;
