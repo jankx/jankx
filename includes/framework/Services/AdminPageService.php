@@ -1781,6 +1781,37 @@ class AdminPageService
                 });
             });
 
+            $(document).on('click', '.install-extension-ajax', function(e) {
+                e.preventDefault();
+                var $btn = $(this);
+                var name = $btn.data('extension');
+                var nonce = $btn.data('nonce');
+
+                $btn.addClass('loading').text('<?php echo esc_js(__('Installing...', 'jankx')); ?>');
+                $notice.hide();
+
+                $.post(ajaxurl, {
+                    action: 'jankx_install_extension',
+                    extension: name,
+                    nonce: nonce
+                }, function(res) {
+                    if (res.success) {
+                        $notice.removeClass('notice-error').addClass('notice-success')
+                               .html('<p>' + res.data.message + '</p>').show();
+                        location.reload();
+                    } else {
+                        var errMsg = (res.data && res.data.message) ? res.data.message : (res.data || 'Error');
+                        $notice.removeClass('notice-success').addClass('notice-error')
+                               .html('<p>' + errMsg + '</p>').show();
+                        $btn.removeClass('loading').text('<?php echo esc_js(__('Install Now', 'jankx')); ?>');
+                    }
+                }).fail(function() {
+                    $notice.removeClass('notice-success').addClass('notice-error')
+                           .html('<p><?php echo esc_js(__('An error occurred during installation.', 'jankx')); ?></p>').show();
+                    $btn.removeClass('loading').text('<?php echo esc_js(__('Install Now', 'jankx')); ?>');
+                });
+            });
+
             $(document).on('click', '.delete-extension', function() {
                 var $btn = $(this);
                 var name = $btn.data('extension');
@@ -1834,7 +1865,7 @@ class AdminPageService
                 <div class="row-actions visible">
                     <?php if ($isMissing): ?>
                         <span class="install">
-                            <a href="<?php echo admin_url('admin.php?page=jankx-marketplace'); ?>" class="install-now">
+                            <a href="javascript:void(0);" class="install-extension-ajax" data-extension="<?php echo esc_attr($name); ?>" data-nonce="<?php echo esc_attr($nonce); ?>">
                                 <?php _e('Install Now', 'jankx'); ?>
                             </a>
                         </span>
@@ -2005,22 +2036,27 @@ class AdminPageService
                                 </div>
 
                                 <div class="card-action-area">
-                                    <span class="update-time"><?php printf(__('Cập nhật %s', 'jankx'), $lastUpdated); ?></span>
-                                    <?php
-                                    $extensionManager = \Jankx\Extensions\ExtensionManager::getInstance();
-                                    $isInstalled = $extensionManager->has_extension_id($slug) || $extensionManager->has_extension($slug);
-                                    if ($isInstalled): ?>
-                                        <button class="button jankx-btn-primary installed" disabled style="background: #e2e8f0 !important; color: #64748b !important; border-color: #cbd5e1 !important; cursor: not-allowed !important;">
-                                            <span class="dashicons dashicons-yes" style="font-size: 16px; margin-right: 4px; vertical-align: middle;"></span>
-                                            <?php _e('Đã cài đặt', 'jankx'); ?>
+                                    <div class="action-buttons">
+                                        <button class="button jankx-btn-secondary detail-extension"
+                                                data-ext='<?php echo esc_attr(json_encode($ext)); ?>'>
+                                            <?php _e('Chi tiết', 'jankx'); ?>
                                         </button>
-                                    <?php else: ?>
-                                        <button class="button jankx-btn-primary install-extension"
-                                                data-slug="<?php echo esc_attr($slug); ?>"
-                                                data-nonce="<?php echo esc_attr($nonce); ?>">
-                                            <?php _e('Cài đặt ngay', 'jankx'); ?>
-                                        </button>
-                                    <?php endif; ?>
+                                        <?php
+                                        $extensionManager = \Jankx\Extensions\ExtensionManager::getInstance();
+                                        $isInstalled = $extensionManager->has_extension_id($slug) || $extensionManager->has_extension($slug);
+                                        if ($isInstalled): ?>
+                                            <button class="button jankx-btn-primary installed" disabled>
+                                                <span class="dashicons dashicons-yes" style="font-size: 16px; margin-right: 4px; vertical-align: middle;"></span>
+                                                <?php _e('Đã có', 'jankx'); ?>
+                                            </button>
+                                        <?php else: ?>
+                                            <button class="button jankx-btn-primary install-extension"
+                                                    data-slug="<?php echo esc_attr($slug); ?>"
+                                                    data-nonce="<?php echo esc_attr($nonce); ?>">
+                                                <?php _e('Cài đặt', 'jankx'); ?>
+                                            </button>
+                                        <?php endif; ?>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -2268,19 +2304,130 @@ class AdminPageService
 
             .update-time { font-size: 12px; color: #cbd5e1; }
 
+            .card-action-area {
+                padding: 16px 20px;
+                border-top: 1px solid #f1f5f9;
+                background: #fdfdfd;
+            }
+
+            .action-buttons {
+                display: flex;
+                gap: 10px;
+                width: 100%;
+            }
+
+            .jankx-btn-primary, .jankx-btn-secondary {
+                border-radius: 10px !important;
+                padding: 10px 16px !important;
+                font-weight: 600 !important;
+                border: none !important;
+                transition: all 0.2s !important;
+                height: auto !important;
+                line-height: 1.2 !important;
+                flex: 1;
+                text-align: center;
+                cursor: pointer;
+                font-size: 13px !important;
+            }
+
             .jankx-btn-primary {
                 background: #3b82f6 !important;
-                border-radius: 10px !important;
-                padding: 12px 24px !important;
-                font-weight: 600 !important;
                 color: #fff !important;
-                border: none !important;
-                transition: background 0.2s !important;
-                height: auto !important;
-                line-height: 1 !important;
-                width: 100%;
-                text-align: center;
             }
+            .jankx-btn-primary:hover { background: #2563eb !important; }
+            .jankx-btn-primary.installed {
+                background: #f1f5f9 !important;
+                color: #94a3b8 !important;
+                cursor: not-allowed;
+            }
+
+            .jankx-btn-secondary {
+                background: #fff !important;
+                color: #475569 !important;
+                border: 1px solid #e2e8f0 !important;
+            }
+            .jankx-btn-secondary:hover {
+                background: #f8fafc !important;
+                border-color: #3b82f6 !important;
+                color: #3b82f6 !important;
+            }
+
+            /* Modal Styles */
+            .jankx-modal-overlay {
+                position: fixed;
+                top: 0; left: 0; right: 0; bottom: 0;
+                background: rgba(15, 23, 42, 0.6);
+                backdrop-filter: blur(4px);
+                z-index: 99999;
+                display: none;
+                align-items: center;
+                justify-content: center;
+                padding: 20px;
+                opacity: 0;
+                transition: opacity 0.3s;
+            }
+            .jankx-modal-overlay.is-active { display: flex; opacity: 1; }
+
+            .jankx-modal-content {
+                background: #fff;
+                width: 100%;
+                max-width: 600px;
+                border-radius: 24px;
+                box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+                overflow: hidden;
+                transform: translateY(20px);
+                transition: transform 0.3s;
+            }
+            .jankx-modal-overlay.is-active .jankx-modal-content { transform: translateY(0); }
+
+            .modal-header {
+                padding: 30px;
+                background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+                border-bottom: 1px solid #e2e8f0;
+                position: relative;
+                display: flex;
+                gap: 20px;
+            }
+            .modal-close {
+                position: absolute;
+                top: 20px; right: 20px;
+                width: 32px; height: 32px;
+                background: #fff;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                color: #64748b;
+                box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+                transition: all 0.2s;
+            }
+            .modal-close:hover { color: #f43f5e; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
+
+            .modal-icon-wrapper {
+                width: 80px; height: 80px;
+                border-radius: 18px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+            }
+            .modal-title-area h2 { margin: 0 0 8px 0; font-size: 24px; font-weight: 700; color: #1e293b; }
+            .modal-body { padding: 30px; }
+            .modal-description { font-size: 15px; line-height: 1.7; color: #475569; margin-bottom: 25px; }
+
+            .modal-metadata {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 20px;
+                padding: 20px;
+                background: #f8fafc;
+                border-radius: 16px;
+                margin-bottom: 25px;
+            }
+            .meta-val { display: block; font-weight: 600; color: #1e293b; font-size: 14px; }
+            .meta-lbl { display: block; font-size: 12px; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
+            .modal-footer { padding: 20px 30px; border-top: 1px solid #e2e8f0; display: flex; justify-content: flex-end; }
 
             .jankx-btn-primary:hover { background: #2563eb !important; }
 
@@ -2352,6 +2499,45 @@ class AdminPageService
             }
         </style>
 
+        <div class="jankx-modal-overlay" id="extension-modal">
+            <div class="jankx-modal-content">
+                <div class="modal-header">
+                    <div class="modal-close"><span class="dashicons dashicons-no-alt"></span></div>
+                    <div class="modal-icon-wrapper" id="m-icon-bg">
+                        <div id="m-icon-content"></div>
+                    </div>
+                    <div class="modal-title-area">
+                        <h2 id="m-title">Extension Name</h2>
+                        <span id="m-badge" class="badge">Free</span>
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <div class="modal-description" id="m-desc"></div>
+                    <div class="modal-metadata">
+                        <div class="meta-item">
+                            <span class="meta-lbl"><?php _e('Tác giả', 'jankx'); ?></span>
+                            <span class="meta-val" id="m-author">Jankx Team</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-lbl"><?php _e('Phiên bản', 'jankx'); ?></span>
+                            <span class="meta-val" id="m-version">1.0.0</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-lbl"><?php _e('Cài đặt', 'jankx'); ?></span>
+                            <span class="meta-val" id="m-installs">0</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-lbl"><?php _e('Đánh giá', 'jankx'); ?></span>
+                            <span class="meta-val" id="m-rating">5.0</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="button jankx-btn-secondary modal-close-btn"><?php _e('Đóng', 'jankx'); ?></button>
+                </div>
+            </div>
+        </div>
+
         <script>
         jQuery(function($) {
             var $notice = $('#jankx-install-notice');
@@ -2408,6 +2594,64 @@ class AdminPageService
                     var text = $(this).text().toLowerCase();
                     $(this).toggle(text.indexOf(q) > -1);
                 });
+            });
+
+            // Modal Functionality
+            var $modal = $('#extension-modal');
+            var closeModal = function() {
+                $modal.removeClass('is-active');
+                $('body').removeClass('modal-open');
+            };
+
+            $(document).on('click', '.detail-extension', function() {
+                var $card = $(this).closest('.extension-card-modern');
+                var data = $(this).data('ext');
+
+                // Fill data
+                $('#m-title').text(data.name || 'Unknown');
+                $('#m-desc').text(data.description || '');
+                $('#m-version').text('v' + (data.latest_version || '1.0.0'));
+                $('#m-author').text(data.author_name || 'Jankx Team');
+                $('#m-installs').text((data.install_count || 0).toLocaleString());
+                $('#m-rating').text((data.rating || 5).toFixed(1) + ' / 5.0');
+                
+                var $badge = $('#m-badge');
+                if (data.is_premium) {
+                    $badge.text('Premium').attr('class', 'badge premium');
+                } else {
+                    $badge.text('Miễn phí').attr('class', 'badge free');
+                }
+
+                // Icon handling
+                var $iconParent = $card.find('.extension-icon');
+                $('#m-icon-content').html($iconParent.html());
+                var $defIcon = $iconParent.find('.default-icon');
+                if ($defIcon.length) {
+                    $('#m-icon-bg').css('background', $defIcon.css('background'));
+                    $('#m-icon-content').find('.default-icon').css('background', 'transparent');
+                } else {
+                    $('#m-icon-bg').css('background', '#fff');
+                }
+
+                $modal.addClass('is-active');
+                $('body').addClass('modal-open');
+            });
+
+            // Close modal events
+            $(document).on('click', '.modal-close, .modal-close-btn', function() {
+                closeModal();
+            });
+
+            $modal.on('click', function(e) {
+                if ($(e.target).closest('.jankx-modal-content').length === 0) {
+                    closeModal();
+                }
+            });
+
+            $(document).on('keydown', function(e) {
+                if (e.key === 'Escape' && $modal.hasClass('is-active')) {
+                    closeModal();
+                }
             });
         });
         </script>

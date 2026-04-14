@@ -60,6 +60,7 @@ class ExtensionService implements ExtensionServiceInterface
         add_action('admin_init', [$this, 'registerAdminHooks']);
         add_action('wp_ajax_jankx_toggle_extension', [$this, 'handleToggleExtension']);
         add_action('wp_ajax_jankx_delete_extension', [$this, 'handleDeleteExtension']);
+        add_action('wp_ajax_jankx_install_extension', [$this, 'handleInstallExtension']);
         add_action('wp_ajax_jankx_get_extension_manifest', [$this, 'handleGetExtensionManifest']);
         add_action('wp_ajax_jankx_get_extension_settings', [$this, 'handleGetExtensionSettings']);
         add_action('wp_ajax_jankx_save_extension_settings', [$this, 'handleSaveExtensionSettings']);
@@ -568,7 +569,37 @@ class ExtensionService implements ExtensionServiceInterface
         $wp_filesystem = $this->getFilesystem();
         $wp_filesystem->delete($extensionPath, true);
 
+        // Invalidate directory cache
+        delete_transient('jankx_extensions_dirs_' . get_stylesheet());
+
         wp_send_json_success(['message' => 'Extension deleted successfully']);
+    }
+
+    /**
+     * Handle AJAX install extension
+     */
+    public function handleInstallExtension()
+    {
+        check_ajax_referer('jankx_extension_manager_nonce', 'nonce');
+
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(['message' => 'Unauthorized'], 403);
+            return;
+        }
+
+        $extensionName = sanitize_text_field($_POST['extension'] ?? '');
+        if (empty($extensionName)) {
+            wp_send_json_error(['message' => 'Extension name is required']);
+            return;
+        }
+
+        $result = $this->extensionManager->install_extension_from_hub($extensionName);
+
+        if (is_wp_error($result)) {
+            wp_send_json_error(['message' => $result->get_error_message()]);
+        } else {
+            wp_send_json_success(['message' => __('Extension installed successfully.', 'jankx')]);
+        }
     }
 
      /**
