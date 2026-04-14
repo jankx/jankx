@@ -5,23 +5,23 @@ if (!defined('ABSPATH')) {
 
 return [
     'id' => 'blog_posts',
-    'name' => 'Bài viết',
-    'description' => 'Hiển thị và meta cho bài viết',
+    'name' => __('Blog Posts', 'jankx'),
+    'description' => __('Display and metadata settings for blog posts', 'jankx'),
     'fields' => [
         [
             'id' => 'blog_layout',
-            'name' => 'Layout blog',
+            'name' => __('Blog Layout', 'jankx'),
             'type' => 'select',
             'options' => [
-                'grid' => 'Lưới',
-                'list' => 'Danh sách',
-                'masonry' => 'Masonry',
+                'grid' => __('Grid', 'jankx'),
+                'list' => __('List', 'jankx'),
+                'masonry' => __('Masonry', 'jankx'),
             ],
             'value' => 'grid',
         ],
         [
             'id' => 'show_post_meta',
-            'name' => 'Hiển thị meta (tác giả, ngày)',
+            'name' => __('Show Post Metadata (Author, Date)', 'jankx'),
             'type' => 'checkbox',
             'value' => 1,
         ],

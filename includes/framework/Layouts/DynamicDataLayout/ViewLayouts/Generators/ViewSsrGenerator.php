@@ -413,13 +413,13 @@ class ViewSsrGenerator extends AbstractViewContentGenerator
         
         switch ($blockName) {
             case 'core/heading':
-                return '<h2 class="wp-block-heading">Sample Title</h2>';
+                return '<h2 class="wp-block-heading">' . __('Sample Title', 'jankx') . '</h2>';
             case 'core/paragraph':
-                return '<p class="has-text-align-left">Sample content preview...</p>';
+                return '<p class="has-text-align-left">' . __('Sample content preview...', 'jankx') . '</p>';
             case 'core/image':
                 return '<img class="wp-block-image" src="https://via.placeholder.com/300x200" alt="Sample image" />';
             default:
-                return '<div class="wp-block-preview">Sample preview content</div>';
+                return '<div class="wp-block-preview">' . __('Sample preview content', 'jankx') . '</div>';
         }
     }
 }

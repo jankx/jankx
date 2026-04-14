@@ -184,7 +184,7 @@ class SlideshowBlock extends Block
 
                             <?php if ($autoplay) : ?>
                                 <button class="slideshow-autoplay-btn">
-                                    <?php _e('Xem tự động', 'jankx'); ?>
+                                    <?php _e('Autoplay', 'jankx'); ?>
                                 </button>
                             <?php endif; ?>
                         </div>

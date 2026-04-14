@@ -123,9 +123,9 @@ class SaleBadgeService
         $percentage = $this->getDiscountPercentage($productId);
 
         if ($percentage > 0) {
-            // Replace "Khuyến mại" with percentage in the HTML
+            // Replace "Sale!" with percentage in the HTML
             $html = str_replace(
-                'Khuyến mại',
+                __('Sale!', 'jankx'),
                 "-{$percentage}%",
                 $html
             );
@@ -143,7 +143,7 @@ class SaleBadgeService
      */
     public function filterWooCommerceBlocksSaleBadgeHtml($badgeHtml, $product = null)
     {
-        if (!$badgeHtml || strpos($badgeHtml, 'Khuyến mại') === false) {
+        if (!$badgeHtml) {
             return $badgeHtml;
         }
 
@@ -164,10 +164,10 @@ class SaleBadgeService
         $percentage = $this->getDiscountPercentage($productId);
 
         if ($percentage > 0) {
-            // Replace "Khuyến mại" with percentage in the HTML
-            $badgeHtml = str_replace(
-                'Khuyến mại',
-                "-{$percentage}%",
+            // Replace the sale text with percentage in the HTML
+            $badgeHtml = preg_replace(
+                '/(>)([^<]*Sale![^<]*)(<)/i',
+                "$1-{$percentage}%$3",
                 $badgeHtml
             );
         }
@@ -193,9 +193,9 @@ class SaleBadgeService
 
         if ($percentage > 0) {
             // Replace the badge text with percentage
-            $badgeHtml = str_replace(
-                'Khuyến mại',
-                "-{$percentage}%",
+            $badgeHtml = preg_replace(
+                '/(>)([^<]*Sale![^<]*)(<)/i',
+                "$1-{$percentage}%$3",
                 $badgeHtml
             );
         }
@@ -223,7 +223,7 @@ class SaleBadgeService
             return "-{$percentage}%";
         }
 
-        return __('Khuyến mại', 'cheephub');
+        return __('Sale!', 'jankx');
     }
 
     /**

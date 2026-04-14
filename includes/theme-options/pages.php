@@ -6,63 +6,63 @@ if (!defined('ABSPATH')) {
 return [
     [
         'id' => 'general',
-        'name' => 'Tổng quan',
+        'name' => __('General', 'jankx'),
         'args' => [
-            'description' => 'Cấu hình cơ bản cho toàn site',
+            'description' => __('Basic configuration for the entire site', 'jankx'),
             'priority' => 1,
             'icon' => 'dashicons-admin-generic',
         ],
     ],
     [
         'id' => 'branding',
-        'name' => 'Thương hiệu',
+        'name' => __('Branding', 'jankx'),
         'args' => [
-            'description' => 'Logo, màu sắc nhận diện',
+            'description' => __('Logo and brand identity colors', 'jankx'),
             'priority' => 2,
             'icon' => 'dashicons-admin-appearance',
         ],
     ],
     [
         'id' => 'layout',
-        'name' => 'Bố cục & Khoảng cách',
+        'name' => __('Layout & Spacing', 'jankx'),
         'args' => [
-            'description' => 'Layout, khoảng cách, slider',
+            'description' => __('Layout, spacing, and slider options', 'jankx'),
             'priority' => 3,
             'icon' => 'dashicons-align-center',
         ],
     ],
     [
         'id' => 'typography',
-        'name' => 'Typography',
+        'name' => __('Typography', 'jankx'),
         'args' => [
-            'description' => 'Phông chữ và cỡ chữ',
+            'description' => __('Fonts and font sizes', 'jankx'),
             'priority' => 4,
             'icon' => 'dashicons-editor-textcolor',
         ],
     ],
     [
         'id' => 'blog',
-        'name' => 'Blog',
+        'name' => __('Blog', 'jankx'),
         'args' => [
-            'description' => 'Cấu hình trang blog và bài viết',
+            'description' => __('Blog and post configuration', 'jankx'),
             'priority' => 5,
             'icon' => 'dashicons-admin-post',
         ],
     ],
     [
         'id' => 'socials',
-        'name' => 'Mạng xã hội',
+        'name' => __('Social Media', 'jankx'),
         'args' => [
-            'description' => 'Liên kết mạng xã hội và chia sẻ',
+            'description' => __('Social links and sharing options', 'jankx'),
             'priority' => 6,
             'icon' => 'dashicons-share',
         ],
     ],
     [
         'id' => 'preset',
-        'name' => 'Preset & Layout',
+        'name' => __('Preset & Layout', 'jankx'),
         'args' => [
-            'description' => 'Chọn preset giao diện và bố cục trang',
+            'description' => __('Choose UI presets and page layouts', 'jankx'),
             'priority' => 7,
             'icon' => 'dashicons-layout',
         ],

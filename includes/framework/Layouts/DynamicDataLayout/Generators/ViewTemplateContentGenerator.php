@@ -175,7 +175,7 @@ class ViewTemplateContentGenerator extends AbstractContentGenerator
                 $templateSlug,
                 $exception->getMessage()
             ));
-            return '<div style="padding: 12px; text-align: center;">Template rendering error: ' . esc_html($exception->getMessage()) . '</div>';
+            return '<div style="padding: 12px; text-align: center;">' . __('Template rendering error: ', 'jankx') . esc_html($exception->getMessage()) . '</div>';
         }
     }
 

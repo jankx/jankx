@@ -32,7 +32,7 @@ class ExampleService extends AbstractService
     {
         // Khởi tạo dữ liệu mẫu
         $this->data = [
-            'message' => 'Service đã được khởi tạo thành công!',
+            'message' => __('Service initialized successfully!', 'jankx'),
             'timestamp' => time(),
             'version' => '1.0.0'
         ];
@@ -72,7 +72,7 @@ class ExampleService extends AbstractService
     {
         if (current_user_can('manage_options')) {
             echo '<div style="position: fixed; bottom: 10px; right: 10px; background: #007cba; color: white; padding: 10px; border-radius: 5px; z-index: 9999;">';
-            echo 'ExampleService: ' . $this->data['message'];
+            echo __('ExampleService: ', 'jankx') . $this->data['message'];
             echo '</div>';
         }
     }

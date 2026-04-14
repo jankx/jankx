@@ -110,9 +110,9 @@ class ViewTemplateContentGenerator extends AbstractViewContentGenerator
         ob_start();
         ?>
         <div class="wp-block-jankx-view-template-preview">
-            <h3 class="view-item-title">Sample Title</h3>
-            <time class="view-item-date" datetime="2024-01-01">January 1, 2024</time>
-            <div class="view-item-excerpt">Sample excerpt content for preview...</div>
+            <h3 class="view-item-title"><?php _e('Sample Title', 'jankx'); ?></h3>
+            <time class="view-item-date" datetime="2024-01-01"><?php _e('January 1, 2024', 'jankx'); ?></time>
+            <div class="view-item-excerpt"><?php _e('Sample excerpt content for preview...', 'jankx'); ?></div>
         </div>
         <?php
         return (string) ob_get_clean();

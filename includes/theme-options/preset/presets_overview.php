@@ -134,33 +134,33 @@ $header_topbar = _jankx_layout_svg([
 /* ═══════════════════════════════════════════════════════════════ */
 return [
     'id'          => 'presets_overview',
-    'name'        => 'Preset & Bố cục',
-    'description' => 'Chọn preset giao diện tổng thể, bố cục bài viết và layout header',
+    'name'        => __('Preset & Layout', 'jankx'),
+    'description' => __('Choose the overall visual style preset, post layout, and header layout', 'jankx'),
     'fields'      => [
 
         // ── Divider ─────────────────────────────────────────────
         [
             'id'   => '_div_theme_preset',
-            'name' => 'Preset giao diện',
+            'name' => __('Theme Presets', 'jankx'),
             'type' => 'divide',
         ],
 
         // ── 1. Theme Preset Chooser ──────────────────────────────
         [
             'id'          => 'theme_preset',
-            'name'        => 'Theme Preset',
+            'name'        => __('Theme Preset', 'jankx'),
             'type'        => 'svg_chooser',
-            'subtitle'    => 'Chọn phong cách tổng thể cho toàn site. Mỗi preset có màu sắc, font và layout riêng.',
+            'subtitle'    => __('Choose the overall style for the entire site. Each preset has unique colors, fonts, and layouts.', 'jankx'),
             'columns'     => 3,
             'height'      => '100px',
             'show_labels' => true,
             'options'     => [
-                'classic'    => ['label' => 'Classic',    'svg' => $preset_classic],
-                'magazine'   => ['label' => 'Magazine',   'svg' => $preset_magazine],
-                'minimal'    => ['label' => 'Minimal',    'svg' => $preset_minimal],
-                'blog'       => ['label' => 'Blog',       'svg' => $preset_blog],
-                'ecommerce'  => ['label' => 'E-Commerce', 'svg' => $preset_ecommerce],
-                'landing'    => ['label' => 'Landing',    'svg' => $preset_landing],
+                'classic'    => ['label' => __('Classic', 'jankx'),    'svg' => $preset_classic],
+                'magazine'   => ['label' => __('Magazine', 'jankx'),   'svg' => $preset_magazine],
+                'minimal'    => ['label' => __('Minimal', 'jankx'),    'svg' => $preset_minimal],
+                'blog'       => ['label' => __('Blog', 'jankx'),       'svg' => $preset_blog],
+                'ecommerce'  => ['label' => __('E-Commerce', 'jankx'), 'svg' => $preset_ecommerce],
+                'landing'    => ['label' => __('Landing', 'jankx'),    'svg' => $preset_landing],
             ],
             'default_value' => 'classic',
         ],
@@ -168,25 +168,25 @@ return [
         // ── Divider ─────────────────────────────────────────────
         [
             'id'   => '_div_post_layout',
-            'name' => 'Bố cục Posts',
+            'name' => __('Post Layouts', 'jankx'),
             'type' => 'divide',
         ],
 
         // ── 2. Post/Blog Layout Chooser ──────────────────────────
         [
             'id'          => 'post_layout',
-            'name'        => 'Bố cục bài viết',
+            'name'        => __('Post Layout', 'jankx'),
             'type'        => 'svg_chooser',
-            'subtitle'    => 'Chọn cách hiển thị danh sách bài viết trên trang Blog / Archive.',
+            'subtitle'    => __('Choose how post lists are displayed on the Blog / Archive pages.', 'jankx'),
             'columns'     => 5,
             'height'      => '80px',
             'show_labels' => true,
             'options'     => [
-                'grid_3'    => ['label' => 'Grid 3 cột',   'svg' => $layout_grid_3],
-                'grid_2'    => ['label' => 'Grid 2 cột',   'svg' => $layout_grid_2],
-                'list'      => ['label' => 'Danh sách',    'svg' => $layout_list],
-                'masonry'   => ['label' => 'Masonry',      'svg' => $layout_masonry],
-                'featured'  => ['label' => 'Nổi bật',     'svg' => $layout_featured],
+                'grid_3'    => ['label' => __('3-Column Grid', 'jankx'),   'svg' => $layout_grid_3],
+                'grid_2'    => ['label' => __('2-Column Grid', 'jankx'),   'svg' => $layout_grid_2],
+                'list'      => ['label' => __('List', 'jankx'),            'svg' => $layout_list],
+                'masonry'   => ['label' => __('Masonry', 'jankx'),         'svg' => $layout_masonry],
+                'featured'  => ['label' => __('Featured', 'jankx'),        'svg' => $layout_featured],
             ],
             'default_value' => 'grid_3',
         ],
@@ -194,24 +194,24 @@ return [
         // ── Divider ─────────────────────────────────────────────
         [
             'id'   => '_div_header_layout',
-            'name' => 'Bố cục Header',
+            'name' => __('Header Layouts', 'jankx'),
             'type' => 'divide',
         ],
 
         // ── 3. Header Layout Chooser ─────────────────────────────
         [
             'id'          => 'header_layout',
-            'name'        => 'Bố cục Header',
+            'name'        => __('Header Layout', 'jankx'),
             'type'        => 'svg_chooser',
-            'subtitle'    => 'Chọn kiểu sắp xếp logo, menu và các nút hành động trong phần đầu trang.',
+            'subtitle'    => __('Choose the arrangement of the logo, menu, and action buttons in the header.', 'jankx'),
             'columns'     => 4,
             'height'      => '60px',
             'show_labels' => true,
             'options'     => [
-                'classic'  => ['label' => 'Classic',   'svg' => $header_classic],
-                'centered' => ['label' => 'Centered',  'svg' => $header_centered],
-                'split'    => ['label' => 'Split CTA', 'svg' => $header_split],
-                'topbar'   => ['label' => 'Top Bar',   'svg' => $header_topbar],
+                'classic'  => ['label' => __('Classic', 'jankx'),   'svg' => $header_classic],
+                'centered' => ['label' => __('Centered', 'jankx'),  'svg' => $header_centered],
+                'split'    => ['label' => __('Split CTA', 'jankx'), 'svg' => $header_split],
+                'topbar'   => ['label' => __('Top Bar', 'jankx'),   'svg' => $header_topbar],
             ],
             'default_value' => 'classic',
         ],

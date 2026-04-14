@@ -5,12 +5,12 @@ if (!defined('ABSPATH')) {
 
 return [
     'id' => 'typography_fonts',
-    'name' => 'Phông chữ',
-    'description' => 'Thiết lập font cho tiêu đề và nội dung',
+    'name' => __('Fonts', 'jankx'),
+    'description' => __('Configure fonts for headings and content', 'jankx'),
     'fields' => [
         [
             'id' => 'body_typography',
-            'name' => 'Body font',
+            'name' => __('Body Font', 'jankx'),
             'type' => 'typography',
             'font-family' => 'Inter',
             'font-size' => '16px',
