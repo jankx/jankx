@@ -10,7 +10,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const smartTabsBlocks = document.querySelectorAll('.smart-tabs');
   const generateUid = (prefix = 'smart-tabs') => `${prefix}-${Math.random().toString(36).slice(2, 10)}`;
   smartTabsBlocks.forEach(tabsBlock => {
-    var _tabsBlock$getAttribu;
     const navItems = Array.from(tabsBlock.querySelectorAll('.smart-tabs__nav-item'));
     const tabsContent = tabsBlock.querySelector('.smart-tabs__content');
     const tabPanels = tabsContent ? Array.from(tabsContent.querySelectorAll('.smart-tab')) : [];
@@ -160,7 +159,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       return false;
     };
-    const datasetActive = parseInt((_tabsBlock$getAttribu = tabsBlock.getAttribute('data-active-tab')) !== null && _tabsBlock$getAttribu !== void 0 ? _tabsBlock$getAttribu : '0', 10);
+    const datasetActive = parseInt(tabsBlock.getAttribute('data-active-tab') ?? '0', 10);
     const defaultIndex = Number.isNaN(datasetActive) ? 0 : datasetActive;
     if (!handleHashNavigation(window.location.hash)) {
       activateTab(defaultIndex, {

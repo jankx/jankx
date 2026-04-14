@@ -2,21 +2,11 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
-/***/ "./blocks/swiper-slide/block.json":
-/*!****************************************!*\
-  !*** ./blocks/swiper-slide/block.json ***!
-  \****************************************/
-/***/ ((module) => {
-
-module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/swiper-slide","title":"Swiper Slide","category":"jankx","description":"Single slide for Swiper slider","keywords":["slide","swiper"],"textdomain":"jankx","parent":["jankx/swiper"],"attributes":{"slideId":{"type":"string"},"imageSize":{"type":"string","enum":["contain","cover","fullwidth"],"default":"cover"}},"supports":{"html":false,"reusable":false,"spacing":{"margin":false,"padding":true},"color":{"background":true,"text":true,"gradients":true},"background":{"backgroundImage":true,"backgroundSize":true,"backgroundPosition":true,"backgroundRepeat":true,"__experimentalDefaultControls":{"backgroundImage":true}},"dimensions":{"minHeight":true}},"usesContext":["jankx/swiperId"],"editorScript":"file:./build/index.js","editorStyle":"file:./build/editor.css","style":"file:./build/style.css"}');
-
-/***/ }),
-
-/***/ "./blocks/swiper-slide/edit.tsx":
+/***/ "./blocks/swiper-slide/edit.tsx"
 /*!**************************************!*\
   !*** ./blocks/swiper-slide/edit.tsx ***!
   \**************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
@@ -79,81 +69,91 @@ function Edit({
   });
 }
 
-/***/ }),
+/***/ },
 
-/***/ "./blocks/swiper-slide/editor.scss":
+/***/ "./blocks/swiper-slide/editor.scss"
 /*!*****************************************!*\
   !*** ./blocks/swiper-slide/editor.scss ***!
   \*****************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
 
-/***/ }),
+/***/ },
 
-/***/ "./blocks/swiper-slide/style.scss":
+/***/ "./blocks/swiper-slide/style.scss"
 /*!****************************************!*\
   !*** ./blocks/swiper-slide/style.scss ***!
   \****************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
 
-/***/ }),
+/***/ },
 
-/***/ "@wordpress/block-editor":
-/*!*************************************!*\
-  !*** external ["wp","blockEditor"] ***!
-  \*************************************/
-/***/ ((module) => {
-
-module.exports = window["wp"]["blockEditor"];
-
-/***/ }),
-
-/***/ "@wordpress/blocks":
-/*!********************************!*\
-  !*** external ["wp","blocks"] ***!
-  \********************************/
-/***/ ((module) => {
-
-module.exports = window["wp"]["blocks"];
-
-/***/ }),
-
-/***/ "@wordpress/components":
-/*!************************************!*\
-  !*** external ["wp","components"] ***!
-  \************************************/
-/***/ ((module) => {
-
-module.exports = window["wp"]["components"];
-
-/***/ }),
-
-/***/ "@wordpress/i18n":
-/*!******************************!*\
-  !*** external ["wp","i18n"] ***!
-  \******************************/
-/***/ ((module) => {
-
-module.exports = window["wp"]["i18n"];
-
-/***/ }),
-
-/***/ "react/jsx-runtime":
+/***/ "react/jsx-runtime"
 /*!**********************************!*\
   !*** external "ReactJSXRuntime" ***!
   \**********************************/
-/***/ ((module) => {
+(module) {
 
 module.exports = window["ReactJSXRuntime"];
 
-/***/ })
+/***/ },
+
+/***/ "@wordpress/block-editor"
+/*!*************************************!*\
+  !*** external ["wp","blockEditor"] ***!
+  \*************************************/
+(module) {
+
+module.exports = window["wp"]["blockEditor"];
+
+/***/ },
+
+/***/ "@wordpress/blocks"
+/*!********************************!*\
+  !*** external ["wp","blocks"] ***!
+  \********************************/
+(module) {
+
+module.exports = window["wp"]["blocks"];
+
+/***/ },
+
+/***/ "@wordpress/components"
+/*!************************************!*\
+  !*** external ["wp","components"] ***!
+  \************************************/
+(module) {
+
+module.exports = window["wp"]["components"];
+
+/***/ },
+
+/***/ "@wordpress/i18n"
+/*!******************************!*\
+  !*** external ["wp","i18n"] ***!
+  \******************************/
+(module) {
+
+module.exports = window["wp"]["i18n"];
+
+/***/ },
+
+/***/ "./blocks/swiper-slide/block.json"
+/*!****************************************!*\
+  !*** ./blocks/swiper-slide/block.json ***!
+  \****************************************/
+(module) {
+
+module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/swiper-slide","title":"Swiper Slide","category":"jankx","description":"Single slide for Swiper slider","keywords":["slide","swiper"],"textdomain":"jankx","parent":["jankx/swiper"],"attributes":{"slideId":{"type":"string"},"imageSize":{"type":"string","enum":["contain","cover","fullwidth"],"default":"cover"}},"supports":{"html":false,"reusable":false,"spacing":{"margin":false,"padding":true},"color":{"background":true,"text":true,"gradients":true},"background":{"backgroundImage":true,"backgroundSize":true,"backgroundPosition":true,"backgroundRepeat":true,"__experimentalDefaultControls":{"backgroundImage":true}},"dimensions":{"minHeight":true}},"usesContext":["jankx/swiperId"],"editorScript":"file:./build/index.js","editorStyle":"file:./build/editor.css","style":"file:./build/style.css"}');
+
+/***/ }
 
 /******/ 	});
 /************************************************************************/
@@ -175,6 +175,12 @@ module.exports = window["ReactJSXRuntime"];
 /******/ 		};
 /******/ 	
 /******/ 		// Execute the module function
+/******/ 		if (!(moduleId in __webpack_modules__)) {
+/******/ 			delete __webpack_module_cache__[moduleId];
+/******/ 			var e = new Error("Cannot find module '" + moduleId + "'");
+/******/ 			e.code = 'MODULE_NOT_FOUND';
+/******/ 			throw e;
+/******/ 		}
 /******/ 		__webpack_modules__[moduleId](module, module.exports, __webpack_require__);
 /******/ 	
 /******/ 		// Return the exports of the module

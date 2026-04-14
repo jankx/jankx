@@ -2,21 +2,11 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
-/***/ "./blocks/divider/block.json":
-/*!***********************************!*\
-  !*** ./blocks/divider/block.json ***!
-  \***********************************/
-/***/ ((module) => {
-
-module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/divider","title":"Divider","category":"jankx","description":"Divider giống core/separator với các style variants: dashed, dotted, line","textdomain":"jankx","supports":{"html":false,"anchor":true,"align":["center","wide","full"],"spacing":{"margin":["top","bottom"]},"color":{"text":true}},"attributes":{"tagName":{"type":"string","enum":["hr","div"],"default":"hr"},"thickness":{"type":"number","default":2},"widthPercent":{"type":"number","default":50},"lineAlign":{"type":"string","enum":["left","center","right"],"default":"center"},"className":{"type":"string"}},"styles":[{"name":"dashed","label":"Dashed"},{"name":"dotted","label":"Dotted"},{"name":"line","label":"Line"}],"editorScript":"file:./build/index.js","editorStyle":"file:./build/editor.css","style":"file:./build/style.css"}');
-
-/***/ }),
-
-/***/ "./blocks/divider/edit.tsx":
+/***/ "./blocks/divider/edit.tsx"
 /*!*********************************!*\
   !*** ./blocks/divider/edit.tsx ***!
   \*********************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
@@ -63,7 +53,7 @@ function Edit({
           label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Độ dày (px)', 'jankx'),
           value: thickness,
           onChange: v => setAttributes({
-            thickness: v !== null && v !== void 0 ? v : 2
+            thickness: v ?? 2
           }),
           min: 1,
           max: 12
@@ -71,7 +61,7 @@ function Edit({
           label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Chiều rộng (%)', 'jankx'),
           value: widthPercent,
           onChange: v => setAttributes({
-            widthPercent: v !== null && v !== void 0 ? v : 50
+            widthPercent: v ?? 50
           }),
           min: 10,
           max: 100
@@ -97,25 +87,13 @@ function Edit({
   });
 }
 
-/***/ }),
+/***/ },
 
-/***/ "./blocks/divider/editor.scss":
-/*!************************************!*\
-  !*** ./blocks/divider/editor.scss ***!
-  \************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-// extracted by mini-css-extract-plugin
-
-
-/***/ }),
-
-/***/ "./blocks/divider/save.tsx":
+/***/ "./blocks/divider/save.tsx"
 /*!*********************************!*\
   !*** ./blocks/divider/save.tsx ***!
   \*********************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
@@ -146,79 +124,101 @@ function Save({
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)(tagName, blockProps);
 }
 
-/***/ }),
+/***/ },
 
-/***/ "./blocks/divider/style.scss":
-/*!***********************************!*\
-  !*** ./blocks/divider/style.scss ***!
-  \***********************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+/***/ "./blocks/divider/editor.scss"
+/*!************************************!*\
+  !*** ./blocks/divider/editor.scss ***!
+  \************************************/
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
 
-/***/ }),
+/***/ },
 
-/***/ "@wordpress/block-editor":
-/*!*************************************!*\
-  !*** external ["wp","blockEditor"] ***!
-  \*************************************/
-/***/ ((module) => {
+/***/ "./blocks/divider/style.scss"
+/*!***********************************!*\
+  !*** ./blocks/divider/style.scss ***!
+  \***********************************/
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
-module.exports = window["wp"]["blockEditor"];
+__webpack_require__.r(__webpack_exports__);
+// extracted by mini-css-extract-plugin
 
-/***/ }),
 
-/***/ "@wordpress/blocks":
-/*!********************************!*\
-  !*** external ["wp","blocks"] ***!
-  \********************************/
-/***/ ((module) => {
+/***/ },
 
-module.exports = window["wp"]["blocks"];
-
-/***/ }),
-
-/***/ "@wordpress/components":
-/*!************************************!*\
-  !*** external ["wp","components"] ***!
-  \************************************/
-/***/ ((module) => {
-
-module.exports = window["wp"]["components"];
-
-/***/ }),
-
-/***/ "@wordpress/element":
-/*!*********************************!*\
-  !*** external ["wp","element"] ***!
-  \*********************************/
-/***/ ((module) => {
-
-module.exports = window["wp"]["element"];
-
-/***/ }),
-
-/***/ "@wordpress/i18n":
-/*!******************************!*\
-  !*** external ["wp","i18n"] ***!
-  \******************************/
-/***/ ((module) => {
-
-module.exports = window["wp"]["i18n"];
-
-/***/ }),
-
-/***/ "react/jsx-runtime":
+/***/ "react/jsx-runtime"
 /*!**********************************!*\
   !*** external "ReactJSXRuntime" ***!
   \**********************************/
-/***/ ((module) => {
+(module) {
 
 module.exports = window["ReactJSXRuntime"];
 
-/***/ })
+/***/ },
+
+/***/ "@wordpress/block-editor"
+/*!*************************************!*\
+  !*** external ["wp","blockEditor"] ***!
+  \*************************************/
+(module) {
+
+module.exports = window["wp"]["blockEditor"];
+
+/***/ },
+
+/***/ "@wordpress/blocks"
+/*!********************************!*\
+  !*** external ["wp","blocks"] ***!
+  \********************************/
+(module) {
+
+module.exports = window["wp"]["blocks"];
+
+/***/ },
+
+/***/ "@wordpress/components"
+/*!************************************!*\
+  !*** external ["wp","components"] ***!
+  \************************************/
+(module) {
+
+module.exports = window["wp"]["components"];
+
+/***/ },
+
+/***/ "@wordpress/element"
+/*!*********************************!*\
+  !*** external ["wp","element"] ***!
+  \*********************************/
+(module) {
+
+module.exports = window["wp"]["element"];
+
+/***/ },
+
+/***/ "@wordpress/i18n"
+/*!******************************!*\
+  !*** external ["wp","i18n"] ***!
+  \******************************/
+(module) {
+
+module.exports = window["wp"]["i18n"];
+
+/***/ },
+
+/***/ "./blocks/divider/block.json"
+/*!***********************************!*\
+  !*** ./blocks/divider/block.json ***!
+  \***********************************/
+(module) {
+
+module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/divider","title":"Divider","category":"jankx","description":"Divider giống core/separator với các style variants: dashed, dotted, line","textdomain":"jankx","supports":{"html":false,"anchor":true,"align":["center","wide","full"],"spacing":{"margin":["top","bottom"]},"color":{"text":true}},"attributes":{"tagName":{"type":"string","enum":["hr","div"],"default":"hr"},"thickness":{"type":"number","default":2},"widthPercent":{"type":"number","default":50},"lineAlign":{"type":"string","enum":["left","center","right"],"default":"center"},"className":{"type":"string"}},"styles":[{"name":"dashed","label":"Dashed"},{"name":"dotted","label":"Dotted"},{"name":"line","label":"Line"}],"editorScript":"file:./build/index.js","editorStyle":"file:./build/editor.css","style":"file:./build/style.css"}');
+
+/***/ }
 
 /******/ 	});
 /************************************************************************/
@@ -240,6 +240,12 @@ module.exports = window["ReactJSXRuntime"];
 /******/ 		};
 /******/ 	
 /******/ 		// Execute the module function
+/******/ 		if (!(moduleId in __webpack_modules__)) {
+/******/ 			delete __webpack_module_cache__[moduleId];
+/******/ 			var e = new Error("Cannot find module '" + moduleId + "'");
+/******/ 			e.code = 'MODULE_NOT_FOUND';
+/******/ 			throw e;
+/******/ 		}
 /******/ 		__webpack_modules__[moduleId](module, module.exports, __webpack_require__);
 /******/ 	
 /******/ 		// Return the exports of the module

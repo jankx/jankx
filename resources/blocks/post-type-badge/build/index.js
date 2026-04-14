@@ -2,21 +2,11 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
-/***/ "./blocks/post-type-badge/block.json":
-/*!*******************************************!*\
-  !*** ./blocks/post-type-badge/block.json ***!
-  \*******************************************/
-/***/ ((module) => {
-
-module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/post-type-badge","title":"Post Type Badge","category":"jankx","icon":"post","description":"Hiển thị nhãn loại bài viết (post type) trên item trong Post Layout","textdomain":"jankx","attributes":{"displayType":{"type":"string","default":"absolute","enum":["absolute","normal"]},"position":{"type":"string","default":"top-right"},"offsetX":{"type":"string","default":"12px"},"offsetY":{"type":"string","default":"12px"},"backgroundColor":{"type":"string","default":"#2e7d32"},"textColor":{"type":"string","default":"#ffffff"},"borderRadius":{"type":"number","default":8},"showLabel":{"type":"boolean","default":true}},"editorScript":"file:./build/index.js","editorStyle":"file:./build/editor.css","style":"file:./build/style.css","supports":{"html":false}}');
-
-/***/ }),
-
-/***/ "./blocks/post-type-badge/edit.tsx":
+/***/ "./blocks/post-type-badge/edit.tsx"
 /*!*****************************************!*\
   !*** ./blocks/post-type-badge/edit.tsx ***!
   \*****************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
@@ -191,57 +181,67 @@ function Edit({
   });
 }
 
-/***/ }),
+/***/ },
 
-/***/ "@wordpress/block-editor":
-/*!*************************************!*\
-  !*** external ["wp","blockEditor"] ***!
-  \*************************************/
-/***/ ((module) => {
-
-module.exports = window["wp"]["blockEditor"];
-
-/***/ }),
-
-/***/ "@wordpress/blocks":
-/*!********************************!*\
-  !*** external ["wp","blocks"] ***!
-  \********************************/
-/***/ ((module) => {
-
-module.exports = window["wp"]["blocks"];
-
-/***/ }),
-
-/***/ "@wordpress/components":
-/*!************************************!*\
-  !*** external ["wp","components"] ***!
-  \************************************/
-/***/ ((module) => {
-
-module.exports = window["wp"]["components"];
-
-/***/ }),
-
-/***/ "@wordpress/i18n":
-/*!******************************!*\
-  !*** external ["wp","i18n"] ***!
-  \******************************/
-/***/ ((module) => {
-
-module.exports = window["wp"]["i18n"];
-
-/***/ }),
-
-/***/ "react/jsx-runtime":
+/***/ "react/jsx-runtime"
 /*!**********************************!*\
   !*** external "ReactJSXRuntime" ***!
   \**********************************/
-/***/ ((module) => {
+(module) {
 
 module.exports = window["ReactJSXRuntime"];
 
-/***/ })
+/***/ },
+
+/***/ "@wordpress/block-editor"
+/*!*************************************!*\
+  !*** external ["wp","blockEditor"] ***!
+  \*************************************/
+(module) {
+
+module.exports = window["wp"]["blockEditor"];
+
+/***/ },
+
+/***/ "@wordpress/blocks"
+/*!********************************!*\
+  !*** external ["wp","blocks"] ***!
+  \********************************/
+(module) {
+
+module.exports = window["wp"]["blocks"];
+
+/***/ },
+
+/***/ "@wordpress/components"
+/*!************************************!*\
+  !*** external ["wp","components"] ***!
+  \************************************/
+(module) {
+
+module.exports = window["wp"]["components"];
+
+/***/ },
+
+/***/ "@wordpress/i18n"
+/*!******************************!*\
+  !*** external ["wp","i18n"] ***!
+  \******************************/
+(module) {
+
+module.exports = window["wp"]["i18n"];
+
+/***/ },
+
+/***/ "./blocks/post-type-badge/block.json"
+/*!*******************************************!*\
+  !*** ./blocks/post-type-badge/block.json ***!
+  \*******************************************/
+(module) {
+
+module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/post-type-badge","title":"Post Type Badge","category":"jankx","icon":"post","description":"Hiển thị nhãn loại bài viết (post type) trên item trong Post Layout","textdomain":"jankx","attributes":{"displayType":{"type":"string","default":"absolute","enum":["absolute","normal"]},"position":{"type":"string","default":"top-right"},"offsetX":{"type":"string","default":"12px"},"offsetY":{"type":"string","default":"12px"},"backgroundColor":{"type":"string","default":"#2e7d32"},"textColor":{"type":"string","default":"#ffffff"},"borderRadius":{"type":"number","default":8},"showLabel":{"type":"boolean","default":true}},"editorScript":"file:./build/index.js","editorStyle":"file:./build/editor.css","style":"file:./build/style.css","supports":{"html":false}}');
+
+/***/ }
 
 /******/ 	});
 /************************************************************************/
@@ -263,6 +263,12 @@ module.exports = window["ReactJSXRuntime"];
 /******/ 		};
 /******/ 	
 /******/ 		// Execute the module function
+/******/ 		if (!(moduleId in __webpack_modules__)) {
+/******/ 			delete __webpack_module_cache__[moduleId];
+/******/ 			var e = new Error("Cannot find module '" + moduleId + "'");
+/******/ 			e.code = 'MODULE_NOT_FOUND';
+/******/ 			throw e;
+/******/ 		}
 /******/ 		__webpack_modules__[moduleId](module, module.exports, __webpack_require__);
 /******/ 	
 /******/ 		// Return the exports of the module

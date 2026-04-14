@@ -2,85 +2,85 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
-/***/ "./blocks/advanced-filter/block.json":
-/*!*******************************************!*\
-  !*** ./blocks/advanced-filter/block.json ***!
-  \*******************************************/
-/***/ ((module) => {
-
-module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/advanced-filter","version":"1.0.0","title":"Advanced Filter","category":"jankx","parent":["jankx/advanced-filters","jankx/smart-tab"],"icon":"filter","description":"Một filter đơn lẻ dùng bên trong Advanced Filters.","textdomain":"jankx","supports":{"html":false,"reusable":false},"attributes":{"filterType":{"type":"string","default":"taxonomy","enum":["taxonomy","meta","price","date","author","keyword"]},"label":{"type":"string","default":""},"enabled":{"type":"boolean","default":true},"taxonomy":{"type":"string","default":""},"displayStyle":{"type":"string","default":"buttons","enum":["buttons","checkboxes","dropdown","select"]},"listingType":{"type":"string","default":"ul","enum":["ul","ol","none"]},"showCount":{"type":"boolean","default":false},"showEmptyTerms":{"type":"boolean","default":true},"showOnlyTopLevel":{"type":"boolean","default":false},"showHierarchy":{"type":"boolean","default":false},"multipleSelection":{"type":"boolean","default":true},"layout":{"type":"string","default":"horizontal","enum":["horizontal","vertical","dropdown","accordion"]},"showLabels":{"type":"boolean","default":true},"collapsible":{"type":"boolean","default":false},"defaultExpanded":{"type":"boolean","default":true},"metaKey":{"type":"string","default":""},"inputType":{"type":"string","default":"text","enum":["text","number","range","date","date-range"]},"minValue":{"type":"string","default":""},"maxValue":{"type":"string","default":""},"placeholder":{"type":"string","default":""},"minPrice":{"type":"string","default":""},"maxPrice":{"type":"string","default":""},"currency":{"type":"string","default":"VND"},"dateField":{"type":"string","default":"post_date"},"dateRange":{"type":"boolean","default":true},"showSearchButton":{"type":"boolean","default":false},"searchButtonText":{"type":"string","default":"Search"},"searchButtonDisplay":{"type":"string","default":"text","enum":["text","icon","icon-text"]},"searchButtonIcon":{"type":"string","default":""},"keywordAction":{"type":"string","default":"typing","enum":["typing","button"]},"filterValue":{"type":"string","default":""},"filterValueMin":{"type":"string","default":""},"filterValueMax":{"type":"string","default":""},"filterValueStart":{"type":"string","default":""},"filterValueEnd":{"type":"string","default":""}},"editorScript":"file:./build/index.js"}');
-
-/***/ }),
-
-/***/ "@wordpress/block-editor":
-/*!*************************************!*\
-  !*** external ["wp","blockEditor"] ***!
-  \*************************************/
-/***/ ((module) => {
-
-module.exports = window["wp"]["blockEditor"];
-
-/***/ }),
-
-/***/ "@wordpress/blocks":
-/*!********************************!*\
-  !*** external ["wp","blocks"] ***!
-  \********************************/
-/***/ ((module) => {
-
-module.exports = window["wp"]["blocks"];
-
-/***/ }),
-
-/***/ "@wordpress/components":
-/*!************************************!*\
-  !*** external ["wp","components"] ***!
-  \************************************/
-/***/ ((module) => {
-
-module.exports = window["wp"]["components"];
-
-/***/ }),
-
-/***/ "@wordpress/data":
-/*!******************************!*\
-  !*** external ["wp","data"] ***!
-  \******************************/
-/***/ ((module) => {
-
-module.exports = window["wp"]["data"];
-
-/***/ }),
-
-/***/ "@wordpress/element":
-/*!*********************************!*\
-  !*** external ["wp","element"] ***!
-  \*********************************/
-/***/ ((module) => {
-
-module.exports = window["wp"]["element"];
-
-/***/ }),
-
-/***/ "@wordpress/i18n":
-/*!******************************!*\
-  !*** external ["wp","i18n"] ***!
-  \******************************/
-/***/ ((module) => {
-
-module.exports = window["wp"]["i18n"];
-
-/***/ }),
-
-/***/ "react/jsx-runtime":
+/***/ "react/jsx-runtime"
 /*!**********************************!*\
   !*** external "ReactJSXRuntime" ***!
   \**********************************/
-/***/ ((module) => {
+(module) {
 
 module.exports = window["ReactJSXRuntime"];
 
-/***/ })
+/***/ },
+
+/***/ "@wordpress/block-editor"
+/*!*************************************!*\
+  !*** external ["wp","blockEditor"] ***!
+  \*************************************/
+(module) {
+
+module.exports = window["wp"]["blockEditor"];
+
+/***/ },
+
+/***/ "@wordpress/blocks"
+/*!********************************!*\
+  !*** external ["wp","blocks"] ***!
+  \********************************/
+(module) {
+
+module.exports = window["wp"]["blocks"];
+
+/***/ },
+
+/***/ "@wordpress/components"
+/*!************************************!*\
+  !*** external ["wp","components"] ***!
+  \************************************/
+(module) {
+
+module.exports = window["wp"]["components"];
+
+/***/ },
+
+/***/ "@wordpress/data"
+/*!******************************!*\
+  !*** external ["wp","data"] ***!
+  \******************************/
+(module) {
+
+module.exports = window["wp"]["data"];
+
+/***/ },
+
+/***/ "@wordpress/element"
+/*!*********************************!*\
+  !*** external ["wp","element"] ***!
+  \*********************************/
+(module) {
+
+module.exports = window["wp"]["element"];
+
+/***/ },
+
+/***/ "@wordpress/i18n"
+/*!******************************!*\
+  !*** external ["wp","i18n"] ***!
+  \******************************/
+(module) {
+
+module.exports = window["wp"]["i18n"];
+
+/***/ },
+
+/***/ "./blocks/advanced-filter/block.json"
+/*!*******************************************!*\
+  !*** ./blocks/advanced-filter/block.json ***!
+  \*******************************************/
+(module) {
+
+module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/advanced-filter","version":"1.0.0","title":"Advanced Filter","category":"jankx","parent":["jankx/advanced-filters","jankx/smart-tab"],"icon":"filter","description":"Một filter đơn lẻ dùng bên trong Advanced Filters.","textdomain":"jankx","supports":{"html":false,"reusable":false},"attributes":{"filterType":{"type":"string","default":"taxonomy","enum":["taxonomy","meta","price","date","author","keyword"]},"label":{"type":"string","default":""},"enabled":{"type":"boolean","default":true},"taxonomy":{"type":"string","default":""},"displayStyle":{"type":"string","default":"buttons","enum":["buttons","checkboxes","dropdown","select"]},"listingType":{"type":"string","default":"ul","enum":["ul","ol","none"]},"showCount":{"type":"boolean","default":false},"showEmptyTerms":{"type":"boolean","default":true},"showOnlyTopLevel":{"type":"boolean","default":false},"showHierarchy":{"type":"boolean","default":false},"multipleSelection":{"type":"boolean","default":true},"layout":{"type":"string","default":"horizontal","enum":["horizontal","vertical","dropdown","accordion"]},"showLabels":{"type":"boolean","default":true},"collapsible":{"type":"boolean","default":false},"defaultExpanded":{"type":"boolean","default":true},"metaKey":{"type":"string","default":""},"inputType":{"type":"string","default":"text","enum":["text","number","range","date","date-range"]},"minValue":{"type":"string","default":""},"maxValue":{"type":"string","default":""},"placeholder":{"type":"string","default":""},"minPrice":{"type":"string","default":""},"maxPrice":{"type":"string","default":""},"currency":{"type":"string","default":"VND"},"dateField":{"type":"string","default":"post_date"},"dateRange":{"type":"boolean","default":true},"showSearchButton":{"type":"boolean","default":false},"searchButtonText":{"type":"string","default":"Search"},"searchButtonDisplay":{"type":"string","default":"text","enum":["text","icon","icon-text"]},"searchButtonIcon":{"type":"string","default":""},"keywordAction":{"type":"string","default":"typing","enum":["typing","button"]},"filterValue":{"type":"string","default":""},"filterValueMin":{"type":"string","default":""},"filterValueMax":{"type":"string","default":""},"filterValueStart":{"type":"string","default":""},"filterValueEnd":{"type":"string","default":""}},"editorScript":"file:./build/index.js"}');
+
+/***/ }
 
 /******/ 	});
 /************************************************************************/
@@ -102,6 +102,12 @@ module.exports = window["ReactJSXRuntime"];
 /******/ 		};
 /******/ 	
 /******/ 		// Execute the module function
+/******/ 		if (!(moduleId in __webpack_modules__)) {
+/******/ 			delete __webpack_module_cache__[moduleId];
+/******/ 			var e = new Error("Cannot find module '" + moduleId + "'");
+/******/ 			e.code = 'MODULE_NOT_FOUND';
+/******/ 			throw e;
+/******/ 		}
 /******/ 		__webpack_modules__[moduleId](module, module.exports, __webpack_require__);
 /******/ 	
 /******/ 		// Return the exports of the module
@@ -185,7 +191,6 @@ function Edit({
   setAttributes,
   clientId
 }) {
-  var _ref, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8;
   const {
     filterType,
     label,
@@ -299,14 +304,14 @@ function Edit({
   const resolvedDisplayStyle = displayStyle || parentDefaults.displayStyle || 'buttons';
   const normalizedDisplayStyle = ['buttons', 'checkboxes'].includes(resolvedDisplayStyle || '') ? resolvedDisplayStyle : 'buttons';
   const resolvedLayout = layout || parentDefaults.layout || 'horizontal';
-  const resolvedShowLabels = (_ref = showLabels !== null && showLabels !== void 0 ? showLabels : parentDefaults.showLabels) !== null && _ref !== void 0 ? _ref : true;
-  const resolvedShowCount = (_ref2 = showCount !== null && showCount !== void 0 ? showCount : parentDefaults.showCount) !== null && _ref2 !== void 0 ? _ref2 : false;
-  const resolvedShowEmptyTerms = (_ref3 = showEmptyTerms !== null && showEmptyTerms !== void 0 ? showEmptyTerms : parentDefaults.showEmptyTerms) !== null && _ref3 !== void 0 ? _ref3 : true;
-  const resolvedShowOnlyTopLevel = (_ref4 = showOnlyTopLevel !== null && showOnlyTopLevel !== void 0 ? showOnlyTopLevel : parentDefaults.showOnlyTopLevel) !== null && _ref4 !== void 0 ? _ref4 : false;
-  const resolvedShowHierarchy = (_ref5 = showHierarchy !== null && showHierarchy !== void 0 ? showHierarchy : parentDefaults.showHierarchy) !== null && _ref5 !== void 0 ? _ref5 : false;
-  const resolvedMultiple = (_ref6 = multipleSelection !== null && multipleSelection !== void 0 ? multipleSelection : parentDefaults.multipleSelection) !== null && _ref6 !== void 0 ? _ref6 : true;
-  const resolvedCollapsible = (_ref7 = collapsible !== null && collapsible !== void 0 ? collapsible : parentDefaults.collapsible) !== null && _ref7 !== void 0 ? _ref7 : false;
-  const resolvedDefaultExpanded = (_ref8 = defaultExpanded !== null && defaultExpanded !== void 0 ? defaultExpanded : parentDefaults.defaultExpanded) !== null && _ref8 !== void 0 ? _ref8 : true;
+  const resolvedShowLabels = showLabels ?? parentDefaults.showLabels ?? true;
+  const resolvedShowCount = showCount ?? parentDefaults.showCount ?? false;
+  const resolvedShowEmptyTerms = showEmptyTerms ?? parentDefaults.showEmptyTerms ?? true;
+  const resolvedShowOnlyTopLevel = showOnlyTopLevel ?? parentDefaults.showOnlyTopLevel ?? false;
+  const resolvedShowHierarchy = showHierarchy ?? parentDefaults.showHierarchy ?? false;
+  const resolvedMultiple = multipleSelection ?? parentDefaults.multipleSelection ?? true;
+  const resolvedCollapsible = collapsible ?? parentDefaults.collapsible ?? false;
+  const resolvedDefaultExpanded = defaultExpanded ?? parentDefaults.defaultExpanded ?? true;
   const resolvedKeywordAction = keywordAction || 'typing';
   const resolvedSearchButtonText = searchButtonText || (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Search', 'jankx');
   const resolvedSearchButtonDisplay = searchButtonDisplay || 'text';

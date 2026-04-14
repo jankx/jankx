@@ -2,21 +2,11 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
-/***/ "./blocks/dynamic-data-layout/block.json":
-/*!***********************************************!*\
-  !*** ./blocks/dynamic-data-layout/block.json ***!
-  \***********************************************/
-/***/ ((module) => {
-
-module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/dynamic-data-layout","version":"1.0.0","title":"Dynamic Data Layout","category":"jankx","icon":"layout","description":"Hiển thị danh sách posts theo layout tùy chỉnh với WordPress query builder","textdomain":"jankx","editorScript":"file:./build/index.js","editorStyle":"file:./build/editor.css","style":"file:./build/style.css","providesContext":{"queryId":"queryId","postType":"postType","displayLayout":"layout","postsPerPage":"postsPerPage","columns":"columns","columnsTablet":"columnsTablet","columnsMobile":"columnsMobile","slidesToScroll":"slidesToScroll","loop":"loop","autoplay":"autoplay","autoplayDelay":"autoplayDelay","showArrows":"showArrows","showDots":"showDots","carouselAlign":"carouselAlign","carouselAxis":"carouselAxis","carouselDirection":"carouselDirection","carouselStartIndex":"carouselStartIndex","carouselDuration":"carouselDuration","carouselDragFree":"carouselDragFree","carouselDragThreshold":"carouselDragThreshold","carouselSkipSnaps":"carouselSkipSnaps","carouselContainScroll":"carouselContainScroll","carouselInViewThreshold":"carouselInViewThreshold","queryPreset":"queryPreset","includeStickyPosts":"includeStickyPosts","orderBy":"orderBy","order":"order","offset":"offset","taxQuery":"taxQuery","metaQuery":"metaQuery","keyword":"keyword","authorIn":"authorIn","authorNotIn":"authorNotIn","postIn":"postIn","postNotIn":"postNotIn","metaKey":"metaKey","metaType":"metaType","postStatus":"postStatus","postParent":"postParent","postParentIn":"postParentIn","postParentNotIn":"postParentNotIn","customQueryId":"customQueryId"},"usesContext":["queryId","postType"],"allowedBlocks":["core/heading","jankx/dynamic-data-template"],"supports":{"html":false,"align":["wide","full"],"anchor":true,"innerBlocks":true,"spacing":{"margin":true,"padding":true,"blockGap":true},"color":{"background":true,"text":true,"link":true,"gradients":true},"background":{"backgroundImage":true,"backgroundSize":true},"typography":{"fontSize":true,"lineHeight":true},"__experimentalBorder":{"color":true,"radius":true,"style":true,"width":true},"__experimentalLayout":{"allowSwitching":true,"allowInheriting":true,"default":{"type":"constrained"}}},"attributes":{"queryPreset":{"type":"string","default":"custom","enum":["default","related","custom","on-sale","featured","related-products","best-sellers","top-rated","upsells","new-arrivals","recently-viewed"]},"postType":{"type":"string","default":"post"},"useMultiPostType":{"type":"boolean","default":false},"postTypes":{"type":"array","default":[]},"postsPerPage":{"type":"number","default":10},"includeStickyPosts":{"type":"boolean","default":false},"layout":{"type":"string","default":"grid"},"columns":{"type":"number","default":3},"columnsTablet":{"type":"number","default":2},"columnsMobile":{"type":"number","default":1},"responsiveColumns":{"type":"object","default":{"desktop":3,"tablet":2,"mobile":1}},"orderBy":{"type":"string","default":"date"},"order":{"type":"string","default":"DESC"},"queryId":{"type":"string","default":""},"offset":{"type":"number","default":0},"taxQuery":{"type":"array","default":[]},"metaQuery":{"type":"array","default":[]},"keyword":{"type":"string","default":""},"authorIn":{"type":"array","default":[]},"authorNotIn":{"type":"array","default":[]},"postIn":{"type":"array","default":[]},"postNotIn":{"type":"array","default":[]},"metaKey":{"type":"string","default":""},"metaType":{"type":"string","default":""},"postStatus":{"type":"array","default":["publish"]},"postParent":{"type":"number","default":0},"postParentIn":{"type":"array","default":[]},"postParentNotIn":{"type":"array","default":[]},"customQueryId":{"type":"string","default":""},"enablePagination":{"type":"boolean","default":false},"paginationStyle":{"type":"string","default":"numbers","enum":["numbers","simple","arrows","load-more"]},"paginationAlignment":{"type":"string","default":"center","enum":["left","center","right"]},"showPaginationNumbers":{"type":"boolean","default":true},"paginationPrevText":{"type":"string","default":""},"paginationNextText":{"type":"string","default":""},"slidesToScroll":{"type":"number","default":1},"loop":{"type":"boolean","default":false},"autoplay":{"type":"boolean","default":false},"autoplayDelay":{"type":"number","default":3000},"showArrows":{"type":"boolean","default":true},"showDots":{"type":"boolean","default":true},"carouselAlign":{"type":"string","default":"start","enum":["start","center","end"]},"carouselAxis":{"type":"string","default":"x","enum":["x","y"]},"carouselDirection":{"type":"string","default":"ltr","enum":["ltr","rtl"]},"carouselStartIndex":{"type":"number","default":0},"carouselDuration":{"type":"number","default":25},"carouselDragFree":{"type":"boolean","default":false},"carouselDragThreshold":{"type":"number","default":10},"carouselSkipSnaps":{"type":"boolean","default":false},"carouselContainScroll":{"type":"string","default":"trimSnaps","enum":["false","trimSnaps","keepSnaps"]},"carouselInViewThreshold":{"type":"number","default":0},"showTitle":{"type":"boolean","default":true},"showExcerpt":{"type":"boolean","default":true},"showFeaturedImage":{"type":"boolean","default":true},"thumbnailPosition":{"type":"string","default":"top","enum":["top","bottom","left","right"]},"imageRatio":{"type":"string","default":""},"showDate":{"type":"boolean","default":true},"showAuthor":{"type":"boolean","default":false},"showPrice":{"type":"boolean","default":true},"showAddToCart":{"type":"boolean","default":true},"showRating":{"type":"boolean","default":false},"excerptLength":{"type":"number","default":55}}}');
-
-/***/ }),
-
-/***/ "./blocks/dynamic-data-layout/edit.tsx":
+/***/ "./blocks/dynamic-data-layout/edit.tsx"
 /*!*********************************************!*\
   !*** ./blocks/dynamic-data-layout/edit.tsx ***!
   \*********************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
@@ -543,7 +533,6 @@ function Edit({
 
   // Helper to render dynamic settings
   const renderSettingsControl = (setting, index) => {
-    var _ref;
     // Check conditions
     if (setting.condition) {
       const shouldRender = Object.entries(setting.condition).every(([key, value]) => {
@@ -590,7 +579,7 @@ function Edit({
       case 'toggle':
         return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToggleControl, {
           ...commonProps,
-          checked: (_ref = attributes[setting.name]) !== null && _ref !== void 0 ? _ref : setting.default,
+          checked: attributes[setting.name] ?? setting.default,
           onChange: value => setAttributes({
             [setting.name]: value
           })
@@ -956,9 +945,8 @@ function Edit({
             onChange: tokens => {
               const normalizedTokens = normalizeTokens(tokens);
               const selectedIds = normalizedTokens.map(tokenName => {
-                var _author$id;
                 const author = authors.find(item => item.name === tokenName);
-                return (_author$id = author?.id) !== null && _author$id !== void 0 ? _author$id : 0;
+                return author?.id ?? 0;
               }).filter(id => id > 0);
               setAttributes({
                 authorIn: selectedIds
@@ -974,9 +962,8 @@ function Edit({
             onChange: tokens => {
               const normalizedTokens = normalizeTokens(tokens);
               const selectedIds = normalizedTokens.map(tokenName => {
-                var _author$id2;
                 const author = authors.find(item => item.name === tokenName);
-                return (_author$id2 = author?.id) !== null && _author$id2 !== void 0 ? _author$id2 : 0;
+                return author?.id ?? 0;
               }).filter(id => id > 0);
               setAttributes({
                 authorNotIn: selectedIds
@@ -1277,9 +1264,8 @@ function Edit({
                   onChange: tokens => {
                     const selectedNames = normalizeTokens(tokens);
                     const selectedIds = selectedNames.map(tokenName => {
-                      var _term$id;
                       const term = terms.find(item => item.name === tokenName);
-                      return (_term$id = term?.id) !== null && _term$id !== void 0 ? _term$id : 0;
+                      return term?.id ?? 0;
                     }).filter(id => id > 0);
                     const newTaxQuery = [...taxQuery];
                     const targetQuery = newTaxQuery[existingQueryIndex];
@@ -1624,25 +1610,13 @@ function Edit({
 }
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Edit);
 
-/***/ }),
+/***/ },
 
-/***/ "./blocks/dynamic-data-layout/editor.scss":
-/*!************************************************!*\
-  !*** ./blocks/dynamic-data-layout/editor.scss ***!
-  \************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-// extracted by mini-css-extract-plugin
-
-
-/***/ }),
-
-/***/ "./blocks/dynamic-data-layout/save.tsx":
+/***/ "./blocks/dynamic-data-layout/save.tsx"
 /*!*********************************************!*\
   !*** ./blocks/dynamic-data-layout/save.tsx ***!
   \*********************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
@@ -1730,25 +1704,13 @@ function Save({
   });
 }
 
-/***/ }),
+/***/ },
 
-/***/ "./blocks/dynamic-data-layout/style.scss":
-/*!***********************************************!*\
-  !*** ./blocks/dynamic-data-layout/style.scss ***!
-  \***********************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-// extracted by mini-css-extract-plugin
-
-
-/***/ }),
-
-/***/ "./shared/components/ResponsiveControl.tsx":
+/***/ "./shared/components/ResponsiveControl.tsx"
 /*!*************************************************!*\
   !*** ./shared/components/ResponsiveControl.tsx ***!
   \*************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
@@ -1839,13 +1801,13 @@ function ResponsiveControl({
   });
 }
 
-/***/ }),
+/***/ },
 
-/***/ "./shared/components/index.ts":
+/***/ "./shared/components/index.ts"
 /*!************************************!*\
   !*** ./shared/components/index.ts ***!
   \************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
@@ -1857,13 +1819,13 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-/***/ }),
+/***/ },
 
-/***/ "./shared/components/useResponsiveValue.ts":
+/***/ "./shared/components/useResponsiveValue.ts"
 /*!*************************************************!*\
   !*** ./shared/components/useResponsiveValue.ts ***!
   \*************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
@@ -1901,77 +1863,111 @@ function useResponsiveValue(initialValues = {}) {
   };
 }
 
-/***/ }),
+/***/ },
 
-/***/ "@wordpress/block-editor":
-/*!*************************************!*\
-  !*** external ["wp","blockEditor"] ***!
-  \*************************************/
-/***/ ((module) => {
+/***/ "./blocks/dynamic-data-layout/editor.scss"
+/*!************************************************!*\
+  !*** ./blocks/dynamic-data-layout/editor.scss ***!
+  \************************************************/
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
-module.exports = window["wp"]["blockEditor"];
+__webpack_require__.r(__webpack_exports__);
+// extracted by mini-css-extract-plugin
 
-/***/ }),
 
-/***/ "@wordpress/blocks":
-/*!********************************!*\
-  !*** external ["wp","blocks"] ***!
-  \********************************/
-/***/ ((module) => {
+/***/ },
 
-module.exports = window["wp"]["blocks"];
+/***/ "./blocks/dynamic-data-layout/style.scss"
+/*!***********************************************!*\
+  !*** ./blocks/dynamic-data-layout/style.scss ***!
+  \***********************************************/
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
-/***/ }),
+__webpack_require__.r(__webpack_exports__);
+// extracted by mini-css-extract-plugin
 
-/***/ "@wordpress/components":
-/*!************************************!*\
-  !*** external ["wp","components"] ***!
-  \************************************/
-/***/ ((module) => {
 
-module.exports = window["wp"]["components"];
+/***/ },
 
-/***/ }),
-
-/***/ "@wordpress/data":
-/*!******************************!*\
-  !*** external ["wp","data"] ***!
-  \******************************/
-/***/ ((module) => {
-
-module.exports = window["wp"]["data"];
-
-/***/ }),
-
-/***/ "@wordpress/element":
-/*!*********************************!*\
-  !*** external ["wp","element"] ***!
-  \*********************************/
-/***/ ((module) => {
-
-module.exports = window["wp"]["element"];
-
-/***/ }),
-
-/***/ "@wordpress/i18n":
-/*!******************************!*\
-  !*** external ["wp","i18n"] ***!
-  \******************************/
-/***/ ((module) => {
-
-module.exports = window["wp"]["i18n"];
-
-/***/ }),
-
-/***/ "react/jsx-runtime":
+/***/ "react/jsx-runtime"
 /*!**********************************!*\
   !*** external "ReactJSXRuntime" ***!
   \**********************************/
-/***/ ((module) => {
+(module) {
 
 module.exports = window["ReactJSXRuntime"];
 
-/***/ })
+/***/ },
+
+/***/ "@wordpress/block-editor"
+/*!*************************************!*\
+  !*** external ["wp","blockEditor"] ***!
+  \*************************************/
+(module) {
+
+module.exports = window["wp"]["blockEditor"];
+
+/***/ },
+
+/***/ "@wordpress/blocks"
+/*!********************************!*\
+  !*** external ["wp","blocks"] ***!
+  \********************************/
+(module) {
+
+module.exports = window["wp"]["blocks"];
+
+/***/ },
+
+/***/ "@wordpress/components"
+/*!************************************!*\
+  !*** external ["wp","components"] ***!
+  \************************************/
+(module) {
+
+module.exports = window["wp"]["components"];
+
+/***/ },
+
+/***/ "@wordpress/data"
+/*!******************************!*\
+  !*** external ["wp","data"] ***!
+  \******************************/
+(module) {
+
+module.exports = window["wp"]["data"];
+
+/***/ },
+
+/***/ "@wordpress/element"
+/*!*********************************!*\
+  !*** external ["wp","element"] ***!
+  \*********************************/
+(module) {
+
+module.exports = window["wp"]["element"];
+
+/***/ },
+
+/***/ "@wordpress/i18n"
+/*!******************************!*\
+  !*** external ["wp","i18n"] ***!
+  \******************************/
+(module) {
+
+module.exports = window["wp"]["i18n"];
+
+/***/ },
+
+/***/ "./blocks/dynamic-data-layout/block.json"
+/*!***********************************************!*\
+  !*** ./blocks/dynamic-data-layout/block.json ***!
+  \***********************************************/
+(module) {
+
+module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/dynamic-data-layout","version":"1.0.0","title":"Dynamic Data Layout","category":"jankx","icon":"layout","description":"Hiển thị danh sách posts theo layout tùy chỉnh với WordPress query builder","textdomain":"jankx","editorScript":"file:./build/index.js","editorStyle":"file:./build/editor.css","style":"file:./build/style.css","providesContext":{"queryId":"queryId","postType":"postType","displayLayout":"layout","postsPerPage":"postsPerPage","columns":"columns","columnsTablet":"columnsTablet","columnsMobile":"columnsMobile","slidesToScroll":"slidesToScroll","loop":"loop","autoplay":"autoplay","autoplayDelay":"autoplayDelay","showArrows":"showArrows","showDots":"showDots","carouselAlign":"carouselAlign","carouselAxis":"carouselAxis","carouselDirection":"carouselDirection","carouselStartIndex":"carouselStartIndex","carouselDuration":"carouselDuration","carouselDragFree":"carouselDragFree","carouselDragThreshold":"carouselDragThreshold","carouselSkipSnaps":"carouselSkipSnaps","carouselContainScroll":"carouselContainScroll","carouselInViewThreshold":"carouselInViewThreshold","queryPreset":"queryPreset","includeStickyPosts":"includeStickyPosts","orderBy":"orderBy","order":"order","offset":"offset","taxQuery":"taxQuery","metaQuery":"metaQuery","keyword":"keyword","authorIn":"authorIn","authorNotIn":"authorNotIn","postIn":"postIn","postNotIn":"postNotIn","metaKey":"metaKey","metaType":"metaType","postStatus":"postStatus","postParent":"postParent","postParentIn":"postParentIn","postParentNotIn":"postParentNotIn","customQueryId":"customQueryId"},"usesContext":["queryId","postType"],"allowedBlocks":["core/heading","jankx/dynamic-data-template","jankx/layout-switcher"],"supports":{"html":false,"align":["wide","full"],"anchor":true,"innerBlocks":true,"spacing":{"margin":true,"padding":true,"blockGap":true},"color":{"background":true,"text":true,"link":true,"gradients":true},"background":{"backgroundImage":true,"backgroundSize":true},"typography":{"fontSize":true,"lineHeight":true},"__experimentalBorder":{"color":true,"radius":true,"style":true,"width":true},"__experimentalLayout":{"allowSwitching":true,"allowInheriting":true,"default":{"type":"constrained"}}},"attributes":{"queryPreset":{"type":"string","default":"custom","enum":["default","related","custom","on-sale","featured","related-products","best-sellers","top-rated","upsells","new-arrivals","recently-viewed"]},"postType":{"type":"string","default":"post"},"useMultiPostType":{"type":"boolean","default":false},"postTypes":{"type":"array","default":[]},"postsPerPage":{"type":"number","default":10},"includeStickyPosts":{"type":"boolean","default":false},"layout":{"type":"string","default":"grid"},"columns":{"type":"number","default":3},"columnsTablet":{"type":"number","default":2},"columnsMobile":{"type":"number","default":1},"responsiveColumns":{"type":"object","default":{"desktop":3,"tablet":2,"mobile":1}},"orderBy":{"type":"string","default":"date"},"order":{"type":"string","default":"DESC"},"queryId":{"type":"string","default":""},"offset":{"type":"number","default":0},"taxQuery":{"type":"array","default":[]},"metaQuery":{"type":"array","default":[]},"keyword":{"type":"string","default":""},"authorIn":{"type":"array","default":[]},"authorNotIn":{"type":"array","default":[]},"postIn":{"type":"array","default":[]},"postNotIn":{"type":"array","default":[]},"metaKey":{"type":"string","default":""},"metaType":{"type":"string","default":""},"postStatus":{"type":"array","default":["publish"]},"postParent":{"type":"number","default":0},"postParentIn":{"type":"array","default":[]},"postParentNotIn":{"type":"array","default":[]},"customQueryId":{"type":"string","default":""},"enablePagination":{"type":"boolean","default":false},"paginationStyle":{"type":"string","default":"numbers","enum":["numbers","simple","arrows","load-more"]},"paginationAlignment":{"type":"string","default":"center","enum":["left","center","right"]},"showPaginationNumbers":{"type":"boolean","default":true},"paginationPrevText":{"type":"string","default":""},"paginationNextText":{"type":"string","default":""},"slidesToScroll":{"type":"number","default":1},"loop":{"type":"boolean","default":false},"autoplay":{"type":"boolean","default":false},"autoplayDelay":{"type":"number","default":3000},"showArrows":{"type":"boolean","default":true},"showDots":{"type":"boolean","default":true},"carouselAlign":{"type":"string","default":"start","enum":["start","center","end"]},"carouselAxis":{"type":"string","default":"x","enum":["x","y"]},"carouselDirection":{"type":"string","default":"ltr","enum":["ltr","rtl"]},"carouselStartIndex":{"type":"number","default":0},"carouselDuration":{"type":"number","default":25},"carouselDragFree":{"type":"boolean","default":false},"carouselDragThreshold":{"type":"number","default":10},"carouselSkipSnaps":{"type":"boolean","default":false},"carouselContainScroll":{"type":"string","default":"trimSnaps","enum":["false","trimSnaps","keepSnaps"]},"carouselInViewThreshold":{"type":"number","default":0},"showTitle":{"type":"boolean","default":true},"showExcerpt":{"type":"boolean","default":true},"showFeaturedImage":{"type":"boolean","default":true},"thumbnailPosition":{"type":"string","default":"top","enum":["top","bottom","left","right"]},"imageRatio":{"type":"string","default":""},"showDate":{"type":"boolean","default":true},"showAuthor":{"type":"boolean","default":false},"showPrice":{"type":"boolean","default":true},"showAddToCart":{"type":"boolean","default":true},"showRating":{"type":"boolean","default":false},"excerptLength":{"type":"number","default":55}}}');
+
+/***/ }
 
 /******/ 	});
 /************************************************************************/
@@ -1993,6 +1989,12 @@ module.exports = window["ReactJSXRuntime"];
 /******/ 		};
 /******/ 	
 /******/ 		// Execute the module function
+/******/ 		if (!(moduleId in __webpack_modules__)) {
+/******/ 			delete __webpack_module_cache__[moduleId];
+/******/ 			var e = new Error("Cannot find module '" + moduleId + "'");
+/******/ 			e.code = 'MODULE_NOT_FOUND';
+/******/ 			throw e;
+/******/ 		}
 /******/ 		__webpack_modules__[moduleId](module, module.exports, __webpack_require__);
 /******/ 	
 /******/ 		// Return the exports of the module
@@ -2050,18 +2052,47 @@ var __webpack_exports__ = {};
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_blocks__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/blocks */ "@wordpress/blocks");
 /* harmony import */ var _wordpress_blocks__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_blocks__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _style_scss__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./style.scss */ "./blocks/dynamic-data-layout/style.scss");
-/* harmony import */ var _edit__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./edit */ "./blocks/dynamic-data-layout/edit.tsx");
-/* harmony import */ var _save__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./save */ "./blocks/dynamic-data-layout/save.tsx");
-/* harmony import */ var _block_json__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./block.json */ "./blocks/dynamic-data-layout/block.json");
+/* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/block-editor */ "@wordpress/block-editor");
+/* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _style_scss__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./style.scss */ "./blocks/dynamic-data-layout/style.scss");
+/* harmony import */ var _edit__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./edit */ "./blocks/dynamic-data-layout/edit.tsx");
+/* harmony import */ var _save__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./save */ "./blocks/dynamic-data-layout/save.tsx");
+/* harmony import */ var _block_json__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./block.json */ "./blocks/dynamic-data-layout/block.json");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__);
 
 
 
 
 
-(0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_0__.registerBlockType)(_block_json__WEBPACK_IMPORTED_MODULE_4__.name, {
-  edit: _edit__WEBPACK_IMPORTED_MODULE_2__["default"],
-  save: _save__WEBPACK_IMPORTED_MODULE_3__["default"]
+
+
+// Deprecated v1: old save used only data-layout + data-columns, no extra classes or CSS vars
+
+const deprecated = [{
+  attributes: _block_json__WEBPACK_IMPORTED_MODULE_5__.attributes,
+  migrate(attributes) {
+    return attributes;
+  },
+  save({
+    attributes
+  }) {
+    const layout = attributes.layout || 'grid';
+    const columns = attributes.columns || 3;
+    const blockProps = _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.useBlockProps.save({
+      'data-layout': layout,
+      'data-columns': columns
+    });
+    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("div", {
+      ...blockProps,
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.InnerBlocks.Content, {})
+    });
+  }
+}];
+(0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_0__.registerBlockType)(_block_json__WEBPACK_IMPORTED_MODULE_5__.name, {
+  edit: _edit__WEBPACK_IMPORTED_MODULE_3__["default"],
+  save: _save__WEBPACK_IMPORTED_MODULE_4__["default"],
+  deprecated
 });
 })();
 

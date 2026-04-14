@@ -2,21 +2,11 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
-/***/ "./blocks/slideshow-item/block.json":
-/*!******************************************!*\
-  !*** ./blocks/slideshow-item/block.json ***!
-  \******************************************/
-/***/ ((module) => {
-
-module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/slideshow-item","title":"Slideshow Item","category":"jankx","description":"Single slide item for slideshow (locked block)","keywords":["slide","image","caption"],"textdomain":"jankx","parent":["jankx/slideshow-container"],"attributes":{"imageId":{"type":"number"},"imageUrl":{"type":"string"},"imageAlt":{"type":"string"},"imageCaption":{"type":"string"},"thumbnailUrl":{"type":"string"},"slideId":{"type":"string"}},"supports":{"html":false,"reusable":false,"lock":false,"spacing":{"margin":false,"padding":true},"color":{"background":true,"text":true},"typography":{"fontSize":true,"lineHeight":true,"__experimentalFontFamily":true,"__experimentalFontWeight":true,"__experimentalFontStyle":true}},"usesContext":["jankx/slideShowId","jankx/slideshowContainerId"],"editorScript":"file:./build/index.js","editorStyle":"file:./build/editor.css","style":"file:./build/style.css"}');
-
-/***/ }),
-
-/***/ "./blocks/slideshow-item/edit.tsx":
+/***/ "./blocks/slideshow-item/edit.tsx"
 /*!****************************************!*\
   !*** ./blocks/slideshow-item/edit.tsx ***!
   \****************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
@@ -162,25 +152,13 @@ function Edit({
   });
 }
 
-/***/ }),
+/***/ },
 
-/***/ "./blocks/slideshow-item/editor.scss":
-/*!*******************************************!*\
-  !*** ./blocks/slideshow-item/editor.scss ***!
-  \*******************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-// extracted by mini-css-extract-plugin
-
-
-/***/ }),
-
-/***/ "./blocks/slideshow-item/save.tsx":
+/***/ "./blocks/slideshow-item/save.tsx"
 /*!****************************************!*\
   !*** ./blocks/slideshow-item/save.tsx ***!
   \****************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
@@ -198,79 +176,101 @@ function Save({
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_0__.InnerBlocks.Content, {});
 }
 
-/***/ }),
+/***/ },
 
-/***/ "./blocks/slideshow-item/style.scss":
-/*!******************************************!*\
-  !*** ./blocks/slideshow-item/style.scss ***!
-  \******************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+/***/ "./blocks/slideshow-item/editor.scss"
+/*!*******************************************!*\
+  !*** ./blocks/slideshow-item/editor.scss ***!
+  \*******************************************/
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
 
-/***/ }),
+/***/ },
 
-/***/ "@wordpress/block-editor":
-/*!*************************************!*\
-  !*** external ["wp","blockEditor"] ***!
-  \*************************************/
-/***/ ((module) => {
+/***/ "./blocks/slideshow-item/style.scss"
+/*!******************************************!*\
+  !*** ./blocks/slideshow-item/style.scss ***!
+  \******************************************/
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
-module.exports = window["wp"]["blockEditor"];
+__webpack_require__.r(__webpack_exports__);
+// extracted by mini-css-extract-plugin
 
-/***/ }),
 
-/***/ "@wordpress/blocks":
-/*!********************************!*\
-  !*** external ["wp","blocks"] ***!
-  \********************************/
-/***/ ((module) => {
+/***/ },
 
-module.exports = window["wp"]["blocks"];
-
-/***/ }),
-
-/***/ "@wordpress/components":
-/*!************************************!*\
-  !*** external ["wp","components"] ***!
-  \************************************/
-/***/ ((module) => {
-
-module.exports = window["wp"]["components"];
-
-/***/ }),
-
-/***/ "@wordpress/element":
-/*!*********************************!*\
-  !*** external ["wp","element"] ***!
-  \*********************************/
-/***/ ((module) => {
-
-module.exports = window["wp"]["element"];
-
-/***/ }),
-
-/***/ "@wordpress/i18n":
-/*!******************************!*\
-  !*** external ["wp","i18n"] ***!
-  \******************************/
-/***/ ((module) => {
-
-module.exports = window["wp"]["i18n"];
-
-/***/ }),
-
-/***/ "react/jsx-runtime":
+/***/ "react/jsx-runtime"
 /*!**********************************!*\
   !*** external "ReactJSXRuntime" ***!
   \**********************************/
-/***/ ((module) => {
+(module) {
 
 module.exports = window["ReactJSXRuntime"];
 
-/***/ })
+/***/ },
+
+/***/ "@wordpress/block-editor"
+/*!*************************************!*\
+  !*** external ["wp","blockEditor"] ***!
+  \*************************************/
+(module) {
+
+module.exports = window["wp"]["blockEditor"];
+
+/***/ },
+
+/***/ "@wordpress/blocks"
+/*!********************************!*\
+  !*** external ["wp","blocks"] ***!
+  \********************************/
+(module) {
+
+module.exports = window["wp"]["blocks"];
+
+/***/ },
+
+/***/ "@wordpress/components"
+/*!************************************!*\
+  !*** external ["wp","components"] ***!
+  \************************************/
+(module) {
+
+module.exports = window["wp"]["components"];
+
+/***/ },
+
+/***/ "@wordpress/element"
+/*!*********************************!*\
+  !*** external ["wp","element"] ***!
+  \*********************************/
+(module) {
+
+module.exports = window["wp"]["element"];
+
+/***/ },
+
+/***/ "@wordpress/i18n"
+/*!******************************!*\
+  !*** external ["wp","i18n"] ***!
+  \******************************/
+(module) {
+
+module.exports = window["wp"]["i18n"];
+
+/***/ },
+
+/***/ "./blocks/slideshow-item/block.json"
+/*!******************************************!*\
+  !*** ./blocks/slideshow-item/block.json ***!
+  \******************************************/
+(module) {
+
+module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/slideshow-item","title":"Slideshow Item","category":"jankx","description":"Single slide item for slideshow (locked block)","keywords":["slide","image","caption"],"textdomain":"jankx","parent":["jankx/slideshow-container"],"attributes":{"imageId":{"type":"number"},"imageUrl":{"type":"string"},"imageAlt":{"type":"string"},"imageCaption":{"type":"string"},"thumbnailUrl":{"type":"string"},"slideId":{"type":"string"}},"supports":{"html":false,"reusable":false,"lock":false,"spacing":{"margin":false,"padding":true},"color":{"background":true,"text":true},"typography":{"fontSize":true,"lineHeight":true,"__experimentalFontFamily":true,"__experimentalFontWeight":true,"__experimentalFontStyle":true}},"usesContext":["jankx/slideShowId","jankx/slideshowContainerId"],"editorScript":"file:./build/index.js","editorStyle":"file:./build/editor.css","style":"file:./build/style.css"}');
+
+/***/ }
 
 /******/ 	});
 /************************************************************************/
@@ -292,6 +292,12 @@ module.exports = window["ReactJSXRuntime"];
 /******/ 		};
 /******/ 	
 /******/ 		// Execute the module function
+/******/ 		if (!(moduleId in __webpack_modules__)) {
+/******/ 			delete __webpack_module_cache__[moduleId];
+/******/ 			var e = new Error("Cannot find module '" + moduleId + "'");
+/******/ 			e.code = 'MODULE_NOT_FOUND';
+/******/ 			throw e;
+/******/ 		}
 /******/ 		__webpack_modules__[moduleId](module, module.exports, __webpack_require__);
 /******/ 	
 /******/ 		// Return the exports of the module

@@ -2,21 +2,11 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
-/***/ "./blocks/swiper-banner/block.json":
-/*!*****************************************!*\
-  !*** ./blocks/swiper-banner/block.json ***!
-  \*****************************************/
-/***/ ((module) => {
-
-module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/swiper-banner","title":"Swiper Banner","category":"jankx","description":"Banner slide for Swiper with customizable styles and links","keywords":["banner","slide","swiper","image","link"],"textdomain":"jankx","parent":["jankx/swiper"],"attributes":{"imageId":{"type":"number","default":0},"imageUrl":{"type":"string","default":""},"imageAlt":{"type":"string","default":""},"imageCaption":{"type":"string","default":""},"linkUrl":{"type":"string","default":""},"linkTarget":{"type":"string","enum":["_self","_blank"],"default":"_self"},"bannerStyle":{"type":"string","enum":["banner","circles","square"],"default":"banner"},"overlayOpacity":{"type":"number","default":0.3},"overlayColor":{"type":"string","default":"#000000"},"textAlign":{"type":"string","enum":["left","center","right"],"default":"center"},"textPosition":{"type":"string","enum":["top","middle","bottom"],"default":"middle"},"showCaption":{"type":"boolean","default":true},"height":{"type":"number","default":0},"imageSize":{"type":"string","enum":["contain","cover","fullwidth"],"default":"cover"},"className":{"type":"string"}},"supports":{"html":false,"anchor":true,"spacing":{"margin":true,"padding":true},"color":{"background":true,"text":true},"border":{"color":true,"radius":true,"style":true,"width":true}},"editorScript":"file:./build/index.js","editorStyle":"file:./build/editor.css","style":"file:./build/style.css"}');
-
-/***/ }),
-
-/***/ "./blocks/swiper-banner/edit.tsx":
+/***/ "./blocks/swiper-banner/edit.tsx"
 /*!***************************************!*\
   !*** ./blocks/swiper-banner/edit.tsx ***!
   \***************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
@@ -305,25 +295,13 @@ function Edit({
   });
 }
 
-/***/ }),
+/***/ },
 
-/***/ "./blocks/swiper-banner/editor.scss":
-/*!******************************************!*\
-  !*** ./blocks/swiper-banner/editor.scss ***!
-  \******************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-// extracted by mini-css-extract-plugin
-
-
-/***/ }),
-
-/***/ "./blocks/swiper-banner/save.tsx":
+/***/ "./blocks/swiper-banner/save.tsx"
 /*!***************************************!*\
   !*** ./blocks/swiper-banner/save.tsx ***!
   \***************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
@@ -400,69 +378,91 @@ function Save({
   });
 }
 
-/***/ }),
+/***/ },
 
-/***/ "./blocks/swiper-banner/style.scss":
-/*!*****************************************!*\
-  !*** ./blocks/swiper-banner/style.scss ***!
-  \*****************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+/***/ "./blocks/swiper-banner/editor.scss"
+/*!******************************************!*\
+  !*** ./blocks/swiper-banner/editor.scss ***!
+  \******************************************/
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
 
-/***/ }),
+/***/ },
 
-/***/ "@wordpress/block-editor":
-/*!*************************************!*\
-  !*** external ["wp","blockEditor"] ***!
-  \*************************************/
-/***/ ((module) => {
+/***/ "./blocks/swiper-banner/style.scss"
+/*!*****************************************!*\
+  !*** ./blocks/swiper-banner/style.scss ***!
+  \*****************************************/
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
-module.exports = window["wp"]["blockEditor"];
+__webpack_require__.r(__webpack_exports__);
+// extracted by mini-css-extract-plugin
 
-/***/ }),
 
-/***/ "@wordpress/blocks":
-/*!********************************!*\
-  !*** external ["wp","blocks"] ***!
-  \********************************/
-/***/ ((module) => {
+/***/ },
 
-module.exports = window["wp"]["blocks"];
-
-/***/ }),
-
-/***/ "@wordpress/components":
-/*!************************************!*\
-  !*** external ["wp","components"] ***!
-  \************************************/
-/***/ ((module) => {
-
-module.exports = window["wp"]["components"];
-
-/***/ }),
-
-/***/ "@wordpress/i18n":
-/*!******************************!*\
-  !*** external ["wp","i18n"] ***!
-  \******************************/
-/***/ ((module) => {
-
-module.exports = window["wp"]["i18n"];
-
-/***/ }),
-
-/***/ "react/jsx-runtime":
+/***/ "react/jsx-runtime"
 /*!**********************************!*\
   !*** external "ReactJSXRuntime" ***!
   \**********************************/
-/***/ ((module) => {
+(module) {
 
 module.exports = window["ReactJSXRuntime"];
 
-/***/ })
+/***/ },
+
+/***/ "@wordpress/block-editor"
+/*!*************************************!*\
+  !*** external ["wp","blockEditor"] ***!
+  \*************************************/
+(module) {
+
+module.exports = window["wp"]["blockEditor"];
+
+/***/ },
+
+/***/ "@wordpress/blocks"
+/*!********************************!*\
+  !*** external ["wp","blocks"] ***!
+  \********************************/
+(module) {
+
+module.exports = window["wp"]["blocks"];
+
+/***/ },
+
+/***/ "@wordpress/components"
+/*!************************************!*\
+  !*** external ["wp","components"] ***!
+  \************************************/
+(module) {
+
+module.exports = window["wp"]["components"];
+
+/***/ },
+
+/***/ "@wordpress/i18n"
+/*!******************************!*\
+  !*** external ["wp","i18n"] ***!
+  \******************************/
+(module) {
+
+module.exports = window["wp"]["i18n"];
+
+/***/ },
+
+/***/ "./blocks/swiper-banner/block.json"
+/*!*****************************************!*\
+  !*** ./blocks/swiper-banner/block.json ***!
+  \*****************************************/
+(module) {
+
+module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/swiper-banner","title":"Swiper Banner","category":"jankx","description":"Banner slide for Swiper with customizable styles and links","keywords":["banner","slide","swiper","image","link"],"textdomain":"jankx","parent":["jankx/swiper"],"attributes":{"imageId":{"type":"number","default":0},"imageUrl":{"type":"string","default":""},"imageAlt":{"type":"string","default":""},"imageCaption":{"type":"string","default":""},"linkUrl":{"type":"string","default":""},"linkTarget":{"type":"string","enum":["_self","_blank"],"default":"_self"},"bannerStyle":{"type":"string","enum":["banner","circles","square"],"default":"banner"},"overlayOpacity":{"type":"number","default":0.3},"overlayColor":{"type":"string","default":"#000000"},"textAlign":{"type":"string","enum":["left","center","right"],"default":"center"},"textPosition":{"type":"string","enum":["top","middle","bottom"],"default":"middle"},"showCaption":{"type":"boolean","default":true},"height":{"type":"number","default":0},"imageSize":{"type":"string","enum":["contain","cover","fullwidth"],"default":"cover"},"className":{"type":"string"}},"supports":{"html":false,"anchor":true,"spacing":{"margin":true,"padding":true},"color":{"background":true,"text":true},"border":{"color":true,"radius":true,"style":true,"width":true}},"editorScript":"file:./build/index.js","editorStyle":"file:./build/editor.css","style":"file:./build/style.css"}');
+
+/***/ }
 
 /******/ 	});
 /************************************************************************/
@@ -484,6 +484,12 @@ module.exports = window["ReactJSXRuntime"];
 /******/ 		};
 /******/ 	
 /******/ 		// Execute the module function
+/******/ 		if (!(moduleId in __webpack_modules__)) {
+/******/ 			delete __webpack_module_cache__[moduleId];
+/******/ 			var e = new Error("Cannot find module '" + moduleId + "'");
+/******/ 			e.code = 'MODULE_NOT_FOUND';
+/******/ 			throw e;
+/******/ 		}
 /******/ 		__webpack_modules__[moduleId](module, module.exports, __webpack_require__);
 /******/ 	
 /******/ 		// Return the exports of the module

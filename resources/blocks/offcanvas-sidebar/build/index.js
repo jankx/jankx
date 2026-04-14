@@ -2,75 +2,75 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
-/***/ "./blocks/offcanvas-sidebar/block.json":
-/*!*********************************************!*\
-  !*** ./blocks/offcanvas-sidebar/block.json ***!
-  \*********************************************/
-/***/ ((module) => {
-
-module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","name":"jankx/offcanvas-sidebar","title":"Offcanvas Sidebar","category":"jankx","icon":"menu","description":"Create animated offcanvas sidebar with multiple transition effects","keywords":["sidebar","offcanvas","menu","navigation","animation","transition"],"textdomain":"jankx","supports":{"html":false,"align":["wide","full"],"color":{"background":true,"gradients":true,"text":true,"link":false},"background":{"backgroundImage":true,"backgroundSize":true},"spacing":{"margin":true,"padding":true}},"innerBlocks":{"allowedBlocks":["core/paragraph","core/heading","core/image","core/gallery","core/list","core/quote","core/buttons","core/separator","core/spacer","core/social-links","core/navigation","core/search","core/calendar","core/latest-posts","core/latest-comments","core/rss","core/audio","core/video","core/file","core/code","core/html","core/preformatted","core/pullquote","core/table","core/verse","core/media-text","core/columns","core/group","core/cover","core/embed","jankx/language-switcher","jankx/icon-button","jankx/offcanvas-sidebar"],"template":[["core/heading",{"level":3,"content":"Sidebar Content"}],["core/paragraph",{"content":"Add your content here using any available blocks."}]],"templateLock":false},"attributes":{"sidebarPosition":{"type":"string","default":"left"},"animationEffect":{"type":"string","default":"slide-in"},"sidebarWidth":{"type":"string","default":"300px"},"overlayColor":{"type":"string","default":"rgba(0,0,0,0.2)"},"showCloseButton":{"type":"boolean","default":true},"closeButtonPosition":{"type":"string","default":"top-right"},"closeButtonSize":{"type":"string","default":"medium"},"closeButtonStyle":{"type":"string","default":"circle"},"closeButtonColor":{"type":"string","default":"inherit"},"triggerText":{"type":"string","default":"Menu"},"triggerIcon":{"type":"string","default":"menu"},"showOverlay":{"type":"boolean","default":true},"closeOnOverlayClick":{"type":"boolean","default":true},"closeOnEscape":{"type":"boolean","default":true},"autoClose":{"type":"boolean","default":false},"autoCloseDelay":{"type":"number","default":5000},"menuItems":{"type":"array","default":[{"id":"home","text":"Home","url":"#","icon":"home"},{"id":"about","text":"About","url":"#","icon":"info"},{"id":"services","text":"Services","url":"#","icon":"cog"},{"id":"contact","text":"Contact","url":"#","icon":"email"}]},"className":{"type":"string"}},"editorScript":"file:./build/index.js","viewScript":"file:./build/frontend.js","style":"file:./build/style.css","editorStyle":"file:./build/editor.css"}');
-
-/***/ }),
-
-/***/ "@wordpress/block-editor":
-/*!*************************************!*\
-  !*** external ["wp","blockEditor"] ***!
-  \*************************************/
-/***/ ((module) => {
-
-module.exports = window["wp"]["blockEditor"];
-
-/***/ }),
-
-/***/ "@wordpress/blocks":
-/*!********************************!*\
-  !*** external ["wp","blocks"] ***!
-  \********************************/
-/***/ ((module) => {
-
-module.exports = window["wp"]["blocks"];
-
-/***/ }),
-
-/***/ "@wordpress/components":
-/*!************************************!*\
-  !*** external ["wp","components"] ***!
-  \************************************/
-/***/ ((module) => {
-
-module.exports = window["wp"]["components"];
-
-/***/ }),
-
-/***/ "@wordpress/element":
-/*!*********************************!*\
-  !*** external ["wp","element"] ***!
-  \*********************************/
-/***/ ((module) => {
-
-module.exports = window["wp"]["element"];
-
-/***/ }),
-
-/***/ "@wordpress/i18n":
-/*!******************************!*\
-  !*** external ["wp","i18n"] ***!
-  \******************************/
-/***/ ((module) => {
-
-module.exports = window["wp"]["i18n"];
-
-/***/ }),
-
-/***/ "react/jsx-runtime":
+/***/ "react/jsx-runtime"
 /*!**********************************!*\
   !*** external "ReactJSXRuntime" ***!
   \**********************************/
-/***/ ((module) => {
+(module) {
 
 module.exports = window["ReactJSXRuntime"];
 
-/***/ })
+/***/ },
+
+/***/ "@wordpress/block-editor"
+/*!*************************************!*\
+  !*** external ["wp","blockEditor"] ***!
+  \*************************************/
+(module) {
+
+module.exports = window["wp"]["blockEditor"];
+
+/***/ },
+
+/***/ "@wordpress/blocks"
+/*!********************************!*\
+  !*** external ["wp","blocks"] ***!
+  \********************************/
+(module) {
+
+module.exports = window["wp"]["blocks"];
+
+/***/ },
+
+/***/ "@wordpress/components"
+/*!************************************!*\
+  !*** external ["wp","components"] ***!
+  \************************************/
+(module) {
+
+module.exports = window["wp"]["components"];
+
+/***/ },
+
+/***/ "@wordpress/element"
+/*!*********************************!*\
+  !*** external ["wp","element"] ***!
+  \*********************************/
+(module) {
+
+module.exports = window["wp"]["element"];
+
+/***/ },
+
+/***/ "@wordpress/i18n"
+/*!******************************!*\
+  !*** external ["wp","i18n"] ***!
+  \******************************/
+(module) {
+
+module.exports = window["wp"]["i18n"];
+
+/***/ },
+
+/***/ "./blocks/offcanvas-sidebar/block.json"
+/*!*********************************************!*\
+  !*** ./blocks/offcanvas-sidebar/block.json ***!
+  \*********************************************/
+(module) {
+
+module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/offcanvas-sidebar","title":"Offcanvas Sidebar","category":"jankx","icon":"menu","description":"Create animated offcanvas sidebar with multiple transition effects","keywords":["sidebar","offcanvas","menu","navigation","animation","transition"],"textdomain":"jankx","supports":{"html":false,"align":["wide","full"],"color":{"background":true,"gradients":true,"text":true,"link":false},"background":{"backgroundImage":true,"backgroundSize":true},"spacing":{"margin":true,"padding":true}},"innerBlocks":{"allowedBlocks":["core/paragraph","core/heading","core/image","core/gallery","core/list","core/quote","core/buttons","core/separator","core/spacer","core/social-links","core/navigation","core/search","core/calendar","core/latest-posts","core/latest-comments","core/rss","core/audio","core/video","core/file","core/code","core/html","core/preformatted","core/pullquote","core/table","core/verse","core/media-text","core/columns","core/group","core/cover","core/embed","jankx/language-switcher","jankx/icon-button","jankx/offcanvas-sidebar"],"template":[["core/heading",{"level":3,"content":"Sidebar Content"}],["core/paragraph",{"content":"Add your content here using any available blocks."}]],"templateLock":false},"attributes":{"sidebarPosition":{"type":"string","default":"left"},"animationEffect":{"type":"string","default":"slide-in"},"sidebarWidth":{"type":"string","default":"300px"},"overlayColor":{"type":"string","default":"rgba(0,0,0,0.2)"},"showCloseButton":{"type":"boolean","default":true},"closeButtonPosition":{"type":"string","default":"top-right"},"closeButtonSize":{"type":"string","default":"medium"},"closeButtonStyle":{"type":"string","default":"circle"},"closeButtonColor":{"type":"string","default":"inherit"},"triggerText":{"type":"string","default":"Menu"},"triggerIcon":{"type":"string","default":"menu"},"showOverlay":{"type":"boolean","default":true},"closeOnOverlayClick":{"type":"boolean","default":true},"closeOnEscape":{"type":"boolean","default":true},"autoClose":{"type":"boolean","default":false},"autoCloseDelay":{"type":"number","default":5000},"menuItems":{"type":"array","default":[{"id":"home","text":"Home","url":"#","icon":"home"},{"id":"about","text":"About","url":"#","icon":"info"},{"id":"services","text":"Services","url":"#","icon":"cog"},{"id":"contact","text":"Contact","url":"#","icon":"email"}]},"className":{"type":"string"}},"editorScript":"file:./build/index.js","viewScript":"file:./build/frontend.js","style":"file:./build/style.css","editorStyle":"file:./build/editor.css"}');
+
+/***/ }
 
 /******/ 	});
 /************************************************************************/
@@ -92,6 +92,12 @@ module.exports = window["ReactJSXRuntime"];
 /******/ 		};
 /******/ 	
 /******/ 		// Execute the module function
+/******/ 		if (!(moduleId in __webpack_modules__)) {
+/******/ 			delete __webpack_module_cache__[moduleId];
+/******/ 			var e = new Error("Cannot find module '" + moduleId + "'");
+/******/ 			e.code = 'MODULE_NOT_FOUND';
+/******/ 			throw e;
+/******/ 		}
 /******/ 		__webpack_modules__[moduleId](module, module.exports, __webpack_require__);
 /******/ 	
 /******/ 		// Return the exports of the module

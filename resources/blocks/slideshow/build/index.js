@@ -2,21 +2,11 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
-/***/ "./blocks/slideshow/block.json":
-/*!*************************************!*\
-  !*** ./blocks/slideshow/block.json ***!
-  \*************************************/
-/***/ ((module) => {
-
-module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/slideshow","title":"Slideshow","category":"jankx","description":"Advanced slideshow with thumbnails, captions and PhotoSwipe integration","keywords":["slideshow","gallery","photoswipe","carousel","images"],"textdomain":"jankx","attributes":{"autoplay":{"type":"boolean","default":false},"autoplayDelay":{"type":"number","default":3000},"fullscreen":{"type":"boolean","default":true},"showThumbnails":{"type":"boolean","default":true},"showNavigation":{"type":"boolean","default":true},"showPagination":{"type":"boolean","default":true},"transitionEffect":{"type":"string","enum":["slide","fade"],"default":"slide"},"transitionSpeed":{"type":"number","default":300},"thumbnailSize":{"type":"string","enum":["small","medium","large"],"default":"medium"},"mainImageHeight":{"type":"number","default":400},"captionPosition":{"type":"string","enum":["top","bottom","overlay","hidden"],"default":"hidden"},"enableLightbox":{"type":"boolean","default":false},"showFooterText":{"type":"boolean","default":false},"fullscreenText":{"type":"string","default":"Fullscreen"},"prevText":{"type":"string","default":"&lt;"},"nextText":{"type":"string","default":"&gt;"},"className":{"type":"string"},"anchor":{"type":"string"}},"supports":{"html":false,"anchor":true,"align":["wide","full"],"spacing":{"margin":true,"padding":true},"color":{"background":true,"text":true,"gradients":true,"link":true},"border":{"color":true,"radius":true,"style":true,"width":true,"__experimentalDefaultControls":{"radius":true}},"typography":{"fontSize":true,"lineHeight":true,"__experimentalFontFamily":true,"__experimentalFontWeight":true,"__experimentalFontStyle":true,"__experimentalTextTransform":true,"__experimentalTextDecoration":true,"__experimentalLetterSpacing":true},"dimensions":{"minHeight":true}},"providesContext":{"jankx/slideShowId":"anchor","jankx/showThumbnails":"showThumbnails","jankx/showNavigation":"showNavigation","jankx/transitionEffect":"transitionEffect","jankx/captionPosition":"captionPosition","jankx/prevText":"prevText","jankx/nextText":"nextText"},"editorScript":"file:./build/index.js","editorStyle":"file:./build/editor.css","viewScript":"file:./build/view.js","style":"file:./build/style.css"}');
-
-/***/ }),
-
-/***/ "./blocks/slideshow/edit.tsx":
+/***/ "./blocks/slideshow/edit.tsx"
 /*!***********************************!*\
   !*** ./blocks/slideshow/edit.tsx ***!
   \***********************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
@@ -332,25 +322,13 @@ function Edit({
   });
 }
 
-/***/ }),
+/***/ },
 
-/***/ "./blocks/slideshow/editor.scss":
-/*!**************************************!*\
-  !*** ./blocks/slideshow/editor.scss ***!
-  \**************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-// extracted by mini-css-extract-plugin
-
-
-/***/ }),
-
-/***/ "./blocks/slideshow/save.tsx":
+/***/ "./blocks/slideshow/save.tsx"
 /*!***********************************!*\
   !*** ./blocks/slideshow/save.tsx ***!
   \***********************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
@@ -368,89 +346,111 @@ function Save({
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_0__.InnerBlocks.Content, {});
 }
 
-/***/ }),
+/***/ },
 
-/***/ "./blocks/slideshow/style.scss":
-/*!*************************************!*\
-  !*** ./blocks/slideshow/style.scss ***!
-  \*************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+/***/ "./blocks/slideshow/editor.scss"
+/*!**************************************!*\
+  !*** ./blocks/slideshow/editor.scss ***!
+  \**************************************/
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
 
-/***/ }),
+/***/ },
 
-/***/ "@wordpress/block-editor":
+/***/ "./blocks/slideshow/style.scss"
 /*!*************************************!*\
-  !*** external ["wp","blockEditor"] ***!
+  !*** ./blocks/slideshow/style.scss ***!
   \*************************************/
-/***/ ((module) => {
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
-module.exports = window["wp"]["blockEditor"];
+__webpack_require__.r(__webpack_exports__);
+// extracted by mini-css-extract-plugin
 
-/***/ }),
 
-/***/ "@wordpress/blocks":
-/*!********************************!*\
-  !*** external ["wp","blocks"] ***!
-  \********************************/
-/***/ ((module) => {
+/***/ },
 
-module.exports = window["wp"]["blocks"];
-
-/***/ }),
-
-/***/ "@wordpress/components":
-/*!************************************!*\
-  !*** external ["wp","components"] ***!
-  \************************************/
-/***/ ((module) => {
-
-module.exports = window["wp"]["components"];
-
-/***/ }),
-
-/***/ "@wordpress/data":
-/*!******************************!*\
-  !*** external ["wp","data"] ***!
-  \******************************/
-/***/ ((module) => {
-
-module.exports = window["wp"]["data"];
-
-/***/ }),
-
-/***/ "@wordpress/element":
-/*!*********************************!*\
-  !*** external ["wp","element"] ***!
-  \*********************************/
-/***/ ((module) => {
-
-module.exports = window["wp"]["element"];
-
-/***/ }),
-
-/***/ "@wordpress/i18n":
-/*!******************************!*\
-  !*** external ["wp","i18n"] ***!
-  \******************************/
-/***/ ((module) => {
-
-module.exports = window["wp"]["i18n"];
-
-/***/ }),
-
-/***/ "react/jsx-runtime":
+/***/ "react/jsx-runtime"
 /*!**********************************!*\
   !*** external "ReactJSXRuntime" ***!
   \**********************************/
-/***/ ((module) => {
+(module) {
 
 module.exports = window["ReactJSXRuntime"];
 
-/***/ })
+/***/ },
+
+/***/ "@wordpress/block-editor"
+/*!*************************************!*\
+  !*** external ["wp","blockEditor"] ***!
+  \*************************************/
+(module) {
+
+module.exports = window["wp"]["blockEditor"];
+
+/***/ },
+
+/***/ "@wordpress/blocks"
+/*!********************************!*\
+  !*** external ["wp","blocks"] ***!
+  \********************************/
+(module) {
+
+module.exports = window["wp"]["blocks"];
+
+/***/ },
+
+/***/ "@wordpress/components"
+/*!************************************!*\
+  !*** external ["wp","components"] ***!
+  \************************************/
+(module) {
+
+module.exports = window["wp"]["components"];
+
+/***/ },
+
+/***/ "@wordpress/data"
+/*!******************************!*\
+  !*** external ["wp","data"] ***!
+  \******************************/
+(module) {
+
+module.exports = window["wp"]["data"];
+
+/***/ },
+
+/***/ "@wordpress/element"
+/*!*********************************!*\
+  !*** external ["wp","element"] ***!
+  \*********************************/
+(module) {
+
+module.exports = window["wp"]["element"];
+
+/***/ },
+
+/***/ "@wordpress/i18n"
+/*!******************************!*\
+  !*** external ["wp","i18n"] ***!
+  \******************************/
+(module) {
+
+module.exports = window["wp"]["i18n"];
+
+/***/ },
+
+/***/ "./blocks/slideshow/block.json"
+/*!*************************************!*\
+  !*** ./blocks/slideshow/block.json ***!
+  \*************************************/
+(module) {
+
+module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/slideshow","title":"Slideshow","category":"jankx","description":"Advanced slideshow with thumbnails, captions and PhotoSwipe integration","keywords":["slideshow","gallery","photoswipe","carousel","images"],"textdomain":"jankx","attributes":{"autoplay":{"type":"boolean","default":false},"autoplayDelay":{"type":"number","default":3000},"fullscreen":{"type":"boolean","default":true},"showThumbnails":{"type":"boolean","default":true},"showNavigation":{"type":"boolean","default":true},"showPagination":{"type":"boolean","default":true},"transitionEffect":{"type":"string","enum":["slide","fade"],"default":"slide"},"transitionSpeed":{"type":"number","default":300},"thumbnailSize":{"type":"string","enum":["small","medium","large"],"default":"medium"},"mainImageHeight":{"type":"number","default":400},"captionPosition":{"type":"string","enum":["top","bottom","overlay","hidden"],"default":"hidden"},"enableLightbox":{"type":"boolean","default":false},"showFooterText":{"type":"boolean","default":false},"fullscreenText":{"type":"string","default":"Fullscreen"},"prevText":{"type":"string","default":"&lt;"},"nextText":{"type":"string","default":"&gt;"},"className":{"type":"string"},"anchor":{"type":"string"}},"supports":{"html":false,"anchor":true,"align":["wide","full"],"spacing":{"margin":true,"padding":true},"color":{"background":true,"text":true,"gradients":true,"link":true},"border":{"color":true,"radius":true,"style":true,"width":true,"__experimentalDefaultControls":{"radius":true}},"typography":{"fontSize":true,"lineHeight":true,"__experimentalFontFamily":true,"__experimentalFontWeight":true,"__experimentalFontStyle":true,"__experimentalTextTransform":true,"__experimentalTextDecoration":true,"__experimentalLetterSpacing":true},"dimensions":{"minHeight":true}},"providesContext":{"jankx/slideShowId":"anchor","jankx/showThumbnails":"showThumbnails","jankx/showNavigation":"showNavigation","jankx/transitionEffect":"transitionEffect","jankx/captionPosition":"captionPosition","jankx/prevText":"prevText","jankx/nextText":"nextText"},"editorScript":"file:./build/index.js","editorStyle":"file:./build/editor.css","viewScript":"file:./build/view.js","style":"file:./build/style.css"}');
+
+/***/ }
 
 /******/ 	});
 /************************************************************************/
@@ -472,6 +472,12 @@ module.exports = window["ReactJSXRuntime"];
 /******/ 		};
 /******/ 	
 /******/ 		// Execute the module function
+/******/ 		if (!(moduleId in __webpack_modules__)) {
+/******/ 			delete __webpack_module_cache__[moduleId];
+/******/ 			var e = new Error("Cannot find module '" + moduleId + "'");
+/******/ 			e.code = 'MODULE_NOT_FOUND';
+/******/ 			throw e;
+/******/ 		}
 /******/ 		__webpack_modules__[moduleId](module, module.exports, __webpack_require__);
 /******/ 	
 /******/ 		// Return the exports of the module

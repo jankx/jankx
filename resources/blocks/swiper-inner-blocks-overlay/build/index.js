@@ -2,21 +2,11 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
-/***/ "./blocks/swiper-inner-blocks-overlay/block.json":
-/*!*******************************************************!*\
-  !*** ./blocks/swiper-inner-blocks-overlay/block.json ***!
-  \*******************************************************/
-/***/ ((module) => {
-
-module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/swiper-inner-blocks-overlay","title":"Swiper Overlay Inner Blocks","category":"jankx","description":"Overlay container for persistent content fixed over Swiper slides","textdomain":"jankx","parent":["jankx/swiper"],"supports":{"html":false,"anchor":true,"align":["wide","full"],"spacing":{"margin":true,"padding":true},"color":{"background":true,"text":true},"border":{"color":true,"radius":true,"style":true,"width":true}},"attributes":{"className":{"type":"string"}},"editorScript":"file:./build/index.js","editorStyle":"file:./build/editor.css","style":"file:./build/style.css"}');
-
-/***/ }),
-
-/***/ "./blocks/swiper-inner-blocks-overlay/edit.tsx":
+/***/ "./blocks/swiper-inner-blocks-overlay/edit.tsx"
 /*!*****************************************************!*\
   !*** ./blocks/swiper-inner-blocks-overlay/edit.tsx ***!
   \*****************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
@@ -38,25 +28,13 @@ function Edit() {
   });
 }
 
-/***/ }),
+/***/ },
 
-/***/ "./blocks/swiper-inner-blocks-overlay/editor.scss":
-/*!********************************************************!*\
-  !*** ./blocks/swiper-inner-blocks-overlay/editor.scss ***!
-  \********************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-// extracted by mini-css-extract-plugin
-
-
-/***/ }),
-
-/***/ "./blocks/swiper-inner-blocks-overlay/save.tsx":
+/***/ "./blocks/swiper-inner-blocks-overlay/save.tsx"
 /*!*****************************************************!*\
   !*** ./blocks/swiper-inner-blocks-overlay/save.tsx ***!
   \*****************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
@@ -78,49 +56,71 @@ function Save() {
   });
 }
 
-/***/ }),
+/***/ },
 
-/***/ "./blocks/swiper-inner-blocks-overlay/style.scss":
-/*!*******************************************************!*\
-  !*** ./blocks/swiper-inner-blocks-overlay/style.scss ***!
-  \*******************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+/***/ "./blocks/swiper-inner-blocks-overlay/editor.scss"
+/*!********************************************************!*\
+  !*** ./blocks/swiper-inner-blocks-overlay/editor.scss ***!
+  \********************************************************/
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
 
-/***/ }),
+/***/ },
 
-/***/ "@wordpress/block-editor":
-/*!*************************************!*\
-  !*** external ["wp","blockEditor"] ***!
-  \*************************************/
-/***/ ((module) => {
+/***/ "./blocks/swiper-inner-blocks-overlay/style.scss"
+/*!*******************************************************!*\
+  !*** ./blocks/swiper-inner-blocks-overlay/style.scss ***!
+  \*******************************************************/
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
-module.exports = window["wp"]["blockEditor"];
+__webpack_require__.r(__webpack_exports__);
+// extracted by mini-css-extract-plugin
 
-/***/ }),
 
-/***/ "@wordpress/blocks":
-/*!********************************!*\
-  !*** external ["wp","blocks"] ***!
-  \********************************/
-/***/ ((module) => {
+/***/ },
 
-module.exports = window["wp"]["blocks"];
-
-/***/ }),
-
-/***/ "react/jsx-runtime":
+/***/ "react/jsx-runtime"
 /*!**********************************!*\
   !*** external "ReactJSXRuntime" ***!
   \**********************************/
-/***/ ((module) => {
+(module) {
 
 module.exports = window["ReactJSXRuntime"];
 
-/***/ })
+/***/ },
+
+/***/ "@wordpress/block-editor"
+/*!*************************************!*\
+  !*** external ["wp","blockEditor"] ***!
+  \*************************************/
+(module) {
+
+module.exports = window["wp"]["blockEditor"];
+
+/***/ },
+
+/***/ "@wordpress/blocks"
+/*!********************************!*\
+  !*** external ["wp","blocks"] ***!
+  \********************************/
+(module) {
+
+module.exports = window["wp"]["blocks"];
+
+/***/ },
+
+/***/ "./blocks/swiper-inner-blocks-overlay/block.json"
+/*!*******************************************************!*\
+  !*** ./blocks/swiper-inner-blocks-overlay/block.json ***!
+  \*******************************************************/
+(module) {
+
+module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/swiper-inner-blocks-overlay","title":"Swiper Overlay Inner Blocks","category":"jankx","description":"Overlay container for persistent content fixed over Swiper slides","textdomain":"jankx","parent":["jankx/swiper"],"supports":{"html":false,"anchor":true,"align":["wide","full"],"spacing":{"margin":true,"padding":true},"color":{"background":true,"text":true},"border":{"color":true,"radius":true,"style":true,"width":true}},"attributes":{"className":{"type":"string"}},"editorScript":"file:./build/index.js","editorStyle":"file:./build/editor.css","style":"file:./build/style.css"}');
+
+/***/ }
 
 /******/ 	});
 /************************************************************************/
@@ -142,6 +142,12 @@ module.exports = window["ReactJSXRuntime"];
 /******/ 		};
 /******/ 	
 /******/ 		// Execute the module function
+/******/ 		if (!(moduleId in __webpack_modules__)) {
+/******/ 			delete __webpack_module_cache__[moduleId];
+/******/ 			var e = new Error("Cannot find module '" + moduleId + "'");
+/******/ 			e.code = 'MODULE_NOT_FOUND';
+/******/ 			throw e;
+/******/ 		}
 /******/ 		__webpack_modules__[moduleId](module, module.exports, __webpack_require__);
 /******/ 	
 /******/ 		// Return the exports of the module

@@ -2,21 +2,11 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
-/***/ "./blocks/smart-breadcrumb/block.json":
-/*!********************************************!*\
-  !*** ./blocks/smart-breadcrumb/block.json ***!
-  \********************************************/
-/***/ ((module) => {
-
-module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/smart-breadcrumb","version":"1.0.0","title":"Smart Breadcrumb","category":"jankx","icon":"arrow-right-alt","keywords":["breadcrumb","navigation","seo","rankmath","yoast"],"supports":{"align":["wide","full"],"html":false,"color":{"background":true,"text":true,"gradients":true,"link":true},"spacing":{"margin":true,"padding":true,"blockGap":true},"border":{"color":true,"radius":true,"style":true,"width":true},"background":{"backgroundImage":true,"backgroundPosition":true,"backgroundRepeat":true,"backgroundSize":true},"dimensions":{"minHeight":true},"typography":{"fontSize":true,"lineHeight":true,"fontFamily":true,"fontWeight":true,"fontStyle":true,"textTransform":true,"textDecoration":true,"letterSpacing":true}},"description":"Breadcrumb navigation tương thích với RankMath, Yoast SEO và các plugin SEO khác.","attributes":{"showHome":{"type":"boolean","default":true},"homeText":{"type":"string","default":"Trang chủ"},"separator":{"type":"string","default":"›"},"showCurrent":{"type":"boolean","default":true},"maxDepth":{"type":"integer","default":3},"stylePreset":{"type":"string","default":"default"},"useSeoPlugin":{"type":"boolean","default":true},"fallbackToCustom":{"type":"boolean","default":true}},"textdomain":"jankx","editorScript":"file:./build/index.js","editorStyle":"file:./build/editor.css","style":"file:./build/style.css"}');
-
-/***/ }),
-
-/***/ "./blocks/smart-breadcrumb/src/edit.js":
+/***/ "./blocks/smart-breadcrumb/src/edit.js"
 /*!*********************************************!*\
   !*** ./blocks/smart-breadcrumb/src/edit.js ***!
   \*********************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
@@ -203,25 +193,13 @@ function Edit({
   });
 }
 
-/***/ }),
+/***/ },
 
-/***/ "./blocks/smart-breadcrumb/src/editor.scss":
-/*!*************************************************!*\
-  !*** ./blocks/smart-breadcrumb/src/editor.scss ***!
-  \*************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-// extracted by mini-css-extract-plugin
-
-
-/***/ }),
-
-/***/ "./blocks/smart-breadcrumb/src/save.js":
+/***/ "./blocks/smart-breadcrumb/src/save.js"
 /*!*********************************************!*\
   !*** ./blocks/smart-breadcrumb/src/save.js ***!
   \*********************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
@@ -236,13 +214,13 @@ function save() {
   return null;
 }
 
-/***/ }),
+/***/ },
 
-/***/ "./blocks/smart-breadcrumb/src/style-presets.js":
+/***/ "./blocks/smart-breadcrumb/src/style-presets.js"
 /*!******************************************************!*\
   !*** ./blocks/smart-breadcrumb/src/style-presets.js ***!
   \******************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
@@ -312,109 +290,131 @@ function getBreadcrumbStylePresetOptions() {
   return BREADCRUMB_STYLE_PRESETS;
 }
 
-/***/ }),
+/***/ },
 
-/***/ "./blocks/smart-breadcrumb/src/style.scss":
-/*!************************************************!*\
-  !*** ./blocks/smart-breadcrumb/src/style.scss ***!
-  \************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+/***/ "./blocks/smart-breadcrumb/src/editor.scss"
+/*!*************************************************!*\
+  !*** ./blocks/smart-breadcrumb/src/editor.scss ***!
+  \*************************************************/
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
 
-/***/ }),
+/***/ },
 
-/***/ "@wordpress/block-editor":
-/*!*************************************!*\
-  !*** external ["wp","blockEditor"] ***!
-  \*************************************/
-/***/ ((module) => {
+/***/ "./blocks/smart-breadcrumb/src/style.scss"
+/*!************************************************!*\
+  !*** ./blocks/smart-breadcrumb/src/style.scss ***!
+  \************************************************/
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
-module.exports = window["wp"]["blockEditor"];
+__webpack_require__.r(__webpack_exports__);
+// extracted by mini-css-extract-plugin
 
-/***/ }),
 
-/***/ "@wordpress/blocks":
-/*!********************************!*\
-  !*** external ["wp","blocks"] ***!
-  \********************************/
-/***/ ((module) => {
+/***/ },
 
-module.exports = window["wp"]["blocks"];
-
-/***/ }),
-
-/***/ "@wordpress/components":
-/*!************************************!*\
-  !*** external ["wp","components"] ***!
-  \************************************/
-/***/ ((module) => {
-
-module.exports = window["wp"]["components"];
-
-/***/ }),
-
-/***/ "@wordpress/data":
-/*!******************************!*\
-  !*** external ["wp","data"] ***!
-  \******************************/
-/***/ ((module) => {
-
-module.exports = window["wp"]["data"];
-
-/***/ }),
-
-/***/ "@wordpress/editor":
-/*!********************************!*\
-  !*** external ["wp","editor"] ***!
-  \********************************/
-/***/ ((module) => {
-
-module.exports = window["wp"]["editor"];
-
-/***/ }),
-
-/***/ "@wordpress/element":
-/*!*********************************!*\
-  !*** external ["wp","element"] ***!
-  \*********************************/
-/***/ ((module) => {
-
-module.exports = window["wp"]["element"];
-
-/***/ }),
-
-/***/ "@wordpress/i18n":
-/*!******************************!*\
-  !*** external ["wp","i18n"] ***!
-  \******************************/
-/***/ ((module) => {
-
-module.exports = window["wp"]["i18n"];
-
-/***/ }),
-
-/***/ "@wordpress/server-side-render":
-/*!******************************************!*\
-  !*** external ["wp","serverSideRender"] ***!
-  \******************************************/
-/***/ ((module) => {
-
-module.exports = window["wp"]["serverSideRender"];
-
-/***/ }),
-
-/***/ "react/jsx-runtime":
+/***/ "react/jsx-runtime"
 /*!**********************************!*\
   !*** external "ReactJSXRuntime" ***!
   \**********************************/
-/***/ ((module) => {
+(module) {
 
 module.exports = window["ReactJSXRuntime"];
 
-/***/ })
+/***/ },
+
+/***/ "@wordpress/block-editor"
+/*!*************************************!*\
+  !*** external ["wp","blockEditor"] ***!
+  \*************************************/
+(module) {
+
+module.exports = window["wp"]["blockEditor"];
+
+/***/ },
+
+/***/ "@wordpress/blocks"
+/*!********************************!*\
+  !*** external ["wp","blocks"] ***!
+  \********************************/
+(module) {
+
+module.exports = window["wp"]["blocks"];
+
+/***/ },
+
+/***/ "@wordpress/components"
+/*!************************************!*\
+  !*** external ["wp","components"] ***!
+  \************************************/
+(module) {
+
+module.exports = window["wp"]["components"];
+
+/***/ },
+
+/***/ "@wordpress/data"
+/*!******************************!*\
+  !*** external ["wp","data"] ***!
+  \******************************/
+(module) {
+
+module.exports = window["wp"]["data"];
+
+/***/ },
+
+/***/ "@wordpress/editor"
+/*!********************************!*\
+  !*** external ["wp","editor"] ***!
+  \********************************/
+(module) {
+
+module.exports = window["wp"]["editor"];
+
+/***/ },
+
+/***/ "@wordpress/element"
+/*!*********************************!*\
+  !*** external ["wp","element"] ***!
+  \*********************************/
+(module) {
+
+module.exports = window["wp"]["element"];
+
+/***/ },
+
+/***/ "@wordpress/i18n"
+/*!******************************!*\
+  !*** external ["wp","i18n"] ***!
+  \******************************/
+(module) {
+
+module.exports = window["wp"]["i18n"];
+
+/***/ },
+
+/***/ "@wordpress/server-side-render"
+/*!******************************************!*\
+  !*** external ["wp","serverSideRender"] ***!
+  \******************************************/
+(module) {
+
+module.exports = window["wp"]["serverSideRender"];
+
+/***/ },
+
+/***/ "./blocks/smart-breadcrumb/block.json"
+/*!********************************************!*\
+  !*** ./blocks/smart-breadcrumb/block.json ***!
+  \********************************************/
+(module) {
+
+module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/smart-breadcrumb","version":"1.0.0","title":"Smart Breadcrumb","category":"jankx","icon":"arrow-right-alt","keywords":["breadcrumb","navigation","seo","rankmath","yoast"],"supports":{"align":["wide","full"],"html":false,"color":{"background":true,"text":true,"gradients":true,"link":true},"spacing":{"margin":true,"padding":true,"blockGap":true},"border":{"color":true,"radius":true,"style":true,"width":true},"background":{"backgroundImage":true,"backgroundPosition":true,"backgroundRepeat":true,"backgroundSize":true},"dimensions":{"minHeight":true},"typography":{"fontSize":true,"lineHeight":true,"fontFamily":true,"fontWeight":true,"fontStyle":true,"textTransform":true,"textDecoration":true,"letterSpacing":true}},"description":"Breadcrumb navigation tương thích với RankMath, Yoast SEO và các plugin SEO khác.","attributes":{"showHome":{"type":"boolean","default":true},"homeText":{"type":"string","default":"Trang chủ"},"separator":{"type":"string","default":"›"},"showCurrent":{"type":"boolean","default":true},"maxDepth":{"type":"integer","default":3},"stylePreset":{"type":"string","default":"default"},"useSeoPlugin":{"type":"boolean","default":true},"fallbackToCustom":{"type":"boolean","default":true}},"textdomain":"jankx","editorScript":"file:./build/index.js","editorStyle":"file:./build/editor.css","style":"file:./build/style.css"}');
+
+/***/ }
 
 /******/ 	});
 /************************************************************************/
@@ -436,6 +436,12 @@ module.exports = window["ReactJSXRuntime"];
 /******/ 		};
 /******/ 	
 /******/ 		// Execute the module function
+/******/ 		if (!(moduleId in __webpack_modules__)) {
+/******/ 			delete __webpack_module_cache__[moduleId];
+/******/ 			var e = new Error("Cannot find module '" + moduleId + "'");
+/******/ 			e.code = 'MODULE_NOT_FOUND';
+/******/ 			throw e;
+/******/ 		}
 /******/ 		__webpack_modules__[moduleId](module, module.exports, __webpack_require__);
 /******/ 	
 /******/ 		// Return the exports of the module

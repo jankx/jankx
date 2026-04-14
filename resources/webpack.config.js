@@ -11,10 +11,6 @@ module.exports = {
   devtool: 'source-map',
   context: path.resolve(__dirname),
   entry: {
-    'blocks/language-switcher/build/index': './blocks/language-switcher/index.tsx',
-    'blocks/language-switcher/build/frontend': './blocks/language-switcher/frontend.ts',
-    'blocks/language-switcher/build/style': './blocks/language-switcher/style.scss',
-    'blocks/language-switcher/build/editor': './blocks/language-switcher/editor.scss',
 
     'blocks/icon-picker/build/index': './blocks/icon-picker/index.tsx',
     'blocks/icon-picker/build/save': './blocks/icon-picker/save.js',
@@ -38,14 +34,7 @@ module.exports = {
     'blocks/advanced-image-box/build/style': './blocks/advanced-image-box/style.scss',
     'blocks/advanced-image-box/build/editor': './blocks/advanced-image-box/editor.scss',
 
-    'blocks/magic-text/build/index': './blocks/magic-text/index.js',
-    'blocks/magic-text/build/style': './blocks/magic-text/style.scss',
-    'blocks/magic-text/build/editor': './blocks/magic-text/editor.scss',
 
-    'blocks/table-of-content/build/index': './blocks/table-of-content/index.tsx',
-    'blocks/table-of-content/build/style': './blocks/table-of-content/style.scss',
-    'blocks/table-of-content/build/editor': './blocks/table-of-content/editor.scss',
-    'blocks/table-of-content/build/view': './blocks/table-of-content/view.ts',
 
     'blocks/comment-count/build/index': './blocks/comment-count/index.tsx',
     'blocks/comment-count/build/style': './blocks/comment-count/style.scss',
@@ -56,9 +45,6 @@ module.exports = {
     'blocks/modal/build/editor': './blocks/modal/editor.scss',
     'blocks/modal/build/view': './blocks/modal/view.js',
 
-    'blocks/date-picker-calendar/build/index': './blocks/date-picker-calendar/index.js',
-    'blocks/date-picker-calendar/build/style-index': './blocks/date-picker-calendar/style.scss',
-    'blocks/date-picker-calendar/build/editor': './blocks/date-picker-calendar/editor.scss',
 
     'blocks/smart-tabs/build/index': './blocks/smart-tabs/index.tsx',
     'blocks/smart-tabs/build/style': './blocks/smart-tabs/style.scss',
@@ -140,18 +126,6 @@ module.exports = {
     'blocks/advanced-filters/build/style': './blocks/advanced-filters/style.scss',
     'blocks/advanced-filters/build/editor': './blocks/advanced-filters/editor.scss',
 
-    'blocks/master-table/build/index': './blocks/master-table/index.tsx',
-    'blocks/master-table/build/style': './blocks/master-table/style.scss',
-    'blocks/master-table/build/editor': './blocks/master-table/editor.scss',
-
-    'blocks/table-row/build/index': './blocks/table-row/index.tsx',
-    'blocks/table-row/build/style': './blocks/table-row/style.scss',
-    'blocks/table-row/build/editor': './blocks/table-row/editor.scss',
-
-    'blocks/table-cell/build/index': './blocks/table-cell/index.tsx',
-    'blocks/table-cell/build/style': './blocks/table-cell/style.scss',
-    'blocks/table-cell/build/editor': './blocks/table-cell/editor.scss',
-
     'blocks/smart-search/build/index': './blocks/smart-search/index.tsx',
     'blocks/smart-search/build/frontend': './blocks/smart-search/frontend.ts',
     'blocks/smart-search/build/style': './blocks/smart-search/style.scss',
@@ -164,28 +138,11 @@ module.exports = {
 
     'blocks/dynamic-data-template/build/index': './blocks/dynamic-data-template/index.tsx',
 
-    'blocks/dynamic-ssr-layout/build/index': './blocks/dynamic-ssr-layout/index.tsx',
-    'blocks/dynamic-ssr-layout/build/view': './blocks/dynamic-ssr-layout/view.js',
-    'blocks/dynamic-ssr-layout/build/style': './blocks/dynamic-ssr-layout/style.scss',
-    'blocks/dynamic-ssr-layout/build/editor': './blocks/dynamic-ssr-layout/editor.scss',
-
-    'blocks/dynamic-ssr-template/build/index': './blocks/dynamic-ssr-template/index.tsx',
-    'blocks/dynamic-ssr-template/build/style': './blocks/dynamic-ssr-template/style.scss',
-    'blocks/dynamic-ssr-template/build/editor': './blocks/dynamic-ssr-template/editor.scss',
-
-    'blocks/floating-messengers/build/index': './blocks/floating-messengers/index.tsx',
-    'blocks/floating-messengers/build/style': './blocks/floating-messengers/style.scss',
-    'blocks/floating-messengers/build/editor': './blocks/floating-messengers/editor.scss',
-    'blocks/floating-messengers/build/frontend': './blocks/floating-messengers/frontend.ts',
 
     'blocks/sticky-box/build/index': './blocks/sticky-box/index.tsx',
     'blocks/sticky-box/build/style': './blocks/sticky-box/style.scss',
     'blocks/sticky-box/build/editor': './blocks/sticky-box/editor.scss',
 
-    'blocks/facebook-page/build/index': './blocks/facebook-page/index.tsx',
-    'blocks/facebook-page/build/frontend': './blocks/facebook-page/frontend.ts',
-    'blocks/facebook-page/build/style': './blocks/facebook-page/style.scss',
-    'blocks/facebook-page/build/editor': './blocks/facebook-page/editor.scss',
 
     'blocks/star-rating/build/index': './blocks/star-rating/index.tsx',
     'blocks/star-rating/build/style': './blocks/star-rating/style.scss',
@@ -199,10 +156,9 @@ module.exports = {
     'blocks/divider/build/editor': './blocks/divider/editor.scss',
 
     // Menu Builder block
-    'blocks/menu-builder/build/index': './blocks/menu-builder/index.tsx',
-    'blocks/menu-builder/build/style': './blocks/menu-builder/style.scss',
-    'blocks/menu-builder/build/editor': './blocks/menu-builder/editor.scss',
-    'blocks/menu-builder/build/frontend': './blocks/menu-builder/frontend.js',
+    'blocks/user-menu/build/index': './blocks/user-menu/src/index.tsx',
+    'blocks/user-menu/build/style': './blocks/user-menu/src/style.scss',
+    'blocks/user-menu/build/editor': './blocks/user-menu/src/editor.scss',
     'blocks/wrapper/build/index': './blocks/wrapper/index.tsx',
     'assets/js/child-order': './js/filters/child-order.tsx',
     'assets/js/responsive-visibility': './js/filters/responsive-visibility.tsx',

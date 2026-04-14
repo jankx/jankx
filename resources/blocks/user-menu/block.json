@@ -31,12 +31,35 @@
     },
     "supports": {
         "html": false,
+        "align": ["wide", "full"],
         "spacing": {
             "margin": true,
-            "padding": true
+            "padding": true,
+            "blockGap": true,
+            "__experimentalDefaultControls": {
+                "margin": true,
+                "padding": true
+            }
+        },
+        "color": {
+            "text": true,
+            "background": true,
+            "link": true,
+            "__experimentalDefaultControls": {
+                "text": true,
+                "background": true
+            }
         },
         "typography": {
-            "fontSize": true
+            "fontSize": true,
+            "lineHeight": true,
+            "fontWeight": true,
+            "__experimentalDefaultControls": {
+                "fontSize": true
+            }
         }
-    }
+    },
+    "editorScript": "file:./build/index.js",
+    "editorStyle": "file:./build/editor.css",
+    "style": "file:./build/style.css"
 }

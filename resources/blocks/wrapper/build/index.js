@@ -2,21 +2,11 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
-/***/ "./blocks/wrapper/block.json":
-/*!***********************************!*\
-  !*** ./blocks/wrapper/block.json ***!
-  \***********************************/
-/***/ ((module) => {
-
-module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/wrapper","version":"1.0.0","title":"Wrapper","category":"design","description":"A layout wrapper block with advanced responsive controls.","providesContext":{"jankx/wrapperId":"anchor"},"attributes":{"paddingDesktop":{"type":"number"},"paddingTablet":{"type":"number"},"paddingMobile":{"type":"number"},"marginDesktop":{"type":"number"},"marginTablet":{"type":"number"},"marginMobile":{"type":"number"},"hideOnDesktop":{"type":"boolean","default":false},"hideOnTablet":{"type":"boolean","default":false},"hideOnMobile":{"type":"boolean","default":false},"tagName":{"type":"string","default":"div"},"maxWidth":{"type":"string"},"renderMode":{"type":"string","default":"dynamic"}},"supports":{"html":false,"anchor":true,"spacing":{"margin":false,"padding":false}},"editorScript":"file:./build/index.js","editorStyle":"file:./build/index.css"}');
-
-/***/ }),
-
-/***/ "./blocks/wrapper/edit.tsx":
+/***/ "./blocks/wrapper/edit.tsx"
 /*!*********************************!*\
   !*** ./blocks/wrapper/edit.tsx ***!
   \*********************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
@@ -180,13 +170,13 @@ function Edit({
   });
 }
 
-/***/ }),
+/***/ },
 
-/***/ "./blocks/wrapper/save.tsx":
+/***/ "./blocks/wrapper/save.tsx"
 /*!*********************************!*\
   !*** ./blocks/wrapper/save.tsx ***!
   \*********************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
@@ -219,13 +209,13 @@ function save({
   });
 }
 
-/***/ }),
+/***/ },
 
-/***/ "./js/components/jankx-inspector/JankxInspector.tsx":
+/***/ "./js/components/jankx-inspector/JankxInspector.tsx"
 /*!**********************************************************!*\
   !*** ./js/components/jankx-inspector/JankxInspector.tsx ***!
   \**********************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
@@ -292,13 +282,13 @@ const JankxInspector = ({
   });
 };
 
-/***/ }),
+/***/ },
 
-/***/ "./js/components/jankx-inspector/ResponsiveControl.tsx":
+/***/ "./js/components/jankx-inspector/ResponsiveControl.tsx"
 /*!*************************************************************!*\
   !*** ./js/components/jankx-inspector/ResponsiveControl.tsx ***!
   \*************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
@@ -369,57 +359,67 @@ const ResponsiveControl = ({
   });
 };
 
-/***/ }),
+/***/ },
 
-/***/ "@wordpress/block-editor":
-/*!*************************************!*\
-  !*** external ["wp","blockEditor"] ***!
-  \*************************************/
-/***/ ((module) => {
-
-module.exports = window["wp"]["blockEditor"];
-
-/***/ }),
-
-/***/ "@wordpress/blocks":
-/*!********************************!*\
-  !*** external ["wp","blocks"] ***!
-  \********************************/
-/***/ ((module) => {
-
-module.exports = window["wp"]["blocks"];
-
-/***/ }),
-
-/***/ "@wordpress/components":
-/*!************************************!*\
-  !*** external ["wp","components"] ***!
-  \************************************/
-/***/ ((module) => {
-
-module.exports = window["wp"]["components"];
-
-/***/ }),
-
-/***/ "@wordpress/element":
-/*!*********************************!*\
-  !*** external ["wp","element"] ***!
-  \*********************************/
-/***/ ((module) => {
-
-module.exports = window["wp"]["element"];
-
-/***/ }),
-
-/***/ "react/jsx-runtime":
+/***/ "react/jsx-runtime"
 /*!**********************************!*\
   !*** external "ReactJSXRuntime" ***!
   \**********************************/
-/***/ ((module) => {
+(module) {
 
 module.exports = window["ReactJSXRuntime"];
 
-/***/ })
+/***/ },
+
+/***/ "@wordpress/block-editor"
+/*!*************************************!*\
+  !*** external ["wp","blockEditor"] ***!
+  \*************************************/
+(module) {
+
+module.exports = window["wp"]["blockEditor"];
+
+/***/ },
+
+/***/ "@wordpress/blocks"
+/*!********************************!*\
+  !*** external ["wp","blocks"] ***!
+  \********************************/
+(module) {
+
+module.exports = window["wp"]["blocks"];
+
+/***/ },
+
+/***/ "@wordpress/components"
+/*!************************************!*\
+  !*** external ["wp","components"] ***!
+  \************************************/
+(module) {
+
+module.exports = window["wp"]["components"];
+
+/***/ },
+
+/***/ "@wordpress/element"
+/*!*********************************!*\
+  !*** external ["wp","element"] ***!
+  \*********************************/
+(module) {
+
+module.exports = window["wp"]["element"];
+
+/***/ },
+
+/***/ "./blocks/wrapper/block.json"
+/*!***********************************!*\
+  !*** ./blocks/wrapper/block.json ***!
+  \***********************************/
+(module) {
+
+module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/wrapper","version":"1.0.0","title":"Wrapper","category":"design","description":"A layout wrapper block with advanced responsive controls.","providesContext":{"jankx/wrapperId":"anchor"},"attributes":{"paddingDesktop":{"type":"number"},"paddingTablet":{"type":"number"},"paddingMobile":{"type":"number"},"marginDesktop":{"type":"number"},"marginTablet":{"type":"number"},"marginMobile":{"type":"number"},"hideOnDesktop":{"type":"boolean","default":false},"hideOnTablet":{"type":"boolean","default":false},"hideOnMobile":{"type":"boolean","default":false},"tagName":{"type":"string","default":"div"},"maxWidth":{"type":"string"},"renderMode":{"type":"string","default":"dynamic"}},"supports":{"html":false,"anchor":true,"spacing":{"margin":false,"padding":false}},"editorScript":"file:./build/index.js","editorStyle":"file:./build/index.css"}');
+
+/***/ }
 
 /******/ 	});
 /************************************************************************/
@@ -441,6 +441,12 @@ module.exports = window["ReactJSXRuntime"];
 /******/ 		};
 /******/ 	
 /******/ 		// Execute the module function
+/******/ 		if (!(moduleId in __webpack_modules__)) {
+/******/ 			delete __webpack_module_cache__[moduleId];
+/******/ 			var e = new Error("Cannot find module '" + moduleId + "'");
+/******/ 			e.code = 'MODULE_NOT_FOUND';
+/******/ 			throw e;
+/******/ 		}
 /******/ 		__webpack_modules__[moduleId](module, module.exports, __webpack_require__);
 /******/ 	
 /******/ 		// Return the exports of the module
