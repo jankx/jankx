@@ -1,0 +1,17 @@
+.wp-block-jankx-user-menu.is-editor-preview {
+    border: 1px dashed rgba(0, 0, 0, 0.1);
+    padding: 10px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.5);
+
+    &::before {
+        content: 'User Menu Preview';
+        display: block;
+        font-size: 10px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 8px;
+        opacity: 0.4;
+        font-weight: bold;
+    }
+}

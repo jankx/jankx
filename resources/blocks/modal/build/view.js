@@ -2,11 +2,11 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
-/***/ "./node_modules/micromodal/dist/micromodal.es.js":
-/*!*******************************************************!*\
-  !*** ./node_modules/micromodal/dist/micromodal.es.js ***!
-  \*******************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+/***/ "../node_modules/micromodal/dist/micromodal.es.js"
+/*!********************************************************!*\
+  !*** ../node_modules/micromodal/dist/micromodal.es.js ***!
+  \********************************************************/
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
@@ -232,7 +232,7 @@ var n,
 "undefined" != typeof window && (window.MicroModal = l);
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (l);
 
-/***/ })
+/***/ }
 
 /******/ 	});
 /************************************************************************/
@@ -254,6 +254,12 @@ var n,
 /******/ 		};
 /******/ 	
 /******/ 		// Execute the module function
+/******/ 		if (!(moduleId in __webpack_modules__)) {
+/******/ 			delete __webpack_module_cache__[moduleId];
+/******/ 			var e = new Error("Cannot find module '" + moduleId + "'");
+/******/ 			e.code = 'MODULE_NOT_FOUND';
+/******/ 			throw e;
+/******/ 		}
 /******/ 		__webpack_modules__[moduleId](module, module.exports, __webpack_require__);
 /******/ 	
 /******/ 		// Return the exports of the module
@@ -297,7 +303,7 @@ var __webpack_exports__ = {};
   !*** ./blocks/modal/view.js ***!
   \******************************/
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var micromodal__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! micromodal */ "./node_modules/micromodal/dist/micromodal.es.js");
+/* harmony import */ var micromodal__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! micromodal */ "../node_modules/micromodal/dist/micromodal.es.js");
 /**
  * Modal Block Frontend JavaScript
  *

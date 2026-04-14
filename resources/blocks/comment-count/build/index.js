@@ -2,21 +2,11 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
-/***/ "./blocks/comment-count/block.json":
-/*!*****************************************!*\
-  !*** ./blocks/comment-count/block.json ***!
-  \*****************************************/
-/***/ ((module) => {
-
-module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/comment-count","title":"Comment Count","category":"jankx","description":"Display the number of comments for the current post.","keywords":["comments","count","meta"],"textdomain":"jankx","supports":{"html":false,"align":["left","center","right"],"typography":{"fontSize":true,"lineHeight":true,"fontFamily":true,"fontStyle":true,"fontWeight":true,"letterSpacing":true,"textTransform":true,"textDecoration":true},"color":{"text":true},"spacing":{"margin":true,"padding":true}},"editorScript":"file:./build/index.js","style":"file:./build/style.css","editorStyle":"file:./build/editor.css"}');
-
-/***/ }),
-
-/***/ "./blocks/comment-count/edit.tsx":
+/***/ "./blocks/comment-count/edit.tsx"
 /*!***************************************!*\
   !*** ./blocks/comment-count/edit.tsx ***!
   \***************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
@@ -50,12 +40,11 @@ function Edit() {
     isTemplateEditor,
     isResolving
   } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_2__.useSelect)(select => {
-    var _ref, _editorStore$getCurre, _ref2, _currentPost$type;
     const editorStore = select('core/editor');
     const coreStore = select('core');
     const currentPost = editorStore?.getCurrentPost?.();
-    const postId = (_ref = (_editorStore$getCurre = editorStore?.getCurrentPostId?.()) !== null && _editorStore$getCurre !== void 0 ? _editorStore$getCurre : currentPost?.id) !== null && _ref !== void 0 ? _ref : 0;
-    const postType = (_ref2 = (_currentPost$type = currentPost?.type) !== null && _currentPost$type !== void 0 ? _currentPost$type : editorStore?.getCurrentPostType?.()) !== null && _ref2 !== void 0 ? _ref2 : 'post';
+    const postId = editorStore?.getCurrentPostId?.() ?? currentPost?.id ?? 0;
+    const postType = currentPost?.type ?? editorStore?.getCurrentPostType?.() ?? 'post';
     const templateEditor = currentPost && (currentPost.type === 'wp_template' || currentPost.type === 'wp_template_part');
     let count = null;
     let resolving = false;
@@ -85,7 +74,7 @@ function Edit() {
     className: 'jankx-comment-count'
   });
   const isLoading = isResolving && commentCount === null && !isTemplateEditor;
-  const displayCount = isTemplateEditor ? 12 : Math.max(0, Number(commentCount !== null && commentCount !== void 0 ? commentCount : 0));
+  const displayCount = isTemplateEditor ? 12 : Math.max(0, Number(commentCount ?? 0));
   const label = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__._n)('Comment', 'Comments', displayCount, 'jankx');
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
     ...blockProps,
@@ -101,67 +90,77 @@ function Edit() {
   });
 }
 
-/***/ }),
+/***/ },
 
-/***/ "@wordpress/block-editor":
-/*!*************************************!*\
-  !*** external ["wp","blockEditor"] ***!
-  \*************************************/
-/***/ ((module) => {
-
-module.exports = window["wp"]["blockEditor"];
-
-/***/ }),
-
-/***/ "@wordpress/blocks":
-/*!********************************!*\
-  !*** external ["wp","blocks"] ***!
-  \********************************/
-/***/ ((module) => {
-
-module.exports = window["wp"]["blocks"];
-
-/***/ }),
-
-/***/ "@wordpress/components":
-/*!************************************!*\
-  !*** external ["wp","components"] ***!
-  \************************************/
-/***/ ((module) => {
-
-module.exports = window["wp"]["components"];
-
-/***/ }),
-
-/***/ "@wordpress/data":
-/*!******************************!*\
-  !*** external ["wp","data"] ***!
-  \******************************/
-/***/ ((module) => {
-
-module.exports = window["wp"]["data"];
-
-/***/ }),
-
-/***/ "@wordpress/i18n":
-/*!******************************!*\
-  !*** external ["wp","i18n"] ***!
-  \******************************/
-/***/ ((module) => {
-
-module.exports = window["wp"]["i18n"];
-
-/***/ }),
-
-/***/ "react/jsx-runtime":
+/***/ "react/jsx-runtime"
 /*!**********************************!*\
   !*** external "ReactJSXRuntime" ***!
   \**********************************/
-/***/ ((module) => {
+(module) {
 
 module.exports = window["ReactJSXRuntime"];
 
-/***/ })
+/***/ },
+
+/***/ "@wordpress/block-editor"
+/*!*************************************!*\
+  !*** external ["wp","blockEditor"] ***!
+  \*************************************/
+(module) {
+
+module.exports = window["wp"]["blockEditor"];
+
+/***/ },
+
+/***/ "@wordpress/blocks"
+/*!********************************!*\
+  !*** external ["wp","blocks"] ***!
+  \********************************/
+(module) {
+
+module.exports = window["wp"]["blocks"];
+
+/***/ },
+
+/***/ "@wordpress/components"
+/*!************************************!*\
+  !*** external ["wp","components"] ***!
+  \************************************/
+(module) {
+
+module.exports = window["wp"]["components"];
+
+/***/ },
+
+/***/ "@wordpress/data"
+/*!******************************!*\
+  !*** external ["wp","data"] ***!
+  \******************************/
+(module) {
+
+module.exports = window["wp"]["data"];
+
+/***/ },
+
+/***/ "@wordpress/i18n"
+/*!******************************!*\
+  !*** external ["wp","i18n"] ***!
+  \******************************/
+(module) {
+
+module.exports = window["wp"]["i18n"];
+
+/***/ },
+
+/***/ "./blocks/comment-count/block.json"
+/*!*****************************************!*\
+  !*** ./blocks/comment-count/block.json ***!
+  \*****************************************/
+(module) {
+
+module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/comment-count","title":"Comment Count","category":"jankx","description":"Display the number of comments for the current post.","keywords":["comments","count","meta"],"textdomain":"jankx","supports":{"html":false,"align":["left","center","right"],"typography":{"fontSize":true,"lineHeight":true,"fontFamily":true,"fontStyle":true,"fontWeight":true,"letterSpacing":true,"textTransform":true,"textDecoration":true},"color":{"text":true},"spacing":{"margin":true,"padding":true}},"editorScript":"file:./build/index.js","style":"file:./build/style.css","editorStyle":"file:./build/editor.css"}');
+
+/***/ }
 
 /******/ 	});
 /************************************************************************/
@@ -183,6 +182,12 @@ module.exports = window["ReactJSXRuntime"];
 /******/ 		};
 /******/ 	
 /******/ 		// Execute the module function
+/******/ 		if (!(moduleId in __webpack_modules__)) {
+/******/ 			delete __webpack_module_cache__[moduleId];
+/******/ 			var e = new Error("Cannot find module '" + moduleId + "'");
+/******/ 			e.code = 'MODULE_NOT_FOUND';
+/******/ 			throw e;
+/******/ 		}
 /******/ 		__webpack_modules__[moduleId](module, module.exports, __webpack_require__);
 /******/ 	
 /******/ 		// Return the exports of the module

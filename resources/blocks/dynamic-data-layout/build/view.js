@@ -2,11 +2,379 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
-/***/ "../node_modules/embla-carousel-autoplay/esm/embla-carousel-autoplay.esm.js":
+/***/ "./assets/js/jankx-carousel-common.js"
+/*!********************************************!*\
+  !*** ./assets/js/jankx-carousel-common.js ***!
+  \********************************************/
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__),
+/* harmony export */   initJankxCarousel: () => (/* binding */ initJankxCarousel)
+/* harmony export */ });
+/* harmony import */ var _shared_components_JankxCarousel__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./../../shared/components/JankxCarousel */ "./shared/components/JankxCarousel.ts");
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_shared_components_JankxCarousel__WEBPACK_IMPORTED_MODULE_0__["default"]);
+const carouselInstances = new Map();
+function initJankxCarousel(selector, root = document) {
+  const carousels = root ? root.querySelectorAll(selector) : document.querySelectorAll(selector);
+  carousels.forEach(carousel => {
+    if (carousel._carouselInitialized) return;
+    const instance = new _shared_components_JankxCarousel__WEBPACK_IMPORTED_MODULE_0__["default"](carousel);
+    if (instance.embla) {
+      carouselInstances.set(carousel, instance);
+    }
+  });
+}
+if (typeof window !== 'undefined') {
+  window.JankxCarousel = {
+    init: initJankxCarousel,
+    instances: carouselInstances,
+    Carousel: _shared_components_JankxCarousel__WEBPACK_IMPORTED_MODULE_0__["default"]
+  };
+}
+
+/***/ },
+
+/***/ "./assets/js/jankx-woocommerce-sorting.js"
+/*!************************************************!*\
+  !*** ./assets/js/jankx-woocommerce-sorting.js ***!
+  \************************************************/
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   initWooCommerceSorting: () => (/* binding */ initWooCommerceSorting),
+/* harmony export */   updateDynamicBlocks: () => (/* binding */ updateDynamicBlocks)
+/* harmony export */ });
+/**
+ * Shared logic for WooCommerce catalog sorting integration with dynamic layout blocks.
+ * 
+ * @param {Function} initializeCallback Callback to re-initialize block-specific features (like carousels)
+ */
+function initWooCommerceSorting(initializeCallback) {
+  // If already initialized, just update the callback if needed (or skip)
+  if (window._jankxSortingInitialized) return;
+  const sortingSelect = document.querySelector('.woocommerce-ordering .orderby');
+  if (!sortingSelect) return;
+
+  // Only intercept if there are Jankx dynamic blocks on the page
+  const blocks = document.querySelectorAll('.wp-block-jankx-dynamic-data-layout, .wp-block-jankx-dynamic-ssr-layout');
+  if (blocks.length === 0) return;
+  window._jankxSortingInitialized = true;
+
+  // WooCommerce usually submits the form on 'change'.
+  // We intercept the change event to perform AJAX update instead of full page reload.
+  sortingSelect.addEventListener('change', function (e) {
+    e.preventDefault();
+    e.stopPropagation();
+    const orderBy = this.value;
+    updateDynamicBlocks(orderBy, initializeCallback);
+
+    // Update URL without reload to keep state consistent for browser back/forward
+    const url = new URL(window.location.href);
+    url.searchParams.set('orderby', orderBy);
+    window.history.pushState({}, '', url);
+    return false;
+  });
+
+  // Also listen to the form submit just in case
+  const form = sortingSelect.closest('form');
+  if (form) {
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      const formData = new FormData(form);
+      const orderBy = formData.get('orderby');
+      updateDynamicBlocks(orderBy, initializeCallback);
+    });
+  }
+}
+
+/**
+ * Update all dynamic layout blocks on the page
+ * 
+ * @param {string} orderBy The selection sort order
+ * @param {Function} initializeCallback
+ */
+function updateDynamicBlocks(orderBy, initializeCallback) {
+  const blocks = document.querySelectorAll('.wp-block-jankx-dynamic-data-layout, .wp-block-jankx-dynamic-ssr-layout');
+  blocks.forEach(block => {
+    const isSsr = block.classList.contains('wp-block-jankx-dynamic-ssr-layout');
+    const action = isSsr ? 'jankx_dynamic_ssr_layout_filter' : 'jankx_dynamic_data_layout_filter';
+
+    // Getting block attributes from data attributes
+    const blockId = block.dataset.blockId || block.dataset.queryId;
+    const postId = block.dataset.postId || window.jankx && window.jankx.post_id || 0;
+    if (!blockId) return;
+    block.classList.add('is-loading');
+    const data = new FormData();
+    data.append('action', action);
+    data.append('block_id', blockId);
+    data.append('post_id', postId);
+
+    // Construct filters with new orderby
+    const filters = {
+      orderby: orderBy
+    };
+    data.append('filters', JSON.stringify(filters));
+
+    // Resolve AJAX URL and Nonce from localized data
+    let ajaxUrl = '/wp-admin/admin-ajax.php';
+    let nonce = '';
+    if (isSsr) {
+      if (window.jankxDynamicSsrLayoutView) {
+        ajaxUrl = window.jankxDynamicSsrLayoutView.ajaxUrl || ajaxUrl;
+        nonce = window.jankxDynamicSsrLayoutView.nonce;
+      }
+    } else {
+      if (window.jankxDynamicDataLayoutView) {
+        ajaxUrl = window.jankxDynamicDataLayoutView.ajaxUrl || ajaxUrl;
+        nonce = window.jankxDynamicDataLayoutView.nonce;
+      }
+    }
+
+    // Global fallbacks if block-specific localization is missing
+    if (!nonce) {
+      nonce = window.jankx && window.jankx.nonce || '';
+    }
+    data.append('nonce', nonce);
+    fetch(ajaxUrl, {
+      method: 'POST',
+      body: data
+    }).then(res => res.json()).then(res => {
+      if (res.success && res.data.html) {
+        const temp = document.createElement('div');
+        temp.innerHTML = res.data.html;
+        const newBlock = temp.firstElementChild;
+        if (newBlock) {
+          block.replaceWith(newBlock);
+
+          // Re-initialize features
+          if (typeof initializeCallback === 'function') {
+            initializeCallback(newBlock);
+          }
+
+          // Standard re-init events
+          document.dispatchEvent(new CustomEvent('jankx:reinitialize-carousel', {
+            detail: {
+              element: newBlock
+            }
+          }));
+          if (window.initCarousel) {
+            window.initCarousel(newBlock);
+          }
+        }
+      }
+    }).catch(err => console.error('Jankx Dynamic Layout AJAX error:', err)).finally(() => {
+      const currentBlock = document.querySelector(`[data-block-id="${blockId}"]`);
+      if (currentBlock) currentBlock.classList.remove('is-loading');
+    });
+  });
+}
+
+/***/ },
+
+/***/ "./shared/components/JankxCarousel.ts"
+/*!********************************************!*\
+  !*** ./shared/components/JankxCarousel.ts ***!
+  \********************************************/
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ JankxCarousel)
+/* harmony export */ });
+/* harmony import */ var embla_carousel__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! embla-carousel */ "../node_modules/embla-carousel/esm/embla-carousel.esm.js");
+/* harmony import */ var embla_carousel_autoplay__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! embla-carousel-autoplay */ "../node_modules/embla-carousel-autoplay/esm/embla-carousel-autoplay.esm.js");
+
+
+class JankxCarousel {
+  prevBtn = null;
+  nextBtn = null;
+  dotsContainer = null;
+  updateDotsCallback = null;
+  constructor(carousel, options = {}) {
+    if (!carousel || carousel._carouselInitialized) return;
+    this.carousel = carousel;
+    this.options = options;
+    const container = carousel.querySelector('.carousel-container') || carousel.querySelector('.embla__viewport');
+    if (!container) return;
+    this.container = container;
+    this.init();
+  }
+  init() {
+    this.setupConfig();
+    this.prepareDOM();
+    this.initEmbla();
+    this.setupNavigation();
+    this.setupPagination();
+    this.setupEventListeners();
+    this.carousel._carouselInitialized = true;
+    this.carousel.classList.add('carousel-initialized');
+    this.updateUI();
+  }
+  setupConfig() {
+    const computed = getComputedStyle(this.carousel);
+    const cssSlides = parseInt(computed.getPropertyValue('--slides-per-view')) || NaN;
+    const cssSpace = parseInt(computed.getPropertyValue('--space-between')) || NaN;
+    const dataSlides = parseInt(this.carousel.getAttribute('data-slides-per-view')) || NaN;
+    const dataColumns = parseInt(this.carousel.getAttribute('data-columns')) || NaN;
+    const dataSpace = parseInt(this.carousel.getAttribute('data-space-between')) || NaN;
+    this.config = {
+      slidesPerView: dataSlides || dataColumns || cssSlides || 1,
+      spaceBetween: dataSpace || cssSpace || 16,
+      autoplay: this.carousel.getAttribute('data-autoplay') === 'true' || this.carousel.classList.contains('has-autoplay'),
+      autoplayDelay: Math.max(3000, parseInt(this.carousel.getAttribute('data-autoplay-delay')) || 5000),
+      showArrows: this.carousel.getAttribute('data-show-arrows') !== 'false' && (this.carousel.classList.contains('has-arrows') || this.carousel.classList.contains('show-arrows')),
+      showDots: this.carousel.getAttribute('data-show-dots') !== 'false' && (this.carousel.classList.contains('has-dots') || this.carousel.classList.contains('show-dots')),
+      loop: this.carousel.getAttribute('data-loop') !== 'false',
+      dotsPerPage: this.carousel.getAttribute('data-dots-per-page') === 'true' || this.options.dotsPerPage || false,
+      ...this.options
+    };
+
+    // If not specified, default these to true for certain block types or if they have specific classes
+    if (this.carousel.getAttribute('data-show-arrows') === null && !this.config.showArrows) {
+      this.config.showArrows = this.carousel.classList.contains('wp-block-jankx-dynamic-data-layout');
+    }
+    if (this.carousel.getAttribute('data-show-dots') === null && !this.config.showDots) {
+      this.config.showDots = this.carousel.classList.contains('wp-block-jankx-dynamic-data-layout');
+    }
+    this.container.style.setProperty('--slides-per-view', this.config.slidesPerView);
+    this.container.style.setProperty('--space-between', `${this.config.spaceBetween}px`);
+  }
+  prepareDOM() {
+    this.container.classList.add('embla__viewport');
+    let track = this.container.querySelector('.embla__container');
+    if (!track) {
+      track = document.createElement('div');
+      track.className = 'embla__container';
+      while (this.container.firstChild) {
+        const node = this.container.firstChild;
+        if (node.nodeType === 3 && !(node.nodeValue || '').trim()) {
+          this.container.removeChild(node);
+          continue;
+        }
+        if (node.nodeType === 8) {
+          this.container.removeChild(node);
+          continue;
+        }
+        if (node.nodeType === 1 && node.classList.contains('carousel-slide')) {
+          track.appendChild(node);
+        } else {
+          const wrapper = document.createElement('div');
+          wrapper.className = 'carousel-slide';
+          this.container.removeChild(node);
+          wrapper.appendChild(node);
+          track.appendChild(wrapper);
+        }
+      }
+      this.container.appendChild(track);
+    }
+  }
+  initEmbla() {
+    const plugins = this.config.autoplay ? [(0,embla_carousel_autoplay__WEBPACK_IMPORTED_MODULE_1__["default"])({
+      delay: this.config.autoplayDelay,
+      stopOnInteraction: true,
+      stopOnMouseEnter: true
+    })] : [];
+    this.embla = (0,embla_carousel__WEBPACK_IMPORTED_MODULE_0__["default"])(this.container, {
+      loop: this.config.loop,
+      duration: 25,
+      align: 'start',
+      slidesToScroll: this.config.dotsPerPage ? 'auto' : 1
+    }, plugins);
+  }
+  setupNavigation() {
+    if (!this.config.showArrows) return;
+    let prevBtn = this.carousel.querySelector('.carousel-prev');
+    let nextBtn = this.carousel.querySelector('.carousel-next');
+    if (!prevBtn || !nextBtn) {
+      prevBtn = document.createElement('button');
+      prevBtn.className = 'carousel-nav carousel-prev';
+      prevBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none"><path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+      nextBtn = document.createElement('button');
+      nextBtn.className = 'carousel-nav carousel-next';
+      nextBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none"><path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+      this.carousel.appendChild(prevBtn);
+      this.carousel.appendChild(nextBtn);
+    }
+    prevBtn.onclick = e => {
+      e.preventDefault();
+      this.embla.scrollPrev();
+    };
+    nextBtn.onclick = e => {
+      e.preventDefault();
+      this.embla.scrollNext();
+    };
+    this.prevBtn = prevBtn;
+    this.nextBtn = nextBtn;
+  }
+  setupPagination() {
+    if (!this.config.showDots) return;
+    let dotsContainer = this.carousel.querySelector('.carousel-dots');
+    if (!dotsContainer) {
+      dotsContainer = document.createElement('div');
+      dotsContainer.className = 'carousel-dots';
+      this.carousel.appendChild(dotsContainer);
+    }
+    const updateDots = () => {
+      const scrollSnaps = this.embla.scrollSnapList();
+      dotsContainer.innerHTML = '';
+      if (scrollSnaps.length <= 1) return;
+      scrollSnaps.forEach((_, index) => {
+        const dot = document.createElement('button');
+        dot.className = 'carousel-dot';
+        if (index === this.embla.selectedScrollSnap()) dot.classList.add('is-active');
+        dot.onclick = () => this.embla.scrollTo(index);
+        dotsContainer.appendChild(dot);
+      });
+    };
+    this.dotsContainer = dotsContainer;
+    this.updateDotsCallback = updateDots;
+    updateDots();
+  }
+  setupEventListeners() {
+    this.embla.on('select', () => this.updateUI());
+    this.embla.on('reInit', () => {
+      if (this.updateDotsCallback) this.updateDotsCallback();
+      this.updateUI();
+    });
+    if (this.config.autoplay) {
+      const ap = this.embla.plugins().autoplay;
+      if (ap) {
+        this.carousel.addEventListener('mouseenter', () => ap.stop());
+        this.carousel.addEventListener('mouseleave', () => ap.play());
+      }
+    }
+  }
+  updateUI() {
+    if (this.prevBtn) this.prevBtn.disabled = !this.embla.canScrollPrev();
+    if (this.nextBtn) this.nextBtn.disabled = !this.embla.canScrollNext();
+    if (this.dotsContainer) {
+      const dots = this.dotsContainer.querySelectorAll('.carousel-dot');
+      const activeIndex = this.embla.selectedScrollSnap();
+      dots.forEach((dot, i) => {
+        dot.classList.toggle('is-active', i === activeIndex);
+      });
+    }
+  }
+  destroy() {
+    if (this.embla) {
+      this.embla.destroy();
+    }
+    this.carousel._carouselInitialized = false;
+    this.carousel.classList.remove('carousel-initialized');
+  }
+}
+
+/***/ },
+
+/***/ "../node_modules/embla-carousel-autoplay/esm/embla-carousel-autoplay.esm.js"
 /*!**********************************************************************************!*\
   !*** ../node_modules/embla-carousel-autoplay/esm/embla-carousel-autoplay.esm.js ***!
   \**********************************************************************************/
-/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
@@ -204,13 +572,13 @@ function Autoplay(userOptions = {}) {
 Autoplay.globalOptions = undefined;
 
 
-/***/ }),
+/***/ },
 
-/***/ "../node_modules/embla-carousel/esm/embla-carousel.esm.js":
+/***/ "../node_modules/embla-carousel/esm/embla-carousel.esm.js"
 /*!****************************************************************!*\
   !*** ../node_modules/embla-carousel/esm/embla-carousel.esm.js ***!
   \****************************************************************/
-/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
@@ -1850,368 +2218,7 @@ function EmblaCarousel(root, userOptions, userPlugins) {
 EmblaCarousel.globalOptions = undefined;
 
 
-/***/ }),
-
-/***/ "./assets/js/jankx-carousel-common.js":
-/*!********************************************!*\
-  !*** ./assets/js/jankx-carousel-common.js ***!
-  \********************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__),
-/* harmony export */   initJankxCarousel: () => (/* binding */ initJankxCarousel)
-/* harmony export */ });
-/* harmony import */ var _shared_components_JankxCarousel__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./../../shared/components/JankxCarousel */ "./shared/components/JankxCarousel.ts");
-
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_shared_components_JankxCarousel__WEBPACK_IMPORTED_MODULE_0__["default"]);
-const carouselInstances = new Map();
-function initJankxCarousel(selector, root = document) {
-  const carousels = root ? root.querySelectorAll(selector) : document.querySelectorAll(selector);
-  carousels.forEach(carousel => {
-    if (carousel._carouselInitialized) return;
-    const instance = new _shared_components_JankxCarousel__WEBPACK_IMPORTED_MODULE_0__["default"](carousel);
-    if (instance.embla) {
-      carouselInstances.set(carousel, instance);
-    }
-  });
-}
-if (typeof window !== 'undefined') {
-  window.JankxCarousel = {
-    init: initJankxCarousel,
-    instances: carouselInstances,
-    Carousel: _shared_components_JankxCarousel__WEBPACK_IMPORTED_MODULE_0__["default"]
-  };
-}
-
-/***/ }),
-
-/***/ "./assets/js/jankx-woocommerce-sorting.js":
-/*!************************************************!*\
-  !*** ./assets/js/jankx-woocommerce-sorting.js ***!
-  \************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   initWooCommerceSorting: () => (/* binding */ initWooCommerceSorting),
-/* harmony export */   updateDynamicBlocks: () => (/* binding */ updateDynamicBlocks)
-/* harmony export */ });
-/**
- * Shared logic for WooCommerce catalog sorting integration with dynamic layout blocks.
- * 
- * @param {Function} initializeCallback Callback to re-initialize block-specific features (like carousels)
- */
-function initWooCommerceSorting(initializeCallback) {
-  const sortingSelect = document.querySelector('.woocommerce-ordering .orderby');
-  if (!sortingSelect) return;
-
-  // WooCommerce usually submits the form on 'change'.
-  // We intercept the change event to perform AJAX update instead of full page reload.
-  sortingSelect.addEventListener('change', function (e) {
-    e.preventDefault();
-    e.stopPropagation();
-    const orderBy = this.value;
-    updateDynamicBlocks(orderBy, initializeCallback);
-
-    // Update URL without reload to keep state consistent for browser back/forward
-    const url = new URL(window.location.href);
-    url.searchParams.set('orderby', orderBy);
-    window.history.pushState({}, '', url);
-    return false;
-  });
-
-  // Also listen to the form submit just in case
-  const form = sortingSelect.closest('form');
-  if (form) {
-    form.addEventListener('submit', function (e) {
-      e.preventDefault();
-      const formData = new FormData(form);
-      const orderBy = formData.get('orderby');
-      updateDynamicBlocks(orderBy, initializeCallback);
-    });
-  }
-}
-
-/**
- * Update all dynamic layout blocks on the page
- * 
- * @param {string} orderBy The selection sort order
- * @param {Function} initializeCallback
- */
-function updateDynamicBlocks(orderBy, initializeCallback) {
-  const blocks = document.querySelectorAll('.wp-block-jankx-dynamic-data-layout, .wp-block-jankx-dynamic-ssr-layout');
-  blocks.forEach(block => {
-    const isSsr = block.classList.contains('wp-block-jankx-dynamic-ssr-layout');
-    const action = isSsr ? 'jankx_dynamic_ssr_layout_filter' : 'jankx_dynamic_data_layout_filter';
-
-    // Getting block attributes from data attributes
-    const blockId = block.dataset.blockId || block.dataset.queryId;
-    const postId = block.dataset.postId || window.jankx && window.jankx.post_id || 0;
-    if (!blockId) return;
-    block.classList.add('is-loading');
-    const data = new FormData();
-    data.append('action', action);
-    data.append('block_id', blockId);
-    data.append('post_id', postId);
-
-    // Construct filters with new orderby
-    const filters = {
-      orderby: orderBy
-    };
-    data.append('filters', JSON.stringify(filters));
-
-    // Resolve AJAX URL and Nonce from localized data
-    let ajaxUrl = '/wp-admin/admin-ajax.php';
-    let nonce = '';
-    if (isSsr) {
-      if (window.jankxDynamicSsrLayoutView) {
-        ajaxUrl = window.jankxDynamicSsrLayoutView.ajaxUrl || ajaxUrl;
-        nonce = window.jankxDynamicSsrLayoutView.nonce;
-      }
-    } else {
-      if (window.jankxDynamicDataLayoutView) {
-        ajaxUrl = window.jankxDynamicDataLayoutView.ajaxUrl || ajaxUrl;
-        nonce = window.jankxDynamicDataLayoutView.nonce;
-      }
-    }
-
-    // Global fallbacks if block-specific localization is missing
-    if (!nonce) {
-      nonce = window.jankx && window.jankx.nonce || '';
-    }
-    data.append('nonce', nonce);
-    fetch(ajaxUrl, {
-      method: 'POST',
-      body: data
-    }).then(res => res.json()).then(res => {
-      if (res.success && res.data.html) {
-        const temp = document.createElement('div');
-        temp.innerHTML = res.data.html;
-        const newBlock = temp.firstElementChild;
-        if (newBlock) {
-          block.replaceWith(newBlock);
-
-          // Re-initialize features
-          if (typeof initializeCallback === 'function') {
-            initializeCallback(newBlock);
-          }
-
-          // Standard re-init events
-          document.dispatchEvent(new CustomEvent('jankx:reinitialize-carousel', {
-            detail: {
-              element: newBlock
-            }
-          }));
-          if (window.initCarousel) {
-            window.initCarousel(newBlock);
-          }
-        }
-      }
-    }).catch(err => console.error('Jankx Dynamic Layout AJAX error:', err)).finally(() => {
-      const currentBlock = document.querySelector(`[data-block-id="${blockId}"]`);
-      if (currentBlock) currentBlock.classList.remove('is-loading');
-    });
-  });
-}
-
-/***/ }),
-
-/***/ "./shared/components/JankxCarousel.ts":
-/*!********************************************!*\
-  !*** ./shared/components/JankxCarousel.ts ***!
-  \********************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (/* binding */ JankxCarousel)
-/* harmony export */ });
-/* harmony import */ var embla_carousel__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! embla-carousel */ "../node_modules/embla-carousel/esm/embla-carousel.esm.js");
-/* harmony import */ var embla_carousel_autoplay__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! embla-carousel-autoplay */ "../node_modules/embla-carousel-autoplay/esm/embla-carousel-autoplay.esm.js");
-
-
-class JankxCarousel {
-  prevBtn = null;
-  nextBtn = null;
-  dotsContainer = null;
-  updateDotsCallback = null;
-  constructor(carousel, options = {}) {
-    if (!carousel || carousel._carouselInitialized) return;
-    this.carousel = carousel;
-    this.options = options;
-    const container = carousel.querySelector('.carousel-container') || carousel.querySelector('.embla__viewport');
-    if (!container) return;
-    this.container = container;
-    this.init();
-  }
-  init() {
-    this.setupConfig();
-    this.prepareDOM();
-    this.initEmbla();
-    this.setupNavigation();
-    this.setupPagination();
-    this.setupEventListeners();
-    this.carousel._carouselInitialized = true;
-    this.carousel.classList.add('carousel-initialized');
-    this.updateUI();
-  }
-  setupConfig() {
-    const computed = getComputedStyle(this.carousel);
-    const cssSlides = parseInt(computed.getPropertyValue('--slides-per-view')) || NaN;
-    const cssSpace = parseInt(computed.getPropertyValue('--space-between')) || NaN;
-    const dataSlides = parseInt(this.carousel.getAttribute('data-slides-per-view')) || NaN;
-    const dataColumns = parseInt(this.carousel.getAttribute('data-columns')) || NaN;
-    const dataSpace = parseInt(this.carousel.getAttribute('data-space-between')) || NaN;
-    this.config = {
-      slidesPerView: dataSlides || dataColumns || cssSlides || 1,
-      spaceBetween: dataSpace || cssSpace || 16,
-      autoplay: this.carousel.getAttribute('data-autoplay') === 'true' || this.carousel.classList.contains('has-autoplay'),
-      autoplayDelay: Math.max(3000, parseInt(this.carousel.getAttribute('data-autoplay-delay')) || 5000),
-      showArrows: this.carousel.getAttribute('data-show-arrows') !== 'false' && (this.carousel.classList.contains('has-arrows') || this.carousel.classList.contains('show-arrows')),
-      showDots: this.carousel.getAttribute('data-show-dots') !== 'false' && (this.carousel.classList.contains('has-dots') || this.carousel.classList.contains('show-dots')),
-      loop: this.carousel.getAttribute('data-loop') !== 'false',
-      dotsPerPage: this.carousel.getAttribute('data-dots-per-page') === 'true' || this.options.dotsPerPage || false,
-      ...this.options
-    };
-
-    // If not specified, default these to true for certain block types or if they have specific classes
-    if (this.carousel.getAttribute('data-show-arrows') === null && !this.config.showArrows) {
-      this.config.showArrows = this.carousel.classList.contains('wp-block-jankx-dynamic-data-layout');
-    }
-    if (this.carousel.getAttribute('data-show-dots') === null && !this.config.showDots) {
-      this.config.showDots = this.carousel.classList.contains('wp-block-jankx-dynamic-data-layout');
-    }
-    this.container.style.setProperty('--slides-per-view', this.config.slidesPerView);
-    this.container.style.setProperty('--space-between', `${this.config.spaceBetween}px`);
-  }
-  prepareDOM() {
-    this.container.classList.add('embla__viewport');
-    let track = this.container.querySelector('.embla__container');
-    if (!track) {
-      track = document.createElement('div');
-      track.className = 'embla__container';
-      while (this.container.firstChild) {
-        const node = this.container.firstChild;
-        if (node.nodeType === 3 && !(node.nodeValue || '').trim()) {
-          this.container.removeChild(node);
-          continue;
-        }
-        if (node.nodeType === 8) {
-          this.container.removeChild(node);
-          continue;
-        }
-        if (node.nodeType === 1 && node.classList.contains('carousel-slide')) {
-          track.appendChild(node);
-        } else {
-          const wrapper = document.createElement('div');
-          wrapper.className = 'carousel-slide';
-          this.container.removeChild(node);
-          wrapper.appendChild(node);
-          track.appendChild(wrapper);
-        }
-      }
-      this.container.appendChild(track);
-    }
-  }
-  initEmbla() {
-    const plugins = this.config.autoplay ? [(0,embla_carousel_autoplay__WEBPACK_IMPORTED_MODULE_1__["default"])({
-      delay: this.config.autoplayDelay,
-      stopOnInteraction: true,
-      stopOnMouseEnter: true
-    })] : [];
-    this.embla = (0,embla_carousel__WEBPACK_IMPORTED_MODULE_0__["default"])(this.container, {
-      loop: this.config.loop,
-      duration: 25,
-      align: 'start',
-      slidesToScroll: this.config.dotsPerPage ? 'auto' : 1
-    }, plugins);
-  }
-  setupNavigation() {
-    if (!this.config.showArrows) return;
-    let prevBtn = this.carousel.querySelector('.carousel-prev');
-    let nextBtn = this.carousel.querySelector('.carousel-next');
-    if (!prevBtn || !nextBtn) {
-      prevBtn = document.createElement('button');
-      prevBtn.className = 'carousel-nav carousel-prev';
-      prevBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none"><path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
-      nextBtn = document.createElement('button');
-      nextBtn.className = 'carousel-nav carousel-next';
-      nextBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none"><path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
-      this.carousel.appendChild(prevBtn);
-      this.carousel.appendChild(nextBtn);
-    }
-    prevBtn.onclick = e => {
-      e.preventDefault();
-      this.embla.scrollPrev();
-    };
-    nextBtn.onclick = e => {
-      e.preventDefault();
-      this.embla.scrollNext();
-    };
-    this.prevBtn = prevBtn;
-    this.nextBtn = nextBtn;
-  }
-  setupPagination() {
-    if (!this.config.showDots) return;
-    let dotsContainer = this.carousel.querySelector('.carousel-dots');
-    if (!dotsContainer) {
-      dotsContainer = document.createElement('div');
-      dotsContainer.className = 'carousel-dots';
-      this.carousel.appendChild(dotsContainer);
-    }
-    const updateDots = () => {
-      const scrollSnaps = this.embla.scrollSnapList();
-      dotsContainer.innerHTML = '';
-      if (scrollSnaps.length <= 1) return;
-      scrollSnaps.forEach((_, index) => {
-        const dot = document.createElement('button');
-        dot.className = 'carousel-dot';
-        if (index === this.embla.selectedScrollSnap()) dot.classList.add('is-active');
-        dot.onclick = () => this.embla.scrollTo(index);
-        dotsContainer.appendChild(dot);
-      });
-    };
-    this.dotsContainer = dotsContainer;
-    this.updateDotsCallback = updateDots;
-    updateDots();
-  }
-  setupEventListeners() {
-    this.embla.on('select', () => this.updateUI());
-    this.embla.on('reInit', () => {
-      if (this.updateDotsCallback) this.updateDotsCallback();
-      this.updateUI();
-    });
-    if (this.config.autoplay) {
-      const ap = this.embla.plugins().autoplay;
-      if (ap) {
-        this.carousel.addEventListener('mouseenter', () => ap.stop());
-        this.carousel.addEventListener('mouseleave', () => ap.play());
-      }
-    }
-  }
-  updateUI() {
-    if (this.prevBtn) this.prevBtn.disabled = !this.embla.canScrollPrev();
-    if (this.nextBtn) this.nextBtn.disabled = !this.embla.canScrollNext();
-    if (this.dotsContainer) {
-      const dots = this.dotsContainer.querySelectorAll('.carousel-dot');
-      const activeIndex = this.embla.selectedScrollSnap();
-      dots.forEach((dot, i) => {
-        dot.classList.toggle('is-active', i === activeIndex);
-      });
-    }
-  }
-  destroy() {
-    if (this.embla) {
-      this.embla.destroy();
-    }
-    this.carousel._carouselInitialized = false;
-    this.carousel.classList.remove('carousel-initialized');
-  }
-}
-
-/***/ })
+/***/ }
 
 /******/ 	});
 /************************************************************************/
@@ -2233,6 +2240,12 @@ class JankxCarousel {
 /******/ 		};
 /******/ 	
 /******/ 		// Execute the module function
+/******/ 		if (!(moduleId in __webpack_modules__)) {
+/******/ 			delete __webpack_module_cache__[moduleId];
+/******/ 			var e = new Error("Cannot find module '" + moduleId + "'");
+/******/ 			e.code = 'MODULE_NOT_FOUND';
+/******/ 			throw e;
+/******/ 		}
 /******/ 		__webpack_modules__[moduleId](module, module.exports, __webpack_require__);
 /******/ 	
 /******/ 		// Return the exports of the module

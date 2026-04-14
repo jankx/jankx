@@ -1,11 +1,11 @@
 /******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
-/***/ "../node_modules/vanilla-sharing/dist/vanilla-sharing.umd.js":
+/***/ "../node_modules/vanilla-sharing/dist/vanilla-sharing.umd.js"
 /*!*******************************************************************!*\
   !*** ../node_modules/vanilla-sharing/dist/vanilla-sharing.umd.js ***!
   \*******************************************************************/
-/***/ (function(__unused_webpack_module, exports) {
+(__unused_webpack_module, exports) {
 
 (function (global, factory) {
    true ? factory(exports) : 0;
@@ -345,7 +345,7 @@
   exports.whatsapp = whatsapp;
 });
 
-/***/ })
+/***/ }
 
 /******/ 	});
 /************************************************************************/
@@ -367,6 +367,12 @@
 /******/ 		};
 /******/ 	
 /******/ 		// Execute the module function
+/******/ 		if (!(moduleId in __webpack_modules__)) {
+/******/ 			delete __webpack_module_cache__[moduleId];
+/******/ 			var e = new Error("Cannot find module '" + moduleId + "'");
+/******/ 			e.code = 'MODULE_NOT_FOUND';
+/******/ 			throw e;
+/******/ 		}
 /******/ 		__webpack_modules__[moduleId].call(module.exports, module, module.exports, __webpack_require__);
 /******/ 	
 /******/ 		// Return the exports of the module

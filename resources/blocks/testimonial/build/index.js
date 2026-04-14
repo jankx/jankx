@@ -2,21 +2,11 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
-/***/ "./blocks/testimonial/block.json":
-/*!***************************************!*\
-  !*** ./blocks/testimonial/block.json ***!
-  \***************************************/
-/***/ ((module) => {
-
-module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/testimonial","version":"1.0.0","title":"Testimonial","category":"jankx","icon":"testimonial","description":"Một testimonial item độc lập, tuỳ chỉnh nội dung và kiểu hiển thị bằng PHP","textdomain":"jankx","editorScript":"file:./build/index.js","style":"file:./build/style.css","usesContext":["asSlide","layoutType"],"supports":{"html":false,"anchor":true,"spacing":{"margin":true,"padding":true},"color":{"background":true,"text":true},"typography":{"fontSize":true,"lineHeight":true}},"attributes":{"author":{"type":"string","default":""},"role":{"type":"string","default":""},"company":{"type":"string","default":""},"date":{"type":"string","default":""},"rating":{"type":"number","default":0},"excerpt":{"type":"string","default":""},"avatarId":{"type":"number","default":0},"link":{"type":"string","default":""}},"example":{"attributes":{"author":"Customer Name","role":"CTO","company":"Awesome Inc","rating":5,"excerpt":"Sản phẩm tuyệt vời, dịch vụ nhanh!"}}}');
-
-/***/ }),
-
-/***/ "./blocks/testimonial/edit.tsx":
+/***/ "./blocks/testimonial/edit.tsx"
 /*!*************************************!*\
   !*** ./blocks/testimonial/edit.tsx ***!
   \*************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
@@ -180,79 +170,89 @@ function Edit({
   });
 }
 
-/***/ }),
+/***/ },
 
-/***/ "./blocks/testimonial/style.scss":
+/***/ "./blocks/testimonial/style.scss"
 /*!***************************************!*\
   !*** ./blocks/testimonial/style.scss ***!
   \***************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
 
-/***/ }),
+/***/ },
 
-/***/ "@wordpress/block-editor":
-/*!*************************************!*\
-  !*** external ["wp","blockEditor"] ***!
-  \*************************************/
-/***/ ((module) => {
-
-module.exports = window["wp"]["blockEditor"];
-
-/***/ }),
-
-/***/ "@wordpress/blocks":
-/*!********************************!*\
-  !*** external ["wp","blocks"] ***!
-  \********************************/
-/***/ ((module) => {
-
-module.exports = window["wp"]["blocks"];
-
-/***/ }),
-
-/***/ "@wordpress/components":
-/*!************************************!*\
-  !*** external ["wp","components"] ***!
-  \************************************/
-/***/ ((module) => {
-
-module.exports = window["wp"]["components"];
-
-/***/ }),
-
-/***/ "@wordpress/data":
-/*!******************************!*\
-  !*** external ["wp","data"] ***!
-  \******************************/
-/***/ ((module) => {
-
-module.exports = window["wp"]["data"];
-
-/***/ }),
-
-/***/ "@wordpress/i18n":
-/*!******************************!*\
-  !*** external ["wp","i18n"] ***!
-  \******************************/
-/***/ ((module) => {
-
-module.exports = window["wp"]["i18n"];
-
-/***/ }),
-
-/***/ "react/jsx-runtime":
+/***/ "react/jsx-runtime"
 /*!**********************************!*\
   !*** external "ReactJSXRuntime" ***!
   \**********************************/
-/***/ ((module) => {
+(module) {
 
 module.exports = window["ReactJSXRuntime"];
 
-/***/ })
+/***/ },
+
+/***/ "@wordpress/block-editor"
+/*!*************************************!*\
+  !*** external ["wp","blockEditor"] ***!
+  \*************************************/
+(module) {
+
+module.exports = window["wp"]["blockEditor"];
+
+/***/ },
+
+/***/ "@wordpress/blocks"
+/*!********************************!*\
+  !*** external ["wp","blocks"] ***!
+  \********************************/
+(module) {
+
+module.exports = window["wp"]["blocks"];
+
+/***/ },
+
+/***/ "@wordpress/components"
+/*!************************************!*\
+  !*** external ["wp","components"] ***!
+  \************************************/
+(module) {
+
+module.exports = window["wp"]["components"];
+
+/***/ },
+
+/***/ "@wordpress/data"
+/*!******************************!*\
+  !*** external ["wp","data"] ***!
+  \******************************/
+(module) {
+
+module.exports = window["wp"]["data"];
+
+/***/ },
+
+/***/ "@wordpress/i18n"
+/*!******************************!*\
+  !*** external ["wp","i18n"] ***!
+  \******************************/
+(module) {
+
+module.exports = window["wp"]["i18n"];
+
+/***/ },
+
+/***/ "./blocks/testimonial/block.json"
+/*!***************************************!*\
+  !*** ./blocks/testimonial/block.json ***!
+  \***************************************/
+(module) {
+
+module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/testimonial","version":"1.0.0","title":"Testimonial","category":"jankx","icon":"testimonial","description":"Một testimonial item độc lập, tuỳ chỉnh nội dung và kiểu hiển thị bằng PHP","textdomain":"jankx","editorScript":"file:./build/index.js","style":"file:./build/style.css","usesContext":["asSlide","layoutType"],"supports":{"html":false,"anchor":true,"spacing":{"margin":true,"padding":true},"color":{"background":true,"text":true},"typography":{"fontSize":true,"lineHeight":true}},"attributes":{"author":{"type":"string","default":""},"role":{"type":"string","default":""},"company":{"type":"string","default":""},"date":{"type":"string","default":""},"rating":{"type":"number","default":0},"excerpt":{"type":"string","default":""},"avatarId":{"type":"number","default":0},"link":{"type":"string","default":""}},"example":{"attributes":{"author":"Customer Name","role":"CTO","company":"Awesome Inc","rating":5,"excerpt":"Sản phẩm tuyệt vời, dịch vụ nhanh!"}}}');
+
+/***/ }
 
 /******/ 	});
 /************************************************************************/
@@ -274,6 +274,12 @@ module.exports = window["ReactJSXRuntime"];
 /******/ 		};
 /******/ 	
 /******/ 		// Execute the module function
+/******/ 		if (!(moduleId in __webpack_modules__)) {
+/******/ 			delete __webpack_module_cache__[moduleId];
+/******/ 			var e = new Error("Cannot find module '" + moduleId + "'");
+/******/ 			e.code = 'MODULE_NOT_FOUND';
+/******/ 			throw e;
+/******/ 		}
 /******/ 		__webpack_modules__[moduleId](module, module.exports, __webpack_require__);
 /******/ 	
 /******/ 		// Return the exports of the module

@@ -2,107 +2,107 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
-/***/ "./blocks/advanced-filters/block.json":
-/*!********************************************!*\
-  !*** ./blocks/advanced-filters/block.json ***!
-  \********************************************/
-/***/ ((module) => {
-
-module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/advanced-filters","version":"1.0.0","title":"Advanced Filters","category":"jankx","icon":"filter","description":"Hiển thị bộ lọc nâng cao để filter posts trong Post Type Layout blocks","textdomain":"jankx","editorScript":"file:./build/index.js","editorStyle":"file:./build/editor.css","style":"file:./build/style.css","viewScript":"file:./build/frontend.js","providesContext":{"jankx/advanced-filters/targetPostType":"targetPostType","jankx/advanced-filters/layout":"layout","jankx/advanced-filters/displayStyle":"displayStyle","jankx/advanced-filters/showLabels":"showLabels","jankx/advanced-filters/showCount":"showCount","jankx/advanced-filters/showEmptyTerms":"showEmptyTerms","jankx/advanced-filters/showOnlyTopLevel":"showOnlyTopLevel","jankx/advanced-filters/showHierarchy":"showHierarchy","jankx/advanced-filters/multipleSelection":"multipleSelection","jankx/advanced-filters/collapsible":"collapsible","jankx/advanced-filters/defaultExpanded":"defaultExpanded"},"supports":{"html":false,"align":["wide","full"],"anchor":true,"spacing":{"margin":true,"padding":true,"blockGap":true},"color":{"background":true,"text":true,"link":true,"gradients":true},"background":{"backgroundImage":true,"backgroundSize":true},"typography":{"fontSize":true,"lineHeight":true},"__experimentalBorder":{"color":true,"radius":true,"style":true,"width":true},"__experimentalLayout":{"allowSwitching":true,"allowInheriting":true,"default":{"type":"default"}}},"attributes":{"blockId":{"type":"string","default":""},"targetBlockIds":{"type":"array","default":[]},"filterType":{"type":"string","default":"taxonomy","enum":["taxonomy","meta","price","date","author","keyword","mixed"]},"layout":{"type":"string","default":"horizontal","enum":["horizontal","vertical","dropdown","accordion"]},"targetPostType":{"type":"string","default":"post"},"showLabels":{"type":"boolean","default":true},"showResetButton":{"type":"boolean","default":true},"resetButtonText":{"type":"string","default":"Reset Filters"},"ajaxEnabled":{"type":"boolean","default":true},"updateUrl":{"type":"boolean","default":true},"scrollToResults":{"type":"boolean","default":false},"taxonomyFilters":{"type":"array","default":[]},"metaFilters":{"type":"array","default":[]},"priceFilters":{"type":"array","default":[]},"dateFilters":{"type":"array","default":[]},"authorFilters":{"type":"array","default":[]},"keywordFilter":{"type":"object","default":{"enabled":false,"placeholder":"Search..."}},"displayStyle":{"type":"string","default":"buttons","enum":["buttons","checkboxes","dropdown","select"]},"showCount":{"type":"boolean","default":false},"showEmptyTerms":{"type":"boolean","default":true},"showOnlyTopLevel":{"type":"boolean","default":false},"showHierarchy":{"type":"boolean","default":false},"displayAsDropdown":{"type":"boolean","default":false},"multipleSelection":{"type":"boolean","default":true},"collapsible":{"type":"boolean","default":false},"defaultExpanded":{"type":"boolean","default":true}}}');
-
-/***/ }),
-
-/***/ "./blocks/advanced-filters/editor.scss":
+/***/ "./blocks/advanced-filters/editor.scss"
 /*!*********************************************!*\
   !*** ./blocks/advanced-filters/editor.scss ***!
   \*********************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
 
-/***/ }),
+/***/ },
 
-/***/ "@wordpress/block-editor":
-/*!*************************************!*\
-  !*** external ["wp","blockEditor"] ***!
-  \*************************************/
-/***/ ((module) => {
-
-module.exports = window["wp"]["blockEditor"];
-
-/***/ }),
-
-/***/ "@wordpress/blocks":
-/*!********************************!*\
-  !*** external ["wp","blocks"] ***!
-  \********************************/
-/***/ ((module) => {
-
-module.exports = window["wp"]["blocks"];
-
-/***/ }),
-
-/***/ "@wordpress/components":
-/*!************************************!*\
-  !*** external ["wp","components"] ***!
-  \************************************/
-/***/ ((module) => {
-
-module.exports = window["wp"]["components"];
-
-/***/ }),
-
-/***/ "@wordpress/data":
-/*!******************************!*\
-  !*** external ["wp","data"] ***!
-  \******************************/
-/***/ ((module) => {
-
-module.exports = window["wp"]["data"];
-
-/***/ }),
-
-/***/ "@wordpress/element":
-/*!*********************************!*\
-  !*** external ["wp","element"] ***!
-  \*********************************/
-/***/ ((module) => {
-
-module.exports = window["wp"]["element"];
-
-/***/ }),
-
-/***/ "@wordpress/i18n":
-/*!******************************!*\
-  !*** external ["wp","i18n"] ***!
-  \******************************/
-/***/ ((module) => {
-
-module.exports = window["wp"]["i18n"];
-
-/***/ }),
-
-/***/ "@wordpress/server-side-render":
-/*!******************************************!*\
-  !*** external ["wp","serverSideRender"] ***!
-  \******************************************/
-/***/ ((module) => {
-
-module.exports = window["wp"]["serverSideRender"];
-
-/***/ }),
-
-/***/ "react/jsx-runtime":
+/***/ "react/jsx-runtime"
 /*!**********************************!*\
   !*** external "ReactJSXRuntime" ***!
   \**********************************/
-/***/ ((module) => {
+(module) {
 
 module.exports = window["ReactJSXRuntime"];
 
-/***/ })
+/***/ },
+
+/***/ "@wordpress/block-editor"
+/*!*************************************!*\
+  !*** external ["wp","blockEditor"] ***!
+  \*************************************/
+(module) {
+
+module.exports = window["wp"]["blockEditor"];
+
+/***/ },
+
+/***/ "@wordpress/blocks"
+/*!********************************!*\
+  !*** external ["wp","blocks"] ***!
+  \********************************/
+(module) {
+
+module.exports = window["wp"]["blocks"];
+
+/***/ },
+
+/***/ "@wordpress/components"
+/*!************************************!*\
+  !*** external ["wp","components"] ***!
+  \************************************/
+(module) {
+
+module.exports = window["wp"]["components"];
+
+/***/ },
+
+/***/ "@wordpress/data"
+/*!******************************!*\
+  !*** external ["wp","data"] ***!
+  \******************************/
+(module) {
+
+module.exports = window["wp"]["data"];
+
+/***/ },
+
+/***/ "@wordpress/element"
+/*!*********************************!*\
+  !*** external ["wp","element"] ***!
+  \*********************************/
+(module) {
+
+module.exports = window["wp"]["element"];
+
+/***/ },
+
+/***/ "@wordpress/i18n"
+/*!******************************!*\
+  !*** external ["wp","i18n"] ***!
+  \******************************/
+(module) {
+
+module.exports = window["wp"]["i18n"];
+
+/***/ },
+
+/***/ "@wordpress/server-side-render"
+/*!******************************************!*\
+  !*** external ["wp","serverSideRender"] ***!
+  \******************************************/
+(module) {
+
+module.exports = window["wp"]["serverSideRender"];
+
+/***/ },
+
+/***/ "./blocks/advanced-filters/block.json"
+/*!********************************************!*\
+  !*** ./blocks/advanced-filters/block.json ***!
+  \********************************************/
+(module) {
+
+module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/advanced-filters","version":"1.0.0","title":"Advanced Filters","category":"jankx","icon":"filter","description":"Hiển thị bộ lọc nâng cao để filter posts trong Post Type Layout blocks","textdomain":"jankx","editorScript":"file:./build/index.js","editorStyle":"file:./build/editor.css","style":"file:./build/style.css","viewScript":"file:./build/frontend.js","providesContext":{"jankx/advanced-filters/targetPostType":"targetPostType","jankx/advanced-filters/layout":"layout","jankx/advanced-filters/displayStyle":"displayStyle","jankx/advanced-filters/showLabels":"showLabels","jankx/advanced-filters/showCount":"showCount","jankx/advanced-filters/showEmptyTerms":"showEmptyTerms","jankx/advanced-filters/showOnlyTopLevel":"showOnlyTopLevel","jankx/advanced-filters/showHierarchy":"showHierarchy","jankx/advanced-filters/multipleSelection":"multipleSelection","jankx/advanced-filters/collapsible":"collapsible","jankx/advanced-filters/defaultExpanded":"defaultExpanded"},"supports":{"html":false,"align":["wide","full"],"anchor":true,"spacing":{"margin":true,"padding":true,"blockGap":true},"color":{"background":true,"text":true,"link":true,"gradients":true},"background":{"backgroundImage":true,"backgroundSize":true},"typography":{"fontSize":true,"lineHeight":true},"__experimentalBorder":{"color":true,"radius":true,"style":true,"width":true},"__experimentalLayout":{"allowSwitching":true,"allowInheriting":true,"default":{"type":"default"}}},"attributes":{"blockId":{"type":"string","default":""},"targetBlockIds":{"type":"array","default":[]},"filterType":{"type":"string","default":"taxonomy","enum":["taxonomy","meta","price","date","author","keyword","mixed"]},"layout":{"type":"string","default":"horizontal","enum":["horizontal","vertical","dropdown","accordion"]},"targetPostType":{"type":"string","default":"post"},"showLabels":{"type":"boolean","default":true},"showResetButton":{"type":"boolean","default":true},"resetButtonText":{"type":"string","default":"Reset Filters"},"ajaxEnabled":{"type":"boolean","default":true},"updateUrl":{"type":"boolean","default":true},"scrollToResults":{"type":"boolean","default":false},"taxonomyFilters":{"type":"array","default":[]},"metaFilters":{"type":"array","default":[]},"priceFilters":{"type":"array","default":[]},"dateFilters":{"type":"array","default":[]},"authorFilters":{"type":"array","default":[]},"keywordFilter":{"type":"object","default":{"enabled":false,"placeholder":"Search..."}},"displayStyle":{"type":"string","default":"buttons","enum":["buttons","checkboxes","dropdown","select"]},"showCount":{"type":"boolean","default":false},"showEmptyTerms":{"type":"boolean","default":true},"showOnlyTopLevel":{"type":"boolean","default":false},"showHierarchy":{"type":"boolean","default":false},"displayAsDropdown":{"type":"boolean","default":false},"multipleSelection":{"type":"boolean","default":true},"collapsible":{"type":"boolean","default":false},"defaultExpanded":{"type":"boolean","default":true}}}');
+
+/***/ }
 
 /******/ 	});
 /************************************************************************/
@@ -124,6 +124,12 @@ module.exports = window["ReactJSXRuntime"];
 /******/ 		};
 /******/ 	
 /******/ 		// Execute the module function
+/******/ 		if (!(moduleId in __webpack_modules__)) {
+/******/ 			delete __webpack_module_cache__[moduleId];
+/******/ 			var e = new Error("Cannot find module '" + moduleId + "'");
+/******/ 			e.code = 'MODULE_NOT_FOUND';
+/******/ 			throw e;
+/******/ 		}
 /******/ 		__webpack_modules__[moduleId](module, module.exports, __webpack_require__);
 /******/ 	
 /******/ 		// Return the exports of the module

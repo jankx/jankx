@@ -2,21 +2,11 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
-/***/ "./blocks/slideshow-container/block.json":
-/*!***********************************************!*\
-  !*** ./blocks/slideshow-container/block.json ***!
-  \***********************************************/
-/***/ ((module) => {
-
-module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/slideshow-container","title":"Slideshow Container","category":"jankx","description":"Container for slideshow items","keywords":["slideshow","container","wrapper"],"textdomain":"jankx","parent":["jankx/slideshow"],"attributes":{"containerId":{"type":"string"},"images":{"type":"array","default":[]}},"supports":{"html":false,"reusable":false,"lock":false,"spacing":{"margin":false,"padding":true},"color":{"background":true,"text":true}},"providesContext":{"jankx/slideshowContainerId":"containerId"},"usesContext":["jankx/slideShowId","jankx/showThumbnails","jankx/showNavigation","jankx/transitionEffect","jankx/captionPosition"],"editorScript":"file:./build/index.js","editorStyle":"file:./build/editor.css","style":"file:./build/style.css"}');
-
-/***/ }),
-
-/***/ "./blocks/slideshow-container/edit.tsx":
+/***/ "./blocks/slideshow-container/edit.tsx"
 /*!*********************************************!*\
   !*** ./blocks/slideshow-container/edit.tsx ***!
   \*********************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
@@ -49,7 +39,6 @@ function Edit({
   clientId,
   context
 }) {
-  var _context$jankxShowTh, _context$jankxShowNa, _context$jankxTransi, _context$jankxPrevTe, _context$jankxNextTe;
   const {
     images
   } = attributes;
@@ -70,11 +59,11 @@ function Edit({
   }, [clientId]);
 
   // Get settings from parent slideshow
-  const showThumbnails = (_context$jankxShowTh = context['jankx/showThumbnails']) !== null && _context$jankxShowTh !== void 0 ? _context$jankxShowTh : true;
-  const showNavigation = (_context$jankxShowNa = context['jankx/showNavigation']) !== null && _context$jankxShowNa !== void 0 ? _context$jankxShowNa : true;
-  const transitionEffect = (_context$jankxTransi = context['jankx/transitionEffect']) !== null && _context$jankxTransi !== void 0 ? _context$jankxTransi : 'slide';
-  const prevText = (_context$jankxPrevTe = context['jankx/prevText']) !== null && _context$jankxPrevTe !== void 0 ? _context$jankxPrevTe : '←';
-  const nextText = (_context$jankxNextTe = context['jankx/nextText']) !== null && _context$jankxNextTe !== void 0 ? _context$jankxNextTe : '→';
+  const showThumbnails = context['jankx/showThumbnails'] ?? true;
+  const showNavigation = context['jankx/showNavigation'] ?? true;
+  const transitionEffect = context['jankx/transitionEffect'] ?? 'slide';
+  const prevText = context['jankx/prevText'] ?? '←';
+  const nextText = context['jankx/nextText'] ?? '→';
   const blockProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.useBlockProps)({
     className: 'slideshow-container-block'
   });
@@ -256,25 +245,13 @@ function Edit({
   });
 }
 
-/***/ }),
+/***/ },
 
-/***/ "./blocks/slideshow-container/editor.scss":
-/*!************************************************!*\
-  !*** ./blocks/slideshow-container/editor.scss ***!
-  \************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-// extracted by mini-css-extract-plugin
-
-
-/***/ }),
-
-/***/ "./blocks/slideshow-container/save.tsx":
+/***/ "./blocks/slideshow-container/save.tsx"
 /*!*********************************************!*\
   !*** ./blocks/slideshow-container/save.tsx ***!
   \*********************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
@@ -292,89 +269,111 @@ function Save({
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_0__.InnerBlocks.Content, {});
 }
 
-/***/ }),
+/***/ },
 
-/***/ "./blocks/slideshow-container/style.scss":
-/*!***********************************************!*\
-  !*** ./blocks/slideshow-container/style.scss ***!
-  \***********************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+/***/ "./blocks/slideshow-container/editor.scss"
+/*!************************************************!*\
+  !*** ./blocks/slideshow-container/editor.scss ***!
+  \************************************************/
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
 
-/***/ }),
+/***/ },
 
-/***/ "@wordpress/block-editor":
-/*!*************************************!*\
-  !*** external ["wp","blockEditor"] ***!
-  \*************************************/
-/***/ ((module) => {
+/***/ "./blocks/slideshow-container/style.scss"
+/*!***********************************************!*\
+  !*** ./blocks/slideshow-container/style.scss ***!
+  \***********************************************/
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
-module.exports = window["wp"]["blockEditor"];
+__webpack_require__.r(__webpack_exports__);
+// extracted by mini-css-extract-plugin
 
-/***/ }),
 
-/***/ "@wordpress/blocks":
-/*!********************************!*\
-  !*** external ["wp","blocks"] ***!
-  \********************************/
-/***/ ((module) => {
+/***/ },
 
-module.exports = window["wp"]["blocks"];
-
-/***/ }),
-
-/***/ "@wordpress/components":
-/*!************************************!*\
-  !*** external ["wp","components"] ***!
-  \************************************/
-/***/ ((module) => {
-
-module.exports = window["wp"]["components"];
-
-/***/ }),
-
-/***/ "@wordpress/data":
-/*!******************************!*\
-  !*** external ["wp","data"] ***!
-  \******************************/
-/***/ ((module) => {
-
-module.exports = window["wp"]["data"];
-
-/***/ }),
-
-/***/ "@wordpress/element":
-/*!*********************************!*\
-  !*** external ["wp","element"] ***!
-  \*********************************/
-/***/ ((module) => {
-
-module.exports = window["wp"]["element"];
-
-/***/ }),
-
-/***/ "@wordpress/i18n":
-/*!******************************!*\
-  !*** external ["wp","i18n"] ***!
-  \******************************/
-/***/ ((module) => {
-
-module.exports = window["wp"]["i18n"];
-
-/***/ }),
-
-/***/ "react/jsx-runtime":
+/***/ "react/jsx-runtime"
 /*!**********************************!*\
   !*** external "ReactJSXRuntime" ***!
   \**********************************/
-/***/ ((module) => {
+(module) {
 
 module.exports = window["ReactJSXRuntime"];
 
-/***/ })
+/***/ },
+
+/***/ "@wordpress/block-editor"
+/*!*************************************!*\
+  !*** external ["wp","blockEditor"] ***!
+  \*************************************/
+(module) {
+
+module.exports = window["wp"]["blockEditor"];
+
+/***/ },
+
+/***/ "@wordpress/blocks"
+/*!********************************!*\
+  !*** external ["wp","blocks"] ***!
+  \********************************/
+(module) {
+
+module.exports = window["wp"]["blocks"];
+
+/***/ },
+
+/***/ "@wordpress/components"
+/*!************************************!*\
+  !*** external ["wp","components"] ***!
+  \************************************/
+(module) {
+
+module.exports = window["wp"]["components"];
+
+/***/ },
+
+/***/ "@wordpress/data"
+/*!******************************!*\
+  !*** external ["wp","data"] ***!
+  \******************************/
+(module) {
+
+module.exports = window["wp"]["data"];
+
+/***/ },
+
+/***/ "@wordpress/element"
+/*!*********************************!*\
+  !*** external ["wp","element"] ***!
+  \*********************************/
+(module) {
+
+module.exports = window["wp"]["element"];
+
+/***/ },
+
+/***/ "@wordpress/i18n"
+/*!******************************!*\
+  !*** external ["wp","i18n"] ***!
+  \******************************/
+(module) {
+
+module.exports = window["wp"]["i18n"];
+
+/***/ },
+
+/***/ "./blocks/slideshow-container/block.json"
+/*!***********************************************!*\
+  !*** ./blocks/slideshow-container/block.json ***!
+  \***********************************************/
+(module) {
+
+module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"jankx/slideshow-container","title":"Slideshow Container","category":"jankx","description":"Container for slideshow items","keywords":["slideshow","container","wrapper"],"textdomain":"jankx","parent":["jankx/slideshow"],"attributes":{"containerId":{"type":"string"},"images":{"type":"array","default":[]}},"supports":{"html":false,"reusable":false,"lock":false,"spacing":{"margin":false,"padding":true},"color":{"background":true,"text":true}},"providesContext":{"jankx/slideshowContainerId":"containerId"},"usesContext":["jankx/slideShowId","jankx/showThumbnails","jankx/showNavigation","jankx/transitionEffect","jankx/captionPosition"],"editorScript":"file:./build/index.js","editorStyle":"file:./build/editor.css","style":"file:./build/style.css"}');
+
+/***/ }
 
 /******/ 	});
 /************************************************************************/
@@ -396,6 +395,12 @@ module.exports = window["ReactJSXRuntime"];
 /******/ 		};
 /******/ 	
 /******/ 		// Execute the module function
+/******/ 		if (!(moduleId in __webpack_modules__)) {
+/******/ 			delete __webpack_module_cache__[moduleId];
+/******/ 			var e = new Error("Cannot find module '" + moduleId + "'");
+/******/ 			e.code = 'MODULE_NOT_FOUND';
+/******/ 			throw e;
+/******/ 		}
 /******/ 		__webpack_modules__[moduleId](module, module.exports, __webpack_require__);
 /******/ 	
 /******/ 		// Return the exports of the module
