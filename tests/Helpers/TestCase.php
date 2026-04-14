@@ -20,8 +20,27 @@ abstract class TestCase extends BaseTestCase
     {
         parent::setUp();
 
+        // Ensure ContentLayoutServiceProvider is registered with the global Application
+        // This is needed for tests that use BlockTemplateLayoutManager via the container
+        $this->ensureContentLayoutProviderRegistered();
+
         // Set up common mocks
         $this->setUpCommonMocks();
+    }
+
+    /**
+     * Ensure ContentLayoutServiceProvider is registered with the global Application
+     */
+    protected function ensureContentLayoutProviderRegistered(): void
+    {
+        if (class_exists(\Jankx\Foundation\Application::class)
+            && class_exists(\Jankx\Support\Providers\ContentLayoutServiceProvider::class)
+        ) {
+            $app = \Jankx\Foundation\Application::getInstance();
+            if ($app && !$app->isRegistered(\Jankx\Support\Providers\ContentLayoutServiceProvider::class)) {
+                $app->register(\Jankx\Support\Providers\ContentLayoutServiceProvider::class);
+            }
+        }
     }
 
     /**

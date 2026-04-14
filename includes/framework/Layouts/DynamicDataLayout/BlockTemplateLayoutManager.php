@@ -2,12 +2,14 @@
 
 namespace Jankx\Layouts\DynamicDataLayout;
 
+use Jankx\Foundation\Application;
+use Jankx\Layouts\DynamicDataLayout\BlockTemplateLayoutFactory;
 use Jankx\Layouts\DynamicDataLayout\Contracts\BlockTemplateLayoutInterface;
 use Jankx\Layouts\DynamicDataLayout\LayoutRegistry;
 
 /**
  * Block Template Layout Manager
- * 
+ *
  * High-level service that manages dynamic data layouts via the LayoutRegistry.
  * Replaces static instance access with dependency injection.
  */
@@ -22,14 +24,29 @@ class BlockTemplateLayoutManager
 
     /**
      * Get singleton instance
-     * 
+     *
      * @deprecated Use dependency injection
      * @return static
      */
     public static function getInstance()
     {
         if (!static::$instance) {
-            static::$instance = new static(new LayoutRegistry());
+            $app = Application::getInstance();
+            $registry = $app ? $app->make(LayoutRegistry::class) : new LayoutRegistry($app ?? new Application());
+            static::$instance = new static($registry);
+
+            // Register layouts from factory if registry is empty
+            if (empty($registry->all())) {
+                BlockTemplateLayoutFactory::init();
+                $layouts = BlockTemplateLayoutFactory::getRegisteredLayouts();
+                foreach ($layouts as $name => $class) {
+                    try {
+                        $registry->register($name, $class);
+                    } catch (\Exception $e) {
+                        // Skip if already registered or invalid
+                    }
+                }
+            }
         }
         return static::$instance;
     }

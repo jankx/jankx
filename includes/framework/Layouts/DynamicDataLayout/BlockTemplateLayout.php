@@ -2,6 +2,7 @@
 
 namespace Jankx\Layouts\DynamicDataLayout;
 
+use Jankx\Foundation\Application;
 use Jankx\Layouts\DynamicDataLayout\Contracts\BlockTemplateLayoutInterface;
 use Jankx\Layouts\DynamicDataLayout\Contracts\ContentGeneratorInterface;
 use Jankx\Layouts\DynamicDataLayout\Generators\PostTemplateBlockGenerator;
@@ -69,13 +70,31 @@ abstract class BlockTemplateLayout implements BlockTemplateLayoutInterface
 
     /**
      * Constructor with Dependency Injection
-     * 
-     * @param ViewService $viewService
+     *
+     * @param ViewService|null $viewService
      */
-    public function __construct(ViewService $viewService)
+    public function __construct(?ViewService $viewService = null)
     {
-        $this->viewService = $viewService;
+        $this->viewService = $viewService ?? $this->resolveViewService();
         $this->options = $this->defaultOptions;
+    }
+
+    /**
+     * Resolve ViewService from Application container
+     *
+     * @return ViewService
+     */
+    protected function resolveViewService(): ViewService
+    {
+        $app = Application::getInstance();
+        if ($app) {
+            try {
+                return $app->make(ViewService::class);
+            } catch (\Exception $e) {
+                // Fall back to manual instantiation
+            }
+        }
+        return new ViewService();
     }
 
     public function getName(): string
