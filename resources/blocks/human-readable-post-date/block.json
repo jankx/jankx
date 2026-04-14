@@ -7,6 +7,7 @@
     "icon": "clock",
     "description": "Hiển thị thời gian đăng bài dưới dạng thân thiện (ví dụ: 3 giờ trước)",
     "textdomain": "jankx",
+    "usesContext": ["postId", "postType"],
     "attributes": {
         "showIcon": {
             "type": "boolean",
@@ -26,5 +27,7 @@
             "margin": true,
             "padding": true
         }
-    }
+    },
+    "editorScript": "file:./build/index.js",
+    "style": "file:./build/style.css"
 }

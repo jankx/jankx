@@ -82,11 +82,11 @@ class GutenbergService
 
     public function initBlocks()
     {
-        foreach ($this->getBlocks() as $blockClass => $initialized) {
-            $block = $initialized
-                ? $this->repository->getBlock($blockClass)
-                : $this->app->make($blockClass);
-
+        foreach ($this->getBlocks() as $blockClass) {
+            $block = $this->repository->getBlock($blockClass);
+            if (!$block) {
+                $block = $this->app->make($blockClass);
+            }
             $this->repository->registerBlock($block);
         }
     }

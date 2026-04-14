@@ -1,6 +1,6 @@
 {
     "framework_version": "2.0.0",
-    "generated_at": "2026-03-14T12:10:46+00:00",
+    "generated_at": "2026-04-14T04:11:46+00:00",
     "blocks": [
         {
             "id": "jankx/advanced-button",
@@ -873,79 +873,6 @@
             "has_php_render": true
         },
         {
-            "id": "jankx/date-picker-calendar",
-            "title": "Date Picker Calendar",
-            "description": "A calendar block with date picker functionality supporting outline and fill modes",
-            "category": "jankx",
-            "attributes": {
-                "selectedDates": {
-                    "type": "array",
-                    "default": []
-                },
-                "currentMonth": {
-                    "type": "number",
-                    "default": 3
-                },
-                "currentYear": {
-                    "type": "number",
-                    "default": 2026
-                },
-                "showNavigation": {
-                    "type": "boolean",
-                    "default": true
-                },
-                "showWeekdays": {
-                    "type": "boolean",
-                    "default": true
-                }
-            },
-            "supports": {
-                "html": false,
-                "align": [
-                    "wide",
-                    "full"
-                ],
-                "spacing": {
-                    "margin": true,
-                    "padding": true
-                },
-                "color": {
-                    "background": true,
-                    "text": true,
-                    "gradients": true
-                },
-                "background": {
-                    "backgroundImage": true
-                },
-                "border": {
-                    "color": true,
-                    "radius": true,
-                    "style": true,
-                    "width": true,
-                    "__experimentalDefaultControls": {
-                        "color": true,
-                        "radius": true,
-                        "style": true,
-                        "width": true
-                    }
-                },
-                "__experimentalBorder": {
-                    "color": true,
-                    "radius": true,
-                    "style": true,
-                    "width": true,
-                    "__experimentalDefaultControls": {
-                        "color": true,
-                        "radius": true,
-                        "style": true,
-                        "width": true
-                    }
-                }
-            },
-            "php_class": "Jankx\\Gutenberg\\Blocks\\DatePickerCalendarBlock",
-            "has_php_render": true
-        },
-        {
             "id": "jankx/icon-picker",
             "title": "Icon Picker",
             "description": "Ch\u1ecdn v\u00e0 hi\u1ec3n th\u1ecb icon t\u1eeb Jankx Font Icons System v\u1edbi kh\u1ea3 n\u0103ng th\u00eam link v\u00e0 t\u00f9y ch\u1ec9nh style",
@@ -1666,613 +1593,6 @@
             },
             "php_class": "Jankx\\Gutenberg\\Blocks\\DynamicDataTemplateBlock",
             "has_php_render": true
-        },
-        {
-            "id": "jankx/dynamic-ssr-layout",
-            "title": "Dynamic SSR Layout",
-            "description": "Wrapper layout hi\u1ec3n th\u1ecb danh s\u00e1ch posts v\u1edbi SSR template",
-            "category": "jankx",
-            "attributes": {
-                "queryPreset": {
-                    "type": "string",
-                    "default": "custom",
-                    "enum": [
-                        "default",
-                        "related",
-                        "custom",
-                        "on-sale",
-                        "featured",
-                        "related-products",
-                        "best-sellers",
-                        "top-rated",
-                        "upsells",
-                        "new-arrivals",
-                        "recently-viewed"
-                    ]
-                },
-                "postType": {
-                    "type": "string",
-                    "default": "post"
-                },
-                "useMultiPostType": {
-                    "type": "boolean",
-                    "default": false
-                },
-                "postTypes": {
-                    "type": "array",
-                    "default": []
-                },
-                "postsPerPage": {
-                    "type": "number",
-                    "default": 10
-                },
-                "includeStickyPosts": {
-                    "type": "boolean",
-                    "default": false
-                },
-                "layout": {
-                    "type": "string",
-                    "default": "grid"
-                },
-                "columns": {
-                    "type": "number",
-                    "default": 3
-                },
-                "columnsTablet": {
-                    "type": "number",
-                    "default": 2
-                },
-                "columnsMobile": {
-                    "type": "number",
-                    "default": 1
-                },
-                "responsiveColumns": {
-                    "type": "object",
-                    "default": {
-                        "desktop": 3,
-                        "tablet": 2,
-                        "mobile": 1
-                    }
-                },
-                "orderBy": {
-                    "type": "string",
-                    "default": "date"
-                },
-                "order": {
-                    "type": "string",
-                    "default": "DESC"
-                },
-                "queryId": {
-                    "type": "string",
-                    "default": ""
-                },
-                "offset": {
-                    "type": "number",
-                    "default": 0
-                },
-                "taxQuery": {
-                    "type": "array",
-                    "default": []
-                },
-                "metaQuery": {
-                    "type": "array",
-                    "default": []
-                },
-                "keyword": {
-                    "type": "string",
-                    "default": ""
-                },
-                "authorIn": {
-                    "type": "array",
-                    "default": []
-                },
-                "authorNotIn": {
-                    "type": "array",
-                    "default": []
-                },
-                "postIn": {
-                    "type": "array",
-                    "default": []
-                },
-                "postNotIn": {
-                    "type": "array",
-                    "default": []
-                },
-                "metaKey": {
-                    "type": "string",
-                    "default": ""
-                },
-                "metaType": {
-                    "type": "string",
-                    "default": ""
-                },
-                "postStatus": {
-                    "type": "array",
-                    "default": [
-                        "publish"
-                    ]
-                },
-                "postParent": {
-                    "type": "number",
-                    "default": 0
-                },
-                "postParentIn": {
-                    "type": "array",
-                    "default": []
-                },
-                "postParentNotIn": {
-                    "type": "array",
-                    "default": []
-                },
-                "customQueryId": {
-                    "type": "string",
-                    "default": ""
-                },
-                "enablePagination": {
-                    "type": "boolean",
-                    "default": false
-                },
-                "paginationStyle": {
-                    "type": "string",
-                    "default": "numbers",
-                    "enum": [
-                        "numbers",
-                        "simple",
-                        "arrows",
-                        "load-more"
-                    ]
-                },
-                "paginationAlignment": {
-                    "type": "string",
-                    "default": "center",
-                    "enum": [
-                        "left",
-                        "center",
-                        "right"
-                    ]
-                },
-                "showPaginationNumbers": {
-                    "type": "boolean",
-                    "default": true
-                },
-                "paginationPrevText": {
-                    "type": "string",
-                    "default": ""
-                },
-                "paginationNextText": {
-                    "type": "string",
-                    "default": ""
-                },
-                "slidesToScroll": {
-                    "type": "number",
-                    "default": 1
-                },
-                "loop": {
-                    "type": "boolean",
-                    "default": false
-                },
-                "autoplay": {
-                    "type": "boolean",
-                    "default": false
-                },
-                "autoplayDelay": {
-                    "type": "number",
-                    "default": 3000
-                },
-                "showArrows": {
-                    "type": "boolean",
-                    "default": true
-                },
-                "showDots": {
-                    "type": "boolean",
-                    "default": true
-                },
-                "carouselAlign": {
-                    "type": "string",
-                    "default": "start",
-                    "enum": [
-                        "start",
-                        "center",
-                        "end"
-                    ]
-                },
-                "carouselAxis": {
-                    "type": "string",
-                    "default": "x",
-                    "enum": [
-                        "x",
-                        "y"
-                    ]
-                },
-                "carouselDirection": {
-                    "type": "string",
-                    "default": "ltr",
-                    "enum": [
-                        "ltr",
-                        "rtl"
-                    ]
-                },
-                "carouselStartIndex": {
-                    "type": "number",
-                    "default": 0
-                },
-                "carouselDuration": {
-                    "type": "number",
-                    "default": 25
-                },
-                "carouselDragFree": {
-                    "type": "boolean",
-                    "default": false
-                },
-                "carouselDragThreshold": {
-                    "type": "number",
-                    "default": 10
-                },
-                "carouselSkipSnaps": {
-                    "type": "boolean",
-                    "default": false
-                },
-                "carouselContainScroll": {
-                    "type": "string",
-                    "default": "trimSnaps",
-                    "enum": [
-                        "false",
-                        "trimSnaps",
-                        "keepSnaps"
-                    ]
-                },
-                "carouselInViewThreshold": {
-                    "type": "number",
-                    "default": 0
-                },
-                "showTitle": {
-                    "type": "boolean",
-                    "default": true
-                },
-                "showExcerpt": {
-                    "type": "boolean",
-                    "default": true
-                },
-                "showFeaturedImage": {
-                    "type": "boolean",
-                    "default": true
-                },
-                "thumbnailPosition": {
-                    "type": "string",
-                    "default": "top",
-                    "enum": [
-                        "top",
-                        "bottom",
-                        "left",
-                        "right"
-                    ]
-                },
-                "imageRatio": {
-                    "type": "string",
-                    "default": ""
-                },
-                "showDate": {
-                    "type": "boolean",
-                    "default": true
-                },
-                "showAuthor": {
-                    "type": "boolean",
-                    "default": false
-                },
-                "showPrice": {
-                    "type": "boolean",
-                    "default": true
-                },
-                "showAddToCart": {
-                    "type": "boolean",
-                    "default": true
-                },
-                "showRating": {
-                    "type": "boolean",
-                    "default": false
-                },
-                "excerptLength": {
-                    "type": "number",
-                    "default": 55
-                }
-            },
-            "supports": {
-                "html": false,
-                "align": [
-                    "wide",
-                    "full"
-                ],
-                "anchor": true,
-                "innerBlocks": true,
-                "spacing": {
-                    "margin": true,
-                    "padding": true,
-                    "blockGap": true
-                },
-                "color": {
-                    "background": true,
-                    "text": true,
-                    "link": true,
-                    "gradients": true
-                },
-                "background": {
-                    "backgroundImage": true,
-                    "backgroundSize": true
-                },
-                "typography": {
-                    "fontSize": true,
-                    "lineHeight": true
-                },
-                "__experimentalBorder": {
-                    "color": true,
-                    "radius": true,
-                    "style": true,
-                    "width": true
-                },
-                "__experimentalLayout": {
-                    "allowSwitching": true,
-                    "allowInheriting": true,
-                    "default": {
-                        "type": "constrained"
-                    }
-                }
-            },
-            "php_class": "Jankx\\Gutenberg\\Blocks\\DynamicSsrLayoutBlock",
-            "has_php_render": true
-        },
-        {
-            "id": "jankx/dynamic-ssr-template",
-            "title": "Dynamic SSR Template",
-            "description": "Server-rendered template cho t\u1eebng item trong Dynamic SSR Layout",
-            "category": "jankx",
-            "attributes": {
-                "templateSlug": {
-                    "type": "string",
-                    "default": "layouts/loop/item-default"
-                },
-                "thumbnailPosition": {
-                    "type": "string",
-                    "default": "top"
-                },
-                "imageRatio": {
-                    "type": "string",
-                    "default": ""
-                },
-                "itemSpacing": {
-                    "type": "string",
-                    "default": "normal"
-                },
-                "showItemBorder": {
-                    "type": "boolean",
-                    "default": false
-                },
-                "itemBorderRadius": {
-                    "type": "number",
-                    "default": 0
-                },
-                "showExcerpt": {
-                    "type": "boolean",
-                    "default": true
-                },
-                "excerptLength": {
-                    "type": "number",
-                    "default": 55
-                },
-                "showTitle": {
-                    "type": "boolean",
-                    "default": true
-                },
-                "overlayIcon": {
-                    "type": "string",
-                    "default": ""
-                },
-                "overlayIconPosition": {
-                    "type": "string",
-                    "default": "center"
-                },
-                "overlayIconSize": {
-                    "type": "number",
-                    "default": 24
-                },
-                "overlayIconColor": {
-                    "type": "string",
-                    "default": "#ffffff"
-                },
-                "overlayIconBackground": {
-                    "type": "string",
-                    "default": "rgba(0, 0, 0, 0.5)"
-                },
-                "overlayIconShowMode": {
-                    "type": "string",
-                    "default": "always-show",
-                    "enum": [
-                        "always-show",
-                        "hover-hide",
-                        "hover-show"
-                    ]
-                },
-                "overlayIconTarget": {
-                    "type": "string",
-                    "default": "featured-image",
-                    "enum": [
-                        "featured-image",
-                        "entry-image",
-                        "entire-item"
-                    ]
-                },
-                "overlayIconType": {
-                    "type": "string",
-                    "default": "class",
-                    "enum": [
-                        "class",
-                        "image",
-                        "text"
-                    ]
-                },
-                "overlayIconText": {
-                    "type": "string",
-                    "default": ""
-                },
-                "overlayIconRotate": {
-                    "type": "number",
-                    "default": 0
-                },
-                "overlayIconImageId": {
-                    "type": "number",
-                    "default": 0
-                },
-                "overlayIconImageUrl": {
-                    "type": "string",
-                    "default": ""
-                },
-                "showDate": {
-                    "type": "boolean",
-                    "default": true
-                },
-                "showAuthor": {
-                    "type": "boolean",
-                    "default": false
-                },
-                "showPrice": {
-                    "type": "boolean",
-                    "default": true
-                },
-                "showAddToCart": {
-                    "type": "boolean",
-                    "default": true
-                },
-                "showRating": {
-                    "type": "boolean",
-                    "default": false
-                },
-                "animationType": {
-                    "type": "string",
-                    "default": "none",
-                    "enum": [
-                        "none",
-                        "fade-in",
-                        "fade-in-up",
-                        "fade-in-down",
-                        "fade-in-left",
-                        "fade-in-right",
-                        "zoom-in",
-                        "slide-in-up"
-                    ]
-                },
-                "animationDuration": {
-                    "type": "number",
-                    "default": 1000
-                },
-                "animationDelay": {
-                    "type": "number",
-                    "default": 0
-                },
-                "animationTarget": {
-                    "type": "string",
-                    "default": "entry",
-                    "enum": [
-                        "entry",
-                        "thumbnail"
-                    ]
-                },
-                "animationReverse": {
-                    "type": "boolean",
-                    "default": false
-                }
-            },
-            "supports": {
-                "reusable": false,
-                "html": false,
-                "align": [
-                    "wide",
-                    "full"
-                ],
-                "layout": true,
-                "color": {
-                    "gradients": true,
-                    "link": true,
-                    "__experimentalDefaultControls": {
-                        "background": true,
-                        "text": true
-                    }
-                },
-                "typography": {
-                    "fontSize": true,
-                    "lineHeight": true,
-                    "__experimentalFontFamily": true,
-                    "__experimentalFontWeight": true,
-                    "__experimentalFontStyle": true,
-                    "__experimentalTextTransform": true,
-                    "__experimentalTextDecoration": true
-                }
-            },
-            "php_class": "Jankx\\Gutenberg\\Blocks\\DynamicSsrTemplateBlock",
-            "has_php_render": true
-        },
-        {
-            "id": "jankx/magic-text",
-            "title": "Magic Text Block",
-            "description": "Add custom style to text",
-            "category": "jankx",
-            "attributes": [],
-            "supports": {
-                "html": false
-            },
-            "php_class": "Jankx\\Gutenberg\\Blocks\\MagicTextBlock",
-            "has_php_render": false
-        },
-        {
-            "id": "jankx/master-table",
-            "title": "Master Table",
-            "description": "A customizable table with advanced styling options",
-            "category": "jankx",
-            "attributes": {
-                "hasFixedLayout": {
-                    "type": "boolean",
-                    "default": false
-                },
-                "hasHeaderRow": {
-                    "type": "boolean",
-                    "default": true
-                },
-                "hasFooterRow": {
-                    "type": "boolean",
-                    "default": false
-                }
-            },
-            "supports": {
-                "html": false,
-                "align": [
-                    "wide",
-                    "full"
-                ],
-                "spacing": {
-                    "margin": true,
-                    "padding": true
-                },
-                "color": {
-                    "background": true,
-                    "text": true
-                },
-                "__experimentalBorder": {
-                    "color": true,
-                    "radius": true,
-                    "style": true,
-                    "width": true,
-                    "__experimentalDefaultControls": {
-                        "color": true,
-                        "radius": true,
-                        "style": true,
-                        "width": true
-                    }
-                },
-                "typography": {
-                    "fontSize": true,
-                    "lineHeight": true
-                }
-            },
-            "php_class": "Jankx\\Gutenberg\\Blocks\\MasterTableBlock",
-            "has_php_render": false
         },
         {
             "id": "jankx/modal",
@@ -3910,289 +3230,6 @@
             "has_php_render": true
         },
         {
-            "id": "jankx/table-cell",
-            "title": "Table Cell",
-            "description": "A table cell that can contain any block content",
-            "category": "jankx",
-            "attributes": {
-                "isHeaderCell": {
-                    "type": "boolean",
-                    "default": false
-                },
-                "colspan": {
-                    "type": "number",
-                    "default": 1
-                },
-                "rowspan": {
-                    "type": "number",
-                    "default": 1
-                },
-                "verticalAlignment": {
-                    "type": "string",
-                    "enum": [
-                        "top",
-                        "middle",
-                        "bottom"
-                    ],
-                    "default": "middle"
-                }
-            },
-            "supports": {
-                "html": false,
-                "reusable": false,
-                "spacing": {
-                    "padding": true,
-                    "margin": false
-                },
-                "color": {
-                    "background": true,
-                    "text": true
-                },
-                "__experimentalBorder": {
-                    "color": true,
-                    "style": true,
-                    "width": true,
-                    "__experimentalDefaultControls": {
-                        "color": true,
-                        "style": true,
-                        "width": true
-                    }
-                },
-                "typography": {
-                    "fontSize": true,
-                    "fontWeight": true,
-                    "textAlign": true
-                }
-            },
-            "php_class": "Jankx\\Gutenberg\\Blocks\\TableCellBlock",
-            "has_php_render": false
-        },
-        {
-            "id": "jankx/table-of-content",
-            "title": "Table of Content",
-            "description": "Display interactive table of content for the current post",
-            "category": "jankx",
-            "attributes": {
-                "listingType": {
-                    "type": "string",
-                    "enum": [
-                        "ul",
-                        "ol",
-                        "none"
-                    ],
-                    "default": "ul"
-                },
-                "expandIconType": {
-                    "type": "string",
-                    "enum": [
-                        "plus-minus",
-                        "chevron",
-                        "arrow",
-                        "caret",
-                        "none"
-                    ],
-                    "default": "plus-minus"
-                },
-                "defaultExpanded": {
-                    "type": "boolean",
-                    "default": false
-                },
-                "expandFirstItem": {
-                    "type": "boolean",
-                    "default": true
-                },
-                "showHeading": {
-                    "type": "boolean",
-                    "default": true
-                },
-                "hideEmptyMessage": {
-                    "type": "boolean",
-                    "default": true
-                },
-                "customHeadingText": {
-                    "type": "string",
-                    "default": ""
-                },
-                "headingStyle": {
-                    "type": "string",
-                    "enum": [
-                        "underline",
-                        "tabbed",
-                        "bordered"
-                    ],
-                    "default": "underline"
-                },
-                "minHeadingLevel": {
-                    "type": "number",
-                    "default": 1,
-                    "minimum": 1,
-                    "maximum": 6
-                },
-                "maxHeadingLevel": {
-                    "type": "number",
-                    "default": 6,
-                    "minimum": 2,
-                    "maximum": 6
-                },
-                "className": {
-                    "type": "string",
-                    "default": ""
-                },
-                "anchor": {
-                    "type": "string",
-                    "default": ""
-                }
-            },
-            "supports": {
-                "html": false,
-                "anchor": true,
-                "align": [
-                    "wide",
-                    "full"
-                ],
-                "spacing": {
-                    "margin": true,
-                    "padding": true,
-                    "blockGap": true,
-                    "__experimentalDefaultControls": {
-                        "padding": true,
-                        "margin": true
-                    }
-                },
-                "color": {
-                    "background": true,
-                    "gradients": true,
-                    "text": true,
-                    "link": true,
-                    "__experimentalDefaultControls": {
-                        "background": true,
-                        "text": true
-                    }
-                },
-                "typography": {
-                    "fontSize": true,
-                    "lineHeight": true,
-                    "fontFamily": true,
-                    "fontWeight": true,
-                    "fontStyle": true,
-                    "textTransform": true,
-                    "textDecoration": true,
-                    "letterSpacing": true,
-                    "__experimentalDefaultControls": {
-                        "fontSize": true
-                    }
-                },
-                "__experimentalBorder": {
-                    "color": true,
-                    "radius": true,
-                    "style": true,
-                    "width": true,
-                    "__experimentalDefaultControls": {
-                        "radius": true
-                    }
-                },
-                "shadow": true
-            },
-            "php_class": "Jankx\\Gutenberg\\Blocks\\TableOfContentBlock",
-            "has_php_render": true
-        },
-        {
-            "id": "jankx/table-row",
-            "title": "Table Row",
-            "description": "A table row with customizable cells",
-            "category": "jankx",
-            "attributes": {
-                "isHeader": {
-                    "type": "boolean",
-                    "default": false
-                },
-                "isFooter": {
-                    "type": "boolean",
-                    "default": false
-                }
-            },
-            "supports": {
-                "html": false,
-                "reusable": false,
-                "spacing": {
-                    "padding": true
-                },
-                "color": {
-                    "background": true,
-                    "text": true
-                },
-                "border": {
-                    "color": true,
-                    "radius": true,
-                    "style": true,
-                    "width": true,
-                    "__experimentalDefaultControls": {
-                        "color": true,
-                        "style": true,
-                        "width": true
-                    }
-                }
-            },
-            "php_class": "Jankx\\Gutenberg\\Blocks\\TableRowBlock",
-            "has_php_render": false
-        },
-        {
-            "id": "jankx/facebook-page",
-            "title": "Facebook Page",
-            "description": "Nh\u00fang Facebook Page Plugin v\u1edbi t\u00f9y ch\u1ecdn tabs, k\u00edch th\u01b0\u1edbc, v\u00e0 hi\u1ec3n th\u1ecb.",
-            "category": "jankx",
-            "attributes": {
-                "href": {
-                    "type": "string",
-                    "default": ""
-                },
-                "tabs": {
-                    "type": "string",
-                    "default": "timeline,events,messages"
-                },
-                "width": {
-                    "type": "number",
-                    "default": 380
-                },
-                "hideCover": {
-                    "type": "boolean",
-                    "default": false
-                },
-                "showFacepile": {
-                    "type": "boolean",
-                    "default": true
-                },
-                "smallHeader": {
-                    "type": "boolean",
-                    "default": false
-                },
-                "adaptContainerWidth": {
-                    "type": "boolean",
-                    "default": true
-                },
-                "locale": {
-                    "type": "string",
-                    "default": "vi_VN"
-                },
-                "className": {
-                    "type": "string"
-                }
-            },
-            "supports": {
-                "html": false,
-                "align": [
-                    "wide",
-                    "full"
-                ],
-                "spacing": {
-                    "margin": true,
-                    "padding": true
-                }
-            },
-            "php_class": "Jankx\\Gutenberg\\Blocks\\FacebookPageBlock",
-            "has_php_render": false
-        },
-        {
             "id": "jankx/testimonials",
             "title": "Testimonials",
             "description": "Hi\u1ec3n th\u1ecb testimonials v\u1edbi layout t\u1ed5ng th\u1ec3 (grid/list/carousel/banner)",
@@ -4429,99 +3466,6 @@
             "has_php_render": true
         },
         {
-            "id": "jankx/floating-messengers",
-            "title": "Floating Messengers",
-            "description": "Floating action button for multi-messenger links with advanced expansion and animations",
-            "category": "jankx",
-            "attributes": {
-                "positionX": {
-                    "type": "string",
-                    "enum": [
-                        "left",
-                        "right"
-                    ],
-                    "default": "right"
-                },
-                "positionY": {
-                    "type": "string",
-                    "enum": [
-                        "bottom",
-                        "center"
-                    ],
-                    "default": "bottom"
-                },
-                "offsetBottom": {
-                    "type": "number",
-                    "default": 24
-                },
-                "expansionStyle": {
-                    "type": "string",
-                    "enum": [
-                        "vertical",
-                        "horizontal",
-                        "fan",
-                        "split"
-                    ],
-                    "default": "vertical"
-                },
-                "idleAnimation": {
-                    "type": "string",
-                    "enum": [
-                        "none",
-                        "pulse-ring",
-                        "wiggle",
-                        "float"
-                    ],
-                    "default": "none"
-                },
-                "spacing": {
-                    "type": "number",
-                    "default": 60
-                },
-                "messengers": {
-                    "type": "array",
-                    "default": [
-                        {
-                            "id": "zalo",
-                            "name": "Zalo",
-                            "color": "#0068FF",
-                            "url": "#"
-                        },
-                        {
-                            "id": "messenger",
-                            "name": "Messenger",
-                            "color": "#00B2FF",
-                            "url": "#"
-                        },
-                        {
-                            "id": "instagram",
-                            "name": "Instagram",
-                            "color": "#E1306C",
-                            "url": "#"
-                        },
-                        {
-                            "id": "telegram",
-                            "name": "Telegram",
-                            "color": "#229ED9",
-                            "url": "#"
-                        },
-                        {
-                            "id": "call",
-                            "name": "Hotline",
-                            "color": "#34D399",
-                            "url": "tel:123456789"
-                        }
-                    ]
-                }
-            },
-            "supports": {
-                "html": false,
-                "anchor": true
-            },
-            "php_class": "Jankx\\Gutenberg\\Blocks\\FloatingMessengersBlock",
-            "has_php_render": false
-        },
-        {
             "id": "jankx/sticky-box",
             "title": "Sticky Box",
             "description": "Nh\u00f3m n\u1ed9i dung c\u00f3 h\u00e0nh vi sticky theo tr\u1ee5c Y khi scroll t\u1edbi.",
@@ -4614,46 +3558,6 @@
             "has_php_render": false
         },
         {
-            "id": "jankx/language-switcher",
-            "title": "Language Switcher",
-            "description": "Display language switcher for Polylang plugin",
-            "category": "jankx",
-            "attributes": {
-                "showFlags": {
-                    "type": "boolean",
-                    "default": true
-                },
-                "showNames": {
-                    "type": "boolean",
-                    "default": true
-                },
-                "showCurrent": {
-                    "type": "boolean",
-                    "default": true
-                },
-                "displayType": {
-                    "type": "string",
-                    "default": "dropdown"
-                },
-                "className": {
-                    "type": "string"
-                }
-            },
-            "supports": {
-                "html": false,
-                "align": [
-                    "wide",
-                    "full"
-                ],
-                "spacing": {
-                    "margin": true,
-                    "padding": true
-                }
-            },
-            "php_class": "Jankx\\Gutenberg\\Blocks\\LanguageSwitcherBlock",
-            "has_php_render": true
-        },
-        {
             "id": "jankx/layout-switcher",
             "title": "Layout Switcher",
             "description": "Cho ph\u00e9p ng\u01b0\u1eddi d\u00f9ng chuy\u1ec3n \u0111\u1ed5i layout c\u1ee7a Dynamic Data Layout",
@@ -4679,58 +3583,6 @@
             },
             "supports": [],
             "php_class": "Jankx\\Gutenberg\\Blocks\\LayoutSwitcherBlock",
-            "has_php_render": true
-        },
-        {
-            "id": "jankx/plyr-player",
-            "title": "Plyr Player",
-            "description": "Media player powered by Plyr",
-            "category": "jankx",
-            "attributes": {
-                "mediaType": {
-                    "type": "string",
-                    "default": "video"
-                },
-                "mediaUrl": {
-                    "type": "string",
-                    "default": ""
-                },
-                "posterUrl": {
-                    "type": "string",
-                    "default": ""
-                },
-                "autoplay": {
-                    "type": "boolean",
-                    "default": false
-                },
-                "loop": {
-                    "type": "boolean",
-                    "default": false
-                },
-                "muted": {
-                    "type": "boolean",
-                    "default": false
-                },
-                "preload": {
-                    "type": "string",
-                    "default": "metadata"
-                },
-                "className": {
-                    "type": "string"
-                }
-            },
-            "supports": {
-                "html": false,
-                "align": [
-                    "wide",
-                    "full"
-                ],
-                "spacing": {
-                    "margin": true,
-                    "padding": true
-                }
-            },
-            "php_class": "Jankx\\Gutenberg\\Blocks\\PlyrPlayerBlock",
             "has_php_render": true
         },
         {
@@ -5466,6 +4318,97 @@
                 }
             },
             "php_class": "Jankx\\Gutenberg\\Blocks\\TypographyBlock",
+            "has_php_render": true
+        },
+        {
+            "id": "jankx/human-readable-post-date",
+            "title": "Human Readable Post Date",
+            "description": "Hi\u1ec3n th\u1ecb th\u1eddi gian \u0111\u0103ng b\u00e0i d\u01b0\u1edbi d\u1ea1ng th\u00e2n thi\u1ec7n (v\u00ed d\u1ee5: 3 gi\u1edd tr\u01b0\u1edbc)",
+            "category": "jankx",
+            "attributes": {
+                "showIcon": {
+                    "type": "boolean",
+                    "default": true
+                }
+            },
+            "supports": {
+                "html": false,
+                "color": {
+                    "text": true
+                },
+                "typography": {
+                    "fontSize": true,
+                    "lineHeight": true
+                },
+                "spacing": {
+                    "margin": true,
+                    "padding": true
+                }
+            },
+            "php_class": "Jankx\\Gutenberg\\Blocks\\HumanReadablePostDateBlock",
+            "has_php_render": true
+        },
+        {
+            "id": "jankx/user-menu",
+            "title": "User Menu",
+            "description": "Hi\u1ec3n th\u1ecb menu ng\u01b0\u1eddi d\u00f9ng v\u1edbi tr\u1ea1ng th\u00e1i \u0111\u0103ng nh\u1eadp/\u0111\u0103ng xu\u1ea5t v\u00e0 dropdown th\u00f4ng tin c\u00e1 nh\u00e2n.",
+            "category": "jankx",
+            "attributes": {
+                "showRegister": {
+                    "type": "boolean",
+                    "default": true
+                },
+                "showLogin": {
+                    "type": "boolean",
+                    "default": true
+                },
+                "showUserName": {
+                    "type": "boolean",
+                    "default": false
+                },
+                "greetingText": {
+                    "type": "string",
+                    "default": "Xin ch\u00e0o,"
+                },
+                "avatarSize": {
+                    "type": "number",
+                    "default": 35
+                }
+            },
+            "supports": {
+                "html": false,
+                "align": [
+                    "wide",
+                    "full"
+                ],
+                "spacing": {
+                    "margin": true,
+                    "padding": true,
+                    "blockGap": true,
+                    "__experimentalDefaultControls": {
+                        "margin": true,
+                        "padding": true
+                    }
+                },
+                "color": {
+                    "text": true,
+                    "background": true,
+                    "link": true,
+                    "__experimentalDefaultControls": {
+                        "text": true,
+                        "background": true
+                    }
+                },
+                "typography": {
+                    "fontSize": true,
+                    "lineHeight": true,
+                    "fontWeight": true,
+                    "__experimentalDefaultControls": {
+                        "fontSize": true
+                    }
+                }
+            },
+            "php_class": "Jankx\\Gutenberg\\Blocks\\UserMenuBlock",
             "has_php_render": true
         },
         {

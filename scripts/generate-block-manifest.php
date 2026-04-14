@@ -11,10 +11,11 @@ use Tests\Gutenberg\Blocks\BlockManifestGenerator;
 use Tests\Gutenberg\Blocks\BlockOutputReferenceGenerator;
 use Tests\Gutenberg\Support\DesignTokenGenerator;
 
+require_once ABSPATH . 'tests/bootstrap.php';
+require_once ABSPATH . 'tests/bootstrap-mocks.php';
+
 // Initialize Application
 $app = new Application(dirname(__DIR__));
-
-require_once ABSPATH . 'tests/bootstrap-mocks.php';
 
 // Setup paths needed by generator
 $app->instance('blocks.path', $app->basePath('resources/blocks'));
