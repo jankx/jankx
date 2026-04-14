@@ -1,0 +1,101 @@
+name: Release
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  build-release-zip:
+    name: Build & Upload Release ZIP
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # ── PHP setup ──────────────────────────────────────────────────────────
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: mbstring, intl, bcmath, curl, gd, zip
+          tools: composer:v2
+
+      # ── Node setup ─────────────────────────────────────────────────────────
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: resources/package-lock.json
+
+      # ── Install production PHP deps only (no dev) ──────────────────────────
+      - name: Install Composer production dependencies
+        run: |
+          composer install \
+            --no-dev \
+            --prefer-dist \
+            --optimize-autoloader \
+            --no-progress \
+            --no-interaction
+
+      # ── Build JS/CSS assets ────────────────────────────────────────────────
+      - name: Install Node dependencies (theme root)
+        run: npm ci --no-interaction
+
+      - name: Build theme production assets (Mix)
+        run: npm run production --no-interaction
+
+      - name: Install Node dependencies (resources blocks)
+        run: npm ci --no-interaction
+        working-directory: resources
+
+      - name: Build Gutenberg blocks
+        run: npm run build --no-interaction
+        working-directory: resources
+
+      # ── Package ZIP ────────────────────────────────────────────────────────
+      - name: Create release ZIP
+        run: |
+          RELEASE_TAG="${{ github.event.release.tag_name }}"
+          ZIP_NAME="jankx-${RELEASE_TAG}.zip"
+          THEME_SLUG="jankx"
+
+          # Create a clean staging directory
+          mkdir -p /tmp/release/${THEME_SLUG}
+
+          # Copy everything except dev-only / VCS / build-time files
+          rsync -a \
+            --exclude='.git' \
+            --exclude='.github' \
+            --exclude='.gitignore' \
+            --exclude='.gitattributes' \
+            --exclude='node_modules' \
+            --exclude='resources/node_modules' \
+            --exclude='tests' \
+            --exclude='scripts' \
+            --exclude='resources/blocks/*/node_modules' \
+            --exclude='resources/**/*.map' \
+            --exclude='*.log' \
+            --exclude='.env*' \
+            --exclude='phpunit.xml*' \
+            --exclude='composer.lock' \
+            --exclude='package-lock.json' \
+            --exclude='resources/package-lock.json' \
+            --exclude='llms.txt' \
+            --exclude='docs' \
+            ./ /tmp/release/${THEME_SLUG}/
+
+          # Create the ZIP from the parent of the staging dir
+          cd /tmp/release
+          zip -r "${ZIP_NAME}" ${THEME_SLUG}/
+          echo "ZIP_PATH=/tmp/release/${ZIP_NAME}" >> $GITHUB_ENV
+          echo "ZIP_NAME=${ZIP_NAME}" >> $GITHUB_ENV
+
+      # ── Upload ZIP to the GitHub Release ───────────────────────────────────
+      - name: Upload ZIP to release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ${{ env.ZIP_PATH }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
