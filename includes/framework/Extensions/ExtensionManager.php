@@ -653,4 +653,99 @@ class ExtensionManager implements ExtensionManagerInterface
 
         return $info;
     }
+
+    /**
+     * Install an extension from Jankx Hub
+     */
+    public function install_extension_from_hub(string $slug): bool|\WP_Error
+    {
+        $info = $this->get_hub_extension_info($slug);
+        if (empty($info['download_url'])) {
+            return new \WP_Error('hub_error', __('Could not resolve download URL from Jankx Hub.', 'jankx'));
+        }
+
+        if (!function_exists('download_url')) {
+            require_once ABSPATH . 'wp-admin/includes/file.php';
+        }
+
+        $tmp_file = download_url($info['download_url']);
+        if (is_wp_error($tmp_file)) {
+            return $tmp_file;
+        }
+
+        $extensions_dir = get_template_directory() . '/extensions';
+        $target_dir = $extensions_dir . '/' . $slug;
+
+        $wp_filesystem = $this->getFilesystem();
+        if (!$wp_filesystem->exists($extensions_dir)) {
+            $wp_filesystem->mkdir($extensions_dir);
+        }
+
+        // Unzip to a temporary directory first to handle folder structure
+        $unzip_dir = $extensions_dir . '/_tmp_' . $slug;
+        if ($wp_filesystem->exists($unzip_dir)) {
+            $wp_filesystem->delete($unzip_dir, true);
+        }
+        $wp_filesystem->mkdir($unzip_dir);
+
+        $unzipped = unzip_file($tmp_file, $unzip_dir);
+        @unlink($tmp_file);
+
+        if (is_wp_error($unzipped)) {
+            $wp_filesystem->delete($unzip_dir, true);
+            return $unzipped;
+        }
+
+        // Usually GitHub Zips have a root folder like "repo-branch"
+        $files = $wp_filesystem->dirlist($unzip_dir);
+        $source_dir = $unzip_dir;
+        
+        if (count($files) === 1) {
+            $first_file = reset($files);
+            if ($first_file['type'] === 'd') {
+                $source_dir .= '/' . $first_file['name'];
+            }
+        }
+
+        // Move to final location
+        if ($wp_filesystem->exists($target_dir)) {
+            $wp_filesystem->delete($target_dir, true);
+        }
+
+        $moved = $wp_filesystem->move($source_dir, $target_dir);
+        $wp_filesystem->delete($unzip_dir, true);
+
+        if (!$moved) {
+            return new \WP_Error('install_error', __('Failed to move extension to final directory.', 'jankx'));
+        }
+
+        // Enable the extension immediately after install
+        $manifestPath = $target_dir . '/manifest.json';
+        if ($wp_filesystem->exists($manifestPath)) {
+            $manifestJson = $wp_filesystem->get_contents($manifestPath);
+            $manifest = json_decode($manifestJson, true);
+            if ($manifest) {
+                $manifest['enabled'] = true;
+                $wp_filesystem->put_contents(
+                    $manifestPath,
+                    json_encode($manifest, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE)
+                );
+            }
+        }
+
+        // Invalidate directory cache
+        delete_transient('jankx_extensions_dirs_' . get_stylesheet());
+
+        return true;
+    }
+
+    protected function getFilesystem()
+    {
+        global $wp_filesystem;
+        if (empty($wp_filesystem)) {
+            require_once ABSPATH . 'wp-admin/includes/file.php';
+            WP_Filesystem();
+        }
+        return $wp_filesystem;
+    }
 }

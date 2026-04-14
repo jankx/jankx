@@ -62,7 +62,8 @@ return [
     ],
     'extensions' => [
         'required' => [
-            'hello-extension'
+            'hello-extension',
+            'custom-pricing'
         ],
         'recommended' => [
         ],
