@@ -27,6 +27,12 @@ if (file_exists($autoloader)) {
     require_once $autoloader;
 }
 
+// Initialize BlockTemplateLayoutFactory to register core layouts for tests
+// This ensures layouts are available when BlockTemplateLayoutManager::getInstance() is called
+if (class_exists(\Jankx\Layouts\DynamicDataLayout\BlockTemplateLayoutFactory::class)) {
+    \Jankx\Layouts\DynamicDataLayout\BlockTemplateLayoutFactory::init();
+}
+
 // Global state for mock WordPress environment
 $GLOBALS['options'] = [];
 $GLOBALS['mock_posts'] = [];
@@ -213,7 +219,12 @@ if (!function_exists('get_the_author_meta')) { function get_the_author_meta($f =
 if (!function_exists('admin_url')) { function admin_url($p = '') { return 'http://example.com/wp-admin/' . ltrim($p, '/'); } }
 if (!function_exists('home_url')) { function home_url($p = '') { return 'http://example.com/' . ltrim($p, '/'); } }
 if (!function_exists('get_template_directory')) { function get_template_directory() { return ABSPATH; } }
-if (!function_exists('get_stylesheet_directory')) { function get_stylesheet_directory() { return ABSPATH; } }
+if (!function_exists('get_stylesheet_directory')) {
+    function get_stylesheet_directory() {
+        // Use test_child_theme_path global if set, otherwise fall back to ABSPATH
+        return $GLOBALS['test_child_theme_path'] ?? ABSPATH;
+    }
+}
 
 // Utilities & Formatting
 if (!function_exists('esc_attr')) { function esc_attr($t) { return htmlspecialchars($t, ENT_QUOTES, 'UTF-8'); } }
@@ -261,7 +272,15 @@ if (!function_exists('is_child_theme')) { function is_child_theme() { return fal
 
 if (!function_exists('pll_the_languages')) {
     function pll_the_languages($args = []) {
-        $languages = [
+        // Use global mock languages if set
+        if (isset($GLOBALS['mock_pll_languages'])) {
+            $languages = $GLOBALS['mock_pll_languages'];
+            if ($args['raw'] ?? false) {
+                return $languages;
+            }
+        }
+
+        $defaultLanguages = [
             'en' => [
                 'id' => 1, 'slug' => 'en', 'name' => 'English', 'url' => '#en', 'flag' => 'en.png', 'current_lang' => true,
             ],
@@ -271,7 +290,7 @@ if (!function_exists('pll_the_languages')) {
         ];
 
         if ($args['raw'] ?? false) {
-            return $languages;
+            return $defaultLanguages;
         }
 
         $output = '<ul class="pll-language-switcher-list"><li>English</li><li>Tiếng Việt</li></ul>';
@@ -279,7 +298,12 @@ if (!function_exists('pll_the_languages')) {
         return $output;
     }
 }
-if (!function_exists('pll_current_language')) { function pll_current_language() { return 'en'; } }
+if (!function_exists('pll_current_language')) {
+    function pll_current_language() {
+        // Use global mock language if set
+        return $GLOBALS['mock_pll_current_language'] ?? 'en';
+    }
+}
 
 // Missing WP mocks for TemplateEngineServiceProvider
 if (!function_exists('wp_kses_post')) { function wp_kses_post($t) { return $t; } }
@@ -289,6 +313,7 @@ if (!function_exists('get_term_link')) { function get_term_link($t, $taxonomy = 
 if (!function_exists('get_post_meta')) { function get_post_meta($p, $k = '', $s = false) { return $s ? '' : []; } }
 if (!function_exists('get_the_post_thumbnail_url')) { function get_the_post_thumbnail_url($p = 0, $s = 'post-thumbnail') { return ''; } }
 if (!function_exists('wp_get_attachment_image_src')) { function wp_get_attachment_image_src($a, $s = 'thumbnail', $i = false) { return false; } }
+if (!function_exists('wp_doing_ajax')) { function wp_doing_ajax() { return false; } }
 
 // Post Types
 if (!function_exists('get_post_types')) {
@@ -301,6 +326,15 @@ if (!function_exists('get_post_types')) {
 // Others
 if (!function_exists('wp_die')) { function wp_die($m = '') { throw new \Exception($m); } }
 if (!function_exists('register_rest_route')) { function register_rest_route($n, $r, $a = []) { return true; } }
+
+// Register ContentLayoutServiceProvider with the global Application instance
+// This ensures LayoutRegistry and BlockTemplateLayoutManager are properly configured in tests
+if (class_exists(\Jankx\Foundation\Application::class) && class_exists(\Jankx\Support\Providers\ContentLayoutServiceProvider::class)) {
+    $app = \Jankx\Foundation\Application::getInstance();
+    if ($app && !$app->isRegistered(\Jankx\Support\Providers\ContentLayoutServiceProvider::class)) {
+        $app->register(\Jankx\Support\Providers\ContentLayoutServiceProvider::class);
+    }
+}
 
 // Autoloader for Jankx components
 spl_autoload_register(function ($class) {

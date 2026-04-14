@@ -104,9 +104,9 @@ class ThemeOptionsServiceProviderTest extends TestCase
             ->andReturn($mockService);
 
         $this->provider->boot($this->app);
-        
-        // Trigger action
-        do_action('init');
+
+        // Trigger action - ThemeOptionsServiceProvider hooks to after_setup_theme, not init
+        do_action('after_setup_theme');
     }
 
     /**

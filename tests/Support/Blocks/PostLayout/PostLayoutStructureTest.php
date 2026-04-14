@@ -179,17 +179,21 @@ class PostLayoutStructureTest extends TestCase
     public function testAllLayoutsHaveStructure()
     {
         $layouts = $this->layoutManager->getCommonLayouts();
-        
-        foreach ($layouts as $layoutInfo) {
-            $layoutName = $layoutInfo['name'] ?? '';
+
+        // Ensure we have layouts to test
+        $this->assertNotEmpty($layouts, 'Should have common layouts to test');
+
+        $testedLayoutCount = 0;
+
+        // getCommonLayouts() returns ['grid' => className, 'list' => className, ...]
+        foreach ($layouts as $layoutName => $layoutClass) {
             if (empty($layoutName)) {
                 continue;
             }
 
             try {
-                $decorator = $this->layoutManager->createLayout($layoutName, 'post', []);
-                $layout = $decorator->getLayout();
-                
+                $layout = $this->layoutManager->createLayout($layoutName);
+
                 if ($layout && method_exists($layout, 'getHtmlStructure')) {
                     $structure = $layout->getHtmlStructure();
                     $this->assertIsArray($structure, "Layout '{$layoutName}' structure should be an array");
@@ -197,11 +201,15 @@ class PostLayoutStructureTest extends TestCase
                     $this->assertArrayHasKey('layout', $structure);
                     $this->assertArrayHasKey('container', $structure);
                     $this->assertEquals($layoutName, $structure['layout']);
+                    $testedLayoutCount++;
                 }
             } catch (\Exception $e) {
                 $this->fail("Failed to get structure for layout {$layoutName}: " . $e->getMessage());
             }
         }
+
+        // Ensure we tested at least one layout
+        $this->assertGreaterThan(0, $testedLayoutCount, 'Should test at least one layout');
     }
 
     public function testContainerStructureUpdatesWithDifferentColumns()

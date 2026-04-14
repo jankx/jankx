@@ -46,7 +46,18 @@ class ContentLayoutServiceProvider extends ServiceProvider
 
         // 2. Register Layout Registry (Strategy manager)
         $app->singleton(LayoutRegistry::class, function ($app) {
-            return new LayoutRegistry($app);
+            $registry = new LayoutRegistry($app);
+            // Initialize and register core layouts immediately so they're available even if boot() isn't called
+            BlockTemplateLayoutFactory::init();
+            $layouts = BlockTemplateLayoutFactory::getRegisteredLayouts();
+            foreach ($layouts as $name => $class) {
+                try {
+                    $registry->register($name, $class);
+                } catch (\Exception $e) {
+                    // Skip if already registered or invalid
+                }
+            }
+            return $registry;
         });
         $app->alias(LayoutRegistry::class, 'jankx.layout.registry');
 
