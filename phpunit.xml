@@ -14,9 +14,19 @@
         </testsuite>
         <testsuite name="Services">
             <directory>tests/App/Services</directory>
+            <directory>tests/Services</directory>
         </testsuite>
         <testsuite name="Providers">
             <directory>tests/App/Providers</directory>
+        </testsuite>
+        <testsuite name="Admin">
+            <directory>tests/Admin</directory>
+        </testsuite>
+        <testsuite name="Extensions">
+            <directory>tests/Extensions</directory>
+        </testsuite>
+        <testsuite name="Layouts">
+            <directory>tests/Layouts</directory>
         </testsuite>
         <testsuite name="PostLayout">
             <directory>tests/Support/Blocks/PostLayout</directory>

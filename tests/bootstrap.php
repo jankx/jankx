@@ -97,6 +97,11 @@ if (!class_exists('WP_Block_Type_Registry')) {
 if (!function_exists('add_action')) {
     function add_action($tag, $callback, $priority = 10, $accepted_args = 1) {
         $GLOBALS['wp_hooks']['actions'][$tag][$priority][] = $callback;
+        // Special handling for admin_notices - also store in dedicated array for easy access
+        if ($tag === 'admin_notices') {
+            if (!isset($GLOBALS['admin_notices'])) $GLOBALS['admin_notices'] = [];
+            $GLOBALS['admin_notices'][] = $callback;
+        }
         return true;
     }
 }
@@ -108,6 +113,11 @@ if (!function_exists('add_filter')) {
 }
 if (!function_exists('do_action')) {
     function do_action($tag, ...$args) {
+        // Handle mock actions for testing
+        if (isset($GLOBALS['mock_actions'][$tag])) {
+            call_user_func($GLOBALS['mock_actions'][$tag], ...$args);
+        }
+        // Handle regular actions from wp_hooks
         if (isset($GLOBALS['wp_hooks']['actions'][$tag])) {
             $priorities = $GLOBALS['wp_hooks']['actions'][$tag];
             ksort($priorities);
@@ -326,6 +336,49 @@ if (!function_exists('get_post_types')) {
 // Others
 if (!function_exists('wp_die')) { function wp_die($m = '') { throw new \Exception($m); } }
 if (!function_exists('register_rest_route')) { function register_rest_route($n, $r, $a = []) { return true; } }
+
+// Translation functions
+if (!function_exists('__')) { function __($text, $domain = 'default') { return $text; } }
+if (!function_exists('_e')) { function _e($text, $domain = 'default') { echo $text; } }
+if (!function_exists('esc_html__')) { function esc_html__($text, $domain = 'default') { return htmlspecialchars($text, ENT_QUOTES, 'UTF-8'); } }
+if (!function_exists('esc_html_e')) { function esc_html_e($text, $domain = 'default') { echo htmlspecialchars($text, ENT_QUOTES, 'UTF-8'); } }
+
+// Admin/FormHandler mocks
+if (!function_exists('sanitize_key')) { function sanitize_key($key) { return preg_replace('/[^a-z0-9_-]/', '', strtolower($key)); } }
+if (!function_exists('sanitize_title')) { function sanitize_title($title) { return strtolower(preg_replace('/[^a-z0-9_-]/', '', str_replace(' ', '-', $title))); } }
+if (!function_exists('current_time')) { function current_time($type = 'mysql') { return date('Y-m-d H:i:s'); } }
+if (!function_exists('map_deep')) {
+    function map_deep($value, $callback) {
+        if (is_array($value)) {
+            foreach ($value as $index => $item) {
+                $value[$index] = map_deep($item, $callback);
+            }
+        } elseif (is_object($value)) {
+            $object_vars = get_object_vars($value);
+            foreach ($object_vars as $property_name => $property_value) {
+                $value->$property_name = map_deep($property_value, $callback);
+            }
+        } else {
+            $value = call_user_func($callback, $value);
+        }
+        return $value;
+    }
+}
+if (!function_exists('sanitize_text_field')) { function sanitize_text_field($str) { return trim(strip_tags($str)); } }
+if (!function_exists('wp_verify_nonce')) { function wp_verify_nonce($nonce, $action = -1) { return $GLOBALS['mock_wp_verify_nonce'] ?? false; } }
+if (!function_exists('current_user_can')) { function current_user_can($capability) { return $GLOBALS['mock_current_user_can'] ?? false; } }
+// Note: add_action and do_action are defined earlier in this file
+if (!function_exists('did_action')) {
+    function did_action($tag) {
+        return 0;
+    }
+}
+if (!function_exists('esc_html')) { function esc_html($text) { return htmlspecialchars($text, ENT_QUOTES, 'UTF-8'); } }
+if (!function_exists('update_option')) { function update_option($option, $value, $autoload = null) { $GLOBALS['options'][$option] = $value; return true; } }
+if (!function_exists('get_option')) { function get_option($option, $default = false) { return $GLOBALS['options'][$option] ?? $default; } }
+
+// Admin notices collector
+$GLOBALS['admin_notices'] = [];
 
 // Register ContentLayoutServiceProvider with the global Application instance
 // This ensures LayoutRegistry and BlockTemplateLayoutManager are properly configured in tests
