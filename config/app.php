@@ -60,4 +60,11 @@ return [
             'meta_key' => '_unit',
         ],
     ],
+    'extensions' => [
+        'required' => [
+            'hello-extension'
+        ],
+        'recommended' => [
+        ],
+    ],
 ];

@@ -24,6 +24,8 @@ class ExtensionManager implements ExtensionManagerInterface
     protected $extensions = [];
     protected $active_extensions = [];
     protected $extension_ids = [];
+    protected $required_extensions = [];
+    protected $recommended_extensions = [];
 
     /**
      * Get singleton instance via the Application container.
@@ -53,6 +55,31 @@ class ExtensionManager implements ExtensionManagerInterface
     protected function init()
     {
         add_action('jankx/gutenberg/register-blocks', [$this, 'register_extension_blocks']);
+        add_action('admin_notices', [$this, 'render_extension_notices']);
+
+        // Load requirements from config
+        $this->load_requirements_from_config();
+    }
+
+    /**
+     * Load extension requirements from application config
+     */
+    protected function load_requirements_from_config(): void
+    {
+        $config = $this->app->make('config');
+        $requirements = $config->get('app.extensions', []);
+
+        if (isset($requirements['required']) && is_array($requirements['required'])) {
+            foreach ($requirements['required'] as $extensionId) {
+                $this->require_extension($extensionId, true);
+            }
+        }
+
+        if (isset($requirements['recommended']) && is_array($requirements['recommended'])) {
+            foreach ($requirements['recommended'] as $extensionId) {
+                $this->require_extension($extensionId, false);
+            }
+        }
     }
 
     /**
@@ -481,5 +508,149 @@ class ExtensionManager implements ExtensionManagerInterface
         }
 
         return true;
+    }
+
+    /**
+     * Register a required or recommended extension
+     */
+    public function require_extension(string $extensionId, bool $required = true): void
+    {
+        if ($required) {
+            if (!in_array($extensionId, $this->required_extensions)) {
+                $this->required_extensions[] = $extensionId;
+            }
+        } else {
+            if (!in_array($extensionId, $this->recommended_extensions)) {
+                $this->recommended_extensions[] = $extensionId;
+            }
+        }
+    }
+
+    /**
+     * Get all required extensions
+     */
+    public function get_required_extensions(): array
+    {
+        return $this->required_extensions;
+    }
+
+    /**
+     * Get all recommended extensions
+     */
+    public function get_recommended_extensions(): array
+    {
+        return $this->recommended_extensions;
+    }
+
+    /**
+     * Get missing required extensions
+     */
+    public function get_missing_required_extensions(): array
+    {
+        $missing = [];
+        foreach ($this->required_extensions as $extensionId) {
+            if (!$this->has_extension_id($extensionId) || !$this->is_extension_active_by_id($extensionId)) {
+                $missing[] = $extensionId;
+            }
+        }
+        return $missing;
+    }
+
+    /**
+     * Check if extension is active by its ID
+     */
+    public function is_extension_active_by_id(string $extensionId): bool
+    {
+        $extension = $this->get_extension_by_id($extensionId);
+        if (!$extension) {
+            return false;
+        }
+        return $extension->is_active();
+    }
+
+    /**
+     * Render admin notices for missing extensions
+     */
+    public function render_extension_notices(): void
+    {
+        $missing_required = $this->get_missing_required_extensions();
+        if (!empty($missing_required)) {
+            $names = [];
+            foreach ($missing_required as $id) {
+                $info = $this->get_hub_extension_info($id);
+                $names[] = $info['name'] ?? $id;
+            }
+            ?>
+            <div class="notice notice-error is-dismissible">
+                <p>
+                    <?php echo sprintf(
+                        __('The following extensions are <strong>required</strong> for %s theme: %s. Please install and activate them.', 'jankx'),
+                        esc_html($this->app->make('config')->get('app.name', 'Jankx')),
+                        '<strong>' . implode('</strong>, <strong>', array_map('esc_html', $names)) . '</strong>'
+                    ); ?>
+                </p>
+            </div>
+            <?php
+        }
+
+        // Show recommended notices only if not already dismissed (simplification for now)
+        $recommended = $this->recommended_extensions;
+        $missing_recommended = [];
+        foreach ($recommended as $extensionId) {
+            if (!$this->has_extension_id($extensionId) || !$this->is_extension_active_by_id($extensionId)) {
+                $missing_recommended[] = $extensionId;
+            }
+        }
+
+        if (!empty($missing_recommended)) {
+            $names = [];
+            foreach ($missing_recommended as $id) {
+                $info = $this->get_hub_extension_info($id);
+                $names[] = $info['name'] ?? $id;
+            }
+            ?>
+            <div class="notice notice-warning is-dismissible">
+                <p>
+                    <?php echo sprintf(
+                        __('The following extensions are <strong>recommended</strong> for %s theme: %s. Installing them will provide more features.', 'jankx'),
+                        esc_html($this->app->make('config')->get('app.name', 'Jankx')),
+                        '<strong>' . implode('</strong>, <strong>', array_map('esc_html', $names)) . '</strong>'
+                    ); ?>
+                </p>
+            </div>
+            <?php
+        }
+    }
+
+    /**
+     * Get extension information from Jankx Hub API with caching
+     */
+    public function get_hub_extension_info(string $slug): array
+    {
+        $cache_key = 'jankx_hub_ext_' . md5($slug);
+        $cached_info = get_transient($cache_key);
+
+        if ($cached_info !== false) {
+            return $cached_info;
+        }
+
+        $api_url = "https://jankx.pages.dev/api/extensions/{$slug}/resolve";
+        $response = wp_remote_get($api_url, [
+            'timeout' => 10,
+            'sslverify' => false, // Sometimes needed for local dev
+        ]);
+
+        if (is_wp_error($response) || wp_remote_retrieve_response_code($response) !== 200) {
+            return [];
+        }
+
+        $info = json_decode(wp_remote_retrieve_body($response), true);
+        if (!$info) {
+            return [];
+        }
+
+        set_transient($cache_key, $info, DAY_IN_SECONDS);
+
+        return $info;
     }
 }
