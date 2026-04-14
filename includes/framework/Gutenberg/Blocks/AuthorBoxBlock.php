@@ -22,13 +22,13 @@ class AuthorBoxBlock extends Block
         // Get author ID
         if ($author_id === 0) {
             // Try to get post author first
-            $post_author = get_the_author_meta('ID');
+            $post_author = \get_the_author_meta('ID');
 
             if ($post_author) {
                 $author_id = $post_author;
             } else {
                 // If no post author (template editor or no post), use current user
-                $current_user = get_current_user_id();
+                $current_user = \get_current_user_id();
                 if ($current_user) {
                     $author_id = $current_user;
                 }
@@ -37,26 +37,26 @@ class AuthorBoxBlock extends Block
 
         if (!$author_id) {
             // Fallback: try to get any admin user for preview
-            $users = get_users(['role' => 'administrator', 'number' => 1]);
+            $users = \get_users(['role' => 'administrator', 'number' => 1]);
             if (!empty($users)) {
                 $author_id = $users[0]->ID;
             } else {
-                return '<p>' . __('No author found', 'jankx') . '</p>';
+                return '<p>' . \__('No author found', 'jankx') . '</p>';
             }
         }
 
         // Get author data
-        $author = get_userdata($author_id);
+        $author = \get_userdata($author_id);
         if (!$author) {
-            return '<p>' . __('Author not found', 'jankx') . '</p>';
+            return '<p>' . \__('Author not found', 'jankx') . '</p>';
         }
 
         // Build CSS classes
         $classes = ['wp-block-jankx-author-box'];
-        $classes[] = 'layout-' . sanitize_html_class($layout);
+        $classes[] = 'layout-' . \sanitize_html_class($layout);
 
         // Get WordPress block wrapper attributes (includes spacing, colors, background, etc.)
-        $block_wrapper_attrs = get_block_wrapper_attributes([
+        $block_wrapper_attrs = \get_block_wrapper_attributes([
             'class' => implode(' ', $classes)
         ]);
 
@@ -65,20 +65,20 @@ class AuthorBoxBlock extends Block
         <div <?php echo $block_wrapper_attrs; ?>>
             <?php if ($show_avatar) : ?>
                 <div class="author-avatar">
-                    <?php echo get_avatar($author_id, $avatar_size, '', $author->display_name); ?>
+                    <?php echo \get_avatar($author_id, $avatar_size, '', $author->display_name); ?>
                 </div>
             <?php endif; ?>
 
             <div class="author-info">
                 <h3 class="author-name">
-                    <a href="<?php echo esc_url(get_author_posts_url($author_id)); ?>">
-                        <?php echo esc_html($author->display_name); ?>
+                    <a href="<?php echo \esc_url(\get_author_posts_url($author_id)); ?>">
+                        <?php echo \esc_html($author->display_name); ?>
                     </a>
                 </h3>
 
                 <?php if ($show_bio && !empty($author->description)) : ?>
                     <div class="author-bio">
-                        <?php echo wp_kses_post($author->description); ?>
+                        <?php echo \wp_kses_post($author->description); ?>
                     </div>
                 <?php endif; ?>
 
@@ -90,7 +90,7 @@ class AuthorBoxBlock extends Block
 
                 <?php if ($show_posts) : ?>
                     <div class="author-posts">
-                        <h4 class="posts-title"><?php _e('Recent Posts', 'jankx'); ?></h4>
+                        <h4 class="posts-title"><?php \_e('Recent Posts', 'jankx'); ?></h4>
                         <?php echo $this->renderRecentPosts($author_id, $posts_count); ?>
                     </div>
                 <?php endif; ?>
@@ -164,8 +164,8 @@ class AuthorBoxBlock extends Block
         foreach ($social_links as $link) {
             $output .= sprintf(
                 '<a href="%s" class="social-link" target="_blank" rel="noopener noreferrer" aria-label="%s">%s</a>',
-                esc_url($link['url']),
-                esc_attr($link['label']),
+                \esc_url($link['url']),
+                \esc_attr($link['label']),
                 $link['icon']
             );
         }
@@ -175,22 +175,22 @@ class AuthorBoxBlock extends Block
 
     private function renderRecentPosts($author_id, $posts_count)
     {
-        $posts = get_posts([
+        $posts = \get_posts([
             'author' => $author_id,
             'numberposts' => $posts_count,
             'post_status' => 'publish'
         ]);
 
         if (empty($posts)) {
-            return '<p>' . __('No posts found', 'jankx') . '</p>';
+            return '<p>' . \__('No posts found', 'jankx') . '</p>';
         }
 
         $output = '<ul class="posts-list">';
         foreach ($posts as $post) {
             $output .= sprintf(
                 '<li><a href="%s">%s</a></li>',
-                esc_url(get_permalink($post->ID)),
-                esc_html($post->post_title)
+                \esc_url(\get_permalink($post->ID)),
+                \esc_html($post->post_title)
             );
         }
         $output .= '</ul>';

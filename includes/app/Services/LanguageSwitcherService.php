@@ -61,15 +61,15 @@ class LanguageSwitcherService extends AbstractService
      */
     protected function initLanguages(): void
     {
-        if (!function_exists('pll_the_languages')) {
+        if (!\function_exists('pll_the_languages')) {
             return;
         }
 
         // Lấy current language
-        $this->currentLanguageCode = pll_current_language();
+        $this->currentLanguageCode = \pll_current_language();
 
         // Lấy danh sách languages
-        $languages = pll_the_languages([
+        $languages = \pll_the_languages([
             'raw' => 1,
             'hide_if_empty' => 0,
             'show_flags' => 1,
@@ -78,7 +78,7 @@ class LanguageSwitcherService extends AbstractService
         ]);
         $languages = $this->processingLanguagesData($languages);
 
-        $this->languages = apply_filters('jankx/languages', $languages);
+        $this->languages = \apply_filters('jankx/languages', $languages);
     }
 
     protected function processingLanguageData($language) {
@@ -138,7 +138,7 @@ class LanguageSwitcherService extends AbstractService
     public function getDebugInfo(): array
     {
         return [
-            'polylang_active' => function_exists('pll_the_languages'),
+            'polylang_active' => \function_exists('pll_the_languages'),
             'current_language' => $this->currentLanguage,
             'languages_count' => count($this->languages),
             'languages_data' => $this->languages,
@@ -154,11 +154,11 @@ class LanguageSwitcherService extends AbstractService
     public function registerRestRoutes(): void
     {
         // Đăng ký route ngay lập tức nếu rest_api_init đã được gọi
-        if (did_action('rest_api_init')) {
+        if (\did_action('rest_api_init')) {
             $this->registerLanguagesRoute();
         } else {
             // Nếu chưa, đợi hook rest_api_init
-            add_action('rest_api_init', [$this, 'registerLanguagesRoute']);
+            \add_action('rest_api_init', [$this, 'registerLanguagesRoute']);
         }
     }
 
@@ -169,7 +169,7 @@ class LanguageSwitcherService extends AbstractService
      */
     public function registerLanguagesRoute(): void
     {
-        register_rest_route('jankx/v1', '/languages', [
+        \register_rest_route('jankx/v1', '/languages', [
             'methods' => 'GET',
             'callback' => [$this, 'getLanguagesApi'],
             'permission_callback' => '__return_true',
@@ -184,14 +184,14 @@ class LanguageSwitcherService extends AbstractService
         ]);
 
         // Thêm endpoint debug
-        register_rest_route('jankx/v1', '/debug/language-switcher', [
+        \register_rest_route('jankx/v1', '/debug/language-switcher', [
             'methods' => 'GET',
             'callback' => [$this, 'getDebugInfo'],
             'permission_callback' => '__return_true'
         ]);
 
         // Thêm endpoint refresh
-        register_rest_route('jankx/v1', '/refresh/languages', [
+        \register_rest_route('jankx/v1', '/refresh/languages', [
             'methods' => 'POST',
             'callback' => [$this, 'refreshLanguages'],
             'permission_callback' => '__return_true'
@@ -265,12 +265,12 @@ class LanguageSwitcherService extends AbstractService
      */
     protected function getLanguagesForCurrentPage(): array
     {
-        if (!function_exists('pll_the_languages')) {
+        if (!\function_exists('pll_the_languages')) {
             return $this->languages;
         }
 
         // Get languages with current page context
-        $currentPageLanguages = pll_the_languages([
+        $currentPageLanguages = \pll_the_languages([
             'raw' => 1,
             'hide_if_empty' => 0,
             'show_flags' => 1,
@@ -291,7 +291,7 @@ class LanguageSwitcherService extends AbstractService
             }
         }
 
-        return apply_filters('jankx/languages/current-page', $languages, $this->languages);
+        return \apply_filters('jankx/languages/current-page', $languages, $this->languages);
     }
 
     /**

@@ -51,11 +51,11 @@ class ThemeDataLoader
      */
     protected function loadParentThemeData()
     {
-        $parentTheme = wp_get_theme(get_template());
+        $parentTheme = \wp_get_theme(\get_template());
 
-        $this->config->set('template.name', $parentTheme->get('Name') ?: get_template());
+        $this->config->set('template.name', $parentTheme->get('Name') ?: \get_template());
         $this->config->set('template.version', $parentTheme->get('Version') ?: '1.0.0');
-        $this->config->set('template.textdomain', $parentTheme->get('TextDomain') ?: get_template());
+        $this->config->set('template.textdomain', $parentTheme->get('TextDomain') ?: \get_template());
     }
 
     /**
@@ -65,13 +65,13 @@ class ThemeDataLoader
      */
     protected function loadChildThemeData()
     {
-        $childTheme = wp_get_theme();
+        $childTheme = \wp_get_theme();
 
         // Only load child theme data if it's different from parent theme
         if ($childTheme->get_stylesheet() !== $childTheme->get_template()) {
-            $this->config->set('theme.name', $childTheme->get('Name') ?: get_stylesheet());
+            $this->config->set('theme.name', $childTheme->get('Name') ?: \get_stylesheet());
             $this->config->set('theme.version', $childTheme->get('Version') ?: '1.0.0');
-            $this->config->set('theme.textdomain', $childTheme->get('TextDomain') ?: get_stylesheet());
+            $this->config->set('theme.textdomain', $childTheme->get('TextDomain') ?: \get_stylesheet());
         }
     }
 }
