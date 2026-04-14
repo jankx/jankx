@@ -74,7 +74,7 @@ jobs:
         run: npm run production --no-interaction
 
       - name: Install NPM dependencies (resources blocks)
-        run: npm ci --no-interaction
+        run: npm install --no-interaction
         working-directory: resources
 
       - name: Build Gutenberg Blocks (Webpack)

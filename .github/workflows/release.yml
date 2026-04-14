@@ -27,7 +27,7 @@ jobs:
         with:
           node-version: '20'
           cache: 'npm'
-          cache-dependency-path: resources/package-lock.json
+          cache-dependency-path: package-lock.json
 
       # ── Install production PHP deps only (no dev) ──────────────────────────
       - name: Install Composer production dependencies
@@ -47,7 +47,7 @@ jobs:
         run: npm run production --no-interaction
 
       - name: Install Node dependencies (resources blocks)
-        run: npm ci --no-interaction
+        run: npm install --no-interaction
         working-directory: resources
 
       - name: Build Gutenberg blocks
