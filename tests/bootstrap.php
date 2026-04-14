@@ -3,6 +3,24 @@
  * PHPUnit Bootstrap File for Jankx Theme
  */
 
+// Define common WP functions first to ensure they are available for all components
+if (!function_exists('wp_upload_dir')) {
+    function wp_upload_dir($time = null, $create_dir = true, $refresh_cache = false) {
+        return [
+            'path' => '/tmp/uploads',
+            'url' => 'http://example.com/wp-content/uploads',
+            'subdir' => '',
+            'basedir' => '/tmp/uploads',
+            'baseurl' => 'http://example.com/wp-content/uploads',
+            'error' => false,
+        ];
+    }
+}
+if (!function_exists('wp_mkdir_p')) { function wp_mkdir_p($path) { return true; } }
+if (!function_exists('wp_normalize_path')) { function wp_normalize_path($path) { return str_replace('\\', '/', $path); } }
+if (!function_exists('get_template_directory_uri')) { function get_template_directory_uri() { return 'http://example.com/wp-content/themes/jankx'; } }
+if (!function_exists('get_user_meta')) { function get_user_meta($u, $k = '', $s = false) { if ($k === 'description') return 'Test Bio'; return $s ? '' : []; } }
+
 // Load Composer autoloader
 $autoloader = dirname(__FILE__) . '/../vendor/autoload.php';
 if (file_exists($autoloader)) {
@@ -244,10 +262,10 @@ if (!function_exists('is_child_theme')) { function is_child_theme() { return fal
 if (!function_exists('pll_the_languages')) {
     function pll_the_languages($args = []) {
         $languages = [
-            'en' => (object)[
+            'en' => [
                 'id' => 1, 'slug' => 'en', 'name' => 'English', 'url' => '#en', 'flag' => 'en.png', 'current_lang' => true,
             ],
-            'vi' => (object)[
+            'vi' => [
                 'id' => 2, 'slug' => 'vi', 'name' => 'Vietnamese', 'url' => '#vi', 'flag' => 'vi.png', 'current_lang' => false,
             ],
         ];
@@ -262,6 +280,15 @@ if (!function_exists('pll_the_languages')) {
     }
 }
 if (!function_exists('pll_current_language')) { function pll_current_language() { return 'en'; } }
+
+// Missing WP mocks for TemplateEngineServiceProvider
+if (!function_exists('wp_kses_post')) { function wp_kses_post($t) { return $t; } }
+if (!function_exists('wp_trim_words')) { function wp_trim_words($t, $n = 55, $m = '') { return $t; } }
+if (!function_exists('_x')) { function _x($t, $c, $d = 'default') { return $t; } }
+if (!function_exists('get_term_link')) { function get_term_link($t, $taxonomy = '') { return '#'; } }
+if (!function_exists('get_post_meta')) { function get_post_meta($p, $k = '', $s = false) { return $s ? '' : []; } }
+if (!function_exists('get_the_post_thumbnail_url')) { function get_the_post_thumbnail_url($p = 0, $s = 'post-thumbnail') { return ''; } }
+if (!function_exists('wp_get_attachment_image_src')) { function wp_get_attachment_image_src($a, $s = 'thumbnail', $i = false) { return false; } }
 
 // Post Types
 if (!function_exists('get_post_types')) {
@@ -278,9 +305,28 @@ if (!function_exists('register_rest_route')) { function register_rest_route($n, 
 // Autoloader for Jankx components
 spl_autoload_register(function ($class) {
     if (strpos($class, 'Jankx\\Extensions\\') === 0) {
-        $name = str_replace('Jankx\\Extensions\\', '', $class);
-        $file = dirname(__FILE__) . '/../extensions/' . strtolower(preg_replace('/(?<!^)[A-Z]/', '-$0', str_replace('Extension', '', $name))) . '/' . $name . '.php';
-        if (file_exists($file)) require_once $file;
+        $relativeClass = substr($class, 17); // Remove Jankx\Extensions\
+        $parts = explode('\\', $relativeClass);
+        if (count($parts) >= 1) {
+            $extensionSlug = strtolower(preg_replace('/(?<!^)[A-Z]/', '-$0', $parts[0]));
+            
+            // Try different possible paths for the extension
+            $baseDir = dirname(__FILE__) . '/../extensions/' . $extensionSlug;
+            
+            // Standard location: extensions/slug/includes/...
+            $standardFile = $baseDir . '/includes/' . implode('/', array_slice($parts, 1)) . '.php';
+            if (file_exists($standardFile)) {
+                require_once $standardFile;
+                return;
+            }
+
+            // Fallback for main extension class: extensions/slug/ClassName.php
+            $fallbackFile = $baseDir . '/' . end($parts) . '.php';
+            if (file_exists($fallbackFile)) {
+                require_once $fallbackFile;
+                return;
+            }
+        }
     }
 });
 
