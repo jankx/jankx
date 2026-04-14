@@ -18,11 +18,14 @@ Jankx Framework là một WordPress theme framework mạnh mẽ, hiện đại v
 
 **Nguyên tắc cốt lõi: "Tất cả tính năng đều load qua Service Provider"**
 
-- **Modularity**: Mọi tính năng được đóng gói trong Service Provider riêng biệt
-- **Lazy Loading**: Services chỉ được load khi cần thiết
-- **Dependency Injection**: Tất cả dependencies được inject qua Application Container
-- **Testability**: Mỗi service có thể được test độc lập
-- **Extensibility**: Dễ dàng thêm/xóa tính năng bằng cách đăng ký/hủy Service Provider
+- **Modularity**: Mọi tính năng được đóng gói trong Service Provider riêng biệt.
+- **AI-Driven Pattern**: Codebase được tối ưu để AI có thể đọc hiểu và generate dựa trên `AI_GENERATION_SPEC.md`.
+- **Strict Namespacing**: Mọi lời gọi hàm toàn cục (WordPress/PHP) trong class namespaced PHẢI có tiền tố `\` (ví dụ: `\get_template()`) để tối ưu hiệu suất và tránh lỗi trong môi trường test.
+- **3-Level CSS System**: Quản lý CSS theo phân cấp CORE -> TYPE -> INSTANCE.
+- **Lazy Loading**: Services chỉ được load khi cần thiết.
+- **Dependency Injection**: Tất cả dependencies được inject qua Application Container.
+- **Testability**: Mỗi service có thể được test độc lập.
+- **Extensibility**: Dễ dàng thêm/xóa tính năng bằng cách đăng ký/hủy Service Provider.
 
 ## Cấu trúc thư mục
 
