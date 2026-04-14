@@ -1,66 +1,85 @@
 {
     "colors": {
         "base": {
-            "name": "Base",
+            "name": "Base (White)",
             "value": "#FFFFFF",
             "variable": "var(--wp--preset--color--base)"
         },
         "contrast": {
-            "name": "Contrast",
-            "value": "#111111",
+            "name": "Contrast (Dark)",
+            "value": "#0d1117",
             "variable": "var(--wp--preset--color--contrast)"
         },
         "primary": {
-            "name": "Primary",
-            "value": "#503AA8",
+            "name": "Primary (Gaming Blue)",
+            "value": "#3B82F6",
             "variable": "var(--wp--preset--color--primary)"
         },
-        "link": {
-            "name": "Link Color",
-            "value": "#503AA8",
-            "variable": "var(--wp--preset--color--link)"
+        "secondary": {
+            "name": "Secondary (Esports Pink)",
+            "value": "#e83e8c",
+            "variable": "var(--wp--preset--color--secondary)"
         },
-        "accent-1": {
-            "name": "Accent 1",
-            "value": "#FFEE58",
-            "variable": "var(--wp--preset--color--accent-1)"
+        "accent-game": {
+            "name": "Game Accent (Cyan)",
+            "value": "#17a2b8",
+            "variable": "var(--wp--preset--color--accent-game)"
         },
-        "accent-2": {
-            "name": "Accent 2",
-            "value": "#F6CFF4",
-            "variable": "var(--wp--preset--color--accent-2)"
+        "light-bg": {
+            "name": "Light Background",
+            "value": "#F9FAFB",
+            "variable": "var(--wp--preset--color--light-bg)"
         },
-        "accent-3": {
-            "name": "Accent 3",
-            "value": "#503AA8",
-            "variable": "var(--wp--preset--color--accent-3)"
+        "dark-text": {
+            "name": "Dark Text",
+            "value": "#111827",
+            "variable": "var(--wp--preset--color--dark-text)"
         },
-        "accent-4": {
-            "name": "Accent 4",
-            "value": "#686868",
-            "variable": "var(--wp--preset--color--accent-4)"
-        },
-        "accent-5": {
-            "name": "Accent 5",
-            "value": "#FBFAF3",
-            "variable": "var(--wp--preset--color--accent-5)"
+        "grey-text": {
+            "name": "Grey Text",
+            "value": "#6B7280",
+            "variable": "var(--wp--preset--color--grey-text)"
         }
     },
     "typography": {
-        "fontFamilies": [],
-        "fontSizes": []
-    },
-    "spacing": {
-        "sizes": {
-            "40": {
-                "name": "40",
-                "value": "40px",
-                "variable": "var(--wp--preset--spacing--40)"
+        "fontFamilies": {
+            "inter": {
+                "name": "Inter",
+                "variable": "var(--wp--preset--font-family--inter)"
+            },
+            "montserrat": {
+                "name": "Montserrat",
+                "variable": "var(--wp--preset--font-family--montserrat)"
+            }
+        },
+        "fontSizes": {
+            "small": {
+                "name": "Small",
+                "value": "12px",
+                "variable": "var(--wp--preset--font-size--small)"
+            },
+            "normal": {
+                "name": "Normal",
+                "value": "15px",
+                "variable": "var(--wp--preset--font-size--normal)"
+            },
+            "medium": {
+                "name": "Medium",
+                "value": "18px",
+                "variable": "var(--wp--preset--font-size--medium)"
+            },
+            "large": {
+                "name": "Large",
+                "value": "28px",
+                "variable": "var(--wp--preset--font-size--large)"
             }
         }
     },
+    "spacing": {
+        "sizes": []
+    },
     "layout": {
-        "contentSize": "calc(100% - 200px)",
-        "wideSize": "calc(100% - 200px)"
+        "contentSize": "1200px",
+        "wideSize": "1320px"
     }
 }

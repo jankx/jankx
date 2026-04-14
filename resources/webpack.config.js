@@ -138,6 +138,8 @@ module.exports = {
 
     'blocks/dynamic-data-template/build/index': './blocks/dynamic-data-template/index.tsx',
 
+    'blocks/human-readable-post-date/build/index': './blocks/human-readable-post-date/index.tsx',
+    'blocks/human-readable-post-date/build/style': './blocks/human-readable-post-date/style.scss',
 
     'blocks/sticky-box/build/index': './blocks/sticky-box/index.tsx',
     'blocks/sticky-box/build/style': './blocks/sticky-box/style.scss',

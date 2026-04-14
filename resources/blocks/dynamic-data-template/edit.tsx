@@ -37,7 +37,7 @@ interface DynamicDataTemplateAttributes {
     };
     thumbnailPosition?: 'top' | 'bottom' | 'left' | 'right';
     overlayIcon?: string;
-    overlayIconMode?: 'always-show' | 'hover-hide' | 'hover-show';
+    overlayIconShowMode?: 'always-show' | 'hover-hide' | 'hover-show';
     overlayIconPosition?: 'center' | 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
     overlayIconSize?: number;
     overlayIconColor?: string;
@@ -315,7 +315,7 @@ export default function Edit({
         itemPadding = {},
         thumbnailPosition = 'top',
         overlayIcon,
-        overlayIconMode = 'always-show',
+        overlayIconShowMode = 'always-show',
         overlayIconPosition = 'center',
         overlayIconSize = 24,
         overlayIconColor = '#ffffff',
@@ -351,20 +351,20 @@ export default function Edit({
         const args: Record<string, any> = {
             per_page: postsPerPage,
             offset: context.offset || 0,
-            order: context.order || 'DESC',
+            order: (context.order || 'desc').toLowerCase(),
             orderby: context.orderBy || 'date',
-            status: context.postStatus || 'publish',
+            status: Array.isArray(context.postStatus) ? context.postStatus.join(',') : (context.postStatus || 'publish'),
             _embed: true, // Fetch embedded data like featured media
         };
 
         if (context.keyword) args.search = context.keyword;
-        if (context.authorIn?.length) args.author = context.authorIn;
-        if (context.authorNotIn?.length) args.author_exclude = context.authorNotIn;
-        if (context.postIn?.length) args.include = context.postIn;
-        if (context.postNotIn?.length) args.exclude = context.postNotIn;
+        if (context.authorIn?.length) args.author = context.authorIn.join(',');
+        if (context.authorNotIn?.length) args.author_exclude = context.authorNotIn.join(',');
+        if (context.postIn?.length) args.include = context.postIn.join(',');
+        if (context.postNotIn?.length) args.exclude = context.postNotIn.join(',');
         if (context.postParent) args.parent = context.postParent;
-        if (context.postParentIn?.length) args.parent = context.postParentIn;
-        if (context.postParentNotIn?.length) args.parent_exclude = context.postParentNotIn;
+        if (context.postParentIn?.length) args.parent = context.postParentIn.join(',');
+        if (context.postParentNotIn?.length) args.parent_exclude = context.postParentNotIn.join(',');
         // ignore_sticky_posts logic depends on API version but generally REST doesn't sticky by default unless asked?
         // Actually REST API doesn't move sticky posts to top by default like WP_Query.
         // But let's leave it as is.

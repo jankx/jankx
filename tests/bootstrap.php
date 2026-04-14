@@ -20,7 +20,12 @@ if (!function_exists('wp_mkdir_p')) { function wp_mkdir_p($path) { return true; 
 if (!function_exists('wp_normalize_path')) { function wp_normalize_path($path) { return str_replace('\\', '/', $path); } }
 if (!function_exists('get_template_directory_uri')) { function get_template_directory_uri() { return 'http://example.com/wp-content/themes/jankx'; } }
 if (!function_exists('get_user_meta')) { function get_user_meta($u, $k = '', $s = false) { if ($k === 'description') return 'Test Bio'; return $s ? '' : []; } }
-
+if (!function_exists('_n')) { function _n($single, $plural, $number, $domain = 'default') { return $number === 1 ? $single : $plural; } }
+if (!function_exists('human_time_diff')) { function human_time_diff($from, $to = '') { return '1 day'; } }
+if (!function_exists('is_user_logged_in')) { function is_user_logged_in() { return false; } }
+if (!function_exists('get_the_time')) { function get_the_time($format = 'U', $post = null) { return time() - 86400; } }
+if (!function_exists('wp_login_url')) { function wp_login_url($redirect = '') { return 'http://example.com/wp-login.php'; } }
+if (!function_exists('wp_registration_url')) { function wp_registration_url() { return 'http://example.com/wp-login.php?action=register'; } }
 // Load Composer autoloader
 $autoloader = dirname(__FILE__) . '/../vendor/autoload.php';
 if (file_exists($autoloader)) {
