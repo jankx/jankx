@@ -1598,7 +1598,21 @@ class AdminPageService
             <ul class="subsubsub">
                 <li class="all"><a href="<?php echo admin_url('admin.php?page=jankx-extensions'); ?>" class="<?php echo $status == 'all' ? 'current' : ''; ?>"><?php _e('All', 'jankx'); ?> <span class="count">(<?php echo $total; ?>)</span></a> |</li>
                 <li class="active"><a href="<?php echo add_query_arg('extension_status', 'active'); ?>" class="<?php echo $status == 'active' ? 'current' : ''; ?>"><?php _e('Active', 'jankx'); ?> <span class="count">(<?php echo $totalActive; ?>)</span></a> |</li>
-                <li class="inactive"><a href="<?php echo add_query_arg('extension_status', 'inactive'); ?>" class="<?php echo $status == 'inactive' ? 'current' : ''; ?>"><?php _e('Inactive', 'jankx'); ?> <span class="count">(<?php echo $totalInactive; ?>)</span></a></li>
+                <li class="inactive"><a href="<?php echo add_query_arg('extension_status', 'inactive'); ?>" class="<?php echo $status == 'inactive' ? 'current' : ''; ?>"><?php _e('Inactive', 'jankx'); ?> <span class="count">(<?php echo $totalInactive; ?>)</span></a>
+                <?php
+                $unmet_required = $extensionManager->get_missing_required_extensions();
+                $recommended = $extensionManager->get_recommended_extensions();
+                $unmet_recommended = [];
+                foreach ($recommended as $id) {
+                    if (!$extensionManager->has_extension_id($id) || !$extensionManager->is_extension_active_by_id($id)) {
+                        $unmet_recommended[] = $id;
+                    }
+                }
+                
+                if (!empty($unmet_required) || !empty($unmet_recommended)) : ?>
+                    | </li><li class="required"><a href="<?php echo add_query_arg('extension_status', 'required'); ?>" class="<?php echo $status == 'required' ? 'current' : ''; ?>"><?php _e('Required', 'jankx'); ?> <span class="count">(<?php echo count($unmet_required) + count($unmet_recommended); ?>)</span></a>
+                <?php endif; ?>
+                </li>
             </ul>
 
             <table class="wp-list-table widefat plugins">
@@ -1618,14 +1632,88 @@ class AdminPageService
                         <?php
                         /* --- Active (loaded) extensions --- */
                         if ($status === 'all' || $status === 'active'):
+                            $required_ids = $extensionManager->get_required_extensions();
+                            $recommended_ids = $extensionManager->get_recommended_extensions();
+
                             foreach ($extensions as $name => $extension):
                                 $info     = $extension->get_info();
-                                $this->renderExtensionRow($name, $info, true, $nonce);
+                                $type = '';
+                                // Check if this extension is required or recommended
+                                // We check by its name which is often the ID, or we could find its ID
+                                if (in_array($name, $required_ids)) $type = 'required';
+                                elseif (in_array($name, $recommended_ids)) $type = 'recommended';
+
+                                $this->renderExtensionRow($name, $info, true, $nonce, $type);
+                            endforeach;
+                        endif;
+
+                        /* --- Required & Recommended extensions --- */
+                        if ($status === 'required'):
+                            $required_ids = $extensionManager->get_required_extensions();
+                            $recommended_ids = $extensionManager->get_recommended_extensions();
+                            
+                            foreach ($required_ids as $id):
+                                $extension = $extensionManager->get_extension_by_id($id);
+                                if ($extension) {
+                                    $info = $extension->get_info();
+                                    $this->renderExtensionRow($id, $info, true, $nonce, 'required');
+                                } else {
+                                    if (isset($disabledManifests[$id])) {
+                                        $m = $disabledManifests[$id]['manifest'];
+                                        $info = [
+                                            'name'                    => $m['name']        ?? $id,
+                                            'version'                 => $m['version']     ?? '1.0.0',
+                                            'description'             => $m['description'] ?? '',
+                                            'author'                  => $m['author']      ?? 'Jankx Team',
+                                            'is_child_theme_extension'=> false,
+                                        ];
+                                        $this->renderExtensionRow($id, $info, false, $nonce, 'required');
+                                    } else {
+                                        $hubInfo = $extensionManager->get_hub_extension_info($id);
+                                        $this->renderExtensionRow($id, [
+                                            'name'        => $hubInfo['name']        ?? $id,
+                                            'description' => $hubInfo['description'] ?? __('This extension is required by the theme but not installed.', 'jankx'),
+                                            'version'     => $hubInfo['version']     ?? 'N/A',
+                                            'author'      => $hubInfo['author']      ?? 'N/A'
+                                        ], false, $nonce, 'required', true);
+                                    }
+                                }
+                            endforeach;
+
+                            foreach ($recommended_ids as $id):
+                                $extension = $extensionManager->get_extension_by_id($id);
+                                if ($extension) {
+                                    $info = $extension->get_info();
+                                    $this->renderExtensionRow($id, $info, true, $nonce, 'recommended');
+                                } else {
+                                    if (isset($disabledManifests[$id])) {
+                                        $m = $disabledManifests[$id]['manifest'];
+                                        $info = [
+                                            'name'                    => $m['name']        ?? $id,
+                                            'version'                 => $m['version']     ?? '1.0.0',
+                                            'description'             => $m['description'] ?? '',
+                                            'author'                  => $m['author']      ?? 'Jankx Team',
+                                            'is_child_theme_extension'=> false,
+                                        ];
+                                        $this->renderExtensionRow($id, $info, false, $nonce, 'recommended');
+                                    } else {
+                                        $hubInfo = $extensionManager->get_hub_extension_info($id);
+                                        $this->renderExtensionRow($id, [
+                                            'name'        => $hubInfo['name']        ?? $id,
+                                            'description' => $hubInfo['description'] ?? __('This extension is recommended by the theme but not installed.', 'jankx'),
+                                            'version'     => $hubInfo['version']     ?? 'N/A',
+                                            'author'      => $hubInfo['author']      ?? 'N/A'
+                                        ], false, $nonce, 'recommended', true);
+                                    }
+                                }
                             endforeach;
                         endif;
 
                         /* --- Disabled extensions (not instantiated) --- */
                         if ($status === 'all' || $status === 'inactive'):
+                            $required_ids = $extensionManager->get_required_extensions();
+                            $recommended_ids = $extensionManager->get_recommended_extensions();
+
                             foreach ($disabledManifests as $name => $data):
                                 $m = $data['manifest'];
                                 $info = [
@@ -1635,7 +1723,11 @@ class AdminPageService
                                     'author'                  => $m['author']      ?? 'Jankx Team',
                                     'is_child_theme_extension'=> false,
                                 ];
-                                $this->renderExtensionRow($name, $info, false, $nonce);
+                                $type = '';
+                                if (in_array($name, $required_ids)) $type = 'required';
+                                elseif (in_array($name, $recommended_ids)) $type = 'recommended';
+
+                                $this->renderExtensionRow($name, $info, false, $nonce, $type);
                             endforeach;
                         endif;
                         ?>
@@ -1722,15 +1814,31 @@ class AdminPageService
     /**
      * Render a single extension item row
      */
-    protected function renderExtensionRow(string $name, array $info, bool $isActive, string $nonce): void
+    protected function renderExtensionRow(string $name, array $info, bool $isActive, string $nonce, string $type = '', bool $isMissing = false): void
     {
         $statusClass = $isActive ? 'active' : 'inactive';
+        if ($isMissing) {
+            $statusClass .= ' missing';
+        }
         ?>
         <tr class="<?php echo $statusClass; ?>" data-slug="<?php echo esc_attr($name); ?>">
             <td class="plugin-title column-primary">
-                <strong><?php echo esc_html($info['name'] ?? $name); ?></strong>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <strong><?php echo esc_html($info['name'] ?? $name); ?></strong>
+                    <?php if ($type === 'required'): ?>
+                        <span class="jankx-badge-required" style="background: #ef4444; color: #fff; font-size: 9px; padding: 2px 6px; border-radius: 4px; font-weight: 700; text-transform: uppercase;"><?php _e('Required', 'jankx'); ?></span>
+                    <?php elseif ($type === 'recommended'): ?>
+                        <span class="jankx-badge-recommended" style="background: #3b82f6; color: #fff; font-size: 9px; padding: 2px 6px; border-radius: 4px; font-weight: 700; text-transform: uppercase;"><?php _e('Recommended', 'jankx'); ?></span>
+                    <?php endif; ?>
+                </div>
                 <div class="row-actions visible">
-                    <?php if ($isActive): ?>
+                    <?php if ($isMissing): ?>
+                        <span class="install">
+                            <a href="<?php echo admin_url('admin.php?page=jankx-marketplace'); ?>" class="install-now">
+                                <?php _e('Install Now', 'jankx'); ?>
+                            </a>
+                        </span>
+                    <?php elseif ($isActive): ?>
                         <span class="deactivate">
                             <a href="javascript:void(0);" class="toggle-extension" data-extension="<?php echo esc_attr($name); ?>" data-nonce="<?php echo esc_attr($nonce); ?>">
                                 <?php _e('Deactivate', 'jankx'); ?>
@@ -1743,11 +1851,13 @@ class AdminPageService
                             </a> |
                         </span>
                     <?php endif; ?>
-                    <span class="delete">
-                        <a href="javascript:void(0);" class="delete-extension" data-extension="<?php echo esc_attr($name); ?>" data-nonce="<?php echo esc_attr($nonce); ?>" style="color: #d63638;">
-                            <?php _e('Delete', 'jankx'); ?>
-                        </a>
-                    </span>
+                    <?php if (!$isMissing): ?>
+                        <span class="delete">
+                            <a href="javascript:void(0);" class="delete-extension" data-extension="<?php echo esc_attr($name); ?>" data-nonce="<?php echo esc_attr($nonce); ?>" style="color: #d63638;">
+                                <?php _e('Delete', 'jankx'); ?>
+                            </a>
+                        </span>
+                    <?php endif; ?>
                 </div>
                 <button type="button" class="toggle-row"><span class="screen-reader-text"><?php _e('Show more details'); ?></span></button>
             </td>
