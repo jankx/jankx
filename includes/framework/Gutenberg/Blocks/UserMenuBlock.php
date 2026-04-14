@@ -45,16 +45,16 @@ class UserMenuBlock extends Block
         $current_user = wp_get_current_user();
         $avatar_size = $attributes['avatarSize'] ?? 35;
         $show_name = $attributes['showUserName'] ?? false;
-        $greeting = $attributes['greetingText'] ?? 'Xin chào,';
+        $greeting = $attributes['greetingText'] ?? __('Hello,', 'jankx');
 
         $menu_items = [
             'profile' => [
-                'label' => __('Hồ sơ cá nhân', 'jankx'),
+                'label' => __('Profile', 'jankx'),
                 'url' => admin_url('profile.php'),
                 'icon' => 'dashicons-admin-users',
             ],
             'logout' => [
-                'label' => __('Đăng xuất', 'jankx'),
+                'label' => __('Logout', 'jankx'),
                 'url' => wp_logout_url(home_url()),
                 'icon' => 'dashicons-logout',
             ],
@@ -133,7 +133,7 @@ class UserMenuBlock extends Block
             $output .= sprintf(
                 '<a href="%s" class="login-link" style="font-size:13px; font-weight:700; color:inherit; text-decoration:none;">%s</a>',
                 wp_login_url(),
-                __('Đăng nhập', 'jankx')
+                __('Login', 'jankx')
             );
         }
 
@@ -141,7 +141,7 @@ class UserMenuBlock extends Block
             $output .= sprintf(
                 '<a href="%s" class="register-button" style="background:var(--wp--preset--color--primary); color:#FFF; padding:8px 20px; border-radius:30px; font-size:12px; font-weight:800; text-decoration:none; text-transform:uppercase;">%s</a>',
                 wp_registration_url(),
-                __('Đăng ký', 'jankx')
+                __('Register', 'jankx')
             );
         }
 

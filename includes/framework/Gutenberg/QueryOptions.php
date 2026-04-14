@@ -22,23 +22,23 @@ class QueryOptions
         $options = [
             [
                 'value' => 'date',
-                'label' => __('Date (Ngày đăng)', 'jankx'),
+                'label' => __('Date', 'jankx'),
             ],
             [
                 'value' => 'modified',
-                'label' => __('Modified (Ngày sửa)', 'jankx'),
+                'label' => __('Modified Date', 'jankx'),
             ],
             [
                 'value' => 'title',
-                'label' => __('Title (Tiêu đề)', 'jankx'),
+                'label' => __('Title', 'jankx'),
             ],
             [
                 'value' => 'name',
-                'label' => __('Name (Slug)', 'jankx'),
+                'label' => __('Slug', 'jankx'),
             ],
             [
                 'value' => 'author',
-                'label' => __('Author (Tác giả)', 'jankx'),
+                'label' => __('Author', 'jankx'),
             ],
             [
                 'value' => 'type',
@@ -54,35 +54,35 @@ class QueryOptions
             ],
             [
                 'value' => 'rand',
-                'label' => __('Random (Ngẫu nhiên)', 'jankx'),
+                'label' => __('Random', 'jankx'),
             ],
             [
                 'value' => 'comment_count',
-                'label' => __('Comment Count (Số bình luận)', 'jankx'),
+                'label' => __('Comment Count', 'jankx'),
             ],
             [
                 'value' => 'relevance',
-                'label' => __('Relevance (Độ liên quan)', 'jankx'),
+                'label' => __('Relevance', 'jankx'),
             ],
             [
                 'value' => 'meta_value',
-                'label' => __('Meta Value (Giá trị meta)', 'jankx'),
+                'label' => __('Meta Value', 'jankx'),
             ],
             [
                 'value' => 'meta_value_num',
-                'label' => __('Meta Value Num (Giá trị meta số)', 'jankx'),
+                'label' => __('Meta Value Numeric', 'jankx'),
             ],
             [
                 'value' => 'post__in',
-                'label' => __('Post__in (Thứ tự trong mảng)', 'jankx'),
+                'label' => __('Post__in (Array Order)', 'jankx'),
             ],
             [
                 'value' => 'post_name__in',
-                'label' => __('Post Name__in (Thứ tự slug)', 'jankx'),
+                'label' => __('Post Name__in (Slug Order)', 'jankx'),
             ],
             [
                 'value' => 'post_parent__in',
-                'label' => __('Post Parent__in (Thứ tự parent)', 'jankx'),
+                'label' => __('Post Parent__in (Parent Order)', 'jankx'),
             ],
         ];
 
@@ -117,11 +117,11 @@ class QueryOptions
         $options = [
             [
                 'value' => 'DESC',
-                'label' => __('Descending (Giảm dần)', 'jankx'),
+                'label' => __('Descending', 'jankx'),
             ],
             [
                 'value' => 'ASC',
-                'label' => __('Ascending (Tăng dần)', 'jankx'),
+                'label' => __('Ascending', 'jankx'),
             ],
         ];
 

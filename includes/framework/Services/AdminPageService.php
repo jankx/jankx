@@ -83,12 +83,12 @@ class AdminPageService
                 <span class="dashicons dashicons-shield-plugins" style="color: #ef4444; font-size: 24px; width: 24px; height: 24px;"></span>
                 <div>
                     <h4 style="margin: 0 0 5px 0; font-size: 15px; font-weight: 700; color: #1e293b;"><?php _e('Activate JANKX PRO', 'jankx'); ?></h4>
-                    <p style="margin: 0; font-size: 13px; color: #64748b; line-height: 1.5;"><?php _e('Kích hoạt theme JANKX PRO để nhận các bản cập nhật tự động, truy cập kho extension premium và nhận hỗ trợ kỹ thuật từ đội ngũ phát triển.', 'jankx'); ?></p>
+                    <p style="margin: 0; font-size: 13px; color: #64748b; line-height: 1.5;"><?php _e('Activate JANKX PRO to receive automatic updates, access the premium extension repository and receive technical support from the development team.', 'jankx'); ?></p>
                 </div>
             </div>
             <div style="display: flex; gap: 10px;">
-                <a href="<?php echo admin_url('admin.php?page=jankx-license'); ?>" class="button button-primary" style="background: #3b82f6; border: none; border-radius: 8px; font-weight: 600;"><?php _e('Kích hoạt ngay', 'jankx'); ?></a>
-                <a href="https://optilarity.top" target="_blank" class="button" style="border-radius: 8px;"><?php _e('Mua bản quyền', 'jankx'); ?></a>
+                <a href="<?php echo admin_url('admin.php?page=jankx-license'); ?>" class="button button-primary" style="background: #3b82f6; border: none; border-radius: 8px; font-weight: 600;"><?php _e('Activate Now', 'jankx'); ?></a>
+                <a href="https://optilarity.top" target="_blank" class="button" style="border-radius: 8px;"><?php _e('Buy License', 'jankx'); ?></a>
             </div>
         </div>
         <?php
@@ -104,11 +104,11 @@ class AdminPageService
         <div class="jankx-dashboard-widget-content">
             <div class="jankx-widget-header" style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid #eee;">
                 <span class="dashicons dashicons-art" style="color: #3b82f6;"></span>
-                <strong>JANKX PRO v<?php echo esc_html($version); ?></strong>
+                <strong><?php printf(__('JANKX PRO v%s', 'jankx'), esc_html($version)); ?></strong>
                 <span style="margin-left: auto; font-size: 11px; background: #dcfce7; color: #166534; padding: 2px 8px; border-radius: 10px;"><?php _e('Operational', 'jankx'); ?></span>
             </div>
             
-            <p style="font-size: 13px; color: #64748b;"><?php _e('Chào mừng bạn quay trở lại! Dưới đây là các bản cập nhật mới nhất từ Jankx Portal:', 'jankx'); ?></p>
+            <p style="font-size: 13px; color: #64748b;"><?php _e('Welcome back! Here are the latest updates from Jankx Portal:', 'jankx'); ?></p>
             
             <div class="jankx-widget-news-wrapper" style="margin: 15px 0;">
                 <?php $this->renderNewsWidget(3); ?>
@@ -220,8 +220,8 @@ class AdminPageService
         if (empty($news_data)) : ?>
             <div class="news-portal-empty">
                 <span class="dashicons dashicons-cloud"></span>
-                <p><?php _e('Không thể tải tin tức lúc này. Vui lòng thử lại sau.', 'jankx'); ?></p>
-                <a href="https://jankx.pages.dev/news" target="_blank" class="button"><?php _e('Xem trên Jankx Hub', 'jankx'); ?></a>
+                <p><?php _e('Could not load news at this time. Please try again later.', 'jankx'); ?></p>
+                <a href="https://jankx.pages.dev/news" target="_blank" class="button"><?php _e('View on Jankx Hub', 'jankx'); ?></a>
             </div>
         <?php else : ?>
             <div class="news-portal-grid">
@@ -231,7 +231,7 @@ class AdminPageService
                     $date    = date_i18n(get_option('date_format'), strtotime($item['created_at']));
                     $excerpt = mb_substr(strip_tags($item['content'] ?? ''), 0, 120);
                     $item_type = strtolower($item['type'] ?? 'news');
-                    $labels  = ['announcement' => 'Thông báo', 'release' => 'Phiên bản', 'tutorial' => 'Hướng dẫn', 'news' => 'Tin tức'];
+                    $labels  = ['announcement' => __('Announcement', 'jankx'), 'release' => __('Release', 'jankx'), 'tutorial' => __('Tutorial', 'jankx'), 'news' => __('News', 'jankx')];
                 ?>
                 <a href="<?php echo esc_url($url); ?>" target="_blank" rel="noopener" class="news-card news-card--<?php echo esc_attr($item_type); ?>">
                     <span class="news-badge"><?php echo esc_html($labels[$item_type] ?? ucfirst($item_type)); ?></span>
@@ -252,7 +252,7 @@ class AdminPageService
         $this->addPage([
             'id' => 'jankx-dashboard',
             'title' => __('JANKX PRO Dashboard', 'jankx'),
-            'subtitle' => __('Dahboard cho website của bạn với các thông tin hệ thống và các tiện ích quản lý nhanh.', 'jankx'),
+            'subtitle' => __('Dashboard for your website with system information and quick management utilities.', 'jankx'),
             'menu_title' => __('Dashboard', 'jankx'),
             'capability' => 'manage_options',
             'callback' => [$this, 'renderDashboardPage'],
@@ -285,7 +285,7 @@ class AdminPageService
         $this->addPage([
             'id' => 'jankx-extensions',
             'title' => __('Managed Extensions', 'jankx'),
-            'subtitle' => __('Quản lý các phần mở rộng chức năng cho Jankx Framework.', 'jankx'),
+            'subtitle' => __('Manage functional extensions for the Jankx Framework.', 'jankx'),
             'menu_title' => __('Extensions', 'jankx'),
             'capability' => 'manage_options',
             'callback' => [$this, 'renderExtensionsPage'],
@@ -296,7 +296,7 @@ class AdminPageService
         $this->addPage([
             'id' => 'jankx-marketplace',
             'title' => __('Extension Marketplace', 'jankx'),
-            'subtitle' => __('Khám phá và cài đặt hàng trăm tiện ích mở rộng từ cộng đồng Jankx.', 'jankx'),
+            'subtitle' => __('Explore and install hundreds of extensions from the Jankx community.', 'jankx'),
             'menu_title' => __('Marketplace', 'jankx'),
             'capability' => 'manage_options',
             'callback' => [$this, 'renderMarketplacePage'],
@@ -307,7 +307,7 @@ class AdminPageService
         $this->addPage([
             'id' => 'jankx-icons',
             'title' => __('Icon Repository', 'jankx'),
-            'subtitle' => __('Thư viện biểu tượng tập trung cho theme và các nội dung website.', 'jankx'),
+            'subtitle' => __('Centralized icon library for the theme and website content.', 'jankx'),
             'menu_title' => __('Icon Repository', 'jankx'),
             'capability' => 'manage_options',
             'callback' => [$this, 'renderIconsPage'],
@@ -318,7 +318,7 @@ class AdminPageService
         $this->addPage([
             'id' => 'jankx-utilities',
             'title' => __('Utilities', 'jankx'),
-            'subtitle' => __('Các công cụ tối ưu hệ thống, hình ảnh và cấu hình nâng cao.', 'jankx'),
+            'subtitle' => __('System optimization tools, images and advanced configuration.', 'jankx'),
             'menu_title' => __('Utilities', 'jankx'),
             'capability' => 'manage_options',
             'callback' => [$this, 'renderUtilitiesPage'],
@@ -329,7 +329,7 @@ class AdminPageService
         $this->addPage([
             'id' => 'jankx-debug',
             'title' => __('System Information', 'jankx'),
-            'subtitle' => __('Thông tin chi tiết về môi trường máy chủ và nhật ký lỗi hệ thống.', 'jankx'),
+            'subtitle' => __('Detailed information about the server environment and system error logs.', 'jankx'),
             'menu_title' => __('System Information', 'jankx'),
             'capability' => 'manage_options',
             'callback' => [$this, 'renderDebugPage'],
@@ -592,7 +592,7 @@ class AdminPageService
                                 <?php endforeach; ?>
                             </div>
                         <?php else : ?>
-                            <p class="card-desc"><?php _e('Bạn chưa cài đặt bất kỳ extension nào cho theme.', 'jankx'); ?></p>
+                            <p class="card-desc"><?php _e('You have not installed any extensions for the theme yet.', 'jankx'); ?></p>
                         <?php endif; ?>
                         
                         <div style="margin-top: 20px;">
@@ -624,7 +624,7 @@ class AdminPageService
                     <span class="dashicons dashicons-rss"></span>
                     <h2><?php _e('Jankx News & Updates', 'jankx'); ?></h2>
                     <a href="https://jankx.pages.dev/news" target="_blank" rel="noopener" class="news-portal-see-all">
-                        <?php _e('Xem tất cả', 'jankx'); ?> →
+                        <?php _e('See all', 'jankx'); ?> →
                     </a>
                 </div>
                 <?php $this->renderNewsWidget(6); ?>
@@ -866,7 +866,7 @@ class AdminPageService
         ?>
         </div> <!-- .jankx-universal-content -->
         <footer class="jankx-admin-footer">
-            <p>&copy; <?php echo date('Y'); ?> JANKX PRO. Made with <span class="dashicons dashicons-heart" style="color: #ef4444; font-size: 14px; width: 14px; height: 14px;"></span> by Puleeno.</p>
+            <p><?php echo sprintf(__('&copy; %1$s JANKX PRO. Made with %2$s by %3$s', 'jankx'), date('Y'), '<span class="dashicons dashicons-heart" style="color: #ef4444; font-size: 14px; width: 14px; height: 14px;"></span>', 'Puleeno'); ?></p>
         </footer>
         </div> <!-- .jankx-admin-page-container -->
         <?php
@@ -1083,7 +1083,7 @@ class AdminPageService
                                 <span class="dashicons dashicons-admin-site" style="font-size: 16px; width: 16px; height: 16px;"></span>
                             </div>
                             <div>
-                                <span style="display: block; font-size: 14px; font-weight: 600;">Managed</span>
+                                <span style="display: block; font-size: 14px; font-weight: 600;"><?php _e('Managed', 'jankx'); ?></span>
                                 <span style="display: block; font-size: 11px; color: #94a3b8;"><?php _e('Cloud Deployment', 'jankx'); ?></span>
                             </div>
                         </div>
@@ -1249,7 +1249,7 @@ class AdminPageService
     protected function renderDefaultPageContent($page)
     {
         echo '<div class="jankx-default-content">';
-        echo '<p>This page is under construction.</p>';
+        echo '<p>' . __('This page is under construction.', 'jankx') . '</p>';
         echo '</div>';
     }
 
@@ -1936,22 +1936,22 @@ class AdminPageService
             <div id="jankx-install-notice" style="display:none; margin-bottom:20px;" class="notice"></div>
             <header class="marketplace-header">
                 <div class="header-content">
-                    <h1><?php _e('Thư viện Extension', 'jankx'); ?></h1>
-                    <p class="subtitle"><?php _e('Khám phá và cài đặt các extension mở rộng tính năng cho theme Jankx của bạn. Tất cả extension tự động tương thích với phiên bản PHP và Jankx hiện tại.', 'jankx'); ?></p>
+                    <h1><?php _e('Extension Library', 'jankx'); ?></h1>
+                    <p class="subtitle"><?php _e('Explore and install functional extensions for your Jankx theme. All extensions are automatically compatible with the current PHP and Jankx versions.', 'jankx'); ?></p>
                 </div>
             </header>
 
             <nav class="marketplace-toolbar">
                 <div class="search-wrapper">
                     <span class="dashicons dashicons-search"></span>
-                    <input type="text" id="extension-search" placeholder="<?php esc_attr_e('Tìm kiếm extension...', 'jankx'); ?>">
+                    <input type="text" id="extension-search" placeholder="<?php esc_attr_e('Search extensions...', 'jankx'); ?>">
                 </div>
                 <div class="filter-tabs">
-                    <button class="filter-tab active" data-filter="all"><?php _e('Tất cả', 'jankx'); ?></button>
-                    <button class="filter-tab" data-filter="popular"><?php _e('Phổ biến nhất', 'jankx'); ?></button>
-                    <button class="filter-tab" data-filter="free"><?php _e('Miễn phí', 'jankx'); ?></button>
+                    <button class="filter-tab active" data-filter="all"><?php _e('All', 'jankx'); ?></button>
+                    <button class="filter-tab" data-filter="popular"><?php _e('Most Popular', 'jankx'); ?></button>
+                    <button class="filter-tab" data-filter="free"><?php _e('Free', 'jankx'); ?></button>
                     <button class="filter-tab" data-filter="premium"><?php _e('Premium', 'jankx'); ?></button>
-                    <button class="filter-tab" data-filter="newest"><?php _e('Mới nhất', 'jankx'); ?></button>
+                    <button class="filter-tab" data-filter="newest"><?php _e('Newest', 'jankx'); ?></button>
                 </div>
             </nav>
 
@@ -1959,9 +1959,9 @@ class AdminPageService
                 <?php if (empty($extensions) && !is_array($extensions)): ?>
                     <div class="empty-state">
                         <div class="empty-icon"><span class="dashicons dashicons-store"></span></div>
-                        <h3><?php _e('Không tìm thấy extension nào', 'jankx'); ?></h3>
-                        <p><?php _e('Thư viện extension hiện đang được cập nhật. Vui lòng quay lại sau ít phút hoặc thử làm mới dữ liệu.', 'jankx'); ?></p>
-                        <a href="<?php echo add_query_arg('force_refresh', '1'); ?>" class="button jankx-btn-primary" style="width:auto;"><?php _e('Làm mới dữ liệu', 'jankx'); ?></a>
+                        <h3><?php _e('No extensions found', 'jankx'); ?></h3>
+                        <p><?php _e('The extension library is currently being updated. Please come back in a few minutes or try refreshing the data.', 'jankx'); ?></p>
+                        <a href="<?php echo add_query_arg('force_refresh', '1'); ?>" class="button jankx-btn-primary" style="width:auto;"><?php _e('Refresh Data', 'jankx'); ?></a>
                     </div>
                 <?php else: ?>
                     <?php foreach ($extensions as $ext):
@@ -1971,9 +1971,9 @@ class AdminPageService
                         $reviews = $ext['rating_count'] ?? 0;
                         $installs = $ext['install_count'] ?? 0;
                         
-                        $lastUpdated = __('Vừa xong', 'jankx');
+                        $lastUpdated = __('Just now', 'jankx');
                         if (!empty($ext['updated_at'])) {
-                            $lastUpdated = sprintf(__('%s trước', 'jankx'), human_time_diff(strtotime($ext['updated_at'])));
+                            $lastUpdated = sprintf(__('%s ago', 'jankx'), human_time_diff(strtotime($ext['updated_at'])));
                         }
                     ?>
                         <div class="extension-card-modern <?php echo $isPremium ? 'is-premium' : ''; ?>" data-slug="<?php echo esc_attr($slug); ?>">
@@ -2007,7 +2007,7 @@ class AdminPageService
                                         <?php if ($isPremium): ?>
                                             <span class="badge premium"><?php _e('Premium', 'jankx'); ?></span>
                                         <?php else: ?>
-                                            <span class="badge free"><?php _e('Miễn phí', 'jankx'); ?></span>
+                                            <span class="badge free"><?php _e('Free', 'jankx'); ?></span>
                                         <?php endif; ?>
                                     </div>
                                 </div>
@@ -2020,40 +2020,37 @@ class AdminPageService
                                             <span class="dashicons dashicons-star-filled <?php echo $i <= $rating ? 'active' : ''; ?>"></span>
                                         <?php endfor; ?>
                                     </div>
-                                    <span class="rating-text">(<?php printf(__('%s đánh giá', 'jankx'), number_format($reviews)); ?>)</span>
+                                    <span class="rating-text">(<?php printf(__('%s reviews', 'jankx'), number_format($reviews)); ?>)</span>
                                 </div>
 
                                 <div class="extension-stats-modern">
                                     <div class="stat-item">
                                         <span class="dashicons dashicons-download"></span>
-                                        <span><?php printf(__('%s lượt cài đặt', 'jankx'), number_format($installs)); ?></span>
+                                        <span><?php printf(__('%s installs', 'jankx'), number_format($installs)); ?></span>
                                     </div>
                                 </div>
 
                                 <div class="extension-footer-meta">
                                     <span class="version">v<?php echo esc_html($ext['latest_version'] ?? '1.0.0'); ?></span>
-                                    <span class="author"><?php printf(__('bởi %s', 'jankx'), '<span class="author-name">' . esc_html($ext['author_name'] ?? 'Jankx Team') . '</span>'); ?></span>
+                                    <span class="author"><?php printf(__('by %s', 'jankx'), '<span class="author-name">' . esc_html($ext['author_name'] ?? 'Jankx Team') . '</span>'); ?></span>
                                 </div>
 
                                 <div class="card-action-area">
                                     <div class="action-buttons">
-                                        <button class="button jankx-btn-secondary detail-extension"
-                                                data-ext='<?php echo esc_attr(json_encode($ext)); ?>'>
-                                            <?php _e('Chi tiết', 'jankx'); ?>
+                                        <button class="button detail-extension" data-ext='<?php echo json_encode($ext); ?>'>
+                                            <?php _e('Details', 'jankx'); ?>
                                         </button>
-                                        <?php
-                                        $extensionManager = \Jankx\Extensions\ExtensionManager::getInstance();
-                                        $isInstalled = $extensionManager->has_extension_id($slug) || $extensionManager->has_extension($slug);
-                                        if ($isInstalled): ?>
-                                            <button class="button jankx-btn-primary installed" disabled>
-                                                <span class="dashicons dashicons-yes" style="font-size: 16px; margin-right: 4px; vertical-align: middle;"></span>
-                                                <?php _e('Đã có', 'jankx'); ?>
+                                        <?php if ($this->isExtensionInstalled($slug)): ?>
+                                            <button class="button installed" disabled>
+                                                <span class="dashicons dashicons-yes"></span>
+                                                <?php _e('Already Installed', 'jankx'); ?>
                                             </button>
                                         <?php else: ?>
-                                            <button class="button jankx-btn-primary install-extension"
+                                            <button class="button jankx-btn-primary install-extension" 
                                                     data-slug="<?php echo esc_attr($slug); ?>"
-                                                    data-nonce="<?php echo esc_attr($nonce); ?>">
-                                                <?php _e('Cài đặt', 'jankx'); ?>
+                                                    data-nonce="<?php echo wp_create_nonce('jankx_install_' . $slug); ?>">
+                                                <span class="dashicons dashicons-download"></span>
+                                                <?php _e('Install', 'jankx'); ?>
                                             </button>
                                         <?php endif; ?>
                                     </div>
@@ -2089,7 +2086,7 @@ class AdminPageService
             </div>
 
             <footer class="marketplace-footer">
-                <p><?php printf(__('Được phát triển với %s bởi Jankx Team', 'jankx'), '<span class="heart" style="color:#e91e63;">❤</span>'); ?></p>
+                <p><?php printf(__('Developed with %s by Jankx Team', 'jankx'), '<span class="heart" style="color:#e91e63;">❤</span>'); ?></p>
             </footer>
         </div>
 
@@ -2507,33 +2504,33 @@ class AdminPageService
                         <div id="m-icon-content"></div>
                     </div>
                     <div class="modal-title-area">
-                        <h2 id="m-title">Extension Name</h2>
-                        <span id="m-badge" class="badge">Free</span>
+                        <h2 id="m-title"><?php _e('Extension Name', 'jankx'); ?></h2>
+                        <span id="m-badge" class="badge"><?php _e('Free', 'jankx'); ?></span>
                     </div>
                 </div>
                 <div class="modal-body">
                     <div class="modal-description" id="m-desc"></div>
                     <div class="modal-metadata">
                         <div class="meta-item">
-                            <span class="meta-lbl"><?php _e('Tác giả', 'jankx'); ?></span>
-                            <span class="meta-val" id="m-author">Jankx Team</span>
+                            <span class="meta-lbl"><?php _e('Author', 'jankx'); ?></span>
+                            <span class="meta-val" id="m-author"><?php _e('Jankx Team', 'jankx'); ?></span>
                         </div>
                         <div class="meta-item">
-                            <span class="meta-lbl"><?php _e('Phiên bản', 'jankx'); ?></span>
+                            <span class="meta-lbl"><?php _e('Version', 'jankx'); ?></span>
                             <span class="meta-val" id="m-version">1.0.0</span>
                         </div>
                         <div class="meta-item">
-                            <span class="meta-lbl"><?php _e('Cài đặt', 'jankx'); ?></span>
+                            <span class="meta-lbl"><?php _e('Installs', 'jankx'); ?></span>
                             <span class="meta-val" id="m-installs">0</span>
                         </div>
                         <div class="meta-item">
-                            <span class="meta-lbl"><?php _e('Đánh giá', 'jankx'); ?></span>
+                            <span class="meta-lbl"><?php _e('Rating', 'jankx'); ?></span>
                             <span class="meta-val" id="m-rating">5.0</span>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button class="button jankx-btn-secondary modal-close-btn"><?php _e('Đóng', 'jankx'); ?></button>
+                    <button class="button jankx-btn-secondary modal-close-btn"><?php _e('Close', 'jankx'); ?></button>
                 </div>
             </div>
         </div>
@@ -2549,7 +2546,7 @@ class AdminPageService
 
                 if (!slug) return;
 
-                $btn.addClass('loading').prop('disabled', true).text('<?php echo esc_js(__('Đang cài...', 'jankx')); ?>');
+                $btn.addClass('loading').prop('disabled', true).text('<?php echo esc_js(__('Installing...', 'jankx')); ?>');
                 $notice.hide();
 
                 $.post(ajaxurl, {
@@ -2560,20 +2557,20 @@ class AdminPageService
                     if (res.success) {
                         $notice.removeClass('notice-error').addClass('notice-success')
                                .html('<p><strong><?php echo esc_js(__('Success:', 'jankx')); ?></strong> ' + res.data.message + '</p>').show();
-                        $btn.text('<?php echo esc_js(__('Đã cài đặt', 'jankx')); ?>');
+                        $btn.text('<?php echo esc_js(__('Installed', 'jankx')); ?>');
                         $btn.addClass('installed').prop('disabled', true).css('background', '#10b981');
                         $('html, body').animate({ scrollTop: $notice.offset().top - 80 }, 400);
                     } else {
                         var errMsg = (res.data && res.data.message)
                             ? res.data.message
-                            : '<?php echo esc_js(__('Cài đặt thất bại.', 'jankx')); ?>';
+                            : '<?php echo esc_js(__('Installation failed.', 'jankx')); ?>';
                         $notice.removeClass('notice-success').addClass('notice-error')
                                .html('<p><strong><?php echo esc_js(__('Error:', 'jankx')); ?></strong> ' + errMsg + '</p>').show();
-                        $btn.removeClass('loading').prop('disabled', false).text('<?php echo esc_js(__('Cài đặt ngay', 'jankx')); ?>');
+                        $btn.removeClass('loading').prop('disabled', false).text('<?php echo esc_js(__('Install Now', 'jankx')); ?>');
                         $('html, body').animate({ scrollTop: $notice.offset().top - 80 }, 400);
                     }
                 }).fail(function(xhr) {
-                    var errMsg = '<?php echo esc_js(__('Lỗi kết nối. Vui lòng thử lại.', 'jankx')); ?>';
+                    var errMsg = '<?php echo esc_js(__('Connection error. Please try again.', 'jankx')); ?>';
                     try {
                         var parsed = JSON.parse(xhr.responseText);
                         if (parsed && parsed.data && parsed.data.message) {
@@ -2582,7 +2579,7 @@ class AdminPageService
                     } catch(e) {}
                     $notice.removeClass('notice-success').addClass('notice-error')
                            .html('<p><strong><?php echo esc_js(__('Error:', 'jankx')); ?></strong> ' + errMsg + '</p>').show();
-                    $btn.removeClass('loading').prop('disabled', false).text('<?php echo esc_js(__('Cài đặt ngay', 'jankx')); ?>');
+                    $btn.removeClass('loading').prop('disabled', false).text('<?php echo esc_js(__('Install Now', 'jankx')); ?>');
                     $('html, body').animate({ scrollTop: $notice.offset().top - 80 }, 400);
                 });
             });
@@ -2619,7 +2616,7 @@ class AdminPageService
                 if (data.is_premium) {
                     $badge.text('Premium').attr('class', 'badge premium');
                 } else {
-                    $badge.text('Miễn phí').attr('class', 'badge free');
+                    $badge.text('<?php echo esc_js(__('Free', 'jankx')); ?>').attr('class', 'badge free');
                 }
 
                 // Icon handling

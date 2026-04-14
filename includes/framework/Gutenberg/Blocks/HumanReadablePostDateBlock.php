@@ -37,14 +37,7 @@ class HumanReadablePostDateBlock extends Block
 
         $diff = human_time_diff(get_the_time('U', $post_id), current_time('timestamp'));
         
-        // Manual translation for Vietnamese if needed
-        $diff = str_replace(
-            ['hours', 'hour', 'mins', 'min', 'days', 'day', 'weeks', 'week', 'months', 'month', 'years', 'year'],
-            ['giờ', 'giờ', 'phút', 'phút', 'ngày', 'ngày', 'tuần', 'tuần', 'tháng', 'tháng', 'năm', 'năm'],
-            $diff
-        );
-
-        $human_date = $diff . ' ' . __('trước', 'jankx');
+        $human_date = sprintf(__('%s ago', 'jankx'), $diff);
         $show_icon = $attributes['showIcon'] ?? true;
         
         $wrapper_attributes = get_block_wrapper_attributes([

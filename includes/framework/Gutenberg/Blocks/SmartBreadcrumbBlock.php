@@ -10,7 +10,7 @@ class SmartBreadcrumbBlock extends Block {
 
         // Set default values
         $showHome = $attributes['showHome'] ?? true;
-        $homeText = $attributes['homeText'] ?? __('Trang chủ', 'jankx');
+        $homeText = $attributes['homeText'] ?? __('Home', 'jankx');
         $separator = $attributes['separator'] ?? '›';
         $showCurrent = $attributes['showCurrent'] ?? true;
         $maxDepth = $attributes['maxDepth'] ?? 3;
@@ -188,7 +188,7 @@ class SmartBreadcrumbBlock extends Block {
      */
     private function generateCustomBreadcrumb($attributes) {
         $showHome = $attributes['showHome'] ?? true;
-        $homeText = $attributes['homeText'] ?? __('Trang chủ', 'jankx');
+        $homeText = $attributes['homeText'] ?? __('Home', 'jankx');
         $separator = $attributes['separator'] ?? '›';
         $showCurrent = $attributes['showCurrent'] ?? true;
         $maxDepth = $attributes['maxDepth'] ?? 3;
@@ -236,10 +236,10 @@ class SmartBreadcrumbBlock extends Block {
             $breadcrumb_items = array_merge($breadcrumb_items, $this->getArchiveBreadcrumb($queried_object, $maxDepth));
         } elseif (is_search()) {
             // Search results
-            $breadcrumb_items[] = '<span>' . sprintf(__('Kết quả tìm kiếm cho: "%s"', 'jankx'), get_search_query()) . '</span>';
+            $breadcrumb_items[] = '<span>' . sprintf(__('Search Results for: "%s"', 'jankx'), get_search_query()) . '</span>';
         } elseif (is_404()) {
             // 404 page
-            $breadcrumb_items[] = '<span>' . __('Trang không tìm thấy', 'jankx') . '</span>';
+            $breadcrumb_items[] = '<span>' . __('Page not found', 'jankx') . '</span>';
         }
 
         // Add current page if not already added and showCurrent is true (but not in editor preview)
@@ -331,7 +331,7 @@ class SmartBreadcrumbBlock extends Block {
         $items = [];
 
         if (is_author()) {
-            $items[] = '<span>' . sprintf(__('Tác giả: %s', 'jankx'), $queried_object->display_name) . '</span>';
+            $items[] = '<span>' . sprintf(__('Author: %s', 'jankx'), $queried_object->display_name) . '</span>';
         } elseif (is_date()) {
             if (is_year()) {
                 $items[] = '<span>' . get_the_date('Y') . '</span>';
@@ -369,9 +369,9 @@ class SmartBreadcrumbBlock extends Block {
                 return get_the_date();
             }
         } elseif (is_search()) {
-            return sprintf(__('Kết quả tìm kiếm cho: "%s"', 'jankx'), get_search_query());
+            return sprintf(__('Search Results for: "%s"', 'jankx'), get_search_query());
         } elseif (is_404()) {
-            return __('Trang không tìm thấy', 'jankx');
+            return __('Page not found', 'jankx');
         }
 
         return '';

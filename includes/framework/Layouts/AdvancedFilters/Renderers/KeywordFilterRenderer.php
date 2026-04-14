@@ -63,7 +63,7 @@ class KeywordFilterRenderer extends BaseFilterRenderer
         if (!empty($multi['enabled']) && count($post_types) > 1) {
             echo '<div class="post-type-radios" role="radiogroup" aria-label="' . esc_attr(__('Post Type', 'jankx')) . '">';
             // "All" option
-            echo '<label class="filter-option"><input type="radio" name="post_type" value="" checked /> ' . esc_html(__('Tất cả', 'jankx')) . '</label>';
+            echo '<label class="filter-option"><input type="radio" name="post_type" value="" checked /> ' . esc_html(__('All', 'jankx')) . '</label>';
             foreach ($post_types as $pt) {
                 $obj = get_post_type_object($pt);
                 $label_text = $obj && isset($obj->labels->singular_name) ? $obj->labels->singular_name : ucwords(str_replace(['-', '_'], ' ', $pt));

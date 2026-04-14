@@ -5,12 +5,12 @@ if (!defined('ABSPATH')) {
 
 return [
     'id' => 'layout_main',
-    'name' => 'Bố cục & Khoảng cách',
-    'description' => 'Các tuỳ chọn layout chung',
+    'name' => __('Layout & Spacing', 'jankx'),
+    'description' => __('General layout options', 'jankx'),
     'fields' => [
         [
             'id' => 'container_width',
-            'name' => 'Chiều rộng container',
+            'name' => __('Container Width', 'jankx'),
             'type' => 'slider',
             'value' => 1200,
             'min' => 960,
@@ -20,12 +20,12 @@ return [
         ],
         [
             'id' => 'sidebar_position',
-            'name' => 'Vị trí sidebar',
+            'name' => __('Sidebar Position', 'jankx'),
             'type' => 'radio',
             'options' => [
-                'right' => 'Bên phải',
-                'left' => 'Bên trái',
-                'none' => 'Không sidebar',
+                'right' => __('Right', 'jankx'),
+                'left' => __('Left', 'jankx'),
+                'none' => __('No Sidebar', 'jankx'),
             ],
             'value' => 'right',
         ],

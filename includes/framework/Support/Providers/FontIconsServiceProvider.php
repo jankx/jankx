@@ -81,8 +81,8 @@ class FontIconsServiceProvider extends ServiceProvider
     {
         add_submenu_page(
             'jankx-settings', // Parent slug
-            'Icons Repository', // Page title
-            'Icons Repository', // Menu title
+            __('Icons Repository', 'jankx'), // Page title
+            __('Icons Repository', 'jankx'), // Menu title
             'manage_options', // Capability
             'jankx-icons', // Menu slug
             [$this, 'renderAdminPage'] // Callback
@@ -174,23 +174,23 @@ class FontIconsServiceProvider extends ServiceProvider
         $iconTypes = $this->app->make('font-icons.repository')->getIconTypes();
 
         echo '<div class="wrap">';
-        echo '<h1>Font Icons Repository</h1>';
-        echo '<p>Manage your font icons collection.</p>';
+        echo '<h1>' . __('Font Icons Repository', 'jankx') . '</h1>';
+        echo '<p>' . __('Manage your font icons collection.', 'jankx') . '</p>';
 
         if (!empty($iconTypes)) {
-            echo '<h2>Registered Icon Types:</h2>';
+            echo '<h2>' . __('Registered Icon Types:', 'jankx') . '</h2>';
             echo '<ul>';
             foreach ($iconTypes as $type => $data) {
                 $config = $data['config'] ?? [];
                 echo '<li>';
                 echo '<strong>' . ($config['display_name'] ?? $type) . '</strong> ';
                 echo '(' . count($data['icons'] ?? []) . ' icons) ';
-                echo $config['auto_load'] ? '[Auto-load]' : '[Manual]';
+                echo $config['auto_load'] ? __(' [Auto-load]', 'jankx') : __(' [Manual]', 'jankx');
                 echo '</li>';
             }
             echo '</ul>';
         } else {
-            echo '<p>No icon types registered yet.</p>';
+            echo '<p>' . __('No icon types registered yet.', 'jankx') . '</p>';
         }
 
         echo '</div>';

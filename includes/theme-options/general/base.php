@@ -5,32 +5,32 @@ if (!defined('ABSPATH')) {
 
 return [
     'id' => 'general_base',
-    'name' => 'Thiết lập chung',
-    'description' => 'Các tuỳ chọn cơ bản',
+    'name' => __('General Settings', 'jankx'),
+    'description' => __('Basic configuration options', 'jankx'),
     'fields' => [
         [
             'id' => 'site_title',
-            'name' => 'Tiêu đề site',
+            'name' => __('Site Title', 'jankx'),
             'type' => 'text',
             'value' => get_option('blogname'),
             'default_value' => 'Jankx Theme',
-            'description' => 'Hiển thị tại header và SEO title fallback',
+            'description' => __('Displayed in the header and as an SEO title fallback', 'jankx'),
         ],
         [
             'id' => 'site_tagline',
-            'name' => 'Mô tả ngắn',
+            'name' => __('Tagline', 'jankx'),
             'type' => 'textarea',
             'value' => get_option('blogdescription'),
-            'description' => 'Hiển thị ở một số block hero/footer',
+            'description' => __('Displayed in some hero and footer blocks', 'jankx'),
         ],
         [
             'id' => 'enable_back_to_top',
-            'name' => 'Bật nút Back to Top',
+            'name' => __('Enable Back to Top', 'jankx'),
             'type' => 'switch',
             'value' => 1,
-            'on' => 'Bật',
-            'off' => 'Tắt',
-            'description' => 'Hiển thị nút cuộn lên đầu trang',
+            'on' => __('On', 'jankx'),
+            'off' => __('Off', 'jankx'),
+            'description' => __('Display a scroll-to-top button', 'jankx'),
         ],
     ],
 ];

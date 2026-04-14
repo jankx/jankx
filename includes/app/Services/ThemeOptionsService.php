@@ -156,15 +156,15 @@ class ThemeOptionsService
         // Thiết lập arguments cho adapter
         $args = [
             'opt_name' => $this->optionName,
-            'display_name' => 'Bookix Theme Options',
+            'display_name' => __('Jankx Theme Options', 'jankx'),
             'display_version' => '1.0.0',
             'menu_type' => 'submenu',
             'allow_sub_menu' => true,
-            'menu_title' => 'Theme Options',
-            'page_title' => 'Bookix Theme Options',
+            'menu_title' => __('Theme Options', 'jankx'),
+            'page_title' => __('Jankx Theme Options', 'jankx'),
             'page_parent' => 'themes.php',
             'page_permissions' => 'manage_options',
-            'page_slug' => 'bookix-theme-options',
+            'page_slug' => 'jankx-theme-options',
         ];
 
         $this->adapter->setArgs($args);
@@ -223,12 +223,12 @@ class ThemeOptionsService
     {
         return [
             'opt_name' => $this->optionName,
-            'display_name' => 'Bookix Theme Options',
+            'display_name' => __('Jankx Theme Options', 'jankx'),
             'display_version' => '1.0.0',
             'menu_type' => 'submenu',
             'allow_sub_menu' => true,
-            'menu_title' => 'Theme Options',
-            'page_title' => 'Bookix Theme Options',
+            'menu_title' => __('Theme Options', 'jankx'),
+            'page_title' => __('Jankx Theme Options', 'jankx'),
             'page_parent' => 'themes.php', // Sẽ được thay đổi bởi JankxAdminPagesServiceProvider
             'page_permissions' => 'manage_options',
             'page_slug' => 'jankx-theme-options', // Sử dụng slug thống nhất
@@ -269,10 +269,10 @@ class ThemeOptionsService
     protected function createDirectMenu(): void
     {
         add_menu_page(
-            'Bookix Theme Options',
-            'Theme Options',
+            __('Jankx Theme Options', 'jankx'),
+            __('Theme Options', 'jankx'),
             'manage_options',
-            'bookix-theme-options',
+            'jankx-theme-options',
             [$this, 'renderOptionsPage'],
             'dashicons-admin-generic',
             60
@@ -297,10 +297,10 @@ class ThemeOptionsService
 
         // Fallback: hiển thị thông tin debug
         echo '<div class="wrap">';
-        echo '<h1>Bookix Theme Options</h1>';
-        echo '<p>Framework Mode: ' . $this->getCurrentFrameworkMode() . '</p>';
-        echo '<p>Adapter: ' . ($this->adapter ? get_class($this->adapter) : 'Not loaded') . '</p>';
-        echo '<p>Options Data: ' . (empty($this->getOptionsData()) ? 'Empty' : 'Loaded') . '</p>';
+        echo '<h1>' . __('Jankx Theme Options', 'jankx') . '</h1>';
+        echo '<p>' . __('Framework Mode: ', 'jankx') . $this->getCurrentFrameworkMode() . '</p>';
+        echo '<p>' . __('Adapter: ', 'jankx') . ($this->adapter ? get_class($this->adapter) : __('Not loaded', 'jankx')) . '</p>';
+        echo '<p>' . __('Options Data: ', 'jankx') . (empty($this->getOptionsData()) ? __('Empty', 'jankx') : __('Loaded', 'jankx')) . '</p>';
         echo '</div>';
     }
 

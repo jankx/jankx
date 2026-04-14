@@ -5,14 +5,14 @@ if (!defined('ABSPATH')) {
 
 return [
     'id' => 'socials_links',
-    'name' => 'Liên kết mạng xã hội',
-    'description' => 'Thêm URL các mạng xã hội để hiển thị ở header, footer hoặc widget. Bạn có thể tự thêm mạng xã hội mới bằng nút "Add Custom Profile"',
+    'name' => __('Social Media Links', 'jankx'),
+    'description' => __('Add social media URLs to display in the header, footer, or widgets. You can add custom profiles using the "Add Custom Profile" button.', 'jankx'),
     'fields' => [
         [
             'id' => 'social_profiles',
-            'name' => 'Mạng xã hội',
+            'name' => __('Social Profiles', 'jankx'),
             'type' => 'social_profiles',
-            'subtitle' => 'Quản lý các liên kết mạng xã hội. Click vào icon để bật/tắt, kéo thả để sắp xếp thứ tự.',
+            'subtitle' => __('Manage your social links. Click an icon to toggle on/off, and drag-and-drop to reorder items.', 'jankx'),
         ],
     ],
 ];

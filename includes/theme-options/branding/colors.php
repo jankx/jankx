@@ -5,24 +5,24 @@ if (!defined('ABSPATH')) {
 
 return [
     'id' => 'branding_colors',
-    'name' => 'Màu sắc & Logo',
-    'description' => 'Thiết lập màu nhận diện và logo',
+    'name' => __('Colors & Logo', 'jankx'),
+    'description' => __('Configure brand colors and logo', 'jankx'),
     'fields' => [
         [
             'id' => 'logo_image',
-            'name' => 'Logo chính',
+            'name' => __('Primary Logo', 'jankx'),
             'type' => 'image',
-            'description' => 'Logo hiển thị ở header',
+            'description' => __('Logo displayed in the header', 'jankx'),
         ],
         [
             'id' => 'primary_color',
-            'name' => 'Màu chủ đạo',
+            'name' => __('Primary Color', 'jankx'),
             'type' => 'color',
             'value' => '#ff5722',
         ],
         [
             'id' => 'secondary_color',
-            'name' => 'Màu phụ',
+            'name' => __('Secondary Color', 'jankx'),
             'type' => 'color',
             'value' => '#009688',
         ],

@@ -31,7 +31,7 @@ class ServiceHelper
     public static function service(string $serviceName, $default = null)
     {
         if (!self::getApp()) {
-            throw new \Exception('ServiceHelper chưa được khởi tạo. Gọi ServiceHelper::init() trước.');
+            throw new \Exception(__('ServiceHelper has not been initialized. Call ServiceHelper::init() first.', 'jankx'));
         }
 
         try {
@@ -189,13 +189,13 @@ class ServiceHelper
         $stats = self::getStats();
 
         echo '<div style="position: fixed; top: 10px; right: 10px; background: #333; color: white; padding: 15px; border-radius: 5px; z-index: 9999; font-family: monospace; font-size: 12px;">';
-        echo '<h4 style="margin: 0 0 10px 0;">Lazy Services Debug</h4>';
-        echo '<p><strong>Registered:</strong> ' . implode(', ', $stats['registered']) . '</p>';
-        echo '<p><strong>Loaded:</strong> ' . implode(', ', $stats['resolved']) . '</p>';
-        echo '<p><strong>Total Providers:</strong> ' . $stats['total_registered'] . '</p>';
-        echo '<p><strong>Total Loaded:</strong> ' . $stats['total_resolved'] . '</p>';
-        echo '<p><strong>Memory:</strong> ' . number_format($stats['memory_usage'] / 1024 / 1024, 2) . ' MB</p>';
-        echo '<p><strong>Peak:</strong> ' . number_format($stats['peak_memory'] / 1024 / 1024, 2) . ' MB</p>';
+        echo '<h4 style="margin: 0 0 10px 0;">' . __('Lazy Services Debug', 'jankx') . '</h4>';
+        echo '<p><strong>' . __('Registered:', 'jankx') . '</strong> ' . implode(', ', $stats['registered']) . '</p>';
+        echo '<p><strong>' . __('Loaded:', 'jankx') . '</strong> ' . implode(', ', $stats['resolved']) . '</p>';
+        echo '<p><strong>' . __('Total Providers:', 'jankx') . '</strong> ' . $stats['total_registered'] . '</p>';
+        echo '<p><strong>' . __('Total Loaded:', 'jankx') . '</strong> ' . $stats['total_resolved'] . '</p>';
+        echo '<p><strong>' . __('Memory:', 'jankx') . '</strong> ' . number_format($stats['memory_usage'] / 1024 / 1024, 2) . ' MB</p>';
+        echo '<p><strong>' . __('Peak:', 'jankx') . '</strong> ' . number_format($stats['peak_memory'] / 1024 / 1024, 2) . ' MB</p>';
         echo '</div>';
     }
 }
