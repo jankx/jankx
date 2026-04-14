@@ -1,0 +1,60 @@
+# ─── Git export-ignore ───────────────────────────────────────────────────────
+# Files/dirs marked export-ignore are excluded from `git archive` ZIPs
+# and are also used as a reference list in our release.yml rsync step.
+
+# VCS & CI
+.github            export-ignore
+.gitattributes     export-ignore
+.gitignore         export-ignore
+
+# Development tooling
+tests              export-ignore
+scripts            export-ignore
+docs               export-ignore
+llms.txt           export-ignore
+
+# Node / build sources (compiled assets in resources/blocks/*/build/ ARE kept)
+node_modules       export-ignore
+resources/node_modules  export-ignore
+
+# Config files not needed at runtime
+phpunit.xml        export-ignore
+phpunit.xml.dist   export-ignore
+.env               export-ignore
+.env.example       export-ignore
+*.log              export-ignore
+
+# Lock files (end-user installs with --no-dev anyway)
+composer.lock      export-ignore
+package-lock.json  export-ignore
+resources/package-lock.json  export-ignore
+
+# Source maps (optional — comment out if you want to keep them)
+resources/blocks/**/*.js.map  export-ignore
+resources/blocks/**/*.css.map export-ignore
+
+# ─── Line endings ────────────────────────────────────────────────────────────
+* text=auto eol=lf
+*.php text eol=lf
+*.js  text eol=lf
+*.tsx text eol=lf
+*.ts  text eol=lf
+*.css text eol=lf
+*.scss text eol=lf
+*.json text eol=lf
+*.md  text eol=lf
+*.html text eol=lf
+*.txt text eol=lf
+*.sh  text eol=lf
+
+# Binary assets – no line-ending conversion
+*.png  binary
+*.jpg  binary
+*.jpeg binary
+*.gif  binary
+*.ico  binary
+*.woff binary
+*.woff2 binary
+*.ttf  binary
+*.eot  binary
+*.zip  binary

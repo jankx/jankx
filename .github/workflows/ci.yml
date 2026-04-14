@@ -67,11 +67,16 @@ jobs:
           node-version: '20'
           cache: 'npm'
 
-      - name: Install NPM dependencies
+      - name: Install NPM dependencies (theme root / Mix)
         run: npm ci --no-interaction
 
-      - name: Build Production Assets
+      - name: Build Production Assets (Mix)
         run: npm run production --no-interaction
 
-      - name: Lint JS (if available)
-        run: if npm run lint -- --help > /dev/null 2>&1; then npm run lint; else echo "No lint script found"; fi
+      - name: Install NPM dependencies (resources blocks)
+        run: npm ci --no-interaction
+        working-directory: resources
+
+      - name: Build Gutenberg Blocks (Webpack)
+        run: npm run build --no-interaction
+        working-directory: resources
