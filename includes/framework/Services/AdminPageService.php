@@ -1851,6 +1851,15 @@ class AdminPageService
         if ($isMissing) {
             $statusClass .= ' missing';
         }
+
+        $settings_url = null;
+        $is_application = false;
+        $extensionManager = $this->app->make('extension.manager');
+        $extension = $extensionManager->get_extension($name);
+        if ($extension) {
+            $settings_url = $extension->get_settings_url();
+            $is_application = $extension->is_application();
+        }
         ?>
         <tr class="<?php echo $statusClass; ?>" data-slug="<?php echo esc_attr($name); ?>">
             <td class="plugin-title column-primary">
@@ -1860,6 +1869,9 @@ class AdminPageService
                         <span class="jankx-badge-required" style="background: #ef4444; color: #fff; font-size: 9px; padding: 2px 6px; border-radius: 4px; font-weight: 700; text-transform: uppercase;"><?php _e('Required', 'jankx'); ?></span>
                     <?php elseif ($type === 'recommended'): ?>
                         <span class="jankx-badge-recommended" style="background: #3b82f6; color: #fff; font-size: 9px; padding: 2px 6px; border-radius: 4px; font-weight: 700; text-transform: uppercase;"><?php _e('Recommended', 'jankx'); ?></span>
+                    <?php endif; ?>
+                    <?php if ($is_application): ?>
+                        <span class="jankx-badge-app" style="background: #8b5cf6; color: #fff; font-size: 9px; padding: 2px 6px; border-radius: 4px; font-weight: 700; text-transform: uppercase;"><?php _e('App', 'jankx'); ?></span>
                     <?php endif; ?>
                 </div>
                 <div class="row-actions visible">
@@ -1873,8 +1885,16 @@ class AdminPageService
                         <span class="deactivate">
                             <a href="javascript:void(0);" class="toggle-extension" data-extension="<?php echo esc_attr($name); ?>" data-nonce="<?php echo esc_attr($nonce); ?>">
                                 <?php _e('Deactivate', 'jankx'); ?>
-                            </a> |
+                            </a>
                         </span>
+                        <?php if ($settings_url): ?>
+                            | <span class="settings">
+                                <a href="<?php echo esc_url($settings_url); ?>">
+                                    <?php _e('Settings', 'jankx'); ?>
+                                </a>
+                            </span>
+                        <?php endif; ?>
+                        |
                     <?php else: ?>
                         <span class="activate">
                             <a href="javascript:void(0);" class="toggle-extension" data-extension="<?php echo esc_attr($name); ?>" data-nonce="<?php echo esc_attr($nonce); ?>">

@@ -211,6 +211,25 @@ abstract class AbstractExtension implements ExtensionInterface
     }
 
     /**
+     * Get settings URL
+     */
+    public function get_settings_url(): ?string
+    {
+        if (isset($this->manifest_data['settings_url'])) {
+            return admin_url($this->manifest_data['settings_url']);
+        }
+        return null;
+    }
+
+    /**
+     * Check if extension is a sub-application
+     */
+    public function is_application(): bool
+    {
+        return isset($this->manifest_data['is_application']) && $this->manifest_data['is_application'];
+    }
+
+    /**
      * Get caller configuration
      */
     public function get_caller_config()
