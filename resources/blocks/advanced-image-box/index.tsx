@@ -66,4 +66,4 @@ export const settings: BlockConfiguration<AdvancedImageBoxAttributes> = {
 };
 
 // Register the block
-registerBlockType(name as string, settings);
+registerBlockType(name as string, { ...metadata, ...settings } as any);
