@@ -12,6 +12,8 @@ return [
         Jankx\Support\Providers\ErrorSuppressionServiceProvider::class,
         Jankx\Support\Providers\FontIconsServiceProvider::class,
         Jankx\Support\Providers\FontsServiceProvider::class,
+        Jankx\Support\Providers\ThemeOptionsServiceProvider::class,
+        App\Providers\ThemeOptionsIntegrationServiceProvider::class,
         Jankx\Support\Providers\PerformanceServiceProvider::class,
         Jankx\Support\Providers\TemplateEngineServiceProvider::class,
         Jankx\Support\Providers\ThemeServiceProvider::class,

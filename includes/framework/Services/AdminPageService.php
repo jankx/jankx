@@ -1856,9 +1856,15 @@ class AdminPageService
         $is_application = false;
         $extensionManager = $this->app->make('extension.manager');
         $extension = $extensionManager->get_extension($name);
+        $dependencies = [];
         if ($extension) {
             $settings_url = $extension->get_settings_url();
             $is_application = $extension->is_application();
+            
+            $manifest = $extension->get_manifest_data();
+            if (isset($manifest['requirements']['extensions'])) {
+                $dependencies = $manifest['requirements']['extensions'];
+            }
         }
         ?>
         <tr class="<?php echo $statusClass; ?>" data-slug="<?php echo esc_attr($name); ?>">
@@ -1915,6 +1921,22 @@ class AdminPageService
             <td class="column-description desc">
                 <div class="plugin-description">
                     <p><?php echo esc_html($info['description'] ?? ''); ?></p>
+                    <?php if (!empty($dependencies)): ?>
+                        <div class="extension-dependencies" style="margin-top: 8px; font-size: 12px; color: #64748b;">
+                            <strong><?php _e('Requires:', 'jankx'); ?></strong>
+                            <span style="display: inline-flex; gap: 5px; flex-wrap: wrap; margin-left: 5px;">
+                                <?php foreach ($dependencies as $dep_id => $dep_version): 
+                                    $dep_ext = $extensionManager->get_extension_by_id($dep_id);
+                                    $dep_name = $dep_ext ? $dep_ext->get_info()['name'] : $dep_id;
+                                    $is_dep_active = $extensionManager->is_extension_active_by_id($dep_id);
+                                ?>
+                                    <span style="background: <?php echo $is_dep_active ? '#f0fdf4' : '#fef2f2'; ?>; color: <?php echo $is_dep_active ? '#166534' : '#991b1b'; ?>; padding: 1px 6px; border-radius: 4px; border: 1px solid <?php echo $is_dep_active ? '#bbf7d0' : '#fecaca'; ?>;">
+                                        <?php echo esc_html($dep_name); ?> <?php echo $dep_version !== '*' ? '(' . esc_html($dep_version) . ')' : ''; ?>
+                                    </span>
+                                <?php endforeach; ?>
+                            </span>
+                        </div>
+                    <?php endif; ?>
                 </div>
                 <div class="<?php echo $statusClass; ?> second plugin-version-author-uri">
                     <?php printf(__('Version %s', 'jankx'), esc_html($info['version'] ?? '1.0.0')); ?> |

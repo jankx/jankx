@@ -141,6 +141,13 @@ class ExtensionManager implements ExtensionManagerInterface
             }
         }
 
+        // Register required extensions if specified in manifest
+        if (isset($manifest_data['requirements']['extensions'])) {
+            foreach ($manifest_data['requirements']['extensions'] as $req_id => $req_version) {
+                $this->require_extension($req_id, true, $req_version);
+            }
+        }
+
         // If extension with this ID already exists, skip loading
         if (isset($this->extension_ids[$extension_id])) {
             return false;
