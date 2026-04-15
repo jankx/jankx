@@ -216,7 +216,13 @@ class ThemeExtensionManager
                 $extension = new $className();
                 if ($extension instanceof AbstractExtension) {
                     $extension->set_extension_path($dir);
-                    $extension->set_extension_url($this->getExtensionsUrl() . '/' . $name);
+                    
+                    // Determine correct URL based on directory
+                    $baseUrl = get_stylesheet_directory_uri();
+                    if (strpos($dir, get_template_directory()) === 0) {
+                        $baseUrl = get_template_directory_uri();
+                    }
+                    $extension->set_extension_url(trailingslashit($baseUrl) . 'extensions/' . $name);
                     $extension->set_manifest_data($manifest);
 
                     $this->extensions[$name] = $extension;

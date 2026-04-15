@@ -2674,6 +2674,18 @@ class AdminPageService
     }
 
     /**
+     * Check if an extension is already installed
+     *
+     * @param string $slug Extension slug
+     * @return bool
+     */
+    public function isExtensionInstalled($slug)
+    {
+        $extensionManager = \Jankx\Extensions\ExtensionManager::getInstance();
+        return $extensionManager->has_extension_id($slug);
+    }
+
+    /**
      * Get service name
      */
     public function getName()
