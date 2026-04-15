@@ -1603,8 +1603,8 @@ class AdminPageService
                 $unmet_required = $extensionManager->get_missing_required_extensions();
                 $recommended = $extensionManager->get_recommended_extensions();
                 $unmet_recommended = [];
-                foreach ($recommended as $id) {
-                    if (!$extensionManager->has_extension_id($id) || !$extensionManager->is_extension_active_by_id($id)) {
+                foreach ($recommended as $id => $version) {
+                    if (!$extensionManager->has_extension_id($id) || !$extensionManager->is_extension_active_by_id($id, $version)) {
                         $unmet_recommended[] = $id;
                     }
                 }

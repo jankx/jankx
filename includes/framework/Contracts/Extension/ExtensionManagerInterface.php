@@ -168,9 +168,10 @@ interface ExtensionManagerInterface
      *
      * @param string $extensionId
      * @param bool $required
+     * @param string $version
      * @return void
      */
-    public function require_extension(string $extensionId, bool $required = true): void;
+    public function require_extension(string $extensionId, bool $required = true, string $version = '*'): void;
 
     /**
      * Get all required extensions
@@ -192,4 +193,11 @@ interface ExtensionManagerInterface
      * @return array
      */
     public function get_missing_required_extensions(): array;
+
+    /**
+     * Get current Jankx version for extension matching
+     *
+     * @return string
+     */
+    public function get_jankx_version(): string;
 }

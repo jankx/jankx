@@ -61,7 +61,10 @@ return [
         ],
     ],
     'extensions' => [
+        'jankx_version' => '2.0.0', // Target Jankx version (optional, defaults to current theme version)
         'required' => [
+            // 'jankx-ux' => '^1.0.0',
+            // 'jankx-dashboard' => 'v1.2.3',
         ],
         'recommended' => [
         ],

@@ -69,15 +69,16 @@ class ExtensionManager implements ExtensionManagerInterface
         $config = $this->app->make('config');
         $requirements = $config->get('app.extensions', []);
 
-        if (isset($requirements['required']) && is_array($requirements['required'])) {
-            foreach ($requirements['required'] as $extensionId) {
-                $this->require_extension($extensionId, true);
-            }
-        }
-
-        if (isset($requirements['recommended']) && is_array($requirements['recommended'])) {
-            foreach ($requirements['recommended'] as $extensionId) {
-                $this->require_extension($extensionId, false);
+        foreach (['required', 'recommended'] as $type) {
+            if (isset($requirements[$type]) && is_array($requirements[$type])) {
+                foreach ($requirements[$type] as $key => $value) {
+                    $is_required = $type === 'required';
+                    if (is_int($key)) {
+                        $this->require_extension($value, $is_required, '*');
+                    } else {
+                        $this->require_extension($key, $is_required, $value);
+                    }
+                }
             }
         }
     }
@@ -130,6 +131,15 @@ class ExtensionManager implements ExtensionManagerInterface
 
         // Check for extension_id to prevent duplicates
         $extension_id = $manifest_data['extension_id'] ?? $extensionName;
+
+        // Check Jankx version requirement if specified in manifest
+        if (isset($manifest_data['requirements']['jankx'])) {
+            $required_jankx = $manifest_data['requirements']['jankx'];
+            if (!$this->version_matches($required_jankx, $this->get_jankx_version())) {
+                Log::notice("Extension {$extensionName} requires Jankx version {$required_jankx}, but current version is " . $this->get_jankx_version());
+                return false;
+            }
+        }
 
         // If extension with this ID already exists, skip loading
         if (isset($this->extension_ids[$extension_id])) {
@@ -513,16 +523,12 @@ class ExtensionManager implements ExtensionManagerInterface
     /**
      * Register a required or recommended extension
      */
-    public function require_extension(string $extensionId, bool $required = true): void
+    public function require_extension(string $extensionId, bool $required = true, string $version = '*'): void
     {
         if ($required) {
-            if (!in_array($extensionId, $this->required_extensions)) {
-                $this->required_extensions[] = $extensionId;
-            }
+            $this->required_extensions[$extensionId] = $version;
         } else {
-            if (!in_array($extensionId, $this->recommended_extensions)) {
-                $this->recommended_extensions[] = $extensionId;
-            }
+            $this->recommended_extensions[$extensionId] = $version;
         }
     }
 
@@ -543,13 +549,47 @@ class ExtensionManager implements ExtensionManagerInterface
     }
 
     /**
+     * Helper to check if version matches constraint
+     */
+    protected function version_matches(string $constraint, string $version): bool
+    {
+        if ($constraint === '*') {
+            return true;
+        }
+
+        // Basic operator parsing
+        $operator = '==';
+        $v = $constraint;
+        if (preg_match('/^([<>=!~^]+)(.*)$/', $constraint, $matches)) {
+            $operator = $matches[1];
+            $v = trim($matches[2]);
+
+            // Handle common semver shortcuts
+            if ($operator === '^' || $operator === '~') {
+                $operator = '>='; // Simplified fallback
+            }
+        }
+
+        return version_compare($version, $v, $operator);
+    }
+
+    /**
+     * Get target Jankx version for extension compatibility
+     */
+    public function get_jankx_version(): string
+    {
+        $config = $this->app->make('config');
+        return $config->get('app.extensions.jankx_version', \Jankx\Foundation\Application::VERSION);
+    }
+
+    /**
      * Get missing required extensions
      */
     public function get_missing_required_extensions(): array
     {
         $missing = [];
-        foreach ($this->required_extensions as $extensionId) {
-            if (!$this->has_extension_id($extensionId) || !$this->is_extension_active_by_id($extensionId)) {
+        foreach ($this->required_extensions as $extensionId => $version) {
+            if (!$this->has_extension_id($extensionId) || !$this->is_extension_active_by_id($extensionId, $version)) {
                 $missing[] = $extensionId;
             }
         }
@@ -557,15 +597,23 @@ class ExtensionManager implements ExtensionManagerInterface
     }
 
     /**
-     * Check if extension is active by its ID
+     * Check if extension is active by its ID and matches version
      */
-    public function is_extension_active_by_id(string $extensionId): bool
+    public function is_extension_active_by_id(string $extensionId, string $version = '*'): bool
     {
         $extension = $this->get_extension_by_id($extensionId);
         if (!$extension) {
             return false;
         }
-        return $extension->is_active();
+        if (!$extension->is_active()) {
+            return false;
+        }
+
+        if ($version !== '*' && !$this->version_matches($version, $extension->get_version())) {
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -583,10 +631,23 @@ class ExtensionManager implements ExtensionManagerInterface
             ?>
             <div class="notice notice-error is-dismissible">
                 <p>
-                    <?php echo sprintf(
-                        __('The following extensions are <strong>required</strong> for %s theme: %s. Please install and activate them.', 'jankx'),
+                    <?php 
+                    $message = __('The following extensions are <strong>required</strong> for %s theme: %s. Please install and activate them.', 'jankx');
+                    $extension_list = [];
+                    foreach ($missing_required as $id) {
+                        $info = $this->get_hub_extension_info($id);
+                        $name = $info['name'] ?? $id;
+                        $version = $this->required_extensions[$id] ?? '*';
+                        if ($version !== '*') {
+                            $name .= ' (' . $version . ')';
+                        }
+                        $extension_list[] = $name;
+                    }
+
+                    echo sprintf(
+                        $message,
                         esc_html($this->app->make('config')->get('app.name', 'Jankx')),
-                        '<strong>' . implode('</strong>, <strong>', array_map('esc_html', $names)) . '</strong>'
+                        '<strong>' . implode('</strong>, <strong>', array_map('esc_html', $extension_list)) . '</strong>'
                     ); ?>
                 </p>
             </div>
@@ -596,8 +657,8 @@ class ExtensionManager implements ExtensionManagerInterface
         // Show recommended notices only if not already dismissed (simplification for now)
         $recommended = $this->recommended_extensions;
         $missing_recommended = [];
-        foreach ($recommended as $extensionId) {
-            if (!$this->has_extension_id($extensionId) || !$this->is_extension_active_by_id($extensionId)) {
+        foreach ($recommended as $extensionId => $version) {
+            if (!$this->has_extension_id($extensionId) || !$this->is_extension_active_by_id($extensionId, $version)) {
                 $missing_recommended[] = $extensionId;
             }
         }
@@ -611,10 +672,23 @@ class ExtensionManager implements ExtensionManagerInterface
             ?>
             <div class="notice notice-warning is-dismissible">
                 <p>
-                    <?php echo sprintf(
-                        __('The following extensions are <strong>recommended</strong> for %s theme: %s. Installing them will provide more features.', 'jankx'),
+                    <?php 
+                    $message = __('The following extensions are <strong>recommended</strong> for %s theme: %s. Installing them will provide more features.', 'jankx');
+                    $extension_list = [];
+                    foreach ($missing_recommended as $id) {
+                        $info = $this->get_hub_extension_info($id);
+                        $name = $info['name'] ?? $id;
+                        $version = $this->recommended_extensions[$id] ?? '*';
+                        if ($version !== '*') {
+                            $name .= ' (' . $version . ')';
+                        }
+                        $extension_list[] = $name;
+                    }
+
+                    echo sprintf(
+                        $message,
                         esc_html($this->app->make('config')->get('app.name', 'Jankx')),
-                        '<strong>' . implode('</strong>, <strong>', array_map('esc_html', $names)) . '</strong>'
+                        '<strong>' . implode('</strong>, <strong>', array_map('esc_html', $extension_list)) . '</strong>'
                     ); ?>
                 </p>
             </div>
@@ -635,6 +709,19 @@ class ExtensionManager implements ExtensionManagerInterface
         }
 
         $api_url = "https://jankx.pages.dev/api/extensions/{$slug}/resolve";
+        
+        // Pass Jankx version and PHP version for better resolution
+        $api_url = add_query_arg([
+            'jankx_version' => $this->get_jankx_version(),
+            'php_version'   => PHP_VERSION,
+        ], $api_url);
+
+        // Pass version requirement if available
+        $version = $this->required_extensions[$slug] ?? ($this->recommended_extensions[$slug] ?? '*');
+        if ($version !== '*') {
+            $api_url = add_query_arg('version', $version, $api_url);
+        }
+
         $response = wp_remote_get($api_url, [
             'timeout' => 10,
             'sslverify' => false, // Sometimes needed for local dev
