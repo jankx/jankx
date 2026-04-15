@@ -34,7 +34,10 @@
       "Jankx\\": "./includes/framework",
       "Jankx\\Features\\": "./features",
       "Jankx\\Features\\ContentTemplates\\": "./features/content-templates",
-      "App\\": "./includes/app"
+      "Jankx\\Foundation\\Cli\\Seeders\\": "./includes/framework/Foundation/Cli/Seeders",
+      "Jankx\\Demo\\": "./demo",
+      "App\\": "./includes/app",
+      "App\\Console\\": "./includes/app/Console"
     }
   },
   "autoload-dev": {
