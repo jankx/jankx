@@ -3,12 +3,16 @@
 namespace App\Services\WooCommerce;
 
 use Jankx\Log\Log;
+use App\Services\WooCommerce\Adapters\ProductAdapterFactory;
+use App\Services\WooCommerce\Adapters\Contracts\ProductAdapterInterface;
 
 /**
  * Sale Badge Service
  *
  * Converts WooCommerce sale badge text to percentage format
  * Example: "Khuyến mại" => "-38%"
+ *
+ * Refactored to use Adapter Pattern for product type handling
  */
 class SaleBadgeService
 {
@@ -40,30 +44,40 @@ class SaleBadgeService
     /**
      * Get discount percentage for a product
      *
-     * @param int $productId Product ID
+     * @param int|object $product Product ID or object
      * @return int Discount percentage (0-100)
      */
-    protected function getDiscountPercentage($productId)
+    protected function getDiscountPercentage($product)
     {
-        if (!$productId) {
+        $adapter = ProductAdapterFactory::create($product);
+
+        if (!$adapter) {
             return 0;
         }
 
-        $product = wc_get_product($productId);
+        return $this->calculateDiscountPercentage($adapter);
+    }
 
-        if (!$product || !$product->is_on_sale()) {
+    /**
+     * Calculate discount percentage from adapter
+     *
+     * @param ProductAdapterInterface $adapter
+     * @return int
+     */
+    protected function calculateDiscountPercentage(ProductAdapterInterface $adapter): int
+    {
+        if (!$adapter->isOnSale()) {
             return 0;
         }
 
-        $regular_price = $product->get_regular_price();
-        $sale_price = $product->get_sale_price();
+        $regularPrice = $adapter->getRegularPrice();
+        $salePrice = $adapter->getSalePrice();
 
-        if (!$regular_price || !$sale_price || $regular_price <= 0) {
+        if ($regularPrice <= 0 || $salePrice <= 0) {
             return 0;
         }
 
-        // Calculate percentage
-        $discount = (($regular_price - $sale_price) / $regular_price) * 100;
+        $discount = (($regularPrice - $salePrice) / $regularPrice) * 100;
 
         return round($discount);
     }
@@ -77,25 +91,19 @@ class SaleBadgeService
      */
     public function filterSaleBadgeText($badgeText, $product = null)
     {
-        $productId = null;
+        $adapter = ProductAdapterFactory::create($product);
 
-        if ($product) {
-            // Handle different product object types
-            if (is_object($product)) {
-                if (method_exists($product, 'get_id')) {
-                    // WC_Product object
-                    $productId = $product->get_id();
-                } elseif (isset($product->ID)) {
-                    // WP_Post object
-                    $productId = $product->ID;
-                }
-            } elseif (is_numeric($product)) {
-                // Product ID passed directly
-                $productId = $product;
-            }
+        if (!$adapter) {
+            return $badgeText;
         }
 
-        return $this->convertToPercentage($badgeText, $productId);
+        $percentage = $this->calculateDiscountPercentage($adapter);
+
+        if ($percentage > 0) {
+            return "-{$percentage}%";
+        }
+
+        return $badgeText;
     }
 
     /**
@@ -109,18 +117,13 @@ class SaleBadgeService
     public function filterProductGridItemHtml($html, $product, $context)
     {
         // The actual WC_Product object is in the $context parameter
-        $wcProduct = $context;
+        $adapter = ProductAdapterFactory::create($context);
 
-        if (!$wcProduct || !is_object($wcProduct) || !method_exists($wcProduct, 'is_on_sale')) {
+        if (!$adapter || !$adapter->isOnSale()) {
             return $html;
         }
 
-        if (!$wcProduct->is_on_sale()) {
-            return $html;
-        }
-
-        $productId = $wcProduct->get_id();
-        $percentage = $this->getDiscountPercentage($productId);
+        $percentage = $this->calculateDiscountPercentage($adapter);
 
         if ($percentage > 0) {
             // Replace "Sale!" with percentage in the HTML
@@ -147,21 +150,13 @@ class SaleBadgeService
             return $badgeHtml;
         }
 
-        $productId = null;
+        $adapter = ProductAdapterFactory::create($product);
 
-        if ($product) {
-            if (is_object($product)) {
-                if (method_exists($product, 'get_id')) {
-                    $productId = $product->get_id();
-                } elseif (isset($product->ID)) {
-                    $productId = $product->ID;
-                }
-            } elseif (is_numeric($product)) {
-                $productId = $product;
-            }
+        if (!$adapter) {
+            return $badgeHtml;
         }
 
-        $percentage = $this->getDiscountPercentage($productId);
+        $percentage = $this->calculateDiscountPercentage($adapter);
 
         if ($percentage > 0) {
             // Replace the sale text with percentage in the HTML
@@ -184,12 +179,13 @@ class SaleBadgeService
      */
     public function filterSaleBadgeHtml($badgeHtml, $product = null)
     {
-        if (!$product) {
+        $adapter = ProductAdapterFactory::create($product);
+
+        if (!$adapter) {
             return $badgeHtml;
         }
 
-        $productId = $product->get_id();
-        $percentage = $this->getDiscountPercentage($productId);
+        $percentage = $this->calculateDiscountPercentage($adapter);
 
         if ($percentage > 0) {
             // Replace the badge text with percentage
@@ -211,13 +207,13 @@ class SaleBadgeService
      */
     public function getSaleBadgeText($productId)
     {
-        $product = wc_get_product($productId);
+        $adapter = ProductAdapterFactory::create($productId);
 
-        if (!$product || !$product->is_on_sale()) {
+        if (!$adapter || !$adapter->isOnSale()) {
             return '';
         }
 
-        $percentage = $this->getDiscountPercentage($productId);
+        $percentage = $this->calculateDiscountPercentage($adapter);
 
         if ($percentage > 0) {
             return "-{$percentage}%";
@@ -234,13 +230,13 @@ class SaleBadgeService
      */
     public function hasValidDiscount($productId)
     {
-        $product = wc_get_product($productId);
+        $adapter = ProductAdapterFactory::create($productId);
 
-        if (!$product || !$product->is_on_sale()) {
+        if (!$adapter || !$adapter->isOnSale()) {
             return false;
         }
 
-        $percentage = $this->getDiscountPercentage($productId);
+        $percentage = $this->calculateDiscountPercentage($adapter);
 
         return $percentage > 0;
     }

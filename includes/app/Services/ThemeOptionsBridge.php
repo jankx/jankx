@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use App\Services\ThemeOptions\BlockDefaultApplierRegistry;
+
 /**
  * Theme Options Bridge
  *
@@ -282,115 +284,15 @@ class ThemeOptionsBridge
 
         $blockName = $block['blockName'] ?? '';
 
-        // Apply color defaults to specific blocks if not set
-        switch ($blockName) {
-            case 'jankx/typography':
-                $blockContent = $this->applyTypographyDefaults($blockContent, $block);
-                break;
+        // Use Strategy Pattern to apply defaults via registry
+        BlockDefaultApplierRegistry::init();
+        $applier = BlockDefaultApplierRegistry::resolve($blockName);
 
-            case 'jankx/advanced-button':
-                $blockContent = $this->applyButtonDefaults($blockContent, $block);
-                break;
-
-            case 'core/button':
-            case 'core/buttons':
-                $blockContent = $this->applyCoreButtonDefaults($blockContent, $block);
-                break;
+        if ($applier !== null) {
+            return $applier->apply($blockContent, $block, $this->themeOptions);
         }
 
         return $blockContent;
-    }
-
-    /**
-     * Apply typography defaults from theme options
-     *
-     * @param string $content
-     * @param array $block
-     * @return string
-     */
-    protected function applyTypographyDefaults(string $content, array $block): string
-    {
-        $bodyTypography = $this->themeOptions->getOption('body_typography', []);
-
-        // If typography block doesn't have explicit color, apply body color
-        if (!empty($bodyTypography['color'])) {
-            $attrs = $block['attrs'] ?? [];
-
-            // Only apply if textColor is not explicitly set
-            if (empty($attrs['textColor']) && empty($attrs['style']['color']['text'])) {
-                // Add CSS variable for color inheritance
-                $content = str_replace(
-                    'class="has-jankx-typography"',
-                    'class="has-jankx-typography jankx-inherit-body-color"',
-                    $content
-                );
-            }
-        }
-
-        return $content;
-    }
-
-    /**
-     * Apply button defaults from theme options
-     *
-     * @param string $content
-     * @param array $block
-     * @return string
-     */
-    protected function applyButtonDefaults(string $content, array $block): string
-    {
-        $primaryColor = $this->themeOptions->getOption('primary_color', '#ff5722');
-        $attrs = $block['attrs'] ?? [];
-
-        // If button doesn't have explicit background color, apply primary color
-        if (empty($attrs['backgroundColor']) && empty($attrs['style']['color']['background'])) {
-            // Add inline style for background color
-            $style = sprintf('background-color: %s;', esc_attr($primaryColor));
-
-            // Try to inject into the button element
-            if (preg_match('/<a[^>]*class="[^"]*jankx-button[^"]*"[^>]*>/', $content, $matches)) {
-                $tag = $matches[0];
-                if (strpos($tag, 'style=') === false) {
-                    $newTag = str_replace('>', sprintf(' style="%s">', $style), $tag);
-                    $content = str_replace($tag, $newTag, $content);
-                }
-            }
-        }
-
-        return $content;
-    }
-
-    /**
-     * Apply defaults to core button blocks
-     *
-     * @param string $content
-     * @param array $block
-     * @return string
-     */
-    protected function applyCoreButtonDefaults(string $content, array $block): string
-    {
-        $primaryColor = $this->themeOptions->getOption('primary_color', '#ff5722');
-        $attrs = $block['attrs'] ?? [];
-
-        // Check if button has background color set via theme palette
-        $backgroundColor = $attrs['backgroundColor'] ?? '';
-
-        // If it uses 'primary' from palette, ensure it matches our primary color
-        if ($backgroundColor === 'primary') {
-            // WordPress should already handle this via theme.json palette
-            // But we can add inline style as fallback
-            if (strpos($content, 'style=') === false) {
-                $style = sprintf('background-color: %s;', esc_attr($primaryColor));
-                $content = preg_replace(
-                    '/<a([^>]*)>/',
-                    sprintf('<a$1 style="%s">', $style),
-                    $content,
-                    1
-                );
-            }
-        }
-
-        return $content;
     }
 
     /**
