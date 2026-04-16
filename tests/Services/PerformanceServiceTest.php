@@ -7,6 +7,10 @@ use Jankx\Services\PerformanceService;
 use PHPUnit\Framework\TestCase;
 use Brain\Monkey;
 
+/**
+ * @runTestsInSeparateProcesses
+ * @preserveGlobalState disabled
+ */
 class PerformanceServiceTest extends TestCase
 {
     private $app;

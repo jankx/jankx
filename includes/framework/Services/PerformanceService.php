@@ -42,12 +42,17 @@ class PerformanceService
      */
     public function boot()
     {
+        // Only apply optimizations when WordPress is available (not in unit tests)
+        if (!function_exists('add_action')) {
+            return;
+        }
+
         $this->optimizeHtmlHeader();
         $this->removeEmojis();
-        
+
         // Defer scripts
         add_filter('script_loader_tag', [$this, 'deferScripts'], 10, 3);
-        
+
         // Try optimizing dashicons
         add_action('wp_enqueue_scripts', [$this, 'optimizeDashicons'], 99);
     }
