@@ -52,7 +52,7 @@ class AdvancedImageBoxBlock extends Block
         // WordPress converts block.json editorScript to handle
         // Format: jankx-advanced-image-box-editor-script
         $handle = 'jankx-advanced-image-box-editor-script';
-        
+
         // Check if script is registered
         if (!wp_script_is($handle, 'registered')) {
             return;
@@ -61,7 +61,7 @@ class AdvancedImageBoxBlock extends Block
         wp_enqueue_script($handle);
 
         $presetsData = PresetRegistry::getPresetsData();
-        
+
         // Add helper function to get CSS for preset
         $cssHelper = "
 window.jankxAdvancedImageBoxGetPresetCSS = function(presetId, attributes, options) {
@@ -70,13 +70,20 @@ window.jankxAdvancedImageBoxGetPresetCSS = function(presetId, attributes, option
     return '';
 };
 ";
-        
+
+        // Merge theme options data
+        $themeOptionsData = [];
+        if (function_exists('jankx_get_theme_options_data')) {
+            $themeOptionsData = jankx_get_theme_options_data();
+        }
+
         wp_add_inline_script(
             $handle,
             sprintf(
-                'window.jankxAdvancedImageBoxPresets = %s;%s',
+                'window.jankxAdvancedImageBoxPresets = %s;%s\nwindow.jankxThemeOptions = %s;',
                 wp_json_encode($presetsData),
-                $cssHelper
+                $cssHelper,
+                wp_json_encode($themeOptionsData)
             ),
             'before'
         );

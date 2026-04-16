@@ -127,9 +127,9 @@
 			"text": "var(--wp--preset--color--dark-text)"
 		},
 		"typography": {
-			"fontFamily": "var(--wp--preset--font-family--inter)",
-			"fontSize": "15px",
-			"lineHeight": "1.6"
+			"fontFamily": "var(--jankx-body-font-family, var(--wp--preset--font-family--inter))",
+			"fontSize": "var(--jankx-body-font-size, 15px)",
+			"lineHeight": "var(--jankx-body-line-height, 1.6)"
 		},
 		"elements": {
 			"link": {
@@ -141,7 +141,7 @@
 				},
 				":hover": {
 					"color": {
-						"text": "var(--wp--preset--color--primary)"
+						"text": "var(--jankx-primary-color, var(--wp--preset--color--primary))"
 					}
 				}
 			},
