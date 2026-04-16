@@ -43,7 +43,7 @@ class ExtensionManagerTest extends TestCase
         $requiredProperty->setAccessible(true);
         $required = $requiredProperty->getValue($this->manager);
 
-        $this->assertContains('test-extension', $required);
+        $this->assertArrayHasKey('test-extension', $required);
     }
 
     public function testCanRecommendExtension()
@@ -58,7 +58,7 @@ class ExtensionManagerTest extends TestCase
         $recommendedProperty->setAccessible(true);
         $recommended = $recommendedProperty->getValue($this->manager);
 
-        $this->assertContains('test-extension', $recommended);
+        $this->assertArrayHasKey('test-extension', $recommended);
     }
 
     public function testGetInstanceReturnsManagerFromContainer()

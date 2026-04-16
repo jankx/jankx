@@ -4,6 +4,11 @@ namespace Jankx\Services;
 
 use Jankx\Foundation\Application;
 
+use function remove_action;
+use function remove_filter;
+use function add_action;
+use function add_filter;
+
 /**
  * Performance Service
  *
