@@ -37,6 +37,7 @@ class PerformanceServiceTest extends TestCase
             $this->markTestSkipped('Cannot mock WordPress functions when already defined');
         }
 
+        Monkey\Functions\expect('get_option')->atLeast()->times(4)->andReturn('yes');
         Monkey\Functions\expect('remove_action')->atLeast()->times(1);
         Monkey\Functions\expect('remove_filter')->atLeast()->times(1);
         Monkey\Functions\expect('add_filter')->with('script_loader_tag', [$this->service, 'deferScripts'], 10, 3)->once();

@@ -38,18 +38,25 @@ class PerformanceService
     public function boot()
     {
         // Only apply optimizations when WordPress is available (not in unit tests)
-        if (!function_exists('add_action')) {
+        if (!function_exists('add_action') || !function_exists('get_option')) {
             return;
         }
 
-        $this->optimizeHtmlHeader();
-        $this->removeEmojis();
+        if (get_option('jankx_perf_optimize_html', 'yes') === 'yes') {
+            $this->optimizeHtmlHeader();
+        }
 
-        // Defer scripts
-        add_filter('script_loader_tag', [$this, 'deferScripts'], 10, 3);
+        if (get_option('jankx_perf_remove_emojis', 'yes') === 'yes') {
+            $this->removeEmojis();
+        }
 
-        // Try optimizing dashicons
-        add_action('wp_enqueue_scripts', [$this, 'optimizeDashicons'], 99);
+        if (get_option('jankx_perf_defer_scripts', 'yes') === 'yes') {
+            add_filter('script_loader_tag', [$this, 'deferScripts'], 10, 3);
+        }
+
+        if (get_option('jankx_perf_optimize_dashicons', 'yes') === 'yes') {
+            add_action('wp_enqueue_scripts', [$this, 'optimizeDashicons'], 99);
+        }
     }
 
     /**

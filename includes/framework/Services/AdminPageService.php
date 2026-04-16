@@ -1296,6 +1296,7 @@ class AdminPageService
         ?>
         <div class="jankx-utilities-grid-wrapper">
             <div class="utilities-grid">
+                <div class="utilities-main-column">
                 <div class="utility-card main-card jankx-card">
                     <div class="card-header">
                         <div class="card-header-title">
@@ -1350,6 +1351,98 @@ class AdminPageService
                         </form>
                     </div>
                 </div>
+
+                <div class="utility-card main-card jankx-card" style="margin-top: 24px;">
+                    <div class="card-header">
+                        <div class="card-header-title">
+                            <span class="dashicons dashicons-performance"></span>
+                            <h3><?php _e('Frontend Performance Settings', 'jankx'); ?></h3>
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                        <p class="section-desc"><?php _e('Optimize your website\'s frontend loading speed by disabling unused core features and enabling safe HTML/Asset optimizations.', 'jankx'); ?></p>
+
+                        <form method="post" action="">
+                            <?php wp_nonce_field('jankx_save_performance', 'jankx_performance_nonce'); ?>
+                            <input type="hidden" name="jankx_action" value="save_performance_settings">
+
+                            <?php 
+                            $perf_html = get_option('jankx_perf_optimize_html', 'yes');
+                            $perf_emojis = get_option('jankx_perf_remove_emojis', 'yes');
+                            $perf_dashicons = get_option('jankx_perf_optimize_dashicons', 'yes');
+                            $perf_defer = get_option('jankx_perf_defer_scripts', 'yes');
+                            ?>
+
+                            <div class="image-sizes-grid">
+                                <!-- HTML Header -->
+                                <div class="size-item <?php echo $perf_html === 'yes' ? 'is-active' : ''; ?>">
+                                    <div class="size-info">
+                                        <div class="size-name"><?php _e('Optimize HTML Header', 'jankx'); ?></div>
+                                        <div class="size-meta"><?php _e('Remove rsd_link, wlwmanifest, and wp_generator', 'jankx'); ?></div>
+                                    </div>
+                                    <div class="size-toggle">
+                                        <label class="jankx-switch">
+                                            <input type="checkbox" name="perf_html" value="yes" <?php checked($perf_html, 'yes'); ?>>
+                                            <span class="slider round"></span>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <!-- Emojis -->
+                                <div class="size-item <?php echo $perf_emojis === 'yes' ? 'is-active' : ''; ?>">
+                                    <div class="size-info">
+                                        <div class="size-name"><?php _e('Disable Native Emojis', 'jankx'); ?></div>
+                                        <div class="size-meta"><?php _e('Removes heavy emoji detection scripts', 'jankx'); ?></div>
+                                    </div>
+                                    <div class="size-toggle">
+                                        <label class="jankx-switch">
+                                            <input type="checkbox" name="perf_emojis" value="yes" <?php checked($perf_emojis, 'yes'); ?>>
+                                            <span class="slider round"></span>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <!-- Dashicons -->
+                                <div class="size-item <?php echo $perf_dashicons === 'yes' ? 'is-active' : ''; ?>">
+                                    <div class="size-info">
+                                        <div class="size-name"><?php _e('Unload Dashicons', 'jankx'); ?></div>
+                                        <div class="size-meta"><?php _e('Stop loading dashicons.min.css for guests', 'jankx'); ?></div>
+                                    </div>
+                                    <div class="size-toggle">
+                                        <label class="jankx-switch">
+                                            <input type="checkbox" name="perf_dashicons" value="yes" <?php checked($perf_dashicons, 'yes'); ?>>
+                                            <span class="slider round"></span>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <!-- Defer JS -->
+                                <div class="size-item <?php echo $perf_defer === 'yes' ? 'is-active' : ''; ?>">
+                                    <div class="size-info">
+                                        <div class="size-name"><?php _e('Defer Javascripts', 'jankx'); ?></div>
+                                        <div class="size-meta"><?php _e('Add defer attribute (skips jQuery core)', 'jankx'); ?></div>
+                                    </div>
+                                    <div class="size-toggle">
+                                        <label class="jankx-switch">
+                                            <input type="checkbox" name="perf_defer" value="yes" <?php checked($perf_defer, 'yes'); ?>>
+                                            <span class="slider round"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card-footer">
+                                <button type="submit" class="jankx-btn-save">
+                                    <span class="dashicons dashicons-saved"></span>
+                                    <?php _e('Save Performance', 'jankx'); ?>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                </div><!-- /.utilities-main-column -->
 
                 <div class="utility-sidebar">
                     <div class="utility-card sidebar-card jankx-card">
@@ -1411,6 +1504,17 @@ class AdminPageService
                 display: grid;
                 grid-template-columns: 1fr 340px;
                 gap: 24px;
+                align-items: start;
+            }
+
+            .utilities-main-column {
+                display: flex;
+                flex-direction: column;
+                gap: 24px;
+            }
+
+            .utilities-main-column .jankx-card {
+                margin-bottom: 0;
             }
 
             .select-all-label {
@@ -1517,6 +1621,7 @@ class AdminPageService
 
             @media (max-width: 1200px) {
                 .utilities-grid { grid-template-columns: 1fr; }
+                .utilities-main-column { gap: 20px; }
                 .utility-sidebar { flex-direction: row; }
                 .sidebar-card, .help-card { flex: 1; }
             }

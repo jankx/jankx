@@ -52,6 +52,10 @@ class FormHandler
                     $this->handleSaveImageSizes($data);
                     break;
                 
+                case 'save_performance_settings':
+                    $this->handleSavePerformanceSettings($data);
+                    break;
+                
                 case 'clear_debug_log':
                     $this->handleClearDebugLog($data);
                     break;
@@ -229,6 +233,36 @@ class FormHandler
             printf(
                 '<div class="notice notice-success is-dismissible"><p>%s</p></div>',
                 esc_html__('Debug log cleared.', 'jankx')
+            );
+        });
+    }
+
+    /**
+     * Handle saving frontend performance settings
+     * 
+     * @param array $data Form data
+     * @return void
+     */
+    protected function handleSavePerformanceSettings(array $data): void
+    {
+        if (!wp_verify_nonce($data['jankx_performance_nonce'] ?? '', 'jankx_save_performance')) {
+            wp_die(__('Security check failed', 'jankx'));
+        }
+
+        if (!current_user_can('manage_options')) {
+            wp_die(__('You do not have permission to perform this action.', 'jankx'));
+        }
+
+        // Set options with fallback value "no" for unchecked checkboxes
+        update_option('jankx_perf_optimize_html', isset($data['perf_html']) && $data['perf_html'] === 'yes' ? 'yes' : 'no');
+        update_option('jankx_perf_remove_emojis', isset($data['perf_emojis']) && $data['perf_emojis'] === 'yes' ? 'yes' : 'no');
+        update_option('jankx_perf_optimize_dashicons', isset($data['perf_dashicons']) && $data['perf_dashicons'] === 'yes' ? 'yes' : 'no');
+        update_option('jankx_perf_defer_scripts', isset($data['perf_defer']) && $data['perf_defer'] === 'yes' ? 'yes' : 'no');
+
+        add_action('admin_notices', function () {
+            printf(
+                '<div class="notice notice-success is-dismissible"><p>%s</p></div>',
+                esc_html__('Performance settings saved.', 'jankx')
             );
         });
     }
