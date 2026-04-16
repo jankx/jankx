@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use App\Services\ThemeOptions\BlockDefaultApplierRegistry;
+
 /**
  * Theme Options Bridge
  *
@@ -68,23 +70,7 @@ class ThemeOptionsBridge
      */
     public function passOptionsToBlockEditor(): void
     {
-        $handle = 'jankx-theme-options-data';
-
-        // Register a dummy script to attach data to
-        wp_register_script($handle, '', [], '1.0.0', false);
-        wp_enqueue_script($handle);
-
-        // Get all theme options data
-        $themeData = $this->getThemeOptionsData();
-
-        // Localize the data
-        wp_localize_script($handle, 'jankxThemeOptions', $themeData);
-
-        // Also add to window object for immediate access
-        wp_add_inline_script($handle, sprintf(
-            'window.jankxThemeOptions = %s;',
-            wp_json_encode($themeData)
-        ), 'before');
+        $this->enqueueThemeData('jankx-theme-options-data', false, true);
     }
 
     /**
@@ -94,18 +80,36 @@ class ThemeOptionsBridge
      */
     public function passOptionsToFrontend(): void
     {
-        $handle = 'jankx-theme-options-frontend';
-
         // Only enqueue if there are dynamic blocks that need this data
         if (!apply_filters('jankx/theme_options/enqueue_frontend', true)) {
             return;
         }
 
-        wp_register_script($handle, '', [], '1.0.0', true);
+        $this->enqueueThemeData('jankx-theme-options-frontend', true, false);
+    }
+
+    /**
+     * Helper method to enqueue theme data script
+     *
+     * @param string $handle Script handle
+     * @param bool $inFooter Whether to load in footer
+     * @param bool $addInline Whether to add inline script for window object
+     * @return void
+     */
+    private function enqueueThemeData(string $handle, bool $inFooter = false, bool $addInline = false): void
+    {
+        wp_register_script($handle, '', [], '1.0.0', $inFooter);
         wp_enqueue_script($handle);
 
         $themeData = $this->getThemeOptionsData();
         wp_localize_script($handle, 'jankxThemeOptions', $themeData);
+
+        if ($addInline) {
+            wp_add_inline_script($handle, sprintf(
+                'window.jankxThemeOptions = %s;',
+                wp_json_encode($themeData)
+            ), 'before');
+        }
     }
 
     /**
@@ -191,6 +195,23 @@ class ThemeOptionsBridge
     }
 
     /**
+     * Color scheme hue ranges lookup
+     *
+     * @var array
+     */
+    protected $colorSchemeRanges = [
+        ['min' => 350, 'max' => 360, 'name' => 'red'],
+        ['min' => 0, 'max' => 10, 'name' => 'red'],
+        ['min' => 10, 'max' => 45, 'name' => 'orange'],
+        ['min' => 45, 'max' => 75, 'name' => 'yellow'],
+        ['min' => 75, 'max' => 150, 'name' => 'green'],
+        ['min' => 150, 'max' => 200, 'name' => 'teal'],
+        ['min' => 200, 'max' => 260, 'name' => 'blue'],
+        ['min' => 260, 'max' => 300, 'name' => 'purple'],
+        ['min' => 300, 'max' => 350, 'name' => 'pink'],
+    ];
+
+    /**
      * Detect color scheme from primary color
      *
      * @param string $primaryColor
@@ -198,18 +219,39 @@ class ThemeOptionsBridge
      */
     protected function detectColorScheme(string $primaryColor): ?string
     {
-        // Simple detection based on hue ranges
-        $hex = ltrim($primaryColor, '#');
+        $hue = $this->calculateHue($primaryColor);
+
+        if ($hue === null) {
+            return 'neutral';
+        }
+
+        foreach ($this->colorSchemeRanges as $range) {
+            if ($hue >= $range['min'] && $hue < $range['max']) {
+                return $range['name'];
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Calculate hue from hex color
+     *
+     * @param string $hexColor
+     * @return float|null
+     */
+    protected function calculateHue(string $hexColor): ?float
+    {
+        $hex = ltrim($hexColor, '#');
         $r = hexdec(substr($hex, 0, 2));
         $g = hexdec(substr($hex, 2, 2));
         $b = hexdec(substr($hex, 4, 2));
 
-        // Calculate hue
         $max = max($r, $g, $b);
         $min = min($r, $g, $b);
 
         if ($max === $min) {
-            return 'neutral';
+            return null;
         }
 
         $d = $max - $min;
@@ -222,28 +264,7 @@ class ThemeOptionsBridge
             $hue = (($r - $g) / $d + 4) / 6;
         }
 
-        $hue = $hue * 360;
-
-        // Map hue to color scheme name
-        if ($hue >= 350 || $hue < 10) {
-            return 'red';
-        } elseif ($hue >= 10 && $hue < 45) {
-            return 'orange';
-        } elseif ($hue >= 45 && $hue < 75) {
-            return 'yellow';
-        } elseif ($hue >= 75 && $hue < 150) {
-            return 'green';
-        } elseif ($hue >= 150 && $hue < 200) {
-            return 'teal';
-        } elseif ($hue >= 200 && $hue < 260) {
-            return 'blue';
-        } elseif ($hue >= 260 && $hue < 300) {
-            return 'purple';
-        } elseif ($hue >= 300 && $hue < 350) {
-            return 'pink';
-        }
-
-        return null;
+        return $hue * 360;
     }
 
     /**
@@ -263,115 +284,15 @@ class ThemeOptionsBridge
 
         $blockName = $block['blockName'] ?? '';
 
-        // Apply color defaults to specific blocks if not set
-        switch ($blockName) {
-            case 'jankx/typography':
-                $blockContent = $this->applyTypographyDefaults($blockContent, $block);
-                break;
+        // Use Strategy Pattern to apply defaults via registry
+        BlockDefaultApplierRegistry::init();
+        $applier = BlockDefaultApplierRegistry::resolve($blockName);
 
-            case 'jankx/advanced-button':
-                $blockContent = $this->applyButtonDefaults($blockContent, $block);
-                break;
-
-            case 'core/button':
-            case 'core/buttons':
-                $blockContent = $this->applyCoreButtonDefaults($blockContent, $block);
-                break;
+        if ($applier !== null) {
+            return $applier->apply($blockContent, $block, $this->themeOptions);
         }
 
         return $blockContent;
-    }
-
-    /**
-     * Apply typography defaults from theme options
-     *
-     * @param string $content
-     * @param array $block
-     * @return string
-     */
-    protected function applyTypographyDefaults(string $content, array $block): string
-    {
-        $bodyTypography = $this->themeOptions->getOption('body_typography', []);
-
-        // If typography block doesn't have explicit color, apply body color
-        if (!empty($bodyTypography['color'])) {
-            $attrs = $block['attrs'] ?? [];
-
-            // Only apply if textColor is not explicitly set
-            if (empty($attrs['textColor']) && empty($attrs['style']['color']['text'])) {
-                // Add CSS variable for color inheritance
-                $content = str_replace(
-                    'class="has-jankx-typography"',
-                    'class="has-jankx-typography jankx-inherit-body-color"',
-                    $content
-                );
-            }
-        }
-
-        return $content;
-    }
-
-    /**
-     * Apply button defaults from theme options
-     *
-     * @param string $content
-     * @param array $block
-     * @return string
-     */
-    protected function applyButtonDefaults(string $content, array $block): string
-    {
-        $primaryColor = $this->themeOptions->getOption('primary_color', '#ff5722');
-        $attrs = $block['attrs'] ?? [];
-
-        // If button doesn't have explicit background color, apply primary color
-        if (empty($attrs['backgroundColor']) && empty($attrs['style']['color']['background'])) {
-            // Add inline style for background color
-            $style = sprintf('background-color: %s;', esc_attr($primaryColor));
-
-            // Try to inject into the button element
-            if (preg_match('/<a[^>]*class="[^"]*jankx-button[^"]*"[^>]*>/', $content, $matches)) {
-                $tag = $matches[0];
-                if (strpos($tag, 'style=') === false) {
-                    $newTag = str_replace('>', sprintf(' style="%s">', $style), $tag);
-                    $content = str_replace($tag, $newTag, $content);
-                }
-            }
-        }
-
-        return $content;
-    }
-
-    /**
-     * Apply defaults to core button blocks
-     *
-     * @param string $content
-     * @param array $block
-     * @return string
-     */
-    protected function applyCoreButtonDefaults(string $content, array $block): string
-    {
-        $primaryColor = $this->themeOptions->getOption('primary_color', '#ff5722');
-        $attrs = $block['attrs'] ?? [];
-
-        // Check if button has background color set via theme palette
-        $backgroundColor = $attrs['backgroundColor'] ?? '';
-
-        // If it uses 'primary' from palette, ensure it matches our primary color
-        if ($backgroundColor === 'primary') {
-            // WordPress should already handle this via theme.json palette
-            // But we can add inline style as fallback
-            if (strpos($content, 'style=') === false) {
-                $style = sprintf('background-color: %s;', esc_attr($primaryColor));
-                $content = preg_replace(
-                    '/<a([^>]*)>/',
-                    sprintf('<a$1 style="%s">', $style),
-                    $content,
-                    1
-                );
-            }
-        }
-
-        return $content;
     }
 
     /**
