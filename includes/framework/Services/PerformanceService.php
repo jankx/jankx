@@ -4,11 +4,6 @@ namespace Jankx\Services;
 
 use Jankx\Foundation\Application;
 
-use function remove_action;
-use function remove_filter;
-use function add_action;
-use function add_filter;
-
 /**
  * Performance Service
  *
@@ -62,6 +57,10 @@ class PerformanceService
      */
     protected function optimizeHtmlHeader()
     {
+        if (!function_exists('remove_action')) {
+            return;
+        }
+
         // Remove generator tag for security and performance
         remove_action('wp_head', 'wp_generator');
 
@@ -83,6 +82,10 @@ class PerformanceService
      */
     protected function removeEmojis()
     {
+        if (!function_exists('remove_action') || !function_exists('remove_filter')) {
+            return;
+        }
+
         // Remove actions related to emojis
         remove_action('wp_head', 'print_emoji_detection_script', 7);
         remove_action('admin_print_scripts', 'print_emoji_detection_script');
