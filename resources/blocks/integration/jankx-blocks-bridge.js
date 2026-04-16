@@ -5,6 +5,7 @@
  * Allows blocks in resources/blocks to use enhanced controls.
  */
 
+import { useEffect } from '@wordpress/element';
 import { addFilter } from '@wordpress/hooks';
 import { createHigherOrderComponent } from '@wordpress/compose';
 import { InspectorControls } from '@wordpress/block-editor';
