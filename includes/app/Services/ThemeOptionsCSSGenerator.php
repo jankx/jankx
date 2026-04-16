@@ -99,16 +99,7 @@ class ThemeOptionsCSSGenerator
      */
     public function enqueueDynamicCSS(): void
     {
-        $css = $this->generateCSS();
-
-        if (empty($css)) {
-            return;
-        }
-
-        // Register a dummy handle and add inline CSS
-        wp_register_style($this->handle, false, [], '1.0.0');
-        wp_enqueue_style($this->handle);
-        wp_add_inline_style($this->handle, $css);
+        $this->enqueueCSS($this->handle);
     }
 
     /**
@@ -125,15 +116,7 @@ class ThemeOptionsCSSGenerator
             return;
         }
 
-        $css = $this->generateCSS();
-
-        if (empty($css)) {
-            return;
-        }
-
-        wp_register_style($this->handle . '-admin', false, [], '1.0.0');
-        wp_enqueue_style($this->handle . '-admin');
-        wp_add_inline_style($this->handle . '-admin', $css);
+        $this->enqueueCSS($this->handle . '-admin');
     }
 
     /**
@@ -148,18 +131,30 @@ class ThemeOptionsCSSGenerator
             return;
         }
 
+        // For block editor iframe, we need to use a different approach
+        if (wp_script_is('wp-block-editor', 'enqueued')) {
+            $this->enqueueCSS($this->handle . '-blocks', ['wp-edit-blocks']);
+        }
+    }
+
+    /**
+     * Helper method to enqueue CSS with given handle
+     *
+     * @param string $handle Style handle
+     * @param array $deps Dependencies
+     * @return void
+     */
+    private function enqueueCSS(string $handle, array $deps = []): void
+    {
         $css = $this->generateCSS();
 
         if (empty($css)) {
             return;
         }
 
-        // For block editor iframe, we need to use a different approach
-        if (wp_script_is('wp-block-editor', 'enqueued')) {
-            wp_register_style($this->handle . '-blocks', false, ['wp-edit-blocks'], '1.0.0');
-            wp_enqueue_style($this->handle . '-blocks');
-            wp_add_inline_style($this->handle . '-blocks', $css);
-        }
+        wp_register_style($handle, false, $deps, '1.0.0');
+        wp_enqueue_style($handle);
+        wp_add_inline_style($handle, $css);
     }
 
     /**

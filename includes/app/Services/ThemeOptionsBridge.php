@@ -68,23 +68,7 @@ class ThemeOptionsBridge
      */
     public function passOptionsToBlockEditor(): void
     {
-        $handle = 'jankx-theme-options-data';
-
-        // Register a dummy script to attach data to
-        wp_register_script($handle, '', [], '1.0.0', false);
-        wp_enqueue_script($handle);
-
-        // Get all theme options data
-        $themeData = $this->getThemeOptionsData();
-
-        // Localize the data
-        wp_localize_script($handle, 'jankxThemeOptions', $themeData);
-
-        // Also add to window object for immediate access
-        wp_add_inline_script($handle, sprintf(
-            'window.jankxThemeOptions = %s;',
-            wp_json_encode($themeData)
-        ), 'before');
+        $this->enqueueThemeData('jankx-theme-options-data', false, true);
     }
 
     /**
@@ -94,18 +78,36 @@ class ThemeOptionsBridge
      */
     public function passOptionsToFrontend(): void
     {
-        $handle = 'jankx-theme-options-frontend';
-
         // Only enqueue if there are dynamic blocks that need this data
         if (!apply_filters('jankx/theme_options/enqueue_frontend', true)) {
             return;
         }
 
-        wp_register_script($handle, '', [], '1.0.0', true);
+        $this->enqueueThemeData('jankx-theme-options-frontend', true, false);
+    }
+
+    /**
+     * Helper method to enqueue theme data script
+     *
+     * @param string $handle Script handle
+     * @param bool $inFooter Whether to load in footer
+     * @param bool $addInline Whether to add inline script for window object
+     * @return void
+     */
+    private function enqueueThemeData(string $handle, bool $inFooter = false, bool $addInline = false): void
+    {
+        wp_register_script($handle, '', [], '1.0.0', $inFooter);
         wp_enqueue_script($handle);
 
         $themeData = $this->getThemeOptionsData();
         wp_localize_script($handle, 'jankxThemeOptions', $themeData);
+
+        if ($addInline) {
+            wp_add_inline_script($handle, sprintf(
+                'window.jankxThemeOptions = %s;',
+                wp_json_encode($themeData)
+            ), 'before');
+        }
     }
 
     /**
@@ -191,6 +193,23 @@ class ThemeOptionsBridge
     }
 
     /**
+     * Color scheme hue ranges lookup
+     *
+     * @var array
+     */
+    protected $colorSchemeRanges = [
+        ['min' => 350, 'max' => 360, 'name' => 'red'],
+        ['min' => 0, 'max' => 10, 'name' => 'red'],
+        ['min' => 10, 'max' => 45, 'name' => 'orange'],
+        ['min' => 45, 'max' => 75, 'name' => 'yellow'],
+        ['min' => 75, 'max' => 150, 'name' => 'green'],
+        ['min' => 150, 'max' => 200, 'name' => 'teal'],
+        ['min' => 200, 'max' => 260, 'name' => 'blue'],
+        ['min' => 260, 'max' => 300, 'name' => 'purple'],
+        ['min' => 300, 'max' => 350, 'name' => 'pink'],
+    ];
+
+    /**
      * Detect color scheme from primary color
      *
      * @param string $primaryColor
@@ -198,18 +217,39 @@ class ThemeOptionsBridge
      */
     protected function detectColorScheme(string $primaryColor): ?string
     {
-        // Simple detection based on hue ranges
-        $hex = ltrim($primaryColor, '#');
+        $hue = $this->calculateHue($primaryColor);
+
+        if ($hue === null) {
+            return 'neutral';
+        }
+
+        foreach ($this->colorSchemeRanges as $range) {
+            if ($hue >= $range['min'] && $hue < $range['max']) {
+                return $range['name'];
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Calculate hue from hex color
+     *
+     * @param string $hexColor
+     * @return float|null
+     */
+    protected function calculateHue(string $hexColor): ?float
+    {
+        $hex = ltrim($hexColor, '#');
         $r = hexdec(substr($hex, 0, 2));
         $g = hexdec(substr($hex, 2, 2));
         $b = hexdec(substr($hex, 4, 2));
 
-        // Calculate hue
         $max = max($r, $g, $b);
         $min = min($r, $g, $b);
 
         if ($max === $min) {
-            return 'neutral';
+            return null;
         }
 
         $d = $max - $min;
@@ -222,28 +262,7 @@ class ThemeOptionsBridge
             $hue = (($r - $g) / $d + 4) / 6;
         }
 
-        $hue = $hue * 360;
-
-        // Map hue to color scheme name
-        if ($hue >= 350 || $hue < 10) {
-            return 'red';
-        } elseif ($hue >= 10 && $hue < 45) {
-            return 'orange';
-        } elseif ($hue >= 45 && $hue < 75) {
-            return 'yellow';
-        } elseif ($hue >= 75 && $hue < 150) {
-            return 'green';
-        } elseif ($hue >= 150 && $hue < 200) {
-            return 'teal';
-        } elseif ($hue >= 200 && $hue < 260) {
-            return 'blue';
-        } elseif ($hue >= 260 && $hue < 300) {
-            return 'purple';
-        } elseif ($hue >= 300 && $hue < 350) {
-            return 'pink';
-        }
-
-        return null;
+        return $hue * 360;
     }
 
     /**

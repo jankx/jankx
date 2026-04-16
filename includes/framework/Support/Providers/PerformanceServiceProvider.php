@@ -34,6 +34,13 @@ class PerformanceServiceProvider extends ServiceProvider
      */
     public function register(Application $app)
     {
+        $this->app->singleton('performance', function ($app) {
+            return new \Jankx\Services\PerformanceService($app);
+        });
+        
+        $this->app->singleton(\Jankx\Services\PerformanceService::class, function ($app) {
+            return $app->make('performance');
+        });
     }
 
     /**
@@ -44,5 +51,14 @@ class PerformanceServiceProvider extends ServiceProvider
      */
     public function boot(Application $app)
     {
+        // Get the performance service
+        $performance = $app->make('performance');
+        
+        // We only apply heavy frontend optimizations if context is frontend
+        // But some features like removing emojis from admin also apply globally
+        $kernel = $app->make('kernel');
+        
+        // Always boot, the service methods will handle is_admin() checks
+        $performance->boot();
     }
 }
