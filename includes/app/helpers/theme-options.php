@@ -31,6 +31,35 @@ if (!function_exists('jankx_get_theme_option')) {
     }
 }
 
+if (!function_exists('jankx_register_theme_options')) {
+    /**
+     * Register theme options for an instance
+     *
+     * @param string $instance_name The option key in database
+     * @param array $options_array Array of pages, sections, and fields
+     * @param array $config Configuration for the dashboard
+     * @return \Jankx\Dashboard\OptionFramework
+     */
+    function jankx_register_theme_options(string $instance_name, array $options_array = [], array $config = [])
+    {
+        $framework = new \Jankx\Dashboard\OptionFramework($instance_name);
+        if (!empty($config)) {
+            $framework->setConfig($config);
+        }
+        if (!empty($options_array)) {
+            $framework->setOptions($options_array);
+        }
+
+        // Register to app container if needed
+        $app = Application::getInstance();
+        if ($app && $instance_name === 'jankx') {
+            $app->instance('theme-options', $framework);
+        }
+
+        return $framework;
+    }
+}
+
 if (!function_exists('jankx_get_theme_color')) {
     /**
      * Get a theme color

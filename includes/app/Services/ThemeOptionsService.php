@@ -266,6 +266,29 @@ class ThemeOptionsService
     }
 
     /**
+     * Render theme options page
+     *
+     * @return void
+     */
+    public function renderOptionsPage(): void
+    {
+        if (!$this->adapter) {
+            wp_die(__('Theme options adapter not initialized.', 'jankx'));
+        }
+
+        $framework = null;
+        if (method_exists($this->adapter, 'getFramework')) {
+            $framework = $this->adapter->getFramework();
+        }
+
+        if ($framework && method_exists($framework, 'renderOptionsPage')) {
+            $framework->renderOptionsPage();
+        } else {
+            wp_die(__('Theme options framework not found or does not support rendering.', 'jankx'));
+        }
+    }
+
+    /**
      * Get service name
      *
      * @return string

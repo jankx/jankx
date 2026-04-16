@@ -21,9 +21,16 @@ return [
         ],
         [
             'id' => 'show_post_meta',
-            'name' => __('Show Post Metadata (Author, Date)', 'jankx'),
+            'name' => __('Show Post Metadata', 'jankx'),
             'type' => 'checkbox',
-            'value' => 1,
+            'options' => [
+                'author' => __('Author', 'jankx'),
+                'date' => __('Date', 'jankx'),
+                'category' => __('Category', 'jankx'),
+                'tags' => __('Tags', 'jankx'),
+                'comment_count' => __('Comment Count', 'jankx'),
+            ],
+            'default' => ['author', 'date'],
         ],
     ],
 ];
