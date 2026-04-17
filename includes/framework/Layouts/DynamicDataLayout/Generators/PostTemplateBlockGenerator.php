@@ -154,14 +154,12 @@ class PostTemplateBlockGenerator extends AbstractContentGenerator
                 // Fix missing styles: Apply render_block filters to ensure block supports are applied
                 $blockHtml = apply_filters('render_block', $blockHtml, $normalizedBlock, $blockInstance);
 
-                // Handle Premium Overlay Layout if requested via attribute
+                // Handle hero-overlay layout
                 if (($attrs['templateLayout'] ?? '') === 'hero-overlay') {
                     if (in_array($normalizedBlock['blockName'], ['core/post-featured-image', 'jankx/advanced-image-box'], true)) {
-                        $blockHtml = str_replace('<img ', '<img style="width:100%;height:100%;object-fit:cover;display:block;" ', $blockHtml);
-                        $output .= sprintf('<div class="hero-image-wrapper" style="position:absolute;top:0;left:0;width:100%%;height:100%%;z-index:1;">%s</div>', $blockHtml);
+                        $output .= sprintf('<div class="jankx-hero-image">%s</div>', $blockHtml);
                         continue;
                     } else {
-                        // Build context for content
                         $contentOutput .= $blockHtml;
                         continue;
                     }
@@ -191,36 +189,61 @@ class PostTemplateBlockGenerator extends AbstractContentGenerator
                 $output .= $blockHtml;
             }
 
-            // If Hero Overlay mode, construct the final premium box
+            // -------------------------------------------------------
+            // hero-overlay: build box entirely from block attributes.
+            // Inline styles carry all visual config; SCSS only handles
+            // hover zoom, ::after gradient, and pointer-events logic.
+            // -------------------------------------------------------
             if (($attrs['templateLayout'] ?? '') === 'hero-overlay') {
-                // Ensure the box has a background even if image is missing
-                $output = sprintf(
-                    '<div class="premium-hero-box" style="position:relative;overflow:hidden;min-height:350px;height:100%%;display:flex;align-items:flex-end;border-radius:12px;background:#111;">
-                        %s
-                        <div class="premium-hero-content" style="position:relative;z-index:10;width:100%%;padding:40px 30px;background:linear-gradient(to top, rgba(0,0,0,1) 0%%, rgba(0,0,0,0.5) 50%%, transparent 100%%);pointer-events:none;">
-                            <div style="pointer-events:auto;">%s</div>
-                        </div>
-                    </div>',
-                    $output, // This contains the image wrapper with z-index 1
+                $minHeight       = $attrs['heroMinHeight']         ?? '320px';
+                $aspectRatio     = $attrs['heroAspectRatio']       ?? '';
+                $fallbackBg      = $attrs['heroFallbackBackground'] ?? 'linear-gradient(135deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%)';
+                $borderRadius    = $attrs['heroBorderRadius']       ?? '12px';
+                $overlayGradient = $attrs['heroOverlayGradient']   ?? 'linear-gradient(to top,rgba(0,0,0,0.88) 0%,rgba(0,0,0,0.45) 45%,transparent 100%)';
+                $contentPadding  = $attrs['heroContentPadding']    ?? '30px 24px 24px';
+
+                // Required structural styles
+                $boxStyle  = 'position:relative;overflow:hidden;display:flex;align-items:flex-end;height:100%;';
+                $boxStyle .= 'min-height:' . $minHeight . ';';
+                $boxStyle .= 'background:' . $fallbackBg . ';';
+                $boxStyle .= 'border-radius:' . $borderRadius . ';';
+                if ($aspectRatio !== '') {
+                    $boxStyle .= 'aspect-ratio:' . $aspectRatio . ';';
+                }
+                // CSS custom property consumed by .jankx-hero-overlay-box::after in SCSS
+                $boxStyle .= '--jankx-hero-overlay-gradient:' . $overlayGradient . ';';
+
+                // Merge additional block-support styles (spacing/border from block editor UI)
+                $supportStyles = $this->buildTemplateItemStyle($attrs);
+                if ($supportStyles !== '') {
+                    $boxStyle .= $supportStyles;
+                }
+
+                $contentStyle = 'width:100%;padding:' . $contentPadding . ';pointer-events:none;';
+
+                // $output      = .jankx-hero-image HTML (accumulated in the loop above)
+                // $contentOutput = all other inner blocks HTML
+                return sprintf(
+                    '<div class="jankx-hero-overlay-box" style="%s">%s<div class="jankx-hero-content" style="%s"><div style="pointer-events:auto;">%s</div></div></div>',
+                    $boxStyle,
+                    $output,
+                    $contentStyle,
                     $contentOutput
                 );
             }
 
-            // Build wrapper styles and classes for the template item
-            $wrapperStyle = $this->buildTemplateItemStyle($attrs);
-
-            // For Hero Overlay, we need the item itself to be the container
-            if (($attrs['templateLayout'] ?? '') === 'hero-overlay') {
-                $wrapperStyle = rtrim($wrapperStyle, ';') . '; position:relative; overflow:hidden;';
-            }
+            // -------------------------------------------------------
+            // Default / other layouts: optional wrapper from block supports
+            // -------------------------------------------------------
+            $wrapperStyle   = $this->buildTemplateItemStyle($attrs);
             $wrapperClasses = $this->buildTemplateItemClasses($attrs);
 
-            // If we have styles or classes to apply, wrap the output
             if (!empty($wrapperStyle) || !empty($wrapperClasses)) {
                 $styleAttr = !empty($wrapperStyle) ? sprintf(' style="%s"', esc_attr($wrapperStyle)) : '';
                 $classAttr = !empty($wrapperClasses) ? sprintf(' class="%s"', esc_attr($wrapperClasses)) : '';
                 $output = sprintf('<div%s%s>%s</div>', $classAttr, $styleAttr, $output);
             }
+
 
             return $output;
         } catch (\Throwable $exception) {

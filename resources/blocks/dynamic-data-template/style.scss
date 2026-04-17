@@ -1,135 +1,75 @@
-// Content Loop Layout: Normal
-.content-loop-layout--normal {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
+/**
+ * Dynamic Data Template Block Styles
+ *
+ * PHILOSOPHY: Chỉ chứa structural/behavioral styles không thể set
+ * qua block attributes (transitions, animations, pseudo-elements, hover states).
+ * Visual styles (color, padding, border-radius, size...) được PHP generate
+ * thành inline styles từ block attributes để fully custom qua Block Editor.
+ */
 
-    .wp-block-post-featured-image {
-        margin: 0;
+// =====================================================
+// Hero Overlay — structural/behavioral only
+// Image & gradient overlay cần pseudo-element và
+// transitions không thể làm bằng inline style
+// =====================================================
+.jankx-hero-overlay-box {
+    // Image fills container
+    .jankx-hero-image {
+        position: absolute;
+        inset: 0;
+        z-index: 1;
 
-        img {
+        a,
+        figure {
+            display: block;
             width: 100%;
-            height: auto;
-            border-radius: 8px;
+            height: 100%;
+            margin: 0;
         }
-    }
-}
-
-// Content Loop Layout: Boxed
-.content-loop-layout--boxed {
-    background: #fff;
-    border: 1px solid #e5e7eb;
-    border-radius: 12px;
-    overflow: hidden;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    transition: all 0.3s ease;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-
-    &:hover {
-        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-        transform: translateY(-2px);
-    }
-
-    // Image Wrapper
-    .wp-block-post-featured-image {
-        margin: 0;
-        aspect-ratio: var(--jankx-image-ratio, 1/1);
-        overflow: hidden;
 
         img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transition: transform 0.3s ease;
             display: block;
+            transition: transform 0.5s ease;
         }
     }
 
-    &:hover .wp-block-post-featured-image img {
-        transform: scale(1.05);
+    &:hover .jankx-hero-image img {
+        transform: scale(1.06);
     }
 
-    // Content Body
-    .card-body,
-    .post-content-wrapper {
-        padding: 1.25rem;
-        display: flex;
-        flex-direction: column;
-        flex-grow: 1;
-        gap: 0.75rem;
+    // Gradient overlay — must be pseudo-element (cannot do via inline style)
+    &::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: var(
+            --jankx-hero-overlay-gradient,
+            linear-gradient(to top, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.45) 45%, transparent 100%)
+        );
+        z-index: 2;
+        pointer-events: none;
+    }
 
-        .wp-block-post-title {
-            margin: 0;
-            font-size: 1.125rem;
-            line-height: 1.4;
-            font-weight: 600;
+    // Content above image + gradient
+    .jankx-hero-content {
+        position: relative;
+        z-index: 10;
+        width: 100%;
+        pointer-events: none;
 
-            a {
-                color: #111827;
-                text-decoration: none;
-
-                &:hover {
-                    color: #ea580c;
-                }
-            }
-        }
-
-        .wp-block-post-excerpt {
-            margin: 0;
-            color: #6b7280;
-            font-size: 0.875rem;
-            line-height: 1.5;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-
-        .wp-block-post-date {
-            font-size: 0.75rem;
-            color: #9ca3af;
-        }
-
-        .wp-block-woocommerce-product-price {
-            margin-top: auto;
-            font-weight: 700;
-            color: #ea580c;
-            font-size: 1.125rem;
-        }
-
-        .wp-block-woocommerce-product-button {
-            margin-top: 0.5rem;
-
-            .button {
-                width: 100%;
-                justify-content: center;
-                border-radius: 6px;
-                padding: 0.625rem;
-                font-weight: 600;
-                text-align: center;
-                background-color: #111827;
-                color: #fff;
-                border: none;
-                cursor: pointer;
-                transition: background 0.2s;
-
-                &:hover {
-                    background-color: #374151;
-                }
-            }
+        > * {
+            pointer-events: auto;
         }
     }
 }
 
-// Previous Product Card (keep for compatibility if needed, but the user wants Boxed)
-.content-loop-layout--product-card {
-    @extend .content-loop-layout--boxed;
-}
-
-// Overlay icon wrapper for featured/entry images
+// =====================================================
+// Overlay icon wrapper (standard overlay mode)
+// Positioning logic requires CSS classes
+// =====================================================
 .jankx-thumbnail-overlay-wrapper {
     position: relative;
     display: block;
@@ -147,60 +87,26 @@
         justify-content: center;
         border-radius: 999px;
         padding: 6px;
-        color: inherit;
-        background: rgba(0, 0, 0, 0.5);
         z-index: 10;
         transition: opacity 0.2s ease;
     }
 
-    &.overlay-mode-always-show .jankx-overlay-icon {
-        opacity: 1;
-    }
+    &.overlay-mode-always-show .jankx-overlay-icon { opacity: 1; }
+    &.overlay-mode-hover-show .jankx-overlay-icon  { opacity: 0; }
+    &.overlay-mode-hover-show:hover .jankx-overlay-icon { opacity: 1; }
+    &.overlay-mode-hover-hide .jankx-overlay-icon  { opacity: 1; }
+    &.overlay-mode-hover-hide:hover .jankx-overlay-icon { opacity: 0; }
 
-    &.overlay-mode-hover-show .jankx-overlay-icon {
-        opacity: 0;
-    }
-
-    &.overlay-mode-hover-show:hover .jankx-overlay-icon {
-        opacity: 1;
-    }
-
-    &.overlay-mode-hover-hide .jankx-overlay-icon {
-        opacity: 1;
-    }
-
-    &.overlay-mode-hover-hide:hover .jankx-overlay-icon {
-        opacity: 0;
-    }
-
-    &.overlay-pos-center .jankx-overlay-icon {
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-    }
-
-    &.overlay-pos-top-left .jankx-overlay-icon {
-        top: 8px;
-        left: 8px;
-    }
-
-    &.overlay-pos-top-right .jankx-overlay-icon {
-        top: 8px;
-        right: 8px;
-    }
-
-    &.overlay-pos-bottom-left .jankx-overlay-icon {
-        bottom: 8px;
-        left: 8px;
-    }
-
-    &.overlay-pos-bottom-right .jankx-overlay-icon {
-        bottom: 8px;
-        right: 8px;
-    }
+    &.overlay-pos-center .jankx-overlay-icon      { top: 50%; left: 50%; transform: translate(-50%, -50%); }
+    &.overlay-pos-top-left .jankx-overlay-icon    { top: 8px; left: 8px; }
+    &.overlay-pos-top-right .jankx-overlay-icon   { top: 8px; right: 8px; }
+    &.overlay-pos-bottom-left .jankx-overlay-icon { bottom: 8px; left: 8px; }
+    &.overlay-pos-bottom-right .jankx-overlay-icon { bottom: 8px; right: 8px; }
 }
 
-// Scroll Reveal Animations
+// =====================================================
+// Scroll Reveal Animations (behavioral — cannot inline)
+// =====================================================
 .jankx-reveal {
     --jankx-animation-duration: 1000ms;
     --jankx-animation-delay: 0ms;
@@ -216,95 +122,37 @@
         transform: translate(0, 0) scale(1);
     }
 
-    // Animation Types
-    &--fade-in-up {
-        transform: translateY(30px);
-
-        &.is-in-view {
-            transform: translateY(0);
-        }
-    }
-
-    &--fade-in-down {
-        transform: translateY(-30px);
-
-        &.is-in-view {
-            transform: translateY(0);
-        }
-    }
-
-    &--fade-in-left {
-        transform: translateX(-30px);
-
-        &.is-in-view {
-            transform: translateX(0);
-        }
-    }
-
-    &--fade-in-right {
-        transform: translateX(30px);
-
-        &.is-in-view {
-            transform: translateX(0);
-        }
-    }
-
-    &--zoom-in {
-        transform: scale(0.9);
-
-        &.is-in-view {
-            transform: scale(1);
-        }
-    }
+    &--fade-in-up   { transform: translateY(30px);  &.is-in-view { transform: translateY(0); } }
+    &--fade-in-down { transform: translateY(-30px); &.is-in-view { transform: translateY(0); } }
+    &--fade-in-left { transform: translateX(-30px); &.is-in-view { transform: translateX(0); } }
+    &--fade-in-right { transform: translateX(30px); &.is-in-view { transform: translateX(0); } }
+    &--zoom-in      { transform: scale(0.9);        &.is-in-view { transform: scale(1); } }
 
     &--slide-in-up {
         clip-path: inset(100% 0 0 0);
-
-        &.is-in-view {
-            clip-path: inset(0 0 0 0);
-        }
+        &.is-in-view { clip-path: inset(0 0 0 0); }
     }
 
-    // Target Selection
     &--target-thumbnail {
-        opacity: 1; // Item itself is visible
+        opacity: 1;
         transform: none;
 
         .wp-block-post-featured-image img,
-        .product-card-image-wrapper img,
         .jankx-thumbnail-overlay-wrapper img {
             opacity: 0;
             transition: inherit;
         }
 
-        &.is-in-view {
-
-            .wp-block-post-featured-image img,
-            .product-card-image-wrapper img,
-            .jankx-thumbnail-overlay-wrapper img {
-                opacity: 1;
-                transform: translate(0, 0) scale(1);
-            }
+        &.is-in-view .wp-block-post-featured-image img,
+        &.is-in-view .jankx-thumbnail-overlay-wrapper img {
+            opacity: 1;
+            transform: translate(0, 0) scale(1);
         }
 
-        &.jankx-reveal--fade-in-up img {
-            transform: translateY(30px);
-        }
-
-        &.jankx-reveal--fade-in-down img {
-            transform: translateY(-30px);
-        }
-
-        &.jankx-reveal--fade-in-left img {
-            transform: translateX(-30px);
-        }
-
-        &.jankx-reveal--fade-in-right img {
-            transform: translateX(30px);
-        }
-
-        &.jankx-reveal--zoom-in img {
-            transform: scale(0.9);
-        }
+        &.jankx-reveal--fade-in-up img    { transform: translateY(30px); }
+        &.jankx-reveal--fade-in-down img  { transform: translateY(-30px); }
+        &.jankx-reveal--fade-in-left img  { transform: translateX(-30px); }
+        &.jankx-reveal--fade-in-right img { transform: translateX(30px); }
+        &.jankx-reveal--zoom-in img       { transform: scale(0.9); }
     }
 }

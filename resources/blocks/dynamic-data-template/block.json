@@ -108,6 +108,11 @@
     }
   },
   "attributes": {
+    "templateLayout": {
+      "type": "string",
+      "default": "default",
+      "enum": ["default", "hero-overlay", "boxed", "horizontal"]
+    },
     "contentLoopLayout": {
       "type": "string",
       "default": "default"
@@ -115,6 +120,30 @@
     "className": {
       "type": "string",
       "default": ""
+    },
+    "heroMinHeight": {
+      "type": "string",
+      "default": "320px"
+    },
+    "heroAspectRatio": {
+      "type": "string",
+      "default": ""
+    },
+    "heroOverlayGradient": {
+      "type": "string",
+      "default": "linear-gradient(to top, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.45) 45%, transparent 100%)"
+    },
+    "heroFallbackBackground": {
+      "type": "string",
+      "default": "linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)"
+    },
+    "heroBorderRadius": {
+      "type": "string",
+      "default": "12px"
+    },
+    "heroContentPadding": {
+      "type": "string",
+      "default": "30px 24px 24px"
     },
     "itemSpacing": {
       "type": "string",
