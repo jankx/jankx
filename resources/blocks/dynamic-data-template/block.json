@@ -155,6 +155,22 @@
         "loose"
       ]
     },
+    "backgroundColor": {
+      "type": "string"
+    },
+    "textColor": {
+      "type": "string"
+    },
+    "gradient": {
+      "type": "string"
+    },
+    "fontSize": {
+      "type": "string"
+    },
+    "overlayIconMode": {
+      "type": "string",
+      "default": "always-show"
+    },
     "overlayIcon": {
       "type": "string",
       "default": ""

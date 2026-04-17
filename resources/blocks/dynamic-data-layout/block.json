@@ -407,6 +407,13 @@
     "excerptLength": {
       "type": "number",
       "default": 55
+    },
+    "postTemplate": {
+      "type": "object"
+    },
+    "spaceBetween": {
+      "type": "number",
+      "default": 16
     }
   }
 }

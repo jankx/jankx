@@ -372,6 +372,7 @@ interface DynamicDataLayoutAttributes {
     showAddToCart?: boolean;
     showRating?: boolean;
     excerptLength?: number;
+    spaceBetween?: number;
 }
 
 interface EditProps {
@@ -445,6 +446,7 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
         showAddToCart = true,
         showRating = false,
         excerptLength = 55,
+        spaceBetween = 16,
     } = attributes;
 
     // States for taxonomies and authors
@@ -1103,6 +1105,14 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                             }}
                         />
                     ) : null}
+                    <RangeControl
+                        label={__('Space Between', 'jankx')}
+                        value={spaceBetween}
+                        onChange={(value) => setAttributes({ spaceBetween: value || 0 })}
+                        min={0}
+                        max={100}
+                        help={__('Space between items in pixels', 'jankx')}
+                    />
                 </PanelBody>
 
                 {/* Layout Specific Settings (Dynamic) */}

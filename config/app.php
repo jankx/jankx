@@ -27,9 +27,7 @@ return [
         Jankx\Support\Providers\ContentLayoutServiceProvider::class,
         // App\Providers\SkeletonServiceProvider::class,
 
-        // App\Providers\WooCommerce\BuyNowServiceProvider::class,
         // App\Providers\WooCommerce\EmptyPriceServiceProvider::class,
-        // App\Providers\WooCommerce\SaleBadgeServiceProvider::class,
         // App\Providers\WordPress\ApplyTermHtmlDescriptionServiceProvider::class,
         // App\Providers\WordPress\VisualTermDescriptionEditorServiceProvider::class,
         App\Providers\WordPress\AdminThumbnailColumnStyleServiceProvider::class,
