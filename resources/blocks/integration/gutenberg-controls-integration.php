@@ -11,7 +11,7 @@
 namespace Jankx\Blocks\Integration;
 
 use Jankx\Gutenberg\Controls\Registry\BlockRegistry;
-use Jankx\Gutenberg\Presets\PresetManager;
+use Jankx\Gutenberg\Controls\Presets\PresetManager;
 
 /**
  * Class GutenbergControlsIntegration
@@ -96,7 +96,7 @@ class GutenbergControlsIntegration
         }
 
         // Autoload if not already loaded
-        if (!class_exists('Jankx\Gutenberg\Controls\Registry\BlockRegistry')) {
+        if (!class_exists(BlockRegistry::class)) {
             $autoload = $vendorDir . '/vendor/autoload.php';
             if (file_exists($autoload)) {
                 require_once $autoload;
@@ -110,7 +110,7 @@ class GutenbergControlsIntegration
     public function registerBlockIntegration(): void
     {
         // Register block registry singleton
-        if (class_exists('Jankx\Gutenberg\Controls\Registry\BlockRegistry')) {
+        if (class_exists(BlockRegistry::class)) {
             $registry = BlockRegistry::getInstance();
 
             // Configure supported blocks with appropriate controls
@@ -265,7 +265,7 @@ class GutenbergControlsIntegration
      */
     private function registerPresets(): void
     {
-        if (!class_exists('Jankx\Gutenberg\Presets\PresetManager')) {
+        if (!class_exists(PresetManager::class)) {
             return;
         }
 
@@ -417,7 +417,7 @@ class GutenbergControlsIntegration
      */
     private function getPresetsForJS(): array
     {
-        if (!class_exists('Jankx\Gutenberg\Presets\PresetManager')) {
+        if (!class_exists(PresetManager::class)) {
             return [];
         }
 

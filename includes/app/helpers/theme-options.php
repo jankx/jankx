@@ -43,6 +43,11 @@ if (!function_exists('jankx_register_theme_options')) {
     function jankx_register_theme_options(string $instance_name, array $options_array = [], array $config = [])
     {
         $framework = new \Jankx\Dashboard\OptionFramework($instance_name);
+        $app = Application::getInstance();
+        if ($app) {
+            $framework->setApp($app);
+        }
+
         if (!empty($config)) {
             $framework->setConfig($config);
         }

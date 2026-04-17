@@ -18,6 +18,12 @@ if (!defined('ABSPATH')) {
 // Load Jankx Framework
 require_once get_template_directory() . '/includes/framework.php';
 
+// Load Gutenberg Controls Integration for blocks
+$blocks_integration = get_template_directory() . '/resources/blocks/integration/loader.php';
+if (file_exists($blocks_integration)) {
+    require_once $blocks_integration;
+}
+
 /**
  * Enqueue fonts and styles for frontend
  */
