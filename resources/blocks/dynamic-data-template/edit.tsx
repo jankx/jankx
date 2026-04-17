@@ -24,6 +24,7 @@ import type { CSSProperties } from 'react';
 import type { BlockInstance } from '@wordpress/blocks';
 
 interface DynamicDataTemplateAttributes {
+    templateLayout: string;
     contentLoopLayout: string;
     className?: string;
     itemSpacing?: 'none' | 'compact' | 'normal' | 'loose';
@@ -36,6 +37,14 @@ interface DynamicDataTemplateAttributes {
         left?: string;
     };
     thumbnailPosition?: 'top' | 'bottom' | 'left' | 'right';
+    // Hero Overlay layout settings
+    heroMinHeight?: string;
+    heroAspectRatio?: string;
+    heroOverlayGradient?: string;
+    heroFallbackBackground?: string;
+    heroBorderRadius?: string;
+    heroContentPadding?: string;
+    // Overlay icon settings
     overlayIcon?: string;
     overlayIconShowMode?: 'always-show' | 'hover-hide' | 'hover-show';
     overlayIconPosition?: 'center' | 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
@@ -307,6 +316,7 @@ export default function Edit({
     context,
 }: DynamicDataTemplateEditProps): JSX.Element {
     const {
+        templateLayout = 'default',
         contentLoopLayout,
         className = '',
         itemSpacing = 'normal',
@@ -314,6 +324,12 @@ export default function Edit({
         itemBorderRadius = 0,
         itemPadding = {},
         thumbnailPosition = 'top',
+        heroMinHeight = '320px',
+        heroAspectRatio = '',
+        heroOverlayGradient = 'linear-gradient(to top,rgba(0,0,0,0.88) 0%,rgba(0,0,0,0.45) 45%,transparent 100%)',
+        heroFallbackBackground = 'linear-gradient(135deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%)',
+        heroBorderRadius = '12px',
+        heroContentPadding = '30px 24px 24px',
         overlayIcon,
         overlayIconShowMode = 'always-show',
         overlayIconPosition = 'center',
@@ -494,6 +510,18 @@ export default function Edit({
             <InspectorControls>
                 <PanelBody title={__('Template Settings', 'jankx')} initialOpen={true}>
                     <SelectControl
+                        label={__('Template Layout', 'jankx')}
+                        value={templateLayout}
+                        options={[
+                            { label: __('Default', 'jankx'), value: 'default' },
+                            { label: __('Hero Overlay', 'jankx'), value: 'hero-overlay' },
+                            { label: __('Boxed', 'jankx'), value: 'boxed' },
+                            { label: __('Horizontal', 'jankx'), value: 'horizontal' },
+                        ]}
+                        onChange={(value: string): void => setAttributes({ templateLayout: value })}
+                        help={__('Choose the overall item layout style.', 'jankx')}
+                    />
+                    <SelectControl
                         label={__('Content Loop Layout', 'jankx')}
                         value={contentLoopLayout}
                         options={layoutOptions}
@@ -527,6 +555,65 @@ export default function Edit({
                         />
                     )}
                 </PanelBody>
+
+                {templateLayout === 'hero-overlay' && (
+                    <PanelBody title={__('Hero Overlay Settings', 'jankx')} initialOpen={true}>
+                        <TextControl
+                            label={__('Min Height', 'jankx')}
+                            value={heroMinHeight}
+                            onChange={(value: string) => setAttributes({ heroMinHeight: value })}
+                            help={__('e.g. 320px, 50vh', 'jankx')}
+                        />
+                        <SelectControl
+                            label={__('Aspect Ratio', 'jankx')}
+                            value={heroAspectRatio}
+                            options={[
+                                { label: __('None (use min-height)', 'jankx'), value: '' },
+                                { label: '16:9', value: '16/9' },
+                                { label: '4:3', value: '4/3' },
+                                { label: '3:2', value: '3/2' },
+                                { label: '1:1', value: '1/1' },
+                                { label: '21:9', value: '21/9' },
+                            ]}
+                            onChange={(value: string) => setAttributes({ heroAspectRatio: value })}
+                            help={__('When set, overrides min-height on larger screens.', 'jankx')}
+                        />
+                        <TextControl
+                            label={__('Border Radius', 'jankx')}
+                            value={heroBorderRadius}
+                            onChange={(value: string) => setAttributes({ heroBorderRadius: value })}
+                            help={__('e.g. 12px, 0px', 'jankx')}
+                        />
+                        <TextControl
+                            label={__('Content Padding', 'jankx')}
+                            value={heroContentPadding}
+                            onChange={(value: string) => setAttributes({ heroContentPadding: value })}
+                            help={__('e.g. 30px 24px 24px', 'jankx')}
+                        />
+                        <div className="components-base-control">
+                            <label className="components-base-control__label">
+                                {__('Fallback Background', 'jankx')}
+                            </label>
+                            <TextControl
+                                label=""
+                                value={heroFallbackBackground}
+                                onChange={(value: string) => setAttributes({ heroFallbackBackground: value })}
+                                help={__('Color or gradient shown when no featured image. e.g. #1a1a2e or linear-gradient(...)', 'jankx')}
+                            />
+                        </div>
+                        <div className="components-base-control">
+                            <label className="components-base-control__label">
+                                {__('Overlay Gradient', 'jankx')}
+                            </label>
+                            <TextControl
+                                label=""
+                                value={heroOverlayGradient}
+                                onChange={(value: string) => setAttributes({ heroOverlayGradient: value })}
+                                help={__('CSS gradient for the dark overlay on top of the image.', 'jankx')}
+                            />
+                        </div>
+                    </PanelBody>
+                )}
 
                 <PanelBody title={__('Image Settings', 'jankx')} initialOpen={false}>
                     <SelectControl
