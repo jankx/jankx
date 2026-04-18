@@ -62,7 +62,6 @@ return [
         'required' => [
             // 'jankx-ux' => '^1.0.0',
             // 'jankx-dashboard' => 'v1.2.3',
-            'hello-extension' => '*'
         ],
         'recommended' => [
         ],
