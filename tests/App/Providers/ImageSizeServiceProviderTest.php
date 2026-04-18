@@ -38,10 +38,10 @@ class ImageSizeServiceProviderTest extends TestCase
 
     public function testFilterImageSizesWithOption()
     {
-        $GLOBALS['options']['jankx_enabled_image_sizes'] = ['thumbnail'];
-        $sizes = ['thumbnail', 'medium', 'large'];
+        $GLOBALS['options']['jankx_enabled_image_sizes'] = ['thumbnail', 'custom_size'];
+        $sizes = ['thumbnail', 'medium', 'large', 'custom_size', 'unwanted_size'];
         $result = $this->provider->filterImageSizes($sizes);
-        $this->assertEquals(['thumbnail'], $result);
+        $this->assertEquals(['thumbnail', 'medium', 'large', 'custom_size'], array_values($result));
     }
 
     public function testFilterImageSizesInAdminUtilitiesPage()
@@ -57,13 +57,21 @@ class ImageSizeServiceProviderTest extends TestCase
 
     public function testFilterAdvancedImageSizes()
     {
-        $GLOBALS['options']['jankx_enabled_image_sizes'] = ['thumbnail'];
+        $GLOBALS['options']['jankx_enabled_image_sizes'] = ['thumbnail', 'custom_size'];
         $sizes = [
             'thumbnail' => ['width' => 150],
             'medium' => ['width' => 300],
-            'large' => ['width' => 1024]
+            'large' => ['width' => 1024],
+            'custom_size' => ['width' => 800],
+            'unwanted_size' => ['width' => 600]
         ];
         $result = $this->provider->filterAdvancedImageSizes($sizes);
-        $this->assertEquals(['thumbnail' => ['width' => 150]], $result);
+        $expected = [
+            'thumbnail' => ['width' => 150],
+            'medium' => ['width' => 300],
+            'large' => ['width' => 1024],
+            'custom_size' => ['width' => 800]
+        ];
+        $this->assertEquals($expected, $result);
     }
 }
