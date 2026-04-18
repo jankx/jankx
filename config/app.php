@@ -24,7 +24,6 @@ return [
         App\Providers\GutenbergServiceProvider::class,
         App\MenuBuilder\ServiceProvider::class,
         Jankx\Support\Providers\ContentLayoutServiceProvider::class,
-        // App\Providers\SkeletonServiceProvider::class,
 
         // App\Providers\WooCommerce\EmptyPriceServiceProvider::class,
         // App\Providers\WordPress\ApplyTermHtmlDescriptionServiceProvider::class,

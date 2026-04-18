@@ -134,11 +134,33 @@ class ThemeOptionsBridge
 
         // Update color palette if it exists
         if (isset($data['settings']['color']['palette'])) {
-            foreach ($data['settings']['color']['palette'] as &$color) {
-                if ($color['slug'] === 'primary') {
-                    $color['color'] = $primaryColor;
-                } elseif ($color['slug'] === 'secondary') {
-                    $color['color'] = $secondaryColor;
+            $palettes = $data['settings']['color']['palette'];
+            
+            // Handle both flat array and nested palette structures (theme, default, user)
+            if (isset($palettes['theme']) || isset($palettes['default'])) {
+                foreach (['theme', 'default', 'user'] as $origin) {
+                    if (isset($data['settings']['color']['palette'][$origin])) {
+                        foreach ($data['settings']['color']['palette'][$origin] as &$color) {
+                            if (is_array($color) && isset($color['slug'])) {
+                                if ($color['slug'] === 'primary') {
+                                    $color['color'] = $primaryColor;
+                                } elseif ($color['slug'] === 'secondary') {
+                                    $color['color'] = $secondaryColor;
+                                }
+                            }
+                        }
+                    }
+                }
+            } else {
+                // Flat array structure
+                foreach ($data['settings']['color']['palette'] as &$color) {
+                    if (is_array($color) && isset($color['slug'])) {
+                        if ($color['slug'] === 'primary') {
+                            $color['color'] = $primaryColor;
+                        } elseif ($color['slug'] === 'secondary') {
+                            $color['color'] = $secondaryColor;
+                        }
+                    }
                 }
             }
         }
