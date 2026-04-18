@@ -14,10 +14,15 @@ body { background-color: #09090b !important; color: #e4e4e7 !important; }
 .wp-site-blocks > main { margin-top: 0 !important; margin-bottom: 0 !important; }
 .wp-block-jankx-dynamic-data-layout { margin-top: 0 !important; }
 .post-type-layout-grid { background-color: transparent !important; display: grid !important; grid-template-columns: repeat(3, minmax(0, 1fr)) !important; gap: 24px !important; padding: 0 !important; margin: 0 !important; align-items: stretch !important; }
+.wp-block-post-template.is-layout-grid { display: grid !important; grid-template-columns: repeat(3, minmax(0, 1fr)) !important; gap: 24px !important; padding: 0 !important; margin: 0 !important; align-items: stretch !important; }
 .post-type-layout-grid::before, .post-type-layout-grid::after { display: none !important; }
-.post-type-layout-grid > * { width: 100% !important; max-width: 100% !important; margin: 0 !important; flex: none !important; }
-@media (max-width: 1024px) { .post-type-layout-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; } }
-@media (max-width: 640px) { .post-type-layout-grid { grid-template-columns: 1fr !important; } }
+.post-type-layout-grid > *, .wp-block-post-template.is-layout-grid > * { width: 100% !important; max-width: 100% !important; margin: 0 !important; flex: none !important; }
+@media (max-width: 1024px) { 
+    .post-type-layout-grid, .wp-block-post-template.is-layout-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; } 
+}
+@media (max-width: 640px) { 
+    .post-type-layout-grid, .wp-block-post-template.is-layout-grid { grid-template-columns: 1fr !important; } 
+}
 .wp-block-jankx-dynamic-data-template { margin-bottom: 0 !important; padding: 0 !important; height: 100% !important; }
 .jankx-card { height: 100% !important; }
 .wp-block-post-featured-image { margin-bottom: 0 !important; background-color: #27272a !important; }
@@ -40,8 +45,8 @@ body { background-color: #09090b !important; color: #e4e4e7 !important; }
     <!-- /wp:group -->
 
     <!-- Search Results -->
-    <!-- wp:group {"align":"wide","style":{"spacing":{"padding":{"top":"80px","bottom":"100px"},"margin":{"top":"0","bottom":"0"}}},"layout":{"type":"default"}} -->
-    <div class="wp-block-group alignwide" style="margin-top:0;margin-bottom:0;padding-top:80px;padding-bottom:100px">
+    <!-- wp:group {"align":"wide","style":{"spacing":{"padding":{"top":"80px","bottom":"100px","left":"24px","right":"24px"},"margin":{"top":"0","bottom":"0"}}},"layout":{"type":"default"}} -->
+    <div class="wp-block-group alignwide" style="margin-top:0;margin-bottom:0;padding-top:80px;padding-bottom:100px;padding-left:24px;padding-right:24px">
         
         <!-- wp:query {"queryId":0,"query":{"perPage":10,"pages":0,"offset":0,"postType":"post","order":"desc","orderBy":"date","author":"","search":"","exclude":[],"sticky":"","inherit":true}} -->
         <div class="wp-block-query">
