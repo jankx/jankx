@@ -639,7 +639,7 @@ class ExtensionManager implements ExtensionManagerInterface
             <div class="notice notice-error is-dismissible">
                 <p>
                     <?php 
-                    $message = __('The following extensions are <strong>required</strong> for %s theme: %s. Please install and activate them.', 'jankx');
+                    $message = __('The following extensions are <strong>required</strong> for %1$s theme: %2$s. <a href="%3$s">Please install and activate them.</a>', 'jankx');
                     $extension_list = [];
                     foreach ($missing_required as $id) {
                         $info = $this->get_hub_extension_info($id);
@@ -654,7 +654,8 @@ class ExtensionManager implements ExtensionManagerInterface
                     echo sprintf(
                         $message,
                         esc_html($this->app->make('config')->get('app.name', 'Jankx')),
-                        '<strong>' . implode('</strong>, <strong>', array_map('esc_html', $extension_list)) . '</strong>'
+                        '<strong>' . implode('</strong>, <strong>', array_map('esc_html', $extension_list)) . '</strong>',
+                        esc_url(admin_url('admin.php?page=jankx-extensions&extension_status=required'))
                     ); ?>
                 </p>
             </div>
@@ -680,7 +681,7 @@ class ExtensionManager implements ExtensionManagerInterface
             <div class="notice notice-warning is-dismissible">
                 <p>
                     <?php 
-                    $message = __('The following extensions are <strong>recommended</strong> for %s theme: %s. Installing them will provide more features.', 'jankx');
+                    $message = __('The following extensions are <strong>recommended</strong> for %1$s theme: %2$s. <a href="%3$s">Installing them will provide more features.</a>', 'jankx');
                     $extension_list = [];
                     foreach ($missing_recommended as $id) {
                         $info = $this->get_hub_extension_info($id);
@@ -695,7 +696,8 @@ class ExtensionManager implements ExtensionManagerInterface
                     echo sprintf(
                         $message,
                         esc_html($this->app->make('config')->get('app.name', 'Jankx')),
-                        '<strong>' . implode('</strong>, <strong>', array_map('esc_html', $extension_list)) . '</strong>'
+                        '<strong>' . implode('</strong>, <strong>', array_map('esc_html', $extension_list)) . '</strong>',
+                        esc_url(admin_url('admin.php?page=jankx-extensions'))
                     ); ?>
                 </p>
             </div>

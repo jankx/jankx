@@ -1750,7 +1750,7 @@ class AdminPageService
                             $required_ids = $extensionManager->get_required_extensions();
                             $recommended_ids = $extensionManager->get_recommended_extensions();
                             
-                            foreach ($required_ids as $id):
+                            foreach ($required_ids as $id => $req_version):
                                 $extension = $extensionManager->get_extension_by_id($id);
                                 if ($extension) {
                                     $info = $extension->get_info();
@@ -1778,7 +1778,7 @@ class AdminPageService
                                 }
                             endforeach;
 
-                            foreach ($recommended_ids as $id):
+                            foreach ($recommended_ids as $id => $rec_version):
                                 $extension = $extensionManager->get_extension_by_id($id);
                                 if ($extension) {
                                     $info = $extension->get_info();
