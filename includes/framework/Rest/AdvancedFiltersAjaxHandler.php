@@ -16,22 +16,37 @@ class AdvancedFiltersAjaxHandler
     /**
      * Register AJAX handlers
      *
+     * SECURITY NOTE: Each endpoint's nopriv status is INTENTIONAL:
+     * - get_data (handleFilterDataRequest): nopriv ENABLED - guests need frontend filtering
+     * - get_terms: nopriv ENABLED but blocked by edit_posts check
+     * - get_meta_keys: nopriv DISABLED - sensitive DB structure info
+     * - get_filterable_blocks: nopriv DISABLED - sensitive block structure
+     *
+     * DO NOT modify nopriv settings without understanding the impact!
+     *
      * @return void
      */
     public function registerHandlers(): void
     {
+        // Frontend filtering - must work for guests (has nonce, no permission check)
         add_action('wp_ajax_jankx_advanced_filter_get_data', [$this, 'handleFilterDataRequest']);
         add_action('wp_ajax_nopriv_jankx_advanced_filter_get_data', [$this, 'handleFilterDataRequest']);
+
+        // Admin endpoints - require edit_posts permission
         add_action('wp_ajax_jankx_advanced_filter_get_terms', [$this, 'handleGetTermsRequest']);
         add_action('wp_ajax_nopriv_jankx_advanced_filter_get_terms', [$this, 'handleGetTermsRequest']);
+
+        // Sensitive admin endpoints - NO nopriv (require login + edit_posts)
         add_action('wp_ajax_jankx_advanced_filter_get_meta_keys', [$this, 'handleGetMetaKeysRequest']);
-        add_action('wp_ajax_nopriv_jankx_advanced_filter_get_meta_keys', [$this, 'handleGetMetaKeysRequest']);
         add_action('wp_ajax_jankx_get_filterable_blocks', [$this, 'handleGetFilterableBlocksRequest']);
-        add_action('wp_ajax_nopriv_jankx_get_filterable_blocks', [$this, 'handleGetFilterableBlocksRequest']);
     }
 
     /**
      * Handle filter data request via AJAX
+     *
+     * SECURITY: This endpoint is intentionally accessible to guests (nopriv enabled).
+     * It provides frontend filtering functionality - users should be able to filter
+     * posts/products without logging in. Only nonce verification is required.
      *
      * @return void
      */
@@ -74,6 +89,14 @@ class AdvancedFiltersAjaxHandler
      */
     public function handleGetTermsRequest(): void
     {
+        if (!wp_verify_nonce($_REQUEST['nonce'] ?? '', 'jankx_advanced_filter_nonce')) {
+            wp_send_json_error('Security check failed');
+        }
+
+        if (!current_user_can('edit_posts')) {
+            wp_send_json_error('Unauthorized access');
+        }
+
         $taxonomy = sanitize_text_field($_REQUEST['taxonomy'] ?? '');
         $post_type = sanitize_text_field($_REQUEST['post_type'] ?? 'post');
 
@@ -112,6 +135,14 @@ class AdvancedFiltersAjaxHandler
      */
     public function handleGetMetaKeysRequest(): void
     {
+        if (!wp_verify_nonce($_REQUEST['nonce'] ?? '', 'jankx_advanced_filter_nonce')) {
+            wp_send_json_error('Security check failed');
+        }
+
+        if (!current_user_can('edit_posts')) {
+            wp_send_json_error('Unauthorized access');
+        }
+
         $post_type = sanitize_text_field($_REQUEST['post_type'] ?? 'post');
 
         global $wpdb;
@@ -135,6 +166,14 @@ class AdvancedFiltersAjaxHandler
      */
     public function handleGetFilterableBlocksRequest(): void
     {
+        if (!wp_verify_nonce($_REQUEST['nonce'] ?? '', 'jankx_advanced_filter_nonce')) {
+            wp_send_json_error('Security check failed');
+        }
+
+        if (!current_user_can('edit_posts')) {
+            wp_send_json_error('Unauthorized access');
+        }
+
         $blocks = [];
 
         $post_id = isset($_REQUEST['post_id']) ? intval($_REQUEST['post_id']) : get_the_ID();

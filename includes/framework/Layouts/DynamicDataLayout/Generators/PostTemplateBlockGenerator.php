@@ -225,9 +225,9 @@ class PostTemplateBlockGenerator extends AbstractContentGenerator
                 // $contentOutput = all other inner blocks HTML
                 return sprintf(
                     '<div class="jankx-hero-overlay-box" style="%s">%s<div class="jankx-hero-content" style="%s"><div style="pointer-events:auto;">%s</div></div></div>',
-                    $boxStyle,
+                    esc_attr($boxStyle),
                     $output,
-                    $contentStyle,
+                    esc_attr($contentStyle),
                     $contentOutput
                 );
             }

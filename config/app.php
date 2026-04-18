@@ -22,7 +22,6 @@ return [
         Jankx\Support\Providers\EnvatoServiceProvider::class,
 
         App\Providers\GutenbergServiceProvider::class,
-        App\Providers\NavigationBlockServiceProvider::class,
         App\MenuBuilder\ServiceProvider::class,
         Jankx\Support\Providers\ContentLayoutServiceProvider::class,
         // App\Providers\SkeletonServiceProvider::class,

@@ -13,15 +13,14 @@ return [
             'name' => __('Site Title', 'jankx'),
             'type' => 'text',
             'value' => get_option('blogname'),
-            'default_value' => 'Jankx Theme',
-            'description' => __('Displayed in the header and as an SEO title fallback', 'jankx'),
+            'option_name' => 'blogname',
         ],
         [
             'id' => 'site_tagline',
             'name' => __('Tagline', 'jankx'),
             'type' => 'textarea',
             'value' => get_option('blogdescription'),
-            'description' => __('Displayed in some hero and footer blocks', 'jankx'),
+            'option_name' => 'blogdescription',
         ],
         [
             'id' => 'enable_back_to_top',

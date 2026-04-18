@@ -34,9 +34,19 @@ class ThemeOptionsCSSGenerator
         // Colors
         'primary_color' => '--jankx-primary-color',
         'secondary_color' => '--jankx-secondary-color',
+        'link_color' => '--jankx-link-color',
+        'link_hover_color' => '--jankx-link-hover-color',
+
+        // Header & Footer
+        'header_background' => '--jankx-header-bg-color',
+        'header_text_color' => '--jankx-header-text-color',
+        'footer_background' => '--jankx-footer-bg-color',
+        'footer_text_color' => '--jankx-footer-text-color',
 
         // Layout
         'container_width' => '--jankx-container-width',
+        'sidebar_width' => '--jankx-sidebar-width',
+        'sidebar_position' => '--jankx-sidebar-position',
 
         // Typography
         'body_typography' => [
@@ -46,9 +56,17 @@ class ThemeOptionsCSSGenerator
             'line-height' => '--jankx-body-line-height',
             'color' => '--jankx-body-text-color',
         ],
+        'heading_typography' => [
+            'font-family' => '--jankx-heading-font-family',
+            'font-weight' => '--jankx-heading-font-weight',
+            'color' => '--jankx-heading-text-color',
+            'text-transform' => '--jankx-heading-transform',
+        ],
 
-        // Sidebar
-        'sidebar_position' => '--jankx-sidebar-position',
+        // Buttons
+        'button_bg_color' => '--jankx-button-bg-color',
+        'button_text_color' => '--jankx-button-text-color',
+        'button_border_radius' => '--jankx-button-border-radius',
     ];
 
     /**
@@ -57,17 +75,33 @@ class ThemeOptionsCSSGenerator
      * @var array
      */
     protected $defaults = [
-        'primary_color' => '#ff5722',
-        'secondary_color' => '#009688',
+        'primary_color' => '#3b82f6',
+        'secondary_color' => '#10b981',
+        'link_color' => '#3b82f6',
+        'link_hover_color' => '#2563eb',
+        'header_background' => '#ffffff',
+        'header_text_color' => '#1e293b',
+        'footer_background' => '#0f172a',
+        'footer_text_color' => '#f8fafc',
         'container_width' => '1200px',
+        'sidebar_width' => '300px',
+        'sidebar_position' => 'right',
         'body_typography' => [
-            'font-family' => 'Inter',
+            'font-family' => 'Inter, sans-serif',
             'font-size' => '16px',
             'font-weight' => '400',
             'line-height' => '1.6',
-            'color' => '#222222',
+            'color' => '#334155',
         ],
-        'sidebar_position' => 'right',
+        'heading_typography' => [
+            'font-family' => 'Montserrat, sans-serif',
+            'font-weight' => '700',
+            'color' => '#0f172a',
+            'text-transform' => 'none',
+        ],
+        'button_bg_color' => '#3b82f6',
+        'button_text_color' => '#ffffff',
+        'button_border_radius' => '8px',
     ];
 
     public function __construct(ThemeOptionsService $themeOptions)
@@ -167,42 +201,44 @@ class ThemeOptionsCSSGenerator
         $css = [];
         $css[] = ':root {';
 
-        // Generate color variables
-        $primaryColor = $this->getOption('primary_color', $this->defaults['primary_color']);
-        $css[] = sprintf('  %s: %s;', $this->cssVarMapping['primary_color'], $primaryColor);
+        // 1. Colors & Basic Variables
+        foreach (['primary_color', 'secondary_color', 'link_color', 'link_hover_color', 'header_background', 'header_text_color', 'footer_background', 'footer_text_color', 'button_bg_color', 'button_text_color'] as $colorKey) {
+            $value = $this->getOption($colorKey, $this->defaults[$colorKey]);
+            $css[] = sprintf('  %s: %s;', $this->cssVarMapping[$colorKey], $value);
 
-        $secondaryColor = $this->getOption('secondary_color', $this->defaults['secondary_color']);
-        $css[] = sprintf('  %s: %s;', $this->cssVarMapping['secondary_color'], $secondaryColor);
+            // Generate RGB variant for opacity support
+            $css[] = sprintf('  %s-rgb: %s;', $this->cssVarMapping[$colorKey], $this->hexToRgb($value));
+        }
 
-        // Generate layout variables
-        $containerWidth = $this->getOption('container_width', 1200);
-        // Ensure container_width has px unit
-        $containerWidth = is_numeric($containerWidth) ? $containerWidth . 'px' : $containerWidth;
-        $css[] = sprintf('  %s: %s;', $this->cssVarMapping['container_width'], $containerWidth);
+        // 2. Layout Variables
+        foreach (['container_width', 'sidebar_width'] as $layoutKey) {
+            $value = $this->getOption($layoutKey, $this->defaults[$layoutKey]);
+            $value = is_numeric($value) ? $value . 'px' : $value;
+            $css[] = sprintf('  %s: %s;', $this->cssVarMapping[$layoutKey], $value);
+        }
+        $css[] = sprintf('  %s: %s;', $this->cssVarMapping['sidebar_position'], $this->getOption('sidebar_position', $this->defaults['sidebar_position']));
 
-        // Generate typography variables
-        $bodyTypography = $this->getOption('body_typography', $this->defaults['body_typography']);
-
-        if (is_array($bodyTypography)) {
-            foreach ($this->cssVarMapping['body_typography'] as $key => $varName) {
-                $value = $bodyTypography[$key] ?? $this->defaults['body_typography'][$key];
-                if (!empty($value)) {
-                    $css[] = sprintf('  %s: %s;', $varName, $value);
+        // 3. Typography Variables
+        foreach (['body_typography', 'heading_typography'] as $typoKey) {
+            $typography = $this->getOption($typoKey, $this->defaults[$typoKey]);
+            if (is_array($typography)) {
+                foreach ($this->cssVarMapping[$typoKey] as $subKey => $varName) {
+                    $value = $typography[$subKey] ?? $this->defaults[$typoKey][$subKey] ?? '';
+                    if (!empty($value)) {
+                        $css[] = sprintf('  %s: %s;', $varName, $value);
+                    }
                 }
             }
         }
 
-        // Sidebar position
-        $sidebarPosition = $this->getOption('sidebar_position', $this->defaults['sidebar_position']);
-        $css[] = sprintf('  %s: %s;', $this->cssVarMapping['sidebar_position'], $sidebarPosition);
-
-        // Add utility variables derived from primary/secondary colors
-        $css[] = sprintf('  --jankx-primary-color-rgb: %s;', $this->hexToRgb($primaryColor));
-        $css[] = sprintf('  --jankx-secondary-color-rgb: %s;', $this->hexToRgb($secondaryColor));
+        // 4. Other Variables
+        $buttonRadius = $this->getOption('button_border_radius', $this->defaults['button_border_radius']);
+        $buttonRadius = is_numeric($buttonRadius) ? $buttonRadius . 'px' : $buttonRadius;
+        $css[] = sprintf('  %s: %s;', $this->cssVarMapping['button_border_radius'], $buttonRadius);
 
         $css[] = '}';
 
-        // Add body styles using the variables
+        // Global Styles
         $css[] = '';
         $css[] = 'body, .editor-styles-wrapper {';
         $css[] = '  font-family: var(--jankx-body-font-family, inherit);';
@@ -210,15 +246,43 @@ class ThemeOptionsCSSGenerator
         $css[] = '  font-weight: var(--jankx-body-font-weight, inherit);';
         $css[] = '  line-height: var(--jankx-body-line-height, inherit);';
         $css[] = '  color: var(--jankx-body-text-color, inherit);';
+        $css[] = '  background-color: var(--wp--preset--color--background, #ffffff);';
         $css[] = '}';
 
-        // Add container styles
-        $css[] = '';
+        $css[] = 'h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {';
+        $css[] = '  font-family: var(--jankx-heading-font-family, inherit);';
+        $css[] = '  font-weight: var(--jankx-heading-font-weight, 700);';
+        $css[] = '  color: var(--jankx-heading-text-color, inherit);';
+        $css[] = '  text-transform: var(--jankx-heading-transform, none);';
+        $css[] = '}';
+
+        $css[] = 'a { color: var(--jankx-link-color); text-decoration: none; transition: color 0.2s ease; }';
+        $css[] = 'a:hover { color: var(--jankx-link-hover-color); }';
+
         $css[] = '.jankx-container, .wp-block-group .alignfull > .wp-block-group__inner-container {';
         $css[] = '  max-width: var(--jankx-container-width, 1200px);';
         $css[] = '  margin-left: auto;';
         $css[] = '  margin-right: auto;';
+        $css[] = '  padding-left: 20px;';
+        $css[] = '  padding-right: 20px;';
         $css[] = '}';
+
+        $css[] = 'header.site-header { background-color: var(--jankx-header-bg-color); color: var(--jankx-header-text-color); }';
+        $css[] = 'footer.site-footer { background-color: var(--jankx-footer-bg-color); color: var(--jankx-footer-text-color); }';
+
+        $css[] = '.button, button, input[type="submit"], .wp-block-button__link {';
+        $css[] = '  background-color: var(--jankx-button-bg-color);';
+        $css[] = '  color: var(--jankx-button-text-color);';
+        $css[] = '  border-radius: var(--jankx-button-border-radius);';
+        $css[] = '  border: none;';
+        $css[] = '  padding: 10px 24px;';
+        $css[] = '  cursor: pointer;';
+        $css[] = '  display: inline-block;';
+        $css[] = '  text-align: center;';
+        $css[] = '  font-weight: 600;';
+        $css[] = '  transition: all 0.2s ease;';
+        $css[] = '}';
+        $css[] = '.button:hover, button:hover, input[type="submit"]:hover, .wp-block-button__link:hover { opacity: 0.9; transform: translateY(-1px); }';
 
         return implode("\n", $css);
     }
@@ -266,19 +330,23 @@ class ThemeOptionsCSSGenerator
      */
     public function getCSSVariables(): array
     {
-        $primaryColor = $this->getOption('primary_color', $this->defaults['primary_color']);
-        $secondaryColor = $this->getOption('secondary_color', $this->defaults['secondary_color']);
-        $containerWidth = $this->getOption('container_width', 1200);
-        $bodyTypography = $this->getOption('body_typography', $this->defaults['body_typography']);
-        $sidebarPosition = $this->getOption('sidebar_position', $this->defaults['sidebar_position']);
-
-        return [
-            'primaryColor' => $primaryColor,
-            'secondaryColor' => $secondaryColor,
-            'containerWidth' => is_numeric($containerWidth) ? $containerWidth . 'px' : $containerWidth,
-            'bodyTypography' => $bodyTypography,
-            'sidebarPosition' => $sidebarPosition,
+        $variables = [
             'cssVarPrefix' => '--jankx-',
         ];
+
+        foreach ($this->cssVarMapping as $optionKey => $varName) {
+            if (is_array($varName)) {
+                $variables[$optionKey] = $this->getOption($optionKey, $this->defaults[$optionKey] ?? []);
+            } else {
+                $value = $this->getOption($optionKey, $this->defaults[$optionKey] ?? '');
+                // Handle numeric values that need px
+                if (in_array($optionKey, ['container_width', 'sidebar_width', 'button_border_radius']) && is_numeric($value)) {
+                    $value .= 'px';
+                }
+                $variables[$optionKey] = $value;
+            }
+        }
+
+        return $variables;
     }
 }
