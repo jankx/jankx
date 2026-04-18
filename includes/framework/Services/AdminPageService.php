@@ -2116,7 +2116,7 @@ class AdminPageService
                             $lastUpdated = sprintf(__('%s ago', 'jankx'), human_time_diff(strtotime($ext['updated_at'])));
                         }
                     ?>
-                        <div class="extension-card-modern <?php echo $isPremium ? 'is-premium' : ''; ?>" data-slug="<?php echo esc_attr($slug); ?>">
+                        <div class="extension-card-modern <?php echo $isPremium ? 'is-premium' : ''; ?>" data-slug="<?php echo esc_attr($slug); ?>" data-installs="<?php echo (int)$installs; ?>" data-date="<?php echo esc_attr(strtotime($ext['updated_at'] ?? '0')); ?>" data-is-free="<?php echo $isPremium ? '0' : '1'; ?>">
                             <div class="card-body">
                                 <div class="extension-head">
                                         <div class="extension-icon">
@@ -2721,13 +2721,61 @@ class AdminPageService
                 });
             });
 
-            // Search functionality (simple client-side filter for demo)
-            $('#extension-search').on('input', function() {
-                var q = $(this).val().toLowerCase();
-                $('.extension-card-modern').each(function() {
+            // Apply both search and filter logic
+            function applyFiltersAndSort() {
+                var q = $('#extension-search').val().toLowerCase();
+                var activeFilter = $('.filter-tab.active').data('filter');
+                var $cards = $('.extension-card-modern');
+                var $grid = $('.jankx-extension-grid');
+
+                // 1. Filter
+                $cards.each(function() {
                     var text = $(this).text().toLowerCase();
-                    $(this).toggle(text.indexOf(q) > -1);
+                    var isFree = $(this).data('is-free') == 1;
+                    var matchSearch = q === '' || text.indexOf(q) > -1;
+                    var matchFilter = activeFilter === 'all' || activeFilter === 'popular' || activeFilter === 'newest' || 
+                                      (activeFilter === 'free' && isFree) || 
+                                      (activeFilter === 'premium' && !isFree);
+                    
+                    $(this).toggle(matchSearch && matchFilter);
                 });
+
+                // 2. Sort
+                var cardsArray = $cards.toArray();
+                if (activeFilter === 'popular') {
+                    cardsArray.sort(function(a, b) {
+                        return parseInt($(b).data('installs')) - parseInt($(a).data('installs'));
+                    });
+                } else if (activeFilter === 'newest') {
+                    cardsArray.sort(function(a, b) {
+                        return parseInt($(b).data('date')) - parseInt($(a).data('date'));
+                    });
+                } else {
+                    cardsArray.sort(function(a, b) {
+                        return parseInt($(a).data('index')) - parseInt($(b).data('index'));
+                    });
+                }
+
+                $.each(cardsArray, function(i, card) {
+                    $grid.append(card);
+                });
+            }
+
+            // Store original index for sorting
+            $('.extension-card-modern').each(function(index) {
+                $(this).attr('data-index', index);
+            });
+
+            // Search functionality
+            $('#extension-search').on('input', function() {
+                applyFiltersAndSort();
+            });
+
+            // Filter Tabs functionality
+            $('.filter-tab').on('click', function() {
+                $('.filter-tab').removeClass('active');
+                $(this).addClass('active');
+                applyFiltersAndSort();
             });
 
             // Modal Functionality
