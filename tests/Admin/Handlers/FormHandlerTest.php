@@ -124,6 +124,86 @@ class FormHandlerTest extends TestCase
         $this->assertStringContainsString('Debug log cleared', $output);
     }
 
+    public function testHandleRequestsCallsActionHandlerForClearImageCache()
+    {
+        $_SERVER['REQUEST_METHOD'] = 'POST';
+        $_POST = [
+            'jankx_action' => 'clear_image_cache',
+            'jankx_utilities_nonce' => 'valid_nonce'
+        ];
+
+        $GLOBALS['mock_wp_verify_nonce'] = true;
+        $GLOBALS['mock_current_user_can'] = true;
+
+        // Mock wpdb
+        global $wpdb;
+        $queryCalled = false;
+        $wpdb = new class(&$queryCalled) {
+            public $options = 'wp_options';
+            private $queryCalledRef;
+            
+            public function __construct(&$queryCalled) {
+                $this->queryCalledRef = &$queryCalled;
+            }
+            
+            public function query($sql) {
+                if (strpos($sql, 'DELETE FROM') !== false) {
+                    $this->queryCalledRef = true;
+                }
+            }
+        };
+
+        $this->formHandler->handleRequests();
+
+        $this->assertTrue($queryCalled, 'wpdb->query should be called to delete transients');
+
+        $this->assertNotEmpty($GLOBALS['admin_notices'] ?? []);
+        $callback = end($GLOBALS['admin_notices']);
+        $output = $this->captureCallbackOutput($callback);
+        $this->assertStringContainsString('cleared successfully', $output);
+    }
+
+    public function testHandleRequestsCallsActionHandlerForExportSettings()
+    {
+        $_SERVER['REQUEST_METHOD'] = 'POST';
+        $_POST = [
+            'jankx_action' => 'export_settings',
+            'jankx_utilities_nonce' => 'valid_nonce'
+        ];
+
+        $GLOBALS['mock_wp_verify_nonce'] = true;
+        $GLOBALS['mock_current_user_can'] = true;
+
+        global $wpdb;
+        $wpdb = new class {
+            public $options = 'wp_options';
+            public function get_results($sql) {
+                $obj1 = new \stdClass();
+                $obj1->option_name = 'jankx_setting1';
+                $obj1->option_value = 'value1';
+                
+                $obj2 = new \stdClass();
+                $obj2->option_name = 'jankx_setting2';
+                $obj2->option_value = serialize(['arr' => 1]);
+                return [$obj1, $obj2];
+            }
+        };
+
+        // Use partial mock to prevent exit
+        $formHandlerMock = $this->getMockBuilder(\Jankx\Admin\Handlers\FormHandler::class)
+            ->setConstructorArgs([$this->app])
+            ->onlyMethods(['terminate'])
+            ->getMock();
+
+        // Capture output
+        ob_start();
+        $formHandlerMock->handleRequests();
+        $output = ob_get_clean();
+
+        $this->assertStringContainsString('"jankx_setting1":"value1"', $output);
+        $this->assertStringContainsString('"jankx_setting2":{"arr":1}', $output);
+    }
+
     public function testHandleRequestsCallsActionHandlerForActivateLicense()
     {
         $_SERVER['REQUEST_METHOD'] = 'POST';
@@ -319,6 +399,38 @@ class FormHandlerTest extends TestCase
         $this->expectExceptionMessage('An error occurred');
 
         $this->formHandler->handleRequests();
+    }
+
+    public function testHandleBulkExtensions()
+    {
+        $_SERVER['REQUEST_METHOD'] = 'POST';
+        $_POST = [
+            'jankx_action' => 'bulk_extensions',
+            'jankx_bulk_nonce' => 'valid_nonce',
+            'action' => 'activate-selected',
+            'checked' => ['extension-1', 'extension-2']
+        ];
+
+        $GLOBALS['mock_wp_verify_nonce'] = true;
+        $GLOBALS['mock_current_user_can'] = true;
+
+        // Mock extension service
+        $mockExtensionService = Mockery::mock('ExtensionService');
+        $mockExtensionService->shouldReceive('enableExtension')->twice()->andReturn(true);
+
+        $this->app->instance('extension.service', $mockExtensionService);
+
+        // Mock terminate and redirect
+        $formHandlerMock = $this->getMockBuilder(\Jankx\Admin\Handlers\FormHandler::class)
+            ->setConstructorArgs([$this->app])
+            ->onlyMethods(['terminate', 'terminateWithRedirect'])
+            ->getMock();
+
+        $formHandlerMock->expects($this->once())
+            ->method('terminateWithRedirect')
+            ->with(2, 0, 'activate-selected');
+
+        $formHandlerMock->handleRequests();
     }
 
     public function testHandleRequestsCatchesExceptions()

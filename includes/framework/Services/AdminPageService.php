@@ -1461,18 +1461,26 @@ class AdminPageService
                                         <strong><?php _e('Clear Image Cache', 'jankx'); ?></strong>
                                         <span><?php _e('Remove transient image metadata.', 'jankx'); ?></span>
                                     </div>
-                                    <button class="action-btn">
-                                        <span class="dashicons dashicons-trash"></span>
-                                    </button>
+                                    <form method="post" action="" style="display:inline; margin:0;">
+                                        <?php wp_nonce_field('jankx_utilities_actions', 'jankx_utilities_nonce'); ?>
+                                        <input type="hidden" name="jankx_action" value="clear_image_cache">
+                                        <button type="submit" class="action-btn" onclick="return confirm('<?php esc_attr_e('Are you sure you want to clear the image cache?', 'jankx'); ?>');">
+                                            <span class="dashicons dashicons-trash"></span>
+                                        </button>
+                                    </form>
                                 </li>
                                 <li>
                                     <div class="action-info">
                                         <strong><?php _e('Export Settings', 'jankx'); ?></strong>
                                         <span><?php _e('Download your configuration.', 'jankx'); ?></span>
                                     </div>
-                                    <button class="action-btn">
-                                        <span class="dashicons dashicons-download"></span>
-                                    </button>
+                                    <form method="post" action="" style="display:inline; margin:0;">
+                                        <?php wp_nonce_field('jankx_utilities_actions', 'jankx_utilities_nonce'); ?>
+                                        <input type="hidden" name="jankx_action" value="export_settings">
+                                        <button type="submit" class="action-btn">
+                                            <span class="dashicons dashicons-download"></span>
+                                        </button>
+                                    </form>
                                 </li>
                             </ul>
                         </div>
@@ -1692,6 +1700,32 @@ class AdminPageService
         ?>
         <div class="jankx-extensions-page">
             <div id="jankx-extension-notice" style="display:none; margin: 10px 0 15px;" class="notice"></div>
+            <?php
+            if (isset($_GET['jankx_bulk_success'])) {
+                $success = (int)$_GET['jankx_bulk_success'];
+                $error   = (int)$_GET['jankx_bulk_error'];
+                $action  = sanitize_text_field($_GET['jankx_bulk_action']);
+                
+                $class = $error === 0 ? 'notice-success' : ($success > 0 ? 'notice-warning' : 'notice-error');
+                $verb = '';
+                switch ($action) {
+                    case 'activate-selected': $verb = __('activated', 'jankx'); break;
+                    case 'deactivate-selected': $verb = __('deactivated', 'jankx'); break;
+                    case 'delete-selected': $verb = __('deleted', 'jankx'); break;
+                }
+                
+                printf(
+                    '<div class="notice %s is-dismissible"><p>%s</p></div>',
+                    esc_attr($class),
+                    sprintf(
+                        __('Bulk action completed: %d extensions %s, %d failed.', 'jankx'),
+                        $success,
+                        $verb,
+                        $error
+                    )
+                );
+            }
+            ?>
 
             <ul class="subsubsub">
                 <li class="all"><a href="<?php echo admin_url('admin.php?page=jankx-extensions'); ?>" class="<?php echo $status == 'all' ? 'current' : ''; ?>"><?php _e('All', 'jankx'); ?> <span class="count">(<?php echo $total; ?>)</span></a> |</li>
@@ -1713,13 +1747,31 @@ class AdminPageService
                 </li>
             </ul>
 
-            <table class="wp-list-table widefat plugins">
-                <thead>
-                    <tr>
-                        <th scope="col" id="name" class="manage-column column-name column-primary"><?php _e('Extension', 'jankx'); ?></th>
-                        <th scope="col" id="description" class="manage-column column-description"><?php _e('Description', 'jankx'); ?></th>
-                    </tr>
-                </thead>
+            <form method="post" action="">
+                <?php wp_nonce_field('jankx_bulk_extensions', 'jankx_bulk_nonce'); ?>
+                <input type="hidden" name="jankx_action" value="bulk_extensions">
+
+                <div class="tablenav top">
+                    <div class="alignleft actions bulkactions">
+                        <label for="bulk-action-selector-top" class="screen-reader-text"><?php _e('Select bulk action'); ?></label>
+                        <select name="action" id="bulk-action-selector-top">
+                            <option value="-1"><?php _e('Bulk actions'); ?></option>
+                            <option value="activate-selected"><?php _e('Activate'); ?></option>
+                            <option value="deactivate-selected"><?php _e('Deactivate'); ?></option>
+                            <option value="delete-selected"><?php _e('Delete'); ?></option>
+                        </select>
+                        <input type="submit" id="doaction" class="button action" value="<?php esc_attr_e('Apply'); ?>">
+                    </div>
+                </div>
+
+                <table class="wp-list-table widefat plugins">
+                    <thead>
+                        <tr>
+                            <td id="cb" class="manage-column column-cb check-column"><label class="screen-reader-text" for="cb-select-all-1"><?php _e('Select All'); ?></label><input id="cb-select-all-1" type="checkbox"></td>
+                            <th scope="col" id="name" class="manage-column column-name column-primary"><?php _e('Extension', 'jankx'); ?></th>
+                            <th scope="col" id="description" class="manage-column column-description"><?php _e('Description', 'jankx'); ?></th>
+                        </tr>
+                    </thead>
 
                 <tbody id="the-list">
                     <?php if (empty($extensions) && empty($disabledManifests)): ?>
@@ -1834,11 +1886,26 @@ class AdminPageService
 
                 <tfoot>
                     <tr>
+                        <td class="manage-column column-cb check-column"><label class="screen-reader-text" for="cb-select-all-2"><?php _e('Select All'); ?></label><input id="cb-select-all-2" type="checkbox"></td>
                         <th scope="col" class="manage-column column-name column-primary"><?php _e('Extension', 'jankx'); ?></th>
                         <th scope="col" class="manage-column column-description"><?php _e('Description', 'jankx'); ?></th>
                     </tr>
                 </tfoot>
             </table>
+
+            <div class="tablenav bottom">
+                <div class="alignleft actions bulkactions">
+                    <label for="bulk-action-selector-bottom" class="screen-reader-text"><?php _e('Select bulk action'); ?></label>
+                    <select name="action2" id="bulk-action-selector-bottom">
+                        <option value="-1"><?php _e('Bulk actions'); ?></option>
+                        <option value="activate-selected"><?php _e('Activate'); ?></option>
+                        <option value="deactivate-selected"><?php _e('Deactivate'); ?></option>
+                        <option value="delete-selected"><?php _e('Delete'); ?></option>
+                    </select>
+                    <input type="submit" id="doaction2" class="button action" value="<?php esc_attr_e('Apply'); ?>">
+                </div>
+            </div>
+            </form>
         </div>
 
         <style>
@@ -1935,6 +2002,13 @@ class AdminPageService
                     }
                 });
             });
+
+            // Bulk select functionality
+            $('#cb-select-all-1, #cb-select-all-2').on('change', function() {
+                var checked = $(this).prop('checked');
+                $('input[name="checked[]"]').prop('checked', checked);
+                $('#cb-select-all-1, #cb-select-all-2').prop('checked', checked);
+            });
         });
         </script>
         <?php
@@ -1966,6 +2040,10 @@ class AdminPageService
         }
         ?>
         <tr class="<?php echo $statusClass; ?>" data-slug="<?php echo esc_attr($name); ?>">
+            <th scope="row" class="check-column">
+                <label class="screen-reader-text" for="checkbox_<?php echo md5($name); ?>"><?php printf(__('Select %s'), $info['name'] ?? $name); ?></label>
+                <input type="checkbox" name="checked[]" value="<?php echo esc_attr($name); ?>" id="checkbox_<?php echo md5($name); ?>">
+            </th>
             <td class="plugin-title column-primary">
                 <div style="display: flex; align-items: center; gap: 8px;">
                     <strong><?php echo esc_html($info['name'] ?? $name); ?></strong>

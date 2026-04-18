@@ -23,7 +23,7 @@ class AdminPageServiceTest extends TestCase
         // If we are in unit test, add_action might be mocked or we can use Brain\Monkey
         
         // Ensure WordPress functions are mocked if not already
-        if (!function_exists('add_action')) {
+        if (!function_exists('wp_parse_args')) {
             require_once __DIR__ . '/../bootstrap-mocks.php';
         }
         

@@ -59,6 +59,14 @@ class FormHandler
                 case 'clear_debug_log':
                     $this->handleClearDebugLog($data);
                     break;
+                    
+                case 'clear_image_cache':
+                    $this->handleClearImageCache($data);
+                    break;
+                    
+                case 'export_settings':
+                    $this->handleExportSettings($data);
+                    break;
 
                 case 'activate_license':
                     $this->handleActivateLicense($data);
@@ -70,6 +78,10 @@ class FormHandler
 
                 case 'disconnect_membership':
                     $this->handleDisconnectMembership($data);
+                    break;
+                
+                case 'bulk_extensions':
+                    $this->handleBulkExtensions($data);
                     break;
                 
                 // Allow other components to add their own handlers via action
@@ -265,5 +277,165 @@ class FormHandler
                 esc_html__('Performance settings saved.', 'jankx')
             );
         });
+    }
+
+    /**
+     * Handle clearing image cache (transients)
+     */
+    protected function handleClearImageCache(array $data): void
+    {
+        if (!wp_verify_nonce($data['jankx_utilities_nonce'] ?? '', 'jankx_utilities_actions')) {
+            wp_die(__('Security check failed', 'jankx'));
+        }
+
+        if (!current_user_can('manage_options')) {
+            wp_die(__('You do not have permission to perform this action.', 'jankx'));
+        }
+
+        global $wpdb;
+        // Clear all transients related to jankx images or just all transients if necessary.
+        // Let's clear transients that have 'jankx' in name to be safe
+        $wpdb->query("DELETE FROM {$wpdb->options} WHERE option_name LIKE '\_transient\_jankx\_%' OR option_name LIKE '\_transient\_timeout\_jankx\_%'");
+
+        add_action('admin_notices', function () {
+            printf(
+                '<div class="notice notice-success is-dismissible"><p>%s</p></div>',
+                esc_html__('Image cache and Jankx transients cleared successfully.', 'jankx')
+            );
+        });
+    }
+
+    /**
+     * Handle exporting settings
+     */
+    protected function handleExportSettings(array $data): void
+    {
+        if (!wp_verify_nonce($data['jankx_utilities_nonce'] ?? '', 'jankx_utilities_actions')) {
+            wp_die(__('Security check failed', 'jankx'));
+        }
+
+        if (!current_user_can('manage_options')) {
+            wp_die(__('You do not have permission to perform this action.', 'jankx'));
+        }
+
+        global $wpdb;
+        $options = $wpdb->get_results("SELECT option_name, option_value FROM {$wpdb->options} WHERE option_name LIKE 'jankx\_%'");
+        
+        $export_data = [];
+        foreach ($options as $opt) {
+            $export_data[$opt->option_name] = maybe_unserialize($opt->option_value);
+        }
+
+        $json = wp_json_encode($export_data);
+
+        header('Content-Description: File Transfer');
+        header('Content-Type: application/json');
+        header('Content-Disposition: attachment; filename="jankx-settings-export-' . date('Y-m-d') . '.json"');
+        header('Expires: 0');
+        header('Cache-Control: must-revalidate');
+        header('Pragma: public');
+        header('Content-Length: ' . strlen($json));
+        
+        echo $json;
+        $this->terminate();
+    }
+
+    /**
+     * Handle bulk actions for extensions
+     */
+    protected function handleBulkExtensions(array $data): void
+    {
+        if (!wp_verify_nonce($data['jankx_bulk_nonce'] ?? '', 'jankx_bulk_extensions')) {
+            wp_die(__('Security check failed', 'jankx'));
+        }
+    
+        if (!current_user_can('manage_options')) {
+            wp_die(__('You do not have permission to perform this action.', 'jankx'));
+        }
+    
+        $action = $data['action'] !== '-1' ? $data['action'] : ($data['action2'] ?? '-1');
+        $extensions = $data['checked'] ?? [];
+    
+        if ($action === '-1' || empty($extensions)) {
+            return;
+        }
+    
+        $extensionService = $this->app->make('extension.service');
+        $successCount = 0;
+        $errorCount = 0;
+    
+        foreach ($extensions as $extensionName) {
+            $extensionName = sanitize_text_field($extensionName);
+            $result = false;
+    
+            switch ($action) {
+                case 'activate-selected':
+                    $result = $extensionService->enableExtension($extensionName);
+                    break;
+                case 'deactivate-selected':
+                    $result = $extensionService->disableExtension($extensionName);
+                    break;
+                case 'delete-selected':
+                    // Deletion logic similar to ExtensionService::handleDeleteExtension
+                    $extensionManager = $this->app->make('extension.manager');
+                    $extension = $extensionManager->get_extension($extensionName);
+                    $path = null;
+                    if ($extension) {
+                        $path = $extension->get_extension_path();
+                    } else {
+                        try {
+                            $themeExtManager = $this->app->make('theme_extension.manager');
+                            $disabled = $themeExtManager->getDisabledManifests();
+                            if (isset($disabled[$extensionName])) {
+                                $path = $disabled[$extensionName]['dir'];
+                            }
+                        } catch (\Exception $e) {}
+                    }
+    
+                    if ($path && is_dir($path) && strpos($path, '/extensions/') !== false) {
+                        require_once ABSPATH . 'wp-admin/includes/file.php';
+                        WP_Filesystem();
+                        global $wp_filesystem;
+                        if ($wp_filesystem->delete($path, true)) {
+                            delete_transient('jankx_extensions_dirs_' . get_stylesheet());
+                            $result = true;
+                        }
+                    }
+                    break;
+            }
+    
+            if ($result) {
+                $successCount++;
+            } else {
+                $errorCount++;
+            }
+        }
+    
+        $this->terminateWithRedirect($successCount, $errorCount, $action);
+    }
+
+    /**
+     * Terminate with redirect to show results
+     */
+    protected function terminateWithRedirect(int $success, int $error, string $action): void
+    {
+        $url = add_query_arg([
+            'jankx_bulk_success' => $success,
+            'jankx_bulk_error'   => $error,
+            'jankx_bulk_action'  => $action
+        ], wp_get_referer() ?: admin_url('admin.php?page=jankx-extensions'));
+
+        wp_safe_redirect($url);
+        $this->terminate();
+    }
+
+    /**
+     * Terminate execution (wrapped for testability)
+     * 
+     * @return void
+     */
+    protected function terminate(): void
+    {
+        exit;
     }
 }
