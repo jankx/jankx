@@ -203,7 +203,7 @@ class PageRenderer
     }
 
     // Compatible with old WordPress versions.
-    public function legacyRender(Engine $engine)
+    public function legacyRender($engine = null)
     {
         /**
          * Get site header

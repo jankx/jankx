@@ -207,7 +207,11 @@ abstract class AbstractSeeder implements SeederInterface
     protected function log(string $message): void
     {
         if ($this->verbose) {
-            WP_CLI::log($message);
+            if (class_exists('WP_CLI')) {
+                WP_CLI::log($message);
+            } else {
+                error_log($message);
+            }
         }
     }
 
@@ -219,6 +223,10 @@ abstract class AbstractSeeder implements SeederInterface
      */
     protected function warn(string $message): void
     {
-        WP_CLI::warning($message);
+        if (class_exists('WP_CLI')) {
+            WP_CLI::warning($message);
+        } else {
+            error_log('Warning: ' . $message);
+        }
     }
 }
