@@ -26,9 +26,6 @@ class AdminPageService
      */
     public function enqueueDashboardAssets($hook)
     {
-        if ('index.php' === $hook) {
-            wp_enqueue_style('jankx-dashboard-fonts', 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap', [], null);
-        }
     }
 
     /**
@@ -123,7 +120,6 @@ class AdminPageService
                 #jankx_dashboard_widget .inside { padding: 0; margin-top: 0; }
                 .jankx-dashboard-widget-content { 
                     padding: 15px; 
-                    font-family: 'Inter', sans-serif;
                 }
                 
                 /* News Grid & Cards for Widget */
@@ -1104,10 +1100,7 @@ class AdminPageService
     {
         ?>
         <style>
-            @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-
             .jankx-admin-page-container {
-                font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
                 margin: 20px 20px 20px 0;
                 color: #1e293b;
             }
@@ -1849,7 +1842,7 @@ class AdminPageService
         </div>
 
         <style>
-            .wp-list-table .plugin-title strong { display: block; margin-bottom: 0.2em; font-size: 14px; }
+            .wp-list-table .plugin-title strong { display: block; margin-bottom: 0.2em; font-weight: 400;}
             .toggle-extension.loading { opacity:0.6; cursor:not-allowed; }
             .jankx-extensions-page .wp-list-table.plugins td { vertical-align: top; }
         </style>
@@ -2238,10 +2231,7 @@ class AdminPageService
         </div>
 
         <style>
-            @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-
             .jankx-marketplace-modern {
-                font-family: 'Inter', sans-serif;
                 color: #2c3338;
                 padding: 40px;
                 background: #f8fafc;

@@ -240,7 +240,9 @@ class ThemeOptionsCSSGenerator
 
         // Global Styles
         $css[] = '';
-        $css[] = 'body, .editor-styles-wrapper {';
+        
+        $bodySelector = is_admin() ? '.editor-styles-wrapper' : 'body, .editor-styles-wrapper';
+        $css[] = $bodySelector . ' {';
         $css[] = '  font-family: var(--jankx-body-font-family, inherit);';
         $css[] = '  font-size: var(--jankx-body-font-size, inherit);';
         $css[] = '  font-weight: var(--jankx-body-font-weight, inherit);';
@@ -249,40 +251,42 @@ class ThemeOptionsCSSGenerator
         $css[] = '  background-color: var(--wp--preset--color--background, #ffffff);';
         $css[] = '}';
 
-        $css[] = 'h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {';
-        $css[] = '  font-family: var(--jankx-heading-font-family, inherit);';
-        $css[] = '  font-weight: var(--jankx-heading-font-weight, 700);';
-        $css[] = '  color: var(--jankx-heading-text-color, inherit);';
-        $css[] = '  text-transform: var(--jankx-heading-transform, none);';
-        $css[] = '}';
+        if (!is_admin()) {
+            $css[] = 'h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {';
+            $css[] = '  font-family: var(--jankx-heading-font-family, inherit);';
+            $css[] = '  font-weight: var(--jankx-heading-font-weight, 700);';
+            $css[] = '  color: var(--jankx-heading-text-color, inherit);';
+            $css[] = '  text-transform: var(--jankx-heading-transform, none);';
+            $css[] = '}';
 
-        $css[] = 'a { color: var(--jankx-link-color); text-decoration: none; transition: color 0.2s ease; }';
-        $css[] = 'a:hover { color: var(--jankx-link-hover-color); }';
+            $css[] = 'a { color: var(--jankx-link-color); text-decoration: none; transition: color 0.2s ease; }';
+            $css[] = 'a:hover { color: var(--jankx-link-hover-color); }';
 
-        $css[] = '.jankx-container, .wp-block-group .alignfull > .wp-block-group__inner-container {';
-        $css[] = '  max-width: var(--jankx-container-width, 1200px);';
-        $css[] = '  margin-left: auto;';
-        $css[] = '  margin-right: auto;';
-        $css[] = '  padding-left: 20px;';
-        $css[] = '  padding-right: 20px;';
-        $css[] = '}';
+            $css[] = '.jankx-container, .wp-block-group .alignfull > .wp-block-group__inner-container {';
+            $css[] = '  max-width: var(--jankx-container-width, 1200px);';
+            $css[] = '  margin-left: auto;';
+            $css[] = '  margin-right: auto;';
+            $css[] = '  padding-left: 20px;';
+            $css[] = '  padding-right: 20px;';
+            $css[] = '}';
 
-        $css[] = 'header.site-header { background-color: var(--jankx-header-bg-color); color: var(--jankx-header-text-color); }';
-        $css[] = 'footer.site-footer { background-color: var(--jankx-footer-bg-color); color: var(--jankx-footer-text-color); }';
+            $css[] = 'header.site-header { background-color: var(--jankx-header-bg-color); color: var(--jankx-header-text-color); }';
+            $css[] = 'footer.site-footer { background-color: var(--jankx-footer-bg-color); color: var(--jankx-footer-text-color); }';
 
-        $css[] = '.button, button, input[type="submit"], .wp-block-button__link {';
-        $css[] = '  background-color: var(--jankx-button-bg-color);';
-        $css[] = '  color: var(--jankx-button-text-color);';
-        $css[] = '  border-radius: var(--jankx-button-border-radius);';
-        $css[] = '  border: none;';
-        $css[] = '  padding: 10px 24px;';
-        $css[] = '  cursor: pointer;';
-        $css[] = '  display: inline-block;';
-        $css[] = '  text-align: center;';
-        $css[] = '  font-weight: 600;';
-        $css[] = '  transition: all 0.2s ease;';
-        $css[] = '}';
-        $css[] = '.button:hover, button:hover, input[type="submit"]:hover, .wp-block-button__link:hover { opacity: 0.9; transform: translateY(-1px); }';
+            $css[] = '.button, button, input[type="submit"], .wp-block-button__link {';
+            $css[] = '  background-color: var(--jankx-button-bg-color);';
+            $css[] = '  color: var(--jankx-button-text-color);';
+            $css[] = '  border-radius: var(--jankx-button-border-radius);';
+            $css[] = '  border: none;';
+            $css[] = '  padding: 10px 24px;';
+            $css[] = '  cursor: pointer;';
+            $css[] = '  display: inline-block;';
+            $css[] = '  text-align: center;';
+            $css[] = '  font-weight: 600;';
+            $css[] = '  transition: all 0.2s ease;';
+            $css[] = '}';
+            $css[] = '.button:hover, button:hover, input[type="submit"]:hover, .wp-block-button__link:hover { opacity: 0.9; transform: translateY(-1px); }';
+        }
 
         return implode("\n", $css);
     }
