@@ -84,7 +84,7 @@ class DynamicDataTemplateBlock extends Block
         $presets = $manager->getForJs();
         wp_add_inline_script(
             'wp-block-editor',
-            'window.jankxContentLayoutPresets = ' . wp_json_encode($presets) . ';',
+            'window.jankxContentLayoutPresets = ' . wp_json_encode($presets, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP) . ';',
             'before'
         );
 

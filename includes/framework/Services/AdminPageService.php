@@ -353,7 +353,7 @@ class AdminPageService
             'styles' => []
         ];
 
-        $page = wp_parse_args($pageData, $defaults);
+        $page = \wp_parse_args($pageData, $defaults);
 
         if (empty($page['id']) || empty($page['title'])) {
             throw new \InvalidArgumentException('Page ID and title are required');

@@ -373,7 +373,7 @@ class GutenbergControlsIntegration
         if (file_exists($editorScript)) {
             wp_enqueue_script(
                 'jankx-gutenberg-controls',
-                get_template_directory_uri() . '/vendor/jankx/gutenberg-controls/assets/build/editor.js',
+                $this->getAssetUrl('assets/build/editor.js'),
                 [
                     'wp-blocks',
                     'wp-element',
@@ -393,7 +393,7 @@ class GutenbergControlsIntegration
         if (file_exists($editorStyle)) {
             wp_enqueue_style(
                 'jankx-gutenberg-controls-editor',
-                get_template_directory_uri() . '/vendor/jankx/gutenberg-controls/assets/build/editor.css',
+                $this->getAssetUrl('assets/build/editor.css'),
                 [],
                 filemtime($editorStyle)
             );
@@ -458,7 +458,7 @@ class GutenbergControlsIntegration
         if (file_exists($cssFile)) {
             wp_enqueue_style(
                 'jankx-gutenberg-controls-frontend',
-                get_template_directory_uri() . '/vendor/jankx/gutenberg-controls/assets/build/frontend.css',
+                $this->getAssetUrl('assets/build/frontend.css'),
                 [],
                 filemtime($cssFile)
             );
@@ -696,6 +696,14 @@ class GutenbergControlsIntegration
         }
 
         return sprintf('rgba(%d, %d, %d, %s)', $r, $g, $b, $alpha);
+    }
+    /**
+     * Get asset URL for the gutenberg-controls package
+     */
+    protected function getAssetUrl(string $path): string
+    {
+        $vendorUrl = get_template_directory_uri() . '/vendor/jankx/gutenberg-controls';
+        return $vendorUrl . '/' . ltrim($path, '/');
     }
 }
 
