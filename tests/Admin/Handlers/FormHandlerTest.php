@@ -138,7 +138,7 @@ class FormHandlerTest extends TestCase
         // Mock wpdb
         global $wpdb;
         $queryCalled = false;
-        $wpdb = new class(&$queryCalled) {
+        $wpdb = new class($queryCalled) {
             public $options = 'wp_options';
             private $queryCalledRef;
             
