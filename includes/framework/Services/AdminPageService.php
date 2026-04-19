@@ -17,8 +17,8 @@ class AdminPageService
         $this->registerDefaultPages();
         $this->registerShortcodes();
 
-        add_action('wp_dashboard_setup', [$this, 'registerDashboardWidgets'], 5);
-        add_action('admin_enqueue_scripts', [$this, 'enqueueDashboardAssets']);
+        \add_action('wp_dashboard_setup', [$this, 'registerDashboardWidgets'], 5);
+        \add_action('admin_enqueue_scripts', [$this, 'enqueueDashboardAssets']);
     }
 
     /**
@@ -37,16 +37,16 @@ class AdminPageService
         $isActivated = $license->isActivated();
 
         if (!$isActivated) {
-            wp_add_dashboard_widget(
+            \wp_add_dashboard_widget(
                 'jankx_license_widget',
-                __('JANKX PRO Activation Required', 'jankx'),
+                \__('JANKX PRO Activation Required', 'jankx'),
                 [$this, 'renderLicenseWidget']
             );
         }
 
-        wp_add_dashboard_widget(
+        \wp_add_dashboard_widget(
             'jankx_dashboard_widget',
-            __('JANKX PRO News & Status', 'jankx'),
+            \__('JANKX PRO News & Status', 'jankx'),
             [$this, 'renderMainDashboardWidget']
         );
 
@@ -79,13 +79,13 @@ class AdminPageService
             <div style="display: flex; align-items: flex-start; gap: 12px; margin-bottom: 12px;">
                 <span class="dashicons dashicons-shield-plugins" style="color: #ef4444; font-size: 24px; width: 24px; height: 24px;"></span>
                 <div>
-                    <h4 style="margin: 0 0 5px 0; font-size: 15px; font-weight: 700; color: #1e293b;"><?php _e('Activate JANKX PRO', 'jankx'); ?></h4>
-                    <p style="margin: 0; font-size: 13px; color: #64748b; line-height: 1.5;"><?php _e('Activate JANKX PRO to receive automatic updates, access the premium extension repository and receive technical support from the development team.', 'jankx'); ?></p>
+                    <h4 style="margin: 0 0 5px 0; font-size: 15px; font-weight: 700; color: #1e293b;"><?php \_e('Activate JANKX PRO', 'jankx'); ?></h4>
+                    <p style="margin: 0; font-size: 13px; color: #64748b; line-height: 1.5;"><?php \_e('Activate JANKX PRO to receive automatic updates, access the premium extension repository and receive technical support from the development team.', 'jankx'); ?></p>
                 </div>
             </div>
             <div style="display: flex; gap: 10px;">
-                <a href="<?php echo admin_url('admin.php?page=jankx-license'); ?>" class="button button-primary" style="background: #3b82f6; border: none; border-radius: 8px; font-weight: 600;"><?php _e('Activate Now', 'jankx'); ?></a>
-                <a href="https://optilarity.top" target="_blank" class="button" style="border-radius: 8px;"><?php _e('Buy License', 'jankx'); ?></a>
+                <a href="<?php echo \admin_url('admin.php?page=jankx-license'); ?>" class="button button-primary" style="background: #3b82f6; border: none; border-radius: 8px; font-weight: 600;"><?php \_e('Activate Now', 'jankx'); ?></a>
+                <a href="https://optilarity.top" target="_blank" class="button" style="border-radius: 8px;"><?php \_e('Buy License', 'jankx'); ?></a>
             </div>
         </div>
         <?php
@@ -101,19 +101,19 @@ class AdminPageService
         <div class="jankx-dashboard-widget-content">
             <div class="jankx-widget-header" style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid #eee;">
                 <span class="dashicons dashicons-art" style="color: #3b82f6;"></span>
-                <strong><?php printf(__('JANKX PRO v%s', 'jankx'), esc_html($version)); ?></strong>
-                <span style="margin-left: auto; font-size: 11px; background: #dcfce7; color: #166534; padding: 2px 8px; border-radius: 10px;"><?php _e('Operational', 'jankx'); ?></span>
+                <strong><?php \printf(\__('JANKX PRO v%s', 'jankx'), \esc_html($version)); ?></strong>
+                <span style="margin-left: auto; font-size: 11px; background: #dcfce7; color: #166534; padding: 2px 8px; border-radius: 10px;"><?php \_e('Operational', 'jankx'); ?></span>
             </div>
             
-            <p style="font-size: 13px; color: #64748b;"><?php _e('Welcome back! Here are the latest updates from Jankx Portal:', 'jankx'); ?></p>
+            <p style="font-size: 13px; color: #64748b;"><?php \_e('Welcome back! Here are the latest updates from Jankx Portal:', 'jankx'); ?></p>
             
             <div class="jankx-widget-news-wrapper" style="margin: 15px 0;">
                 <?php $this->renderNewsWidget(3); ?>
             </div>
 
             <div class="jankx-widget-footer" style="padding-top: 10px; border-top: 1px solid #eee; display: flex; gap: 15px;">
-                <a href="<?php echo admin_url('admin.php?page=jankx-dashboard'); ?>" class="button button-primary"><?php _e('Jankx Dashboard', 'jankx'); ?></a>
-                <a href="<?php echo admin_url('admin.php?page=jankx-theme-options'); ?>" class="button"><?php _e('Theme Options', 'jankx'); ?></a>
+                <a href="<?php echo \admin_url('admin.php?page=jankx-dashboard'); ?>" class="button button-primary"><?php \_e('Jankx Dashboard', 'jankx'); ?></a>
+                <a href="<?php echo \admin_url('admin.php?page=jankx-theme-options'); ?>" class="button"><?php \_e('Theme Options', 'jankx'); ?></a>
             </div>
 
             <style>
@@ -157,15 +157,15 @@ class AdminPageService
      */
     protected function registerShortcodes()
     {
-        add_shortcode('jankx_news', function ($atts) {
-            $atts = shortcode_atts([
+        \add_shortcode('jankx_news', function ($atts) {
+            $atts = \shortcode_atts([
                 'limit' => 5,
                 'type'  => '',
             ], $atts);
 
-            ob_start();
+            \ob_start();
             $this->renderNewsWidget((int)$atts['limit'], $atts['type']);
-            return ob_get_clean();
+            return \ob_get_clean();
         });
     }
 
@@ -174,28 +174,28 @@ class AdminPageService
      */
     protected function getPortalNews($limit = 6, $type = '')
     {
-        $cache_key = 'jankx_portal_news_v1_' . md5($limit . $type);
-        $news_data = get_transient($cache_key);
+        $cache_key = 'jankx_portal_news_v1_' . \md5($limit . $type);
+        $news_data = \get_transient($cache_key);
 
         if (false === $news_data) {
             $api_url = 'https://jankx.pages.dev/api/portal/news';
-            $url = add_query_arg([
+            $url = \add_query_arg([
                 'limit' => $limit,
                 'type'  => $type,
             ], $api_url);
 
-            $response = wp_remote_get($url, [
+            $response = \wp_remote_get($url, [
                 'timeout'   => 5,
                 'sslverify' => false,
             ]);
 
-            if (!is_wp_error($response) && wp_remote_retrieve_response_code($response) === 200) {
-                $body = json_decode(wp_remote_retrieve_body($response), true);
-                $news_data = (!empty($body['status']) && $body['status'] === 'success') ? $body['data'] : [];
+            if (!\is_wp_error($response) && \wp_remote_retrieve_response_code($response) === 200) {
+                $body = \json_decode(\wp_remote_retrieve_body($response), true);
+                $news_data = (!\empty($body['status']) && $body['status'] === 'success') ? $body['data'] : [];
             } else {
                 $news_data = [];
             }
-            set_transient($cache_key, $news_data, 4 * HOUR_IN_SECONDS);
+            \set_transient($cache_key, $news_data, 4 * HOUR_IN_SECONDS);
         }
 
         return $news_data;
@@ -209,31 +209,31 @@ class AdminPageService
         $news_data = $this->getPortalNews($limit, $type);
         
         // Luôn render Common Styles nếu ở ngoài frontend để đảm bảo giao diện
-        if (!is_admin()) {
+        if (!\is_admin()) {
             $this->renderCommonStyles();
         }
 
         if (empty($news_data)) : ?>
             <div class="news-portal-empty">
                 <span class="dashicons dashicons-cloud"></span>
-                <p><?php _e('Could not load news at this time. Please try again later.', 'jankx'); ?></p>
-                <a href="https://jankx.pages.dev/news" target="_blank" class="button"><?php _e('View on Jankx Hub', 'jankx'); ?></a>
+                <p><?php \_e('Could not load news at this time. Please try again later.', 'jankx'); ?></p>
+                <a href="https://jankx.pages.dev/news" target="_blank" class="button"><?php \_e('View on Jankx Hub', 'jankx'); ?></a>
             </div>
         <?php else : ?>
             <div class="news-portal-grid">
                 <?php foreach ($news_data as $item) :
                     $slug    = $item['slug'] ?? $item['id'];
                     $url     = "https://jankx.pages.dev/news/{$slug}";
-                    $date    = date_i18n(get_option('date_format'), strtotime($item['created_at']));
-                    $excerpt = mb_substr(strip_tags($item['content'] ?? ''), 0, 120);
-                    $item_type = strtolower($item['type'] ?? 'news');
-                    $labels  = ['announcement' => __('Announcement', 'jankx'), 'release' => __('Release', 'jankx'), 'tutorial' => __('Tutorial', 'jankx'), 'news' => __('News', 'jankx')];
+                    $date    = \date_i18n(\get_option('date_format'), \strtotime($item['created_at']));
+                    $excerpt = \mb_substr(\strip_tags($item['content'] ?? ''), 0, 120);
+                    $item_type = \strtolower($item['type'] ?? 'news');
+                    $labels  = ['announcement' => \__('Announcement', 'jankx'), 'release' => \__('Release', 'jankx'), 'tutorial' => \__('Tutorial', 'jankx'), 'news' => \__('News', 'jankx')];
                 ?>
-                <a href="<?php echo esc_url($url); ?>" target="_blank" rel="noopener" class="news-card news-card--<?php echo esc_attr($item_type); ?>">
-                    <span class="news-badge"><?php echo esc_html($labels[$item_type] ?? ucfirst($item_type)); ?></span>
-                    <h4 class="news-title"><?php echo esc_html($item['title']); ?></h4>
-                    <p class="news-excerpt"><?php echo esc_html($excerpt); ?>...</p>
-                    <time class="news-date"><?php echo esc_html($date); ?></time>
+                <a href="<?php echo \esc_url($url); ?>" target="_blank" rel="noopener" class="news-card news-card--<?php echo \esc_attr($item_type); ?>">
+                    <span class="news-badge"><?php echo \esc_html($labels[$item_type] ?? \ucfirst($item_type)); ?></span>
+                    <h4 class="news-title"><?php echo \esc_html($item['title']); ?></h4>
+                    <p class="news-excerpt"><?php echo \esc_html($excerpt); ?>...</p>
+                    <time class="news-date"><?php echo \esc_html($date); ?></time>
                 </a>
                 <?php endforeach; ?>
             </div>
@@ -247,9 +247,9 @@ class AdminPageService
     {
         $this->addPage([
             'id' => 'jankx-dashboard',
-            'title' => __('JANKX PRO Dashboard', 'jankx'),
-            'subtitle' => __('Dashboard for your website with system information and quick management utilities.', 'jankx'),
-            'menu_title' => __('Dashboard', 'jankx'),
+            'title' => \__('JANKX PRO Dashboard', 'jankx'),
+            'subtitle' => \__('Dashboard for your website with system information and quick management utilities.', 'jankx'),
+            'menu_title' => \__('Dashboard', 'jankx'),
             'capability' => 'manage_options',
             'callback' => [$this, 'renderDashboardPage'],
             'icon' => 'dashicons-performance',
@@ -405,7 +405,7 @@ class AdminPageService
     {
         $page = $this->getPage($pageId);
         if (!$page) {
-            wp_die('Page not found');
+            \wp_die('Page not found');
         }
 
         $this->setCurrentPage($pageId);
@@ -414,8 +414,8 @@ class AdminPageService
         $this->renderPageHeader($page);
 
         // Render page content
-        if (is_callable($page['callback'])) {
-            call_user_func($page['callback'], $page);
+        if (\is_callable($page['callback'])) {
+            \call_user_func($page['callback'], $page);
         } else {
             $this->renderDefaultPageContent($page);
         }
@@ -492,28 +492,28 @@ class AdminPageService
                 <div class="jankx-card action-card">
                     <div class="card-header">
                         <span class="dashicons dashicons-lightning"></span>
-                        <h3><?php _e('Quick Actions', 'jankx'); ?></h3>
+                        <h3><?php \_e('Quick Actions', 'jankx'); ?></h3>
                     </div>
                     <div class="card-body">
                         <ul class="action-list">
                             <li>
-                                <a href="<?php echo admin_url('admin.php?page=jankx-icons'); ?>">
+                                <a href="<?php echo \admin_url('admin.php?page=jankx-icons'); ?>">
                                     <span class="dashicons dashicons-format-image"></span>
-                                    <span class="text"><?php _e('Manage Icons', 'jankx'); ?></span>
+                                    <span class="text"><?php \_e('Manage Icons', 'jankx'); ?></span>
                                     <span class="dashicons dashicons-arrow-right-alt2 arrow"></span>
                                 </a>
                             </li>
                             <li>
-                                <a href="<?php echo admin_url('admin.php?page=jankx-utilities'); ?>">
+                                <a href="<?php echo \admin_url('admin.php?page=jankx-utilities'); ?>">
                                     <span class="dashicons dashicons-admin-tools"></span>
-                                    <span class="text"><?php _e('Utilities', 'jankx'); ?></span>
+                                    <span class="text"><?php \_e('Utilities', 'jankx'); ?></span>
                                     <span class="dashicons dashicons-arrow-right-alt2 arrow"></span>
                                 </a>
                             </li>
                             <li>
-                                <a href="<?php echo admin_url('customize.php'); ?>">
+                                <a href="<?php echo \admin_url('customize.php'); ?>">
                                     <span class="dashicons dashicons-admin-customizer"></span>
-                                    <span class="text"><?php _e('Customize Theme', 'jankx'); ?></span>
+                                    <span class="text"><?php \_e('Customize Theme', 'jankx'); ?></span>
                                     <span class="dashicons dashicons-arrow-right-alt2 arrow"></span>
                                 </a>
                             </li>
@@ -521,9 +521,9 @@ class AdminPageService
                             $license = $this->app->make('license');
                             if (!$license->isActivated()) : ?>
                             <li>
-                                <a href="<?php echo admin_url('admin.php?page=jankx-license'); ?>" style="color: #ef4444;">
+                                <a href="<?php echo \admin_url('admin.php?page=jankx-license'); ?>" style="color: #ef4444;">
                                     <span class="dashicons dashicons-shield-plugins"></span>
-                                    <span class="text"><?php _e('Activate License', 'jankx'); ?></span>
+                                    <span class="text"><?php \_e('Activate License', 'jankx'); ?></span>
                                     <span class="dashicons dashicons-arrow-right-alt2 arrow"></span>
                                 </a>
                             </li>

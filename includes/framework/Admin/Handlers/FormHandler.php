@@ -43,7 +43,7 @@ class FormHandler
         }
 
         // Sanitize action and inputs
-        $action = sanitize_key($_POST['jankx_action']);
+        $action = \sanitize_key($_POST['jankx_action']);
         $data   = $this->sanitizeRequestData($_POST);
 
         try {
@@ -86,12 +86,12 @@ class FormHandler
                 
                 // Allow other components to add their own handlers via action
                 default:
-                    do_action("jankx/admin/handle_action/{$action}", $data, $this->app);
+                    \do_action("jankx/admin/handle_action/{$action}", $data, $this->app);
                     break;
             }
         } catch (\Exception $e) {
             Log::error("Admin Form Handler: Action '{$action}' failed - " . $e->getMessage());
-            wp_die('An error occurred while processing your request.');
+            \wp_die('An error occurred while processing your request.');
         }
     }
 
@@ -100,12 +100,12 @@ class FormHandler
      */
     protected function handleActivateLicense(array $data): void
     {
-        if (!wp_verify_nonce($data['jankx_license_nonce'] ?? '', 'jankx_activate_license')) {
-            wp_die(__('Security check failed', 'jankx'));
+        if (!\wp_verify_nonce($data['jankx_license_nonce'] ?? '', 'jankx_activate_license')) {
+            \wp_die(\__('Security check failed', 'jankx'));
         }
 
-        if (!current_user_can('manage_options')) {
-            wp_die(__('You do not have permission to perform this action.', 'jankx'));
+        if (!\current_user_can('manage_options')) {
+            \wp_die(\__('You do not have permission to perform this action.', 'jankx'));
         }
 
         $licenseKey = $data['license_key'] ?? '';
@@ -115,18 +115,18 @@ class FormHandler
         $result = $licenseService->verify($licenseKey, $email);
 
         if (!$result['success']) {
-            $message = $result['message'] ?? __('Activation failed.', 'jankx');
-            add_action('admin_notices', function () use ($message) {
-                printf(
+            $message = $result['message'] ?? \__('Activation failed.', 'jankx');
+            \add_action('admin_notices', function () use ($message) {
+                \printf(
                     '<div class="notice notice-error is-dismissible"><p>%s</p></div>',
-                    esc_html($message)
+                    \esc_html($message)
                 );
             });
         } else {
-            add_action('admin_notices', function () {
-                printf(
+            \add_action('admin_notices', function () {
+                \printf(
                     '<div class="notice notice-success is-dismissible"><p>%s</p></div>',
-                    esc_html__('Theme JANKX PRO activated successfully via Optilarity!', 'jankx')
+                    \esc_html__('Theme JANKX PRO activated successfully via Optilarity!', 'jankx')
                 );
             });
         }
@@ -137,21 +137,21 @@ class FormHandler
      */
     protected function handleDeactivateLicense(array $data): void
     {
-        if (!wp_verify_nonce($data['jankx_license_nonce'] ?? '', 'jankx_deactivate_license')) {
-            wp_die(__('Security check failed', 'jankx'));
+        if (!\wp_verify_nonce($data['jankx_license_nonce'] ?? '', 'jankx_deactivate_license')) {
+            \wp_die(\__('Security check failed', 'jankx'));
         }
 
-        if (!current_user_can('manage_options')) {
-            wp_die(__('You do not have permission to perform this action.', 'jankx'));
+        if (!\current_user_can('manage_options')) {
+            \wp_die(\__('You do not have permission to perform this action.', 'jankx'));
         }
 
         $licenseService = $this->app->make('license');
         $result = $licenseService->deactivate();
 
-        add_action('admin_notices', function () {
-            printf(
+        \add_action('admin_notices', function () {
+            \printf(
                 '<div class="notice notice-info is-dismissible"><p>%s</p></div>',
-                esc_html__('License deactivated.', 'jankx')
+                \esc_html__('License deactivated.', 'jankx')
             );
         });
     }
@@ -161,21 +161,21 @@ class FormHandler
      */
     protected function handleDisconnectMembership(array $data): void
     {
-        if (!wp_verify_nonce($data['jankx_membership_nonce'] ?? '', 'jankx_disconnect_membership')) {
-            wp_die(__('Security check failed', 'jankx'));
+        if (!\wp_verify_nonce($data['jankx_membership_nonce'] ?? '', 'jankx_disconnect_membership')) {
+            \wp_die(\__('Security check failed', 'jankx'));
         }
 
-        if (!current_user_can('manage_options')) {
-            wp_die(__('You do not have permission to perform this action.', 'jankx'));
+        if (!\current_user_can('manage_options')) {
+            \wp_die(\__('You do not have permission to perform this action.', 'jankx'));
         }
 
         $membershipService = $this->app->make('membership');
         $membershipService->disconnect();
 
-        add_action('admin_notices', function () {
-            printf(
+        \add_action('admin_notices', function () {
+            \printf(
                 '<div class="notice notice-info is-dismissible"><p>%s</p></div>',
-                esc_html__('Membership disconnected.', 'jankx')
+                \esc_html__('Membership disconnected.', 'jankx')
             );
         });
     }
@@ -188,8 +188,8 @@ class FormHandler
      */
     protected function sanitizeRequestData(array $data): array
     {
-        return map_deep($data, function ($value) {
-            return is_string($value) ? sanitize_text_field($value) : $value;
+        return \map_deep($data, function ($value) {
+            return \is_string($value) ? \sanitize_text_field($value) : $value;
         });
     }
 
@@ -201,21 +201,21 @@ class FormHandler
      */
     protected function handleSaveImageSizes(array $data): void
     {
-        if (!wp_verify_nonce($data['jankx_utilities_nonce'] ?? '', 'jankx_save_utilities')) {
-            wp_die(__('Security check failed', 'jankx'));
+        if (!\wp_verify_nonce($data['jankx_utilities_nonce'] ?? '', 'jankx_save_utilities')) {
+            \wp_die(\__('Security check failed', 'jankx'));
         }
 
-        if (!current_user_can('manage_options')) {
-            wp_die(__('You do not have permission to perform this action.', 'jankx'));
+        if (!\current_user_can('manage_options')) {
+            \wp_die(\__('You do not have permission to perform this action.', 'jankx'));
         }
 
         $enabled_sizes = $data['enabled_sizes'] ?? [];
-        update_option('jankx_enabled_image_sizes', $enabled_sizes);
+        \update_option('jankx_enabled_image_sizes', $enabled_sizes);
 
-        add_action('admin_notices', function () {
-            printf(
+        \add_action('admin_notices', function () {
+            \printf(
                 '<div class="notice notice-success is-dismissible"><p>%s</p></div>',
-                esc_html__('Image size settings saved.', 'jankx')
+                \esc_html__('Image size settings saved.', 'jankx')
             );
         });
     }
@@ -228,23 +228,23 @@ class FormHandler
      */
     protected function handleClearDebugLog(array $data): void
     {
-        if (!wp_verify_nonce($data['jankx_debug_nonce'] ?? '', 'jankx_clear_log')) {
-            wp_die(__('Security check failed', 'jankx'));
+        if (!\wp_verify_nonce($data['jankx_debug_nonce'] ?? '', 'jankx_clear_log')) {
+            \wp_die(\__('Security check failed', 'jankx'));
         }
 
-        if (!current_user_can('manage_options')) {
-            wp_die(__('You do not have permission to perform this action.', 'jankx'));
+        if (!\current_user_can('manage_options')) {
+            \wp_die(\__('You do not have permission to perform this action.', 'jankx'));
         }
 
         $log_file = WP_CONTENT_DIR . '/debug.log';
-        if (file_exists($log_file)) {
-            file_put_contents($log_file, '');
+        if (\file_exists($log_file)) {
+            \file_put_contents($log_file, '');
         }
 
-        add_action('admin_notices', function () {
-            printf(
+        \add_action('admin_notices', function () {
+            \printf(
                 '<div class="notice notice-success is-dismissible"><p>%s</p></div>',
-                esc_html__('Debug log cleared.', 'jankx')
+                \esc_html__('Debug log cleared.', 'jankx')
             );
         });
     }
@@ -257,24 +257,24 @@ class FormHandler
      */
     protected function handleSavePerformanceSettings(array $data): void
     {
-        if (!wp_verify_nonce($data['jankx_performance_nonce'] ?? '', 'jankx_save_performance')) {
-            wp_die(__('Security check failed', 'jankx'));
+        if (!\wp_verify_nonce($data['jankx_performance_nonce'] ?? '', 'jankx_save_performance')) {
+            \wp_die(\__('Security check failed', 'jankx'));
         }
 
-        if (!current_user_can('manage_options')) {
-            wp_die(__('You do not have permission to perform this action.', 'jankx'));
+        if (!\current_user_can('manage_options')) {
+            \wp_die(\__('You do not have permission to perform this action.', 'jankx'));
         }
 
         // Set options with fallback value "no" for unchecked checkboxes
-        update_option('jankx_perf_optimize_html', isset($data['perf_html']) && $data['perf_html'] === 'yes' ? 'yes' : 'no');
-        update_option('jankx_perf_remove_emojis', isset($data['perf_emojis']) && $data['perf_emojis'] === 'yes' ? 'yes' : 'no');
-        update_option('jankx_perf_optimize_dashicons', isset($data['perf_dashicons']) && $data['perf_dashicons'] === 'yes' ? 'yes' : 'no');
-        update_option('jankx_perf_defer_scripts', isset($data['perf_defer']) && $data['perf_defer'] === 'yes' ? 'yes' : 'no');
+        \update_option('jankx_perf_optimize_html', isset($data['perf_html']) && $data['perf_html'] === 'yes' ? 'yes' : 'no');
+        \update_option('jankx_perf_remove_emojis', isset($data['perf_emojis']) && $data['perf_emojis'] === 'yes' ? 'yes' : 'no');
+        \update_option('jankx_perf_optimize_dashicons', isset($data['perf_dashicons']) && $data['perf_dashicons'] === 'yes' ? 'yes' : 'no');
+        \update_option('jankx_perf_defer_scripts', isset($data['perf_defer']) && $data['perf_defer'] === 'yes' ? 'yes' : 'no');
 
-        add_action('admin_notices', function () {
-            printf(
+        \add_action('admin_notices', function () {
+            \printf(
                 '<div class="notice notice-success is-dismissible"><p>%s</p></div>',
-                esc_html__('Performance settings saved.', 'jankx')
+                \esc_html__('Performance settings saved.', 'jankx')
             );
         });
     }
@@ -284,12 +284,12 @@ class FormHandler
      */
     protected function handleClearImageCache(array $data): void
     {
-        if (!wp_verify_nonce($data['jankx_utilities_nonce'] ?? '', 'jankx_utilities_actions')) {
-            wp_die(__('Security check failed', 'jankx'));
+        if (!\wp_verify_nonce($data['jankx_utilities_nonce'] ?? '', 'jankx_utilities_actions')) {
+            \wp_die(\__('Security check failed', 'jankx'));
         }
 
-        if (!current_user_can('manage_options')) {
-            wp_die(__('You do not have permission to perform this action.', 'jankx'));
+        if (!\current_user_can('manage_options')) {
+            \wp_die(\__('You do not have permission to perform this action.', 'jankx'));
         }
 
         global $wpdb;
@@ -297,10 +297,10 @@ class FormHandler
         // Let's clear transients that have 'jankx' in name to be safe
         $wpdb->query("DELETE FROM {$wpdb->options} WHERE option_name LIKE '\_transient\_jankx\_%' OR option_name LIKE '\_transient\_timeout\_jankx\_%'");
 
-        add_action('admin_notices', function () {
-            printf(
+        \add_action('admin_notices', function () {
+            \printf(
                 '<div class="notice notice-success is-dismissible"><p>%s</p></div>',
-                esc_html__('Image cache and Jankx transients cleared successfully.', 'jankx')
+                \esc_html__('Image cache and Jankx transients cleared successfully.', 'jankx')
             );
         });
     }
@@ -323,10 +323,10 @@ class FormHandler
         
         $export_data = [];
         foreach ($options as $opt) {
-            $export_data[$opt->option_name] = maybe_unserialize($opt->option_value);
+            $export_data[$opt->option_name] = \maybe_unserialize($opt->option_value);
         }
 
-        $json = wp_json_encode($export_data);
+        $json = \wp_json_encode($export_data);
 
         header('Content-Description: File Transfer');
         header('Content-Type: application/json');
@@ -419,13 +419,13 @@ class FormHandler
      */
     protected function terminateWithRedirect(int $success, int $error, string $action): void
     {
-        $url = add_query_arg([
+        $url = \add_query_arg([
             'jankx_bulk_success' => $success,
             'jankx_bulk_error'   => $error,
             'jankx_bulk_action'  => $action
-        ], wp_get_referer() ?: admin_url('admin.php?page=jankx-extensions'));
+        ], \wp_get_referer() ?: \admin_url('admin.php?page=jankx-extensions'));
 
-        wp_safe_redirect($url);
+        \wp_safe_redirect($url);
         $this->terminate();
     }
 
