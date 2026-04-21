@@ -1774,7 +1774,17 @@ class AdminPageService
                     </thead>
 
                 <tbody id="the-list">
-                    <?php if (empty($extensions) && empty($disabledManifests)): ?>
+                    <?php
+                    $required_ids = $extensionManager->get_required_extensions();
+                    $recommended_ids = $extensionManager->get_recommended_extensions();
+                    $hasHubItems = !empty($required_ids) || !empty($recommended_ids);
+                    $showNoItems = empty($extensions) && empty($disabledManifests);
+
+                    if ($status === 'required' && $hasHubItems) {
+                        $showNoItems = false;
+                    }
+
+                    if ($showNoItems): ?>
                         <tr class="no-items">
                             <td class="colspanchange" colspan="2"><?php _e('No extensions found.', 'jankx'); ?></td>
                         </tr>

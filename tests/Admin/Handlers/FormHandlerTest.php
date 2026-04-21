@@ -192,7 +192,7 @@ class FormHandlerTest extends TestCase
         // Use partial mock to prevent exit
         $formHandlerMock = $this->getMockBuilder(\Jankx\Admin\Handlers\FormHandler::class)
             ->setConstructorArgs([$this->app])
-            ->onlyMethods(['terminate'])
+            ->onlyMethods(['terminate', 'setHeader'])
             ->getMock();
 
         // Capture output

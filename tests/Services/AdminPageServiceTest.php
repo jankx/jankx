@@ -5,6 +5,7 @@ namespace Tests\Services;
 use PHPUnit\Framework\TestCase;
 use Jankx\Services\AdminPageService;
 use Jankx\Foundation\Application;
+use Jankx\Extensions\ThemeExtensionManager;
 
 class AdminPageServiceTest extends TestCase
 {
@@ -56,7 +57,7 @@ class AdminPageServiceTest extends TestCase
         ]);
 
         // Mock ThemeExtensionManager
-        $themeExtManager = $this->createMock(\Jankx\Contracts\Extension\ExtensionManagerInterface::class);
+        $themeExtManager = $this->createMock(ThemeExtensionManager::class);
         $themeExtManager->method('getDisabledManifests')->willReturn([]);
 
         // App bindings

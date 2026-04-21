@@ -328,13 +328,13 @@ class FormHandler
 
         $json = \wp_json_encode($export_data);
 
-        header('Content-Description: File Transfer');
-        header('Content-Type: application/json');
-        header('Content-Disposition: attachment; filename="jankx-settings-export-' . date('Y-m-d') . '.json"');
-        header('Expires: 0');
-        header('Cache-Control: must-revalidate');
-        header('Pragma: public');
-        header('Content-Length: ' . strlen($json));
+        $this->setHeader('Content-Description: File Transfer');
+        $this->setHeader('Content-Type: application/json');
+        $this->setHeader('Content-Disposition: attachment; filename="jankx-settings-export-' . date('Y-m-d') . '.json"');
+        $this->setHeader('Expires: 0');
+        $this->setHeader('Cache-Control: must-revalidate');
+        $this->setHeader('Pragma: public');
+        $this->setHeader('Content-Length: ' . strlen($json));
         
         echo $json;
         $this->terminate();
@@ -429,6 +429,19 @@ class FormHandler
         $this->terminate();
     }
 
+    /**
+     * Set HTTP header (wrapped for testability)
+     * 
+     * @param string $header Header string
+     * @return void
+     */
+    protected function setHeader(string $header): void
+    {
+        if (!headers_sent()) {
+            header($header);
+        }
+    }
+ 
     /**
      * Terminate execution (wrapped for testability)
      * 

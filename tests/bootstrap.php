@@ -338,6 +338,7 @@ if (!function_exists('pll_current_language')) {
 
 // Missing WP mocks for TemplateEngineServiceProvider
 if (!function_exists('wp_kses_post')) { function wp_kses_post($t) { return $t; } }
+if (!function_exists('esc_js')) { function esc_js($t) { return $t; } }
 if (!function_exists('wp_trim_words')) { function wp_trim_words($t, $n = 55, $m = '') { return $t; } }
 if (!function_exists('_x')) { function _x($t, $c, $d = 'default') { return $t; } }
 if (!function_exists('get_term_link')) { function get_term_link($t, $taxonomy = '') { return '#'; } }
