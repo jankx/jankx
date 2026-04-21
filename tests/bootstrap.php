@@ -116,6 +116,22 @@ if (!function_exists('add_filter')) {
         return true;
     }
 }
+if (!function_exists('add_shortcode')) {
+    function add_shortcode($tag, $callback) {
+        $GLOBALS['wp_hooks']['shortcodes'][$tag] = $callback;
+        return true;
+    }
+}
+if (!function_exists('shortcode_atts')) {
+    function shortcode_atts($pairs, $atts, $shortcode = '') {
+        $atts = (array)$atts;
+        $out = [];
+        foreach ($pairs as $name => $default) {
+            $out[$name] = array_key_exists($name, $atts) ? $atts[$name] : $default;
+        }
+        return $out;
+    }
+}
 if (!function_exists('do_action')) {
     function do_action($tag, ...$args) {
         // Handle mock actions for testing
@@ -370,6 +386,13 @@ if (!function_exists('map_deep')) {
     }
 }
 if (!function_exists('sanitize_text_field')) { function sanitize_text_field($str) { return trim(strip_tags($str)); } }
+if (!function_exists('maybe_unserialize')) {
+    function maybe_unserialize($data) {
+        if (!is_string($data)) return $data;
+        $unserialized = @unserialize($data);
+        return ($unserialized === false && $data !== serialize(false)) ? $data : $unserialized;
+    }
+}
 if (!function_exists('wp_verify_nonce')) { function wp_verify_nonce($nonce, $action = -1) { return $GLOBALS['mock_wp_verify_nonce'] ?? false; } }
 if (!function_exists('current_user_can')) { function current_user_can($capability) { return $GLOBALS['mock_current_user_can'] ?? false; } }
 // Note: add_action and do_action are defined earlier in this file
@@ -393,6 +416,9 @@ if (class_exists(\Jankx\Foundation\Application::class) && class_exists(\Jankx\Su
         $app->register(\Jankx\Support\Providers\ContentLayoutServiceProvider::class);
     }
 }
+
+if (!function_exists('wp_safe_redirect')) { function wp_safe_redirect($location, $status = 302) { return true; } }
+if (!function_exists('wp_get_referer')) { function wp_get_referer() { return false; } }
 
 // Autoloader for Jankx components
 spl_autoload_register(function ($class) {
