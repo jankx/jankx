@@ -20,8 +20,8 @@ Jankx Framework là một WordPress theme framework mạnh mẽ, hiện đại v
 
 - **Modularity**: Mọi tính năng được đóng gói trong Service Provider riêng biệt.
 - **AI-Driven Pattern**: Codebase được tối ưu để AI có thể đọc hiểu và generate dựa trên `AI_GENERATION_SPEC.md`.
-- **Strict Namespacing**: Mọi lời gọi hàm toàn cục (WordPress/PHP) trong class namespaced PHẢI có tiền tố `\` (ví dụ: `\get_template()`) để tối ưu hiệu suất và tránh lỗi trong môi trường test.
-- **3-Level CSS System**: Quản lý CSS theo phân cấp CORE -> TYPE -> INSTANCE.
+- **No External CSS**: Mục tiêu tối thượng là loại bỏ hoàn toàn file CSS bên ngoài. Tất cả styling phải thông qua cấu hình `theme.json` hoặc Block Configs. Chỉ sử dụng thuộc tính `css` trong `theme.json` cho các logic tùy chỉnh không thể thực hiện qua giao diện chuẩn.
+- **3-Level CSS System**: Quản lý CSS theo phân cấp CORE -> TYPE -> INSTANCE (tích hợp trong Asset Management nhưng ưu tiên theme.json).
 - **Lazy Loading**: Services chỉ được load khi cần thiết.
 - **Dependency Injection**: Tất cả dependencies được inject qua Application Container.
 - **Testability**: Mỗi service có thể được test độc lập.
@@ -941,7 +941,14 @@ Common helper functions được load tự động khi framework khởi động.
 
 ## Gutenberg Block Design Pattern: PHP-Driven Customization
 
-### Nguyên Tắc Cốt Lõi
+### 1. Zero External CSS Philosophy
+
+AI MODELS MUST AVOID WRITING CSS TO EXTERNAL FILES (like `style.css`). 
+1. **Primary Choice**: Use standard `theme.json` properties (settings, styles, elements).
+2. **Secondary Choice**: Use Block Attributes in the block code.
+3. **Fallback**: Use the `css` property in `theme.json` (for global/block levels) or `AssetResolver` for complex dynamic instance CSS.
+
+## 2. CSS Level Mapping Rules (Modernized)
 
 **"Tất cả tính năng customize phải được thực hiện ở level PHP qua interfaces và abstract classes theo design pattern. Code JavaScript của block chỉ dùng để hiển thị các tính năng được PHP hỗ trợ."**
 
