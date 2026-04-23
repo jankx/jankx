@@ -144,16 +144,82 @@ class PerformanceService
     }
 
     /**
+     * Vendor script handles (non-wp- prefix) that must never be deferred
+     * because WP core packages depend on them being available synchronously.
+     *
+     * @var string[]
+     */
+    protected $noDeferVendorHandles = [
+        'jquery',
+        'jquery-core',
+        'jquery-migrate',
+        'react',
+        'react-dom',
+        'react-jsx-runtime',
+        'moment',
+    ];
+
+    /**
+     * Whether a script handle belongs to WordPress core.
+     * All wp-* handles form an interdependent graph; deferring any one of
+     * them can silently break another that loads synchronously.
+     *
+     * @param string $handle
+     * @return bool
+     */
+    protected function isWpCoreScript($handle)
+    {
+        return strncmp($handle, 'wp-', 3) === 0;
+    }
+
+    /**
+     * Whether a script has inline companion code registered via
+     * wp_add_inline_script() / wp_script_add_data().
+     * Those inline blocks run synchronously, so their parent must not defer.
+     *
+     * @param string $handle
+     * @return bool
+     */
+    protected function hasInlineCompanionScript($handle)
+    {
+        global $wp_scripts;
+        if (!isset($wp_scripts) || !($wp_scripts instanceof \WP_Scripts)) {
+            return false;
+        }
+        $before = $wp_scripts->get_data($handle, 'before');
+        $after  = $wp_scripts->get_data($handle, 'after');
+        return !empty($before) || !empty($after);
+    }
+
+    /**
      * Defer script tags securely.
+     *
+     * A script is skipped (returned unchanged) when ANY of these is true:
+     *   1. Its handle starts with "wp-"  (all WP core packages).
+     *   2. It is a known vendor dependency of WP core.
+     *   3. It has inline before/after companion scripts registered in
+     *      WP_Scripts — those run synchronously and need the global to exist.
+     *   4. It already carries defer or async.
+     *   5. We are in the admin context.
      */
     public function deferScripts($tag, $handle, $src)
     {
-        // Avoid deferring jquery core because many inline scripts or plugins might break
-        if (in_array($handle, ['jquery', 'jquery-core', 'jquery-migrate'])) {
+        // Rule 1 – WordPress core namespace
+        if ($this->isWpCoreScript($handle)) {
             return $tag;
         }
-        
-        // Only target frontend handles
+
+        // Rule 2 – known vendor scripts
+        if (in_array($handle, $this->noDeferVendorHandles, true)) {
+            return $tag;
+        }
+
+        // Rule 3 – any script with registered inline companion code
+        if ($this->hasInlineCompanionScript($handle)) {
+            return $tag;
+        }
+
+        // Rule 4 & 5 – already async/deferred or in admin
         if (!is_admin()) {
             if (strpos($tag, 'defer') === false && strpos($tag, 'async') === false) {
                 return str_replace(' src', ' defer="defer" src', $tag);

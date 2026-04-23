@@ -191,7 +191,7 @@ class AdminPageService
 
             if (!\is_wp_error($response) && \wp_remote_retrieve_response_code($response) === 200) {
                 $body = \json_decode(\wp_remote_retrieve_body($response), true);
-                $news_data = (!\empty($body['status']) && $body['status'] === 'success') ? $body['data'] : [];
+                $news_data = (!empty($body['status']) && $body['status'] === 'success') ? $body['data'] : [];
             } else {
                 $news_data = [];
             }

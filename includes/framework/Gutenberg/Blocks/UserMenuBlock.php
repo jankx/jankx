@@ -88,7 +88,7 @@ class UserMenuBlock extends Block
         $output .= '</div>';
 
         // Dropdown Menu
-        $output .= '<div class="user-menu-dropdown" style="display:none; position:absolute; right:0; top:100%%; background:#FFF; box-shadow:0 4px 15px rgba(0,0,0,0.1); border-radius:8px; padding:10px; min-width:180px; z-index:100; margin-top:10px;">';
+        $output .= '<div class="user-menu-dropdown" style="display:none; position:absolute; right:0; top:100%; background:#FFF; box-shadow:0 4px 15px rgba(0,0,0,0.1); border-radius:8px; padding:10px; min-width:180px; z-index:100; margin-top:10px;">';
         $output .= '<ul style="list-style:none; margin:0; padding:0;">';
         foreach ($menu_items as $id => $item) {
             $output .= sprintf(

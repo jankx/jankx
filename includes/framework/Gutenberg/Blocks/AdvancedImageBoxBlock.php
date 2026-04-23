@@ -62,27 +62,27 @@ class AdvancedImageBoxBlock extends Block
 
         $presetsData = PresetRegistry::getPresetsData();
 
-        // Add helper function to get CSS for preset
-        $cssHelper = "
-window.jankxAdvancedImageBoxGetPresetCSS = function(presetId, attributes, options) {
-    // This will be handled by PHP renderCSS method
-    // For now, return empty - CSS will be generated in editor
-    return '';
-};
-";
-
         // Merge theme options data
         $themeOptionsData = [];
         if (function_exists('jankx_get_theme_options_data')) {
             $themeOptionsData = jankx_get_theme_options_data();
         }
 
+
         wp_add_inline_script(
             $handle,
             sprintf(
-                'window.jankxAdvancedImageBoxPresets = %s;%s\nwindow.jankxThemeOptions = %s;',
+                'window.jankxAdvancedImageBoxPresets = %s;%swindow.jankxAdvancedImageBoxGetPresetCSS = function(presetId, attributes, options) { return \'\'; };',
                 wp_json_encode($presetsData),
-                $cssHelper,
+                "\n"
+            ),
+            'before'
+        );
+
+        wp_add_inline_script(
+            $handle,
+            sprintf(
+                'window.jankxThemeOptions = %s;',
                 wp_json_encode($themeOptionsData)
             ),
             'before'
