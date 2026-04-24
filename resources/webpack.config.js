@@ -70,14 +70,14 @@ module.exports = {
     'blocks/author-box/build/style': './blocks/author-box/src/style.scss',
     'blocks/author-box/build/editor': './blocks/author-box/src/editor.scss',
 
-    'blocks/swiper/build/index': './blocks/swiper/index.tsx',
-    'blocks/swiper/build/view': './blocks/swiper/view.js',
-    'blocks/swiper/build/style': './blocks/swiper/style.scss',
-    'blocks/swiper/build/editor': './blocks/swiper/editor.scss',
+    'blocks/carousel/build/index': './blocks/carousel/index.tsx',
+    'blocks/carousel/build/view': './blocks/carousel/view.js',
+    'blocks/carousel/build/style': './blocks/carousel/style.scss',
+    'blocks/carousel/build/editor': './blocks/carousel/editor.scss',
 
-    'blocks/swiper-slide/build/index': './blocks/swiper-slide/index.tsx',
-    'blocks/swiper-slide/build/style': './blocks/swiper-slide/style.scss',
-    'blocks/swiper-slide/build/editor': './blocks/swiper-slide/editor.scss',
+    'blocks/carousel-slide/build/index': './blocks/carousel-slide/index.tsx',
+    'blocks/carousel-slide/build/style': './blocks/carousel-slide/style.scss',
+    'blocks/carousel-slide/build/editor': './blocks/carousel-slide/editor.scss',
 
     'blocks/testimonial/build/index': './blocks/testimonial/index.tsx',
     'blocks/testimonial/build/style': './blocks/testimonial/style.scss',
@@ -86,13 +86,13 @@ module.exports = {
     'blocks/testimonials/build/style': './blocks/testimonials/style.scss',
     'blocks/testimonials/build/editor': './blocks/testimonials/editor.scss',
 
-    'blocks/swiper-banner/build/index': './blocks/swiper-banner/index.tsx',
-    'blocks/swiper-banner/build/style': './blocks/swiper-banner/style.scss',
-    'blocks/swiper-banner/build/editor': './blocks/swiper-banner/editor.scss',
+    'blocks/carousel-banner/build/index': './blocks/carousel-banner/index.tsx',
+    'blocks/carousel-banner/build/style': './blocks/carousel-banner/style.scss',
+    'blocks/carousel-banner/build/editor': './blocks/carousel-banner/editor.scss',
 
-    'blocks/swiper-inner-blocks-overlay/build/index': './blocks/swiper-inner-blocks-overlay/index.tsx',
-    'blocks/swiper-inner-blocks-overlay/build/style': './blocks/swiper-inner-blocks-overlay/style.scss',
-    'blocks/swiper-inner-blocks-overlay/build/editor': './blocks/swiper-inner-blocks-overlay/editor.scss',
+    'blocks/carousel-inner-blocks-overlay/build/index': './blocks/carousel-inner-blocks-overlay/index.tsx',
+    'blocks/carousel-inner-blocks-overlay/build/style': './blocks/carousel-inner-blocks-overlay/style.scss',
+    'blocks/carousel-inner-blocks-overlay/build/editor': './blocks/carousel-inner-blocks-overlay/editor.scss',
 
     'blocks/slideshow/build/index': './blocks/slideshow/index.tsx',
     'blocks/slideshow/build/save': './blocks/slideshow/save.tsx',
