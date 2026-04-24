@@ -31,6 +31,11 @@ vendor/bin/phpunit
 
 ### Compiling Assets
 
+### Documentation
+- [Official Documentation](docs/README.md)
+- [Quick Start Guide (Học nhanh cho WP Developer)](QUICK_START.md)
+- [Vietnamese Documentation](docs/vi/README.md)
+
 ```bash
 # Development
 npm run development

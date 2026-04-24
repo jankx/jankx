@@ -41,6 +41,39 @@ if (!function_exists('jankx')) {
 }
 
 /**
+ * Render a Latte template with data.
+ *
+ * @param string $template Path to template
+ * @param array $data Data to pass to template
+ * @return string|void
+ */
+if (!function_exists('jankx_render')) {
+    function jankx_render($template, $data = [], $echo = true)
+    {
+        $engine = \Jankx\Facades\Template::getEngine();
+        if ($echo) {
+            echo $engine->render($template, $data);
+            return;
+        }
+        return $engine->render($template, $data);
+    }
+}
+
+/**
+ * Get option value from theme options.
+ *
+ * @param string $option_name Name of the option
+ * @param mixed $default Default value
+ * @return mixed
+ */
+if (!function_exists('jankx_get_option')) {
+    function jankx_get_option($option_name, $default = null)
+    {
+        return \Jankx\Facades\Option::get($option_name, $default);
+    }
+}
+
+/**
  * Get block template HTML for current page.
  *
  * @return string|null
