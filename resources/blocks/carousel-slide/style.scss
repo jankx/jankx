@@ -1,0 +1,23 @@
+// Carousel Slide Block Styles
+
+.wp-block-jankx-carousel-slide {
+  min-height: 200px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  
+  // Image size variations for background images
+  &.image-size-contain {
+    background-size: contain !important;
+  }
+  
+  &.image-size-cover {
+    background-size: cover !important;
+  }
+  
+  &.image-size-fullwidth {
+    background-size: 100% 100% !important;
+    background-position: center !important;
+  }
+}

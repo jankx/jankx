@@ -1,0 +1,324 @@
+// Carousel Block Styles
+// Import Carousel CSS from npm package
+
+.wp-block-jankx-carousel {
+  position: relative;
+
+         .embla {
+           width: 100%;
+           // PC: height cứng
+           height: var(--carousel-height, 50px);
+           overflow: hidden;
+
+           // Tablet và mobile: max-height với auto adjustment
+           @media (max-width: 1024px) {
+             height: auto;
+             max-height: var(--carousel-height, 50px);
+             min-height: var(--carousel-min-height, 50px);
+           }
+         }
+
+  .embla__container {
+    display: flex;
+    height: 100%;
+    gap: var(--space-between, 30px);
+    will-change: transform;
+  }
+
+  .embla__slide {
+    flex-shrink: 0;
+    width: auto;
+    height: 100%;
+    position: relative;
+    flex: 0 0 calc((100% - (var(--space-between, 30px) * (var(--slides-per-view-desktop, 1) - 1))) / var(--slides-per-view-desktop, 1));
+  }
+
+  @media (max-width: 1024px) {
+    .embla__slide {
+      flex: 0 0 calc((100% - (var(--space-between, 24px) * (var(--slides-per-view-tablet, 1) - 1))) / var(--slides-per-view-tablet, 1));
+    }
+  }
+
+  @media (max-width: 768px) {
+    .embla__slide {
+      flex: 0 0 calc((100% - (var(--space-between, 16px) * (var(--slides-per-view-mobile, 1) - 1))) / var(--slides-per-view-mobile, 1));
+    }
+  }
+
+  // Banner variation should size by content instead of fixed height
+  &.is-style-banner {
+    .embla {
+      height: auto;
+      min-height: var(--carousel-min-height, 500px);
+    }
+  }
+
+  // Gradient Overlay Styles
+  &.has-gradient-overlay {
+    // Prevent hover darkening conflicts with overlay
+    .embla__slide:hover {
+      opacity: 1;
+    }
+    // Confine overlay within slide box to avoid visual glitches
+    .embla__slide {
+      overflow: hidden;
+    }
+    .embla__slide {
+      &::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: var(--gradient-height, 60%);
+        background: linear-gradient(
+          to top,
+          rgba(
+            var(--gradient-color-r, 0),
+            var(--gradient-color-g, 0),
+            var(--gradient-color-b, 0),
+            var(--gradient-opacity, 0.7)
+          ) 0%,
+          rgba(
+            var(--gradient-color-r, 0),
+            var(--gradient-color-g, 0),
+            var(--gradient-color-b, 0),
+            calc(var(--gradient-opacity, 0.7) * 0.8)
+          ) 30%,
+          rgba(
+            var(--gradient-color-r, 0),
+            var(--gradient-color-g, 0),
+            var(--gradient-color-b, 0),
+            calc(var(--gradient-opacity, 0.7) * 0.5)
+          ) 60%,
+          rgba(
+            var(--gradient-color-r, 0),
+            var(--gradient-color-g, 0),
+            var(--gradient-color-b, 0),
+            calc(var(--gradient-opacity, 0.7) * 0.2)
+          ) 85%,
+          transparent 100%
+        );
+        pointer-events: none;
+        z-index: 5;
+      }
+    }
+  }
+
+  // Navigation buttons
+  .embla__button {
+    color: var(--wp--preset--color--contrast, #000);
+
+    &::after {
+      font-size: 24px;
+    }
+  }
+
+    // Banner variation specific styles
+  &.is-style-banner {
+    .embla-banner {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: stretch;
+      
+      &__image {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        min-height: 500px;
+      }
+
+      &__link {
+        display: block;
+        width: 100%;
+        height: 100%;
+      }
+    }
+  }
+
+  // Style Variations
+  &.is-style-banner {
+    .embla__slide {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .embla__dot {
+      background: rgba(255, 255, 255, 0.6);
+      width: 12px;
+      height: 12px;
+
+      &.is-active {
+        background: rgba(255, 255, 255, 1);
+      }
+    }
+  }
+
+  &.is-style-carousel {
+    .embla {
+      padding: 20px 0 50px;
+      overflow: visible;
+    }
+
+    .embla__container {
+      align-items: stretch;
+    }
+
+    .embla__slide {
+      height: auto;
+      padding: 0 10px;
+      opacity: 0.7;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      transform: scale(0.95);
+
+      &.is-active {
+        opacity: 1;
+        transform: scale(1);
+        z-index: 1;
+      }
+
+      // Hover effect for better UX
+      &:hover:not(.is-active) {
+        opacity: 0.85;
+      }
+    }
+
+    // Ensure slides content displays properly
+    .embla__slide > * {
+      width: 100%;
+      height: 100%;
+    }
+
+    .embla__button {
+      background: rgba(0, 0, 0, 0.7);
+      border-radius: 50%;
+      width: 44px;
+      height: 44px;
+      top: 50%;
+      margin-top: -22px;
+      transition: background 0.3s ease, transform 0.2s ease;
+
+      &::after {
+        font-size: 18px;
+        color: #fff;
+        font-weight: bold;
+      }
+
+      &:hover {
+        background: rgba(0, 0, 0, 0.9);
+        transform: scale(1.1);
+      }
+
+      &:active {
+        transform: scale(0.95);
+      }
+
+      // Hide on mobile if needed
+      @media (max-width: 768px) {
+        width: 36px;
+        height: 36px;
+        margin-top: -18px;
+
+        &::after {
+          font-size: 14px;
+        }
+      }
+    }
+
+    .embla__dots {
+      bottom: 10px;
+      position: absolute;
+
+      .embla__dot {
+        width: 10px;
+        height: 10px;
+        margin: 0 6px;
+        background: rgba(0, 0, 0, 0.4);
+        transition: all 0.3s ease;
+
+        &.is-active {
+          background: rgba(0, 0, 0, 0.8);
+          transform: scale(1.2);
+        }
+      }
+    }
+
+    // Responsive adjustments
+    @media (max-width: 768px) {
+      .embla {
+        padding: 15px 0 40px;
+      }
+
+      .embla__slide {
+        padding: 0 8px;
+        opacity: 0.8;
+
+        &.is-active {
+          opacity: 1;
+        }
+      }
+    }
+
+    @media (max-width: 480px) {
+      .embla {
+        padding: 10px 0 35px;
+      }
+
+      .embla__slide {
+        padding: 0 5px;
+      }
+    }
+  }
+
+  &.is-style-testimonial {
+    .embla {
+      padding: 40px 0;
+    }
+
+    .embla__slide {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 20px 40px;
+    }
+
+    .embla__button {
+      color: var(--wp--preset--color--contrast, #666);
+      width: 40px;
+      height: 40px;
+      margin-top: 0;
+
+      &::after {
+        font-size: 24px;
+        font-weight: bold;
+      }
+
+      &:hover {
+        color: var(--wp--preset--color--contrast, #000);
+      }
+    }
+
+    .embla__dots {
+      position: relative;
+      margin-top: 30px;
+
+      .embla__dot {
+        width: 12px;
+        height: 12px;
+        margin: 0 8px;
+        opacity: 0.3;
+
+        &.is-active {
+          opacity: 1;
+          width: 30px;
+          border-radius: 6px;
+        }
+      }
+    }
+  }
+}

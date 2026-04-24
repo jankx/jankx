@@ -37,7 +37,7 @@ class GutenbergControlsIntegration
         'jankx/slideshow',
         'jankx/sticky-box',
         'jankx/wrapper',
-        'jankx/swiper',
+        'jankx/carousel',
     ];
 
     /**
