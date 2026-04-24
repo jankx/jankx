@@ -1,28 +1,28 @@
-/*!********************************************************************************************************************************************************************************************!*\
-  !*** css ../node_modules/css-loader/dist/cjs.js!../node_modules/postcss-loader/dist/cjs.js!../node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!./blocks/swiper/style.scss ***!
-  \********************************************************************************************************************************************************************************************/
-.wp-block-jankx-swiper {
+/*!**********************************************************************************************************************************************************************************************!*\
+  !*** css ../node_modules/css-loader/dist/cjs.js!../node_modules/postcss-loader/dist/cjs.js!../node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!./blocks/carousel/style.scss ***!
+  \**********************************************************************************************************************************************************************************************/
+.wp-block-jankx-carousel {
   position: relative;
 }
-.wp-block-jankx-swiper .embla {
+.wp-block-jankx-carousel .embla {
   width: 100%;
-  height: var(--swiper-height, 50px);
+  height: var(--carousel-height, 50px);
   overflow: hidden;
 }
 @media (max-width: 1024px) {
-  .wp-block-jankx-swiper .embla {
+  .wp-block-jankx-carousel .embla {
     height: auto;
-    max-height: var(--swiper-height, 50px);
-    min-height: var(--swiper-min-height, 50px);
+    max-height: var(--carousel-height, 50px);
+    min-height: var(--carousel-min-height, 50px);
   }
 }
-.wp-block-jankx-swiper .embla__container {
+.wp-block-jankx-carousel .embla__container {
   display: flex;
   height: 100%;
   gap: var(--space-between, 30px);
   will-change: transform;
 }
-.wp-block-jankx-swiper .embla__slide {
+.wp-block-jankx-carousel .embla__slide {
   flex-shrink: 0;
   width: auto;
   height: 100%;
@@ -30,26 +30,26 @@
   flex: 0 0 calc((100% - var(--space-between, 30px) * (var(--slides-per-view-desktop, 1) - 1)) / var(--slides-per-view-desktop, 1));
 }
 @media (max-width: 1024px) {
-  .wp-block-jankx-swiper .embla__slide {
+  .wp-block-jankx-carousel .embla__slide {
     flex: 0 0 calc((100% - var(--space-between, 24px) * (var(--slides-per-view-tablet, 1) - 1)) / var(--slides-per-view-tablet, 1));
   }
 }
 @media (max-width: 768px) {
-  .wp-block-jankx-swiper .embla__slide {
+  .wp-block-jankx-carousel .embla__slide {
     flex: 0 0 calc((100% - var(--space-between, 16px) * (var(--slides-per-view-mobile, 1) - 1)) / var(--slides-per-view-mobile, 1));
   }
 }
-.wp-block-jankx-swiper.is-style-banner .embla {
+.wp-block-jankx-carousel.is-style-banner .embla {
   height: auto;
-  min-height: var(--swiper-min-height, 500px);
+  min-height: var(--carousel-min-height, 500px);
 }
-.wp-block-jankx-swiper.has-gradient-overlay .embla__slide:hover {
+.wp-block-jankx-carousel.has-gradient-overlay .embla__slide:hover {
   opacity: 1;
 }
-.wp-block-jankx-swiper.has-gradient-overlay .embla__slide {
+.wp-block-jankx-carousel.has-gradient-overlay .embla__slide {
   overflow: hidden;
 }
-.wp-block-jankx-swiper.has-gradient-overlay .embla__slide::after {
+.wp-block-jankx-carousel.has-gradient-overlay .embla__slide::after {
   content: "";
   position: absolute;
   bottom: 0;
@@ -60,70 +60,70 @@
   pointer-events: none;
   z-index: 5;
 }
-.wp-block-jankx-swiper .embla__button {
+.wp-block-jankx-carousel .embla__button {
   color: var(--wp--preset--color--contrast, #000);
 }
-.wp-block-jankx-swiper .embla__button::after {
+.wp-block-jankx-carousel .embla__button::after {
   font-size: 24px;
 }
-.wp-block-jankx-swiper.is-style-banner .embla-banner {
+.wp-block-jankx-carousel.is-style-banner .embla-banner {
   width: 100%;
   height: 100%;
   display: flex;
   align-items: stretch;
 }
-.wp-block-jankx-swiper.is-style-banner .embla-banner__image {
+.wp-block-jankx-carousel.is-style-banner .embla-banner__image {
   position: relative;
   width: 100%;
   height: 100%;
   min-height: 500px;
 }
-.wp-block-jankx-swiper.is-style-banner .embla-banner__link {
+.wp-block-jankx-carousel.is-style-banner .embla-banner__link {
   display: block;
   width: 100%;
   height: 100%;
 }
-.wp-block-jankx-swiper.is-style-banner .embla__slide {
+.wp-block-jankx-carousel.is-style-banner .embla__slide {
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
 }
-.wp-block-jankx-swiper.is-style-banner .embla__dot {
+.wp-block-jankx-carousel.is-style-banner .embla__dot {
   background: rgba(255, 255, 255, 0.6);
   width: 12px;
   height: 12px;
 }
-.wp-block-jankx-swiper.is-style-banner .embla__dot.is-active {
+.wp-block-jankx-carousel.is-style-banner .embla__dot.is-active {
   background: rgb(255, 255, 255);
 }
-.wp-block-jankx-swiper.is-style-carousel .embla {
+.wp-block-jankx-carousel.is-style-carousel .embla {
   padding: 20px 0 50px;
   overflow: visible;
 }
-.wp-block-jankx-swiper.is-style-carousel .embla__container {
+.wp-block-jankx-carousel.is-style-carousel .embla__container {
   align-items: stretch;
 }
-.wp-block-jankx-swiper.is-style-carousel .embla__slide {
+.wp-block-jankx-carousel.is-style-carousel .embla__slide {
   height: auto;
   padding: 0 10px;
   opacity: 0.7;
   transition: opacity 0.3s ease, transform 0.3s ease;
   transform: scale(0.95);
 }
-.wp-block-jankx-swiper.is-style-carousel .embla__slide.is-active {
+.wp-block-jankx-carousel.is-style-carousel .embla__slide.is-active {
   opacity: 1;
   transform: scale(1);
   z-index: 1;
 }
-.wp-block-jankx-swiper.is-style-carousel .embla__slide:hover:not(.is-active) {
+.wp-block-jankx-carousel.is-style-carousel .embla__slide:hover:not(.is-active) {
   opacity: 0.85;
 }
-.wp-block-jankx-swiper.is-style-carousel .embla__slide > * {
+.wp-block-jankx-carousel.is-style-carousel .embla__slide > * {
   width: 100%;
   height: 100%;
 }
-.wp-block-jankx-swiper.is-style-carousel .embla__button {
+.wp-block-jankx-carousel.is-style-carousel .embla__button {
   background: rgba(0, 0, 0, 0.7);
   border-radius: 50%;
   width: 44px;
@@ -132,67 +132,67 @@
   margin-top: -22px;
   transition: background 0.3s ease, transform 0.2s ease;
 }
-.wp-block-jankx-swiper.is-style-carousel .embla__button::after {
+.wp-block-jankx-carousel.is-style-carousel .embla__button::after {
   font-size: 18px;
   color: #fff;
   font-weight: bold;
 }
-.wp-block-jankx-swiper.is-style-carousel .embla__button:hover {
+.wp-block-jankx-carousel.is-style-carousel .embla__button:hover {
   background: rgba(0, 0, 0, 0.9);
   transform: scale(1.1);
 }
-.wp-block-jankx-swiper.is-style-carousel .embla__button:active {
+.wp-block-jankx-carousel.is-style-carousel .embla__button:active {
   transform: scale(0.95);
 }
 @media (max-width: 768px) {
-  .wp-block-jankx-swiper.is-style-carousel .embla__button {
+  .wp-block-jankx-carousel.is-style-carousel .embla__button {
     width: 36px;
     height: 36px;
     margin-top: -18px;
   }
-  .wp-block-jankx-swiper.is-style-carousel .embla__button::after {
+  .wp-block-jankx-carousel.is-style-carousel .embla__button::after {
     font-size: 14px;
   }
 }
-.wp-block-jankx-swiper.is-style-carousel .embla__dots {
+.wp-block-jankx-carousel.is-style-carousel .embla__dots {
   bottom: 10px;
   position: absolute;
 }
-.wp-block-jankx-swiper.is-style-carousel .embla__dots .embla__dot {
+.wp-block-jankx-carousel.is-style-carousel .embla__dots .embla__dot {
   width: 10px;
   height: 10px;
   margin: 0 6px;
   background: rgba(0, 0, 0, 0.4);
   transition: all 0.3s ease;
 }
-.wp-block-jankx-swiper.is-style-carousel .embla__dots .embla__dot.is-active {
+.wp-block-jankx-carousel.is-style-carousel .embla__dots .embla__dot.is-active {
   background: rgba(0, 0, 0, 0.8);
   transform: scale(1.2);
 }
 @media (max-width: 768px) {
-  .wp-block-jankx-swiper.is-style-carousel .embla {
+  .wp-block-jankx-carousel.is-style-carousel .embla {
     padding: 15px 0 40px;
   }
-  .wp-block-jankx-swiper.is-style-carousel .embla__slide {
+  .wp-block-jankx-carousel.is-style-carousel .embla__slide {
     padding: 0 8px;
     opacity: 0.8;
   }
-  .wp-block-jankx-swiper.is-style-carousel .embla__slide.is-active {
+  .wp-block-jankx-carousel.is-style-carousel .embla__slide.is-active {
     opacity: 1;
   }
 }
 @media (max-width: 480px) {
-  .wp-block-jankx-swiper.is-style-carousel .embla {
+  .wp-block-jankx-carousel.is-style-carousel .embla {
     padding: 10px 0 35px;
   }
-  .wp-block-jankx-swiper.is-style-carousel .embla__slide {
+  .wp-block-jankx-carousel.is-style-carousel .embla__slide {
     padding: 0 5px;
   }
 }
-.wp-block-jankx-swiper.is-style-testimonial .embla {
+.wp-block-jankx-carousel.is-style-testimonial .embla {
   padding: 40px 0;
 }
-.wp-block-jankx-swiper.is-style-testimonial .embla__slide {
+.wp-block-jankx-carousel.is-style-testimonial .embla__slide {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -200,30 +200,30 @@
   text-align: center;
   padding: 20px 40px;
 }
-.wp-block-jankx-swiper.is-style-testimonial .embla__button {
+.wp-block-jankx-carousel.is-style-testimonial .embla__button {
   color: var(--wp--preset--color--contrast, #666);
   width: 40px;
   height: 40px;
   margin-top: 0;
 }
-.wp-block-jankx-swiper.is-style-testimonial .embla__button::after {
+.wp-block-jankx-carousel.is-style-testimonial .embla__button::after {
   font-size: 24px;
   font-weight: bold;
 }
-.wp-block-jankx-swiper.is-style-testimonial .embla__button:hover {
+.wp-block-jankx-carousel.is-style-testimonial .embla__button:hover {
   color: var(--wp--preset--color--contrast, #000);
 }
-.wp-block-jankx-swiper.is-style-testimonial .embla__dots {
+.wp-block-jankx-carousel.is-style-testimonial .embla__dots {
   position: relative;
   margin-top: 30px;
 }
-.wp-block-jankx-swiper.is-style-testimonial .embla__dots .embla__dot {
+.wp-block-jankx-carousel.is-style-testimonial .embla__dots .embla__dot {
   width: 12px;
   height: 12px;
   margin: 0 8px;
   opacity: 0.3;
 }
-.wp-block-jankx-swiper.is-style-testimonial .embla__dots .embla__dot.is-active {
+.wp-block-jankx-carousel.is-style-testimonial .embla__dots .embla__dot.is-active {
   opacity: 1;
   width: 30px;
   border-radius: 6px;
