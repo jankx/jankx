@@ -50,7 +50,7 @@ const supportsEnhancedControls = (blockName) => {
         'jankx/slideshow',
         'jankx/sticky-box',
         'jankx/wrapper',
-        'jankx/swiper',
+        'jankx/carousel',
     ];
 
     return supportedBlocks.some((name) => blockName.startsWith(name));
