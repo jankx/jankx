@@ -1,0 +1,16 @@
+{
+    "name": "Gutenberg File Sync",
+    "version": "1.0.0",
+    "description": "Sync Gutenberg templates to theme files instead of database.",
+    "author": "Jankx",
+    "extension_id": "gutenberg-file-sync",
+    "caller": {
+        "file": "GutenbergFileSyncExtension.php",
+        "class": "Jankx\\Extensions\\GutenbergFileSync\\GutenbergFileSyncExtension",
+        "method": "init"
+    },
+    "requirements": {
+        "php": ">=7.4"
+    },
+    "auto_activate": true
+}

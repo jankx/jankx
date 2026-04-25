@@ -1,0 +1,30 @@
+{
+    "name": "jankx/gutenberg-file-sync",
+    "description": "Sync Gutenberg templates to theme files instead of database.",
+    "type": "wordpress-plugin",
+    "license": "GPL-3.0-or-later",
+    "authors": [
+        {
+            "name": "Puleeno Nguyen",
+            "email": "puleeno@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=7.4"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.5",
+        "brain/monkey": "^2.6",
+        "mockery/mockery": "^1.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "Jankx\\Extensions\\GutenbergFileSync\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Jankx\\Extensions\\GutenbergFileSync\\Tests\\": "tests/"
+        }
+    }
+}
