@@ -36,11 +36,7 @@ class TemplateCommand extends WP_CLI_Command
         $stylesheet_dir = get_stylesheet_directory();
         $template_dir = get_template_directory();
 
-        $export_dir = $stylesheet_dir . '/html';
-        if (!file_exists($export_dir)) {
-            mkdir($export_dir, 0755, true);
-        }
-
+        $export_dir = $stylesheet_dir;
         WP_CLI::log(sprintf('Exporting templates for theme: %s', $theme->get('Name')));
         WP_CLI::log(sprintf('Destination: %s', $export_dir));
 
@@ -55,7 +51,7 @@ class TemplateCommand extends WP_CLI_Command
                 mkdir($type_export_dir, 0755, true);
             }
 
-            // 1. Get from disk
+            // 1. Get from disk (parent & child)
             $dirs = array_unique([$template_dir . '/' . $type, $stylesheet_dir . '/' . $type]);
             $template_data = [];
 
@@ -90,16 +86,8 @@ class TemplateCommand extends WP_CLI_Command
             foreach ($template_data as $name => $data) {
                 WP_CLI::log(sprintf('  - Processing %s (%s): %s', $type, $data['source'], $name));
                 
-                ob_start();
-                $rendered_content = do_blocks($data['content']);
-                $extra_output = ob_get_clean();
-                $rendered_content = $extra_output . $rendered_content;
-
-                if ($type === 'templates' && stripos($rendered_content, '<html') === false) {
-                    $rendered_content = $this->wrap_in_html($rendered_content, $name);
-                }
-
-                file_put_contents($type_export_dir . '/' . $name, $rendered_content);
+                // Export raw Gutenberg content instead of rendered HTML
+                file_put_contents($type_export_dir . '/' . $name, $data['content']);
             }
         }
 
@@ -118,11 +106,7 @@ class TemplateCommand extends WP_CLI_Command
     public function sync($args, $assoc_args)
     {
         $stylesheet_dir = get_stylesheet_directory();
-        $source_dir = $stylesheet_dir . '/html';
-
-        if (!is_dir($source_dir)) {
-            WP_CLI::error('Source directory "html" not found in active theme.');
-        }
+        $source_dir = $stylesheet_dir;
 
         $types = [
             'templates' => 'wp_template',
@@ -140,7 +124,7 @@ class TemplateCommand extends WP_CLI_Command
 
             foreach ($files as $file_path) {
                 $name = basename($file_path, '.html');
-                $content = $this->extract_gutenberg_content(file_get_contents($file_path));
+                $content = file_get_contents($file_path);
 
                 $existing = get_posts([
                     'post_type'      => $post_type,
@@ -204,53 +188,5 @@ class TemplateCommand extends WP_CLI_Command
         }
 
         WP_CLI::success(sprintf('Deleted %d items from database.', $count));
-    }
-
-    protected function wrap_in_html($content, $title)
-    {
-        $title = ucwords(str_replace(['-', '.html'], [' ', ''], $title));
-        return sprintf(
-            '<!DOCTYPE html>
-<html lang="%s">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>%s</title>
-    <style>body { margin: 0; padding: 0; }</style>
-    %s
-</head>
-<body>%s</body>
-</html>',
-            get_bloginfo('language'),
-            $title,
-            $this->get_theme_styles(),
-            $content
-        );
-    }
-
-    protected function get_theme_styles()
-    {
-        ob_start();
-        wp_enqueue_scripts();
-        wp_print_styles();
-        wp_print_head_scripts();
-        $output = ob_get_clean();
-
-        if (function_exists('wp_get_global_stylesheet')) {
-            $output .= "\n<style id='wp-global-styles-inline-css'>\n" . wp_get_global_stylesheet() . "\n</style>";
-        }
-        return $output;
-    }
-
-    protected function extract_gutenberg_content($content)
-    {
-        if (stripos($content, '<body') !== false) {
-            preg_match('/<body.*?>([\s\S]*?)<\/body>/i', $content, $matches);
-            if (isset($matches[1])) {
-                $content = $matches[1];
-            }
-        }
-        $content = preg_replace('/<style.*?>[\s\S]*?<\/style>/i', '', $content);
-        return trim($content);
     }
 }

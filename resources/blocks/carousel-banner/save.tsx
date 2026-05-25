@@ -1,11 +1,10 @@
-import { useBlockProps } from '@wordpress/block-editor';
+import { useBlockProps, InnerBlocks } from '@wordpress/block-editor';
 import type { CarouselBannerProps } from './types';
 
 export default function Save({ attributes }: CarouselBannerProps): JSX.Element {
   const {
     imageUrl,
     imageAlt,
-    imageCaption,
     linkUrl,
     linkTarget,
     bannerStyle,
@@ -13,7 +12,6 @@ export default function Save({ attributes }: CarouselBannerProps): JSX.Element {
     overlayColor,
     textAlign,
     textPosition,
-    showCaption,
     imageSize = 'cover'
   } = attributes;
 
@@ -23,46 +21,56 @@ export default function Save({ attributes }: CarouselBannerProps): JSX.Element {
   });
 
   const imageStyles: React.CSSProperties = {
-    backgroundImage: `url(${imageUrl})`,
-    '--overlay-color': overlayColor,
-    '--overlay-opacity': overlayOpacity
+    backgroundImage: imageUrl ? `url(${imageUrl})` : undefined,
+    ...(imageSize === 'fullwidth'
+      ? { backgroundSize: '100% 100%', backgroundPosition: 'center' }
+      : imageSize === 'contain'
+        ? { backgroundSize: 'contain' }
+        : { backgroundSize: 'cover' }
+    )
   };
 
-  // Apply fullwidth styles
-  if (imageSize === 'fullwidth') {
-    imageStyles.backgroundSize = '100% 100%';
-    imageStyles.backgroundPosition = 'center';
-  } else if (imageSize === 'contain') {
-    imageStyles.backgroundSize = 'contain';
-  } else {
-    imageStyles.backgroundSize = 'cover';
-  }
-
-  const content = (
-    <div 
-      className={`embla-banner__image image-size-${imageSize}`}
-      style={imageStyles}
-    >
-      {showCaption && imageCaption && (
-        <div className="embla-banner__caption">
-          <div className="embla-banner__caption-content">
-            {imageCaption}
-          </div>
-        </div>
+  const slideContent = (
+    <>
+      {/* Background image layer */}
+      {imageUrl && (
+        <div
+          className={`embla-banner__image image-size-${imageSize}`}
+          style={imageStyles}
+          role="img"
+          aria-label={imageAlt || undefined}
+        />
       )}
-    </div>
+
+      {/* Dark color overlay */}
+      {imageUrl && overlayOpacity > 0 && (
+        <div
+          className="embla-banner__overlay"
+          style={{
+            backgroundColor: overlayColor,
+            opacity: overlayOpacity
+          }}
+          aria-hidden="true"
+        />
+      )}
+
+      {/* Inner blocks content (headings, paragraphs, search, etc.) */}
+      <div className="embla-banner__overlay-content">
+        <InnerBlocks.Content />
+      </div>
+    </>
   );
 
   if (linkUrl) {
     return (
       <div {...blockProps}>
-        <a 
+        <a
           href={linkUrl}
           target={linkTarget}
           rel={linkTarget === '_blank' ? 'noopener noreferrer' : undefined}
           className="embla-banner__link"
         >
-          {content}
+          {slideContent}
         </a>
       </div>
     );
@@ -70,7 +78,7 @@ export default function Save({ attributes }: CarouselBannerProps): JSX.Element {
 
   return (
     <div {...blockProps}>
-      {content}
+      {slideContent}
     </div>
   );
 }

@@ -64,12 +64,8 @@ class CarouselBlock extends Block
             $style_variation = $matches[1];
         }
 
-        // Build wrapper attributes
-        // Build custom classes - WordPress will automatically merge className from attributes
-        // Merge with className from attributes
-        if (!empty($class_name)) {
-            $custom_classes = trim($custom_classes . ' ' . esc_attr($class_name));
-        }
+        // Build custom classes list
+        $custom_classes = '';
 
         if ($full_height) {
             $custom_classes .= ' is-full-height';

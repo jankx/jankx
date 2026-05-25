@@ -1,17 +1,21 @@
 import { __ } from '@wordpress/i18n';
-import { useBlockProps, InspectorControls, MediaUpload, MediaUploadCheck } from '@wordpress/block-editor';
-import { 
-  PanelBody, 
-  Button, 
-  TextControl, 
-  SelectControl, 
-  RangeControl, 
+import { useBlockProps, InspectorControls, MediaUpload, MediaUploadCheck, useInnerBlocksProps, InnerBlocks } from '@wordpress/block-editor';
+import {
+  PanelBody,
+  Button,
+  TextControl,
+  SelectControl,
+  RangeControl,
   ToggleControl,
   ColorPicker,
   Placeholder
 } from '@wordpress/components';
-import { useState } from '@wordpress/element';
 import type { CarouselBannerProps } from './types';
+
+const BANNER_TEMPLATE: [string, Record<string, unknown>, [string, Record<string, unknown>][]?][] = [
+  ['core/heading', { level: 2, placeholder: __('Tiêu đề slide...', 'jankx'), textAlign: 'center' }],
+  ['core/paragraph', { placeholder: __('Mô tả ngắn cho slide này...', 'jankx'), align: 'center' }],
+];
 
 export default function Edit({ attributes, setAttributes }: CarouselBannerProps): JSX.Element {
   const {
@@ -35,6 +39,15 @@ export default function Edit({ attributes, setAttributes }: CarouselBannerProps)
     className: `embla__slide embla-banner embla-banner--${bannerStyle} text-${textAlign} text-position-${textPosition} image-size-${imageSize}`
   });
 
+  const innerBlocksProps = useInnerBlocksProps(
+    { className: 'embla-banner__overlay-content' },
+    {
+      template: BANNER_TEMPLATE,
+      templateLock: false,
+      renderAppender: InnerBlocks.ButtonBlockAppender,
+    }
+  );
+
   const onSelectImage = (media: any) => {
     setAttributes({
       imageId: media.id,
@@ -53,64 +66,17 @@ export default function Edit({ attributes, setAttributes }: CarouselBannerProps)
     });
   };
 
-  const renderImage = () => {
-    if (!imageUrl) {
-      return (
-        <Placeholder
-          icon="format-image"
-          label={__('Carousel Banner', 'jankx')}
-          instructions={__('Select an image to create a banner slide', 'jankx')}
-        >
-          <MediaUploadCheck>
-            <MediaUpload
-              onSelect={onSelectImage}
-              allowedTypes={['image']}
-              value={imageId}
-              render={({ open }) => (
-                <Button
-                  variant="primary"
-                  onClick={open}
-                >
-                  {__('Select Image', 'jankx')}
-                </Button>
-              )}
-            />
-          </MediaUploadCheck>
-        </Placeholder>
-      );
-    }
-
-    const imageStyles: React.CSSProperties = {
-      backgroundImage: `url(${imageUrl})`,
-      '--overlay-color': overlayColor,
-      '--overlay-opacity': overlayOpacity
-    };
-
-    // Apply fullwidth styles
-    if (imageSize === 'fullwidth') {
-      imageStyles.backgroundSize = '100% 100%';
-      imageStyles.backgroundPosition = 'center';
-    } else if (imageSize === 'contain') {
-      imageStyles.backgroundSize = 'contain';
-    } else {
-      imageStyles.backgroundSize = 'cover';
-    }
-
-    return (
-      <div 
-        className={`embla-banner__image image-size-${imageSize}`}
-        style={imageStyles}
-      >
-        {showCaption && imageCaption && (
-          <div className="embla-banner__caption">
-            <div className="embla-banner__caption-content">
-              {imageCaption}
-            </div>
-          </div>
-        )}
-      </div>
-    );
-  };
+  const imageStyles: React.CSSProperties = imageUrl ? {
+    backgroundImage: `url(${imageUrl})`,
+    '--overlay-color': overlayColor,
+    '--overlay-opacity': overlayOpacity,
+    ...(imageSize === 'fullwidth'
+      ? { backgroundSize: '100% 100%', backgroundPosition: 'center' }
+      : imageSize === 'contain'
+        ? { backgroundSize: 'contain' }
+        : { backgroundSize: 'cover' }
+    )
+  } : {};
 
   return (
     <div {...blockProps}>
@@ -164,19 +130,6 @@ export default function Edit({ attributes, setAttributes }: CarouselBannerProps)
                 onChange={(val: string) => setAttributes({ imageAlt: val })}
                 help={__('Describe the image for accessibility', 'jankx')}
               />
-
-              <TextControl
-                label={__('Caption', 'jankx')}
-                value={imageCaption}
-                onChange={(val: string) => setAttributes({ imageCaption: val })}
-                help={__('Text to display over the image', 'jankx')}
-              />
-
-              <ToggleControl
-                label={__('Show Caption', 'jankx')}
-                checked={showCaption}
-                onChange={(val: boolean) => setAttributes({ showCaption: val })}
-              />
             </>
           )}
         </PanelBody>
@@ -226,7 +179,7 @@ export default function Edit({ attributes, setAttributes }: CarouselBannerProps)
           )}
 
           <SelectControl
-            label={__('Text Alignment', 'jankx')}
+            label={__('Content Alignment', 'jankx')}
             value={textAlign}
             options={[
               { label: __('Left', 'jankx'), value: 'left' },
@@ -237,7 +190,7 @@ export default function Edit({ attributes, setAttributes }: CarouselBannerProps)
           />
 
           <SelectControl
-            label={__('Text Position', 'jankx')}
+            label={__('Content Position', 'jankx')}
             value={textPosition}
             options={[
               { label: __('Top', 'jankx'), value: 'top' },
@@ -254,7 +207,7 @@ export default function Edit({ attributes, setAttributes }: CarouselBannerProps)
             min={0}
             max={1}
             step={0.1}
-            help={__('Darkness of overlay over image', 'jankx')}
+            help={__('Darkness of overlay over image (0 = none, 1 = fully dark)', 'jankx')}
           />
 
           <div>
@@ -268,7 +221,49 @@ export default function Edit({ attributes, setAttributes }: CarouselBannerProps)
         </PanelBody>
       </InspectorControls>
 
-      {renderImage()}
+      {/* Background image layer */}
+      {imageUrl ? (
+        <div
+          className={`embla-banner__image image-size-${imageSize}`}
+          style={imageStyles}
+          aria-hidden="true"
+        />
+      ) : (
+        <Placeholder
+          icon="format-image"
+          label={__('Carousel Banner', 'jankx')}
+          instructions={__('Select a background image using the settings panel →', 'jankx')}
+          className="embla-banner__placeholder"
+        >
+          <MediaUploadCheck>
+            <MediaUpload
+              onSelect={onSelectImage}
+              allowedTypes={['image']}
+              value={imageId}
+              render={({ open }) => (
+                <Button variant="primary" onClick={open}>
+                  {__('Select Image', 'jankx')}
+                </Button>
+              )}
+            />
+          </MediaUploadCheck>
+        </Placeholder>
+      )}
+
+      {/* Dark overlay */}
+      {imageUrl && overlayOpacity > 0 && (
+        <div
+          className="embla-banner__overlay"
+          style={{
+            backgroundColor: overlayColor,
+            opacity: overlayOpacity
+          }}
+          aria-hidden="true"
+        />
+      )}
+
+      {/* Inner blocks: heading, paragraph, search, buttons, etc. */}
+      <div {...innerBlocksProps} />
     </div>
   );
 }

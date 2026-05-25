@@ -10,15 +10,14 @@
   min-height: 200px;
 }
 .embla-banner__image {
-  position: relative;
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  z-index: 0;
 }
 .embla-banner__image.image-size-contain {
   background-size: contain;
@@ -29,6 +28,56 @@
 .embla-banner__image.image-size-fullwidth {
   background-size: 100% 100% !important;
   background-position: center !important;
+}
+.embla-banner__overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+.embla-banner__overlay-content {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  width: 100%;
+  box-sizing: border-box;
+  color: #fff;
+}
+.embla-banner__overlay-content * {
+  color: inherit;
+}
+.embla-banner__overlay-content h1,
+.embla-banner__overlay-content h2,
+.embla-banner__overlay-content h3,
+.embla-banner__overlay-content h4,
+.embla-banner__overlay-content h5,
+.embla-banner__overlay-content h6 {
+  color: #fff;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+  margin: 0 0 0.5em;
+  line-height: 1.25;
+}
+.embla-banner__overlay-content p {
+  color: rgba(255, 255, 255, 0.9);
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+  margin: 0 0 1em;
+  line-height: 1.6;
+}
+.embla-banner__overlay-content > *:last-child {
+  margin-bottom: 0;
+}
+.embla-banner__link {
+  display: block;
+  width: 100%;
+  height: 100%;
+  text-decoration: none;
+  color: inherit;
+  position: relative;
 }
 .embla-banner__caption {
   position: relative;
@@ -43,16 +92,28 @@
   line-height: 1.4;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
 }
-.embla-banner__link {
-  display: block;
-  width: 100%;
-  height: 100%;
-  text-decoration: none;
-  color: inherit;
+.embla-banner.text-left .embla-banner__overlay-content {
+  align-items: flex-start;
+  text-align: left;
 }
-.embla-banner--banner .embla-banner__caption-content {
-  font-size: 2rem;
-  font-weight: 700;
+.embla-banner.text-center .embla-banner__overlay-content {
+  align-items: center;
+  text-align: center;
+}
+.embla-banner.text-right .embla-banner__overlay-content {
+  align-items: flex-end;
+  text-align: right;
+}
+.embla-banner.text-position-top .embla-banner__overlay-content {
+  justify-content: flex-start;
+  padding-top: 3rem;
+}
+.embla-banner.text-position-middle .embla-banner__overlay-content {
+  justify-content: center;
+}
+.embla-banner.text-position-bottom .embla-banner__overlay-content {
+  justify-content: flex-end;
+  padding-bottom: 3rem;
 }
 .embla-banner--circles {
   border-radius: 50%;
@@ -62,41 +123,11 @@
 .embla-banner--circles .embla-banner__image {
   border-radius: 50%;
 }
-.embla-banner--circles .embla-banner__caption-content {
-  font-size: 1.2rem;
-  text-align: center;
-}
 .embla-banner--square {
   aspect-ratio: 1;
 }
 .embla-banner--square .embla-banner__image {
   border-radius: 8px;
-}
-.embla-banner--square .embla-banner__caption-content {
-  font-size: 1.3rem;
-}
-.embla-banner.text-left .embla-banner__caption {
-  justify-content: flex-start;
-  text-align: left;
-}
-.embla-banner.text-center .embla-banner__caption {
-  justify-content: center;
-  text-align: center;
-}
-.embla-banner.text-right .embla-banner__caption {
-  justify-content: flex-end;
-  text-align: right;
-}
-.embla-banner.text-position-top .embla-banner__caption {
-  align-items: flex-start;
-  padding-top: 1rem;
-}
-.embla-banner.text-position-middle .embla-banner__caption {
-  align-items: center;
-}
-.embla-banner.text-position-bottom .embla-banner__caption {
-  align-items: flex-end;
-  padding-bottom: 1rem;
 }
 .embla-banner.image-size-contain .embla-banner__image {
   background-size: contain !important;
@@ -110,36 +141,27 @@
 }
 
 @media (max-width: 768px) {
-  .embla-banner__caption {
-    padding: 1rem;
-    max-width: 90%;
+  .embla-banner__overlay-content {
+    padding: 1.5rem;
   }
-  .embla-banner__caption-content {
-    font-size: 1.2rem;
+  .embla-banner__overlay-content h1,
+  .embla-banner__overlay-content h2,
+  .embla-banner__overlay-content h3 {
+    font-size: clamp(1.25rem, 4vw, 2rem);
   }
-  .embla-banner--banner .embla-banner__caption-content {
-    font-size: 1.5rem;
-  }
-  .embla-banner--circles .embla-banner__caption-content {
-    font-size: 1rem;
-  }
-  .embla-banner--square .embla-banner__caption-content {
-    font-size: 1.1rem;
+  .embla-banner__overlay-content p {
+    font-size: 0.95rem;
   }
 }
 @media (max-width: 480px) {
-  .embla-banner__caption {
-    padding: 0.75rem;
+  .embla-banner__overlay-content {
+    padding: 1rem;
   }
-  .embla-banner__caption-content {
-    font-size: 1rem;
+  .embla-banner__overlay-content h1,
+  .embla-banner__overlay-content h2,
+  .embla-banner__overlay-content h3 {
+    font-size: clamp(1rem, 5vw, 1.5rem);
   }
-  .embla-banner--banner .embla-banner__caption-content {
-    font-size: 1.2rem;
-  }
-}
-.block-editor-block-list__layout .embla-banner {
-  min-height: 200px;
 }
 
 /*# sourceMappingURL=style.css.map*/

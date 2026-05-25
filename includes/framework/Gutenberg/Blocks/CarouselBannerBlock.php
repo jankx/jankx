@@ -7,7 +7,15 @@ use Jankx\Gutenberg\Block;
 /**
  * Carousel Banner Block
  *
- * Banner slide for Carousel with customizable styles and links
+ * Banner slide for Carousel with customizable styles and links.
+ * Supports inner blocks overlaid on top of a background image,
+ * enabling rich content (headings, paragraphs, search bars, buttons…)
+ * to appear directly on each carousel slide.
+ *
+ * Layout (3 stacked layers):
+ *   1. .embla-banner__image     — background image (position: absolute, z-index: 0)
+ *   2. .embla-banner__overlay   — semi-transparent color overlay (z-index: 1)
+ *   3. .embla-banner__overlay-content — inner blocks content (z-index: 2)
  *
  * @package Jankx\Gutenberg\Blocks
  * @since 1.0.0
@@ -19,154 +27,117 @@ class CarouselBannerBlock extends Block
     /**
      * Render the Carousel Banner block
      *
-     * @param array $attributes Block attributes
-     * @param string $content Inner blocks content
-     * @param object|null $block Block object
+     * @param array       $attributes Block attributes
+     * @param string      $content    Rendered inner blocks HTML (supplied by WordPress)
+     * @param object|null $block      WP_Block instance
      * @return string Rendered HTML
      */
     public function render($attributes, $content = '', $block = null)
     {
-        // Get attributes with defaults
-        $image_id = $attributes['imageId'] ?? 0;
-        $image_url = $attributes['imageUrl'] ?? '';
-        $image_alt = $attributes['imageAlt'] ?? '';
-        $image_caption = $attributes['imageCaption'] ?? '';
-        $link_url = $attributes['linkUrl'] ?? '';
-        $link_target = $attributes['linkTarget'] ?? '_self';
-        $banner_style = $attributes['bannerStyle'] ?? 'banner';
+        // ── Attributes with defaults ────────────────────────────────────────
+        $image_id      = $attributes['imageId']      ?? 0;
+        $image_url     = $attributes['imageUrl']     ?? '';
+        $image_alt     = $attributes['imageAlt']     ?? '';
+        $link_url      = $attributes['linkUrl']      ?? '';
+        $link_target   = $attributes['linkTarget']   ?? '_self';
+        $banner_style  = $attributes['bannerStyle']  ?? 'banner';
         $overlay_opacity = $attributes['overlayOpacity'] ?? 0.3;
-        $overlay_color = $attributes['overlayColor'] ?? '#000000';
-        $text_align = $attributes['textAlign'] ?? 'center';
+        $overlay_color   = $attributes['overlayColor']   ?? '#000000';
+        $text_align    = $attributes['textAlign']    ?? 'center';
         $text_position = $attributes['textPosition'] ?? 'middle';
-        $show_caption = $attributes['showCaption'] ?? true;
-        $height = $attributes['height'] ?? 0;
-        $image_size = $attributes['imageSize'] ?? 'cover';
-        $class_name = $attributes['className'] ?? '';
+        $height        = $attributes['height']       ?? 0;
+        $image_size    = $attributes['imageSize']    ?? 'cover';
+        $class_name    = $attributes['className']    ?? '';
 
-        // Get image URL from WordPress attachment if imageId is provided
+        // ── Resolve image URL/alt from attachment ID if needed ──────────────
         if ($image_id > 0 && empty($image_url)) {
-            $image_url = wp_get_attachment_image_url($image_id, 'full');
+            $image_url = wp_get_attachment_image_url($image_id, 'full') ?: '';
             if (empty($image_alt)) {
-                $image_alt = get_post_meta($image_id, '_wp_attachment_image_alt', true);
-            }
-            if (empty($image_caption)) {
-                $attachment = get_post($image_id);
-                $image_caption = $attachment ? $attachment->post_excerpt : '';
+                $image_alt = get_post_meta($image_id, '_wp_attachment_image_alt', true) ?: '';
             }
         }
 
-        // If no image, return empty
-        if (empty($image_url)) {
-            return '';
-        }
+        // ── Build outer wrapper classes ─────────────────────────────────────
+        $wrapper_classes = array_filter([
+            'embla__slide',
+            'wp-block-jankx-carousel-banner',
+            'embla-banner',
+            'embla-banner--' . sanitize_html_class($banner_style),
+            'text-' . sanitize_html_class($text_align),
+            'text-position-' . sanitize_html_class($text_position),
+            'image-size-' . sanitize_html_class($image_size),
+            $class_name,
+        ]);
 
-        // Build wrapper classes
-        $wrapper_classes = ['embla__slide', 'embla-banner'];
-        if (!empty($banner_style)) {
-            $wrapper_classes[] = 'banner-style-' . esc_attr($banner_style);
-        }
-        if (!empty($text_position)) {
-            $wrapper_classes[] = 'text-position-' . esc_attr($text_position);
-        }
-        if (!empty($text_align)) {
-            $wrapper_classes[] = 'text-' . esc_attr($text_align);
-        }
-        if (!empty($image_size)) {
-            $wrapper_classes[] = 'image-size-' . esc_attr($image_size);
-        }
-        if (!empty($class_name)) {
-            $wrapper_classes[] = esc_attr($class_name);
-        }
-
-        // Build wrapper attributes
-        $wrapper_attributes = [
-            'class' => implode(' ', $wrapper_classes),
-            'style' => ''
-        ];
-
-        // Add height if specified
+        // ── Additional inline styles (height for circles variant) ───────────
+        $wrapper_style = '';
         if ($height > 0) {
-            $wrapper_attributes['style'] .= sprintf('--banner-height: %dpx;', $height);
+            $wrapper_style = sprintf('--banner-height:%dpx;', (int) $height);
         }
 
-        // Get WordPress block wrapper attributes
-        $block_wrapper_attrs = get_block_wrapper_attributes($wrapper_attributes);
+        $block_wrapper_attrs = get_block_wrapper_attributes([
+            'class' => implode(' ', $wrapper_classes),
+            'style' => $wrapper_style,
+        ]);
 
-
-
-
-
-        // Build banner wrapper classes using BEM
-        $banner_classes = ['embla-banner'];
-        if (!empty($banner_style)) {
-            $banner_classes[] = 'embla-banner--' . esc_attr($banner_style);
+        // ── Background image styles ─────────────────────────────────────────
+        $bg_styles = [];
+        if (!empty($image_url)) {
+            $bg_styles[] = 'background-image:url(\'' . esc_url($image_url) . '\')';
         }
-        if (!empty($text_align)) {
-            $banner_classes[] = 'text-' . esc_attr($text_align);
-        }
-        if (!empty($text_position)) {
-            $banner_classes[] = 'text-position-' . esc_attr($text_position);
-        }
-
-        // Process content - carousel-banner doesn't support inner blocks normally
-        // But if content exists and contains nested carousel-banner blocks, ignore it
-        $processed_content = '';
-        if (!empty($content)) {
-            // Check if content contains nested banner block (this shouldn't happen but WordPress might render it)
-            if (strpos($content, 'wp-block-jankx-carousel-banner') !== false || strpos($content, 'embla-banner__image') !== false) {
-                // Content contains a nested banner block, ignore it completely
-                // This prevents double rendering of banner structure
-                $processed_content = '';
-            } else {
-                // Normal content (text, HTML), use it
-                $processed_content = trim($content);
-            }
+        switch ($image_size) {
+            case 'fullwidth':
+                $bg_styles[] = 'background-size:100% 100%';
+                $bg_styles[] = 'background-position:center';
+                break;
+            case 'contain':
+                $bg_styles[] = 'background-size:contain';
+                break;
+            default:
+                $bg_styles[] = 'background-size:cover';
+                break;
         }
 
+        // ── Overlay styles ──────────────────────────────────────────────────
+        $overlay_style = sprintf(
+            'background-color:%s;opacity:%s;',
+            esc_attr($overlay_color),
+            esc_attr(number_format((float) $overlay_opacity, 2, '.', ''))
+        );
+
+        // ── Render ──────────────────────────────────────────────────────────
         ob_start();
         ?>
         <div <?php echo $block_wrapper_attrs; ?>>
             <?php if (!empty($link_url)) : ?>
-                <a href="<?php echo esc_url($link_url); ?>" 
+                <a href="<?php echo esc_url($link_url); ?>"
                    target="<?php echo esc_attr($link_target); ?>"
                    class="embla-banner__link"
+                   rel="<?php echo $link_target === '_blank' ? 'noopener noreferrer' : ''; ?>"
                    aria-label="<?php echo esc_attr($image_alt); ?>">
             <?php endif; ?>
-            
-            <div class="<?php echo esc_attr(implode(' ', $banner_classes)); ?>">
-                <?php
-                // Build image styles based on imageSize
-                $image_styles = ['background-image: url(\'' . esc_url($image_url) . '\')'];
-                
-                if ($image_size === 'fullwidth') {
-                    $image_styles[] = 'background-size: 100% 100%';
-                    $image_styles[] = 'background-position: center';
-                } elseif ($image_size === 'contain') {
-                    $image_styles[] = 'background-size: contain';
-                } else {
-                    $image_styles[] = 'background-size: cover';
-                }
-                
-                $image_style_attr = implode('; ', $image_styles);
-                ?>
-                <div class="embla-banner__image image-size-<?php echo esc_attr($image_size); ?>" style="<?php echo esc_attr($image_style_attr); ?>">
-                    <?php if (!empty($processed_content) || ($show_caption && !empty($image_caption))) : ?>
-                        <div class="embla-banner__caption">
-                            <?php if (!empty($processed_content)) : ?>
-                                <div class="embla-banner__caption-content">
-                                    <?php echo wp_kses_post($processed_content); ?>
-                                </div>
-                            <?php endif; ?>
-                            <?php if ($show_caption && !empty($image_caption)) : ?>
-                                <div class="embla-banner__caption-text">
-                                    <?php echo esc_html($image_caption); ?>
-                                </div>
-                            <?php endif; ?>
-                        </div>
-                    <?php endif; ?>
-                </div>
+
+            <?php /* Layer 1: Background image */ ?>
+            <?php if (!empty($image_url)) : ?>
+                <div class="embla-banner__image image-size-<?php echo esc_attr($image_size); ?>"
+                     style="<?php echo esc_attr(implode(';', $bg_styles)); ?>"
+                     role="img"
+                     <?php if (!empty($image_alt)) : ?>aria-label="<?php echo esc_attr($image_alt); ?>"<?php endif; ?>
+                ></div>
+            <?php endif; ?>
+
+            <?php /* Layer 2: Semi-transparent color overlay */ ?>
+            <?php if (!empty($image_url) && (float) $overlay_opacity > 0) : ?>
+                <div class="embla-banner__overlay"
+                     style="<?php echo esc_attr($overlay_style); ?>"
+                     aria-hidden="true"></div>
+            <?php endif; ?>
+
+            <?php /* Layer 3: Inner blocks (headings, paragraphs, search, buttons…) */ ?>
+            <div class="embla-banner__overlay-content">
+                <?php echo $content; // Already sanitized by WordPress block rendering ?>
             </div>
-            
+
             <?php if (!empty($link_url)) : ?>
                 </a>
             <?php endif; ?>

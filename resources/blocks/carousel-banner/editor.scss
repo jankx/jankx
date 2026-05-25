@@ -1,181 +1,147 @@
-// Editor styles for Embla Banner
+// Editor styles for Carousel Banner — inner blocks overlay mode
 .embla-banner {
-  .components-placeholder {
-    min-height: 200px;
-    border: 2px dashed #ccc;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: #f9f9f9;
-    
-    .components-placeholder__label {
-      font-size: 16px;
-      font-weight: 600;
-      color: #666;
-      margin-bottom: 10px;
-    }
-    
-    .components-placeholder__instructions {
-      color: #999;
-      font-size: 14px;
-      margin-bottom: 15px;
-    }
-  }
-  
+  position: relative;
+  min-height: 300px;
+
+  // ─── Layer 1: Background image ─────────────────────────────────────────
   &__image {
-    position: relative;
-    min-height: 200px;
+    position: absolute;
+    inset: 0;
+    min-height: 300px;
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    
-    // Image size variations in editor
+    z-index: 0;
+
     &.image-size-contain {
       background-size: contain;
     }
-    
+
     &.image-size-cover {
       background-size: cover;
     }
-    
+
     &.image-size-fullwidth {
       background-size: 100% 100% !important;
       background-position: center !important;
     }
   }
-  
-  // overlay removed — carousel uses global gradient overlay instead
-  
-  &__caption {
+
+  // ─── Layer 2: Color overlay ────────────────────────────────────────────
+  &__overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  // ─── Layer 3: Inner blocks content ─────────────────────────────────────
+  &__overlay-content {
     position: relative;
     z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 300px;
+    width: 100%;
     padding: 2rem;
-    max-width: 80%;
-    
-    &-content {
-      color: white;
-      font-size: 1.5rem;
+    box-sizing: border-box;
+    color: #fff;
+
+    // Ensure block appender stays visible
+    .block-list-appender {
+      margin-top: 1rem;
+    }
+
+    // Make inner blocks text readable on dark backgrounds
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      color: #fff;
+    }
+
+    p {
+      color: rgba(255, 255, 255, 0.9);
+    }
+  }
+
+  // ─── Placeholder when no image selected ───────────────────────────────
+  &__placeholder.components-placeholder {
+    position: relative;
+    z-index: 2;
+    min-height: 200px;
+    border: 2px dashed #ccc;
+    border-radius: 8px;
+    background: rgba(249, 249, 249, 0.95);
+    margin: 1rem;
+
+    .components-placeholder__label {
+      font-size: 16px;
       font-weight: 600;
-      line-height: 1.4;
-      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+      color: #444;
     }
   }
-  
-  // Style variations in editor
-  &--banner {
-    .embla-banner__caption {
-      &-content {
-        font-size: 2rem;
-        font-weight: 700;
-      }
-    }
+
+  // ─── Content alignment in editor ──────────────────────────────────────
+  &.text-left .embla-banner__overlay-content {
+    align-items: flex-start;
+    text-align: left;
   }
-  
+
+  &.text-center .embla-banner__overlay-content {
+    align-items: center;
+    text-align: center;
+  }
+
+  &.text-right .embla-banner__overlay-content {
+    align-items: flex-end;
+    text-align: right;
+  }
+
+  &.text-position-top .embla-banner__overlay-content {
+    justify-content: flex-start;
+    padding-top: 3rem;
+  }
+
+  &.text-position-middle .embla-banner__overlay-content {
+    justify-content: center;
+  }
+
+  &.text-position-bottom .embla-banner__overlay-content {
+    justify-content: flex-end;
+    padding-bottom: 3rem;
+  }
+
+  // ─── Style variations ─────────────────────────────────────────────────
   &--circles {
     border-radius: 50%;
     aspect-ratio: 1;
-    
+
     .embla-banner__image {
       border-radius: 50%;
     }
-    
-    .embla-banner__caption {
-      &-content {
-        font-size: 1.2rem;
-        text-align: center;
-      }
-    }
   }
-  
+
   &--square {
     aspect-ratio: 1;
-    
+
     .embla-banner__image {
       border-radius: 8px;
-    }
-    
-    .embla-banner__caption {
-      &-content {
-        font-size: 1.3rem;
-      }
-    }
-  }
-  
-  // Text alignment
-  &.text-left {
-    .embla-banner__caption {
-      justify-content: flex-start;
-      text-align: left;
-    }
-  }
-  
-  &.text-center {
-    .embla-banner__caption {
-      justify-content: center;
-      text-align: center;
-    }
-  }
-  
-  &.text-right {
-    .embla-banner__caption {
-      justify-content: flex-end;
-      text-align: right;
-    }
-  }
-  
-  // Text position
-  &.text-position-top {
-    .embla-banner__caption {
-      align-items: flex-start;
-      padding-top: 1rem;
-    }
-  }
-  
-  &.text-position-middle {
-    .embla-banner__caption {
-      align-items: center;
-    }
-  }
-  
-  &.text-position-bottom {
-    .embla-banner__caption {
-      align-items: flex-end;
-      padding-bottom: 1rem;
-    }
-  }
-  
-  // Image size classes on wrapper in editor
-  &.image-size-contain {
-    .embla-banner__image {
-      background-size: contain !important;
-    }
-  }
-  
-  &.image-size-cover {
-    .embla-banner__image {
-      background-size: cover !important;
-    }
-  }
-  
-  &.image-size-fullwidth {
-    .embla-banner__image {
-      background-size: 100% 100% !important;
-      background-position: center !important;
     }
   }
 }
 
-// Inspector Controls styles
+// Inspector panel tab styles
 .carousel-tabs {
   .components-tab-panel__tabs {
     display: flex;
     border-bottom: 1px solid #ddd;
     margin-bottom: 20px;
-    
+
     .components-tab-panel__tabs-item {
       flex: 1;
       padding: 10px 15px;
@@ -185,57 +151,15 @@
       cursor: pointer;
       border-bottom: 2px solid transparent;
       transition: all 0.3s ease;
-      
+
       &:hover {
         background: #f0f0f0;
       }
-      
+
       &.is-active {
         border-bottom-color: #007cba;
         color: #007cba;
         font-weight: 600;
-      }
-    }
-  }
-  
-  .components-tab-panel__tab-content {
-    min-height: 200px;
-  }
-}
-
-// Responsive adjustments for editor
-@media (max-width: 768px) {
-  .embla-banner {
-    &__caption {
-      padding: 1rem;
-      max-width: 90%;
-      
-      &-content {
-        font-size: 1.2rem;
-      }
-    }
-    
-    &--banner {
-      .embla-banner__caption {
-        &-content {
-          font-size: 1.5rem;
-        }
-      }
-    }
-    
-    &--circles {
-      .embla-banner__caption {
-        &-content {
-          font-size: 1rem;
-        }
-      }
-    }
-    
-    &--square {
-      .embla-banner__caption {
-        &-content {
-          font-size: 1.1rem;
-        }
       }
     }
   }
