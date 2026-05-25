@@ -49,7 +49,7 @@ return [
 
     // ── Extra WP-CLI command groups (in addition to built-ins) ───────────────
     'commands' => [
-        // 'jankx mymodule' => App\Console\Commands\MyModuleCommand::class,
+        'jankx export-templates' => \Jankx\Foundation\Cli\Commands\ExportTemplatesCommand::class,
     ],
 
     // ── Extra seeder classes (in addition to bundled defaults) ───────────────
