@@ -66,7 +66,7 @@ class ThemeOptionsServiceTest extends TestCase
     public function testGetMenuArgs()
     {
         $args = $this->service->getMenuArgs();
-        $this->assertEquals('bookix_theme_options', $args['opt_name']);
+        $this->assertEquals('jankx_options', $args['opt_name']);
         $this->assertEquals('jankx-theme-options', $args['page_slug']);
     }
 

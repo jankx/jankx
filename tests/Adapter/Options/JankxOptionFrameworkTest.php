@@ -35,12 +35,12 @@ class JankxOptionFrameworkTest extends TestCase
         Functions\expect('esc_js')->andReturnFirstArg();
         Functions\expect('admin_url')->andReturn('http://example.com/wp-admin/admin-ajax.php');
 
-        $adapter->register_admin_menu('Theme Options', 'Bookix Theme Options');
+        $adapter->register_admin_menu('Theme Options', 'Jankx Theme Options');
 
         $framework = $adapter->getFramework();
         $this->assertInstanceOf(OptionFramework::class, $framework);
         $this->assertEquals('jankx_options', $framework->getInstanceName());
-        $this->assertEquals('Bookix Theme Options', $framework->getPageTitle());
+        $this->assertEquals('Jankx Theme Options', $framework->getPageTitle());
         $this->assertTrue(true);
     }
 
