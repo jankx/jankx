@@ -55,10 +55,10 @@ class ThemeOptionsIntegrationServiceProvider extends ServiceProvider
      */
     public function boot(Application $app): void
     {
-        // Wait for theme options to be initialized
+        // Wait for translations to be loaded (priority 5) but run before ThemeOptions (priority 10)
         add_action('after_setup_theme', function () use ($app) {
             $this->bootServices($app);
-        }, 20); // Run after theme options are initialized
+        }, 8);
 
         // Clear cache when theme options are updated
         add_action('jankx/options/updated', function () use ($app) {

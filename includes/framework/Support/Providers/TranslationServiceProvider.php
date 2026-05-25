@@ -40,8 +40,8 @@ class TranslationServiceProvider extends ServiceProvider
      */
     public function boot(Application $app)
     {
-        // Load text domain
-        add_action('init', [$this, 'loadTextDomain']);
+        // Load text domain early to avoid "too early" notice in WP 6.7+
+        add_action('after_setup_theme', [$this, 'loadTextDomain'], 5);
 
         // Direction support
         add_filter('body_class', [$this, 'addDirectionBodyClass']);

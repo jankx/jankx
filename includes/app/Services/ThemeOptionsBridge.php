@@ -61,6 +61,85 @@ class ThemeOptionsBridge
 
         // Filter block attributes to apply theme defaults
         add_filter('render_block', [$this, 'applyThemeDefaultsToBlock'], 10, 3);
+
+        // Inject built-in header options
+        add_filter('jankx/option/core_pages_config', [$this, 'injectHeaderPageConfig'], 10, 1);
+        add_filter('jankx/option/core_sections_for_page', [$this, 'injectHeaderSectionsConfig'], 10, 2);
+    }
+
+    /**
+     * Inject built-in header page config
+     *
+     * @param array $pages Existing pages
+     * @return array
+     */
+    public function injectHeaderPageConfig(array $pages): array
+    {
+        // Use string key to avoid overwriting numeric index (General)
+        $pages['header'] = [
+            'id' => 'header',
+            'name' => __('Header Settings', 'jankx'),
+            'args' => [
+                'description' => __('Configure header behavior and layout', 'jankx'),
+                'priority' => 50,
+                'icon' => 'dashicons-heading',
+            ],
+        ];
+
+        return $pages;
+    }
+
+    /**
+     * Inject built-in header sections config
+     *
+     * @param array $sections Existing sections
+     * @param string $pageId Current page ID
+     * @return array
+     */
+    public function injectHeaderSectionsConfig(array $sections, string $pageId): array
+    {
+        if ($pageId === 'header') {
+            $sections['header_general'] = [
+                'id' => 'header_general',
+                'name' => __('General', 'jankx'),
+                'fields' => [
+                    [
+                        'id' => 'enable_sticky_header',
+                        'name' => __('Enable Sticky Header', 'jankx'),
+                        'type' => 'switch',
+                        'value' => 0,
+                        'on' => __('On', 'jankx'),
+                        'off' => __('Off', 'jankx'),
+                        'description' => __('Make the header sticky when scrolling', 'jankx'),
+                    ],
+                    [
+                        'id' => 'sticky_header_trigger',
+                        'name' => __('Sticky Header Trigger', 'jankx'),
+                        'type' => 'select',
+                        'options' => [
+                            'top' => __('Top of Page', 'jankx'),
+                            'hero' => __('After Hero Carousel', 'jankx'),
+                            'first_group' => __('After First Section', 'jankx'),
+                        ],
+                        'value' => 'top',
+                        'description' => __('Define when the header should become sticky', 'jankx'),
+                    ],
+                    [
+                        'id' => 'header_type',
+                        'name' => __('Header Type', 'jankx'),
+                        'type' => 'select',
+                        'options' => [
+                            'normal' => __('Normal (Static)', 'jankx'),
+                            'overlay' => __('Overlay (Transparent/Above content)', 'jankx'),
+                        ],
+                        'value' => 'normal',
+                        'description' => __('Choose if the header should sit on top of the content or push it down', 'jankx'),
+                    ],
+                ],
+            ];
+        }
+
+        return $sections;
     }
 
     /**

@@ -78,6 +78,9 @@ class ThemeOptionsService
         if (!is_null($this->adapter)) {
             // Tạo sections cho adapter
             $this->createSectionsForAdapter();
+
+            // Cho phép các service khác "tiêm" thêm options
+            do_action('jankx/options/after_create_sections', $this->adapter, $this);
         }
     }
 
