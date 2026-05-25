@@ -4,6 +4,7 @@
     "description": "Sync Gutenberg templates to theme files instead of database.",
     "author": "Jankx",
     "extension_id": "gutenberg-file-sync",
+    "context": ["rest", "admin"],
     "caller": {
         "file": "GutenbergFileSyncExtension.php",
         "class": "Jankx\\Extensions\\GutenbergFileSync\\GutenbergFileSyncExtension",
