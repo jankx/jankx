@@ -1,3 +1,21 @@
+body.jankx-header-overlay {
+    header {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 1000;
+        background-color: transparent !important;
+        border-bottom-color: transparent !important;
+
+        // When sticky, it should gain background again
+        &.is-sticky {
+            position: fixed;
+            background-color: var(--wp--preset--color--contrast, #1a1a1a) !important;
+        }
+    }
+}
+
 header {
     transition: background-color 0.3s ease, box-shadow 0.3s ease;
 

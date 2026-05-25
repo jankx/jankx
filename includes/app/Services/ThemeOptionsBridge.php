@@ -239,6 +239,14 @@ class ThemeOptionsBridge
             $classes[] = 'jankx-color-scheme-' . $colorScheme;
         }
 
+        // Add header type class
+        $headerType = $this->themeOptions->getOption('header_type');
+        if (is_null($headerType)) {
+            $all = get_option('jankx_options', []);
+            $headerType = isset($all['header_type']) ? $all['header_type'] : 'normal';
+        }
+        $classes[] = 'jankx-header-' . sanitize_html_class($headerType);
+
         return $classes;
     }
 
@@ -388,6 +396,14 @@ class ThemeOptionsBridge
                     if (is_null($val)) {
                         $all = get_option('jankx_options', []);
                         return isset($all['sticky_header_trigger']) ? $all['sticky_header_trigger'] : 'top';
+                    }
+                    return $val;
+                })(),
+                'header_type' => (function() {
+                    $val = $this->themeOptions->getOption('header_type');
+                    if (is_null($val)) {
+                        $all = get_option('jankx_options', []);
+                        return isset($all['header_type']) ? $all['header_type'] : 'normal';
                     }
                     return $val;
                 })(),
