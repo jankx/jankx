@@ -166,6 +166,9 @@ module.exports = {
     'assets/js/responsive-visibility': './js/filters/responsive-visibility.tsx',
     'blocks/typography/build/index': './blocks/typography/index.tsx',
     'blocks/integration/build/jankx-blocks-bridge': './blocks/integration/jankx-blocks-bridge.js',
+    'assets/js/sticky-header': './js/sticky-header.ts',
+    '../style': './scss/style.scss',
+    '../style.min': './scss/style.scss',
   },
   output: {
     path: path.resolve(__dirname),

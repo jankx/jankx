@@ -32,7 +32,7 @@ class ThemeOptionsService
     /**
      * @var string
      */
-    protected $optionName = 'bookix_theme_options';
+    protected $optionName = 'jankx_options';
 
     /**
      * @var \Jankx\Adapter\Options\Interfaces\Adapter

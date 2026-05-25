@@ -86,6 +86,32 @@ class ThemeOptionsBridge
         }
 
         $this->enqueueThemeData('jankx-theme-options-frontend', true, false);
+
+        // Enqueue sticky header script if enabled in theme options
+        $enableSticky = $this->themeOptions->getOption('enable_sticky_header');
+        
+        // Fallback to direct get_option if adapter failed
+        if (is_null($enableSticky)) {
+            $allOptions = get_option('jankx_options', []);
+            $enableSticky = isset($allOptions['enable_sticky_header']) ? $allOptions['enable_sticky_header'] : 0;
+        }
+
+        if ($enableSticky) {
+            $scriptUrl = get_template_directory_uri() . '/resources/assets/js/sticky-header.js';
+            $scriptPath = get_template_directory() . '/resources/assets/js/sticky-header.js';
+            $assetPath = get_template_directory() . '/resources/assets/js/sticky-header.asset.php';
+
+            if (file_exists($scriptPath)) {
+                $asset = file_exists($assetPath) ? require $assetPath : ['dependencies' => [], 'version' => filemtime($scriptPath)];
+                wp_enqueue_script(
+                    'jankx-sticky-header',
+                    $scriptUrl,
+                    $asset['dependencies'],
+                    $asset['version'],
+                    true
+                );
+            }
+        }
     }
 
     /**
@@ -347,6 +373,24 @@ class ThemeOptionsBridge
             ],
             'typography' => [
                 'body' => $bodyTypography,
+            ],
+            'header' => [
+                'enable_sticky_header' => (function() {
+                    $val = $this->themeOptions->getOption('enable_sticky_header');
+                    if (is_null($val)) {
+                        $all = get_option('jankx_options', []);
+                        return isset($all['enable_sticky_header']) ? $all['enable_sticky_header'] : 0;
+                    }
+                    return $val;
+                })(),
+                'sticky_header_trigger' => (function() {
+                    $val = $this->themeOptions->getOption('sticky_header_trigger');
+                    if (is_null($val)) {
+                        $all = get_option('jankx_options', []);
+                        return isset($all['sticky_header_trigger']) ? $all['sticky_header_trigger'] : 'top';
+                    }
+                    return $val;
+                })(),
             ],
             'cssVars' => $this->cssGenerator->getCSSVariables(),
         ];
