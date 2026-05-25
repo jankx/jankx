@@ -12,6 +12,10 @@ document.addEventListener('DOMContentLoaded', () => {
       await new Promise(resolve => setTimeout(resolve, 100));
 
       const applyViewportMinusHeader = () => {
+        if (block.classList.contains('is-full-height')) {
+          block.style.setProperty('--carousel-height', '100vh');
+          return;
+        }
         if (!block.classList.contains('fit-vh-minus-header')) {
           return;
         }
@@ -38,8 +42,8 @@ document.addEventListener('DOMContentLoaded', () => {
       const navigation = container.dataset.navigation === 'true';
       const pagination = container.dataset.pagination === 'true';
       const isMobileViewport = (window.innerWidth || document.documentElement.clientWidth) <= 768;
-      const slideNodes = container.querySelectorAll('.embla__slide').length 
-        ? container.querySelectorAll('.embla__slide') 
+      const slideNodes = container.querySelectorAll('.embla__slide').length
+        ? container.querySelectorAll('.embla__slide')
         : container.querySelectorAll('.carousel-slide');
       const slidesCount = slideNodes.length;
       const spaceBetweenMobile = Math.min(spaceBetween, 16);

@@ -1,7 +1,7 @@
 import { __ } from '@wordpress/i18n';
-import { useBlockProps, InspectorControls, useInnerBlocksProps, MediaUpload, MediaUploadCheck, BlockControls, InnerBlocks } from '@wordpress/block-editor';                                 
+import { useBlockProps, InspectorControls, useInnerBlocksProps, MediaUpload, MediaUploadCheck, BlockControls, InnerBlocks } from '@wordpress/block-editor';
 import { PanelBody, RangeControl, ToggleControl, SelectControl, Button, TabPanel, ColorPicker, ToolbarGroup, ToolbarButton } from '@wordpress/components';
-import { gallery, cover, layout, quote } from '@wordpress/icons';                                   
+import { gallery, cover, layout, quote } from '@wordpress/icons';
 import { useEffect, useRef } from '@wordpress/element';
 import { createBlock } from '@wordpress/blocks';
 import { useSelect } from '@wordpress/data';
@@ -18,7 +18,7 @@ const hexToRgb = (hex: string) => {
   } : { r: 0, g: 0, b: 0 };
 };
 
-export default function Edit({ attributes, setAttributes, clientId }: CarouselProps): JSX.Element {                                                               
+export default function Edit({ attributes, setAttributes, clientId }: CarouselProps): JSX.Element {
   const {
     slidesPerView,
     slidesPerViewTablet,
@@ -45,14 +45,15 @@ export default function Edit({ attributes, setAttributes, clientId }: CarouselPr
     gradientOpacity,
     gradientHeight,
     className,
-    fitViewportMinusHeader = false
+    fitViewportMinusHeader = false,
+    fullHeight = false
   } = attributes;
 
   // Get block's style variation
   const styleVariation = useSelect((select) => {
     const block = select('core/block-editor').getBlock(clientId);
     if (!block) return 'default';
-    
+
     // Extract style variation from className
     const match = className?.match(/is-style-(\w+)/);
     return match ? match[1] : 'default';
@@ -65,11 +66,11 @@ export default function Edit({ attributes, setAttributes, clientId }: CarouselPr
     const cleanedClassName = currentClassName
       .replace(/\bis-style-\w+\b/g, '')
       .trim();
-    
+
     // Add new variation class
     const newVariationClass = variation === 'default' ? '' : `is-style-${variation}`;
     const newClassName = [cleanedClassName, newVariationClass].filter(Boolean).join(' ');
-    
+
     setAttributes({ className: newClassName });
   };
 
@@ -80,189 +81,188 @@ export default function Edit({ attributes, setAttributes, clientId }: CarouselPr
   // Convert gradient color to RGB for CSS variables
   const gradientRgb = hexToRgb(gradientColor);
 
-    const blockProps = useBlockProps({
-    ref: containerRef,
-    className: `carousel-block banner-style-${bannerStyle} ${gradientOverlay ? 'has-gradient-overlay' : ''} ${className || ''} ${fitViewportMinusHeader ? 'fit-vh-minus-header' : ''}`.trim(),
-    style: {
-      '--carousel-height': `${height}px`,
+  ref: containerRef,
+    className: `carousel-block banner-style-${bannerStyle} ${gradientOverlay ? 'has-gradient-overlay' : ''} ${className || ''} ${fitViewportMinusHeader ? 'fit-vh-minus-header' : ''} ${fullHeight ? 'is-full-height' : ''}`.trim(),
+      style: {
+    '--carousel-height': fullHeight ? '100vh' : `${height}px`,
       '--carousel-min-height': `${minHeight}px`,
-      '--banner-style': bannerStyle,
-      '--banner-text-color': bannerTextColor,
-      '--banner-background-color': bannerBackgroundColor,
-      '--banner-padding': `${bannerPadding}px`,
-      '--banner-border-radius': `${bannerBorderRadius}px`,
-      '--gradient-overlay-enabled': gradientOverlay ? '1' : '0',
-      '--gradient-color-r': gradientRgb.r,
-      '--gradient-color-g': gradientRgb.g,
-      '--gradient-color-b': gradientRgb.b,
-      '--gradient-opacity': gradientOpacity,
-      '--gradient-height': `${gradientHeight}%`,
-      '--slides-per-view-desktop': slidesPerView,
-      '--slides-per-view-tablet': slidesPerViewTablet,
-      '--slides-per-view-mobile': slidesPerViewMobile,
-      '--space-between': `${spaceBetween}px`
-    } as React.CSSProperties
-  });
+        '--banner-style': bannerStyle,
+          '--banner-text-color': bannerTextColor,
+            '--banner-background-color': bannerBackgroundColor,
+              '--banner-padding': `${bannerPadding}px`,
+                '--banner-border-radius': `${bannerBorderRadius}px`,
+                  '--gradient-overlay-enabled': gradientOverlay ? '1' : '0',
+                    '--gradient-color-r': gradientRgb.r,
+                      '--gradient-color-g': gradientRgb.g,
+                        '--gradient-color-b': gradientRgb.b,
+                          '--gradient-opacity': gradientOpacity,
+                            '--gradient-height': `${gradientHeight}%`,
+                              '--slides-per-view-desktop': slidesPerView,
+                                '--slides-per-view-tablet': slidesPerViewTablet,
+                                  '--slides-per-view-mobile': slidesPerViewMobile,
+                                    '--space-between': `${spaceBetween}px`
+  } as React.CSSProperties
+});
 
-  const innerBlocksProps = useInnerBlocksProps(
-    { className: 'carousel-wrapper' },
-    {
-      allowedBlocks: contentMode === 'slides' 
-        ? ['jankx/carousel-slide', 'jankx/carousel-inner-blocks-overlay'] 
-        : ['jankx/carousel-banner', 'jankx/carousel-inner-blocks-overlay'],
-      template: contentMode === 'slides' ? [
-        ['jankx/carousel-slide'],
-        ['jankx/carousel-slide'],
-        ['jankx/carousel-slide']
-      ] : [],
-      templateLock: false,
-      orientation: 'horizontal',
-      renderAppender: InnerBlocks.ButtonBlockAppender
-    }
+const innerBlocksProps = useInnerBlocksProps(
+  { className: 'carousel-wrapper' },
+  {
+    allowedBlocks: contentMode === 'slides'
+      ? ['jankx/carousel-slide', 'jankx/carousel-inner-blocks-overlay']
+      : ['jankx/carousel-banner', 'jankx/carousel-inner-blocks-overlay'],
+    template: contentMode === 'slides' ? [
+      ['jankx/carousel-slide'],
+      ['jankx/carousel-slide'],
+      ['jankx/carousel-slide']
+    ] : [],
+    templateLock: false,
+    orientation: 'horizontal',
+    renderAppender: InnerBlocks.ButtonBlockAppender
+  }
+);
+
+const hasInnerBlocks = useSelect(
+  (select) => {
+    const { getBlock } = select('core/block-editor');
+    const block = getBlock(clientId);
+    return !!(block && block.innerBlocks.length);
+  },
+  [clientId]
+);
+
+// Handle gallery image selection
+const onSelectGalleryImages = (images: any[]) => {
+  const galleryData = images.map(img => ({
+    id: img.id,
+    url: img.url,
+    alt: img.alt || '',
+    caption: img.caption || ''
+  }));
+
+  setAttributes({ galleryImages: galleryData });
+
+  // Create carousel-banner blocks for each image
+  const bannerBlocks = images.map(img =>
+    createBlock('jankx/carousel-banner', {
+      imageId: img.id,
+      imageUrl: img.url,
+      imageAlt: img.alt || '',
+      imageCaption: img.caption || ''
+    })
   );
 
-  const hasInnerBlocks = useSelect(
-    (select) => {
-      const { getBlock } = select('core/block-editor');
-      const block = getBlock(clientId);
-      return !!(block && block.innerBlocks.length);
-    },
-    [clientId]
-  );
+  // Replace inner blocks with banner blocks
+  wp.data.dispatch('core/block-editor').replaceInnerBlocks(clientId, bannerBlocks);
+};
 
-  // Handle gallery image selection
-  const onSelectGalleryImages = (images: any[]) => {
-    const galleryData = images.map(img => ({
-      id: img.id,
-      url: img.url,
-      alt: img.alt || '',
-      caption: img.caption || ''
-    }));
-    
-    setAttributes({ galleryImages: galleryData });
-    
-    // Create carousel-banner blocks for each image
-    const bannerBlocks = images.map(img => 
-      createBlock('jankx/carousel-banner', {
-        imageId: img.id,
-        imageUrl: img.url,
-        imageAlt: img.alt || '',
-        imageCaption: img.caption || ''
-      })
-    );
-    
-    // Replace inner blocks with banner blocks
-    wp.data.dispatch('core/block-editor').replaceInnerBlocks(clientId, bannerBlocks);
-  };
+// Initialize Embla in editor
+useEffect(() => {
+  if (!containerRef.current) return;
 
-  // Initialize Embla in editor
-  useEffect(() => {
-    if (!containerRef.current) return;
+  const loadCarousel = async () => {
+    await new Promise(resolve => setTimeout(resolve, 200));
 
-    const loadCarousel = async () => {
-      await new Promise(resolve => setTimeout(resolve, 200));
+    if (containerRef.current) {
+      const carouselEl = containerRef.current.querySelector('.embla');
+      if (!carouselEl) return;
 
-      if (containerRef.current) {
-        const carouselEl = containerRef.current.querySelector('.embla');
-        if (!carouselEl) return;
+      const nextEl = carouselEl.querySelector('.embla__button--next');
+      const prevEl = carouselEl.querySelector('.embla__button--prev');
+      const paginationEl = carouselEl.querySelector('.embla__dots');
 
-        const nextEl = carouselEl.querySelector('.embla__button--next');
-        const prevEl = carouselEl.querySelector('.embla__button--prev');
-        const paginationEl = carouselEl.querySelector('.embla__dots');
+      carouselEl.classList.add('embla__viewport');
+      const track = carouselEl.querySelector('.embla__container') || carouselEl.querySelector('.carousel-wrapper');
+      if (track && !track.classList.contains('embla__container')) track.classList.add('embla__container');
 
-        carouselEl.classList.add('embla__viewport');
-        const track = carouselEl.querySelector('.embla__container') || carouselEl.querySelector('.carousel-wrapper');
-        if (track && !track.classList.contains('embla__container')) track.classList.add('embla__container');
+      const options: any = {
+        loop: loop,
+        duration: speed,
+        align: 'start'
+      };
 
-        const options: any = {
-          loop: loop,
-          duration: speed,
-          align: 'start'
-        };
-
-        if (emblaRef.current) {
-          emblaRef.current.reInit(options);
-        } else {
-          emblaRef.current = EmblaCarousel(carouselEl, options);
-          if (navigation && nextEl && prevEl) {
-            nextEl.addEventListener('click', () => emblaRef.current.scrollNext(), { passive: true });
-            prevEl.addEventListener('click', () => emblaRef.current.scrollPrev(), { passive: true });
-          }
-          if (pagination && paginationEl) {
-            const slides = emblaRef.current.slideNodes();
-            paginationEl.innerHTML = '';
-            slides.forEach((_, index) => {
-              const b = document.createElement('span');
-              b.className = 'embla__dot';
-              b.addEventListener('click', () => emblaRef.current.scrollTo(index), { passive: true });
-              paginationEl.appendChild(b);
+      if (emblaRef.current) {
+        emblaRef.current.reInit(options);
+      } else {
+        emblaRef.current = EmblaCarousel(carouselEl, options);
+        if (navigation && nextEl && prevEl) {
+          nextEl.addEventListener('click', () => emblaRef.current.scrollNext(), { passive: true });
+          prevEl.addEventListener('click', () => emblaRef.current.scrollPrev(), { passive: true });
+        }
+        if (pagination && paginationEl) {
+          const slides = emblaRef.current.slideNodes();
+          paginationEl.innerHTML = '';
+          slides.forEach((_, index) => {
+            const b = document.createElement('span');
+            b.className = 'embla__dot';
+            b.addEventListener('click', () => emblaRef.current.scrollTo(index), { passive: true });
+            paginationEl.appendChild(b);
+          });
+          const updateActive = () => {
+            const i = emblaRef.current.selectedScrollSnap();
+            const bullets = paginationEl.querySelectorAll('.embla__dot');
+            bullets.forEach((el, idx) => {
+              if (idx === i) el.classList.add('is-active');
+              else el.classList.remove('is-active');
             });
-            const updateActive = () => {
-              const i = emblaRef.current.selectedScrollSnap();
-              const bullets = paginationEl.querySelectorAll('.embla__dot');
-              bullets.forEach((el, idx) => {
-                if (idx === i) el.classList.add('is-active');
-                else el.classList.remove('is-active');
-              });
-            };
-            emblaRef.current.on('select', updateActive);
-            emblaRef.current.on('reInit', updateActive);
-            updateActive();
-          }
+          };
+          emblaRef.current.on('select', updateActive);
+          emblaRef.current.on('reInit', updateActive);
+          updateActive();
         }
       }
-    };
+    }
+  };
 
-    const timeoutId = setTimeout(loadCarousel, 100);
+  const timeoutId = setTimeout(loadCarousel, 100);
 
-    return () => {
-      clearTimeout(timeoutId);
-    };
-  }, [slidesPerView, slidesPerViewTablet, slidesPerViewMobile, spaceBetween, loop, autoplay, autoplayDelay, speed, navigation, pagination, height, minHeight]);
+  return () => {
+    clearTimeout(timeoutId);
+  };
+}, [slidesPerView, slidesPerViewTablet, slidesPerViewMobile, spaceBetween, loop, autoplay, autoplayDelay, speed, navigation, pagination, height, minHeight]);
 
-  // Cleanup only on unmount
-  useEffect(() => {
-    return () => {
-      if (emblaRef.current) {
-        emblaRef.current.destroy();
-        emblaRef.current = null;
-      }
-    };
-  }, []);
+// Cleanup only on unmount
+useEffect(() => {
+  return () => {
+    if (emblaRef.current) {
+      emblaRef.current.destroy();
+      emblaRef.current = null;
+    }
+  };
+}, []);
 
-  return (
-    <>
-      <BlockControls>
-        <ToolbarGroup>
-          <ToolbarButton
-            icon={gallery}
-            title={__('Default', 'jankx')}
-            onClick={() => updateStyleVariation('default')}
-            isActive={styleVariation === 'default'}
-          />
-          <ToolbarButton
-            icon={cover}
-            title={__('Banner', 'jankx')}
-            onClick={() => updateStyleVariation('banner')}
-            isActive={styleVariation === 'banner'}
-          />
-          <ToolbarButton
-            icon={layout}
-            title={__('Carousel', 'jankx')}
-            onClick={() => updateStyleVariation('carousel')}
-            isActive={styleVariation === 'carousel'}
-          />
-          <ToolbarButton
-            icon={quote}
-            title={__('Testimonial', 'jankx')}
-            onClick={() => updateStyleVariation('testimonial')}
-            isActive={styleVariation === 'testimonial'}
-          />
-        </ToolbarGroup>
-      </BlockControls>
+return (
+  <>
+    <BlockControls>
+      <ToolbarGroup>
+        <ToolbarButton
+          icon={gallery}
+          title={__('Default', 'jankx')}
+          onClick={() => updateStyleVariation('default')}
+          isActive={styleVariation === 'default'}
+        />
+        <ToolbarButton
+          icon={cover}
+          title={__('Banner', 'jankx')}
+          onClick={() => updateStyleVariation('banner')}
+          isActive={styleVariation === 'banner'}
+        />
+        <ToolbarButton
+          icon={layout}
+          title={__('Carousel', 'jankx')}
+          onClick={() => updateStyleVariation('carousel')}
+          isActive={styleVariation === 'carousel'}
+        />
+        <ToolbarButton
+          icon={quote}
+          title={__('Testimonial', 'jankx')}
+          onClick={() => updateStyleVariation('testimonial')}
+          isActive={styleVariation === 'testimonial'}
+        />
+      </ToolbarGroup>
+    </BlockControls>
 
-      <div {...blockProps}>
-        <InspectorControls>
+    <div {...blockProps}>
+      <InspectorControls>
         <TabPanel
           className="carousel-tabs"
           activeClass="is-active"
@@ -293,7 +293,7 @@ export default function Edit({ attributes, setAttributes, clientId }: CarouselPr
                   <p>{__('Use the + button to add individual slides', 'jankx')}</p>
                 </PanelBody>
               )}
-              
+
               {tab.name === 'gallery' && (
                 <PanelBody title={__('Select Images', 'jankx')} initialOpen={true}>
                   <MediaUploadCheck>
@@ -308,15 +308,15 @@ export default function Edit({ attributes, setAttributes, clientId }: CarouselPr
                           onClick={open}
                           style={{ width: '100%', marginBottom: '10px' }}
                         >
-                          {galleryImages.length > 0 
-                            ? __('Change Images', 'jankx') 
+                          {galleryImages.length > 0
+                            ? __('Change Images', 'jankx')
                             : __('Select Images', 'jankx')
                           }
                         </Button>
                       )}
                     />
                   </MediaUploadCheck>
-                  
+
                   {galleryImages.length > 0 && (
                     <p>
                       {__('Selected', 'jankx')}: {galleryImages.length} {__('images', 'jankx')}
@@ -334,7 +334,7 @@ export default function Edit({ attributes, setAttributes, clientId }: CarouselPr
               <RangeControl
                 label={__('Slides Per View (Desktop)', 'jankx')}
                 value={slidesPerView}
-                onChange={(val: number) => setAttributes({ slidesPerView: val })}   
+                onChange={(val: number) => setAttributes({ slidesPerView: val })}
                 min={1}
                 max={6}
                 step={1}
@@ -344,7 +344,7 @@ export default function Edit({ attributes, setAttributes, clientId }: CarouselPr
               <RangeControl
                 label={__('Slides Per View (Tablet)', 'jankx')}
                 value={slidesPerViewTablet}
-                onChange={(val: number) => setAttributes({ slidesPerViewTablet: val })}   
+                onChange={(val: number) => setAttributes({ slidesPerViewTablet: val })}
                 min={1}
                 max={4}
                 step={1}
@@ -354,7 +354,7 @@ export default function Edit({ attributes, setAttributes, clientId }: CarouselPr
               <RangeControl
                 label={__('Slides Per View (Mobile)', 'jankx')}
                 value={slidesPerViewMobile}
-                onChange={(val: number) => setAttributes({ slidesPerViewMobile: val })}   
+                onChange={(val: number) => setAttributes({ slidesPerViewMobile: val })}
                 min={1}
                 max={2}
                 step={1}
@@ -365,7 +365,7 @@ export default function Edit({ attributes, setAttributes, clientId }: CarouselPr
             <RangeControl
               label={__('Slides Per View', 'jankx')}
               value={slidesPerView}
-              onChange={(val: number) => setAttributes({ slidesPerView: val })}   
+              onChange={(val: number) => setAttributes({ slidesPerView: val })}
               min={1}
               max={4}
               step={1}
@@ -409,12 +409,15 @@ export default function Edit({ attributes, setAttributes, clientId }: CarouselPr
             step={50}
             help={__('Minimum height on mobile devices', 'jankx')}
           />
-          
+
+          help={__('Khi bật, Carousel sẽ lấp đầy phần còn lại của viewport sau header.', 'jankx')}
+          />
+
           <ToggleControl
-            label={__('Chiều cao = 100vh trừ header', 'jankx')}
-            checked={fitViewportMinusHeader}
-            onChange={(val: boolean) => setAttributes({ fitViewportMinusHeader: val })}
-            help={__('Khi bật, Carousel sẽ lấp đầy phần còn lại của viewport sau header.', 'jankx')}
+            label={__('Full Viewport Height (100vh)', 'jankx')}
+            checked={fullHeight}
+            onChange={(val: boolean) => setAttributes({ fullHeight: val })}
+            help={__('Bật để Carousel cao bằng toàn bộ màn hình (thường dùng cho Hero).', 'jankx')}
           />
 
           <ToggleControl
@@ -564,7 +567,7 @@ export default function Edit({ attributes, setAttributes, clientId }: CarouselPr
 
         {pagination && <div className="embla__dots"></div>}
       </div>
-      </div>
-    </>
-  );
+    </div>
+  </>
+);
 }

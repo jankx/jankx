@@ -42,6 +42,8 @@ class CarouselBlock extends Block
         $min_height = $attributes['minHeight'] ?? 50;
         $class_name = $attributes['className'] ?? '';
         $anchor = $attributes['anchor'] ?? '';
+        $full_height = $attributes['fullHeight'] ?? false;
+        $fit_vh_minus_header = $attributes['fitViewportMinusHeader'] ?? false;
 
         // Banner style attributes (for banner variation)
         $banner_style = $attributes['bannerStyle'] ?? 'default';
@@ -64,17 +66,23 @@ class CarouselBlock extends Block
 
         // Build wrapper attributes
         // Build custom classes - WordPress will automatically merge className from attributes
-        $custom_classes = 'carousel-block';
-        
-        // Merge with className from attributes (includes variation styles like is-style-banner, etc.)
+        // Merge with className from attributes
         if (!empty($class_name)) {
             $custom_classes = trim($custom_classes . ' ' . esc_attr($class_name));
         }
 
+        if ($full_height) {
+            $custom_classes .= ' is-full-height';
+        }
+        if ($fit_vh_minus_header) {
+            $custom_classes .= ' fit-vh-minus-header';
+        }
+
         // Build style string
+        $carousel_height_val = $full_height ? '100vh' : sprintf('%dpx', $height);
         $style_string = sprintf(
-            '--carousel-height: %dpx; --carousel-min-height: %dpx; --slides-per-view-desktop: %d; --slides-per-view-tablet: %d; --slides-per-view-mobile: %d; --space-between: %dpx;',
-            $height,
+            '--carousel-height: %s; --carousel-min-height: %dpx; --slides-per-view-desktop: %d; --slides-per-view-tablet: %d; --slides-per-view-mobile: %d; --space-between: %dpx;',
+            $carousel_height_val,
             $min_height,
             $slides_per_view,
             $slides_per_view_tablet,
