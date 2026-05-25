@@ -13,6 +13,7 @@ export interface CarouselAttributes {
   height: number;
   minHeight: number;
   fitViewportMinusHeader?: boolean;
+  fullHeight?: boolean;
   contentMode: 'slides' | 'gallery';
   galleryImages: Array<{
     id: number;
@@ -20,6 +21,15 @@ export interface CarouselAttributes {
     alt: string;
     caption?: string;
   }>;
+  bannerStyle?: string;
+  bannerTextColor?: string;
+  bannerBackgroundColor?: string;
+  bannerPadding?: number;
+  bannerBorderRadius?: number;
+  gradientOverlay?: boolean;
+  gradientColor?: string;
+  gradientOpacity?: number;
+  gradientHeight?: number;
   className?: string;
   anchor?: string;
 }
