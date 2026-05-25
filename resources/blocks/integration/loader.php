@@ -67,30 +67,30 @@ function jankx_blocks_integration_missing_notice(): void
  */
 function jankx_enqueue_blocks_bridge(): void
 {
-    $bridgeScript = get_template_directory() . '/resources/blocks/integration/jankx-blocks-bridge.js';
+    $bridgeScript = get_template_directory() . '/resources/blocks/integration/build/jankx-blocks-bridge.js';
+    $bridgeAsset = get_template_directory() . '/resources/blocks/integration/build/jankx-blocks-bridge.asset.php';
 
     if (!file_exists($bridgeScript)) {
         return;
     }
 
-    // Dependencies
-    $deps = [
-        'wp-element',
-        'wp-hooks',
-        'wp-compose',
-        'wp-block-editor',
-        'wp-components',
-        'wp-i18n',
-    ];
+    // Load dependencies from .asset.php
+    $asset = file_exists($bridgeAsset)
+        ? require $bridgeAsset
+        : ['dependencies' => ['wp-element', 'wp-hooks', 'wp-compose', 'wp-block-editor', 'wp-components', 'wp-i18n'], 'version' => filemtime($bridgeScript)];
 
+    $deps = $asset['dependencies'];
+    
     // Load gutenberg-controls first so bridge can use its exports
-    $deps[] = 'jankx-gutenberg-controls';
+    if (wp_script_is('jankx-gutenberg-controls', 'registered')) {
+        $deps[] = 'jankx-gutenberg-controls';
+    }
 
     wp_enqueue_script(
         'jankx-blocks-bridge',
-        get_template_directory_uri() . '/resources/blocks/integration/jankx-blocks-bridge.js',
+        get_template_directory_uri() . '/resources/blocks/integration/build/jankx-blocks-bridge.js',
         $deps,
-        filemtime($bridgeScript),
+        $asset['version'],
         true
     );
 

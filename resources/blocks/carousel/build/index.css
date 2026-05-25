@@ -22,21 +22,32 @@
   gap: var(--space-between, 30px);
   will-change: transform;
 }
-.wp-block-jankx-carousel .embla__slide {
+.wp-block-jankx-carousel .embla__slide,
+.wp-block-jankx-carousel .carousel-slide {
   flex-shrink: 0;
   width: auto;
   height: 100%;
   position: relative;
   flex: 0 0 calc((100% - var(--space-between, 30px) * (var(--slides-per-view-desktop, 1) - 1)) / var(--slides-per-view-desktop, 1));
+  max-width: calc((100% - var(--space-between, 30px) * (var(--slides-per-view-desktop, 1) - 1)) / var(--slides-per-view-desktop, 1));
+}
+.wp-block-jankx-carousel .block-editor-block-list__layout .wp-block-jankx-carousel-slide,
+.wp-block-jankx-carousel .block-editor-block-list__layout .carousel-slide {
+  flex: 0 0 calc((100% - var(--space-between, 30px) * (var(--slides-per-view-desktop, 1) - 1)) / var(--slides-per-view-desktop, 1));
+  max-width: calc((100% - var(--space-between, 30px) * (var(--slides-per-view-desktop, 1) - 1)) / var(--slides-per-view-desktop, 1));
 }
 @media (max-width: 1024px) {
-  .wp-block-jankx-carousel .embla__slide {
+  .wp-block-jankx-carousel .embla__slide,
+  .wp-block-jankx-carousel .carousel-slide {
     flex: 0 0 calc((100% - var(--space-between, 24px) * (var(--slides-per-view-tablet, 1) - 1)) / var(--slides-per-view-tablet, 1));
+    max-width: calc((100% - var(--space-between, 24px) * (var(--slides-per-view-tablet, 1) - 1)) / var(--slides-per-view-tablet, 1));
   }
 }
 @media (max-width: 768px) {
-  .wp-block-jankx-carousel .embla__slide {
+  .wp-block-jankx-carousel .embla__slide,
+  .wp-block-jankx-carousel .carousel-slide {
     flex: 0 0 calc((100% - var(--space-between, 16px) * (var(--slides-per-view-mobile, 1) - 1)) / var(--slides-per-view-mobile, 1));
+    max-width: calc((100% - var(--space-between, 16px) * (var(--slides-per-view-mobile, 1) - 1)) / var(--slides-per-view-mobile, 1));
   }
 }
 .wp-block-jankx-carousel.is-style-banner .embla {

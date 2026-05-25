@@ -35,6 +35,7 @@ interface MetaQueryItem {
 interface TaxonomyItem {
     slug: string;
     name: string;
+    rest_base?: string;
 }
 
 interface TermItem {
@@ -514,7 +515,11 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
 
                 const taxArray = Object.values(taxonomiesData || {}).filter(
                     (item): item is TaxonomyItem => typeof item?.slug === 'string' && typeof item?.name === 'string'
-                );
+                ).map(item => ({
+                    slug: item.slug,
+                    name: item.name,
+                    rest_base: item.rest_base
+                }));
                 setTaxonomies(taxArray);
 
                 const authorsData = await window.wp.apiFetch({
@@ -558,9 +563,9 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
     }, [postType]);
 
     // Function to fetch terms for a specific taxonomy
-    const fetchTermsForTaxonomy = useCallback(async (taxonomy: string) => {
+    const fetchTermsForTaxonomy = useCallback(async (taxonomySlug: string) => {
 
-        if (taxonomyTerms[taxonomy]) {
+        if (taxonomyTerms[taxonomySlug]) {
             return; // Already loaded
         }
 
@@ -568,9 +573,12 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
             return;
         }
 
+        const taxonomy = taxonomies.find(t => t.slug === taxonomySlug);
+        const restBase = taxonomy?.rest_base || taxonomySlug;
+
         try {
             const termsResponse = await window.wp.apiFetch({
-                path: `/wp/v2/${taxonomy}?per_page=100&orderby=name&order=asc`,
+                path: `/wp/v2/${restBase}?per_page=100&orderby=name&order=asc`,
             }) as Array<Record<string, unknown>> | undefined;
 
             if (!isMountedRef.current) {
@@ -592,7 +600,7 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
             setTaxonomyTerms(prev => {
                 const newState = {
                     ...prev,
-                    [taxonomy]: normalizedTerms,
+                    [taxonomySlug]: normalizedTerms,
                 };
                 return newState;
             });
@@ -605,12 +613,12 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
             setTaxonomyTerms(prev => {
                 const newState = {
                     ...prev,
-                    [taxonomy]: [],
+                    [taxonomySlug]: [],
                 };
                 return newState;
             });
         }
-    }, [taxonomyTerms]);
+    }, [taxonomyTerms, taxonomies]);
 
     const styleColor = attributes.style && attributes.style.color ? attributes.style.color : undefined;
     const backgroundColorSlug = attributes.backgroundColor || styleColor?.background?.slug;

@@ -4,19 +4,19 @@
 .wp-block-jankx-carousel {
   position: relative;
 
-         .embla {
-           width: 100%;
-           // PC: height cứng
-           height: var(--carousel-height, 50px);
-           overflow: hidden;
+  .embla {
+    width: 100%;
+    // PC: height cứng
+    height: var(--carousel-height, 50px);
+    overflow: hidden;
 
-           // Tablet và mobile: max-height với auto adjustment
-           @media (max-width: 1024px) {
-             height: auto;
-             max-height: var(--carousel-height, 50px);
-             min-height: var(--carousel-min-height, 50px);
-           }
-         }
+    // Tablet và mobile: max-height với auto adjustment
+    @media (max-width: 1024px) {
+      height: auto;
+      max-height: var(--carousel-height, 50px);
+      min-height: var(--carousel-min-height, 50px);
+    }
+  }
 
   .embla__container {
     display: flex;
@@ -25,23 +25,41 @@
     will-change: transform;
   }
 
-  .embla__slide {
+  .embla__slide,
+  .carousel-slide {
     flex-shrink: 0;
     width: auto;
     height: 100%;
     position: relative;
     flex: 0 0 calc((100% - (var(--space-between, 30px) * (var(--slides-per-view-desktop, 1) - 1))) / var(--slides-per-view-desktop, 1));
+    max-width: calc((100% - (var(--space-between, 30px) * (var(--slides-per-view-desktop, 1) - 1))) / var(--slides-per-view-desktop, 1));
+  }
+
+  // Handle Gutenberg block wrappers in editor
+  .block-editor-block-list__layout {
+
+    .wp-block-jankx-carousel-slide,
+    .carousel-slide {
+      flex: 0 0 calc((100% - (var(--space-between, 30px) * (var(--slides-per-view-desktop, 1) - 1))) / var(--slides-per-view-desktop, 1));
+      max-width: calc((100% - (var(--space-between, 30px) * (var(--slides-per-view-desktop, 1) - 1))) / var(--slides-per-view-desktop, 1));
+    }
   }
 
   @media (max-width: 1024px) {
-    .embla__slide {
+
+    .embla__slide,
+    .carousel-slide {
       flex: 0 0 calc((100% - (var(--space-between, 24px) * (var(--slides-per-view-tablet, 1) - 1))) / var(--slides-per-view-tablet, 1));
+      max-width: calc((100% - (var(--space-between, 24px) * (var(--slides-per-view-tablet, 1) - 1))) / var(--slides-per-view-tablet, 1));
     }
   }
 
   @media (max-width: 768px) {
-    .embla__slide {
+
+    .embla__slide,
+    .carousel-slide {
       flex: 0 0 calc((100% - (var(--space-between, 16px) * (var(--slides-per-view-mobile, 1) - 1))) / var(--slides-per-view-mobile, 1));
+      max-width: calc((100% - (var(--space-between, 16px) * (var(--slides-per-view-mobile, 1) - 1))) / var(--slides-per-view-mobile, 1));
     }
   }
 
@@ -55,14 +73,17 @@
 
   // Gradient Overlay Styles
   &.has-gradient-overlay {
+
     // Prevent hover darkening conflicts with overlay
     .embla__slide:hover {
       opacity: 1;
     }
+
     // Confine overlay within slide box to avoid visual glitches
     .embla__slide {
       overflow: hidden;
     }
+
     .embla__slide {
       &::after {
         content: '';
@@ -71,34 +92,24 @@
         left: 0;
         right: 0;
         height: var(--gradient-height, 60%);
-        background: linear-gradient(
-          to top,
-          rgba(
-            var(--gradient-color-r, 0),
-            var(--gradient-color-g, 0),
-            var(--gradient-color-b, 0),
-            var(--gradient-opacity, 0.7)
-          ) 0%,
-          rgba(
-            var(--gradient-color-r, 0),
-            var(--gradient-color-g, 0),
-            var(--gradient-color-b, 0),
-            calc(var(--gradient-opacity, 0.7) * 0.8)
-          ) 30%,
-          rgba(
-            var(--gradient-color-r, 0),
-            var(--gradient-color-g, 0),
-            var(--gradient-color-b, 0),
-            calc(var(--gradient-opacity, 0.7) * 0.5)
-          ) 60%,
-          rgba(
-            var(--gradient-color-r, 0),
-            var(--gradient-color-g, 0),
-            var(--gradient-color-b, 0),
-            calc(var(--gradient-opacity, 0.7) * 0.2)
-          ) 85%,
-          transparent 100%
-        );
+        background: linear-gradient(to top,
+            rgba(var(--gradient-color-r, 0),
+              var(--gradient-color-g, 0),
+              var(--gradient-color-b, 0),
+              var(--gradient-opacity, 0.7)) 0%,
+            rgba(var(--gradient-color-r, 0),
+              var(--gradient-color-g, 0),
+              var(--gradient-color-b, 0),
+              calc(var(--gradient-opacity, 0.7) * 0.8)) 30%,
+            rgba(var(--gradient-color-r, 0),
+              var(--gradient-color-g, 0),
+              var(--gradient-color-b, 0),
+              calc(var(--gradient-opacity, 0.7) * 0.5)) 60%,
+            rgba(var(--gradient-color-r, 0),
+              var(--gradient-color-g, 0),
+              var(--gradient-color-b, 0),
+              calc(var(--gradient-opacity, 0.7) * 0.2)) 85%,
+            transparent 100%);
         pointer-events: none;
         z-index: 5;
       }
@@ -114,14 +125,14 @@
     }
   }
 
-    // Banner variation specific styles
+  // Banner variation specific styles
   &.is-style-banner {
     .embla-banner {
       width: 100%;
       height: 100%;
       display: flex;
       align-items: stretch;
-      
+
       &__image {
         position: relative;
         width: 100%;
@@ -187,7 +198,7 @@
     }
 
     // Ensure slides content displays properly
-    .embla__slide > * {
+    .embla__slide>* {
       width: 100%;
       height: 100%;
     }

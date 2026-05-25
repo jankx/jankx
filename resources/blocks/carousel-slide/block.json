@@ -5,17 +5,34 @@
   "title": "Carousel Slide",
   "category": "jankx",
   "description": "Single slide for Carousel slider",
-  "keywords": ["slide", "carousel"],
+  "keywords": [
+    "slide",
+    "carousel"
+  ],
   "textdomain": "jankx",
-  "parent": ["jankx/carousel"],
+  "parent": [
+    "jankx/carousel"
+  ],
   "attributes": {
     "slideId": {
       "type": "string"
     },
     "imageSize": {
       "type": "string",
-      "enum": ["contain", "cover", "fullwidth"],
+      "enum": [
+        "contain",
+        "cover",
+        "fullwidth"
+      ],
       "default": "cover"
+    },
+    "overlayColor": {
+      "type": "string",
+      "default": "rgba(0,0,0,0.4)"
+    },
+    "overlayOpacity": {
+      "type": "number",
+      "default": 40
     }
   },
   "supports": {
@@ -43,7 +60,9 @@
       "minHeight": true
     }
   },
-  "usesContext": ["jankx/carouselId"],
+  "usesContext": [
+    "jankx/carouselId"
+  ],
   "editorScript": "file:./build/index.js",
   "editorStyle": "file:./build/editor.css",
   "style": "file:./build/style.css"

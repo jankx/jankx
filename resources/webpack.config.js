@@ -165,6 +165,7 @@ module.exports = {
     'assets/js/child-order': './js/filters/child-order.tsx',
     'assets/js/responsive-visibility': './js/filters/responsive-visibility.tsx',
     'blocks/typography/build/index': './blocks/typography/index.tsx',
+    'blocks/integration/build/jankx-blocks-bridge': './blocks/integration/jankx-blocks-bridge.js',
   },
   output: {
     path: path.resolve(__dirname),
