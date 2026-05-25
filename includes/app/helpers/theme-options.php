@@ -76,7 +76,7 @@ if (!function_exists('jankx_get_theme_color')) {
     function jankx_get_theme_color(string $colorType = 'primary', string $format = 'hex'): string
     {
         $key = $colorType === 'primary' ? 'primary_color' : 'secondary_color';
-        $default = $colorType === 'primary' ? '#ff5722' : '#009688';
+        $default = $colorType === 'primary' ? '#184962' : '#009688';
 
         $color = jankx_get_theme_option($key, $default);
 
@@ -173,7 +173,7 @@ if (!function_exists('jankx_get_css_var')) {
 
                 // Map variable names to values
                 $mapping = [
-                    'primary-color' => $vars['primaryColor'] ?? '#ff5722',
+                    'primary-color' => $vars['primaryColor'] ?? '#184962',
                     'secondary-color' => $vars['secondaryColor'] ?? '#009688',
                     'container-width' => $vars['containerWidth'] ?? '1200px',
                     'body-font-family' => $vars['bodyTypography']['font-family'] ?? 'Inter',

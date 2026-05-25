@@ -42,7 +42,13 @@ class ThemeOptionsService
     public function __construct(Application $app)
     {
         $this->app = $app;
-        $this->optionsPath = Config::get('app.paths.options', get_stylesheet_directory() . '/resources/options');
+        $childThemeOptions = get_stylesheet_directory() . '/theme-options';
+        $defaultOptions = get_stylesheet_directory() . '/resources/options';
+        
+        $this->optionsPath = Config::get(
+            'app.paths.options', 
+            file_exists($childThemeOptions) ? $childThemeOptions : $defaultOptions
+        );
 
         // Set framework từ config
         try {

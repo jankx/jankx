@@ -22,7 +22,7 @@ class CoreButtonBlockApplier extends AbstractBlockDefaultApplier
      */
     public function apply(string $content, array $block, $themeOptions): string
     {
-        $primaryColor = $themeOptions->getOption('primary_color', '#ff5722');
+        $primaryColor = $themeOptions->getOption('primary_color', '#184962');
         $attrs = $this->getAttributes($block);
 
         // Check if button has background color set via theme palette

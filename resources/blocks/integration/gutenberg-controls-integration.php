@@ -280,7 +280,7 @@ class GutenbergControlsIntegration
             'controls' => [
                 'color' => [
                     'colorType' => 'solid',
-                    'solidColor' => '#ff5722',
+                    'solidColor' => '#184962',
                     'useThemeColor' => true,
                     'themeColorKey' => 'primary',
                 ],
@@ -309,7 +309,7 @@ class GutenbergControlsIntegration
                 ],
                 'border' => [
                     'borderWidth' => '2px',
-                    'borderColor' => '#ff5722',
+                    'borderColor' => '#184962',
                 ],
                 'typography' => [
                     'fontWeight' => '500',

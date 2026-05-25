@@ -82,7 +82,7 @@ jankx_register_block_preset('jankx/advanced-button', [
     'controls' => [
         'color' => [
             'colorType' => 'solid',
-            'solidColor' => '#ff5722',
+            'solidColor' => '#184962',
         ],
         'typography' => [
             'fontWeight' => '600',
@@ -118,7 +118,7 @@ Controls tự động generate CSS cho frontend:
 ```php
 // Example output
 <div class="wp-block-jankx-advanced-button" style="
-    background: linear-gradient(135deg, #ff5722 0%, #009688 100%);
+    background: linear-gradient(135deg, #184962 0%, #009688 100%);
     font-family: 'Inter', sans-serif;
     font-size: clamp(16px, 2vw + 1rem, 20px);
     box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);

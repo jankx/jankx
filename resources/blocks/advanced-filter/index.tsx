@@ -40,9 +40,13 @@ type FilterAttributes = {
     minPrice?: string;
     maxPrice?: string;
     currency?: string;
-    dateField?: string;
+    dateField?: 'post_date' | 'post_modified';
     dateRange?: boolean;
     showSearchButton?: boolean;
+    searchButtonText?: string;
+    searchButtonDisplay?: 'text' | 'icon' | 'icon-text';
+    searchButtonIcon?: string;
+    keywordAction?: 'typing' | 'button';
     filterValue?: string;
     filterValueMin?: string;
     filterValueMax?: string;
@@ -107,7 +111,7 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
         (select: any) => {
             const { getBlockParents, getBlock } = select('core/block-editor');
             const parents: string[] = getBlockParents(clientId) || [];
-            
+
             // Tìm parent là smart-tab trước (cho advanced filter trigger)
             let parentId = parents.find((id) => getBlock(id)?.name === 'jankx/smart-tab');
             if (parentId) {
@@ -115,7 +119,7 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                 const attrs = parent?.attributes || {};
                 const triggerSettings = (attrs.triggerSettings || {}) as Record<string, unknown>;
                 const targetBlockId = triggerSettings.targetBlockId as string | undefined;
-                
+
                 // Tìm dynamic-data-layout block để lấy post type
                 let targetPostType = 'post';
                 if (targetBlockId) {
@@ -135,13 +139,13 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                         }
                         return null;
                     };
-                    
+
                     const targetBlock = findBlock(allBlocks);
                     if (targetBlock) {
                         targetPostType = targetBlock.attributes?.postType || 'post';
                     }
                 }
-                
+
                 return {
                     isSmartTabChild: true,
                     parentDefaults: {
@@ -149,7 +153,7 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                     },
                 };
             }
-            
+
             // Fallback: tìm parent là advanced-filters
             parentId = parents.find((id) => getBlock(id)?.name === 'jankx/advanced-filters');
             if (parentId) {
@@ -159,7 +163,7 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                     parentDefaults: parent?.attributes || {},
                 };
             }
-            
+
             return {
                 isSmartTabChild: false,
                 parentDefaults: {},
@@ -222,8 +226,12 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
         setLoadingTerms(true);
         (async () => {
             try {
+                // Tìm rest_base của taxonomy
+                const taxObject = taxonomies.find((t: any) => t.slug === taxonomy);
+                const restBase = taxObject?.rest_base || taxonomy;
+
                 const termsData = await (window as any).wp.apiFetch({
-                    path: `/wp/v2/${taxonomy}?per_page=100&orderby=name&order=asc`,
+                    path: `/wp/v2/${restBase}?per_page=100&orderby=name&order=asc`,
                 });
                 setTerms(Array.isArray(termsData) ? termsData : []);
             } catch (e) {
@@ -232,7 +240,7 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                 setLoadingTerms(false);
             }
         })();
-    }, [taxonomy]);
+    }, [taxonomy, taxonomies]);
 
     // Fetch authors khi filterType là author
     useEffect(() => {

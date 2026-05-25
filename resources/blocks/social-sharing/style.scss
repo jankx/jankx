@@ -22,15 +22,15 @@
         gap: 0.5rem;
         padding: 0.5rem 1rem;
         border: none;
-        background: #f0f0f0;
-        color: #333;
+        background: var(--wp--preset--color--primary, #f0f0f0);
+        color: var(--wp--preset--color--base, #fff);
         cursor: pointer;
         transition: all 0.2s ease;
         font-size: 0.9rem;
         text-decoration: none;
 
         &:hover {
-            background: #e0e0e0;
+            background: var(--wp--preset--color--secondary, #e0e0e0);
             transform: translateY(-2px);
         }
 
@@ -93,47 +93,74 @@
 
         &.facebook {
             background: #1877f2;
-            &:hover { background: color.adjust(#1877f2, $lightness: -10%); }
+
+            &:hover {
+                background: color.adjust(#1877f2, $lightness: -10%);
+            }
         }
 
         &.twitter {
             background: #1da1f2;
-            &:hover { background: color.adjust(#1da1f2, $lightness: -10%); }
+
+            &:hover {
+                background: color.adjust(#1da1f2, $lightness: -10%);
+            }
         }
 
         &.linkedin {
             background: #0077b5;
-            &:hover { background: color.adjust(#0077b5, $lightness: -10%); }
+
+            &:hover {
+                background: color.adjust(#0077b5, $lightness: -10%);
+            }
         }
 
         &.whatsapp {
             background: #25d366;
-            &:hover { background: color.adjust(#25d366, $lightness: -10%); }
+
+            &:hover {
+                background: color.adjust(#25d366, $lightness: -10%);
+            }
         }
 
         &.telegram {
             background: #0088cc;
-            &:hover { background: color.adjust(#0088cc, $lightness: -10%); }
+
+            &:hover {
+                background: color.adjust(#0088cc, $lightness: -10%);
+            }
         }
 
         &.pinterest {
             background: #bd081c;
-            &:hover { background: color.adjust(#bd081c, $lightness: -10%); }
+
+            &:hover {
+                background: color.adjust(#bd081c, $lightness: -10%);
+            }
         }
 
         &.reddit {
             background: #ff4500;
-            &:hover { background: color.adjust(#ff4500, $lightness: -10%); }
+
+            &:hover {
+                background: color.adjust(#ff4500, $lightness: -10%);
+            }
         }
 
         &.email {
             background: #666;
-            &:hover { background: color.adjust(#666, $lightness: -10%); }
+
+            &:hover {
+                background: color.adjust(#666, $lightness: -10%);
+            }
         }
 
         &.copy {
             background: #999;
-            &:hover { background: color.adjust(#999, $lightness: -10%); }
+
+            &:hover {
+                background: color.adjust(#999, $lightness: -10%);
+            }
         }
     }
 
@@ -158,4 +185,3 @@
         border-radius: 8px;
     }
 }
-

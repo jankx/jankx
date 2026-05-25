@@ -123,7 +123,7 @@ class ThemeOptionsBridge
         $data = $themeJson->get_data();
 
         // Get theme option values
-        $primaryColor = $this->themeOptions->getOption('primary_color', '#ff5722');
+        $primaryColor = $this->themeOptions->getOption('primary_color', '#184962');
         $secondaryColor = $this->themeOptions->getOption('secondary_color', '#009688');
         $containerWidth = $this->themeOptions->getOption('container_width', 1200);
 
@@ -207,7 +207,7 @@ class ThemeOptionsBridge
         $classes[] = 'jankx-sidebar-' . sanitize_html_class($sidebarPosition);
 
         // Add color scheme class
-        $primaryColor = $this->themeOptions->getOption('primary_color', '#ff5722');
+        $primaryColor = $this->themeOptions->getOption('primary_color', '#184962');
         $colorScheme = $this->detectColorScheme($primaryColor);
         if ($colorScheme) {
             $classes[] = 'jankx-color-scheme-' . $colorScheme;
@@ -328,7 +328,7 @@ class ThemeOptionsBridge
             return $this->cachedData;
         }
 
-        $primaryColor = $this->themeOptions->getOption('primary_color', '#ff5722');
+        $primaryColor = $this->themeOptions->getOption('primary_color', '#184962');
         $secondaryColor = $this->themeOptions->getOption('secondary_color', '#009688');
         $containerWidth = $this->themeOptions->getOption('container_width', 1200);
         $bodyTypography = $this->themeOptions->getOption('body_typography', []);

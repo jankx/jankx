@@ -21,15 +21,15 @@
   gap: 0.5rem;
   padding: 0.5rem 1rem;
   border: none;
-  background: #f0f0f0;
-  color: #333;
+  background: var(--wp--preset--color--primary, #f0f0f0);
+  color: var(--wp--preset--color--base, #fff);
   cursor: pointer;
   transition: all 0.2s ease;
   font-size: 0.9rem;
   text-decoration: none;
 }
 .wp-block-jankx-social-sharing .sharing-button:hover {
-  background: #e0e0e0;
+  background: var(--wp--preset--color--secondary, #e0e0e0);
   transform: translateY(-2px);
 }
 .wp-block-jankx-social-sharing .sharing-button .sharing-icon {

@@ -67,6 +67,7 @@ interface MetaQueryItem {
 interface TaxonomyItem {
     slug: string;
     name: string;
+    rest_base?: string;
 }
 
 interface TermItem {
@@ -466,8 +467,12 @@ function Edit({ attributes, setAttributes, clientId, isSelected = false }: EditP
         }
 
         try {
+            // Find the rest_base for the taxonomy
+            const taxObject = taxonomies.find(t => t.slug === taxonomy);
+            const restBase = taxObject?.rest_base || taxonomy;
+
             const termsResponse = await window.wp.apiFetch({
-                path: `/wp/v2/${taxonomy}?per_page=100&orderby=name&order=asc`,
+                path: `/wp/v2/${restBase}?per_page=100&orderby=name&order=asc`,
             }) as Array<Record<string, unknown>> | undefined;
 
             const normalizedTerms = (termsResponse || [])

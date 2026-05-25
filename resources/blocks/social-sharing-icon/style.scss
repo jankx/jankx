@@ -7,8 +7,8 @@
         gap: 0.5rem;
         padding: 0.5rem 1rem;
         border: none;
-        background: #f0f0f0;
-        color: #333;
+        background: var(--wp--preset--color--primary, #f0f0f0);
+        color: var(--wp--preset--color--base, #fff);
         cursor: pointer;
         transition: all 0.2s ease;
         font-size: 0.9rem;
@@ -17,7 +17,7 @@
         border-radius: 4px;
 
         &:hover {
-            background: #e0e0e0;
+            background: var(--wp--preset--color--secondary, #e0e0e0);
             transform: translateY(-2px);
         }
 
@@ -98,62 +98,98 @@
 
             &.facebook {
                 background: #1877f2;
-                &:hover { background: #0c63d4; }
+
+                &:hover {
+                    background: #0c63d4;
+                }
             }
 
             &.twitter {
                 background: #1da1f2;
-                &:hover { background: #0d8bd9; }
+
+                &:hover {
+                    background: #0d8bd9;
+                }
             }
 
             &.linkedin {
                 background: #0077b5;
-                &:hover { background: #005e94; }
+
+                &:hover {
+                    background: #005e94;
+                }
             }
 
             &.whatsapp {
                 background: #25d366;
-                &:hover { background: #1ebe57; }
+
+                &:hover {
+                    background: #1ebe57;
+                }
             }
 
             &.telegram {
                 background: #0088cc;
-                &:hover { background: #006ca8; }
+
+                &:hover {
+                    background: #006ca8;
+                }
             }
 
             &.pinterest {
                 background: #bd081c;
-                &:hover { background: #9a0616; }
+
+                &:hover {
+                    background: #9a0616;
+                }
             }
 
             &.reddit {
                 background: #ff4500;
-                &:hover { background: #e03d00; }
+
+                &:hover {
+                    background: #e03d00;
+                }
             }
 
             &.email {
                 background: #666;
-                &:hover { background: #555; }
+
+                &:hover {
+                    background: #555;
+                }
             }
 
             &.copy {
                 background: #999;
-                &:hover { background: #888; }
+
+                &:hover {
+                    background: #888;
+                }
             }
 
             &.messenger {
                 background: #0084ff;
-                &:hover { background: #006de0; }
+
+                &:hover {
+                    background: #006de0;
+                }
             }
 
             &.viber {
                 background: #665CAC;
-                &:hover { background: #574d94; }
+
+                &:hover {
+                    background: #574d94;
+                }
             }
 
             &.line {
                 background: #00B900;
-                &:hover { background: #009900; }
+
+                &:hover {
+                    background: #009900;
+                }
             }
         }
 
@@ -199,4 +235,3 @@
         }
     }
 }
-
