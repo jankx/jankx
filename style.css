@@ -48,16 +48,27 @@ iframe {
     align-items: center;
   }
 }
-body.jankx-header-overlay header {
+body.jankx-header-overlay .wp-site-blocks {
+  position: relative;
+}
+body.jankx-header-overlay header.wp-block-template-part,
+body.jankx-header-overlay header.wp-block-group,
+body.jankx-header-overlay header.has-contrast-background-color,
+body.jankx-header-overlay header.has-background {
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
+  width: 100%;
   z-index: 1000;
   background-color: transparent !important;
+  background-image: none !important;
   border-bottom-color: transparent !important;
 }
-body.jankx-header-overlay header.is-sticky {
+body.jankx-header-overlay header.wp-block-template-part.is-sticky,
+body.jankx-header-overlay header.wp-block-group.is-sticky,
+body.jankx-header-overlay header.has-contrast-background-color.is-sticky,
+body.jankx-header-overlay header.has-background.is-sticky {
   position: fixed;
   background-color: var(--wp--preset--color--contrast, #1a1a1a) !important;
 }

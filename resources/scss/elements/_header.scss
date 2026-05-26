@@ -1,11 +1,23 @@
 body.jankx-header-overlay {
-    header {
+
+    // The wp-site-blocks needs to be the containing block for absolute positioning
+    .wp-site-blocks {
+        position: relative;
+    }
+
+    // Target both the template-part wrapper and the inner group block
+    header.wp-block-template-part,
+    header.wp-block-group,
+    header.has-contrast-background-color,
+    header.has-background {
         position: absolute;
         top: 0;
         left: 0;
         right: 0;
+        width: 100%;
         z-index: 1000;
         background-color: transparent !important;
+        background-image: none !important;
         border-bottom-color: transparent !important;
 
         // When sticky, it should gain background again
@@ -15,6 +27,7 @@ body.jankx-header-overlay {
         }
     }
 }
+
 
 header {
     transition: background-color 0.3s ease, box-shadow 0.3s ease;
