@@ -2,7 +2,7 @@
 import { JankxInspector } from '../../js/components/jankx-inspector/JankxInspector';
 import { ResponsiveControl } from '../../js/components/jankx-inspector/ResponsiveControl';
 import { useBlockProps, InnerBlocks, InspectorControls } from '@wordpress/block-editor';
-import { PanelBody, RangeControl, SelectControl, ToggleControl } from '@wordpress/components';
+import { PanelBody, RangeControl, SelectControl, ToggleControl, TextControl } from '@wordpress/components';
 
 export default function Edit({ attributes, setAttributes }: any) {
     const blockProps = useBlockProps({
@@ -14,6 +14,7 @@ export default function Edit({ attributes, setAttributes }: any) {
             '--jankx-margin-desktop': attributes.marginDesktop ? `${attributes.marginDesktop}px` : undefined,
             '--jankx-margin-tablet': attributes.marginTablet ? `${attributes.marginTablet}px` : undefined,
             '--jankx-margin-mobile': attributes.marginMobile ? `${attributes.marginMobile}px` : undefined,
+            '--jankx-max-width': attributes.maxWidth || undefined,
         } as any
     });
 
@@ -42,6 +43,13 @@ export default function Edit({ attributes, setAttributes }: any) {
                                             { label: 'main', value: 'main' }
                                         ]}
                                         onChange={(tagName) => setAttributes({ tagName })}
+                                    />
+                                    <TextControl
+                                        label="Max Width"
+                                        value={attributes.maxWidth || ''}
+                                        placeholder="e.g. 1200px, 80rem, 100%"
+                                        help="Set the max-width of this wrapper. Leave empty for no restriction."
+                                        onChange={(maxWidth) => setAttributes({ maxWidth: maxWidth || undefined })}
                                     />
                                 </PanelBody>
                             );
@@ -115,7 +123,12 @@ export default function Edit({ attributes, setAttributes }: any) {
                     }}
                 </JankxInspector>
             </InspectorControls>
-            <InnerBlocks />
+            <InnerBlocks
+                __experimentalLayout={{
+                    type: 'constrained',
+                    contentSize: attributes.maxWidth || undefined,
+                }}
+            />
         </div>
     );
 }

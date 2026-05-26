@@ -17,6 +17,8 @@ export default function save({ attributes }: any) {
             '--jankx-margin-desktop': attributes.marginDesktop ? `${attributes.marginDesktop}px` : undefined,
             '--jankx-margin-tablet': attributes.marginTablet ? `${attributes.marginTablet}px` : undefined,
             '--jankx-margin-mobile': attributes.marginMobile ? `${attributes.marginMobile}px` : undefined,
+            '--jankx-max-width': attributes.maxWidth || undefined,
+            maxWidth: attributes.maxWidth || undefined,
         } as any
     });
 

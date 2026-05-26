@@ -55,9 +55,20 @@
     "supports": {
         "html": false,
         "anchor": true,
+        "layout": {
+            "allowSwitching": true,
+            "allowInheriting": true,
+            "default": {
+                "type": "constrained"
+            }
+        },
         "spacing": {
-            "margin": false,
-            "padding": false
+            "margin": true,
+            "padding": true,
+            "blockGap": true
+        },
+        "dimensions": {
+            "minHeight": true
         }
     },
     "editorScript": "file:./build/index.js",
