@@ -18,7 +18,6 @@ body.jankx-header-overlay {
         z-index: 1000;
         background-color: transparent !important;
         background-image: none !important;
-        border-bottom-color: transparent !important;
 
         // When sticky, it should gain background again
         &.is-sticky {
@@ -28,12 +27,14 @@ body.jankx-header-overlay {
     }
 
     &.admin-bar {
+        header.is-sticky {
 
-        header.wp-block-template-part,
-        header.wp-block-group,
-        header.has-contrast-background-color,
-        header.has-background {
-            top: 16px;
+            header.wp-block-template-part,
+            header.wp-block-group,
+            header.has-contrast-background-color,
+            header.has-background {
+                top: 32px;
+            }
         }
     }
 }

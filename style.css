@@ -34,7 +34,6 @@ body.jankx-header-overlay header.has-background {
   z-index: 1000;
   background-color: transparent !important;
   background-image: none !important;
-  border-bottom-color: transparent !important;
 }
 body.jankx-header-overlay header.wp-block-template-part.is-sticky,
 body.jankx-header-overlay header.wp-block-group.is-sticky,
@@ -43,11 +42,11 @@ body.jankx-header-overlay header.has-background.is-sticky {
   position: fixed;
   background-color: var(--jankx-sticky-header-bg-color, #184962) !important;
 }
-body.jankx-header-overlay.admin-bar header.wp-block-template-part,
-body.jankx-header-overlay.admin-bar header.wp-block-group,
-body.jankx-header-overlay.admin-bar header.has-contrast-background-color,
-body.jankx-header-overlay.admin-bar header.has-background {
-  top: 16px;
+body.jankx-header-overlay.admin-bar header.is-sticky header.wp-block-template-part,
+body.jankx-header-overlay.admin-bar header.is-sticky header.wp-block-group,
+body.jankx-header-overlay.admin-bar header.is-sticky header.has-contrast-background-color,
+body.jankx-header-overlay.admin-bar header.is-sticky header.has-background {
+  top: 32px;
 }
 
 header {
