@@ -29,16 +29,17 @@
 
 	// Default fill style - khi button không có background color được set
 	// Only apply when NO other background color class exists
-	&:not(.is-style-outline) .jankx-advanced-button__link.has-base-color:not([class*="-background-color"]) {
+	&:not(.is-style-outline) .jankx-advanced-button__link.is-default-colors:not([class*="-background-color"]) {
 		background-color: var(--wp--preset--color--primary, #503AA8);
 		color: var(--wp--preset--color--contrast, #fff);
 	}
 
 	// Outline style variant
 	&.is-style-outline {
+
 		// Khi button không có background/color được set - dùng primary cho border và text
 		// Only apply when NO other background color class exists
-		.jankx-advanced-button__link.has-base-color:not([class*="-background-color"]) {
+		.jankx-advanced-button__link.is-default-colors:not([class*="-background-color"]) {
 			border-color: var(--wp--preset--color--primary, #503AA8);
 			color: var(--wp--preset--color--primary, #503AA8);
 			background-color: transparent;
@@ -195,10 +196,7 @@
 	cursor: pointer;
 
 	// Default padding - inherit from parent or use default
-	padding: var(--wp--custom--button--padding-top, 0.5rem)
-	         var(--wp--custom--button--padding-right, 1rem)
-	         var(--wp--custom--button--padding-bottom, 0.5rem)
-	         var(--wp--custom--button--padding-left, 1rem);
+	padding: var(--wp--custom--button--padding-top, 0.5rem) var(--wp--custom--button--padding-right, 1rem) var(--wp--custom--button--padding-bottom, 0.5rem) var(--wp--custom--button--padding-left, 1rem);
 }
 
 // Reset button element defaults to match link appearance
@@ -213,6 +211,7 @@ button.jankx-advanced-button__link {
 }
 
 .jankx-advanced-button__link {
+
 	// Icon wrapper
 	.button-icon-wrapper {
 		display: inline-flex;
@@ -224,10 +223,10 @@ button.jankx-advanced-button__link {
 	}
 
 	// Icon blocks styling (các block con như jankx/icon-picker, jankx/svg-icon, core/image)
-	.button-icon-wrapper > *,
-	> .wp-block-jankx-icon-picker,
-	> .wp-block-jankx-svg-icon,
-	> .wp-block-image {
+	.button-icon-wrapper>*,
+	>.wp-block-jankx-icon-picker,
+	>.wp-block-jankx-svg-icon,
+	>.wp-block-image {
 		display: inline-flex;
 		align-items: center;
 		flex-shrink: 0;
@@ -239,12 +238,12 @@ button.jankx-advanced-button__link {
 		svg {
 			// SVG elements inherit color from parent button
 			color: inherit;
-			
+
 			// Apply currentColor to fill and stroke
 			// This makes SVG icons match the button text color
 			fill: currentColor;
 			stroke: currentColor;
-			
+
 			// Ensure all SVG shapes inherit the color
 			// This applies to path, circle, rect, etc.
 			path,

@@ -26,6 +26,16 @@ body.jankx-header-overlay {
             background-color: var(--jankx-sticky-header-bg-color, #184962) !important;
         }
     }
+
+    &.admin-bar {
+
+        header.wp-block-template-part,
+        header.wp-block-group,
+        header.has-contrast-background-color,
+        header.has-background {
+            top: 16px;
+        }
+    }
 }
 
 

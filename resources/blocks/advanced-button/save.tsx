@@ -21,7 +21,11 @@ interface SaveProps {
 		modalShareObjectId: boolean;
 		modalSharePostTitle: boolean;
 		modalShareCurrentUrl: boolean;
+		modalShareFeaturedImageId?: boolean;
+		modalShareFeaturedImageUrl?: boolean;
+		modalFeaturedImageSize?: string;
 		formData: Array<{ key: string; value: string }>;
+		formMappings?: Array<{ source: string; selector: string; mode?: 'value' | 'attribute'; attributeName?: string }>;
 		text: string;
 		url: string;
 		title: string;
@@ -42,7 +46,7 @@ interface SaveProps {
 /**
  * The save function for the Advanced Button Block.
  */
-	export default function Save(props: SaveProps) {
+export default function Save(props: SaveProps) {
 	const {
 		triggerType = 'link',
 		buttonType = 'button',
@@ -77,24 +81,24 @@ interface SaveProps {
 	// We can't reliably check for inner blocks in save function, so we always render
 
 	const blockProps = useBlockProps.save();
-	
+
 	// Get border props (includes border radius)
 	const borderProps = getBorderClassesAndStyles(props.attributes);
 
 	// Check if button has no color settings
 	const hasNoColorSettings = !backgroundColor &&
-	                           !textColor &&
-	                           !gradient &&
-	                           !props.attributes.style?.color?.background &&
-	                           !props.attributes.style?.color?.text &&
-	                           !props.attributes.style?.color?.gradient;
+		!textColor &&
+		!gradient &&
+		!props.attributes.style?.color?.background &&
+		!props.attributes.style?.color?.text &&
+		!props.attributes.style?.color?.gradient;
 
 	const buttonClasses = classnames('jankx-advanced-button__link', borderProps?.className, {
 		[`has-${backgroundColor}-background-color`]: backgroundColor,
 		[`has-${textColor}-color`]: textColor,
 		[`has-${gradient}-gradient-background`]: gradient,
 		[`icon-position-${iconPosition}`]: iconPosition,
-		'has-base-color': hasNoColorSettings,
+		'is-default-colors': hasNoColorSettings,
 		// Add classes for custom colors (WordPress may add these automatically)
 		'has-background': props.attributes.style?.color?.background || props.attributes.style?.color?.gradient,
 		'has-text-color': props.attributes.style?.color?.text,
@@ -102,23 +106,23 @@ interface SaveProps {
 
 	// Build button styles - include custom background/text colors from style.color
 	const buttonStyles: Record<string, any> = {
-		...blockProps.style,
+		...(blockProps.style || {}),
 		...borderProps?.style,
 	};
-	
+
 	// Copy spacing (padding, margin) from blockProps if needed
 	// Border radius is already included from borderProps.style above
-	
+
 	// Apply custom background color from style.color.background if set
 	if (props.attributes.style?.color?.background) {
 		buttonStyles.backgroundColor = props.attributes.style.color.background;
 	}
-	
+
 	// Apply custom text color from style.color.text if set
 	if (props.attributes.style?.color?.text) {
 		buttonStyles.color = props.attributes.style.color.text;
 	}
-	
+
 	// Apply gradient if set (gradient takes priority over background color)
 	if (props.attributes.style?.color?.gradient) {
 		buttonStyles.background = props.attributes.style.color.gradient;
@@ -250,7 +254,7 @@ interface SaveProps {
 					}
 				});
 			}
-			
+
 			// Add form data mappings (as JSON payload)
 			if (Array.isArray(formMappings) && formMappings.length > 0) {
 				try {

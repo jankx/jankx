@@ -19,11 +19,11 @@
   border-style: solid;
   border-color: transparent;
 }
-.wp-block-jankx-advanced-button:not(.is-style-outline) .jankx-advanced-button__link.has-base-color:not([class*=-background-color]) {
+.wp-block-jankx-advanced-button:not(.is-style-outline) .jankx-advanced-button__link.is-default-colors:not([class*=-background-color]) {
   background-color: var(--wp--preset--color--primary, #503AA8);
   color: var(--wp--preset--color--contrast, #fff);
 }
-.wp-block-jankx-advanced-button.is-style-outline .jankx-advanced-button__link.has-base-color:not([class*=-background-color]) {
+.wp-block-jankx-advanced-button.is-style-outline .jankx-advanced-button__link.is-default-colors:not([class*=-background-color]) {
   border-color: var(--wp--preset--color--primary, #503AA8);
   color: var(--wp--preset--color--primary, #503AA8);
   background-color: transparent;

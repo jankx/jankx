@@ -302,7 +302,7 @@ export function Edit(props: EditProps) {
 		'has-background': backgroundColor?.color,
 		'has-text-color': textColor?.color,
 		[`icon-position-${iconPosition}`]: hasInnerBlocks && iconPosition,
-		'has-base-color': hasNoColorSettings,
+		'is-default-colors': hasNoColorSettings,
 	});
 
 	// Build button styles - gradient takes priority over background color

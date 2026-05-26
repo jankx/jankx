@@ -43,8 +43,8 @@ class ButtonStyler
         }
 
         $additionalClasses = $isOutlineMode
-            ? 'has-primary-color has-base-color'
-            : 'has-primary-background-color has-contrast-color has-base-color';
+            ? 'has-primary-color is-default-colors'
+            : 'has-primary-background-color has-contrast-color is-default-colors';
 
         $newButtonClass = str_replace(
             'class="jankx-advanced-button__link',
@@ -147,7 +147,7 @@ class ButtonStyler
             empty($attributes['style']['color']['gradient']);
 
         if ($hasNoColorSettings) {
-            $classes[] = 'has-base-color';
+            $classes[] = 'is-default-colors';
         }
 
         if (!empty($attributes['style']['color']['background']) || !empty($attributes['style']['color']['gradient'])) {

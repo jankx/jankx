@@ -46,6 +46,12 @@ body.jankx-header-overlay header.has-background.is-sticky {
   position: fixed;
   background-color: var(--jankx-sticky-header-bg-color, #184962) !important;
 }
+body.jankx-header-overlay.admin-bar header.wp-block-template-part,
+body.jankx-header-overlay.admin-bar header.wp-block-group,
+body.jankx-header-overlay.admin-bar header.has-contrast-background-color,
+body.jankx-header-overlay.admin-bar header.has-background {
+  top: 16px;
+}
 
 header {
   transition: background-color 0.3s ease, box-shadow 0.3s ease;
