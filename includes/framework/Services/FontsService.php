@@ -190,27 +190,40 @@ class FontsService
         $themeJsonFonts = [];
 
         foreach ($activeFonts as $font) {
-                    $themeJsonFonts[] = [
+            $themeJsonFonts[] = [
                 'fontFamily' => $font->getFamily(),
                 'name' => $font->getName(),
                 'slug' => $font->getId(),
-                    ];
+            ];
         }
 
         if (empty($themeJsonFonts)) {
             return $themeJson;
         }
 
-        // Inject vào theme.json
-        if (!isset($themeJson['settings']['typography']['fontFamilies'])) {
-            $themeJson['settings']['typography']['fontFamilies'] = [];
+        $new_data = [
+            'version'  => 3,
+            'settings' => [
+                'typography' => [
+                    'fontFamilies' => $themeJsonFonts,
+                ],
+            ],
+        ];
+
+        if (is_object($themeJson) && method_exists($themeJson, 'update_with')) {
+            return $themeJson->update_with($new_data);
         }
 
-            // Merge với fonts hiện có
+        // Fallback for array (older WP or other filters)
+        if (is_array($themeJson)) {
+            if (!isset($themeJson['settings']['typography']['fontFamilies'])) {
+                $themeJson['settings']['typography']['fontFamilies'] = [];
+            }
             $themeJson['settings']['typography']['fontFamilies'] = array_merge(
                 $themeJson['settings']['typography']['fontFamilies'],
                 $themeJsonFonts
             );
+        }
 
         return $themeJson;
     }

@@ -148,20 +148,50 @@
 			"h1": {
 				"typography": {
 					"fontFamily": "var(--wp--preset--font-family--montserrat)",
-					"fontWeight": "800"
+					"fontWeight": "900",
+					"fontSize": "64px",
+					"lineHeight": "1.1"
 				}
 			},
 			"h2": {
 				"typography": {
 					"fontFamily": "var(--wp--preset--font-family--montserrat)",
 					"fontWeight": "800",
-					"letterSpacing": "0.5px"
+					"letterSpacing": "0.5px",
+					"fontSize": "48px",
+					"lineHeight": "60px"
 				}
 			},
 			"h3": {
 				"typography": {
 					"fontFamily": "var(--wp--preset--font-family--montserrat)",
-					"fontWeight": "700"
+					"fontWeight": "700",
+					"fontSize": "36px",
+					"lineHeight": "44px"
+				}
+			},
+			"h4": {
+				"typography": {
+					"fontFamily": "var(--wp--preset--font-family--montserrat)",
+					"fontWeight": "600",
+					"fontSize": "22px",
+					"lineHeight": "34px"
+				}
+			},
+			"h5": {
+				"typography": {
+					"fontFamily": "var(--wp--preset--font-family--montserrat)",
+					"fontWeight": "500",
+					"fontSize": "16px",
+					"lineHeight": "24px"
+				}
+			},
+			"h6": {
+				"typography": {
+					"fontFamily": "var(--wp--preset--font-family--montserrat)",
+					"fontWeight": "400",
+					"fontSize": "14px",
+					"lineHeight": "20px"
 				}
 			}
 		},

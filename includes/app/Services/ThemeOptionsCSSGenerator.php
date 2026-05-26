@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use Jankx\Facades\Log;
+use Jankx\Facades\Config;
 
 /**
  * Theme Options CSS Generator
@@ -111,6 +112,18 @@ class ThemeOptionsCSSGenerator
     public function __construct(ThemeOptionsService $themeOptions)
     {
         $this->themeOptions = $themeOptions;
+
+        // Load dynamic defaults from config to avoid hardcoding
+        $configOptions = Config::get('app.theme_defaults.options', []);
+        if (!empty($configOptions)) {
+            foreach ($configOptions as $key => $value) {
+                if (isset($this->defaults[$key]) && is_array($this->defaults[$key]) && is_array($value)) {
+                    $this->defaults[$key] = array_merge($this->defaults[$key], $value);
+                } else {
+                    $this->defaults[$key] = $value;
+                }
+            }
+        }
     }
 
     /**
@@ -264,6 +277,14 @@ class ThemeOptionsCSSGenerator
             $css[] = '  color: var(--jankx-heading-text-color, inherit);';
             $css[] = '  text-transform: var(--jankx-heading-transform, none);';
             $css[] = '}';
+            
+            // Specific Heading Sizes
+            $css[] = 'h1, .h1 { font-size: 64px; line-height: 1.1; font-weight: 900; }';
+            $css[] = 'h2, .h2 { font-size: 48px; line-height: 60px; font-weight: 800; }';
+            $css[] = 'h3, .h3 { font-size: 36px; line-height: 44px; font-weight: 700; }';
+            $css[] = 'h4, .h4 { font-size: 22px; line-height: 34px; font-weight: 700; }';
+            $css[] = 'h5, .h5 { font-size: 16px; line-height: 24px; font-weight: 600; }';
+            $css[] = 'h6, .h6 { font-size: 14px; line-height: 20px; font-weight: 600; }';
 
             $css[] = 'a { color: var(--jankx-link-color); text-decoration: none; transition: color 0.2s ease; }';
             $css[] = 'a:hover { color: var(--jankx-link-hover-color); }';
