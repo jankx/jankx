@@ -40,7 +40,8 @@ body.jankx-header-overlay {
 
 
 header {
-    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    will-change: transform, background-color, backdrop-filter;
 
     &.is-sticky {
         position: fixed;
@@ -48,30 +49,59 @@ header {
         left: 0;
         right: 0;
         z-index: 10000;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-        animation: jankxHeaderSlideDown 0.4s ease forwards;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        animation: jankxHeaderSlideDown 0.5s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
 
-        // Ensure it has a background so content doesn't bleed through
-        background-color: var(--jankx-sticky-header-bg-color, #184962) !important;
+        // Premium Glassmorphism Vibe
+        background-color: rgba(24, 73, 98, 0.85) !important; // Navy with transparency
+        backdrop-filter: blur(15px);
+        -webkit-backdrop-filter: blur(15px);
+
+        // Use the variable if set, but override the transparency logic
+        @supports (background-color: var(--jankx-sticky-header-bg-color)) {
+            background-color: var(--jankx-sticky-header-bg-color) !important;
+            // If the user wants a solid color they can set it, but we add blur anyway
+        }
+
+        // Slight height reduction for vibe
+        padding-top: 10px !important;
+        padding-bottom: 10px !important;
     }
 }
 
 body.jankx-header-overlay {
     header.is-sticky {
-        header.has-contrast-background-color {
-            // Ensure it has a background so content doesn't bleed through
-            background-color: var(--jankx-sticky-header-bg-color, #1a1a1a) !important;
-        }
+        background-color: rgba(24, 73, 98, 0.9) !important;
     }
 }
-
 
 @keyframes jankxHeaderSlideDown {
     from {
         transform: translateY(-100%);
+        opacity: 0;
     }
 
     to {
         transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+// Admin bar support
+.admin-bar {
+    header.is-sticky {
+        top: 32px;
+    }
+
+    @media (max-width: 782px) {
+        header.is-sticky {
+            top: 46px;
+        }
+    }
+
+    @media (max-width: 600px) {
+        header.is-sticky {
+            top: 0; // WordPress hides admin bar at this width or it flows
+        }
     }
 }
