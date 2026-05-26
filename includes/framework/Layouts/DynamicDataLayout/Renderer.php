@@ -52,9 +52,6 @@ class Renderer
             $attributes['postTemplate'] = $templateBlock;
             if (!empty($templateBlock['attrs'])) {
                 $templateAttrs = $templateBlock['attrs'];
-                if (!empty($templateAttrs['imageRatio']) && empty($attributes['imageRatio'])) {
-                    $attributes['imageRatio'] = $templateAttrs['imageRatio'];
-                }
                 if (!empty($templateAttrs['thumbnailPosition']) && empty($attributes['thumbnailPosition'])) {
                     $attributes['thumbnailPosition'] = $templateAttrs['thumbnailPosition'];
                 }

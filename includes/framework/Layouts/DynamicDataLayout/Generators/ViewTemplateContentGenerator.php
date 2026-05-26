@@ -16,7 +16,6 @@ class ViewTemplateContentGenerator extends AbstractContentGenerator
         buildBlockContext as traitBuildBlockContext;
         buildItemClasses as traitBuildItemClasses;
         buildWrapperAttributes as traitBuildWrapperAttributes;
-        resolveImageRatioValue as traitResolveImageRatioValue;
         stringifyAttributes as traitStringifyAttributes;
     }
 
@@ -274,7 +273,6 @@ class ViewTemplateContentGenerator extends AbstractContentGenerator
         
         // Add styling options
         $variables['thumbnail_position'] = $templateAttrs['thumbnailPosition'] ?? 'top';
-        $variables['image_ratio'] = $templateAttrs['imageRatio'] ?? '';
         $variables['item_spacing'] = $templateAttrs['itemSpacing'] ?? 'normal';
         $variables['show_item_border'] = $templateAttrs['showItemBorder'] ?? false;
         $variables['item_border_radius'] = $templateAttrs['itemBorderRadius'] ?? 0;
@@ -306,10 +304,7 @@ class ViewTemplateContentGenerator extends AbstractContentGenerator
         return $this->traitBuildWrapperAttributes($options);
     }
 
-    protected function resolveImageRatioValue($ratio, array $options): ?string
-    {
-        return $this->traitResolveImageRatioValue($ratio, $options);
-    }
+
 
     protected function stringifyAttributes(array $attributes): string
     {

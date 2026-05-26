@@ -13,7 +13,6 @@ class CardItemLayout
     {
         return [
             'thumbnailPosition',
-            'imageRatio',
             'itemSpacing',
             'showItemBorder',
             'itemBorderRadius',

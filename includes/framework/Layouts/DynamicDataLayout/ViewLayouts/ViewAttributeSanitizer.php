@@ -59,8 +59,6 @@ class ViewAttributeSanitizer
         $sanitized['thumbnailPosition'] = $this->sanitizeThumbnailPosition($attributes['thumbnailPosition'] ?? 'top');
         $sanitized['emptyMessage'] = $this->sanitizeText($attributes['emptyMessage'] ?? __('No posts found.', 'jankx'));
         $sanitized['className'] = $this->sanitizeClassName($attributes['className'] ?? '');
-        // Image ratio (e.g., "16/9") used by some layouts
-        $sanitized['imageRatio'] = $this->sanitizeImageRatio($attributes['imageRatio'] ?? '');
 
         // Pagination strings
         $sanitized['paginationStyle'] = $this->sanitizeText($attributes['paginationStyle'] ?? 'numbers');
@@ -160,17 +158,6 @@ class ViewAttributeSanitizer
         return sanitize_html_class($className);
     }
 
-    protected function sanitizeImageRatio(string $ratio): string
-    {
-        $ratio = trim((string) $ratio);
-        if ($ratio === '') {
-            return '';
-        }
-        if (preg_match('/^\d+(\.\d+)?\s*\/\s*\d+(\.\d+)?$/', $ratio)) {
-            return $ratio;
-        }
-        return '';
-    }
 
     protected function sanitizeOverlayType(string $type): string
     {

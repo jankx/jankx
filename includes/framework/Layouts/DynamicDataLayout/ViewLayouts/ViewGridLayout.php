@@ -20,17 +20,7 @@ class ViewGridLayout extends AbstractViewLayout
         $columnsTablet = (int) $this->getOption('columnsTablet', 2);
         $columnsMobile = (int) $this->getOption('columnsMobile', 1);
 
-        $hasImageRatio = false;
-        $imageRatio = $this->getOption('imageRatio', '');
-        $ratioStyle = '';
-        if (is_string($imageRatio) && strpos($imageRatio, '/') !== false) {
-            [$w, $h] = array_map('floatval', explode('/', $imageRatio, 2));
-            if ($w > 0 && $h > 0) {
-                $percent = ($h / $w) * 100.0;
-                $ratioStyle = sprintf('--jankx-image-ratio: %.4f%%;', $percent);
-                $hasImageRatio = true;
-            }
-        }
+
 
         $ul_classes = [
             'wp-block-jankx-dynamic-ssr-layout',
@@ -40,14 +30,11 @@ class ViewGridLayout extends AbstractViewLayout
             'columns-tablet-' . max(1, $columnsTablet),
             'columns-mobile-' . max(1, $columnsMobile),
         ];
-        if ($hasImageRatio) {
-            $ul_classes[] = 'has-image-ratio';
-        }
 
         ob_start();
         ?>
         <div class="<?php echo esc_attr(implode(' ', $ul_classes)); ?>"
-            style="<?php echo esc_attr(sprintf('--columns-desktop: %d; --columns-tablet: %d; --columns-mobile: %d; %s', $columns, $columnsTablet, $columnsMobile, $ratioStyle)); ?>">
+            style="<?php echo esc_attr(sprintf('--columns-desktop: %d; --columns-tablet: %d; --columns-mobile: %d;', $columns, $columnsTablet, $columnsMobile)); ?>">
             <?php
             while ($this->query->have_posts()) {
                 $this->query->the_post();
@@ -110,14 +97,7 @@ class ViewGridLayout extends AbstractViewLayout
         $classes[] = 'columns-tablet-' . max(1, $columnsTablet);
         $classes[] = 'columns-mobile-' . max(1, $columnsMobile);
 
-        // Add image ratio class if set
-        $imageRatio = $this->getOption('imageRatio', '');
-        if (is_string($imageRatio) && strpos($imageRatio, '/') !== false) {
-            [$w, $h] = array_map('floatval', explode('/', $imageRatio, 2));
-            if ($w > 0 && $h > 0) {
-                $classes[] = 'has-image-ratio';
-            }
-        }
+
 
         return $classes;
     }

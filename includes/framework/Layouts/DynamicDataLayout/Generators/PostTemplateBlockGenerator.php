@@ -16,7 +16,6 @@ class PostTemplateBlockGenerator extends AbstractContentGenerator
         buildBlockContext as traitBuildBlockContext;
         buildItemClasses as traitBuildItemClasses;
         buildWrapperAttributes as traitBuildWrapperAttributes;
-        resolveImageRatioValue as traitResolveImageRatioValue;
         stringifyAttributes as traitStringifyAttributes;
     }
     protected array $templateBlock;
@@ -390,10 +389,7 @@ class PostTemplateBlockGenerator extends AbstractContentGenerator
         return $this->traitBuildWrapperAttributes($options);
     }
 
-    protected function resolveImageRatioValue($ratio, array $options): ?string
-    {
-        return $this->traitResolveImageRatioValue($ratio, $options);
-    }
+
 
     protected function stringifyAttributes(array $attributes): string
     {

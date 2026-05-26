@@ -109,9 +109,6 @@ class ContentLayoutServiceProvider extends ServiceProvider
         $assetResolver = $app->make(\Jankx\Services\AssetResolver::class);
         $coreLayoutCss = "
             .is-flex-container { display: flex; flex-wrap: wrap; list-style: none; padding: 0; margin: 0; gap: var(--jankx-grid-gap, 1.5rem); }
-            .has-image-ratio { position: relative; width: 100%; overflow: hidden; background: #f0f0f0; }
-            .has-image-ratio::before { content: ''; display: block; padding-top: var(--jankx-image-ratio, 56.25%); transition: padding-top 0.3s ease; }
-            .has-image-ratio img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; }
             .columns-1 > * { flex: 0 0 100%; max-width: 100%; }
             .columns-2 > * { flex: 0 0 calc(50% - var(--jankx-grid-gap, 1.5rem) / 2); max-width: calc(50% - var(--jankx-grid-gap, 1.5rem) / 2); }
             .columns-3 > * { flex: 0 0 calc(33.333% - var(--jankx-grid-gap, 1.5rem) * 2 / 3); max-width: calc(33.333% - var(--jankx-grid-gap, 1.5rem) * 2 / 3); }

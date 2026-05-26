@@ -13,7 +13,6 @@ class GridItemLayout
     {
         return [
             'thumbnailPosition',
-            'imageRatio',
             'itemSpacing',
             'showItemBorder',
             'itemBorderRadius',

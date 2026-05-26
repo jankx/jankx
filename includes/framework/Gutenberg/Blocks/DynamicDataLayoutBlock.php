@@ -248,14 +248,13 @@ class DynamicDataLayoutBlock extends Block
         $this->ensureServices();
 
         try {
-            // Extract template block attributes (imageRatio, thumbnailPosition) and merge into parent attributes
+            // Extract template block attributes (thumbnailPosition) and merge into parent attributes
             if ($block instanceof \WP_Block) {
                 $templateBlock = $this->extractTemplateBlockFromParsedBlock($block->parsed_block ?? []);
                 if ($templateBlock && !empty($templateBlock['attrs'])) {
                     $templateAttrs = $templateBlock['attrs'];
                     // Merge template block attributes into parent attributes, overriding defaults
                     $keysToMerge = [
-                        'imageRatio',
                         'thumbnailPosition',
                         'overlayIcon',
                         'overlayIconType',
@@ -572,9 +571,6 @@ class DynamicDataLayoutBlock extends Block
         // Set content generator if template block exists
         if ($templateBlock) {
             $templateAttrs = $templateBlock['attrs'] ?? [];
-            if (!empty($templateAttrs['imageRatio']) && empty($attributes['imageRatio'])) {
-                $attributes['imageRatio'] = $templateAttrs['imageRatio'];
-            }
             if (!empty($templateAttrs['thumbnailPosition']) && empty($attributes['thumbnailPosition'])) {
                 $attributes['thumbnailPosition'] = $templateAttrs['thumbnailPosition'];
             }
@@ -782,12 +778,7 @@ class DynamicDataLayoutBlock extends Block
         if (!empty($attributes['queryPreset'])) {
             $attrs['data-query-preset'] = esc_attr($attributes['queryPreset']);
         }
-        if (!empty($attributes['imageRatio'])) {
-            $attrs['data-image-ratio'] = esc_attr($attributes['imageRatio']);
-            // Add image ratio to styles if needed, though usually handled by inner items
-            // But some layouts might use it on wrapper
-            $styleRules[] = '--jankx-image-ratio: ' . esc_attr($attributes['imageRatio']);
-        }
+
         if (!empty($attributes['thumbnailPosition'])) {
             $attrs['data-thumbnail-position'] = esc_attr($attributes['thumbnailPosition']);
         }

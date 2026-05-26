@@ -47,15 +47,9 @@ class ViewSsrGenerator extends AbstractViewContentGenerator
             return '';
         }
 
-        $imageRatio = '';
-        if (!empty($mergedOptions['imageRatio']) && is_string($mergedOptions['imageRatio'])) {
-            $imageRatio = trim((string) $mergedOptions['imageRatio']);
-        }
-        $wrapperStyle = $imageRatio !== '' ? ('--image-ratio: ' . $imageRatio) : '';
-
         ob_start();
         ?>
-        <div class="wp-block-jankx-dynamic-ssr-template"<?php echo $imageRatio !== '' ? (' data-image-ratio="' . esc_attr($imageRatio) . '"') : ''; ?><?php echo $wrapperStyle !== '' ? (' style="' . esc_attr($wrapperStyle) . '"') : ''; ?>>
+        <div class="wp-block-jankx-dynamic-ssr-template">
             <?php
             while ($query->have_posts()) {
                 $query->the_post();

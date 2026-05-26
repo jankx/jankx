@@ -13,7 +13,6 @@ class ListItemLayout
     {
         return [
             'thumbnailPosition',
-            'imageRatio',
             'showDate',
             'showAuthor',
             'showExcerpt',

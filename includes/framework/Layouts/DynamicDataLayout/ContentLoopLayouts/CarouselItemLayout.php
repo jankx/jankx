@@ -13,7 +13,6 @@ class CarouselItemLayout
     {
         return [
             'thumbnailPosition',
-            'imageRatio',
             'slidesToScroll',
             'loop',
             'autoplay',

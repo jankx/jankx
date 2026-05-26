@@ -13,7 +13,6 @@ class MasonryItemLayout
     {
         return [
             'thumbnailPosition',
-            'imageRatio',
             'itemSpacing',
             'showItemBorder',
             'itemBorderRadius',

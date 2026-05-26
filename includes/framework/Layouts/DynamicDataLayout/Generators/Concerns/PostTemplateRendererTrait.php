@@ -124,15 +124,7 @@ trait PostTemplateRendererTrait
             '--carousel-columns-mobile: ' . $columnsMobile,
         ];
 
-        $imageRatioValueForCarousel = $this->resolveImageRatioValue(
-            $this->getOption('imageRatio', $options['imageRatio'] ?? ''),
-            $options
-        );
 
-        if ($imageRatioValueForCarousel !== null) {
-            $styleRules[] = '--jankx-image-ratio: ' . $imageRatioValueForCarousel;
-            $wrapperClasses[] = 'has-image-ratio';
-        }
 
         $containerAttributes = $this->buildWrapperAttributes($options);
         $containerClasses = preg_split('/\s+/', (string) ($containerAttributes['class'] ?? ''));
@@ -386,15 +378,7 @@ trait PostTemplateRendererTrait
             $styleRules[] = '--columns-mobile: ' . $mobile;
         }
 
-        $imageRatioValue = $this->resolveImageRatioValue(
-            $this->getOption('imageRatio', $options['imageRatio'] ?? ''),
-            $options
-        );
 
-        if ($imageRatioValue !== null && $this->currentLayout !== 'masonry') {
-            $styleRules[] = '--jankx-image-ratio: ' . $imageRatioValue;
-            $classes[] = 'has-image-ratio';
-        }
 
         $attributes = [
             'class' => implode(' ', $classes),
@@ -416,29 +400,7 @@ trait PostTemplateRendererTrait
         return $attributes;
     }
 
-    protected function resolveImageRatioValue($ratio, array $options): ?string
-    {
-        $ratioString = is_string($ratio) ? trim($ratio) : '';
 
-        if ($ratioString === '') {
-            $ratioString = '3/2';
-        }
-
-        if (!preg_match('/^(\d+)\s*\/\s*(\d+)$/', $ratioString, $matches)) {
-            return null;
-        }
-
-        $width = (float) $matches[1];
-        $height = (float) $matches[2];
-
-        if ($width <= 0 || $height <= 0) {
-            return null;
-        }
-
-        $padding = ($height / $width) * 100;
-
-        return rtrim(rtrim(sprintf('%.4f', $padding), '0'), '.') . '%';
-    }
 
     protected function stringifyAttributes(array $attributes): string
     {

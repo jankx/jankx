@@ -27,7 +27,6 @@ class LayoutOptionsResolver
             'responsiveColumns' => $this->attributes['responsiveColumns'] ?? null,
             'showFeaturedImage' => $this->attributes['showFeaturedImage'] ?? true,
             'thumbnailPosition' => $this->resolveThumbnailPosition(),
-            'imageRatio' => $this->attributes['imageRatio'] ?? '',
             'showTitle' => $this->attributes['showTitle'] ?? true,
             'showExcerpt' => $this->attributes['showExcerpt'] ?? true,
             'showDate' => $this->attributes['showDate'] ?? true,

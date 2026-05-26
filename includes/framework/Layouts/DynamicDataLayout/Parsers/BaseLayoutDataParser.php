@@ -41,14 +41,6 @@ abstract class BaseLayoutDataParser implements LayoutDataParserInterface
      */
     protected function getCommonData(): array
     {
-        $dynamicCss = $this->generateDynamicCss();
-        if (!empty($dynamicCss)) {
-            \Jankx\Facades\App::make('asset.resolver')->addInlineCss(
-                $dynamicCss, 
-                \Jankx\Services\AssetResolver::INSTANCE
-            );
-        }
-
         return [
             'id' => $this->id,
             'name' => $this->layout->getName(),
@@ -57,30 +49,8 @@ abstract class BaseLayoutDataParser implements LayoutDataParserInterface
         ];
     }
 
-    /**
-     * Generate dynamic CSS for this specific layout instance
-     * 
-     * Child classes should override this to provide custom logic.
-     * 
-     * @return string
-     */
-    protected function generateDynamicCss(): string
-    {
-        $css = [];
-        $options = $this->layout->getOptions();
 
-        // Common: Aspect Ratio (Anti-CLS)
-        $imageRatio = $options['imageRatio'] ?? null;
-        if ($imageRatio && strpos($imageRatio, '/') !== false) {
-            [$w, $h] = array_map('floatval', explode('/', $imageRatio));
-            if ($w > 0 && $h > 0) {
-                $percent = ($h / $w) * 100.0;
-                $css[] = "#{$this->id} { --jankx-image-ratio: {$percent}%; }";
-            }
-        }
 
-        return implode("\n", $css);
-    }
 
     /**
      * Parse and return data as array (suitable for view and JSON)

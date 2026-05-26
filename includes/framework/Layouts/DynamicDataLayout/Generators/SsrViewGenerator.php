@@ -15,7 +15,6 @@ class SsrViewGenerator extends AbstractContentGenerator
         renderTemplateForPost as traitRenderTemplateForPost;
         buildItemClasses as traitBuildItemClasses;
         buildWrapperAttributes as traitBuildWrapperAttributes;
-        resolveImageRatioValue as traitResolveImageRatioValue;
         stringifyAttributes as traitStringifyAttributes;
     }
 
@@ -109,7 +108,6 @@ class SsrViewGenerator extends AbstractContentGenerator
             'options' => $options,
             'layout' => $this->getLayout(),
             'query' => $query,
-            'imageRatio' => $this->getOption('imageRatio', $options['imageRatio'] ?? ''),
             'thumbnailPosition' => $this->getOption('thumbnailPosition', $options['thumbnailPosition'] ?? 'top'),
         ];
 
@@ -136,10 +134,7 @@ class SsrViewGenerator extends AbstractContentGenerator
         return $this->traitBuildWrapperAttributes($options);
     }
 
-    protected function resolveImageRatioValue($ratio, array $options): ?string
-    {
-        return $this->traitResolveImageRatioValue($ratio, $options);
-    }
+
 
     protected function stringifyAttributes(array $attributes): string
     {
