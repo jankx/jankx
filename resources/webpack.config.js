@@ -39,6 +39,9 @@ module.exports = {
     'blocks/comment-count/build/index': './blocks/comment-count/index.tsx',
     'blocks/comment-count/build/style': './blocks/comment-count/style.scss',
     'blocks/comment-count/build/editor': './blocks/comment-count/editor.scss',
+    'blocks/search-results-count/build/index': './blocks/search-results-count/index.tsx',
+    'blocks/search-results-count/build/style': './blocks/search-results-count/style.scss',
+    'blocks/search-results-count/build/editor': './blocks/search-results-count/editor.scss',
 
     'blocks/modal/build/index': './blocks/modal/index.js',
     'blocks/modal/build/style': './blocks/modal/style.scss',

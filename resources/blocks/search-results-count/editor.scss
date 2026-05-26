@@ -1,0 +1,7 @@
+@use './style' as *;
+
+.jankx-search-results-count {
+    border: 1px dashed rgba(0, 0, 0, 0.1);
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+}
