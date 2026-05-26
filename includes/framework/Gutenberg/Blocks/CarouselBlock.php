@@ -223,8 +223,8 @@ class CarouselBlock extends Block
                     $next_html = $nav_icon_type !== 'arrow' ? $build_nav_icon($nav_icon_type, $next_icon_image_url, $next_icon_svg, $next_icon_class) : '';
                     $btn_class_append = $nav_icon_type !== 'arrow' ? ' has-custom-icon' : '';
                 ?>
-                    <div class="embla__button embla__button--prev<?php echo $btn_class_append; ?>" style="position:absolute;top:50%;left:10px;transform:translateY(-50%);width:44px;height:44px;background:rgba(0,0,0,0.7);border-radius:50%;z-index:2;"><?php echo $prev_html; ?></div>
-                    <div class="embla__button embla__button--next<?php echo $btn_class_append; ?>" style="position:absolute;top:50%;right:10px;transform:translateY(-50%);width:44px;height:44px;background:rgba(0,0,0,0.7);border-radius:50%;z-index:2;"><?php echo $next_html; ?></div>
+                    <div class="embla__button embla__button--prev<?php echo $btn_class_append; ?>" style="position:absolute;top:50%;left:10px;transform:translateY(-50%);"><?php echo $prev_html; ?></div>
+                    <div class="embla__button embla__button--next<?php echo $btn_class_append; ?>" style="position:absolute;top:50%;right:10px;transform:translateY(-50%);"><?php echo $next_html; ?></div>
                 <?php endif; ?>
 
                 <?php if ($pagination) : ?>
