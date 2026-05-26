@@ -227,7 +227,9 @@ class ThemeOptionsCSSGenerator
             $typography = $this->getOption($typoKey, $this->defaults[$typoKey]);
             if (is_array($typography)) {
                 foreach ($this->cssVarMapping[$typoKey] as $subKey => $varName) {
-                    $value = $typography[$subKey] ?? $this->defaults[$typoKey][$subKey] ?? '';
+                    // Fall back to default when saved value is null OR empty string
+                    $saved = $typography[$subKey] ?? '';
+                    $value = !empty($saved) ? $saved : ($this->defaults[$typoKey][$subKey] ?? '');
                     if (!empty($value)) {
                         $css[] = sprintf('  %s: %s;', $varName, $value);
                     }
