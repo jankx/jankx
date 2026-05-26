@@ -5,7 +5,13 @@
     "title": "Advanced Button",
     "category": "jankx",
     "description": "Advanced button block with enhanced features and styling options.",
-    "keywords": ["button", "link", "advanced", "cta", "action"],
+    "keywords": [
+        "button",
+        "link",
+        "advanced",
+        "cta",
+        "action"
+    ],
     "textdomain": "jankx",
     "allowedBlocks": [
         "jankx/icon-picker",
@@ -16,7 +22,10 @@
     "attributes": {
         "conditionType": {
             "type": "string",
-            "enum": ["always", "post-type"],
+            "enum": [
+                "always",
+                "post-type"
+            ],
             "default": "always"
         },
         "showForPostType": {
@@ -25,7 +34,12 @@
         },
         "triggerType": {
             "type": "string",
-            "enum": ["link", "button", "detail-link", "modal"],
+            "enum": [
+                "link",
+                "button",
+                "detail-link",
+                "modal"
+            ],
             "default": "link",
             "source": "attribute",
             "selector": ".jankx-advanced-button__link",
@@ -33,7 +47,11 @@
         },
         "buttonType": {
             "type": "string",
-            "enum": ["button", "submit", "reset"],
+            "enum": [
+                "button",
+                "submit",
+                "reset"
+            ],
             "default": "button",
             "source": "attribute",
             "selector": "button",
@@ -75,7 +93,7 @@
             "type": "string",
             "source": "html",
             "selector": ".button-text",
-            "default": "Button"
+            "default": ""
         },
         "url": {
             "type": "string",
@@ -141,7 +159,12 @@
         },
         "iconPosition": {
             "type": "string",
-            "enum": ["left", "right", "top", "bottom"],
+            "enum": [
+                "left",
+                "right",
+                "top",
+                "bottom"
+            ],
             "default": "left"
         },
         "showLabel": {
@@ -178,7 +201,10 @@
         "reusable": false,
         "shadow": true,
         "spacing": {
-            "padding": ["horizontal", "vertical"],
+            "padding": [
+                "horizontal",
+                "vertical"
+            ],
             "margin": true,
             "__experimentalDefaultControls": {
                 "padding": true,
@@ -211,8 +237,15 @@
         }
     },
     "styles": [
-        { "name": "fill", "label": "Fill", "isDefault": true },
-        { "name": "outline", "label": "Outline" }
+        {
+            "name": "fill",
+            "label": "Fill",
+            "isDefault": true
+        },
+        {
+            "name": "outline",
+            "label": "Outline"
+        }
     ],
     "editorScript": "file:./build/index.js",
     "editorStyle": "file:./build/editor.css",

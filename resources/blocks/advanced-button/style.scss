@@ -27,28 +27,38 @@
 		border-color: transparent;
 	}
 
-	// Default fill style - khi button không có background color được set
-	// Only apply when NO other background color class exists
-	&:not(.is-style-outline) .jankx-advanced-button__link.is-default-colors:not([class*="-background-color"]) {
-		background-color: var(--wp--preset--color--primary, #503AA8);
-		color: var(--wp--preset--color--contrast, #fff);
+	// Default behavior for FILL mode (Not Outline)
+	&:not(.is-style-outline) {
+		.jankx-advanced-button__link {
+
+			// Fallback colors if none set
+			&.is-default-colors {
+				background-color: var(--wp--preset--color--primary, #503AA8) !important;
+				color: var(--wp--preset--color--base, #fff) !important;
+			}
+		}
 	}
 
 	// Outline style variant
 	&.is-style-outline {
+		.jankx-advanced-button__link {
+			background-color: transparent !important;
+			border-color: currentColor !important;
+			border-width: 2px !important;
+			border-style: solid !important;
 
-		// Khi button không có background/color được set - dùng primary cho border và text
-		// Only apply when NO other background color class exists
-		.jankx-advanced-button__link.is-default-colors:not([class*="-background-color"]) {
-			border-color: var(--wp--preset--color--primary, #503AA8);
-			color: var(--wp--preset--color--primary, #503AA8);
-			background-color: transparent;
+			// Fallback text/border color if none set
+			&.is-default-colors {
+				color: var(--wp--preset--color--primary, #503AA8) !important;
+				border-color: var(--wp--preset--color--primary, #503AA8) !important;
+			}
 		}
 
-		// Hover state
+		// Hover state for Outline
 		&:hover .jankx-advanced-button__link {
 			background-color: var(--wp--preset--color--primary, #503AA8) !important;
-			color: var(--wp--preset--color--contrast, #fff) !important;
+			color: var(--wp--preset--color--base, #fff) !important;
+			border-color: transparent !important;
 		}
 	}
 

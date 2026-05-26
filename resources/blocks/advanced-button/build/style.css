@@ -23,14 +23,22 @@
   background-color: var(--wp--preset--color--primary, #503AA8);
   color: var(--wp--preset--color--contrast, #fff);
 }
-.wp-block-jankx-advanced-button.is-style-outline .jankx-advanced-button__link.is-default-colors:not([class*=-background-color]) {
+.wp-block-jankx-advanced-button.is-style-outline .jankx-advanced-button__link {
+  background-color: transparent !important;
+  border-color: currentColor;
+  border-width: 2px;
+}
+.wp-block-jankx-advanced-button.is-style-outline .jankx-advanced-button__link.is-default-colors:not([class*=-color]):not([class*=-background-color]) {
   border-color: var(--wp--preset--color--primary, #503AA8);
   color: var(--wp--preset--color--primary, #503AA8);
-  background-color: transparent;
+}
+.wp-block-jankx-advanced-button.is-style-outline .jankx-advanced-button__link[class*=-color] {
+  border-color: currentColor;
 }
 .wp-block-jankx-advanced-button.is-style-outline:hover .jankx-advanced-button__link {
   background-color: var(--wp--preset--color--primary, #503AA8) !important;
   color: var(--wp--preset--color--contrast, #fff) !important;
+  border-color: transparent;
 }
 .wp-block-jankx-advanced-button.has-text-align-left .jankx-advanced-button__link {
   justify-content: flex-start;
