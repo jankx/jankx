@@ -40,6 +40,7 @@ class ThemeOptionsCSSGenerator
         // Header & Footer
         'header_background' => '--jankx-header-bg-color',
         'header_text_color' => '--jankx-header-text-color',
+        'sticky_header_background' => '--jankx-sticky-header-bg-color',
         'footer_background' => '--jankx-footer-bg-color',
         'footer_text_color' => '--jankx-footer-text-color',
 
@@ -81,6 +82,7 @@ class ThemeOptionsCSSGenerator
         'link_hover_color' => '#2563eb',
         'header_background' => '#ffffff',
         'header_text_color' => '#1e293b',
+        'sticky_header_background' => '#184962',
         'footer_background' => '#0f172a',
         'footer_text_color' => '#f8fafc',
         'container_width' => '1200px',
@@ -202,7 +204,7 @@ class ThemeOptionsCSSGenerator
         $css[] = ':root {';
 
         // 1. Colors & Basic Variables
-        foreach (['primary_color', 'secondary_color', 'link_color', 'link_hover_color', 'header_background', 'header_text_color', 'footer_background', 'footer_text_color', 'button_bg_color', 'button_text_color'] as $colorKey) {
+        foreach (['primary_color', 'secondary_color', 'link_color', 'link_hover_color', 'header_background', 'header_text_color', 'sticky_header_background', 'footer_background', 'footer_text_color', 'button_bg_color', 'button_text_color'] as $colorKey) {
             $value = $this->getOption($colorKey, $this->defaults[$colorKey]);
             $css[] = sprintf('  %s: %s;', $this->cssVarMapping[$colorKey], $value);
 
@@ -271,6 +273,7 @@ class ThemeOptionsCSSGenerator
             $css[] = '}';
 
             $css[] = 'header.site-header { background-color: var(--jankx-header-bg-color); color: var(--jankx-header-text-color); }';
+            $css[] = 'header.is-sticky, .main-header.scrolled { background-color: var(--jankx-sticky-header-bg-color) !important; }';
             $css[] = 'footer.site-footer { background-color: var(--jankx-footer-bg-color); color: var(--jankx-footer-text-color); }';
 
             $css[] = '.button, button, input[type="submit"], .wp-block-button__link {';

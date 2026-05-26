@@ -113,6 +113,14 @@ class ThemeOptionsBridge
                         'description' => __('Make the header sticky when scrolling', 'jankx'),
                     ],
                     [
+                        'id' => 'sticky_header_background',
+                        'name' => __('Sticky Header Background', 'jankx'),
+                        'type' => 'color',
+                        'value' => '#184962',
+                        'required' => ['enable_sticky_header', '==', 1],
+                        'description' => __('Background color when header is sticky', 'jankx'),
+                    ],
+                    [
                         'id' => 'sticky_header_trigger',
                         'name' => __('Sticky Header Trigger', 'jankx'),
                         'type' => 'select',
