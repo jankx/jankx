@@ -44,6 +44,11 @@ export interface CarouselAttributes {
   nextIconClass?: string;
   navIconSize?: number;
   navIconColor?: string;
+  // Navigation button settings
+  navBtnWidth?: number;
+  navBtnHeight?: number;
+  navBtnBorderRadius?: number;
+  navBtnBgColor?: string;
 }
 
 export interface CarouselProps {

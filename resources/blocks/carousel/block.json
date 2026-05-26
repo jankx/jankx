@@ -191,6 +191,22 @@
     "navIconColor": {
       "type": "string",
       "default": ""
+    },
+    "navBtnWidth": {
+      "type": "number",
+      "default": 44
+    },
+    "navBtnHeight": {
+      "type": "number",
+      "default": 44
+    },
+    "navBtnBorderRadius": {
+      "type": "number",
+      "default": 50
+    },
+    "navBtnBgColor": {
+      "type": "string",
+      "default": "rgba(0,0,0,0.7)"
     }
   },
   "supports": {

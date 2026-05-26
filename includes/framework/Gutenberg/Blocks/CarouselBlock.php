@@ -69,6 +69,12 @@ class CarouselBlock extends Block
         $prev_icon_class = $attributes['prevIconClass'] ?? '';
         $next_icon_class = $attributes['nextIconClass'] ?? '';
 
+        // Navigation button attributes
+        $nav_btn_width = $attributes['navBtnWidth'] ?? 44;
+        $nav_btn_height = $attributes['navBtnHeight'] ?? 44;
+        $nav_btn_border_radius = $attributes['navBtnBorderRadius'] ?? 50;
+        $nav_btn_bg_color = $attributes['navBtnBgColor'] ?? 'rgba(0,0,0,0.7)';
+
         // Extract style variation from className
         $style_variation = 'default';
         if (preg_match('/is-style-(\w+)/', $class_name, $matches)) {
@@ -160,20 +166,13 @@ class CarouselBlock extends Block
         // Separate slides and overlay
         $slides_content = '';
         $overlay_content = '';
+        $slide_count = 0;
 
         if ($block && !empty($block->inner_blocks)) {
             foreach ($block->inner_blocks as $inner_block) {
                 // Ensure $inner_block is an array if it's not an object (compatibility with different WP versions/contexts)
                 if (is_object($inner_block)) {
                     $block_name = $inner_block->name;
-                    $parsed_block = (array) $inner_block; // Cast to array if render_block expects array
-                    // However, render_block expects an array representing the parsed block. 
-                    // WP_Block->inner_blocks contains WP_Block objects in recent versions.
-                    // We need to render the WP_Block object correctly.
-                    
-                    // Actually, render_block() expects an array. 
-                    // If we have WP_Block objects, we should use their ->parsed_block property or construct the array.
-                    // But wait, render_block($inner_block->parsed_block) is likely what we need if $inner_block is a WP_Block.
                     $parsed_block_data = $inner_block->parsed_block;
                 } else {
                     $block_name = $inner_block['blockName'];
@@ -185,11 +184,15 @@ class CarouselBlock extends Block
                 if ($block_name === 'jankx/carousel-inner-blocks-overlay') {
                     $overlay_content .= $block_html;
                 } else {
+                    $slide_count++;
                     $slides_content .= $block_html;
                 }
             }
         } else {
             $slides_content = $content;
+            // Dọn placeholder tĩnh hoặc phỏng đoán số lượng slide
+            // (Thực tế nếu block có nội dung thì nó vẫn sẽ sinh HTML có cấu trúc)
+            $slide_count = substr_count($slides_content, 'class="embla__slide"') ?: substr_count($slides_content, 'class="wp-block-jankx-carousel-slide"');
         }
 
         ob_start();
@@ -202,7 +205,7 @@ class CarouselBlock extends Block
 
                 <?php echo $overlay_content; ?>
 
-                <?php if ($navigation) : 
+                <?php if ($navigation && $slide_count > 1) : 
                     $build_nav_icon = function($type, $img_url, $svg_code, $icon_class) use ($nav_icon_size, $nav_icon_color) {
                         $size_style = sprintf('width:%dpx;height:%dpx;', $nav_icon_size, $nav_icon_size);
                         $color_style = $nav_icon_color ? sprintf('color:%s;', esc_attr($nav_icon_color)) : '';
@@ -222,12 +225,20 @@ class CarouselBlock extends Block
                     $prev_html = $nav_icon_type !== 'arrow' ? $build_nav_icon($nav_icon_type, $prev_icon_image_url, $prev_icon_svg, $prev_icon_class) : '';
                     $next_html = $nav_icon_type !== 'arrow' ? $build_nav_icon($nav_icon_type, $next_icon_image_url, $next_icon_svg, $next_icon_class) : '';
                     $btn_class_append = $nav_icon_type !== 'arrow' ? ' has-custom-icon' : '';
+                    
+                    $btn_inline_style = sprintf(
+                        'width:%dpx;height:%dpx;background:%s;border-radius:%s%%;position:absolute;top:50%%;transform:translateY(-50%%);z-index:2;',
+                        $nav_btn_width,
+                        $nav_btn_height,
+                        esc_attr($nav_btn_bg_color),
+                        $nav_btn_border_radius
+                    );
                 ?>
-                    <div class="embla__button embla__button--prev<?php echo $btn_class_append; ?>" style="position:absolute;top:50%;left:10px;transform:translateY(-50%);"><?php echo $prev_html; ?></div>
-                    <div class="embla__button embla__button--next<?php echo $btn_class_append; ?>" style="position:absolute;top:50%;right:10px;transform:translateY(-50%);"><?php echo $next_html; ?></div>
+                    <div class="embla__button embla__button--prev<?php echo $btn_class_append; ?>" style="left:10px;<?php echo $btn_inline_style; ?>"><?php echo $prev_html; ?></div>
+                    <div class="embla__button embla__button--next<?php echo $btn_class_append; ?>" style="right:10px;<?php echo $btn_inline_style; ?>"><?php echo $next_html; ?></div>
                 <?php endif; ?>
 
-                <?php if ($pagination) : ?>
+                <?php if ($pagination && $slide_count > 1) : ?>
                     <div class="embla__dots" style="position:absolute;bottom:12px;left:50%;transform:translateX(-50%);display:flex;gap:8px;z-index:2;"></div>
                 <?php endif; ?>
             </div>

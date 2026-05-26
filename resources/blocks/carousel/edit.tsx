@@ -110,7 +110,12 @@ export default function Edit({ attributes, setAttributes, clientId }: CarouselPr
     prevIconClass = '',
     nextIconClass = '',
     navIconSize = 24,
-    navIconColor = ''
+    navIconColor = '',
+    // Navigation button settings
+    navBtnWidth = 44,
+    navBtnHeight = 44,
+    navBtnBorderRadius = 50,
+    navBtnBgColor = 'rgba(0,0,0,0.7)'
   } = attributes;
 
   // Get block's style variation
@@ -186,11 +191,17 @@ export default function Edit({ attributes, setAttributes, clientId }: CarouselPr
     }
   );
 
-  const hasInnerBlocks = useSelect(
+  const { hasInnerBlocks, slideCount } = useSelect(
     (select) => {
       const { getBlock } = select('core/block-editor');
       const block = getBlock(clientId);
-      return !!(block && block.innerBlocks.length);
+      if (!block) return { hasInnerBlocks: false, slideCount: 0 };
+
+      const count = block.innerBlocks.filter((b: any) => b.name !== 'jankx/carousel-inner-blocks-overlay').length;
+      return {
+        hasInnerBlocks: !!block.innerBlocks.length,
+        slideCount: count
+      };
     },
     [clientId]
   );
@@ -622,7 +633,49 @@ export default function Edit({ attributes, setAttributes, clientId }: CarouselPr
             )}
           </PanelBody>
 
-          <PanelBody title={__('Navigation Icons', 'jankx')} initialOpen={false}>
+          <PanelBody title={__('Navigation Settings', 'jankx')} initialOpen={false}>
+            <div style={{ marginBottom: '24px', paddingBottom: '16px', borderBottom: '1px solid #e0e0e0' }}>
+              <h4 style={{ margin: '0 0 12px 0' }}>{__('Button Container Style', 'jankx')}</h4>
+
+              <RangeControl
+                label={__('Button Width (px)', 'jankx')}
+                value={navBtnWidth}
+                onChange={(val?: number) => setAttributes({ navBtnWidth: val || 44 })}
+                min={20}
+                max={100}
+                step={2}
+              />
+              <RangeControl
+                label={__('Button Height (px)', 'jankx')}
+                value={navBtnHeight}
+                onChange={(val?: number) => setAttributes({ navBtnHeight: val || 44 })}
+                min={20}
+                max={100}
+                step={2}
+              />
+              <RangeControl
+                label={__('Border Radius (%)', 'jankx')}
+                value={navBtnBorderRadius}
+                onChange={(val?: number) => setAttributes({ navBtnBorderRadius: typeof val !== 'undefined' ? val : 50 })}
+                min={0}
+                max={50}
+                step={1}
+                help={__('0 for square, 50 for circle', 'jankx')}
+              />
+
+              <div style={{ marginBottom: '16px' }}>
+                <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>
+                  {__('Button Background Color', 'jankx')}
+                </label>
+                <ColorPicker
+                  color={navBtnBgColor || 'rgba(0,0,0,0.7)'}
+                  onChange={(color: string) => setAttributes({ navBtnBgColor: color })}
+                  enableAlpha={true}
+                />
+              </div>
+            </div>
+
+            <h4 style={{ margin: '0 0 12px 0' }}>{__('Icon Display', 'jankx')}</h4>
             <SelectControl
               label={__('Icon Type', 'jankx')}
               value={navIconType}
@@ -773,12 +826,44 @@ export default function Edit({ attributes, setAttributes, clientId }: CarouselPr
         <div className="embla">
           <div {...innerBlocksProps} className={`${innerBlocksProps.className} embla__container`} />
 
-          {navigation && (
+          {navigation && slideCount > 1 && (
             <>
-              <div className={`embla__button embla__button--prev${navIconType !== 'arrow' ? ' has-custom-icon' : ''}`}>
+              <div
+                className={`embla__button embla__button--prev${navIconType !== 'arrow' ? ' has-custom-icon' : ''}`}
+                style={{
+                  width: `${navBtnWidth}px`,
+                  height: `${navBtnHeight}px`,
+                  borderRadius: `${navBtnBorderRadius}%`,
+                  backgroundColor: navBtnBgColor,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  zIndex: 2,
+                  position: 'absolute',
+                  left: '10px',
+                  top: '50%',
+                  transform: 'translateY(-50%)'
+                }}
+              >
                 {renderNavIcon(navIconType, prevIconImageUrl, prevIconSvg, prevIconClass, navIconSize, navIconColor, 'prev')}
               </div>
-              <div className={`embla__button embla__button--next${navIconType !== 'arrow' ? ' has-custom-icon' : ''}`}>
+              <div
+                className={`embla__button embla__button--next${navIconType !== 'arrow' ? ' has-custom-icon' : ''}`}
+                style={{
+                  width: `${navBtnWidth}px`,
+                  height: `${navBtnHeight}px`,
+                  borderRadius: `${navBtnBorderRadius}%`,
+                  backgroundColor: navBtnBgColor,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  zIndex: 2,
+                  position: 'absolute',
+                  right: '10px',
+                  top: '50%',
+                  transform: 'translateY(-50%)'
+                }}
+              >
                 {renderNavIcon(navIconType, nextIconImageUrl, nextIconSvg, nextIconClass, navIconSize, navIconColor, 'next')}
               </div>
             </>
