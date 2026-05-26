@@ -41,6 +41,7 @@ class ThemeOptionsCSSGenerator
         'header_background' => '--jankx-header-bg-color',
         'header_text_color' => '--jankx-header-text-color',
         'sticky_header_background' => '--jankx-sticky-header-bg-color',
+        'sticky_header_text_color' => '--jankx-sticky-header-text-color',
         'footer_background' => '--jankx-footer-bg-color',
         'footer_text_color' => '--jankx-footer-text-color',
 
@@ -83,6 +84,7 @@ class ThemeOptionsCSSGenerator
         'header_background' => '#ffffff',
         'header_text_color' => '#1e293b',
         'sticky_header_background' => '#184962',
+        'sticky_header_text_color' => '#ffffff',
         'footer_background' => '#0f172a',
         'footer_text_color' => '#f8fafc',
         'container_width' => '1200px',
@@ -204,7 +206,7 @@ class ThemeOptionsCSSGenerator
         $css[] = ':root {';
 
         // 1. Colors & Basic Variables
-        foreach (['primary_color', 'secondary_color', 'link_color', 'link_hover_color', 'header_background', 'header_text_color', 'sticky_header_background', 'footer_background', 'footer_text_color', 'button_bg_color', 'button_text_color'] as $colorKey) {
+        foreach (['primary_color', 'secondary_color', 'link_color', 'link_hover_color', 'header_background', 'header_text_color', 'sticky_header_background', 'sticky_header_text_color', 'footer_background', 'footer_text_color', 'button_bg_color', 'button_text_color'] as $colorKey) {
             $value = $this->getOption($colorKey, $this->defaults[$colorKey]);
             $css[] = sprintf('  %s: %s;', $this->cssVarMapping[$colorKey], $value);
 
@@ -273,7 +275,10 @@ class ThemeOptionsCSSGenerator
             $css[] = '}';
 
             $css[] = 'header.site-header { background-color: var(--jankx-header-bg-color); color: var(--jankx-header-text-color); }';
-            $css[] = 'header.is-sticky, .main-header.scrolled { background-color: var(--jankx-sticky-header-bg-color, #184962) !important; }';
+            if ($this->themeOptions->getOption('enable_sticky_header')) {
+                $css[] = 'header.is-sticky, .main-header.scrolled { background-color: var(--jankx-sticky-header-bg-color, #184962) !important; color: var(--jankx-sticky-header-text-color, #ffffff) !important; }';
+                $css[] = 'header.is-sticky a, .main-header.scrolled a, header.is-sticky .wp-block-navigation-item > a, .main-header.scrolled .wp-block-navigation-item > a { color: var(--jankx-sticky-header-text-color, #ffffff) !important; }';
+            }
             $css[] = 'footer.site-footer { background-color: var(--jankx-footer-bg-color); color: var(--jankx-footer-text-color); }';
 
             $css[] = '.button, button, input[type="submit"], .wp-block-button__link {';

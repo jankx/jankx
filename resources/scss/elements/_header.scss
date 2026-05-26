@@ -46,6 +46,15 @@ header {
     }
 }
 
+body.jankx-header-overlay {
+    header.is-sticky {
+        header.has-contrast-background-color {
+            // Ensure it has a background so content doesn't bleed through
+            background-color: var(--jankx-sticky-header-bg-color, #1a1a1a) !important;
+        }
+    }
+}
+
 
 @keyframes jankxHeaderSlideDown {
     from {

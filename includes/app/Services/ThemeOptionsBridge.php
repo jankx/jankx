@@ -121,6 +121,14 @@ class ThemeOptionsBridge
                         'description' => __('Background color when header is sticky', 'jankx'),
                     ],
                     [
+                        'id' => 'sticky_header_text_color',
+                        'name' => __('Sticky Header Text Color', 'jankx'),
+                        'type' => 'color',
+                        'value' => '#ffffff',
+                        'required' => ['enable_sticky_header', '==', 1],
+                        'description' => __('Text and link color when header is sticky', 'jankx'),
+                    ],
+                    [
                         'id' => 'sticky_header_trigger',
                         'name' => __('Sticky Header Trigger', 'jankx'),
                         'type' => 'select',
