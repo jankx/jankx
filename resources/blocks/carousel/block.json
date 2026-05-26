@@ -141,6 +141,56 @@
     },
     "anchor": {
       "type": "string"
+    },
+    "navIconType": {
+      "type": "string",
+      "enum": [
+        "arrow",
+        "image",
+        "svg",
+        "fonticon"
+      ],
+      "default": "arrow"
+    },
+    "prevIconImageId": {
+      "type": "number",
+      "default": 0
+    },
+    "prevIconImageUrl": {
+      "type": "string",
+      "default": ""
+    },
+    "nextIconImageId": {
+      "type": "number",
+      "default": 0
+    },
+    "nextIconImageUrl": {
+      "type": "string",
+      "default": ""
+    },
+    "prevIconSvg": {
+      "type": "string",
+      "default": ""
+    },
+    "nextIconSvg": {
+      "type": "string",
+      "default": ""
+    },
+    "prevIconClass": {
+      "type": "string",
+      "default": ""
+    },
+    "nextIconClass": {
+      "type": "string",
+      "default": ""
+    },
+    "navIconSize": {
+      "type": "number",
+      "default": 24
+    },
+    "navIconColor": {
+      "type": "string",
+      "default": ""
     }
   },
   "supports": {

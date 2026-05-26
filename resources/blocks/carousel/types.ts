@@ -32,6 +32,18 @@ export interface CarouselAttributes {
   gradientHeight?: number;
   className?: string;
   anchor?: string;
+  // Navigation icon settings
+  navIconType?: 'arrow' | 'image' | 'svg' | 'fonticon';
+  prevIconImageId?: number;
+  prevIconImageUrl?: string;
+  nextIconImageId?: number;
+  nextIconImageUrl?: string;
+  prevIconSvg?: string;
+  nextIconSvg?: string;
+  prevIconClass?: string;
+  nextIconClass?: string;
+  navIconSize?: number;
+  navIconColor?: string;
 }
 
 export interface CarouselProps {

@@ -95,6 +95,50 @@ document.addEventListener('DOMContentLoaded', () => {
       const prevEl = block.querySelector('.embla__button--prev');
       const paginationEl = block.querySelector('.embla__dots');
 
+      // Navigation icon setup
+      const navIconType = container.dataset.navIconType || 'arrow';
+      const navIconSize = parseInt(container.dataset.navIconSize) || 24;
+      const navIconColor = container.dataset.navIconColor || '';
+      const prevIconImageUrl = container.dataset.prevIconImageUrl || '';
+      const nextIconImageUrl = container.dataset.nextIconImageUrl || '';
+      const prevIconSvg = container.dataset.prevIconSvg || '';
+      const nextIconSvg = container.dataset.nextIconSvg || '';
+      const prevIconClass = container.dataset.prevIconClass || '';
+      const nextIconClass = container.dataset.nextIconClass || '';
+
+      const buildNavIconHTML = (type, imageUrl, svgCode, iconClass) => {
+        const sizeStyle = `width:${navIconSize}px;height:${navIconSize}px;`;
+        const colorStyle = navIconColor ? `color:${navIconColor};` : '';
+
+        if (type === 'image' && imageUrl) {
+          return `<img src="${imageUrl}" alt="" style="${sizeStyle}object-fit:contain;display:block;" aria-hidden="true" />`;
+        }
+        if (type === 'svg' && svgCode) {
+          return `<span style="${sizeStyle}display:flex;align-items:center;justify-content:center;${colorStyle}" aria-hidden="true">${svgCode}</span>`;
+        }
+        if (type === 'fonticon' && iconClass) {
+          return `<span class="${iconClass}" style="font-size:${navIconSize}px;line-height:1;${colorStyle}" aria-hidden="true"></span>`;
+        }
+        return '';
+      };
+
+      if (navIconType !== 'arrow') {
+        if (prevEl) {
+          const iconHTML = buildNavIconHTML(navIconType, prevIconImageUrl, prevIconSvg, prevIconClass);
+          if (iconHTML) {
+            prevEl.innerHTML = iconHTML;
+            prevEl.classList.add('has-custom-icon');
+          }
+        }
+        if (nextEl) {
+          const iconHTML = buildNavIconHTML(navIconType, nextIconImageUrl, nextIconSvg, nextIconClass);
+          if (iconHTML) {
+            nextEl.innerHTML = iconHTML;
+            nextEl.classList.add('has-custom-icon');
+          }
+        }
+      }
+
       container.classList.add('embla__viewport');
       const track = container.querySelector('.embla__container') || container.querySelector('.carousel-wrapper');
       if (track) {

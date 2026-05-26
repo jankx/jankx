@@ -123,6 +123,16 @@
     &::after {
       font-size: 24px;
     }
+
+    &.has-custom-icon {
+      &::after {
+        display: none;
+      }
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
   }
 
   // Banner variation specific styles

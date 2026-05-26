@@ -1,6 +1,6 @@
 import { __ } from '@wordpress/i18n';
 import { useBlockProps, InspectorControls, useInnerBlocksProps, MediaUpload, MediaUploadCheck, BlockControls, InnerBlocks } from '@wordpress/block-editor';
-import { PanelBody, RangeControl, ToggleControl, SelectControl, Button, TabPanel, ColorPicker, ToolbarGroup, ToolbarButton } from '@wordpress/components';
+import { PanelBody, RangeControl, ToggleControl, SelectControl, Button, TabPanel, ColorPicker, ToolbarGroup, ToolbarButton, TextControl, TextareaControl, BaseControl } from '@wordpress/components';
 import { gallery, cover, layout, quote } from '@wordpress/icons';
 import { useEffect, useRef } from '@wordpress/element';
 import { createBlock } from '@wordpress/blocks';
@@ -16,6 +16,58 @@ const hexToRgb = (hex: string) => {
     g: parseInt(result[2], 16),
     b: parseInt(result[3], 16)
   } : { r: 0, g: 0, b: 0 };
+};
+
+// Render nav icon based on type
+const renderNavIcon = (
+  type: string,
+  imageUrl: string,
+  svgCode: string,
+  iconClass: string,
+  size: number,
+  color: string,
+  direction: 'prev' | 'next'
+): JSX.Element | null => {
+  const iconStyle: React.CSSProperties = {
+    width: `${size}px`,
+    height: `${size}px`,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    color: color || undefined
+  };
+
+  if (type === 'image' && imageUrl) {
+    return (
+      <img
+        src={imageUrl}
+        alt={direction === 'prev' ? 'Previous' : 'Next'}
+        style={{ width: `${size}px`, height: `${size}px`, objectFit: 'contain' }}
+      />
+    );
+  }
+
+  if (type === 'svg' && svgCode) {
+    return (
+      <span
+        style={iconStyle}
+        dangerouslySetInnerHTML={{ __html: svgCode }}
+      />
+    );
+  }
+
+  if (type === 'fonticon' && iconClass) {
+    return (
+      <span
+        className={iconClass}
+        style={{ fontSize: `${size}px`, lineHeight: 1, color: color || undefined }}
+        aria-hidden="true"
+      />
+    );
+  }
+
+  // Default: arrow (rendered by CSS ::after, no element needed)
+  return null;
 };
 
 export default function Edit({ attributes, setAttributes, clientId }: CarouselProps): JSX.Element {
@@ -46,7 +98,19 @@ export default function Edit({ attributes, setAttributes, clientId }: CarouselPr
     gradientHeight,
     className,
     fitViewportMinusHeader = false,
-    fullHeight = false
+    fullHeight = false,
+    // Navigation icon settings
+    navIconType = 'arrow',
+    prevIconImageId = 0,
+    prevIconImageUrl = '',
+    nextIconImageId = 0,
+    nextIconImageUrl = '',
+    prevIconSvg = '',
+    nextIconSvg = '',
+    prevIconClass = '',
+    nextIconClass = '',
+    navIconSize = 24,
+    navIconColor = ''
   } = attributes;
 
   // Get block's style variation
@@ -557,6 +621,153 @@ export default function Edit({ attributes, setAttributes, clientId }: CarouselPr
               </>
             )}
           </PanelBody>
+
+          <PanelBody title={__('Navigation Icons', 'jankx')} initialOpen={false}>
+            <SelectControl
+              label={__('Icon Type', 'jankx')}
+              value={navIconType}
+              options={[
+                { label: __('Arrow (CSS default)', 'jankx'), value: 'arrow' },
+                { label: __('Image (PNG/JPG/SVG file)', 'jankx'), value: 'image' },
+                { label: __('SVG Code', 'jankx'), value: 'svg' },
+                { label: __('Font Icon (class)', 'jankx'), value: 'fonticon' }
+              ]}
+              onChange={(val: string) => setAttributes({ navIconType: val as any })}
+              help={__('Choose how to display the prev/next navigation icons', 'jankx')}
+            />
+
+            <RangeControl
+              label={__('Icon Size (px)', 'jankx')}
+              value={navIconSize}
+              onChange={(val?: number) => setAttributes({ navIconSize: val || 24 })}
+              min={12}
+              max={80}
+              step={2}
+            />
+
+            <div style={{ marginBottom: '16px' }}>
+              <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>
+                {__('Icon Color', 'jankx')}
+              </label>
+              <ColorPicker
+                color={navIconColor || '#ffffff'}
+                onChange={(color: string) => setAttributes({ navIconColor: color })}
+                enableAlpha={true}
+              />
+            </div>
+
+            {navIconType === 'image' && (
+              <>
+                <BaseControl label={__('Previous Button Icon', 'jankx')} id="carousel-prev-icon">
+                  <MediaUploadCheck>
+                    <MediaUpload
+                      onSelect={(media: any) => setAttributes({ prevIconImageId: media.id, prevIconImageUrl: media.url })}
+                      allowedTypes={['image']}
+                      value={prevIconImageId}
+                      render={({ open }: { open: () => void }) => (
+                        <div>
+                          {prevIconImageUrl && (
+                            <img
+                              src={prevIconImageUrl}
+                              alt="Prev icon"
+                              style={{ width: `${navIconSize}px`, height: `${navIconSize}px`, objectFit: 'contain', display: 'block', marginBottom: '8px' }}
+                            />
+                          )}
+                          <Button variant={prevIconImageUrl ? 'secondary' : 'primary'} onClick={open} style={{ width: '100%' }}>
+                            {prevIconImageUrl ? __('Change Prev Icon', 'jankx') : __('Select Prev Icon', 'jankx')}
+                          </Button>
+                          {prevIconImageUrl && (
+                            <Button
+                              variant="link"
+                              isDestructive
+                              onClick={() => setAttributes({ prevIconImageId: 0, prevIconImageUrl: '' })}
+                              style={{ display: 'block', marginTop: '4px' }}
+                            >
+                              {__('Remove', 'jankx')}
+                            </Button>
+                          )}
+                        </div>
+                      )}
+                    />
+                  </MediaUploadCheck>
+                </BaseControl>
+
+                <BaseControl label={__('Next Button Icon', 'jankx')} id="carousel-next-icon">
+                  <MediaUploadCheck>
+                    <MediaUpload
+                      onSelect={(media: any) => setAttributes({ nextIconImageId: media.id, nextIconImageUrl: media.url })}
+                      allowedTypes={['image']}
+                      value={nextIconImageId}
+                      render={({ open }: { open: () => void }) => (
+                        <div>
+                          {nextIconImageUrl && (
+                            <img
+                              src={nextIconImageUrl}
+                              alt="Next icon"
+                              style={{ width: `${navIconSize}px`, height: `${navIconSize}px`, objectFit: 'contain', display: 'block', marginBottom: '8px' }}
+                            />
+                          )}
+                          <Button variant={nextIconImageUrl ? 'secondary' : 'primary'} onClick={open} style={{ width: '100%' }}>
+                            {nextIconImageUrl ? __('Change Next Icon', 'jankx') : __('Select Next Icon', 'jankx')}
+                          </Button>
+                          {nextIconImageUrl && (
+                            <Button
+                              variant="link"
+                              isDestructive
+                              onClick={() => setAttributes({ nextIconImageId: 0, nextIconImageUrl: '' })}
+                              style={{ display: 'block', marginTop: '4px' }}
+                            >
+                              {__('Remove', 'jankx')}
+                            </Button>
+                          )}
+                        </div>
+                      )}
+                    />
+                  </MediaUploadCheck>
+                </BaseControl>
+              </>
+            )}
+
+            {navIconType === 'svg' && (
+              <>
+                <TextareaControl
+                  label={__('Previous Button SVG', 'jankx')}
+                  value={prevIconSvg}
+                  onChange={(val: string) => setAttributes({ prevIconSvg: val })}
+                  placeholder="<svg viewBox='0 0 24 24'>...</svg>"
+                  help={__('Paste the full SVG code for the previous button icon', 'jankx')}
+                  rows={4}
+                />
+                <TextareaControl
+                  label={__('Next Button SVG', 'jankx')}
+                  value={nextIconSvg}
+                  onChange={(val: string) => setAttributes({ nextIconSvg: val })}
+                  placeholder="<svg viewBox='0 0 24 24'>...</svg>"
+                  help={__('Paste the full SVG code for the next button icon', 'jankx')}
+                  rows={4}
+                />
+              </>
+            )}
+
+            {navIconType === 'fonticon' && (
+              <>
+                <TextControl
+                  label={__('Previous Button Icon Class', 'jankx')}
+                  value={prevIconClass}
+                  onChange={(val: string) => setAttributes({ prevIconClass: val })}
+                  placeholder="fas fa-chevron-left"
+                  help={__('CSS class(es) for the font icon (FontAwesome, Dashicons, etc.)', 'jankx')}
+                />
+                <TextControl
+                  label={__('Next Button Icon Class', 'jankx')}
+                  value={nextIconClass}
+                  onChange={(val: string) => setAttributes({ nextIconClass: val })}
+                  placeholder="fas fa-chevron-right"
+                  help={__('CSS class(es) for the font icon (FontAwesome, Dashicons, etc.)', 'jankx')}
+                />
+              </>
+            )}
+          </PanelBody>
         </InspectorControls>
 
         <div className="embla">
@@ -564,8 +775,12 @@ export default function Edit({ attributes, setAttributes, clientId }: CarouselPr
 
           {navigation && (
             <>
-              <div className="embla__button embla__button--prev"></div>
-              <div className="embla__button embla__button--next"></div>
+              <div className={`embla__button embla__button--prev${navIconType !== 'arrow' ? ' has-custom-icon' : ''}`}>
+                {renderNavIcon(navIconType, prevIconImageUrl, prevIconSvg, prevIconClass, navIconSize, navIconColor, 'prev')}
+              </div>
+              <div className={`embla__button embla__button--next${navIconType !== 'arrow' ? ' has-custom-icon' : ''}`}>
+                {renderNavIcon(navIconType, nextIconImageUrl, nextIconSvg, nextIconClass, navIconSize, navIconColor, 'next')}
+              </div>
             </>
           )}
 

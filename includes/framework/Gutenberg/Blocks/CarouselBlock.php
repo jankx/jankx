@@ -58,6 +58,17 @@ class CarouselBlock extends Block
         $gradient_opacity = $attributes['gradientOpacity'] ?? 0.7;
         $gradient_height = $attributes['gradientHeight'] ?? 60;
 
+        // Navigation icon attributes
+        $nav_icon_type = $attributes['navIconType'] ?? 'arrow';
+        $nav_icon_size = $attributes['navIconSize'] ?? 24;
+        $nav_icon_color = $attributes['navIconColor'] ?? '';
+        $prev_icon_image_url = $attributes['prevIconImageUrl'] ?? '';
+        $next_icon_image_url = $attributes['nextIconImageUrl'] ?? '';
+        $prev_icon_svg = $attributes['prevIconSvg'] ?? '';
+        $next_icon_svg = $attributes['nextIconSvg'] ?? '';
+        $prev_icon_class = $attributes['prevIconClass'] ?? '';
+        $next_icon_class = $attributes['nextIconClass'] ?? '';
+
         // Extract style variation from className
         $style_variation = 'default';
         if (preg_match('/is-style-(\w+)/', $class_name, $matches)) {
@@ -114,7 +125,7 @@ class CarouselBlock extends Block
 
         // Build container data attributes for Embla initialization
         $container_attrs = sprintf(
-            'data-slides-per-view="%s" data-slides-per-view-tablet="%s" data-slides-per-view-mobile="%s" data-space-between="%s" data-loop="%s" data-autoplay="%s" data-autoplay-delay="%s" data-speed="%s" data-navigation="%s" data-pagination="%s" data-banner-style="%s" data-banner-text-color="%s" data-banner-background-color="%s" data-banner-padding="%s" data-banner-border-radius="%s" data-carousel-height="%s" data-gradient-overlay="%s" data-gradient-color="%s" data-gradient-opacity="%s" data-gradient-height="%s"',
+            'data-slides-per-view="%s" data-slides-per-view-tablet="%s" data-slides-per-view-mobile="%s" data-space-between="%s" data-loop="%s" data-autoplay="%s" data-autoplay-delay="%s" data-speed="%s" data-navigation="%s" data-pagination="%s" data-banner-style="%s" data-banner-text-color="%s" data-banner-background-color="%s" data-banner-padding="%s" data-banner-border-radius="%s" data-carousel-height="%s" data-gradient-overlay="%s" data-gradient-color="%s" data-gradient-opacity="%s" data-gradient-height="%s" data-nav-icon-type="%s" data-nav-icon-size="%s" data-nav-icon-color="%s" data-prev-icon-image-url="%s" data-next-icon-image-url="%s" data-prev-icon-svg="%s" data-next-icon-svg="%s" data-prev-icon-class="%s" data-next-icon-class="%s"',
             esc_attr($slides_per_view),
             esc_attr($slides_per_view_tablet),
             esc_attr($slides_per_view_mobile),
@@ -134,7 +145,16 @@ class CarouselBlock extends Block
             $gradient_overlay ? 'true' : 'false',
             esc_attr($gradient_color),
             esc_attr($gradient_opacity),
-            esc_attr($gradient_height)
+            esc_attr($gradient_height),
+            esc_attr($nav_icon_type),
+            esc_attr($nav_icon_size),
+            esc_attr($nav_icon_color),
+            esc_attr($prev_icon_image_url),
+            esc_attr($next_icon_image_url),
+            esc_attr($prev_icon_svg),
+            esc_attr($next_icon_svg),
+            esc_attr($prev_icon_class),
+            esc_attr($next_icon_class)
         );
 
         // Separate slides and overlay
@@ -182,9 +202,29 @@ class CarouselBlock extends Block
 
                 <?php echo $overlay_content; ?>
 
-                <?php if ($navigation) : ?>
-                    <div class="embla__button embla__button--prev" style="position:absolute;top:50%;left:10px;transform:translateY(-50%);width:44px;height:44px;background:rgba(0,0,0,0.7);border-radius:50%;z-index:2;"></div>
-                    <div class="embla__button embla__button--next" style="position:absolute;top:50%;right:10px;transform:translateY(-50%);width:44px;height:44px;background:rgba(0,0,0,0.7);border-radius:50%;z-index:2;"></div>
+                <?php if ($navigation) : 
+                    $build_nav_icon = function($type, $img_url, $svg_code, $icon_class) use ($nav_icon_size, $nav_icon_color) {
+                        $size_style = sprintf('width:%dpx;height:%dpx;', $nav_icon_size, $nav_icon_size);
+                        $color_style = $nav_icon_color ? sprintf('color:%s;', esc_attr($nav_icon_color)) : '';
+                        
+                        if ($type === 'image' && $img_url) {
+                            return sprintf('<img src="%s" alt="" style="%sobject-fit:contain;display:block;" aria-hidden="true" />', esc_url($img_url), $size_style);
+                        }
+                        if ($type === 'svg' && $svg_code) {
+                            return sprintf('<span style="%sdisplay:flex;align-items:center;justify-content:center;%s" aria-hidden="true">%s</span>', $size_style, $color_style, $svg_code); // Taint: user could inject bad SVG
+                        }
+                        if ($type === 'fonticon' && $icon_class) {
+                            return sprintf('<span class="%s" style="font-size:%dpx;line-height:1;%s" aria-hidden="true"></span>', esc_attr($icon_class), $nav_icon_size, $color_style);
+                        }
+                        return '';
+                    };
+
+                    $prev_html = $nav_icon_type !== 'arrow' ? $build_nav_icon($nav_icon_type, $prev_icon_image_url, $prev_icon_svg, $prev_icon_class) : '';
+                    $next_html = $nav_icon_type !== 'arrow' ? $build_nav_icon($nav_icon_type, $next_icon_image_url, $next_icon_svg, $next_icon_class) : '';
+                    $btn_class_append = $nav_icon_type !== 'arrow' ? ' has-custom-icon' : '';
+                ?>
+                    <div class="embla__button embla__button--prev<?php echo $btn_class_append; ?>" style="position:absolute;top:50%;left:10px;transform:translateY(-50%);width:44px;height:44px;background:rgba(0,0,0,0.7);border-radius:50%;z-index:2;"><?php echo $prev_html; ?></div>
+                    <div class="embla__button embla__button--next<?php echo $btn_class_append; ?>" style="position:absolute;top:50%;right:10px;transform:translateY(-50%);width:44px;height:44px;background:rgba(0,0,0,0.7);border-radius:50%;z-index:2;"><?php echo $next_html; ?></div>
                 <?php endif; ?>
 
                 <?php if ($pagination) : ?>
