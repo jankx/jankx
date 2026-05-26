@@ -77,6 +77,12 @@ header.is-sticky {
 header.is-sticky {
   padding-top: 10px !important;
   padding-bottom: 10px !important;
+  transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1), background-color 0.4s ease, opacity 0.4s ease;
+}
+header.is-sticky.header-hidden {
+  transform: translateY(-100%);
+  opacity: 0;
+  pointer-events: none;
 }
 
 body.jankx-header-overlay header.is-sticky {

@@ -48,21 +48,35 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log('Jankx: Sticky trigger position calculated:', triggerPosition);
     };
 
+    let lastScrollY = window.scrollY || window.pageYOffset;
     const handleScroll = () => {
         const scrollY = window.scrollY || window.pageYOffset;
+
+        // Basic sticky behavior
         if (scrollY >= triggerPosition) {
             if (!header.classList.contains('is-sticky')) {
                 header.classList.add('is-sticky');
                 document.body.style.paddingTop = `${headerHeight}px`;
                 document.body.classList.add('has-sticky-header');
             }
+
+            // Scroll direction detection for "Slide" effect
+            if (scrollY > lastScrollY && scrollY > triggerPosition + 100) {
+                // Scrolling down - hide header
+                header.classList.add('header-hidden');
+            } else if (scrollY < lastScrollY) {
+                // Scrolling up - show header
+                header.classList.remove('header-hidden');
+            }
         } else {
             if (header.classList.contains('is-sticky')) {
                 header.classList.remove('is-sticky');
+                header.classList.remove('header-hidden');
                 document.body.style.paddingTop = '0';
                 document.body.classList.remove('has-sticky-header');
             }
         }
+        lastScrollY = scrollY;
     };
 
     // Calculate on load and resize
