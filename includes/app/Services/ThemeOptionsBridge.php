@@ -81,7 +81,7 @@ class ThemeOptionsBridge
             'name' => __('Header Settings', 'jankx'),
             'args' => [
                 'description' => __('Configure header behavior and layout', 'jankx'),
-                'priority' => 50,
+                'priority' => 20,
                 'icon' => 'dashicons-heading',
             ],
         ];
