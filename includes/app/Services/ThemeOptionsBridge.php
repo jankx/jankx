@@ -129,7 +129,15 @@ class ThemeOptionsBridge
                         'description' => __('Text and link color when header is sticky', 'jankx'),
                     ],
                     [
-                        'id' => 'sticky_header_trigger',
+                        'id'          => 'sticky_header_logo',
+                        'name'        => __('Sticky Header Logo', 'jankx'),
+                        'type'        => 'image',
+                        'value'       => '',
+                        'required'    => ['enable_sticky_header', '==', 1],
+                        'description' => __('Alternative logo displayed when the header is in sticky mode (useful when the default logo color clashes with the sticky header background)', 'jankx'),
+                    ],
+                    [
+                        'id' => 'themesticky_header_trigger',
                         'name' => __('Sticky Header Trigger', 'jankx'),
                         'type' => 'select',
                         'options' => [
@@ -501,6 +509,33 @@ class ThemeOptionsBridge
                         return isset($all['header_type']) ? $all['header_type'] : 'normal';
                     }
                     return $val;
+                })(),
+                'sticky_header_logo_url' => (function() {
+                    $all = get_option('jankx_options', []);
+
+                    // The image field may store an attachment ID or a URL array.
+                    $raw = $this->themeOptions->getOption('sticky_header_logo');
+                    if (is_null($raw)) {
+                        $raw = $all['sticky_header_logo'] ?? '';
+                    }
+
+                    if (empty($raw)) {
+                        return '';
+                    }
+
+                    // Numeric → attachment ID → resolve to URL
+                    if (is_numeric($raw)) {
+                        $url = wp_get_attachment_image_url((int) $raw, 'full');
+                        return $url ?: '';
+                    }
+
+                    // Array from option-adapter (e.g. ['url' => '...'])
+                    if (is_array($raw)) {
+                        return $raw['url'] ?? (reset($raw) ?: '');
+                    }
+
+                    // Plain URL string
+                    return esc_url_raw($raw);
                 })(),
             ],
             'cssVars' => $this->cssGenerator->getCSSVariables(),

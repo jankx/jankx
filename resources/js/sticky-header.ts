@@ -11,14 +11,56 @@ document.addEventListener('DOMContentLoaded', () => {
     const isStickyEnabled = headerOptions.enable_sticky_header === '1' || headerOptions.enable_sticky_header === 1 || headerOptions.enable_sticky_header === true;
     const triggerType = headerOptions.sticky_header_trigger || 'top';
 
+    /** URL of the alternative logo to show in sticky mode (may be empty string) */
+    const stickyLogoUrl: string = (headerOptions.sticky_header_logo_url || '').trim();
+
     if (!isStickyEnabled) {
         return;
     }
 
-    console.log('Jankx: Sticky header enabled. Trigger:', triggerType);
+    console.log('Jankx: Sticky header enabled. Trigger:', triggerType, '| Sticky logo:', stickyLogoUrl || 'none');
+
+    // ── Logo swap helpers ─────────────────────────────────────────────────────
+    /**
+     * Find the site-logo <img> inside the header.
+     * Supports wp-block-site-logo, custom logo link, and generic .site-logo.
+     */
+    const findLogoImg = (): HTMLImageElement | null => {
+        return (
+            header.querySelector<HTMLImageElement>(
+                '.wp-block-site-logo img, .site-logo img, .custom-logo, img.custom-logo, header .site-branding img, header .navbar-brand img'
+            ) || null
+        );
+    };
+
+    /**
+     * Swap to the sticky logo.
+     * Saves the original src in a data attribute so it can be restored later.
+     */
+    const applyLogo = (img: HTMLImageElement, url: string): void => {
+        if (!img.dataset.originalSrc) {
+            img.dataset.originalSrc = img.src;
+        }
+        if (img.src !== url) {
+            img.src = url;
+        }
+    };
+
+    /**
+     * Restore the original logo src.
+     */
+    const restoreLogo = (img: HTMLImageElement): void => {
+        const original = img.dataset.originalSrc;
+        if (original && img.src !== original) {
+            img.src = original;
+        }
+    };
+    // ─────────────────────────────────────────────────────────────────────────
 
     let triggerPosition = 0;
     const headerHeight = header.offsetHeight;
+
+    let lastScrollY = window.scrollY || window.pageYOffset;
 
     const calculateTriggerPosition = () => {
         if (triggerType === 'hero') {
@@ -48,7 +90,6 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log('Jankx: Sticky trigger position calculated:', triggerPosition);
     };
 
-    let lastScrollY = window.scrollY || window.pageYOffset;
     const handleScroll = () => {
         const scrollY = window.scrollY || window.pageYOffset;
 
@@ -58,6 +99,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 header.classList.add('is-sticky');
                 document.body.style.paddingTop = `${headerHeight}px`;
                 document.body.classList.add('has-sticky-header');
+
+                // ── Swap to sticky logo ──────────────────────────────────────
+                if (stickyLogoUrl) {
+                    const logoImg = findLogoImg();
+                    if (logoImg) {
+                        applyLogo(logoImg, stickyLogoUrl);
+                    }
+                }
+                // ────────────────────────────────────────────────────────────
             }
 
             // Scroll direction detection for "Slide" effect
@@ -74,6 +124,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 header.classList.remove('header-hidden');
                 document.body.style.paddingTop = '0';
                 document.body.classList.remove('has-sticky-header');
+
+                // ── Restore original logo ────────────────────────────────────
+                if (stickyLogoUrl) {
+                    const logoImg = findLogoImg();
+                    if (logoImg) {
+                        restoreLogo(logoImg);
+                    }
+                }
+                // ────────────────────────────────────────────────────────────
             }
         }
         lastScrollY = scrollY;
