@@ -54,7 +54,8 @@ body.jankx-header-overlay.admin-bar header.has-background {
 }
 
 header {
-  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+  will-change: transform, background-color, backdrop-filter;
 }
 header.is-sticky {
   position: fixed;
@@ -62,23 +63,50 @@ header.is-sticky {
   left: 0;
   right: 0;
   z-index: 10000;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-  animation: jankxHeaderSlideDown 0.4s ease forwards;
-  background-color: var(--jankx-sticky-header-bg-color, #184962) !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  animation: jankxHeaderSlideDown 0.5s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+  background-color: rgba(24, 73, 98, 0.85) !important;
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+}
+@supports (background-color: var(--jankx-sticky-header-bg-color)) {
+  header.is-sticky {
+    background-color: var(--jankx-sticky-header-bg-color) !important;
+  }
+}
+header.is-sticky {
+  padding-top: 10px !important;
+  padding-bottom: 10px !important;
 }
 
-body.jankx-header-overlay header.is-sticky header.has-contrast-background-color {
-  background-color: var(--jankx-sticky-header-bg-color, #1a1a1a) !important;
+body.jankx-header-overlay header.is-sticky {
+  background-color: rgba(24, 73, 98, 0.9) !important;
 }
 
 @keyframes jankxHeaderSlideDown {
   from {
     transform: translateY(-100%);
+    opacity: 0;
   }
   to {
     transform: translateY(0);
+    opacity: 1;
   }
 }
+.admin-bar header.is-sticky {
+  top: 32px;
+}
+@media (max-width: 782px) {
+  .admin-bar header.is-sticky {
+    top: 46px;
+  }
+}
+@media (max-width: 600px) {
+  .admin-bar header.is-sticky {
+    top: 0;
+  }
+}
+
 [class*=text-line] {
   display: -webkit-box;
   -webkit-box-orient: vertical;
