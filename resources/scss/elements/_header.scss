@@ -23,7 +23,7 @@ body.jankx-header-overlay {
         // When sticky, it should gain background again
         &.is-sticky {
             position: fixed;
-            background-color: var(--wp--preset--color--contrast, #1a1a1a) !important;
+            background-color: var(--jankx-sticky-header-bg-color, #184962) !important;
         }
     }
 }
@@ -42,7 +42,7 @@ header {
         animation: jankxHeaderSlideDown 0.4s ease forwards;
 
         // Ensure it has a background so content doesn't bleed through
-        background-color: var(--wp--preset--color--contrast, #1a1a1a) !important;
+        background-color: var(--jankx-sticky-header-bg-color, #184962) !important;
     }
 }
 
