@@ -174,6 +174,7 @@ class ThemeOptionsService
             'page_parent' => 'themes.php',
             'page_permissions' => 'manage_options',
             'page_slug' => 'jankx-theme-options',
+            'sync_with_customizer' => (bool) Config::get('app.options.sync_with_customizer', true),
         ];
 
         $this->adapter->setArgs($args);

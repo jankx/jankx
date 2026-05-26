@@ -273,7 +273,7 @@ class ThemeOptionsCSSGenerator
             $css[] = '}';
 
             $css[] = 'header.site-header { background-color: var(--jankx-header-bg-color); color: var(--jankx-header-text-color); }';
-            $css[] = 'header.is-sticky, .main-header.scrolled { background-color: var(--jankx-sticky-header-bg-color) !important; }';
+            $css[] = 'header.is-sticky, .main-header.scrolled { background-color: var(--jankx-sticky-header-bg-color, #184962) !important; }';
             $css[] = 'footer.site-footer { background-color: var(--jankx-footer-bg-color); color: var(--jankx-footer-text-color); }';
 
             $css[] = '.button, button, input[type="submit"], .wp-block-button__link {';

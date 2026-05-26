@@ -19,32 +19,6 @@ iframe {
   background: transparent;
 }
 
-@media (min-width: 768px) {
-  .wp-site-blocks .wp-block-site-logo img {
-    height: auto;
-    min-width: 90px;
-    min-height: 60px;
-    width: auto;
-  }
-}
-@media (max-width: 767px) {
-  .wp-site-blocks .wp-block-site-logo {
-    flex: 1;
-    flex-basis: auto;
-  }
-  .wp-site-blocks .wp-block-site-logo a {
-    min-width: 80px;
-  }
-  .wp-site-blocks .wp-block-site-logo img {
-    width: auto;
-  }
-  .wp-site-blocks .wp-block-site-logo .custom-logo-link {
-    display: flex;
-    width: 100%;
-    justify-content: center;
-    align-items: center;
-  }
-}
 body.jankx-header-overlay .wp-site-blocks {
   position: relative;
 }
@@ -67,7 +41,7 @@ body.jankx-header-overlay header.wp-block-group.is-sticky,
 body.jankx-header-overlay header.has-contrast-background-color.is-sticky,
 body.jankx-header-overlay header.has-background.is-sticky {
   position: fixed;
-  background-color: var(--wp--preset--color--contrast, #1a1a1a) !important;
+  background-color: var(--jankx-sticky-header-bg-color, #184962) !important;
 }
 
 header {
@@ -81,11 +55,7 @@ header.is-sticky {
   z-index: 10000;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
   animation: jankxHeaderSlideDown 0.4s ease forwards;
-  background-color: var(--wp--preset--color--contrast, #1a1a1a) !important;
-}
-
-body.jankx-header-overlay header.is-sticky header.has-contrast-background-color {
-  background-color: var(--jankx-sticky-header-bg-color, #1a1a1a) !important;
+  background-color: var(--jankx-sticky-header-bg-color, #184962) !important;
 }
 
 @keyframes jankxHeaderSlideDown {

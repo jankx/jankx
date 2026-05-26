@@ -38,6 +38,7 @@ return [
     ],
     'options' => [
         'framework' => 'jankx', // auto, jankx, kirki, redux, wordpress
+        'sync_with_customizer' => true, // only for jankx option framework
     ],
     'cli' => [
         'commands' => [
