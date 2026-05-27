@@ -13,6 +13,8 @@ import {
     Button
 } from '@wordpress/components';
 import { useState } from '@wordpress/element';
+// @ts-ignore
+import metadata from './block.json';
 
 interface OffcanvasTriggerAttributes {
     targetSidebarId: string;
@@ -79,14 +81,15 @@ function OffcanvasTriggerEdit({ attributes, setAttributes }: OffcanvasTriggerEdi
     // Handle click in editor - toggle active state for preview
     const handleClick = (e: React.MouseEvent) => {
         e.preventDefault();
-        setIsActive(!isActive);
+        e.stopPropagation(); // Prevent Gutenberg from intercepting the click
+        const nextActive = !isActive;
+        setIsActive(nextActive);
 
-        // Use native DOM instead of jQuery for better performance
-        const target = e.currentTarget as HTMLElement;
-        const container = target.closest('.is-root-container');
-        if (container) {
-            container.classList.toggle('sidebar-open');
-        }
+        // Dispatch global event for sidebar blocks to respond
+        const event = new CustomEvent('jankx-offcanvas-toggle', {
+            detail: { targetSidebarId }
+        });
+        window.dispatchEvent(event);
     };
 
     // Render hamburger bars
@@ -266,7 +269,9 @@ function OffcanvasTriggerSave(): null {
 }
 
 // Register block - metadata loaded from block.json
-registerBlockType('jankx/offcanvas-trigger', {
+// @ts-ignore
+registerBlockType(metadata.name, {
+    ...metadata,
     edit: OffcanvasTriggerEdit,
     save: OffcanvasTriggerSave,
 });

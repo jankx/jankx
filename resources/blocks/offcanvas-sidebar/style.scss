@@ -5,8 +5,11 @@
 
 /* Main block container */
 .offcanvas-sidebar-block {
+    display: block;
+    width: 100%;
     position: absolute;
-    display: inline-block;
+    top: 0;
+    left: -99999px;
 }
 
 /* Trigger Button */
@@ -60,28 +63,28 @@
     height: 100vh;
     overflow: hidden;
 
-        /* Base sidebar styles */
-        .offcanvas-sidebar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 300px;
-            height: 100vh;
-            min-height: 100vh;
-            background: transparent;
-            background-size: cover !important;
-            background-repeat: no-repeat !important;
-            background-position: center !important;
-            color: inherit;
-            z-index: 9999;
-            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.3s;
-            transform: translateX(-100%);
-            overflow-x: hidden;
-            overflow-y: auto;
-            visibility: hidden;
-            min-width: 300px;
-            display: flex;
-            flex-direction: column;
+    /* Base sidebar styles */
+    .offcanvas-sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 300px;
+        height: 100vh;
+        min-height: 100vh;
+        background: transparent;
+        background-size: cover !important;
+        background-repeat: no-repeat !important;
+        background-position: center !important;
+        color: inherit;
+        z-index: 9999;
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.3s;
+        transform: translateX(-100%);
+        overflow-x: hidden;
+        overflow-y: auto;
+        visibility: hidden;
+        min-width: 300px;
+        display: flex;
+        flex-direction: column;
 
         /* Close Button - Base styles */
         .close-button {
@@ -217,7 +220,8 @@
             flex: 1;
             overflow-y: auto;
             overflow-x: hidden;
-            -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+            -webkit-overflow-scrolling: touch;
+            /* Smooth scrolling on iOS */
 
             /* Custom scrollbar styling */
             &::-webkit-scrollbar {
@@ -302,18 +306,18 @@ body.admin-bar {
     .offcanvas-sidebar-block {
         .offcanvas-sidebar {
             padding-top: 45px;
+
             .close-button.position-top-right,
             .close-button.position-top-left {
-                top: 20px; /* Reduced from 60px to 20px for better alignment */
+                top: 20px;
+                /* Reduced from 60px to 20px for better alignment */
             }
         }
     }
 }
 
-/* Open state - applied to html */
-html.sidebar-open {
-    overflow: hidden;
-
+/* Open state */
+.offcanvas-sidebar-block.active {
     .offcanvas-sidebar-container {
         .offcanvas-sidebar {
             transform: translateX(0);
@@ -331,6 +335,10 @@ html.sidebar-open {
     }
 }
 
+html.sidebar-open {
+    overflow: hidden;
+}
+
 /* ========================================
    ANIMATION EFFECTS
    ======================================== */
@@ -344,11 +352,11 @@ html.sidebar-open {
     transform: translateX(100%);
 }
 
-html.sidebar-open .effect-slide-in .offcanvas-sidebar {
+.offcanvas-sidebar-block.active .effect-slide-in .offcanvas-sidebar {
     transform: translateX(0);
 }
 
-html.sidebar-open .effect-slide-in.position-right .offcanvas-sidebar {
+.offcanvas-sidebar-block.active .effect-slide-in.position-right .offcanvas-sidebar {
     transform: translateX(0);
 }
 
@@ -363,7 +371,7 @@ html.sidebar-open .effect-slide-in.position-right .offcanvas-sidebar {
     transform: translateY(-100%);
 }
 
-html.sidebar-open .effect-slide-down .offcanvas-sidebar {
+.offcanvas-sidebar-block.active .effect-slide-down .offcanvas-sidebar {
     transform: translateY(0);
 }
 
@@ -398,10 +406,10 @@ html.sidebar-open .effect-slide-down .offcanvas-sidebar {
 
         .offcanvas-trigger {
             font-size: 12px;
+
             .trigger-text {
                 display: none;
             }
         }
     }
 }
-

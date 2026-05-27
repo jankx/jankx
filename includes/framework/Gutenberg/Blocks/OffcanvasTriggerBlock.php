@@ -13,7 +13,31 @@ class OffcanvasTriggerBlock extends Block
      */
     protected $blockId = 'jankx/offcanvas-trigger';
 
-
+    /**
+     * Register assets for the frontend
+     *
+     * @return void
+     */
+    protected function registerFrontendAssets(): void
+    {
+        // Enqueue the offcanvas sidebar script for the trigger block
+        // to ensure it's available even if the sidebar block is not on the page
+        add_action('wp_enqueue_scripts', function () {
+            $handle = 'jankx-offcanvas-sidebar-frontend';
+            $asset_file = $this->blockPath . '/../offcanvas-sidebar/build/frontend.asset.php';
+            
+            if (file_exists($asset_file)) {
+                $asset = include $asset_file;
+                wp_enqueue_script(
+                    $handle,
+                    get_template_directory_uri() . '/resources/blocks/offcanvas-sidebar/build/frontend.js',
+                    $asset['dependencies'] ?? [],
+                    $asset['version'] ?? false,
+                    true
+                );
+            }
+        });
+    }
 
     public function render($attributes, $content = '')
     {
@@ -61,7 +85,7 @@ class OffcanvasTriggerBlock extends Block
             (int)$getBarWidth('bottom')
         );
 
-        // Build CSS custom properties
+        // Build container style
         $containerStyle = sprintf(
             '--bar-spacing: %dpx; --bar-thickness: %dpx; --bar-width: %dpx; --bar-color: %s;',
             (int)$barSpacing,
@@ -70,9 +94,13 @@ class OffcanvasTriggerBlock extends Block
             esc_attr($barColor)
         );
 
+        $wrapper_attributes = get_block_wrapper_attributes([
+            'class' => "offcanvas-trigger-block display-{$displayOn} {$className}"
+        ]);
+
         ob_start();
         ?>
-        <div class="offcanvas-trigger-block display-<?php echo esc_attr($displayOn); ?> <?php echo esc_attr($className); ?>">
+        <div <?php echo $wrapper_attributes; ?>>
             <button
                 class="offcanvas-trigger hamburger-trigger"
                 data-target-sidebar="<?php echo esc_attr($targetSidebarId); ?>"

@@ -12,7 +12,7 @@ import {
     TextControl,
     ToggleControl
 } from '@wordpress/components';
-import { useMemo, useEffect } from '@wordpress/element';
+import { useMemo, useEffect, useState } from '@wordpress/element';
 // @ts-ignore
 import metadata from './block.json';
 
@@ -28,6 +28,7 @@ interface OffcanvasSidebarAttributes {
     closeButtonSize: 'small' | 'medium' | 'large';
     closeButtonStyle: 'circle' | 'square' | 'rounded' | 'minimal';
     closeButtonColor: string;
+    anchor?: string;
     className?: string;
     style?: any;
 }
@@ -60,17 +61,25 @@ function OffcanvasSidebarEdit({ attributes, setAttributes }: OffcanvasSidebarEdi
         style
     } = attributes;
 
+    const [isOpen, setIsOpen] = useState<boolean>(false);
+
     // Add 'sidebar-open' class to root container in editor to show sidebar
     useEffect(() => {
-        const rootContainer = document.querySelector('.is-root-container');
-        const hamburgerContainer = document.querySelector('.hamburger-container');
-        if (!hamburgerContainer?.classList.contains('active') && rootContainer) {
-            rootContainer.classList.add('sidebar-open');
-        }
-    }, []); // Run once on mount
+        const handleToggle = (e: any) => {
+            const { targetSidebarId } = e.detail;
+            // If no target ID or matches this sidebar's anchor/id
+            // Or if targetSidebarId is undefined (trigger all)
+            if (!targetSidebarId || targetSidebarId === attributes.anchor || targetSidebarId === '') {
+                setIsOpen(prev => !prev);
+            }
+        };
+
+        window.addEventListener('jankx-offcanvas-toggle', handleToggle);
+        return () => window.removeEventListener('jankx-offcanvas-toggle', handleToggle);
+    }, [attributes.anchor]);
 
     const blockProps = useBlockProps({
-        className: `offcanvas-sidebar-block ${className || ''}`
+        className: `offcanvas-sidebar-block ${className || ''} ${isOpen ? 'active' : ''}`
     });
 
     // Extract WordPress generated classes for sidebar

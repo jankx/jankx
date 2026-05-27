@@ -17,6 +17,7 @@
     "textdomain": "jankx",
     "supports": {
         "html": false,
+        "anchor": true,
         "align": [
             "wide",
             "full"

@@ -5,22 +5,6 @@
  * Offcanvas Sidebar Block - Editor Styles
  * Styles specifically for Gutenberg editor
  */
-.is-root-container.sidebar-open {
-  transform: translateX(400px);
-}
-.is-root-container.sidebar-open [data-type="jankx/offcanvas-sidebar"] {
-  transform: translateX(-375px);
-  left: 190px;
-}
-
-[data-type="jankx/offcanvas-sidebar"] {
-  position: absolute !important;
-  top: 0;
-  left: 0;
-  transform: translateX(-775px);
-  height: 100%;
-}
-
 .editor-styles-wrapper .offcanvas-sidebar-block .offcanvas-sidebar-preview {
   /* Width is set dynamically via inline style from sidebarWidth attribute */
   min-height: 100vh;

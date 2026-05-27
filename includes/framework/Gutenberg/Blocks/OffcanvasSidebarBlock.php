@@ -53,8 +53,8 @@ class OffcanvasSidebarBlock extends Block
             $closeButtonColor = $attributes['closeButtonColor'] ?? 'inherit';
             $className = $attributes['className'] ?? '';
 
-            // Generate unique ID for this block instance
-            $blockId = 'offcanvas-sidebar-' . uniqid();
+            // Generate unique ID for this block instance or use the one provided by anchor support
+            $blockId = $attributes['anchor'] ?? ('offcanvas-sidebar-' . uniqid());
 
             // Build wrapper classes
             $wrapperClasses = ['offcanvas-sidebar-block'];

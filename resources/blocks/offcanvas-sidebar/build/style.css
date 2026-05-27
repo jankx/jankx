@@ -7,8 +7,11 @@
  */
 /* Main block container */
 .offcanvas-sidebar-block {
+  display: block;
+  width: 100%;
   position: absolute;
-  display: inline-block;
+  top: 0;
+  left: -99999px;
 }
 
 /* Trigger Button */
@@ -200,7 +203,8 @@
   flex: 1;
   overflow-y: auto;
   overflow-x: hidden;
-  -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+  -webkit-overflow-scrolling: touch;
+  /* Smooth scrolling on iOS */
   /* Custom scrollbar styling */
 }
 .offcanvas-sidebar-container .offcanvas-sidebar .sidebar-content::-webkit-scrollbar {
@@ -274,23 +278,25 @@ body.admin-bar .offcanvas-sidebar-block .offcanvas-sidebar {
 }
 body.admin-bar .offcanvas-sidebar-block .offcanvas-sidebar .close-button.position-top-right,
 body.admin-bar .offcanvas-sidebar-block .offcanvas-sidebar .close-button.position-top-left {
-  top: 20px; /* Reduced from 60px to 20px for better alignment */
+  top: 20px;
+  /* Reduced from 60px to 20px for better alignment */
 }
 
-/* Open state - applied to html */
-html.sidebar-open {
-  overflow: hidden;
-}
-html.sidebar-open .offcanvas-sidebar-container .offcanvas-sidebar {
+/* Open state */
+.offcanvas-sidebar-block.active .offcanvas-sidebar-container .offcanvas-sidebar {
   transform: translateX(0);
   visibility: visible;
 }
-html.sidebar-open .offcanvas-sidebar-container.position-right .offcanvas-sidebar {
+.offcanvas-sidebar-block.active .offcanvas-sidebar-container.position-right .offcanvas-sidebar {
   transform: translateX(0);
 }
-html.sidebar-open .offcanvas-sidebar-container .offcanvas-overlay {
+.offcanvas-sidebar-block.active .offcanvas-sidebar-container .offcanvas-overlay {
   opacity: 1;
   visibility: visible;
+}
+
+html.sidebar-open {
+  overflow: hidden;
 }
 
 /* ========================================
@@ -305,11 +311,11 @@ html.sidebar-open .offcanvas-sidebar-container .offcanvas-overlay {
   transform: translateX(100%);
 }
 
-html.sidebar-open .effect-slide-in .offcanvas-sidebar {
+.offcanvas-sidebar-block.active .effect-slide-in .offcanvas-sidebar {
   transform: translateX(0);
 }
 
-html.sidebar-open .effect-slide-in.position-right .offcanvas-sidebar {
+.offcanvas-sidebar-block.active .effect-slide-in.position-right .offcanvas-sidebar {
   transform: translateX(0);
 }
 
@@ -323,7 +329,7 @@ html.sidebar-open .effect-slide-in.position-right .offcanvas-sidebar {
   transform: translateY(-100%);
 }
 
-html.sidebar-open .effect-slide-down .offcanvas-sidebar {
+.offcanvas-sidebar-block.active .effect-slide-down .offcanvas-sidebar {
   transform: translateY(0);
 }
 
