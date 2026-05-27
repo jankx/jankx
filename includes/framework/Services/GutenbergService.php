@@ -100,6 +100,14 @@ class GutenbergService
     public function init()
     {
         try {
+            // Register and initialize extra Gutenberg filters/enhancements FIRST.
+            // This ensures filters like `register_block_type_args` (used by ResponsiveVisibility, etc)
+            // are hooked before blocks actually register themselves.
+            $this->registerBlockExtras();
+            if ($this->app->bound('gutenberg.extra_manager')) {
+                $this->app->make('gutenberg.extra_manager')->init();
+            }
+
             // Register all blocks
             $this->initBlocks();
 
@@ -122,12 +130,6 @@ class GutenbergService
                 } catch (\Exception $e) {
                     Log::error('GutenbergService: Failed to register block ' . $blockName . ' - ' . $e->getMessage());
                 }
-            }
-
-            // Register and initialize extra Gutenberg filters/enhancements
-            $this->registerBlockExtras();
-            if ($this->app->bound('gutenberg.extra_manager')) {
-                $this->app->make('gutenberg.extra_manager')->init();
             }
         } catch (\Exception $e) {
             Log::error('GutenbergService: Failed to initialize - ' . $e->getMessage());
