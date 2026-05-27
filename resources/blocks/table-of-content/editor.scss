@@ -1,0 +1,22 @@
+/**
+ * Table of Content Block Editor Styles
+ * Minimal styling - ensure editor matches frontend exactly
+ */
+
+.wp-block-jankx-table-of-content {
+    // Editor-specific adjustments only when absolutely necessary
+    // Keep styling identical to frontend
+
+    .toc-item__toggle {
+        // Ensure button is clickable in editor
+        pointer-events: auto;
+        cursor: pointer;
+    }
+
+    .toc-item__link {
+        // Prevent navigation in editor
+        cursor: pointer;
+        pointer-events: auto;
+    }
+}
+

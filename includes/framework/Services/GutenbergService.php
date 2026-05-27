@@ -45,6 +45,7 @@ use Jankx\Gutenberg\Extra\Categories as ExtraCategories;
 use Jankx\Gutenberg\Extra\PostTitle as ExtraPostTitle;
 use Jankx\Gutenberg\Extra\PostContent as ExtraPostContent;
 use Jankx\Gutenberg\Extra\CommentTemplate as ExtraCommentTemplate;
+use Jankx\Gutenberg\Blocks\TableOfContentBlock;
 use Jankx\Gutenberg\Blocks\TermLayoutBlock;
 use Jankx\Gutenberg\Blocks\TermLayoutTemplateBlock;
 use Jankx\Gutenberg\Blocks\SafeIframeBlock;
@@ -173,6 +174,7 @@ class GutenbergService
         $this->repository->registerBlock(CarouselBlock::class);
         $this->repository->registerBlock(CarouselSlideBlock::class);
         $this->repository->registerBlock(CarouselInnerBlocksOverlayBlock::class);
+        $this->repository->registerBlock(TableOfContentBlock::class);
         $this->repository->registerBlock(TestimonialsBlock::class);
         $this->repository->registerBlock(TestimonialBlock::class);
         $this->repository->registerBlock(StarRatingBlock::class);

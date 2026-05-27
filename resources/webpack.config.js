@@ -34,6 +34,10 @@ module.exports = {
     'blocks/advanced-image-box/build/style': './blocks/advanced-image-box/style.scss',
     'blocks/advanced-image-box/build/editor': './blocks/advanced-image-box/editor.scss',
 
+    'blocks/table-of-content/build/index': './blocks/table-of-content/index.tsx',
+    'blocks/table-of-content/build/style': './blocks/table-of-content/style.scss',
+    'blocks/table-of-content/build/editor': './blocks/table-of-content/editor.scss',
+    'blocks/table-of-content/build/view': './blocks/table-of-content/view.ts',
 
 
     'blocks/comment-count/build/index': './blocks/comment-count/index.tsx',

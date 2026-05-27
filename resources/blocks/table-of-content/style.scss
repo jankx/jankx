@@ -1,0 +1,408 @@
+/**
+ * Table of Content Block Styles
+ * Using CSS variables from theme.json color presets
+ * Consistent styling for both editor and frontend
+ */
+
+.jankx-table-of-content {
+    // CSS Custom Properties with theme.json color presets
+    // Using WordPress standard color variables for text and link with dark fallback
+    --toc-text-color: var(--wp--preset--color--dark, #333333);
+    --toc-link-color: var(--wp--preset--color--dark, #000000);
+    --toc-link-hover-color: var(--wp--preset--color--primary, #503AA8);
+    --toc-primary-color: var(--wp--preset--color--primary, #503AA8);
+    --toc-border-color: var(--wp--preset--color--accent-5, #FBFAF3);
+    --toc-bg-color: var(--wp--preset--color--base, #FFFFFF);
+
+    // Layout - Default spacing overridden by block.json style
+    padding: 0;
+    margin: 1rem 0;
+    border: 1px solid var(--toc-border-color);
+    border-radius: 8px;
+
+    // Header - Default (underline style)
+    .toc-header {
+        margin-bottom: 1rem;
+        padding-bottom: 0.75rem;
+        border-bottom: 2px solid var(--toc-primary-color);
+    }
+
+    .toc-title {
+        margin: 0;
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: var(--toc-text-color);
+    }
+
+    // Heading Style: Underline (default)
+    &.heading-style-underline {
+        .toc-header {
+            margin-bottom: 1rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid var(--toc-primary-color);
+        }
+    }
+
+    // Heading Style: Tabbed
+    &.heading-style-tabbed {
+        .toc-header {
+            margin-bottom: 1rem;
+            padding-bottom: 0;
+            border-bottom: none;
+            position: relative;
+
+            &::after {
+                content: '';
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                height: 2px;
+                background: var(--toc-border-color);
+            }
+        }
+
+        .toc-title {
+            display: inline-block;
+            padding: 0.5rem 1.5rem;
+            background: var(--toc-primary-color);
+            color: #fff;
+            border-radius: 4px 4px 0 0;
+            position: relative;
+            z-index: 1;
+        }
+    }
+
+    // Heading Style: Bordered
+    &.heading-style-bordered {
+        .toc-header {
+            margin-bottom: 1rem;
+            padding: 0.75rem 1rem;
+            border: 2px solid var(--toc-primary-color);
+            border-radius: 4px;
+            background: var(--toc-bg-color);
+        }
+
+        .toc-title {
+            color: var(--toc-primary-color);
+            text-align: center;
+        }
+    }
+
+    // Lists
+    .toc-list {
+        margin: 0;
+        padding: 0;
+
+        // Unordered lists (ul) - show bullet points
+        &:is(ul) {
+            list-style: disc;
+            padding-left: 1.5em;
+        }
+
+        // Root ordered list (ol) - initialize counter
+        &.toc-list--root:is(ol) {
+            counter-reset: toc-ol-counter;
+        }
+        
+        // All ordered lists (ol) - show sequential numbers (1, 2, 3...) using single counter
+        &:is(ol) {
+            list-style: none;
+            padding-left: 0;
+            
+            .toc-item {
+                counter-increment: toc-ol-counter;
+                
+                &::before {
+                    content: counter(toc-ol-counter) '. ';
+                    display: inline-block;
+                    min-width: 1.5em;
+                    margin-right: 0.25em;
+                    color: var(--toc-text-color);
+                }
+            }
+        }
+
+        &--root {
+            > .toc-item {
+                &:not(:last-child) {
+                    margin-bottom: 0.5rem;
+                }
+            }
+        }
+
+        // Nested lists
+        &:not(.toc-list--root) {
+            margin-top: 0.5rem;
+            margin-left: 1.5rem;
+            padding-left: 0.75rem;
+            border-left: 2px solid var(--toc-border-color);
+        }
+
+        // No list style (div instead of ul/ol)
+        &--none {
+            display: block;
+        }
+    }
+
+    // List items
+    .toc-item {
+        position: relative;
+        line-height: 1.6;
+
+        &__wrapper {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        &__toggle {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: auto;
+            min-width: 20px;
+            padding: 0;
+            border: none;
+            background: transparent;
+            color: var(--toc-primary-color);
+            font-size: 16px;
+            line-height: 1;
+            cursor: pointer;
+            transition: color 0.2s ease;
+            flex-shrink: 0;
+
+            &:hover {
+                color: var(--toc-link-hover-color);
+            }
+        }
+
+        &__icon {
+            display: inline-block;
+            font-weight: bold;
+        }
+
+        &__link {
+            color: var(--toc-link-color);
+            text-decoration: none;
+            transition: color 0.2s ease;
+            flex: 1;
+
+            &:hover {
+                color: var(--toc-link-hover-color);
+                text-decoration: underline;
+            }
+
+            &:focus {
+                outline: 2px solid var(--toc-primary-color);
+                outline-offset: 2px;
+                border-radius: 2px;
+            }
+        }
+
+        // Level styling
+        &--level-2 {
+            .toc-item__link {
+                font-weight: 600;
+                font-size: 1rem;
+            }
+        }
+
+        &--level-3 {
+            .toc-item__link {
+                font-weight: 500;
+                font-size: 0.95rem;
+            }
+        }
+
+        &--level-4,
+        &--level-5,
+        &--level-6 {
+            .toc-item__link {
+                font-weight: 400;
+                font-size: 0.9rem;
+            }
+        }
+    }
+
+    // Placeholder (when no content)
+    .toc-placeholder {
+        padding: 2rem;
+        text-align: center;
+        color: var(--toc-text-color);
+        opacity: 0.7;
+
+        p {
+            margin: 0.5rem 0;
+
+            &:first-child {
+                font-weight: 500;
+            }
+
+            em {
+                font-size: 0.9rem;
+                color: var(--toc-primary-color);
+            }
+        }
+    }
+
+    // Style Variations
+
+    // Minimal Style - Clean and simple, no borders
+    &.is-style-minimal {
+        border: none;
+        border-radius: 0;
+        padding: 0;
+        margin: 1.5rem 0;
+        background: transparent;
+
+        .toc-header {
+            border-bottom: 1px solid var(--toc-border-color);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+        }
+
+        .toc-title {
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+
+        .toc-list {
+            &:not(.toc-list--root) {
+                border-left: 1px solid var(--toc-border-color);
+                margin-left: 1rem;
+                padding-left: 0.5rem;
+            }
+        }
+
+        .toc-item {
+            &__link {
+                padding: 0.25rem 0;
+                
+                &:hover {
+                    text-decoration: none;
+                    color: var(--toc-link-hover-color);
+                }
+            }
+        }
+    }
+
+    // Boxed Style - Prominent box with padding and background
+    &.is-style-boxed {
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+
+        .toc-wrapper {
+            padding: 0;
+        }
+
+        .toc-header {
+            border-bottom: 2px solid var(--toc-primary-color);
+            padding-bottom: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .toc-title {
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: var(--toc-primary-color);
+        }
+
+        .toc-list {
+            &--root {
+                > .toc-item {
+                    &:not(:last-child) {
+                        margin-bottom: 0.75rem;
+                    }
+                }
+            }
+
+            &:not(.toc-list--root) {
+                margin-left: 2rem;
+                padding-left: 1rem;
+                border-left: 3px solid var(--toc-primary-color);
+            }
+        }
+
+        .toc-item {
+            &__link {
+                padding: 0.5rem 0;
+                font-weight: 500;
+
+                &:hover {
+                    color: var(--toc-link-hover-color);
+                    text-decoration: underline;
+                }
+            }
+        }
+    }
+
+    // Sidebar Style - Compact for sidebar placement
+    &.is-style-sidebar {
+
+        .toc-header {
+            border-bottom: 1px solid var(--toc-border-color);
+            padding-bottom: 0.75rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .toc-title {
+            font-size: 1rem;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .toc-list {
+            &--root {
+                > .toc-item {
+                    &:not(:last-child) {
+                        margin-bottom: 0.4rem;
+                    }
+                }
+            }
+
+            &:not(.toc-list--root) {
+                margin-top: 0.4rem;
+                margin-left: 1rem;
+                padding-left: 0.5rem;
+                border-left: 1px solid var(--toc-border-color);
+            }
+        }
+
+        .toc-item {
+            line-height: 1.5;
+
+            &__link {
+                font-size: 0.9rem;
+                padding: 0.2rem 0;
+
+                &:hover {
+                    text-decoration: none;
+                    color: var(--toc-link-hover-color);
+                }
+            }
+
+            &__toggle {
+                font-size: 14px;
+                min-width: 18px;
+            }
+
+            &--level-2 .toc-item__link {
+                font-size: 0.95rem;
+                font-weight: 600;
+            }
+
+            &--level-3 .toc-item__link {
+                font-size: 0.9rem;
+                font-weight: 500;
+            }
+
+            &--level-4,
+            &--level-5,
+            &--level-6 .toc-item__link {
+                font-size: 0.85rem;
+                font-weight: 400;
+            }
+        }
+    }
+}
+
