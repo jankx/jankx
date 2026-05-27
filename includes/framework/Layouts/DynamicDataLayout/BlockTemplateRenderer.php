@@ -15,6 +15,13 @@ class BlockTemplateRenderer
     protected $templateSanitizer;
     protected $carouselAssetsCallback;
 
+    /**
+     * Cache for WP_Query instances
+     *
+     * @var array
+     */
+    protected static $queryCache = [];
+
     public function __construct(
         BlockTemplateLayoutManager $layoutManager,
         BlockTemplateAttributeSanitizer $attributeSanitizer,
@@ -39,25 +46,39 @@ class BlockTemplateRenderer
 
         // Build robust query using LayoutQueryBuilder (via Decorator) or QueryHelper based on preset
         $queryPreset = $sanitizedAttributes['queryPreset'] ?? 'custom';
+        $queryId = $sanitizedAttributes['queryId'] ?? '';
+        $query = null;
 
-        if ($queryPreset === 'default') {
-            $query = \Jankx\Query\DynamicDataLayoutQueryHelper::buildDefaultQuery($sanitizedAttributes);
-        } elseif ($queryPreset === 'related') {
-            $sanitizedAttributes = \Jankx\Query\DynamicDataLayoutQueryHelper::buildRelatedQuery($sanitizedAttributes);
-            $query = $decorator->buildQuery($sanitizedAttributes);
+        // Check if query is cached by queryId
+        if (!empty($queryId) && isset(self::$queryCache[$queryId])) {
+            $query = self::$queryCache[$queryId];
         } else {
-            if ($queryPreset !== 'custom') {
-                $sanitizedAttributes = \Jankx\Query\DynamicDataLayoutQueryHelper::applyQueryBuilderFilter($sanitizedAttributes, $queryPreset);
+            if ($queryPreset === 'default') {
+                $query = \Jankx\Query\DynamicDataLayoutQueryHelper::buildDefaultQuery($sanitizedAttributes);
+            } elseif ($queryPreset === 'related') {
+                $sanitizedAttributes = \Jankx\Query\DynamicDataLayoutQueryHelper::buildRelatedQuery($sanitizedAttributes);
+                $query = $decorator->buildQuery($sanitizedAttributes);
+            } else {
+                if ($queryPreset !== 'custom') {
+                    $sanitizedAttributes = \Jankx\Query\DynamicDataLayoutQueryHelper::applyQueryBuilderFilter($sanitizedAttributes, $queryPreset);
+                }
+                $query = $decorator->buildQuery($sanitizedAttributes);
             }
-            $query = $decorator->buildQuery($sanitizedAttributes);
+
+            // Store in cache if queryId is provided
+            if (!empty($queryId) && $query instanceof \WP_Query) {
+                self::$queryCache[$queryId] = $query;
+            }
         }
 
         // Always clone the query to avoid modifying the original query (especially global $wp_query)
         // and ensure each block has its own independent loop state.
-        $query = clone $query;
-        $query->rewind_posts();
+        if ($query instanceof \WP_Query) {
+            $query = clone $query;
+            $query->rewind_posts();
+        }
 
-        if (!$query->have_posts()) {
+        if (!$query || !$query->have_posts()) {
             return $this->renderEmptyState($sanitizedAttributes);
         }
 
