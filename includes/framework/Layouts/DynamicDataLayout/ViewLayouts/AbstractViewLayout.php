@@ -193,32 +193,41 @@ abstract class AbstractViewLayout implements ViewLayoutInterface
         ];
     }
 
+    /**
+     * Whether this layout supports responsive column settings.
+     * Override and return true in grid/card-based layouts.
+     *
+     * @return bool
+     */
+    public function supportsColumns(): bool
+    {
+        return false;
+    }
+
     protected function getContainerStructure(array $options): array
     {
         $classes = ['view-type-layout', 'view-type-layout-' . $this->name, 'layout-' . $this->name];
-        if (!empty($options['columns'])) {
-            $classes[] = 'columns-' . intval($options['columns']);
+        $styles  = [];
+
+        if ($this->supportsColumns()) {
+            if (!empty($options['columns'])) {
+                $classes[] = 'columns-' . intval($options['columns']);
+                $styles['--columns-desktop'] = (string) intval($options['columns']);
+            }
+            if (!empty($options['columnsTablet'])) {
+                $classes[] = 'columns-tablet-' . intval($options['columnsTablet']);
+                $styles['--columns-tablet'] = (string) intval($options['columnsTablet']);
+            }
+            if (!empty($options['columnsMobile'])) {
+                $classes[] = 'columns-mobile-' . intval($options['columnsMobile']);
+                $styles['--columns-mobile'] = (string) intval($options['columnsMobile']);
+            }
         }
-        if (!empty($options['columnsTablet'])) {
-            $classes[] = 'columns-tablet-' . intval($options['columnsTablet']);
-        }
-        if (!empty($options['columnsMobile'])) {
-            $classes[] = 'columns-mobile-' . intval($options['columnsMobile']);
-        }
-        $styles = [];
-        if (!empty($options['columns'])) {
-            $styles['--columns-desktop'] = (string) intval($options['columns']);
-        }
-        if (!empty($options['columnsTablet'])) {
-            $styles['--columns-tablet'] = (string) intval($options['columnsTablet']);
-        }
-        if (!empty($options['columnsMobile'])) {
-            $styles['--columns-mobile'] = (string) intval($options['columnsMobile']);
-        }
+
         return [
-            'tag' => 'div',
-            'classes' => $classes,
-            'styles' => $styles,
+            'tag'        => 'div',
+            'classes'    => $classes,
+            'styles'     => $styles,
             'attributes' => [
                 'data-layout' => $this->name,
             ],

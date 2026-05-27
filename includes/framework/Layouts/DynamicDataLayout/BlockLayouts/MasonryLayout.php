@@ -9,6 +9,11 @@ class MasonryLayout extends BlockTemplateLayout
     protected $name = 'masonry';
     protected $title = 'Masonry Layout';
 
+    public function supportsColumns(): bool
+    {
+        return true;
+    }
+
     public function getIcon(): string
     {
         return 'dashicons-layout';

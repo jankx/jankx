@@ -343,22 +343,29 @@ trait PostTemplateRendererTrait
 
         $layoutType = $this->getOption('layout', $options['layout'] ?? '');
         $columns = (int) $this->getOption('columns', $options['columns'] ?? 0);
+        $columnsSupported = in_array($layoutType, ['grid', 'masonry', 'card'], true);
 
         if ($layoutType === 'grid') {
             $classes[] = 'is-flex-container';
-            if ($columns > 0) {
+            if ($columnsSupported && $columns > 0) {
                 $classes[] = 'columns-' . $columns;
             }
         }
 
-        if ($columns > 0) {
-            $classes[] = 'columns-' . $columns;
-        }
-        if ($tablet = (int) $this->getOption('columnsTablet', $options['columnsTablet'] ?? 0)) {
-            $classes[] = 'columns-tablet-' . $tablet;
-        }
-        if ($mobile = (int) $this->getOption('columnsMobile', $options['columnsMobile'] ?? 0)) {
-            $classes[] = 'columns-mobile-' . $mobile;
+        $styleRules = [];
+        if ($columnsSupported) {
+            if ($columns > 0) {
+                $classes[] = 'columns-' . $columns;
+                $styleRules[] = '--columns-desktop: ' . $columns;
+            }
+            if ($tablet = (int) $this->getOption('columnsTablet', $options['columnsTablet'] ?? 0)) {
+                $classes[] = 'columns-tablet-' . $tablet;
+                $styleRules[] = '--columns-tablet: ' . $tablet;
+            }
+            if ($mobile = (int) $this->getOption('columnsMobile', $options['columnsMobile'] ?? 0)) {
+                $classes[] = 'columns-mobile-' . $mobile;
+                $styleRules[] = '--columns-mobile: ' . $mobile;
+            }
         }
 
         $customWrapperClass = $this->getOption('itemsWrapperClass', $options['itemsWrapperClass'] ?? '');
@@ -367,18 +374,6 @@ trait PostTemplateRendererTrait
         }
 
         $classes = array_unique(array_filter($classes));
-        $styleRules = [];
-        if ($columns > 0) {
-            $styleRules[] = '--columns-desktop: ' . $columns;
-        }
-        if ($tablet = (int) $this->getOption('columnsTablet', $options['columnsTablet'] ?? 0)) {
-            $styleRules[] = '--columns-tablet: ' . $tablet;
-        }
-        if ($mobile = (int) $this->getOption('columnsMobile', $options['columnsMobile'] ?? 0)) {
-            $styleRules[] = '--columns-mobile: ' . $mobile;
-        }
-
-
 
         $attributes = [
             'class' => implode(' ', $classes),

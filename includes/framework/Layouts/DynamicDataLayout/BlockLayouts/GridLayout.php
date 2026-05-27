@@ -9,6 +9,11 @@ class GridLayout extends BlockTemplateLayout
     protected $name = 'grid';
     protected $title = 'Grid Layout';
 
+    public function supportsColumns(): bool
+    {
+        return true;
+    }
+
     public function getIcon(): string
     {
         return 'dashicons-grid-view';
