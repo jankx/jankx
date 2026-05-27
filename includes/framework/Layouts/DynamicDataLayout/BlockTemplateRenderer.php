@@ -52,6 +52,11 @@ class BlockTemplateRenderer
             $query = $decorator->buildQuery($sanitizedAttributes);
         }
 
+        // Always clone the query to avoid modifying the original query (especially global $wp_query)
+        // and ensure each block has its own independent loop state.
+        $query = clone $query;
+        $query->rewind_posts();
+
         if (!$query->have_posts()) {
             return $this->renderEmptyState($sanitizedAttributes);
         }
@@ -64,6 +69,22 @@ class BlockTemplateRenderer
             $sliceLimit = $renderLimit > 0 ? $renderLimit : null;
             $query->posts = array_slice($query->posts, $renderOffset, $sliceLimit);
             $query->post_count = count($query->posts);
+
+            // Update found_posts and max_num_pages to reflect the sliced set
+            // This ensures pagination and other logic correctly handle the subset
+            if ($renderLimit > 0) {
+                $query->found_posts = min($query->found_posts, $query->post_count);
+            } else {
+                $query->found_posts = max(0, $query->found_posts - $renderOffset);
+            }
+            
+            $postsPerPage = $query->get('posts_per_page') ?: get_option('posts_per_page');
+            if ($postsPerPage > 0) {
+                $query->max_num_pages = ceil($query->found_posts / $postsPerPage);
+            }
+
+            // Reset loop pointers again after slicing
+            $query->rewind_posts();
         }
 
         $layout->setQuery($query);
@@ -89,6 +110,18 @@ class BlockTemplateRenderer
         // Enqueue carousel assets if needed
         if ($this->carouselAssetsCallback && $layoutName === 'carousel') {
             call_user_func($this->carouselAssetsCallback);
+        }
+
+        // Add debug info for developers
+        if (defined('WP_DEBUG') && WP_DEBUG) {
+            $renderedContent .= sprintf(
+                '<!-- DDL Debug: Offset=%d, Limit=%d, OriginalCount=%d, RenderedCount=%d, Preset=%s -->',
+                $renderOffset,
+                $renderLimit,
+                count($query->posts) + $renderOffset, // Approximation
+                count($query->posts),
+                $queryPreset
+            );
         }
 
         return $renderedContent;

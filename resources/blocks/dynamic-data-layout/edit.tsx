@@ -1031,23 +1031,6 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                         help={__('Number of posts to display', 'jankx')}
                     />
 
-                    <PanelBody title={__('Display Slicing', 'jankx')} initialOpen={false}>
-                        <TextControl
-                            label={__('Render Offset', 'jankx')}
-                            type="number"
-                            value={renderOffset}
-                            onChange={(value) => setAttributes({ renderOffset: parseInt(value) || 0 })}
-                            help={__('Skip first N posts from the result set', 'jankx')}
-                        />
-                        <TextControl
-                            label={__('Render Limit', 'jankx')}
-                            type="number"
-                            value={renderLimit}
-                            onChange={(value) => setAttributes({ renderLimit: parseInt(value) || 0 })}
-                            help={__('Only render N posts. Set to 0 to show all.', 'jankx')}
-                        />
-                    </PanelBody>
-
                     {postType === 'post' ? (
                         <ToggleControl
                             label={__('Include Sticky Posts', 'jankx')}
@@ -1150,6 +1133,23 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                         {settingsDefinition.map((setting, index) => renderSettingsControl(setting, index))}
                     </PanelBody>
                 )}
+
+                <PanelBody title={__('Display Slicing', 'jankx')} initialOpen={false}>
+                    <TextControl
+                        label={__('Render Offset', 'jankx')}
+                        type="number"
+                        value={renderOffset}
+                        onChange={(value) => setAttributes({ renderOffset: parseInt(value) || 0 })}
+                        help={__('Skip first N posts from the result set (useful for breaking main query into multiple layouts)', 'jankx')}
+                    />
+                    <TextControl
+                        label={__('Render Limit', 'jankx')}
+                        type="number"
+                        value={renderLimit}
+                        onChange={(value) => setAttributes({ renderLimit: parseInt(value) || 0 })}
+                        help={__('Only render N posts from the result set. Set to 0 to show all.', 'jankx')}
+                    />
+                </PanelBody>
 
                 {/* Query Parameters - Only show for custom preset */}
                 {queryPreset === 'custom' ? (

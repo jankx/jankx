@@ -28,15 +28,33 @@ class DynamicDataLayoutQueryHelper
     {
         global $wp_query;
 
-        // If we are in the editor and it's an FSE template, $wp_query might not have the correct context.
-        // But for "Default" preset, the intent is ALWAYS to use the global main query.
-        // Running a new WP_Query with $wp_query->query_vars often causes issues (like losing search terms).
-        if ($wp_query instanceof WP_Query) {
+        $postsPerPage = isset($attributes['postsPerPage']) ? (int)$attributes['postsPerPage'] : (get_option('posts_per_page') ?: 10);
+
+        // If the main query already has enough posts or more than requested, just use it
+        if ($wp_query instanceof WP_Query && $wp_query->post_count >= $postsPerPage) {
             return $wp_query;
         }
 
-        // Fallback just in case global $wp_query is not somehow a WP_Query object
-        return current_theme_supports('jankx') ? new WP_Query() : $wp_query;
+        // If we are on a singular page or the main query is limited, 
+        // we need to "re-build" the query to get more posts for the layout.
+        if ($wp_query instanceof WP_Query) {
+            $query_vars = $wp_query->query_vars;
+            
+            // Ensure we get enough posts as requested by the block
+            $query_vars['posts_per_page'] = $postsPerPage;
+            $query_vars['paged'] = $page;
+
+            // If it's a singular page, we want to show posts of the same post type
+            if (is_singular() && empty($query_vars['post_type'])) {
+                $query_vars['post_type'] = get_post_type();
+                unset($query_vars['p'], $query_vars['name'], $query_vars['pagename']);
+            }
+
+            return new WP_Query($query_vars);
+        }
+
+        // Fallback
+        return current_theme_supports('jankx') ? new WP_Query(['posts_per_page' => $postsPerPage]) : $wp_query;
     }
 
     /**
