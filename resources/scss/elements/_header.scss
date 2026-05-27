@@ -83,7 +83,9 @@ header {
 
 body.jankx-header-overlay {
     header.is-sticky {
-        background-color: rgba(24, 73, 98, 0.9) !important;
+        header.has-contrast-background-color {
+            background-color: var(--jankx-sticky-header-bg-color, #1a1a1a) !important;
+        }
     }
 }
 
