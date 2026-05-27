@@ -4,13 +4,16 @@ import {
     useBlockProps,
     InspectorControls,
     InnerBlocks,
-    useInnerBlocksProps
+    useInnerBlocksProps,
+    BlockControls
 } from '@wordpress/block-editor';
 import {
     PanelBody,
     SelectControl,
     TextControl,
-    ToggleControl
+    ToggleControl,
+    ToolbarButton,
+    ToolbarGroup
 } from '@wordpress/components';
 import { useMemo, useEffect, useState } from '@wordpress/element';
 // @ts-ignore
@@ -79,7 +82,7 @@ function OffcanvasSidebarEdit({ attributes, setAttributes }: OffcanvasSidebarEdi
     }, [attributes.anchor]);
 
     const blockProps = useBlockProps({
-        className: `offcanvas-sidebar-block ${className || ''} ${isOpen ? 'active' : ''}`
+        className: `offcanvas-sidebar-block ${className || ''} ${!isOpen ? 'sidebar-hidden' : ''}`
     });
 
     // Extract WordPress generated classes for sidebar
@@ -224,6 +227,18 @@ function OffcanvasSidebarEdit({ attributes, setAttributes }: OffcanvasSidebarEdi
 
     return (
         <>
+            <BlockControls>
+                <ToolbarGroup>
+                    <ToolbarButton
+                        label={isOpen ? __('Hide Sidebar', 'jankx') : __('Show Sidebar', 'jankx')}
+                        icon={isOpen ? 'visibility' : 'hidden'}
+                        isActive={isOpen}
+                        onClick={() => setIsOpen(!isOpen)}
+                        title={isOpen ? __('Hide sidebar preview', 'jankx') : __('Show sidebar preview', 'jankx')}
+                    />
+                </ToolbarGroup>
+            </BlockControls>
+
             <InspectorControls>
                 <PanelBody
                     title={__('Layout & Appearance', 'jankx')}

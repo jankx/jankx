@@ -376,3 +376,30 @@
         }
     }
 }
+/* Toolbar Toggle Show/Hide Styles */
+.offcanvas-sidebar-block {
+    &.sidebar-hidden {
+        .offcanvas-sidebar-preview {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease, opacity 0.3s ease;
+            opacity: 0;
+            margin: 0;
+            padding: 0;
+            border: none;
+
+            .offcanvas-sidebar {
+                visibility: hidden;
+            }
+        }
+    }
+
+    &:not(.sidebar-hidden) {
+        .offcanvas-sidebar-preview {
+            max-height: none;
+            overflow: visible;
+            opacity: 1;
+            transition: max-height 0.3s ease, opacity 0.3s ease;
+        }
+    }
+}
