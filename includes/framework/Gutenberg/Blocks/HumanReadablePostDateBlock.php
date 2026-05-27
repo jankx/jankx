@@ -37,7 +37,7 @@ class HumanReadablePostDateBlock extends Block
 
         $diff = human_time_diff(get_the_time('U', $post_id), current_time('timestamp'));
         
-        $human_date = sprintf(__('%s ago', 'jankx'), $diff);
+        $human_date = sprintf(__('%s ago'), $diff);
         $show_icon = $attributes['showIcon'] ?? true;
         
         $wrapper_attributes = get_block_wrapper_attributes([
