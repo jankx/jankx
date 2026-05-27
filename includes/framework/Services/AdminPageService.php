@@ -2276,7 +2276,7 @@ class AdminPageService
                                         <?php else: ?>
                                             <button class="button jankx-btn-primary install-extension" 
                                                     data-slug="<?php echo esc_attr($slug); ?>"
-                                                    data-nonce="<?php echo wp_create_nonce('jankx_install_' . $slug); ?>">
+                                                    data-nonce="<?php echo esc_attr($nonce); ?>">
                                                 <span class="dashicons dashicons-download"></span>
                                                 <?php _e('Install', 'jankx'); ?>
                                             </button>
@@ -2775,7 +2775,7 @@ class AdminPageService
                 $notice.hide();
 
                 $.post(ajaxurl, {
-                    action: 'jankx_install_extension',
+                    action: 'jankx_marketplace_install_extension',
                     slug:   slug,
                     nonce:  nonce
                 }, function(res) {

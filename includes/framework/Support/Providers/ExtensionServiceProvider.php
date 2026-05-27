@@ -39,7 +39,7 @@ class ExtensionServiceProvider extends ServiceProvider
         $this->app->make('extension.service');
 
         // Register AJAX handlers for the marketplace (lazy - marketplace boots on demand)
-        add_action('wp_ajax_jankx_install_extension', [$this, 'ajaxInstallExtension']);
+        add_action('wp_ajax_jankx_marketplace_install_extension', [$this, 'ajaxInstallExtension']);
         add_action('wp_ajax_jankx_check_theme_update', [$this, 'ajaxCheckThemeUpdate']);
     }
 
