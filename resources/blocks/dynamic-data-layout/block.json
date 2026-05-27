@@ -180,9 +180,17 @@
       "default": ""
     },
     "offset": {
-      "type": "number",
-      "default": 0
-    },
+            "type": "number",
+            "default": 0
+        },
+        "renderOffset": {
+            "type": "number",
+            "default": 0
+        },
+        "renderLimit": {
+            "type": "number",
+            "default": 0
+        },
     "taxQuery": {
       "type": "array",
       "default": []

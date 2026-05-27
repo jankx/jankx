@@ -56,6 +56,16 @@ class BlockTemplateRenderer
             return $this->renderEmptyState($sanitizedAttributes);
         }
 
+        // Slice posts if renderOffset or renderLimit is set
+        $renderOffset = isset($sanitizedAttributes['renderOffset']) ? (int)$sanitizedAttributes['renderOffset'] : 0;
+        $renderLimit = isset($sanitizedAttributes['renderLimit']) ? (int)$sanitizedAttributes['renderLimit'] : 0;
+
+        if ($renderOffset > 0 || $renderLimit > 0) {
+            $sliceLimit = $renderLimit > 0 ? $renderLimit : null;
+            $query->posts = array_slice($query->posts, $renderOffset, $sliceLimit);
+            $query->post_count = count($query->posts);
+        }
+
         $layout->setQuery($query);
         $layout->setOptions($sanitizedAttributes);
 

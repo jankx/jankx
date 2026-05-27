@@ -330,6 +330,8 @@ interface DynamicDataLayoutAttributes {
     paginationPrevText: string;
     paginationNextText: string;
     offset: number;
+    renderOffset: number;
+    renderLimit: number;
     taxQuery: TaxQueryItem[];
     metaQuery: MetaQueryItem[];
     keyword: string;
@@ -406,6 +408,8 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
         paginationPrevText = '',
         paginationNextText = '',
         offset = 0,
+        renderOffset = 0,
+        renderLimit = 0,
         taxQuery = [],
         metaQuery = [],
         keyword = '',
@@ -1026,6 +1030,23 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                         max={50}
                         help={__('Number of posts to display', 'jankx')}
                     />
+
+                    <PanelBody title={__('Display Slicing', 'jankx')} initialOpen={false}>
+                        <TextControl
+                            label={__('Render Offset', 'jankx')}
+                            type="number"
+                            value={renderOffset}
+                            onChange={(value) => setAttributes({ renderOffset: parseInt(value) || 0 })}
+                            help={__('Skip first N posts from the result set', 'jankx')}
+                        />
+                        <TextControl
+                            label={__('Render Limit', 'jankx')}
+                            type="number"
+                            value={renderLimit}
+                            onChange={(value) => setAttributes({ renderLimit: parseInt(value) || 0 })}
+                            help={__('Only render N posts. Set to 0 to show all.', 'jankx')}
+                        />
+                    </PanelBody>
 
                     {postType === 'post' ? (
                         <ToggleControl

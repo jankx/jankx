@@ -37,6 +37,8 @@ class BlockTemplateAttributeSanitizer
 
         // Sanitize numeric values
         $sanitized['postsPerPage'] = $this->sanitizeNumericValue($attributes, 'postsPerPage', 1, 50, 10);
+        $sanitized['renderOffset'] = $this->sanitizeNumericValue($attributes, 'renderOffset', 0, 1000, 0);
+        $sanitized['renderLimit'] = $this->sanitizeNumericValue($attributes, 'renderLimit', 0, 1000, 0);
         $sanitized['paged'] = $this->sanitizeNumericValue($attributes, 'paged', 1, 1000, 1);
         $sanitized['columns'] = $this->sanitizeNumericValue($attributes, 'columns', 1, 6, 3);
         $sanitized['columnsTablet'] = $this->sanitizeNumericValue($attributes, 'columnsTablet', 1, 4, 2);
