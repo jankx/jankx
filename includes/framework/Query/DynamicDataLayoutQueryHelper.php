@@ -27,32 +27,16 @@ class DynamicDataLayoutQueryHelper
     public static function buildDefaultQuery(array $attributes, int $page = 1): WP_Query
     {
         global $wp_query;
-        $query_args = $wp_query->query_vars;
-        
-        if (!empty($attributes['postsPerPage'])) {
-            $query_args['posts_per_page'] = intval($attributes['postsPerPage']);
-        }
-        $query_args['paged'] = $page;
 
-        if (!empty($attributes['orderBy'])) {
-            $query_args['orderby'] = sanitize_key($attributes['orderBy']);
-        }
-        if (!empty($attributes['order'])) {
-            $query_args['order'] = strtoupper(sanitize_key($attributes['order']));
+        // If we are in the editor and it's an FSE template, $wp_query might not have the correct context.
+        // But for "Default" preset, the intent is ALWAYS to use the global main query.
+        // Running a new WP_Query with $wp_query->query_vars often causes issues (like losing search terms).
+        if ($wp_query instanceof WP_Query) {
+            return $wp_query;
         }
 
-        if (!empty($attributes['metaKey']) && in_array($attributes['orderBy'], ['meta_value', 'meta_value_num'])) {
-            $query_args['meta_key'] = sanitize_key($attributes['metaKey']);
-            if (!empty($attributes['metaType'])) {
-                $query_args['meta_type'] = $attributes['metaType'];
-            }
-        }
-
-        if (!empty($attributes['_current_language'])) {
-            $query_args = MultilingualFactory::addLanguageToQueryArgs($query_args, $attributes['_current_language']);
-        }
-
-        return new WP_Query($query_args);
+        // Fallback just in case global $wp_query is not somehow a WP_Query object
+        return current_theme_supports('jankx') ? new WP_Query() : $wp_query;
     }
 
     /**

@@ -49,7 +49,12 @@ class DynamicDataLayoutBlock extends Block
      */
     protected ?BlockTemplateRenderer $rendererService = null;
 
-    public function init()
+    /**
+     * Register WordPress hooks for this block
+     *
+     * @return void
+     */
+    protected function registerHooks(): void
     {
         // Enqueue editor scripts with localized data
         add_action('enqueue_block_editor_assets', [$this, 'enqueueEditorAssets'], 20);
@@ -387,29 +392,6 @@ class DynamicDataLayoutBlock extends Block
             return;
         }
 
-        $asset = require $asset_file;
-
-        // Get the actual script handle from block registration
-        // WordPress registers scripts with handle based on block name
-        $block_name = str_replace('jankx/', '', $this->blockId);
-        $script_handle = 'jankx-' . str_replace('/', '-', $block_name) . '-editor-script';
-
-        // Try alternative handle format
-        if (!wp_script_is($script_handle, 'registered')) {
-            $script_handle = 'jankx-' . str_replace('/', '-', $block_name) . '-editor';
-        }
-
-        // If still not found, try to get from registered block
-        $registered_block = \WP_Block_Type_Registry::get_instance()->get_registered($this->blockId);
-        if ($registered_block && !empty($registered_block->editor_script)) {
-            $script_handle = $registered_block->editor_script;
-        }
-
-        // Only proceed if script is registered
-        if (!wp_script_is($script_handle, 'registered')) {
-            return;
-        }
-
         $layoutManager = $this->getLayoutManager();
 
         // Get all post types
@@ -434,16 +416,6 @@ class DynamicDataLayoutBlock extends Block
         $common_layouts_names = ['grid', 'list', 'card'];
         $commonLayouts = array_intersect_key($structured_layouts, array_flip($common_layouts_names));
 
-        // Localize layouts data
-        wp_localize_script(
-            $script_handle,
-            'jankxDynamicDataLayouts',
-            [
-                'layoutsByPostType' => $layouts_by_post_type,
-                'commonLayouts' => $commonLayouts,
-            ]
-        );
-
         // Localize public post types for editor (ensure non-REST CPTs like product/tour appear)
         $public_post_types = [];
         foreach ($post_types as $slug => $obj) {
@@ -460,28 +432,80 @@ class DynamicDataLayoutBlock extends Block
                 'name' => $label,
             ];
         }
-        wp_localize_script(
-            $script_handle,
-            'jankxPublicPostTypes',
-            $public_post_types
-        );
 
         // Localize query options including query presets
         $query_options = \Jankx\Gutenberg\QueryOptions::getOptions();
-        wp_localize_script(
-            $script_handle,
-            'jankxQueryOptions',
-            $query_options
-        );
 
         // Localize layout structures for JavaScript rendering
         $layout_structures = $this->getLayoutStructures();
-        wp_localize_script(
-            $script_handle,
-            'jankxLayoutStructures',
-            $layout_structures
+
+        // Build inline script data — this is the most reliable approach because
+        // wp_localize_script requires the target handle to be registered BEFORE
+        // this hook runs, which is not always guaranteed.
+        // We register a small "data" script that depends on wp-blocks (always available)
+        // and output all globals as an inline script before it.
+        $data_handle = 'jankx-dynamic-data-layout-editor-data';
+
+        if (!wp_script_is($data_handle, 'registered')) {
+            wp_register_script(
+                $data_handle,
+                false, // no src — inline only
+                ['wp-blocks', 'wp-i18n'],
+                null,
+                false // in <head> to ensure available before block scripts
+            );
+        }
+
+        wp_enqueue_script($data_handle);
+
+        // Build the inline JavaScript that sets all required globals
+        $inline_data = sprintf(
+            'window.jankxDynamicDataLayouts = %s;' .
+            'window.jankxPublicPostTypes = %s;' .
+            'window.jankxQueryOptions = %s;' .
+            'window.jankxLayoutStructures = %s;',
+            wp_json_encode([
+                'layoutsByPostType' => $layouts_by_post_type,
+                'commonLayouts' => $commonLayouts,
+            ], JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP),
+            wp_json_encode($public_post_types, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP),
+            wp_json_encode($query_options, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP),
+            wp_json_encode($layout_structures, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP)
         );
+
+        wp_add_inline_script($data_handle, $inline_data, 'before');
+
+        // Also try wp_localize_script on the actual block script handle if found,
+        // so data is available in both ways (for compatibility).
+        $block_name = str_replace('jankx/', '', $this->blockId);
+        $script_handle = 'jankx-' . str_replace('/', '-', $block_name) . '-editor-script';
+
+        if (!wp_script_is($script_handle, 'registered')) {
+            $script_handle = 'jankx-' . str_replace('/', '-', $block_name) . '-editor';
+        }
+
+        $registered_block = \WP_Block_Type_Registry::get_instance()->get_registered($this->blockId);
+        if ($registered_block) {
+            if (!empty($registered_block->editor_script_handles) && is_array($registered_block->editor_script_handles)) {
+                $script_handle = $registered_block->editor_script_handles[0];
+            } elseif (!empty($registered_block->editor_script)) {
+                $script_handle = $registered_block->editor_script;
+            }
+        }
+
+        if (wp_script_is($script_handle, 'registered')) {
+            wp_localize_script($script_handle, 'jankxDynamicDataLayouts', [
+                'layoutsByPostType' => $layouts_by_post_type,
+                'commonLayouts'     => $commonLayouts,
+            ]);
+            wp_localize_script($script_handle, 'jankxPublicPostTypes', $public_post_types);
+            wp_localize_script($script_handle, 'jankxQueryOptions', $query_options);
+            wp_localize_script($script_handle, 'jankxLayoutStructures', $layout_structures);
+        }
     }
+
+
+
 
     /**
      * Get layout structures for all registered layouts

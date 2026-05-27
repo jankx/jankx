@@ -37,8 +37,20 @@ class BlockTemplateRenderer
         $layout = $this->layoutManager->createLayout($layoutName);
         $decorator = new BlockTemplateLayoutDecorator($layout);
 
-        // Build robust query using LayoutQueryBuilder (via Decorator)
-        $query = $decorator->buildQuery($sanitizedAttributes);
+        // Build robust query using LayoutQueryBuilder (via Decorator) or QueryHelper based on preset
+        $queryPreset = $sanitizedAttributes['queryPreset'] ?? 'custom';
+
+        if ($queryPreset === 'default') {
+            $query = \Jankx\Query\DynamicDataLayoutQueryHelper::buildDefaultQuery($sanitizedAttributes);
+        } elseif ($queryPreset === 'related') {
+            $sanitizedAttributes = \Jankx\Query\DynamicDataLayoutQueryHelper::buildRelatedQuery($sanitizedAttributes);
+            $query = $decorator->buildQuery($sanitizedAttributes);
+        } else {
+            if ($queryPreset !== 'custom') {
+                $sanitizedAttributes = \Jankx\Query\DynamicDataLayoutQueryHelper::applyQueryBuilderFilter($sanitizedAttributes, $queryPreset);
+            }
+            $query = $decorator->buildQuery($sanitizedAttributes);
+        }
 
         if (!$query->have_posts()) {
             return $this->renderEmptyState($sanitizedAttributes);
