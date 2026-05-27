@@ -35,18 +35,20 @@ button.jankx-advanced-button__link {
 }
 
 .wp-block-jankx-advanced-button {
+
 	// Inner blocks should be inline with button content
 	.jankx-advanced-button__link {
+
 		// Icon wrapper contains InnerBlocks
 		.button-icon-wrapper {
 			display: inline-flex;
 			align-items: center;
 
-			> .block-editor-inner-blocks {
+			>.block-editor-inner-blocks {
 				display: inline-flex;
 				align-items: center;
 
-				> .block-editor-block-list__layout {
+				>.block-editor-block-list__layout {
 					display: inline-flex;
 					align-items: center;
 					gap: 4px;
@@ -64,8 +66,9 @@ button.jankx-advanced-button__link {
 
 			// Icon blocks in editor - allow interactions
 			.block-editor-block-list__layout {
+
 				// Icon blocks should be fully interactive
-				> .wp-block {
+				>.wp-block {
 					&:not(.block-list-appender) {
 						position: relative;
 
@@ -108,13 +111,39 @@ button.jankx-advanced-button__link {
 .wp-block-jankx-advanced-button .block-list-appender {
 	pointer-events: auto !important;
 
-	*, button, .components-button, .block-editor-button-block-appender, .components-dropdown, svg {
+	*,
+	button,
+	.components-button,
+	.block-editor-button-block-appender,
+	.components-dropdown,
+	svg {
 		pointer-events: auto !important;
 		cursor: pointer !important;
 	}
 
 	.components-button {
-		height: 24px!important;
+		height: 24px !important;
 	}
 }
 
+.block-editor-iframe__html {
+	.offcanvas-sidebar-block {
+		left: 0;
+	}
+}
+
+.is-root-container.wp-site-blocks {
+	>.wp-block-jankx-offcanvas-sidebar {
+		left: 0;
+
+		.offcanvas-sidebar-preview {
+			opacity: 1 !important;
+		}
+	}
+
+	header.wp-block-template-part {
+		.offcanvas-sidebar-block {
+			display: none !important;
+		}
+	}
+}

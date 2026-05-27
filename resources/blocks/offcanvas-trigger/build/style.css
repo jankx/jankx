@@ -46,6 +46,10 @@
   position: relative;
 }
 
+header.is-sticky .hamburger-container .bar {
+  background-color: var(--jankx-sticky-header-text-color, #333) !important;
+}
+
 /* ========================================
    SKIN 1: Hamburger to X
    ======================================== */

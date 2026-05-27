@@ -278,7 +278,7 @@ body.admin-bar .offcanvas-sidebar-block .offcanvas-sidebar {
 }
 body.admin-bar .offcanvas-sidebar-block .offcanvas-sidebar .close-button.position-top-right,
 body.admin-bar .offcanvas-sidebar-block .offcanvas-sidebar .close-button.position-top-left {
-  top: 20px;
+  top: 55px;
   /* Reduced from 60px to 20px for better alignment */
 }
 

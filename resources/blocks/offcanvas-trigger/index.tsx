@@ -101,7 +101,7 @@ function OffcanvasTriggerEdit({ attributes, setAttributes }: OffcanvasTriggerEdi
                     return barType === 'middle' ? barWidth * 0.6 : barWidth;
                 case 'progressive':
                     return barType === 'top' ? barWidth :
-                           barType === 'middle' ? barWidth * 0.8 : barWidth * 0.6;
+                        barType === 'middle' ? barWidth * 0.8 : barWidth * 0.6;
                 default: // equal
                     return barWidth;
             }
@@ -264,8 +264,12 @@ function OffcanvasTriggerEdit({ attributes, setAttributes }: OffcanvasTriggerEdi
     );
 }
 
-function OffcanvasTriggerSave(): null {
-    return null; // Dynamic block
+function OffcanvasTriggerSave() {
+    return (
+        <div {...useBlockProps.save({ className: 'wp-block-jankx-offcanvas-trigger' })}>
+            {/* Giữ thẻ trống hoặc cấu trúc icon ẩn để Gutenberg lưu vết HTML */}
+        </div>
+    );
 }
 
 // Register block - metadata loaded from block.json

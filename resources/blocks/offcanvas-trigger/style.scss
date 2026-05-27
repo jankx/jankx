@@ -47,6 +47,14 @@
     }
 }
 
+header.is-sticky {
+    .hamburger-container {
+        .bar {
+            background-color: var(--jankx-sticky-header-text-color, #333) !important;
+        }
+    }
+}
+
 /* ========================================
    SKIN 1: Hamburger to X
    ======================================== */
@@ -255,7 +263,9 @@ html.sidebar-open {
 
 // Tablet only - hide on mobile and desktop
 .offcanvas-trigger-block.display-tablet {
-    @media (max-width: 767px), (min-width: 1025px) {
+
+    @media (max-width: 767px),
+    (min-width: 1025px) {
         display: none !important;
     }
 }

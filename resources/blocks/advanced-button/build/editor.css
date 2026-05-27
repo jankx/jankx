@@ -75,12 +75,31 @@ button.jankx-advanced-button__link {
 .wp-block-jankx-advanced-button .block-list-appender {
   pointer-events: auto !important;
 }
-.wp-block-jankx-advanced-button .block-list-appender *, .wp-block-jankx-advanced-button .block-list-appender button, .wp-block-jankx-advanced-button .block-list-appender .components-button, .wp-block-jankx-advanced-button .block-list-appender .block-editor-button-block-appender, .wp-block-jankx-advanced-button .block-list-appender .components-dropdown, .wp-block-jankx-advanced-button .block-list-appender svg {
+.wp-block-jankx-advanced-button .block-list-appender *,
+.wp-block-jankx-advanced-button .block-list-appender button,
+.wp-block-jankx-advanced-button .block-list-appender .components-button,
+.wp-block-jankx-advanced-button .block-list-appender .block-editor-button-block-appender,
+.wp-block-jankx-advanced-button .block-list-appender .components-dropdown,
+.wp-block-jankx-advanced-button .block-list-appender svg {
   pointer-events: auto !important;
   cursor: pointer !important;
 }
 .wp-block-jankx-advanced-button .block-list-appender .components-button {
   height: 24px !important;
+}
+
+.block-editor-iframe__html .offcanvas-sidebar-block {
+  left: 0;
+}
+
+.is-root-container.wp-site-blocks > .wp-block-jankx-offcanvas-sidebar {
+  left: 0;
+}
+.is-root-container.wp-site-blocks > .wp-block-jankx-offcanvas-sidebar .offcanvas-sidebar-preview {
+  opacity: 1 !important;
+}
+.is-root-container.wp-site-blocks header.wp-block-template-part .offcanvas-sidebar-block {
+  display: none !important;
 }
 
 /*# sourceMappingURL=editor.css.map*/

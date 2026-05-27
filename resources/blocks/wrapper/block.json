@@ -53,7 +53,6 @@
         }
     },
     "supports": {
-        "html": false,
         "anchor": true,
         "layout": {
             "allowSwitching": true,
