@@ -231,6 +231,9 @@
 					"fontWeight": "800"
 				}
 			},
+			"core/column": {
+				"css": ".wp-block-column { box-sizing: border-box; }"
+			},
 			"core/template-part": {
 				"css": ".wp-block-template-part[data-area='footer'] { margin-block-start: 0px; }"
 			}
