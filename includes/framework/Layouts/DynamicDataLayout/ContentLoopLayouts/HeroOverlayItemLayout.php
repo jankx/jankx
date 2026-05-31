@@ -17,7 +17,6 @@ class HeroOverlayItemLayout extends AbstractContentLoopLayout
     public function getSupportedOptions(): array
     {
         return [
-            'heroMinHeight',
             'heroOverlayGradient',
             'heroFallbackBackground',
             'heroBorderRadius',
@@ -46,14 +45,12 @@ class HeroOverlayItemLayout extends AbstractContentLoopLayout
      */
     public function renderHeroOverlay(string $imageHtml, string $contentHtml, array $attrs): string
     {
-        $minHeight       = $attrs['heroMinHeight']         ?? '320px';
         $fallbackBg      = $attrs['heroFallbackBackground'] ?? 'linear-gradient(135deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%)';
         $borderRadius    = $attrs['heroBorderRadius']       ?? '12px';
         $overlayGradient = $attrs['heroOverlayGradient']   ?? 'linear-gradient(to top,rgba(0,0,0,0.88) 0%,rgba(0,0,0,0.45) 45%,transparent 100%)';
         $contentPadding  = $attrs['heroContentPadding']    ?? '30px 24px 24px';
 
         $boxStyle  = 'position:relative;overflow:hidden;display:flex;align-items:flex-end;height:100%;';
-        $boxStyle .= 'min-height:' . $minHeight . ';';
         $boxStyle .= 'background:' . $fallbackBg . ';';
         $boxStyle .= 'border-radius:' . $borderRadius . ';';
         $boxStyle .= '--jankx-hero-overlay-gradient:' . $overlayGradient . ';';
@@ -63,7 +60,7 @@ class HeroOverlayItemLayout extends AbstractContentLoopLayout
         return sprintf(
             '<div class="jankx-hero-overlay-box" style="%s">%s<div class="jankx-hero-content" style="%s"><div style="pointer-events:auto;">%s</div></div></div>',
             esc_attr($boxStyle),
-            sprintf('<div class="jankx-hero-image">%s</div>', $imageHtml),
+            $imageHtml,
             esc_attr($contentStyle),
             $contentHtml
         );
