@@ -115,7 +115,8 @@
         "default",
         "hero-overlay",
         "boxed",
-        "horizontal"
+        "horizontal",
+        "overlap-card"
       ]
     },
     "className": {

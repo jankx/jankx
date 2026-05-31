@@ -504,13 +504,14 @@ export default function Edit({
             <InspectorControls>
                 <PanelBody title={__('Template Settings', 'jankx')} initialOpen={true}>
                     <SelectControl
-                        label={__('Template Layout', 'jankx')}
+                        label={__('Content Loop Layout', 'jankx')}
                         value={templateLayout}
                         options={[
                             { label: __('Default', 'jankx'), value: 'default' },
                             { label: __('Hero Overlay', 'jankx'), value: 'hero-overlay' },
                             { label: __('Boxed', 'jankx'), value: 'boxed' },
                             { label: __('Horizontal', 'jankx'), value: 'horizontal' },
+                            { label: __('Overlap Card', 'jankx'), value: 'overlap-card' },
                         ]}
                         onChange={(value: string): void => setAttributes({ templateLayout: value })}
                         help={__('Choose the overall item layout style.', 'jankx')}
