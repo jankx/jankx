@@ -17,9 +17,12 @@ import {
     RangeControl,
     TextControl,
     Button,
+    ButtonGroup,
+    Tooltip,
 } from '@wordpress/components';
 import { useMemo, useEffect, useState, useRef, useCallback } from '@wordpress/element';
-import { useSelect } from '@wordpress/data';
+import { useSelect, useDispatch } from '@wordpress/data';
+import { createBlocksFromTemplate } from '@wordpress/blocks';
 import type { CSSProperties } from 'react';
 import type { BlockInstance } from '@wordpress/blocks';
 
@@ -126,6 +129,97 @@ const DEFAULT_LAYOUTS_DATA = {
 };
 
 const DEFAULT_BLOCKS_DATA: Record<string, { blockName: string; attrs: Record<string, unknown> }[]> = {};
+
+const LAYOUT_ICONS: Record<string, JSX.Element> = {
+    default: (
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="4" y="4" width="16" height="8" rx="1" fill="currentColor" fillOpacity="0.2" stroke="currentColor" strokeWidth="1.5" />
+            <rect x="4" y="15" width="16" height="1.5" rx="0.75" fill="currentColor" />
+            <rect x="4" y="18.5" width="10" height="1.5" rx="0.75" fill="currentColor" />
+        </svg>
+    ),
+    'hero-overlay': (
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="4" y="4" width="16" height="16" rx="1" fill="currentColor" fillOpacity="0.2" stroke="currentColor" strokeWidth="1.5" />
+            <path d="M4 14C4 13.4477 4.44772 13 5 13H19C19.5523 13 20 13.4477 20 14V19C20 19.5523 19.5523 20 19 20H5C4.44772 20 4 19.5523 4 19V14Z" fill="currentColor" />
+            <rect x="6" y="15.5" width="8" height="1.2" rx="0.6" fill="white" />
+            <rect x="6" y="17.5" width="12" height="1.2" rx="0.6" fill="white" />
+        </svg>
+    ),
+    boxed: (
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="4" y="4" width="16" height="16" rx="1" stroke="currentColor" strokeWidth="1.5" />
+            <rect x="6" y="6" width="12" height="8" fill="currentColor" fillOpacity="0.2" stroke="currentColor" strokeWidth="1.5" />
+            <rect x="6" y="16" width="12" height="1.2" rx="0.6" fill="currentColor" />
+        </svg>
+    ),
+    horizontal: (
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="4" y="6" width="7" height="12" rx="1" fill="currentColor" fillOpacity="0.2" stroke="currentColor" strokeWidth="1.5" />
+            <rect x="13" y="8" width="7" height="1.5" rx="0.75" fill="currentColor" />
+            <rect x="13" y="11" width="7" height="1.5" rx="0.75" fill="currentColor" />
+            <rect x="13" y="14" width="4" height="1.5" rx="0.75" fill="currentColor" />
+        </svg>
+    ),
+    'overlap-card': (
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="4" y="4" width="16" height="10" rx="1" fill="currentColor" fillOpacity="0.2" stroke="currentColor" strokeWidth="1.5" />
+            <rect x="6" y="11" width="12" height="9" rx="1" fill="white" stroke="currentColor" strokeWidth="1.5" />
+            <rect x="8" y="13.5" width="8" height="1.2" rx="0.6" fill="currentColor" />
+            <rect x="8" y="16" width="6" height="1.2" rx="0.6" fill="currentColor" />
+        </svg>
+    ),
+};
+
+const GET_LAYOUT_TEMPLATE = (layout: string) => {
+    switch (layout) {
+        case 'hero-overlay':
+            return [
+                ['core/post-featured-image', { aspectRatio: '16/9' }],
+                ['core/group', { style: { spacing: { padding: { top: '20px', right: '20px', bottom: '20px', left: '20px' } } }, layout: { type: 'flex', orientation: 'vertical', justifyContent: 'center' } }, [
+                    ['core/post-title', { isLink: true, textAlign: 'center', style: { typography: { fontSize: '2rem' } } }],
+                    ['jankx/human-readable-post-date', { textAlign: 'center' }]
+                ]]
+            ];
+        case 'horizontal':
+            return [
+                ['core/columns', {}, [
+                    ['core/column', { width: '33.33%' }, [
+                        ['core/post-featured-image', {}]
+                    ]],
+                    ['core/column', { width: '66.66%' }, [
+                        ['core/post-title', { isLink: true }],
+                        ['jankx/human-readable-post-date', {}],
+                        ['core/post-excerpt', {}]
+                    ]]
+                ]]
+            ];
+        case 'overlap-card':
+            return [
+                ['core/post-featured-image', {}],
+                ['core/group', { className: 'overlap-card-content', style: { spacing: { margin: { top: '-60px' }, padding: { top: '20px', right: '20px', bottom: '20px', left: '20px' } }, border: { radius: '8px' }, color: { background: '#ffffff' } } }, [
+                    ['core/post-title', { isLink: true }],
+                    ['jankx/human-readable-post-date', {}]
+                ]]
+            ];
+        case 'boxed':
+            return [
+                ['core/post-featured-image', {}],
+                ['core/group', { style: { spacing: { padding: { top: '15px', right: '15px', bottom: '15px', left: '15px' } } } }, [
+                    ['core/post-title', { isLink: true }],
+                    ['jankx/human-readable-post-date', {}],
+                    ['core/post-excerpt', {}]
+                ]]
+            ];
+        default:
+            return [
+                ['core/post-featured-image', {}],
+                ['core/post-title', { isLink: true }],
+                ['jankx/human-readable-post-date', {}],
+                ['core/post-excerpt', {}]
+            ];
+    }
+};
 
 interface PreviewItemProps {
     blocks: BlockInstance[];
@@ -360,6 +454,17 @@ export default function Edit({
     const showDots: boolean = !!context?.showDots;
     const carouselAlign = context?.carouselAlign || 'start';
 
+    const { replaceInnerBlocks } = useDispatch(blockEditorStore);
+
+    const onLayoutChange = useCallback((newLayout: string) => {
+        setAttributes({ templateLayout: newLayout });
+
+        // Auto replace inner blocks
+        const template = GET_LAYOUT_TEMPLATE(newLayout);
+        const newBlocks = createBlocksFromTemplate(template as any);
+        replaceInnerBlocks(clientId, newBlocks);
+    }, [clientId, setAttributes, replaceInnerBlocks]);
+
     // Prepare query args
     const queryArgs = useMemo(() => {
         const args: Record<string, any> = {
@@ -503,19 +608,30 @@ export default function Edit({
         <>
             <InspectorControls>
                 <PanelBody title={__('Template Settings', 'jankx')} initialOpen={true}>
-                    <SelectControl
-                        label={__('Content Loop Layout', 'jankx')}
-                        value={templateLayout}
-                        options={[
-                            { label: __('Default', 'jankx'), value: 'default' },
-                            { label: __('Hero Overlay', 'jankx'), value: 'hero-overlay' },
-                            { label: __('Boxed', 'jankx'), value: 'boxed' },
-                            { label: __('Horizontal', 'jankx'), value: 'horizontal' },
-                            { label: __('Overlap Card', 'jankx'), value: 'overlap-card' },
-                        ]}
-                        onChange={(value: string): void => setAttributes({ templateLayout: value })}
-                        help={__('Choose the overall item layout style.', 'jankx')}
-                    />
+                    <div className="jankx-layout-chooser">
+                        <label className="jankx-layout-chooser__label">{__('Content Loop Layout', 'jankx')}</label>
+                        <ButtonGroup className="jankx-layout-chooser__group">
+                            {[
+                                { label: __('Default', 'jankx'), value: 'default' },
+                                { label: __('Hero Overlay', 'jankx'), value: 'hero-overlay' },
+                                { label: __('Boxed', 'jankx'), value: 'boxed' },
+                                { label: __('Horizontal', 'jankx'), value: 'horizontal' },
+                                { label: __('Overlap Card', 'jankx'), value: 'overlap-card' },
+                            ].map((option) => (
+                                <Tooltip text={option.label} key={option.value}>
+                                    <Button
+                                        isPressed={templateLayout === option.value}
+                                        onClick={() => onLayoutChange(option.value)}
+                                        className="jankx-layout-chooser__button"
+                                        variant={templateLayout === option.value ? 'primary' : 'secondary'}
+                                    >
+                                        {LAYOUT_ICONS[option.value] || option.label}
+                                    </Button>
+                                </Tooltip>
+                            ))}
+                        </ButtonGroup>
+                        <p className="jankx-layout-chooser__help">{__('Choose the overall item layout style. Changing this will reset item content.', 'jankx')}</p>
+                    </div>
 
                     <SelectControl
                         label={__('Item Spacing', 'jankx')}

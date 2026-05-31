@@ -13,6 +13,7 @@
 // transitions không thể làm bằng inline style
 // =====================================================
 .jankx-hero-overlay-box {
+
     // Image fills container
     .jankx-hero-image {
         position: absolute;
@@ -45,10 +46,8 @@
         content: '';
         position: absolute;
         inset: 0;
-        background: var(
-            --jankx-hero-overlay-gradient,
-            linear-gradient(to top, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.45) 45%, transparent 100%)
-        );
+        background: var(--jankx-hero-overlay-gradient,
+                linear-gradient(to top, rgba(0, 0, 0, 0.88) 0%, rgba(0, 0, 0, 0.45) 45%, transparent 100%));
         z-index: 2;
         pointer-events: none;
     }
@@ -60,9 +59,53 @@
         width: 100%;
         pointer-events: none;
 
-        > * {
+        >* {
             pointer-events: auto;
         }
+    }
+}
+
+// Layout specific overrides
+.dynamic-data-template--hero-overlay {
+    position: relative;
+    overflow: hidden;
+
+    .wp-block-post-featured-image {
+        margin: 0;
+
+        img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+    }
+
+    // Overlay content
+    .wp-block-group {
+        position: absolute;
+        inset: 0;
+        z-index: 10;
+        background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.2) 60%, transparent 100%);
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        pointer-events: none;
+
+        >* {
+            pointer-events: auto;
+        }
+    }
+}
+
+.dynamic-data-template--overlap-card {
+    .overlap-card-content {
+        position: relative;
+        z-index: 10;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        margin-left: 20px;
+        margin-right: 20px;
+        background: #fff;
+        border-radius: 8px;
     }
 }
 
@@ -91,17 +134,51 @@
         transition: opacity 0.2s ease;
     }
 
-    &.overlay-mode-always-show .jankx-overlay-icon { opacity: 1; }
-    &.overlay-mode-hover-show .jankx-overlay-icon  { opacity: 0; }
-    &.overlay-mode-hover-show:hover .jankx-overlay-icon { opacity: 1; }
-    &.overlay-mode-hover-hide .jankx-overlay-icon  { opacity: 1; }
-    &.overlay-mode-hover-hide:hover .jankx-overlay-icon { opacity: 0; }
+    &.overlay-mode-always-show .jankx-overlay-icon {
+        opacity: 1;
+    }
 
-    &.overlay-pos-center .jankx-overlay-icon      { top: 50%; left: 50%; transform: translate(-50%, -50%); }
-    &.overlay-pos-top-left .jankx-overlay-icon    { top: 8px; left: 8px; }
-    &.overlay-pos-top-right .jankx-overlay-icon   { top: 8px; right: 8px; }
-    &.overlay-pos-bottom-left .jankx-overlay-icon { bottom: 8px; left: 8px; }
-    &.overlay-pos-bottom-right .jankx-overlay-icon { bottom: 8px; right: 8px; }
+    &.overlay-mode-hover-show .jankx-overlay-icon {
+        opacity: 0;
+    }
+
+    &.overlay-mode-hover-show:hover .jankx-overlay-icon {
+        opacity: 1;
+    }
+
+    &.overlay-mode-hover-hide .jankx-overlay-icon {
+        opacity: 1;
+    }
+
+    &.overlay-mode-hover-hide:hover .jankx-overlay-icon {
+        opacity: 0;
+    }
+
+    &.overlay-pos-center .jankx-overlay-icon {
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    &.overlay-pos-top-left .jankx-overlay-icon {
+        top: 8px;
+        left: 8px;
+    }
+
+    &.overlay-pos-top-right .jankx-overlay-icon {
+        top: 8px;
+        right: 8px;
+    }
+
+    &.overlay-pos-bottom-left .jankx-overlay-icon {
+        bottom: 8px;
+        left: 8px;
+    }
+
+    &.overlay-pos-bottom-right .jankx-overlay-icon {
+        bottom: 8px;
+        right: 8px;
+    }
 }
 
 // =====================================================
@@ -122,15 +199,52 @@
         transform: translate(0, 0) scale(1);
     }
 
-    &--fade-in-up   { transform: translateY(30px);  &.is-in-view { transform: translateY(0); } }
-    &--fade-in-down { transform: translateY(-30px); &.is-in-view { transform: translateY(0); } }
-    &--fade-in-left { transform: translateX(-30px); &.is-in-view { transform: translateX(0); } }
-    &--fade-in-right { transform: translateX(30px); &.is-in-view { transform: translateX(0); } }
-    &--zoom-in      { transform: scale(0.9);        &.is-in-view { transform: scale(1); } }
+    &--fade-in-up {
+        transform: translateY(30px);
+
+        &.is-in-view {
+            transform: translateY(0);
+        }
+    }
+
+    &--fade-in-down {
+        transform: translateY(-30px);
+
+        &.is-in-view {
+            transform: translateY(0);
+        }
+    }
+
+    &--fade-in-left {
+        transform: translateX(-30px);
+
+        &.is-in-view {
+            transform: translateX(0);
+        }
+    }
+
+    &--fade-in-right {
+        transform: translateX(30px);
+
+        &.is-in-view {
+            transform: translateX(0);
+        }
+    }
+
+    &--zoom-in {
+        transform: scale(0.9);
+
+        &.is-in-view {
+            transform: scale(1);
+        }
+    }
 
     &--slide-in-up {
         clip-path: inset(100% 0 0 0);
-        &.is-in-view { clip-path: inset(0 0 0 0); }
+
+        &.is-in-view {
+            clip-path: inset(0 0 0 0);
+        }
     }
 
     &--target-thumbnail {
@@ -149,10 +263,24 @@
             transform: translate(0, 0) scale(1);
         }
 
-        &.jankx-reveal--fade-in-up img    { transform: translateY(30px); }
-        &.jankx-reveal--fade-in-down img  { transform: translateY(-30px); }
-        &.jankx-reveal--fade-in-left img  { transform: translateX(-30px); }
-        &.jankx-reveal--fade-in-right img { transform: translateX(30px); }
-        &.jankx-reveal--zoom-in img       { transform: scale(0.9); }
+        &.jankx-reveal--fade-in-up img {
+            transform: translateY(30px);
+        }
+
+        &.jankx-reveal--fade-in-down img {
+            transform: translateY(-30px);
+        }
+
+        &.jankx-reveal--fade-in-left img {
+            transform: translateX(-30px);
+        }
+
+        &.jankx-reveal--fade-in-right img {
+            transform: translateX(30px);
+        }
+
+        &.jankx-reveal--zoom-in img {
+            transform: scale(0.9);
+        }
     }
 }

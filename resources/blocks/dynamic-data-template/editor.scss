@@ -4,13 +4,13 @@
 
 .wp-block-jankx-dynamic-data-template {
     // Editor specific styles
-    
+
     // Tất cả items hiển thị giống nhau như frontend
     .dynamic-data-template__item {
         position: relative;
         // Ensure content doesn't overflow
         max-width: 100%;
-        
+
         // Reset styles for BlockPreview container to match InnerBlocks
         &.dynamic-data-template__item--preview {
             .block-editor-block-preview {
@@ -19,13 +19,13 @@
                 height: 100%;
                 width: 100%;
                 border: none;
-                
+
                 .block-editor-block-preview__content {
                     margin: 0;
                     padding: 0;
                     min-height: 100%;
                     width: 100%;
-                    
+
                     // Force images to be responsive inside preview
                     img,
                     .wp-block-post-featured-image img,
@@ -51,23 +51,24 @@
             }
         }
     }
-    
+
     // Container cho items
     .dynamic-data-template__items-container {
         // Đảm bảo gap và layout giống frontend
         width: 100%;
-        
+
         // Ensure grid respects container width
         box-sizing: border-box;
+
         * {
             box-sizing: border-box;
         }
     }
-    
+
     // InnerBlocks styling để giống frontend
     .dynamic-data-template__inner-blocks {
         width: 100%;
-        
+
         // Ensure images are responsive in the editable item too
         img {
             max-width: 100%;
@@ -76,9 +77,66 @@
 
         // Fix alignment: remove top margin from the first block in editable area
         // Target the inner block list layout wrapper
-        .block-editor-block-list__layout > :first-child {
+        .block-editor-block-list__layout> :first-child {
             margin-top: 0 !important;
         }
     }
 }
 
+// Inspector Controls Styles
+.jankx-layout-chooser {
+    margin-bottom: 24px;
+
+    &__label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        font-size: 11px;
+        text-transform: uppercase;
+        color: #1e1e1e;
+    }
+
+    &__group {
+        display: grid !important;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+        width: 100%;
+
+        .components-button {
+            height: 56px !important;
+            padding: 8px !important;
+            justify-content: center !important;
+            border-radius: 4px !important;
+            border: 1px solid #ccc !important;
+            background: #fff !important;
+            transition: all 0.2s ease;
+            display: flex !important;
+            align-items: center !important;
+
+            &:hover {
+                border-color: var(--wp-admin-theme-color) !important;
+                background: #f0f6fc !important;
+                color: var(--wp-admin-theme-color) !important;
+            }
+
+            &.is-pressed {
+                border-color: var(--wp-admin-theme-color) !important;
+                background: var(--wp-admin-theme-color) !important;
+                color: #fff !important;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            }
+
+            svg {
+                width: 32px;
+                height: 32px;
+            }
+        }
+    }
+
+    &__help {
+        margin-top: 8px;
+        font-size: 12px;
+        color: #757575;
+        font-style: italic;
+    }
+}
