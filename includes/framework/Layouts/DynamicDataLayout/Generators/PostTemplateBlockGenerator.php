@@ -22,11 +22,37 @@ class PostTemplateBlockGenerator extends AbstractContentGenerator
     protected array $parentAttributes;
     protected array $runtimeOptions = [];
     protected string $currentLayout = '';
+    protected $itemLayout = null;
 
     public function __construct(array $templateBlock, array $parentAttributes = [])
     {
         $this->templateBlock = $templateBlock;
         $this->parentAttributes = $parentAttributes;
+    }
+
+    public function setItemLayout(\Jankx\Layouts\DynamicDataLayout\Contracts\ContentLoopLayoutInterface $itemLayout): self
+    {
+        $this->itemLayout = $itemLayout;
+        return $this;
+    }
+
+    public function getItemLayout(): ?\Jankx\Layouts\DynamicDataLayout\Contracts\ContentLoopLayoutInterface
+    {
+        if ($this->itemLayout === null && isset($this->templateBlock['attrs']['templateLayout'])) {
+            $layoutName = $this->templateBlock['attrs']['templateLayout'];
+            $manager = \Jankx\Layouts\DynamicDataLayout\ContentLoopLayoutManager::getInstance();
+            $postType = $this->parentAttributes['postType'] ?? 'post';
+            
+            // Try to find the layout class
+            $layouts = $manager->getLayoutsForPostType($postType);
+            foreach ($layouts as $layoutInfo) {
+                if ($layoutInfo['name'] === $layoutName && $layoutInfo['class']) {
+                    $this->itemLayout = new $layoutInfo['class']();
+                    break;
+                }
+            }
+        }
+        return $this->itemLayout;
     }
 
     protected function renderContent($query, array $options = []): string
@@ -128,6 +154,11 @@ class PostTemplateBlockGenerator extends AbstractContentGenerator
                 return '';
             }
 
+            $itemLayout = $this->getItemLayout();
+            if ($itemLayout) {
+                $itemLayout->enqueueAssets();
+            }
+
             $output = '';
             $contentOutput = '';
             foreach ($innerBlocks as $innerBlock) {
@@ -153,13 +184,13 @@ class PostTemplateBlockGenerator extends AbstractContentGenerator
                 // Fix missing styles: Apply render_block filters to ensure block supports are applied
                 $blockHtml = apply_filters('render_block', $blockHtml, $normalizedBlock, $blockInstance);
 
-                // Handle hero-overlay layout
-                if (($attrs['templateLayout'] ?? '') === 'hero-overlay') {
+                // Handle hero-overlay layout via itemLayout class
+                if ($itemLayout instanceof \Jankx\Layouts\DynamicDataLayout\ContentLoopLayouts\HeroOverlayItemLayout) {
                     if (in_array($normalizedBlock['blockName'], ['core/post-featured-image', 'jankx/advanced-image-box'], true)) {
-                        $output .= sprintf('<div class="jankx-hero-image">%s</div>', $blockHtml);
+                        $output .= $blockHtml; // This will be the imageHtml
                         continue;
                     } else {
-                        $contentOutput .= $blockHtml;
+                        $contentOutput .= $blockHtml; // This will be the contentHtml
                         continue;
                     }
                 }
@@ -188,47 +219,8 @@ class PostTemplateBlockGenerator extends AbstractContentGenerator
                 $output .= $blockHtml;
             }
 
-            // -------------------------------------------------------
-            // hero-overlay: build box entirely from block attributes.
-            // Inline styles carry all visual config; SCSS only handles
-            // hover zoom, ::after gradient, and pointer-events logic.
-            // -------------------------------------------------------
-            if (($attrs['templateLayout'] ?? '') === 'hero-overlay') {
-                $minHeight       = $attrs['heroMinHeight']         ?? '320px';
-                $aspectRatio     = $attrs['heroAspectRatio']       ?? '';
-                $fallbackBg      = $attrs['heroFallbackBackground'] ?? 'linear-gradient(135deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%)';
-                $borderRadius    = $attrs['heroBorderRadius']       ?? '12px';
-                $overlayGradient = $attrs['heroOverlayGradient']   ?? 'linear-gradient(to top,rgba(0,0,0,0.88) 0%,rgba(0,0,0,0.45) 45%,transparent 100%)';
-                $contentPadding  = $attrs['heroContentPadding']    ?? '30px 24px 24px';
-
-                // Required structural styles
-                $boxStyle  = 'position:relative;overflow:hidden;display:flex;align-items:flex-end;height:100%;';
-                $boxStyle .= 'min-height:' . $minHeight . ';';
-                $boxStyle .= 'background:' . $fallbackBg . ';';
-                $boxStyle .= 'border-radius:' . $borderRadius . ';';
-                if ($aspectRatio !== '') {
-                    $boxStyle .= 'aspect-ratio:' . $aspectRatio . ';';
-                }
-                // CSS custom property consumed by .jankx-hero-overlay-box::after in SCSS
-                $boxStyle .= '--jankx-hero-overlay-gradient:' . $overlayGradient . ';';
-
-                // Merge additional block-support styles (spacing/border from block editor UI)
-                $supportStyles = $this->buildTemplateItemStyle($attrs);
-                if ($supportStyles !== '') {
-                    $boxStyle .= $supportStyles;
-                }
-
-                $contentStyle = 'width:100%;padding:' . $contentPadding . ';pointer-events:none;';
-
-                // $output      = .jankx-hero-image HTML (accumulated in the loop above)
-                // $contentOutput = all other inner blocks HTML
-                return sprintf(
-                    '<div class="jankx-hero-overlay-box" style="%s">%s<div class="jankx-hero-content" style="%s"><div style="pointer-events:auto;">%s</div></div></div>',
-                    esc_attr($boxStyle),
-                    $output,
-                    esc_attr($contentStyle),
-                    $contentOutput
-                );
+            if ($itemLayout instanceof \Jankx\Layouts\DynamicDataLayout\ContentLoopLayouts\HeroOverlayItemLayout) {
+                return $itemLayout->renderHeroOverlay($output, $contentOutput, $attrs);
             }
 
             // -------------------------------------------------------

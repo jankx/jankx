@@ -161,6 +161,20 @@ const LAYOUT_ICONS: Record<string, JSX.Element> = {
             <rect x="8" y="16" width="6" height="1.2" rx="0.6" fill="currentColor" />
         </svg>
     ),
+    'hero-overlay': (
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="4" y="4" width="16" height="16" rx="1" fill="currentColor" fillOpacity="0.2" stroke="currentColor" strokeWidth="1.5" />
+            <rect x="4" y="4" width="16" height="16" rx="1" fill="url(#hero-gradient)" fillOpacity="0.3" />
+            <rect x="6" y="14" width="12" height="1.5" rx="0.75" fill="currentColor" />
+            <rect x="6" y="16.5" width="8" height="1.5" rx="0.75" fill="currentColor" />
+            <defs>
+                <linearGradient id="hero-gradient" x1="4" y1="4" x2="20" y2="20" gradientUnits="userSpaceOnUse">
+                    <stop stopColor="currentColor" stopOpacity="0.6" />
+                    <stop offset="1" stopColor="currentColor" stopOpacity="0.1" />
+                </linearGradient>
+            </defs>
+        </svg>
+    ),
 };
 
 const GET_LAYOUT_TEMPLATE = (layout: string) => {
@@ -194,6 +208,12 @@ const GET_LAYOUT_TEMPLATE = (layout: string) => {
                     ['jankx/human-readable-post-date', {}],
                     ['core/post-excerpt', {}]
                 ]]
+            ];
+        case 'hero-overlay':
+            return [
+                ['core/post-featured-image', {}],
+                ['core/post-title', { isLink: true }],
+                ['jankx/human-readable-post-date', {}]
             ];
         default:
             return [
@@ -531,7 +551,7 @@ export default function Edit({
     }, [defaultBlocks, convertToTemplate]);
 
     const blockProps = useBlockProps({
-        className: `dynamic-data-template dynamic-data-template--${templateLayout}`,
+        className: `dynamic-data-template content-loop-layout--${templateLayout}`,
         ...(thumbnailPosition && { 'data-thumbnail-position': thumbnailPosition }),
     });
 
@@ -600,6 +620,7 @@ export default function Edit({
                                 { label: __('Boxed', 'jankx'), value: 'boxed' },
                                 { label: __('Horizontal', 'jankx'), value: 'horizontal' },
                                 { label: __('Overlap Card', 'jankx'), value: 'overlap-card' },
+                                { label: __('Hero Overlay', 'jankx'), value: 'hero-overlay' },
                             ].map((option) => (
                                 <Tooltip text={option.label} key={option.value}>
                                     <Button

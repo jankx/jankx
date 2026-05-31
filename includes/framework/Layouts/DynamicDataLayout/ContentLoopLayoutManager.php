@@ -67,12 +67,18 @@ class ContentLoopLayoutManager
      */
     protected function registerBuiltInLayouts(): void
     {
-        $this->registerLayout('default', null, 'common');
+        $this->registerLayout('default', \Jankx\Layouts\DynamicDataLayout\ContentLoopLayouts\DefaultItemLayout::class, 'common');
+        $this->registerLayout('boxed', \Jankx\Layouts\DynamicDataLayout\ContentLoopLayouts\BoxedItemLayout::class, 'common');
+        $this->registerLayout('horizontal', \Jankx\Layouts\DynamicDataLayout\ContentLoopLayouts\HorizontalItemLayout::class, 'common');
+        $this->registerLayout('overlap-card', \Jankx\Layouts\DynamicDataLayout\ContentLoopLayouts\OverlapCardItemLayout::class, 'common');
+        $this->registerLayout('hero-overlay', \Jankx\Layouts\DynamicDataLayout\ContentLoopLayouts\HeroOverlayItemLayout::class, 'common');
+
         $this->registerLayout('grid', \Jankx\Layouts\DynamicDataLayout\ContentLoopLayouts\GridItemLayout::class, 'common');
         $this->registerLayout('card', \Jankx\Layouts\DynamicDataLayout\ContentLoopLayouts\CardItemLayout::class, 'common');
         $this->registerLayout('list', \Jankx\Layouts\DynamicDataLayout\ContentLoopLayouts\ListItemLayout::class, 'common');
         $this->registerLayout('carousel', \Jankx\Layouts\DynamicDataLayout\ContentLoopLayouts\CarouselItemLayout::class, 'common');
         $this->registerLayout('masonry', \Jankx\Layouts\DynamicDataLayout\ContentLoopLayouts\MasonryItemLayout::class, 'common');
+
         if (post_type_exists('product')) {
             $this->registerLayout('button-in-featured-image-wrap', null, 'product');
         }
@@ -187,6 +193,7 @@ class ContentLoopLayoutManager
                     'class' => $layoutInfo['class'],
                     'postType' => $postType,
                     'supportedOptions' => method_exists($layout, 'getSupportedOptions') ? $layout->getSupportedOptions() : [],
+                    'template' => method_exists($layout, 'getDefaultTemplate') ? $layout->getDefaultTemplate($postType) : [],
                 ];
             } catch (\Exception $e) {
                 // Layout class not found or invalid

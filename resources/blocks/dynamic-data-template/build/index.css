@@ -10,7 +10,7 @@
  * Visual styles (color, padding, border-radius, size...) được PHP generate
  * thành inline styles từ block attributes để fully custom qua Block Editor.
  */
-.dynamic-data-template--overlap-card .overlap-card-content {
+.content-loop-layout--overlap-card .overlap-card-content {
   position: relative;
   z-index: 10;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
@@ -18,6 +18,73 @@
   margin-right: 20px;
   background: #fff;
   border-radius: 8px;
+}
+
+.jankx-hero-overlay-box {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: flex-end;
+  height: 100%;
+  min-height: 320px;
+  border-radius: 12px;
+}
+.jankx-hero-overlay-box .jankx-hero-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+.jankx-hero-overlay-box .jankx-hero-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.jankx-hero-overlay-box .jankx-hero-content {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  padding: 30px 24px 24px;
+  pointer-events: none;
+}
+.jankx-hero-overlay-box .jankx-hero-content::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--jankx-hero-overlay-gradient, linear-gradient(to top, rgba(0, 0, 0, 0.88) 0%, rgba(0, 0, 0, 0.45) 45%, transparent 100%));
+  z-index: -1;
+  pointer-events: none;
+}
+.jankx-hero-overlay-box .jankx-hero-content > div {
+  pointer-events: auto;
+}
+.jankx-hero-overlay-box .jankx-hero-content {
+  color: #fff;
+}
+.jankx-hero-overlay-box .jankx-hero-content a {
+  color: #fff;
+  text-decoration: none;
+}
+.jankx-hero-overlay-box .jankx-hero-content a:hover {
+  text-decoration: underline;
+}
+.jankx-hero-overlay-box .jankx-hero-content .wp-block-post-title {
+  margin-top: 0;
+  margin-bottom: 0.5em;
+  font-size: 1.5rem;
+  line-height: 1.3;
+  font-weight: 600;
+}
+.jankx-hero-overlay-box .jankx-hero-content .wp-block-post-date,
+.jankx-hero-overlay-box .jankx-hero-content .jankx-human-readable-post-date {
+  opacity: 0.9;
+  font-size: 0.875rem;
 }
 
 .jankx-thumbnail-overlay-wrapper {

@@ -4922,7 +4922,7 @@
                     "animationTarget": "entry",
                     "animationReverse": false
                 },
-                "html_file": "jankx--dynamic-data-template--default.html"
+                "html_file": "jankx--content-loop-layout--default.html"
             },
             "attr-itemSpacing-none": {
                 "attributes": {
@@ -4956,7 +4956,7 @@
                     "animationTarget": "entry",
                     "animationReverse": false
                 },
-                "html_file": "jankx--dynamic-data-template--attr-itemSpacing-none.html"
+                "html_file": "jankx--content-loop-layout--attr-itemSpacing-none.html"
             },
             "attr-itemSpacing-compact": {
                 "attributes": {
@@ -4990,7 +4990,7 @@
                     "animationTarget": "entry",
                     "animationReverse": false
                 },
-                "html_file": "jankx--dynamic-data-template--attr-itemSpacing-compact.html"
+                "html_file": "jankx--content-loop-layout--attr-itemSpacing-compact.html"
             },
             "attr-itemSpacing-loose": {
                 "attributes": {
@@ -5024,7 +5024,7 @@
                     "animationTarget": "entry",
                     "animationReverse": false
                 },
-                "html_file": "jankx--dynamic-data-template--attr-itemSpacing-loose.html"
+                "html_file": "jankx--content-loop-layout--attr-itemSpacing-loose.html"
             },
             "attr-overlayIconShowMode-hover-hide": {
                 "attributes": {
@@ -5058,7 +5058,7 @@
                     "animationTarget": "entry",
                     "animationReverse": false
                 },
-                "html_file": "jankx--dynamic-data-template--attr-overlayIconShowMode-hover-hide.html"
+                "html_file": "jankx--content-loop-layout--attr-overlayIconShowMode-hover-hide.html"
             },
             "attr-overlayIconShowMode-hover-show": {
                 "attributes": {
@@ -5092,7 +5092,7 @@
                     "animationTarget": "entry",
                     "animationReverse": false
                 },
-                "html_file": "jankx--dynamic-data-template--attr-overlayIconShowMode-hover-show.html"
+                "html_file": "jankx--content-loop-layout--attr-overlayIconShowMode-hover-show.html"
             },
             "attr-overlayIconTarget-entry-image": {
                 "attributes": {
@@ -5126,7 +5126,7 @@
                     "animationTarget": "entry",
                     "animationReverse": false
                 },
-                "html_file": "jankx--dynamic-data-template--attr-overlayIconTarget-entry-image.html"
+                "html_file": "jankx--content-loop-layout--attr-overlayIconTarget-entry-image.html"
             },
             "attr-overlayIconTarget-entire-item": {
                 "attributes": {
@@ -5160,7 +5160,7 @@
                     "animationTarget": "entry",
                     "animationReverse": false
                 },
-                "html_file": "jankx--dynamic-data-template--attr-overlayIconTarget-entire-item.html"
+                "html_file": "jankx--content-loop-layout--attr-overlayIconTarget-entire-item.html"
             },
             "attr-overlayIconType-image": {
                 "attributes": {
@@ -5194,7 +5194,7 @@
                     "animationTarget": "entry",
                     "animationReverse": false
                 },
-                "html_file": "jankx--dynamic-data-template--attr-overlayIconType-image.html"
+                "html_file": "jankx--content-loop-layout--attr-overlayIconType-image.html"
             },
             "attr-overlayIconType-text": {
                 "attributes": {
@@ -5228,7 +5228,7 @@
                     "animationTarget": "entry",
                     "animationReverse": false
                 },
-                "html_file": "jankx--dynamic-data-template--attr-overlayIconType-text.html"
+                "html_file": "jankx--content-loop-layout--attr-overlayIconType-text.html"
             },
             "attr-showItemBorder-true": {
                 "attributes": {
@@ -5262,7 +5262,7 @@
                     "animationTarget": "entry",
                     "animationReverse": false
                 },
-                "html_file": "jankx--dynamic-data-template--attr-showItemBorder-true.html"
+                "html_file": "jankx--content-loop-layout--attr-showItemBorder-true.html"
             },
             "attr-thumbnailPosition-bottom": {
                 "attributes": {
@@ -5296,7 +5296,7 @@
                     "animationTarget": "entry",
                     "animationReverse": false
                 },
-                "html_file": "jankx--dynamic-data-template--attr-thumbnailPosition-bottom.html"
+                "html_file": "jankx--content-loop-layout--attr-thumbnailPosition-bottom.html"
             },
             "attr-thumbnailPosition-left": {
                 "attributes": {
@@ -5330,7 +5330,7 @@
                     "animationTarget": "entry",
                     "animationReverse": false
                 },
-                "html_file": "jankx--dynamic-data-template--attr-thumbnailPosition-left.html"
+                "html_file": "jankx--content-loop-layout--attr-thumbnailPosition-left.html"
             },
             "attr-thumbnailPosition-right": {
                 "attributes": {
@@ -5364,7 +5364,7 @@
                     "animationTarget": "entry",
                     "animationReverse": false
                 },
-                "html_file": "jankx--dynamic-data-template--attr-thumbnailPosition-right.html"
+                "html_file": "jankx--content-loop-layout--attr-thumbnailPosition-right.html"
             },
             "attr-animationType-fade-in": {
                 "attributes": {
@@ -5398,7 +5398,7 @@
                     "animationTarget": "entry",
                     "animationReverse": false
                 },
-                "html_file": "jankx--dynamic-data-template--attr-animationType-fade-in.html"
+                "html_file": "jankx--content-loop-layout--attr-animationType-fade-in.html"
             }
         }
     },

@@ -377,6 +377,26 @@ class DynamicDataLayoutBlock extends Block
                 'nonce' => wp_create_nonce('jankx_load_more')
             ]);
         }
+
+        // Enqueue dynamic-data-template styles since it's rendered via this block
+        $template_style_path = dirname($this->blockPath) . '/dynamic-data-template/build/style.css';
+        $template_asset_path = dirname($this->blockPath) . '/dynamic-data-template/build/style.asset.php';
+
+        if (file_exists($template_style_path)) {
+            $template_asset = file_exists($template_asset_path) ? require $template_asset_path : [
+                'dependencies' => ['wp-block-library'],
+                'version' => filemtime($template_style_path)
+            ];
+
+            $template_style_url = get_template_directory_uri() . str_replace(get_template_directory(), '', dirname($this->blockPath)) . '/dynamic-data-template/build/style.css';
+
+            wp_enqueue_style(
+                'jankx-dynamic-data-template-style',
+                $template_style_url,
+                $template_asset['dependencies'],
+                $template_asset['version']
+            );
+        }
     }
 
     /**
