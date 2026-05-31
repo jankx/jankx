@@ -18,7 +18,6 @@ class HeroOverlayItemLayout extends AbstractContentLoopLayout
     {
         return [
             'heroMinHeight',
-            'heroAspectRatio',
             'heroOverlayGradient',
             'heroFallbackBackground',
             'heroBorderRadius',
@@ -48,7 +47,6 @@ class HeroOverlayItemLayout extends AbstractContentLoopLayout
     public function renderHeroOverlay(string $imageHtml, string $contentHtml, array $attrs): string
     {
         $minHeight       = $attrs['heroMinHeight']         ?? '320px';
-        $aspectRatio     = $attrs['heroAspectRatio']       ?? '';
         $fallbackBg      = $attrs['heroFallbackBackground'] ?? 'linear-gradient(135deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%)';
         $borderRadius    = $attrs['heroBorderRadius']       ?? '12px';
         $overlayGradient = $attrs['heroOverlayGradient']   ?? 'linear-gradient(to top,rgba(0,0,0,0.88) 0%,rgba(0,0,0,0.45) 45%,transparent 100%)';
@@ -58,9 +56,6 @@ class HeroOverlayItemLayout extends AbstractContentLoopLayout
         $boxStyle .= 'min-height:' . $minHeight . ';';
         $boxStyle .= 'background:' . $fallbackBg . ';';
         $boxStyle .= 'border-radius:' . $borderRadius . ';';
-        if ($aspectRatio !== '') {
-            $boxStyle .= 'aspect-ratio:' . $aspectRatio . ';';
-        }
         $boxStyle .= '--jankx-hero-overlay-gradient:' . $overlayGradient . ';';
 
         $contentStyle = 'width:100%;padding:' . $contentPadding . ';pointer-events:none;';

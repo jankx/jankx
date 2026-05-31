@@ -674,20 +674,6 @@ export default function Edit({
                             onChange={(value: string) => setAttributes({ heroMinHeight: value })}
                             help={__('e.g. 320px, 50vh', 'jankx')}
                         />
-                        <SelectControl
-                            label={__('Aspect Ratio', 'jankx')}
-                            value={heroAspectRatio}
-                            options={[
-                                { label: __('None (use min-height)', 'jankx'), value: '' },
-                                { label: '16:9', value: '16/9' },
-                                { label: '4:3', value: '4/3' },
-                                { label: '3:2', value: '3/2' },
-                                { label: '1:1', value: '1/1' },
-                                { label: '21:9', value: '21/9' },
-                            ]}
-                            onChange={(value: string) => setAttributes({ heroAspectRatio: value })}
-                            help={__('When set, overrides min-height on larger screens.', 'jankx')}
-                        />
                         <TextControl
                             label={__('Border Radius', 'jankx')}
                             value={heroBorderRadius}
