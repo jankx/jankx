@@ -2058,32 +2058,6 @@ msgstr ""
 msgid "Invalid iframe URL"
 msgstr ""
 
-#: includes/framework/Gutenberg/Blocks/TermLayoutBlock.php:250
-#: extensions/dynamic-ssr/includes/Blocks/DynamicSsrLayoutBlock.php:732
-#, php-format
-msgid "Template file: %s"
-msgstr ""
-
-#: includes/framework/Gutenberg/Blocks/TermLayoutBlock.php:264
-#: extensions/dynamic-ssr/includes/Blocks/DynamicSsrLayoutBlock.php:752
-msgid "Default Loop Item"
-msgstr ""
-
-#: includes/framework/Gutenberg/Blocks/TermLayoutBlock.php:265
-#: extensions/dynamic-ssr/includes/Blocks/DynamicSsrLayoutBlock.php:753
-msgid "Large Item"
-msgstr ""
-
-#: includes/framework/Gutenberg/Blocks/TermLayoutBlock.php:266
-#: extensions/dynamic-ssr/includes/Blocks/DynamicSsrLayoutBlock.php:754
-msgid "Thumbnail Only"
-msgstr ""
-
-#: includes/framework/Gutenberg/Blocks/TermLayoutBlock.php:267
-#: extensions/dynamic-ssr/includes/Blocks/DynamicSsrLayoutBlock.php:755
-msgid "Term Item"
-msgstr ""
-
 #: includes/framework/Gutenberg/Blocks/OffcanvasTriggerBlock.php:79
 msgid "Toggle menu"
 msgstr ""
