@@ -344,6 +344,11 @@ const buildTemplateItemStyle = (attributes: any): CSSProperties => {
 const buildTemplateItemClasses = (attributes: any): string => {
     const classes: string[] = [];
 
+    // Add template layout class
+    if (attributes?.templateLayout) {
+        classes.push(`content-loop-layout--${attributes.templateLayout}`);
+    }
+
     // Add custom className if present
     if (attributes?.className) {
         classes.push(attributes.className);

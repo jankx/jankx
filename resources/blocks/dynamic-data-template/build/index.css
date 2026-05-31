@@ -26,7 +26,6 @@
   display: flex;
   align-items: flex-end;
   height: 100%;
-  border-radius: 12px;
 }
 .jankx-hero-overlay-box > .wp-block-post-featured-image,
 .jankx-hero-overlay-box > figure {

@@ -46,13 +46,15 @@ class HeroOverlayItemLayout extends AbstractContentLoopLayout
     public function renderHeroOverlay(string $imageHtml, string $contentHtml, array $attrs): string
     {
         $fallbackBg      = $attrs['heroFallbackBackground'] ?? 'linear-gradient(135deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%)';
-        $borderRadius    = $attrs['heroBorderRadius']       ?? '12px';
+        $borderRadius    = $attrs['heroBorderRadius']       ?? '';
         $overlayGradient = $attrs['heroOverlayGradient']   ?? 'linear-gradient(to top,rgba(0,0,0,0.88) 0%,rgba(0,0,0,0.45) 45%,transparent 100%)';
         $contentPadding  = $attrs['heroContentPadding']    ?? '10px 5px 5px';
 
         $boxStyle  = 'position:relative;overflow:hidden;display:flex;align-items:flex-end;height:100%;';
         $boxStyle .= 'background:' . $fallbackBg . ';';
-        $boxStyle .= 'border-radius:' . $borderRadius . ';';
+        if (!empty($borderRadius)) {
+            $boxStyle .= 'border-radius:' . $borderRadius . ';';
+        }
         $boxStyle .= '--jankx-hero-overlay-gradient:' . $overlayGradient . ';';
 
         $contentStyle = 'width:100%;padding:' . $contentPadding . ';pointer-events:none;';
