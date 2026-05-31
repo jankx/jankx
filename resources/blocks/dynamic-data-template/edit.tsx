@@ -138,14 +138,6 @@ const LAYOUT_ICONS: Record<string, JSX.Element> = {
             <rect x="4" y="18.5" width="10" height="1.5" rx="0.75" fill="currentColor" />
         </svg>
     ),
-    'hero-overlay': (
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect x="4" y="4" width="16" height="16" rx="1" fill="currentColor" fillOpacity="0.2" stroke="currentColor" strokeWidth="1.5" />
-            <path d="M4 14C4 13.4477 4.44772 13 5 13H19C19.5523 13 20 13.4477 20 14V19C20 19.5523 19.5523 20 19 20H5C4.44772 20 4 19.5523 4 19V14Z" fill="currentColor" />
-            <rect x="6" y="15.5" width="8" height="1.2" rx="0.6" fill="white" />
-            <rect x="6" y="17.5" width="12" height="1.2" rx="0.6" fill="white" />
-        </svg>
-    ),
     boxed: (
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <rect x="4" y="4" width="16" height="16" rx="1" stroke="currentColor" strokeWidth="1.5" />
@@ -173,14 +165,6 @@ const LAYOUT_ICONS: Record<string, JSX.Element> = {
 
 const GET_LAYOUT_TEMPLATE = (layout: string) => {
     switch (layout) {
-        case 'hero-overlay':
-            return [
-                ['core/post-featured-image', { aspectRatio: '16/9' }],
-                ['core/group', { style: { spacing: { padding: { top: '20px', right: '20px', bottom: '20px', left: '20px' } } }, layout: { type: 'flex', orientation: 'vertical', justifyContent: 'center' } }, [
-                    ['core/post-title', { isLink: true, textAlign: 'center', style: { typography: { fontSize: '2rem' } } }],
-                    ['jankx/human-readable-post-date', { textAlign: 'center' }]
-                ]]
-            ];
         case 'horizontal':
             return [
                 ['core/columns', {}, [
@@ -613,7 +597,6 @@ export default function Edit({
                         <ButtonGroup className="jankx-layout-chooser__group">
                             {[
                                 { label: __('Default', 'jankx'), value: 'default' },
-                                { label: __('Hero Overlay', 'jankx'), value: 'hero-overlay' },
                                 { label: __('Boxed', 'jankx'), value: 'boxed' },
                                 { label: __('Horizontal', 'jankx'), value: 'horizontal' },
                                 { label: __('Overlap Card', 'jankx'), value: 'overlap-card' },

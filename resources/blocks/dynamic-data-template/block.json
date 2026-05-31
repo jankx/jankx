@@ -113,7 +113,6 @@
       "default": "default",
       "enum": [
         "default",
-        "hero-overlay",
         "boxed",
         "horizontal",
         "overlap-card"
