@@ -5,7 +5,7 @@ namespace Jankx\Layouts\DynamicDataLayout;
 use Jankx\Layouts\DynamicDataLayout\DynamicDataLayoutManager;
 use Jankx\Layouts\DynamicDataLayout\BlockTemplateLayoutDecorator;
 use Jankx\Layouts\DynamicDataLayout\Generators\PostTemplateBlockGenerator;
-use Jankx\Layouts\DynamicDataLayout\Generators\SsrViewGenerator;
+
 use Jankx\Layouts\DynamicDataLayout\Generators\ViewTemplateContentGenerator;
 use Jankx\Layouts\DynamicDataLayout\PaginationRenderer;
 use Jankx\Layouts\DynamicDataLayout\Contracts\PostLayoutJsCallbackInterface;
@@ -77,13 +77,25 @@ class Renderer
 
         if ($templateBlock) {
             $blockName = $templateBlock['blockName'] ?? '';
-            $generator = ($blockName === 'jankx/dynamic-data-ssr')
-                ? new SsrViewGenerator($templateBlock, $attributes)
-                : (($blockName === 'jankx/dynamic-ssr-template')
-                    ? new ViewTemplateContentGenerator($templateBlock, $attributes)
-                    : new PostTemplateBlockGenerator($templateBlock, $attributes));
-            $layoutInstance = $decorator->getLayout();
-            $layoutInstance->setContentGenerator($generator);
+            $generator = null;
+
+            if ($blockName === 'jankx/dynamic-data-ssr') {
+                // Allow the dynamic-ssr extension (or any other code) to supply the SSR generator class.
+                // The filter must return a fully-qualified class name that extends AbstractContentGenerator.
+                $ssrClass = apply_filters('jankx/renderer/ssr_generator_class', null, $templateBlock, $attributes);
+                if ($ssrClass && class_exists($ssrClass)) {
+                    $generator = new $ssrClass($templateBlock, $attributes);
+                }
+            } elseif ($blockName === 'jankx/dynamic-ssr-template') {
+                $generator = new ViewTemplateContentGenerator($templateBlock, $attributes);
+            } else {
+                $generator = new PostTemplateBlockGenerator($templateBlock, $attributes);
+            }
+
+            if ($generator !== null) {
+                $layoutInstance = $decorator->getLayout();
+                $layoutInstance->setContentGenerator($generator);
+            }
         }
 
         $html = $decorator->render();

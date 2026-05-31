@@ -2064,32 +2064,6 @@ msgstr "Mảng Thẻ Động %d"
 msgid "Invalid iframe URL"
 msgstr "Chết Điểm Sập Đường Mạch URL Khi Văng Iframe"
 
-#: includes/framework/Gutenberg/Blocks/TermLayoutBlock.php:250
-#: extensions/dynamic-ssr/includes/Blocks/DynamicSsrLayoutBlock.php:732
-#, php-format
-msgid "Template file: %s"
-msgstr "Mục Điểm Tuyến Định Mẫu Tệp Phẳng Theme File Form Này: %s"
-
-#: includes/framework/Gutenberg/Blocks/TermLayoutBlock.php:264
-#: extensions/dynamic-ssr/includes/Blocks/DynamicSsrLayoutBlock.php:752
-msgid "Default Loop Item"
-msgstr "Item Lặp Mặc Định"
-
-#: includes/framework/Gutenberg/Blocks/TermLayoutBlock.php:265
-#: extensions/dynamic-ssr/includes/Blocks/DynamicSsrLayoutBlock.php:753
-msgid "Large Item"
-msgstr "Item Rộng"
-
-#: includes/framework/Gutenberg/Blocks/TermLayoutBlock.php:266
-#: extensions/dynamic-ssr/includes/Blocks/DynamicSsrLayoutBlock.php:754
-msgid "Thumbnail Only"
-msgstr "Chỉ Avatar/Hình Thu nhỏ"
-
-#: includes/framework/Gutenberg/Blocks/TermLayoutBlock.php:267
-#: extensions/dynamic-ssr/includes/Blocks/DynamicSsrLayoutBlock.php:755
-msgid "Term Item"
-msgstr "Mục Thành Phần Category Term"
-
 #: includes/framework/Gutenberg/Blocks/OffcanvasTriggerBlock.php:79
 msgid "Toggle menu"
 msgstr "Lật Vở Dãy Menu Nút Kéo Khung Toggle"
