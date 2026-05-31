@@ -25,7 +25,6 @@ import type { BlockInstance } from '@wordpress/blocks';
 
 interface DynamicDataTemplateAttributes {
     templateLayout: string;
-    contentLoopLayout: string;
     className?: string;
     itemSpacing?: 'none' | 'compact' | 'normal' | 'loose';
     showItemBorder?: boolean;
@@ -317,7 +316,6 @@ export default function Edit({
 }: DynamicDataTemplateEditProps): JSX.Element {
     const {
         templateLayout = 'default',
-        contentLoopLayout,
         className = '',
         itemSpacing = 'normal',
         showItemBorder = false,
@@ -421,11 +419,7 @@ export default function Edit({
         return layouts;
     }, [postType, layoutsData]);
 
-    // Layout options for SelectControl - User requested only Normal/Boxed
-    const layoutOptions = [
-        { label: __('Normal', 'jankx'), value: 'normal' },
-        { label: __('Boxed', 'jankx'), value: 'boxed' },
-    ];
+
 
     // Get default blocks for post type
     const defaultBlocks = useMemo(() => {
@@ -448,7 +442,7 @@ export default function Edit({
     }, [defaultBlocks, convertToTemplate]);
 
     const blockProps = useBlockProps({
-        className: `dynamic-data-template dynamic-data-template--${contentLoopLayout}`,
+        className: `dynamic-data-template dynamic-data-template--${templateLayout}`,
         ...(thumbnailPosition && { 'data-thumbnail-position': thumbnailPosition }),
     });
 
@@ -521,12 +515,7 @@ export default function Edit({
                         onChange={(value: string): void => setAttributes({ templateLayout: value })}
                         help={__('Choose the overall item layout style.', 'jankx')}
                     />
-                    <SelectControl
-                        label={__('Content Loop Layout', 'jankx')}
-                        value={contentLoopLayout}
-                        options={layoutOptions}
-                        onChange={(value: string): void => setAttributes({ contentLoopLayout: value })}
-                    />
+
                     <SelectControl
                         label={__('Item Spacing', 'jankx')}
                         value={itemSpacing}

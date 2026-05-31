@@ -247,7 +247,7 @@ trait PostTemplateRendererTrait
             }
 
             $templateAttrs = $this->templateBlock['attrs'] ?? [];
-            $loopLayout = $templateAttrs['contentLoopLayout'] ?? 'normal';
+            $loopLayout = $templateAttrs['templateLayout'] ?? 'default';
 
             if ($loopLayout === 'boxed') {
                 return sprintf('<div class="card-body">%s</div>', $output);
@@ -308,8 +308,9 @@ trait PostTemplateRendererTrait
         }
 
         $templateAttrs = $this->templateBlock['attrs'] ?? [];
-        if (!empty($templateAttrs['contentLoopLayout'])) {
-            $classes[] = 'content-loop-layout--' . sanitize_html_class($templateAttrs['contentLoopLayout']);
+        if (!empty($templateAttrs['templateLayout'])) {
+            $classes[] = 'content-loop-layout--' . sanitize_html_class($templateAttrs['templateLayout']);
+            $classes[] = 'template-layout--' . sanitize_html_class($templateAttrs['templateLayout']);
         }
 
         $classes = array_unique(array_filter(array_map('sanitize_html_class', $classes)));

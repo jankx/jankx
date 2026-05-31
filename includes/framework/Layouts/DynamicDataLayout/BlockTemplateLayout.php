@@ -388,13 +388,14 @@ abstract class BlockTemplateLayout implements BlockTemplateLayoutInterface
     {
         $classes = get_post_class(['jankx-loop-item']);
         $templateBlock = $this->getOption('postTemplate');
-        $loopLayout = 'normal';
+        $loopLayout = 'default';
 
-        if (is_array($templateBlock) && !empty($templateBlock['attrs']['contentLoopLayout'])) {
-            $loopLayout = $templateBlock['attrs']['contentLoopLayout'];
+        if (is_array($templateBlock) && !empty($templateBlock['attrs']['templateLayout'])) {
+            $loopLayout = $templateBlock['attrs']['templateLayout'];
         }
 
         $classes[] = 'content-loop-layout--' . $loopLayout;
+        $classes[] = 'template-layout--' . $loopLayout;
 
         if ($loopLayout === 'boxed') {
             $classes[] = 'card';
@@ -412,9 +413,9 @@ abstract class BlockTemplateLayout implements BlockTemplateLayoutInterface
     {
         $post_id = get_the_ID();
         $templateBlock = $this->getOption('postTemplate');
-        $loopLayout = is_array($templateBlock) && !empty($templateBlock['attrs']['contentLoopLayout'])
-            ? $templateBlock['attrs']['contentLoopLayout']
-            : 'normal';
+        $loopLayout = is_array($templateBlock) && !empty($templateBlock['attrs']['templateLayout'])
+            ? $templateBlock['attrs']['templateLayout']
+            : 'default';
 
         $data = [
             'post_id' => $post_id,

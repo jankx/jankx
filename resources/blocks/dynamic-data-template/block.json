@@ -111,11 +111,12 @@
     "templateLayout": {
       "type": "string",
       "default": "default",
-      "enum": ["default", "hero-overlay", "boxed", "horizontal"]
-    },
-    "contentLoopLayout": {
-      "type": "string",
-      "default": "default"
+      "enum": [
+        "default",
+        "hero-overlay",
+        "boxed",
+        "horizontal"
+      ]
     },
     "className": {
       "type": "string",
