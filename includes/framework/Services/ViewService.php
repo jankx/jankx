@@ -53,6 +53,11 @@ class ViewService
 
         // 3. Framework defaults
         $this->addPath($this->app->basePath('includes/framework/Layouts/templates'));
+
+        // 4. Allow extensions / plugins to prepend or append their own template paths.
+        //    Listeners receive the current $searchPaths array and must return a (possibly
+        //    modified) array of absolute directory paths.
+        $this->searchPaths = apply_filters('jankx/view_service/paths', $this->searchPaths);
     }
 
     /**
