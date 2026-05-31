@@ -34,4 +34,38 @@ class OverlapCardItemLayout extends AbstractContentLoopLayout
             ]]
         ];
     }
+
+    /**
+     * Special rendering for Overlap Card
+     * Separates featured image from other blocks and wraps content in a group
+     */
+    public function renderOverlapCard(string $imageHtml, string $contentHtml, array $attrs): string
+    {
+        $marginTop       = $attrs['overlapMarginTop']       ?? '-60px';
+        $padding         = $attrs['overlapPadding']         ?? '20px';
+        $borderRadius    = $attrs['overlapBorderRadius']    ?? '8px';
+        $backgroundColor = $attrs['overlapBackgroundColor'] ?? '#ffffff';
+
+        $groupStyle  = 'margin-top:' . $marginTop . ';';
+        $groupStyle .= 'padding:' . $padding . ';';
+        $groupStyle .= 'border-radius:' . $borderRadius . ';';
+        $groupStyle .= 'background-color:' . $backgroundColor . ';';
+
+        return sprintf(
+            '%s<div class="overlap-card-content" style="%s">%s</div>',
+            $imageHtml,
+            esc_attr($groupStyle),
+            $contentHtml
+        );
+    }
+
+    public function getSupportedOptions(): array
+    {
+        return [
+            'overlapMarginTop',
+            'overlapPadding',
+            'overlapBorderRadius',
+            'overlapBackgroundColor',
+        ];
+    }
 }

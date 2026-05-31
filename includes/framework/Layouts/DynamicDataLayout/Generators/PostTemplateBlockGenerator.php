@@ -195,6 +195,17 @@ class PostTemplateBlockGenerator extends AbstractContentGenerator
                     }
                 }
 
+                // Handle overlap-card layout via itemLayout class
+                if ($itemLayout instanceof \Jankx\Layouts\DynamicDataLayout\ContentLoopLayouts\OverlapCardItemLayout) {
+                    if (in_array($normalizedBlock['blockName'], ['core/post-featured-image', 'woocommerce/product-image', 'jankx/advanced-image-box'], true)) {
+                        $output .= $blockHtml; // This will be the imageHtml
+                        continue;
+                    } else {
+                        $contentOutput .= $blockHtml; // This will be the contentHtml
+                        continue;
+                    }
+                }
+
                 // Inject overlay only when targeting featured image (Standard Overlay)
                 if (
                     $overlayTarget === 'featured-image'
@@ -221,6 +232,10 @@ class PostTemplateBlockGenerator extends AbstractContentGenerator
 
             if ($itemLayout instanceof \Jankx\Layouts\DynamicDataLayout\ContentLoopLayouts\HeroOverlayItemLayout) {
                 return $itemLayout->renderHeroOverlay($output, $contentOutput, $attrs);
+            }
+
+            if ($itemLayout instanceof \Jankx\Layouts\DynamicDataLayout\ContentLoopLayouts\OverlapCardItemLayout) {
+                return $itemLayout->renderOverlapCard($output, $contentOutput, $attrs);
             }
 
             // -------------------------------------------------------

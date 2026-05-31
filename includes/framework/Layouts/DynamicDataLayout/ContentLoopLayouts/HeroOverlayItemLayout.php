@@ -48,7 +48,7 @@ class HeroOverlayItemLayout extends AbstractContentLoopLayout
         $fallbackBg      = $attrs['heroFallbackBackground'] ?? 'linear-gradient(135deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%)';
         $borderRadius    = $attrs['heroBorderRadius']       ?? '12px';
         $overlayGradient = $attrs['heroOverlayGradient']   ?? 'linear-gradient(to top,rgba(0,0,0,0.88) 0%,rgba(0,0,0,0.45) 45%,transparent 100%)';
-        $contentPadding  = $attrs['heroContentPadding']    ?? '30px 24px 24px';
+        $contentPadding  = $attrs['heroContentPadding']    ?? '10px 5px 5px';
 
         $boxStyle  = 'position:relative;overflow:hidden;display:flex;align-items:flex-end;height:100%;';
         $boxStyle .= 'background:' . $fallbackBg . ';';
