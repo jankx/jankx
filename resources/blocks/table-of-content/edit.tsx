@@ -205,6 +205,8 @@ export default function Edit({ attributes, setAttributes, clientId }: TableOfCon
         headingStyle,
         minHeadingLevel,
         maxHeadingLevel,
+        bulletType,
+        hierarchicalIndent,
     } = attributes;
 
     // Check if we're in template editor
@@ -293,7 +295,7 @@ export default function Edit({ attributes, setAttributes, clientId }: TableOfCon
     };
 
     const blockProps = useBlockProps({
-        className: `jankx-table-of-content heading-style-${headingStyle}`,
+        className: `jankx-table-of-content heading-style-${headingStyle} has-bullet-${bulletType} ${!hierarchicalIndent ? 'is-flat-hierarchy' : ''}`,
         'data-expand-icon-type': expandIconType,
     });
 
@@ -334,7 +336,7 @@ export default function Edit({ attributes, setAttributes, clientId }: TableOfCon
 
     // Build hierarchy from editor headings or use mock data
     // In template editor, always use mock data filtered by min/max level
-    const tocData = isTemplateEditor 
+    const tocData = isTemplateEditor
         ? MOCK_TOC_DATA.map(item => filterByLevel(item)).filter((item): item is TOCItem => item !== null)
         : (editorHeadings.length > 0 ? buildHierarchy(editorHeadings) : MOCK_TOC_DATA);
 
@@ -474,6 +476,32 @@ export default function Edit({ attributes, setAttributes, clientId }: TableOfCon
                         help={__('Choose icon style for expand/collapse buttons', 'jankx')}
                         __nextHasNoMarginBottom
                         __next40pxDefaultSize
+                    />
+
+                    {listingType === 'ul' && (
+                        <SelectControl
+                            label={__('Bullet Type', 'jankx')}
+                            value={bulletType}
+                            options={[
+                                { label: __('Disc (•)', 'jankx'), value: 'disc' },
+                                { label: __('Circle (○)', 'jankx'), value: 'circle' },
+                                { label: __('Square (■)', 'jankx'), value: 'square' },
+                                { label: __('Custom Marker (Theme Default)', 'jankx'), value: 'custom' },
+                                { label: __('None', 'jankx'), value: 'none' },
+                            ]}
+                            onChange={(value) => setAttributes({ bulletType: value as any })}
+                            help={__('Choose the bullet style for unordered list items', 'jankx')}
+                            __nextHasNoMarginBottom
+                            __next40pxDefaultSize
+                        />
+                    )}
+
+                    <ToggleControl
+                        label={__('Hierarchical Indentation', 'jankx')}
+                        checked={hierarchicalIndent}
+                        onChange={(value) => setAttributes({ hierarchicalIndent: value })}
+                        help={__('Indent nested items based on their level. Disable to keep all items at the same level but distinguish by font weight.', 'jankx')}
+                        __nextHasNoMarginBottom
                     />
 
                     <ToggleControl

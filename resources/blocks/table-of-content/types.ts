@@ -26,6 +26,8 @@ export interface TableOfContentAttributes {
     headingStyle: HeadingStyle;
     minHeadingLevel: number;
     maxHeadingLevel: number;
+    bulletType: 'disc' | 'circle' | 'square' | 'custom' | 'none';
+    hierarchicalIndent: boolean;
     className: string;
     anchor: string;
 }

@@ -5,17 +5,33 @@
     "title": "Table of Content",
     "category": "jankx",
     "description": "Display interactive table of content for the current post",
-    "keywords": ["toc", "table", "content", "index", "mục lục"],
+    "keywords": [
+        "toc",
+        "table",
+        "content",
+        "index",
+        "mục lục"
+    ],
     "textdomain": "jankx",
     "attributes": {
         "listingType": {
             "type": "string",
-            "enum": ["ul", "ol", "none"],
+            "enum": [
+                "ul",
+                "ol",
+                "none"
+            ],
             "default": "ul"
         },
         "expandIconType": {
             "type": "string",
-            "enum": ["plus-minus", "chevron", "arrow", "caret", "none"],
+            "enum": [
+                "plus-minus",
+                "chevron",
+                "arrow",
+                "caret",
+                "none"
+            ],
             "default": "plus-minus"
         },
         "defaultExpanded": {
@@ -40,7 +56,11 @@
         },
         "headingStyle": {
             "type": "string",
-            "enum": ["underline", "tabbed", "bordered"],
+            "enum": [
+                "underline",
+                "tabbed",
+                "bordered"
+            ],
             "default": "underline"
         },
         "minHeadingLevel": {
@@ -62,28 +82,30 @@
         "anchor": {
             "type": "string",
             "default": ""
-        }
-    },
-    "style": {
-        "spacing": {
-            "padding": {
-                "top": "0",
-                "right": "0",
-                "bottom": "0",
-                "left": "0"
-            },
-            "margin": {
-                "top": "2",
-                "right": "0",
-                "bottom": "2",
-                "left": "0"
-            }
+        },
+        "bulletType": {
+            "type": "string",
+            "enum": [
+                "disc",
+                "circle",
+                "square",
+                "custom",
+                "none"
+            ],
+            "default": "disc"
+        },
+        "hierarchicalIndent": {
+            "type": "boolean",
+            "default": true
         }
     },
     "supports": {
         "html": false,
         "anchor": true,
-        "align": ["wide", "full"],
+        "align": [
+            "wide",
+            "full"
+        ],
         "spacing": {
             "margin": true,
             "padding": true,
@@ -151,4 +173,3 @@
         }
     ]
 }
-

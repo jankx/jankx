@@ -718,7 +718,7 @@ class TableOfContentBlock extends Block
      * @param bool $is_first_item Is this the first item
      * @return string HTML output
      */
-    protected function renderTOCList($items, $listing_type, $expand_icon_type, $default_expanded, $expand_first_item, $depth = 0, $is_first_item = false)
+    protected function renderTOCList($items, $listing_type, $expand_icon_type, $default_expanded, $expand_first_item, $depth = 0, $is_first_item = false, $is_hidden = false)
     {
         if (empty($items)) {
             return '';
@@ -737,7 +737,11 @@ class TableOfContentBlock extends Block
             $list_class .= ' toc-list--none';
         }
 
-        $html = sprintf('<%s class="%s">', $list_tag, esc_attr($list_class));
+        if ($is_hidden) {
+            $html = sprintf('<%s class="%s" style="display:none">', $list_tag, esc_attr($list_class));
+        } else {
+            $html = sprintf('<%s class="%s">', $list_tag, esc_attr($list_class));
+        }
 
         foreach ($items as $index => $item) {
             $has_children = !empty($item['children']);
@@ -782,6 +786,8 @@ class TableOfContentBlock extends Block
 
             // Nested children
             if ($has_children) {
+                $is_child_hidden = ($expand_icon_type !== 'none' && !$is_expanded);
+
                 $child_html = $this->renderTOCList(
                     $item['children'],
                     $listing_type,
@@ -789,13 +795,9 @@ class TableOfContentBlock extends Block
                     $default_expanded,
                     $expand_first_item,
                     $depth + 1,
-                    false
+                    false,
+                    $is_child_hidden
                 );
-
-                // Only hide children if icon type is not 'none' and item is not expanded
-                if ($expand_icon_type !== 'none' && !$is_expanded) {
-                    $child_html = str_replace('<' . $list_tag, '<' . $list_tag . ' style="display:none"', $child_html);
-                }
 
                 $html .= $child_html;
             }
@@ -856,6 +858,8 @@ class TableOfContentBlock extends Block
         $heading_style = $attributes['headingStyle'] ?? 'underline';
         $min_heading_level = $attributes['minHeadingLevel'] ?? 1;
         $max_heading_level = $attributes['maxHeadingLevel'] ?? 6;
+        $bullet_type = $attributes['bulletType'] ?? 'disc';
+        $hierarchical_indent = $attributes['hierarchicalIndent'] ?? true;
         $class_name = $attributes['className'] ?? '';
         $anchor = $attributes['anchor'] ?? '';
 
@@ -902,8 +906,16 @@ class TableOfContentBlock extends Block
         }
 
         // Build outer wrapper attributes (for data attributes only)
+        $wrapper_class = 'jankx-table-of-content heading-style-' . esc_attr($heading_style) . ' has-bullet-' . esc_attr($bullet_type);
+        if (!$hierarchical_indent) {
+            $wrapper_class .= ' is-flat-hierarchy';
+        }
+        if (!empty($class_name)) {
+            $wrapper_class .= ' ' . esc_attr($class_name);
+        }
+
         $outer_attrs = [
-            'class' => 'jankx-table-of-content heading-style-' . esc_attr($heading_style),
+            'class' => $wrapper_class,
             'data-default-expanded' => $default_expanded ? 'true' : 'false',
             'data-expand-first-item' => $expand_first_item ? 'true' : 'false',
             'data-expand-icon-type' => $expand_icon_type,

@@ -74,8 +74,10 @@
   padding: 0;
 }
 .jankx-table-of-content .toc-list:is(ul) {
-  list-style: disc;
   padding-left: 1.5em;
+}
+.jankx-table-of-content .toc-list:is(ul) li::before {
+  display: none !important;
 }
 .jankx-table-of-content .toc-list.toc-list--root:is(ol) {
   counter-reset: toc-ol-counter;
@@ -105,6 +107,38 @@
 }
 .jankx-table-of-content .toc-list--none {
   display: block;
+}
+.jankx-table-of-content.has-bullet-disc .toc-list:is(ul) {
+  list-style-type: disc;
+}
+.jankx-table-of-content.has-bullet-circle .toc-list:is(ul) {
+  list-style-type: circle;
+}
+.jankx-table-of-content.has-bullet-square .toc-list:is(ul) {
+  list-style-type: square;
+}
+.jankx-table-of-content.has-bullet-none .toc-list:is(ul) {
+  list-style-type: none;
+}
+.jankx-table-of-content.has-bullet-custom .toc-list:is(ul) {
+  list-style-type: none;
+}
+.jankx-table-of-content.has-bullet-custom .toc-list:is(ul) li::before {
+  display: inline-block !important;
+}
+.jankx-table-of-content.is-flat-hierarchy .toc-list:not(.toc-list--root) {
+  margin-left: 0;
+  padding-left: 0;
+  border-left: none;
+}
+.jankx-table-of-content.is-flat-hierarchy .toc-item--level-2 .toc-item__link {
+  font-weight: 700;
+}
+.jankx-table-of-content.is-flat-hierarchy .toc-item--level-3 .toc-item__link {
+  font-weight: 600;
+}
+.jankx-table-of-content.is-flat-hierarchy .toc-item--level-4 .toc-item__link {
+  font-weight: 500;
 }
 .jankx-table-of-content .toc-item {
   position: relative;

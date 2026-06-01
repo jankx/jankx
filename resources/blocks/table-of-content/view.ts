@@ -32,11 +32,12 @@ function getExpandIcon(type: string, isExpanded: boolean): string {
  * Initialize Table of Content functionality
  */
 function initTableOfContent(): void {
-    const tocBlocks = document.querySelectorAll<TOCElement>('.jankx-table-of-content');
+    const tocBlocks = document.querySelectorAll<TOCElement>('.jankx-table-of-content:not(.is-initialized)');
 
     tocBlocks.forEach((tocBlock) => {
+        tocBlock.classList.add('is-initialized');
         const expandIconType = tocBlock.dataset.expandIconType || 'plus-minus';
-        
+
         // If icon type is 'none', hide all toggle buttons
         if (expandIconType === 'none') {
             const toggleButtons = tocBlock.querySelectorAll<HTMLButtonElement>('.toc-item__toggle');
@@ -52,11 +53,11 @@ function initTableOfContent(): void {
                     e.stopPropagation();
 
                     const isExpanded = button.getAttribute('aria-expanded') === 'true';
-                    const listItem = button.closest('li');
+                    const listItem = button.closest('.toc-item');
 
                     if (!listItem) return;
 
-                    const nestedList = listItem.querySelector<HTMLElement>(':scope > ul, :scope > ol');
+                    const nestedList = Array.from(listItem.children).find(child => child.classList.contains('toc-list')) as HTMLElement | undefined;
                     const iconSpan = button.querySelector<HTMLElement>('.toc-item__icon');
 
                     if (nestedList) {
@@ -108,7 +109,8 @@ if (document.readyState === 'loading') {
 }
 
 // Re-initialize on block editor updates (for block preview)
-if (window.wp && window.wp.domReady) {
-    window.wp.domReady(initTableOfContent);
+const win = window as any;
+if (typeof win !== 'undefined' && win.wp && typeof win.wp.domReady === 'function') {
+    win.wp.domReady(initTableOfContent);
 }
 
