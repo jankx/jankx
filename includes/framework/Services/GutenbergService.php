@@ -13,6 +13,7 @@ use Jankx\Gutenberg\Blocks\IconPickerBlock;
 use Jankx\Gutenberg\Blocks\CommentCountBlock;
 use Jankx\Gutenberg\Blocks\SearchResultsCountBlock;
 use Jankx\Gutenberg\Blocks\PostTypeBadgeBlock;
+use Jankx\Gutenberg\Blocks\PostTermsBlock;
 use Jankx\Gutenberg\Blocks\DynamicDataLayoutBlock;
 use Jankx\Gutenberg\Blocks\DynamicDataTemplateBlock;
 use Jankx\Gutenberg\Blocks\ModalBlock;
@@ -183,6 +184,7 @@ class GutenbergService
         $this->repository->registerBlock(WrapperBlock::class);
         $this->repository->registerBlock(TypographyBlock::class);
         $this->repository->registerBlock(HumanReadablePostDateBlock::class);
+        $this->repository->registerBlock(PostTermsBlock::class);
         $this->repository->registerBlock(UserMenuBlock::class);
         $this->repository->registerBlock(WordPressBlock::class);
     }

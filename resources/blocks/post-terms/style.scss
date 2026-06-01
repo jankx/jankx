@@ -1,0 +1,40 @@
+.wp-block-jankx-post-terms {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--wp--style--block-gap);
+
+    &.layout-newline {
+        flex-direction: column;
+        gap: var(--wp--style--block-gap, 4px);
+    }
+
+    .jankx-post-term {
+        display: inline-block;
+        white-space: nowrap;
+    }
+
+    &.display-style-hashtag {
+        .jankx-post-term {
+            margin-right: 8px;
+            color: var(--wp--preset--color--vivid-cyan-blue, #0693e3);
+            font-weight: 500;
+
+            // Hashtag is handled in edit.tsx and PHP
+        }
+
+        &.layout-inline {
+            .jankx-post-term-separator {
+                display: none;
+            }
+        }
+    }
+
+    a {
+        text-decoration: none;
+        color: inherit;
+
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+}
