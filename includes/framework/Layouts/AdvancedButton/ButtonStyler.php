@@ -27,13 +27,19 @@ class ButtonStyler
         return in_array('is-style-outline', $classes);
     }
 
+    public static function isTextLinkMode(array $classes): bool
+    {
+        return in_array('is-style-text-link', $classes);
+    }
+
     public static function applyDefaultColors(
         string $content,
         array $attributes,
         bool $isOutlineMode,
-        bool $hasBackgroundColor
+        bool $hasBackgroundColor,
+        bool $isTextLinkMode = false
     ): string {
-        if ($hasBackgroundColor) {
+        if ($hasBackgroundColor || $isTextLinkMode) {
             return $content;
         }
 
@@ -139,6 +145,14 @@ class ButtonStyler
             $classes[] = "icon-position-{$iconPosition}";
         }
 
+        if (!empty($attributes['hoverAnimation']) && $attributes['hoverAnimation'] !== 'none') {
+            $classes[] = "hover-ani-{$attributes['hoverAnimation']}";
+        }
+
+        if (!empty($attributes['unhoverAnimation']) && $attributes['unhoverAnimation'] !== 'none') {
+            $classes[] = "unhover-ani-{$attributes['unhoverAnimation']}";
+        }
+
         $hasNoColorSettings = !$backgroundColor &&
             !$textColor &&
             !$gradient &&
@@ -161,7 +175,7 @@ class ButtonStyler
         return implode(' ', $classes);
     }
 
-    public static function buildButtonStyles(array $attributes): array
+    public static function buildButtonStyles(array $attributes, array $classes = []): array
     {
         $styles = [];
 
@@ -180,6 +194,15 @@ class ButtonStyler
         if (!empty($attributes['style']['color']['gradient'])) {
             $styles['background'] = $attributes['style']['color']['gradient'];
             unset($styles['background-color']);
+        }
+
+        // For text link style, force these styles in PHP renderer
+        $isTextLink = (isset($attributes['className']) && strpos($attributes['className'], 'is-style-text-link') !== false) || in_array('is-style-text-link', $classes);
+        if ($isTextLink) {
+            $styles['background-color'] = 'transparent !important';
+            $styles['background'] = 'transparent !important';
+            $styles['border'] = 'none !important';
+            $styles['padding'] = '0 !important';
         }
 
         return $styles;

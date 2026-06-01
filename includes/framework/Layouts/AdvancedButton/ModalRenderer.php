@@ -18,12 +18,14 @@ class ModalRenderer extends AbstractButtonRenderer
         if (!empty($modalId)) {
             $classes .= ' jankx-button-modal-trigger';
         }
-        
+
         $htmlAttributes = [
             'type' => 'button',
             'class' => $classes,
             'data-trigger-type' => 'modal',
         ];
+
+        $htmlAttributes = array_merge($htmlAttributes, $this->getAnimationAttributes($attributes));
         
         // Only add modal attributes if modalId exists
         if (!empty($modalId)) {

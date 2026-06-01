@@ -61,7 +61,34 @@ declare global {
                     }
                 }
             }
+
+            // Animation support
+            const hoverAni = link.getAttribute('data-hover-ani');
+            const unhoverAni = link.getAttribute('data-unhover-ani');
+
+            if (hoverAni || unhoverAni) {
+                link.addEventListener('mouseenter', () => {
+                    if (hoverAni) {
+                        link.classList.remove(`is-animating`, `ani-${hoverAni}`, `ani-${unhoverAni}`);
+                        void link.offsetWidth; // Force reflow
+                        link.classList.add('is-animating', `ani-${hoverAni}`);
+                    }
+                });
+
+                link.addEventListener('mouseleave', () => {
+                    link.classList.remove(`is-animating`, `ani-${hoverAni}`, `ani-${unhoverAni}`);
+                    if (unhoverAni) {
+                        void link.offsetWidth; // Force reflow
+                        link.classList.add('is-animating', `ani-${unhoverAni}`);
+                    }
+                });
+
+                link.addEventListener('animationend', () => {
+                    link.classList.remove('is-animating', `ani-${hoverAni}`, `ani-${unhoverAni}`);
+                });
+            }
         });
+
         const buttons = document.querySelectorAll('.jankx-button-modal-trigger');
         buttons.forEach(button => {
             // Check if event listener is already attached (to avoid duplicates if called multiple times)
@@ -99,7 +126,7 @@ declare global {
                     if (formData.mappings !== undefined && formData.mappings.length > 0) {
                         const mappings = JSON.parse(formData.mappings || '[]');
                         if (Array.isArray(mappings) && mappings.length > 0) {
-                            mappings.forEach(function (item, index) {
+                            mappings.forEach(function (item) {
                                 const val = resolveValue(item.source, trigger);
                                 const elms = document.querySelectorAll(item.selector);
                                 if (elms) {
@@ -141,8 +168,6 @@ declare global {
                 if (!modalId || modalId.trim() === '') {
                     return;
                 }
-
-
 
                 // Try JankxModal first (wrapper around MicroModal with extras)
                 if (window.JankxModal) {

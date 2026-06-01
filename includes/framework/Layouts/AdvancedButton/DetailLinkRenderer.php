@@ -13,6 +13,8 @@ class DetailLinkRenderer extends AbstractButtonRenderer
             'class' => $classes,
             'data-trigger-type' => 'detail-link',
         ];
+
+        $htmlAttributes = array_merge($htmlAttributes, $this->getAnimationAttributes($attributes));
         if ($title) {
             $htmlAttributes['title'] = esc_attr($title);
         }

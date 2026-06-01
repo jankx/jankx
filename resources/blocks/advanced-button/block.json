@@ -170,6 +170,18 @@
         "showLabel": {
             "type": "boolean",
             "default": true
+        },
+        "hoverAnimation": {
+            "type": "string",
+            "default": "none"
+        },
+        "unhoverAnimation": {
+            "type": "string",
+            "default": "none"
+        },
+        "renderIconOutside": {
+            "type": "boolean",
+            "default": false
         }
     },
     "supports": {
@@ -245,6 +257,10 @@
         {
             "name": "outline",
             "label": "Outline"
+        },
+        {
+            "name": "text-link",
+            "label": "Text Link"
         }
     ],
     "editorScript": "file:./build/index.js",

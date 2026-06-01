@@ -61,8 +61,11 @@ interface EditProps {
 		useIconBlocks: boolean;
 		iconPosition: string;
 		showLabel: boolean;
-		conditionType?: string;
 		showForPostType?: string;
+		hoverAnimation: string;
+		unhoverAnimation: string;
+		className?: string;
+		renderIconOutside: boolean;
 	};
 	setAttributes: (attrs: Partial<EditProps['attributes']>) => void;
 	backgroundColor: any;
@@ -114,7 +117,10 @@ export function Edit(props: EditProps) {
 		showLabel = true,
 		conditionType = 'always',
 		showForPostType = '',
+		hoverAnimation = 'none',
+		unhoverAnimation = 'none',
 	} = attributes;
+	const { renderIconOutside } = attributes;
 
 	const shareEnabled =
 		(modalShareObjectId || modalSharePostTitle || modalShareCurrentUrl || modalShareFeaturedImageId || modalShareFeaturedImageUrl);
@@ -303,6 +309,8 @@ export function Edit(props: EditProps) {
 		'has-text-color': textColor?.color,
 		[`icon-position-${iconPosition}`]: hasInnerBlocks && iconPosition,
 		'is-default-colors': hasNoColorSettings,
+		[`hover-ani-${hoverAnimation}`]: hoverAnimation !== 'none',
+		[`unhover-ani-${unhoverAnimation}`]: unhoverAnimation !== 'none',
 	});
 
 	// Build button styles - gradient takes priority over background color
@@ -334,20 +342,31 @@ export function Edit(props: EditProps) {
 		buttonStyles.backgroundColor = attributes.style.color.background;
 	}
 
+	// For Text Link style, we want to force transparency and remove padding in the editor preview
+	const isTextLink = attributes.className?.includes('is-style-text-link');
+	if (isTextLink) {
+		delete buttonStyles.backgroundColor;
+		delete buttonStyles.background;
+		buttonStyles.border = 'none';
+		buttonStyles.padding = '0';
+	}
+
 	// Render button content - Always render InnerBlocks at the same position
 	// Use CSS flex-order to control visual position
-	const renderButtonContent = () => (
+	const renderButtonInnerContent = () => (
 		<>
-			<span className="button-icon-wrapper">
-				<InnerBlocks
-					allowedBlocks={ALLOWED_BLOCKS}
-					template={ICON_TEMPLATE}
-					templateLock={false}
-					renderAppender={hasInnerBlocks ? false : InnerBlocks.ButtonBlockAppender}
-					orientation="horizontal"
-					__experimentalCaptureToolbars={false}
-				/>
-			</span>
+			{!renderIconOutside && (
+				<span className="button-icon-wrapper">
+					<InnerBlocks
+						allowedBlocks={ALLOWED_BLOCKS}
+						template={ICON_TEMPLATE}
+						templateLock={false}
+						renderAppender={hasInnerBlocks ? false : InnerBlocks.ButtonBlockAppender}
+						orientation="horizontal"
+						__experimentalCaptureToolbars={false}
+					/>
+				</span>
+			)}
 			{showLabel && (
 				<RichText
 					tagName="span"
@@ -361,6 +380,34 @@ export function Edit(props: EditProps) {
 		</>
 	);
 
+	const renderIconMarkup = () => (
+		renderIconOutside ? (
+			<span className="button-icon-wrapper">
+				<InnerBlocks
+					allowedBlocks={ALLOWED_BLOCKS}
+					template={ICON_TEMPLATE}
+					templateLock={false}
+					renderAppender={hasInnerBlocks ? false : InnerBlocks.ButtonBlockAppender}
+					orientation="horizontal"
+					__experimentalCaptureToolbars={false}
+				/>
+			</span>
+		) : null
+	);
+
+	const renderButton = (content: React.ReactNode) => {
+		const iconMarkup = renderIconMarkup();
+		if (!renderIconOutside) return <div {...blockProps}>{content}</div>;
+
+		return (
+			<div {...blockProps}>
+				{iconPosition === 'left' || iconPosition === 'top' ? iconMarkup : null}
+				{content}
+				{iconPosition === 'right' || iconPosition === 'bottom' ? iconMarkup : null}
+			</div>
+		);
+	};
+
 	// Render button element based on trigger type
 	let buttonElement = null;
 
@@ -373,6 +420,8 @@ export function Edit(props: EditProps) {
 					rel={rel}
 					style={buttonStyles}
 					title={title}
+					data-hover-ani={hoverAnimation !== 'none' ? hoverAnimation : undefined}
+					data-unhover-ani={unhoverAnimation !== 'none' ? unhoverAnimation : undefined}
 					onClick={(e: React.MouseEvent) => {
 						// In editor, prevent default navigation completely
 						e.preventDefault();
@@ -392,7 +441,7 @@ export function Edit(props: EditProps) {
 						}
 					}}
 				>
-					{renderButtonContent()}
+					{renderButtonInnerContent()}
 				</a>
 			);
 			break;
@@ -404,8 +453,10 @@ export function Edit(props: EditProps) {
 					type={buttonType as any}
 					style={buttonStyles}
 					title={title}
+					data-hover-ani={hoverAnimation !== 'none' ? hoverAnimation : undefined}
+					data-unhover-ani={unhoverAnimation !== 'none' ? unhoverAnimation : undefined}
 				>
-					{renderButtonContent()}
+					{renderButtonInnerContent()}
 				</button>
 			);
 			break;
@@ -417,6 +468,8 @@ export function Edit(props: EditProps) {
 					href="javascript:void(0)"
 					style={buttonStyles}
 					title={title}
+					data-hover-ani={hoverAnimation !== 'none' ? hoverAnimation : undefined}
+					data-unhover-ani={unhoverAnimation !== 'none' ? unhoverAnimation : undefined}
 					onClick={(e: React.MouseEvent) => {
 						// Prevent navigation in editor
 						e.preventDefault();
@@ -429,7 +482,7 @@ export function Edit(props: EditProps) {
 						}
 					}}
 				>
-					{renderButtonContent()}
+					{renderButtonInnerContent()}
 				</a>
 			);
 			break;
@@ -442,8 +495,10 @@ export function Edit(props: EditProps) {
 					data-modal-id={modalId}
 					style={buttonStyles}
 					title={title}
+					data-hover-ani={hoverAnimation !== 'none' ? hoverAnimation : undefined}
+					data-unhover-ani={unhoverAnimation !== 'none' ? unhoverAnimation : undefined}
 				>
-					{renderButtonContent()}
+					{renderButtonInnerContent()}
 				</button>
 			);
 			break;
@@ -454,8 +509,10 @@ export function Edit(props: EditProps) {
 					className={buttonClasses}
 					style={buttonStyles}
 					title={title}
+					data-hover-ani={hoverAnimation !== 'none' ? hoverAnimation : undefined}
+					data-unhover-ani={unhoverAnimation !== 'none' ? unhoverAnimation : undefined}
 				>
-					{renderButtonContent()}
+					{renderButtonInnerContent()}
 				</button>
 			);
 	}
@@ -992,8 +1049,8 @@ export function Edit(props: EditProps) {
 						<ToolsPanelItem
 							label={__('Icon Position', 'jankx')}
 							isShownByDefault
-							hasValue={() => iconPosition !== 'left'}
-							onDeselect={() => setAttributes({ iconPosition: 'left' })}
+							hasValue={() => iconPosition !== 'left' || renderIconOutside}
+							onDeselect={() => setAttributes({ iconPosition: 'left', renderIconOutside: false })}
 						>
 							<SelectControl
 								label={__('Icon Position', 'jankx')}
@@ -1007,8 +1064,78 @@ export function Edit(props: EditProps) {
 								onChange={(value) => setAttributes({ iconPosition: value })}
 								help={__('Choose where to display the icon relative to text', 'jankx')}
 							/>
+							<ToggleControl
+								label={__('Render Icon Outside Link', 'jankx')}
+								checked={renderIconOutside}
+								onChange={(value) => setAttributes({ renderIconOutside: value })}
+								help={__('Place the icon outside the <a> or <button> tag', 'jankx')}
+								__nextHasNoMarginBottom
+							/>
 						</ToolsPanelItem>
 					)}
+				</ToolsPanel>
+
+				<ToolsPanel
+					label={__('Animation Settings', 'jankx')}
+					resetAll={() => {
+						setAttributes({
+							hoverAnimation: 'none',
+							unhoverAnimation: 'none',
+						});
+					}}
+				>
+					<ToolsPanelItem
+						label={__('Hover Animation', 'jankx')}
+						isShownByDefault
+						hasValue={() => hoverAnimation !== 'none'}
+						onDeselect={() => setAttributes({ hoverAnimation: 'none' })}
+					>
+						<SelectControl
+							label={__('Hover Animation', 'jankx')}
+							value={hoverAnimation}
+							options={[
+								{ label: __('None', 'jankx'), value: 'none' },
+								{ label: __('Bounce', 'jankx'), value: 'bounce' },
+								{ label: __('Flash', 'jankx'), value: 'flash' },
+								{ label: __('Pulse', 'jankx'), value: 'pulse' },
+								{ label: __('Rubber Band', 'jankx'), value: 'rubberBand' },
+								{ label: __('Shake', 'jankx'), value: 'shakeX' },
+								{ label: __('Swing', 'jankx'), value: 'swing' },
+								{ label: __('Tada', 'jankx'), value: 'tada' },
+								{ label: __('Wobble', 'jankx'), value: 'wobble' },
+								{ label: __('Jello', 'jankx'), value: 'jello' },
+								{ label: __('Heart Beat', 'jankx'), value: 'heartBeat' },
+							]}
+							onChange={(value) => setAttributes({ hoverAnimation: value })}
+							help={__('Animation effect when hovering over the button', 'jankx')}
+						/>
+					</ToolsPanelItem>
+					<ToolsPanelItem
+						label={__('Unhover Animation', 'jankx')}
+						isShownByDefault
+						hasValue={() => unhoverAnimation !== 'none'}
+						onDeselect={() => setAttributes({ unhoverAnimation: 'none' })}
+					>
+						<SelectControl
+							label={__('Unhover Animation', 'jankx')}
+							value={unhoverAnimation}
+							options={[
+								{ label: __('None', 'jankx'), value: 'none' },
+								{ label: __('Bounce', 'jankx'), value: 'bounce' },
+								{ label: __('Flash', 'jankx'), value: 'flash' },
+								{ label: __('Pulse', 'jankx'), value: 'pulse' },
+								{ label: __('Rubber Band', 'jankx'), value: 'rubberBand' },
+								{ label: __('Shake', 'jankx'), value: 'shakeX' },
+								{ label: __('Swing', 'jankx'), value: 'swing' },
+								{ label: __('Tada', 'jankx'), value: 'tada' },
+								{ label: __('Wobble', 'jankx'), value: 'wobble' },
+								{ label: __('Jello', 'jankx'), value: 'jello' },
+								{ label: __('Heart Beat', 'jankx'), value: 'heartBeat' },
+							]}
+							onChange={(value) => setAttributes({ unhoverAnimation: value })}
+							help={__('Animation effect when mouse leaves the button', 'jankx')}
+						/>
+					</ToolsPanelItem>
 				</ToolsPanel>
 			</InspectorControls>
 
@@ -1036,9 +1163,7 @@ export function Edit(props: EditProps) {
 				/>
 			</InspectorControls>
 
-			<div {...blockProps}>
-				{buttonElement}
-			</div>
+			{renderButton(buttonElement)}
 		</>
 	);
 }

@@ -1,6 +1,10 @@
 /*!**************************************************************************************************************************************************************************************************!*\
   !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!./blocks/advanced-button/style.scss ***!
   \**************************************************************************************************************************************************************************************************/
+@import url(https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css);
+/*!******************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!./blocks/advanced-button/style.scss (1) ***!
+  \******************************************************************************************************************************************************************************************************/
 /**
  * Advanced Button Block Styles
  *
@@ -19,7 +23,7 @@
   border-style: solid;
   border-color: transparent;
 }
-.wp-block-jankx-advanced-button:not(.is-style-outline) .jankx-advanced-button__link.is-default-colors {
+.wp-block-jankx-advanced-button:not(.is-style-outline):not(.is-style-text-link) .jankx-advanced-button__link.is-default-colors {
   background-color: var(--wp--preset--color--primary, #503AA8) !important;
   color: var(--wp--preset--color--base, #fff) !important;
 }
@@ -37,6 +41,57 @@
   background-color: var(--wp--preset--color--primary, #503AA8) !important;
   color: var(--wp--preset--color--base, #fff) !important;
   border-color: transparent !important;
+}
+.wp-block-jankx-advanced-button.is-style-text-link .jankx-advanced-button__link {
+  background-color: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  width: auto !important;
+  display: inline-flex !important;
+}
+.wp-block-jankx-advanced-button.is-style-text-link .jankx-advanced-button__link.is-default-colors {
+  color: var(--wp--preset--color--primary, #503AA8) !important;
+}
+.wp-block-jankx-advanced-button.is-style-text-link .jankx-advanced-button__link:hover {
+  text-decoration: underline !important;
+}
+.wp-block-jankx-advanced-button .jankx-advanced-button__link.is-animating {
+  animation-duration: 1s;
+  animation-fill-mode: both;
+}
+.wp-block-jankx-advanced-button .jankx-advanced-button__link[class*=hover-ani-]:hover {
+  animation-duration: 1s;
+  animation-fill-mode: both;
+}
+.wp-block-jankx-advanced-button .jankx-advanced-button__link.hover-ani-bounce:hover, .wp-block-jankx-advanced-button .jankx-advanced-button__link.ani-bounce {
+  animation-name: bounce;
+}
+.wp-block-jankx-advanced-button .jankx-advanced-button__link.hover-ani-flash:hover, .wp-block-jankx-advanced-button .jankx-advanced-button__link.ani-flash {
+  animation-name: flash;
+}
+.wp-block-jankx-advanced-button .jankx-advanced-button__link.hover-ani-pulse:hover, .wp-block-jankx-advanced-button .jankx-advanced-button__link.ani-pulse {
+  animation-name: pulse;
+}
+.wp-block-jankx-advanced-button .jankx-advanced-button__link.hover-ani-rubberBand:hover, .wp-block-jankx-advanced-button .jankx-advanced-button__link.ani-rubberBand {
+  animation-name: rubberBand;
+}
+.wp-block-jankx-advanced-button .jankx-advanced-button__link.hover-ani-shakeX:hover, .wp-block-jankx-advanced-button .jankx-advanced-button__link.ani-shakeX {
+  animation-name: shakeX;
+}
+.wp-block-jankx-advanced-button .jankx-advanced-button__link.hover-ani-swing:hover, .wp-block-jankx-advanced-button .jankx-advanced-button__link.ani-swing {
+  animation-name: swing;
+}
+.wp-block-jankx-advanced-button .jankx-advanced-button__link.hover-ani-tada:hover, .wp-block-jankx-advanced-button .jankx-advanced-button__link.ani-tada {
+  animation-name: tada;
+}
+.wp-block-jankx-advanced-button .jankx-advanced-button__link.hover-ani-wobble:hover, .wp-block-jankx-advanced-button .jankx-advanced-button__link.ani-wobble {
+  animation-name: wobble;
+}
+.wp-block-jankx-advanced-button .jankx-advanced-button__link.hover-ani-jello:hover, .wp-block-jankx-advanced-button .jankx-advanced-button__link.ani-jello {
+  animation-name: jello;
+}
+.wp-block-jankx-advanced-button .jankx-advanced-button__link.hover-ani-heartBeat:hover, .wp-block-jankx-advanced-button .jankx-advanced-button__link.ani-heartBeat {
+  animation-name: heartBeat;
 }
 .wp-block-jankx-advanced-button.has-text-align-left .jankx-advanced-button__link {
   justify-content: flex-start;

@@ -32,5 +32,17 @@ abstract class AbstractButtonRenderer implements ButtonRendererInterface
         }
         return !empty($attrParts) ? ' ' . implode(' ', $attrParts) : '';
     }
+
+    protected function getAnimationAttributes(array $attributes): array
+    {
+        $aniAttrs = [];
+        if (!empty($attributes['hoverAnimation']) && $attributes['hoverAnimation'] !== 'none') {
+            $aniAttrs['data-hover-ani'] = $attributes['hoverAnimation'];
+        }
+        if (!empty($attributes['unhoverAnimation']) && $attributes['unhoverAnimation'] !== 'none') {
+            $aniAttrs['data-unhover-ani'] = $attributes['unhoverAnimation'];
+        }
+        return $aniAttrs;
+    }
 }
 

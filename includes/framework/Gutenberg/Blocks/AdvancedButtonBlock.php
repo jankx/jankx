@@ -94,6 +94,27 @@ class AdvancedButtonBlock extends Block
         }
 
         // Render wrapper
+        $renderIconOutside = !empty($attributes['renderIconOutside']);
+        $iconPosition = $attributes['iconPosition'] ?? 'left';
+
+        if ($renderIconOutside && !empty($renderedButton)) {
+            // Extract icon wrapper from inside the button and place it outside
+            $iconMarkup = '';
+            if (preg_match('/(<span[^>]*class="[^"]*button-icon-wrapper[^"]*"[^>]*>.*?<\/span>)/s', $renderedButton, $iconMatch)) {
+                $iconMarkup = $iconMatch[1];
+                // Remove the icon wrapper from inside the button
+                $renderedButton = str_replace($iconMarkup, '', $renderedButton);
+            }
+
+            if (!empty($iconMarkup)) {
+                if ($iconPosition === 'left' || $iconPosition === 'top') {
+                    $renderedButton = $iconMarkup . $renderedButton;
+                } else {
+                    $renderedButton = $renderedButton . $iconMarkup;
+                }
+            }
+        }
+
         return WrapperRenderer::render($renderedButton, $attributes, $existingClasses);
     }
 
@@ -128,7 +149,7 @@ class AdvancedButtonBlock extends Block
 
         // Build button classes and styles
         $buttonClasses = ButtonStyler::buildButtonClasses($attributes);
-        $buttonStyles = ButtonStyler::buildButtonStyles($attributes);
+        $buttonStyles = ButtonStyler::buildButtonStyles($attributes, []); // No existing classes if from scratch
 
         // Render using appropriate renderer
         $renderer = ButtonRendererFactory::create($triggerType);
@@ -168,7 +189,7 @@ class AdvancedButtonBlock extends Block
                 
                 // Parse styles
                 $styles = $this->parseStylesString($existingStylesString);
-                $attributeStyles = ButtonStyler::buildButtonStyles($attributes);
+                $attributeStyles = ButtonStyler::buildButtonStyles($attributes, explode(' ', $classes));
                 $styles = array_merge($styles, $attributeStyles);
                 
                 return $renderer->render($attributes, $innerContent, $classes, $styles);
@@ -187,7 +208,7 @@ class AdvancedButtonBlock extends Block
                 
                 // Parse styles
                 $styles = $this->parseStylesString($existingStylesString);
-                $attributeStyles = ButtonStyler::buildButtonStyles($attributes);
+                $attributeStyles = ButtonStyler::buildButtonStyles($attributes, explode(' ', $classes));
                 $styles = array_merge($styles, $attributeStyles);
                 
                 return $renderer->render($attributes, $innerContent, $classes, $styles);
@@ -264,13 +285,15 @@ class AdvancedButtonBlock extends Block
         // Check background color and outline mode
         $hasBackgroundColor = ButtonStyler::hasBackgroundColor($attributes, $content);
         $isOutlineMode = ButtonStyler::isOutlineMode($existingClasses);
+        $isTextLinkMode = ButtonStyler::isTextLinkMode($existingClasses);
 
         // Apply default colors if needed
         $content = ButtonStyler::applyDefaultColors(
             $content,
             $attributes,
             $isOutlineMode,
-            $hasBackgroundColor
+            $hasBackgroundColor,
+            $isTextLinkMode
         );
 
         // Apply border radius

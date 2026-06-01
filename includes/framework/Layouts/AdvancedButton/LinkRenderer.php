@@ -15,6 +15,8 @@ class LinkRenderer extends AbstractButtonRenderer
             'class' => $classes,
             'data-trigger-type' => 'link',
         ];
+
+        $htmlAttributes = array_merge($htmlAttributes, $this->getAnimationAttributes($attributes));
         if ($linkTarget) {
             $htmlAttributes['target'] = $linkTarget;
         }

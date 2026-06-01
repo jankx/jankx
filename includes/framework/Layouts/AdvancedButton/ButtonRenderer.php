@@ -13,6 +13,8 @@ class ButtonRenderer extends AbstractButtonRenderer
             'class' => $classes,
             'data-trigger-type' => 'button',
         ];
+
+        $htmlAttributes = array_merge($htmlAttributes, $this->getAnimationAttributes($attributes));
         if ($title) {
             $htmlAttributes['title'] = esc_attr($title);
         }

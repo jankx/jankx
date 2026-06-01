@@ -10,7 +10,6 @@ import {
 	useBlockProps,
 	RichText,
 	InnerBlocks,
-	__experimentalGetBorderClassesAndStyles as getBorderClassesAndStyles,
 } from '@wordpress/block-editor';
 
 interface SaveProps {
@@ -40,6 +39,10 @@ interface SaveProps {
 		showLabel: boolean;
 		conditionType?: string;
 		showForPostType?: string;
+		hoverAnimation: string;
+		unhoverAnimation: string;
+		className?: string;
+		renderIconOutside: boolean;
 	};
 }
 
@@ -66,11 +69,13 @@ export default function Save(props: SaveProps) {
 		backgroundColor,
 		textColor,
 		gradient,
-		useIconBlocks = false,
 		iconPosition = 'left',
 		showLabel = true,
 		conditionType = 'always',
 		showForPostType = '',
+		hoverAnimation = 'none',
+		unhoverAnimation = 'none',
+		renderIconOutside = false,
 	} = props.attributes;
 
 	// Always render the button - InnerBlocks.Content will handle inner blocks if they exist
@@ -82,8 +87,20 @@ export default function Save(props: SaveProps) {
 
 	const blockProps = useBlockProps.save();
 
-	// Get border props (includes border radius)
-	const borderProps = getBorderClassesAndStyles(props.attributes);
+	// Get border props (border radius) from attributes.style.border
+	const borderRadius = props.attributes.style?.border?.radius;
+	const borderStyle: Record<string, any> = {};
+	if (borderRadius) {
+		if (typeof borderRadius === 'object') {
+			// Individual corner radii
+			const { topLeft, topRight, bottomRight, bottomLeft } = borderRadius as any;
+			borderStyle.borderRadius = `${topLeft || '0'} ${topRight || '0'} ${bottomRight || '0'} ${bottomLeft || '0'}`;
+		} else {
+			borderStyle.borderRadius = borderRadius;
+		}
+	}
+	const borderProps = { className: '', style: borderStyle };
+
 
 	// Check if button has no color settings
 	const hasNoColorSettings = !backgroundColor &&
@@ -99,6 +116,8 @@ export default function Save(props: SaveProps) {
 		[`has-${gradient}-gradient-background`]: gradient,
 		[`icon-position-${iconPosition}`]: iconPosition,
 		'is-default-colors': hasNoColorSettings,
+		[`hover-ani-${hoverAnimation}`]: hoverAnimation !== 'none',
+		[`unhover-ani-${unhoverAnimation}`]: unhoverAnimation !== 'none',
 		// Add classes for custom colors (WordPress may add these automatically)
 		'has-background': props.attributes.style?.color?.background || props.attributes.style?.color?.gradient,
 		'has-text-color': props.attributes.style?.color?.text,
@@ -130,6 +149,15 @@ export default function Save(props: SaveProps) {
 		delete buttonStyles.backgroundColor;
 	}
 
+	// For Text Link style, force transparency and remove padding
+	const isTextLink = props.attributes.className?.includes('is-style-text-link');
+	if (isTextLink) {
+		delete buttonStyles.backgroundColor;
+		delete buttonStyles.background;
+		buttonStyles.border = 'none';
+		buttonStyles.padding = '0';
+	}
+
 	// Sanitize text content to remove any nested anchor tags
 	// This prevents invalid HTML like <a><a>text</a></a>
 	const sanitizeText = (html: string): string => {
@@ -143,9 +171,11 @@ export default function Save(props: SaveProps) {
 	// Always render in same order - use CSS to control visual position
 	const textMarkup = (
 		<>
-			<span className="button-icon-wrapper">
-				<InnerBlocks.Content />
-			</span>
+			{!renderIconOutside && (
+				<span className="button-icon-wrapper">
+					<InnerBlocks.Content />
+				</span>
+			)}
 			{showLabel && (
 				<RichText.Content
 					tagName="span"
@@ -155,6 +185,13 @@ export default function Save(props: SaveProps) {
 			)}
 		</>
 	);
+
+	const iconMarkup = renderIconOutside ? (
+		<span className="button-icon-wrapper">
+			<InnerBlocks.Content />
+		</span>
+	) : null;
+
 
 	// Render button element based on trigger type
 	let buttonElement = null;
@@ -172,6 +209,8 @@ export default function Save(props: SaveProps) {
 					data-condition-type={conditionType}
 					data-show-for-post-type={showForPostType || undefined}
 					data-trigger-type="link"
+					data-hover-ani={hoverAnimation !== 'none' ? hoverAnimation : undefined}
+					data-unhover-ani={unhoverAnimation !== 'none' ? unhoverAnimation : undefined}
 				>
 					{textMarkup}
 				</a>
@@ -188,6 +227,8 @@ export default function Save(props: SaveProps) {
 					data-condition-type={conditionType}
 					data-show-for-post-type={showForPostType || undefined}
 					data-trigger-type="button"
+					data-hover-ani={hoverAnimation !== 'none' ? hoverAnimation : undefined}
+					data-unhover-ani={unhoverAnimation !== 'none' ? unhoverAnimation : undefined}
 				>
 					{textMarkup}
 				</button>
@@ -205,6 +246,8 @@ export default function Save(props: SaveProps) {
 					data-show-for-post-type={showForPostType || undefined}
 					style={buttonStyles}
 					title={title}
+					data-hover-ani={hoverAnimation !== 'none' ? hoverAnimation : undefined}
+					data-unhover-ani={unhoverAnimation !== 'none' ? unhoverAnimation : undefined}
 				>
 					{textMarkup}
 				</a>
@@ -271,6 +314,8 @@ export default function Save(props: SaveProps) {
 					{...modalDataAttrs}
 					style={buttonStyles}
 					title={title}
+					data-hover-ani={hoverAnimation !== 'none' ? hoverAnimation : undefined}
+					data-unhover-ani={unhoverAnimation !== 'none' ? unhoverAnimation : undefined}
 				>
 					{textMarkup}
 				</button>
@@ -285,6 +330,8 @@ export default function Save(props: SaveProps) {
 					style={buttonStyles}
 					title={title}
 					data-trigger-type="link"
+					data-hover-ani={hoverAnimation !== 'none' ? hoverAnimation : undefined}
+					data-unhover-ani={unhoverAnimation !== 'none' ? unhoverAnimation : undefined}
 				>
 					{textMarkup}
 				</a>
@@ -293,7 +340,9 @@ export default function Save(props: SaveProps) {
 
 	return (
 		<div {...blockProps}>
+			{renderIconOutside && (iconPosition === 'left' || iconPosition === 'top') && iconMarkup}
 			{buttonElement}
+			{renderIconOutside && (iconPosition === 'right' || iconPosition === 'bottom') && iconMarkup}
 		</div>
 	);
 }

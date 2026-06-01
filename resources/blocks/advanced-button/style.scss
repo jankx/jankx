@@ -4,6 +4,9 @@
  * Styles for icon positioning using flex order
  */
 
+// Import Animate.css for animations
+@import url('https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css');
+
 // Block wrapper
 .wp-block-jankx-advanced-button {
 	// Box sizing để width fixed bao gồm padding và border
@@ -27,8 +30,8 @@
 		border-color: transparent;
 	}
 
-	// Default behavior for FILL mode (Not Outline)
-	&:not(.is-style-outline) {
+	// Default behavior for FILL mode (Not Outline and Not Text Link)
+	&:not(.is-style-outline):not(.is-style-text-link) {
 		.jankx-advanced-button__link {
 
 			// Fallback colors if none set
@@ -59,6 +62,93 @@
 			background-color: var(--wp--preset--color--primary, #503AA8) !important;
 			color: var(--wp--preset--color--base, #fff) !important;
 			border-color: transparent !important;
+		}
+	}
+
+	// Text Link style variant
+	&.is-style-text-link {
+		.jankx-advanced-button__link {
+			background-color: transparent !important;
+			border: none !important;
+			padding: 0 !important;
+			width: auto !important;
+			display: inline-flex !important;
+
+			// Fallback text color if none set
+			&.is-default-colors {
+				color: var(--wp--preset--color--primary, #503AA8) !important;
+			}
+
+			// Add underline on hover for text link
+			&:hover {
+				text-decoration: underline !important;
+			}
+		}
+	}
+
+
+	// Animation logic
+	.jankx-advanced-button__link {
+		&.is-animating {
+			animation-duration: 1s;
+			animation-fill-mode: both;
+		}
+
+		// CSS-only hover fallback for the editor/basic use
+		&[class*="hover-ani-"]:hover {
+			animation-duration: 1s;
+			animation-fill-mode: both;
+		}
+
+		// List of animations (shared by CSS-only hover and JS-triggered)
+		&.hover-ani-bounce:hover,
+		&.ani-bounce {
+			animation-name: bounce;
+		}
+
+		&.hover-ani-flash:hover,
+		&.ani-flash {
+			animation-name: flash;
+		}
+
+		&.hover-ani-pulse:hover,
+		&.ani-pulse {
+			animation-name: pulse;
+		}
+
+		&.hover-ani-rubberBand:hover,
+		&.ani-rubberBand {
+			animation-name: rubberBand;
+		}
+
+		&.hover-ani-shakeX:hover,
+		&.ani-shakeX {
+			animation-name: shakeX;
+		}
+
+		&.hover-ani-swing:hover,
+		&.ani-swing {
+			animation-name: swing;
+		}
+
+		&.hover-ani-tada:hover,
+		&.ani-tada {
+			animation-name: tada;
+		}
+
+		&.hover-ani-wobble:hover,
+		&.ani-wobble {
+			animation-name: wobble;
+		}
+
+		&.hover-ani-jello:hover,
+		&.ani-jello {
+			animation-name: jello;
+		}
+
+		&.hover-ani-heartBeat:hover,
+		&.ani-heartBeat {
+			animation-name: heartBeat;
 		}
 	}
 
