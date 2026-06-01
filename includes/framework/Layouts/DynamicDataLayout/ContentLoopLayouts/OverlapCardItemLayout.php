@@ -46,10 +46,10 @@ class OverlapCardItemLayout extends AbstractContentLoopLayout
         $borderRadius    = $attrs['overlapBorderRadius']    ?? '8px';
         $backgroundColor = $attrs['overlapBackgroundColor'] ?? '#ffffff';
 
-        $groupStyle  = 'margin-top:' . $marginTop . ';';
-        $groupStyle .= 'padding:' . $padding . ';';
-        $groupStyle .= 'border-radius:' . $borderRadius . ';';
-        $groupStyle .= 'background-color:' . $backgroundColor . ';';
+        $groupStyle  = '--jankx-overlap-margin-top:' . $marginTop . ';';
+        $groupStyle .= '--jankx-overlap-padding:' . $padding . ';';
+        $groupStyle .= '--jankx-overlap-radius:' . $borderRadius . ';';
+        $groupStyle .= '--jankx-overlap-bg:' . $backgroundColor . ';';
 
         return sprintf(
             '%s<div class="overlap-card-content" style="%s">%s</div>',

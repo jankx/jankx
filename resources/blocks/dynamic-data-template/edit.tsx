@@ -62,8 +62,12 @@ interface DynamicDataTemplateAttributes {
     animationType?: string;
     animationDuration?: number;
     animationDelay?: number;
-    animationTarget?: 'entry' | 'thumbnail';
     animationReverse?: boolean;
+    // Overlap Card specific settings
+    overlapMarginTop?: string;
+    overlapPadding?: string;
+    overlapBorderRadius?: string;
+    overlapBackgroundColor?: string;
 }
 
 
@@ -195,7 +199,7 @@ const GET_LAYOUT_TEMPLATE = (layout: string) => {
         case 'overlap-card':
             return [
                 ['core/post-featured-image', {}],
-                ['core/group', { className: 'overlap-card-content', style: { spacing: { margin: { top: '-60px' }, padding: { top: '20px', right: '20px', bottom: '20px', left: '20px' } }, border: { radius: '8px' }, color: { background: '#ffffff' } } }, [
+                ['core/group', { className: 'overlap-card-content' }, [
                     ['core/post-title', { isLink: true }],
                     ['jankx/human-readable-post-date', {}]
                 ]]
@@ -448,6 +452,10 @@ export default function Edit({
         animationDelay = 0,
         animationTarget = 'entry',
         animationReverse = false,
+        overlapMarginTop = '-60px',
+        overlapPadding = '20px',
+        overlapBorderRadius = '8px',
+        overlapBackgroundColor = '#ffffff',
     } = attributes;
 
 
@@ -558,6 +566,12 @@ export default function Edit({
     const blockProps = useBlockProps({
         className: `dynamic-data-template content-loop-layout--${templateLayout}`,
         ...(thumbnailPosition && { 'data-thumbnail-position': thumbnailPosition }),
+        style: templateLayout === 'overlap-card' ? {
+            '--jankx-overlap-margin-top': overlapMarginTop,
+            '--jankx-overlap-padding': overlapPadding,
+            '--jankx-overlap-radius': overlapBorderRadius,
+            '--jankx-overlap-bg': overlapBackgroundColor,
+        } as React.CSSProperties : undefined,
     });
 
     // InnerBlocks props cho tất cả items (tất cả đều editable)
@@ -670,6 +684,42 @@ export default function Edit({
                         />
                     )}
                 </PanelBody>
+
+                {templateLayout === 'overlap-card' && (
+                    <PanelBody title={__('Overlap Card Settings', 'jankx')} initialOpen={true}>
+                        <TextControl
+                            label={__('Margin Top', 'jankx')}
+                            value={overlapMarginTop}
+                            onChange={(value: string) => setAttributes({ overlapMarginTop: value })}
+                            help={__('Tiếp xúc với hình ảnh, e.g. -60px', 'jankx')}
+                        />
+                        <TextControl
+                            label={__('Padding', 'jankx')}
+                            value={overlapPadding}
+                            onChange={(value: string) => setAttributes({ overlapPadding: value })}
+                            help={__('e.g. 20px', 'jankx')}
+                        />
+                        <TextControl
+                            label={__('Border Radius', 'jankx')}
+                            value={overlapBorderRadius}
+                            onChange={(value: string) => setAttributes({ overlapBorderRadius: value })}
+                            help={__('e.g. 8px', 'jankx')}
+                        />
+                        <div className="components-base-control">
+                            <label className="components-base-control__label">
+                                {__('Background Color', 'jankx')}
+                            </label>
+                            <div className="components-color-palette-control__color-indicator-wrapper">
+                                <input
+                                    type="color"
+                                    value={overlapBackgroundColor || '#ffffff'}
+                                    onChange={(e) => setAttributes({ overlapBackgroundColor: e.target.value })}
+                                    style={{ width: '100%', height: '40px' }}
+                                />
+                            </div>
+                        </div>
+                    </PanelBody>
+                )}
 
                 {templateLayout === 'hero-overlay' && (
                     <PanelBody title={__('Hero Overlay Settings', 'jankx')} initialOpen={true}>
@@ -898,7 +948,7 @@ export default function Edit({
                             { label: __('Zoom In', 'jankx'), value: 'zoom-in' },
                             { label: __('Slide In Up', 'jankx'), value: 'slide-in-up' },
                         ]}
-                        onChange={(value) => setAttributes({ animationType: value })}
+                        onChange={(value) => setAttributes({ animationType: value as any })}
                     />
                     {animationType !== 'none' && (
                         <>

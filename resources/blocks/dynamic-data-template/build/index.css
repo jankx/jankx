@@ -16,8 +16,10 @@
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
   margin-left: 20px;
   margin-right: 20px;
-  background: #fff;
-  border-radius: 8px;
+  background: var(--jankx-overlap-bg, #fff);
+  border-radius: var(--jankx-overlap-radius, 8px);
+  margin-top: var(--jankx-overlap-margin-top, -60px);
+  padding: var(--jankx-overlap-padding, 20px);
 }
 
 .jankx-hero-overlay-box {

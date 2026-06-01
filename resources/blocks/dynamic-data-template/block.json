@@ -146,6 +146,22 @@
       "type": "string",
       "default": "10px 5px 5px"
     },
+    "overlapMarginTop": {
+      "type": "string",
+      "default": "-60px"
+    },
+    "overlapPadding": {
+      "type": "string",
+      "default": "20px"
+    },
+    "overlapBorderRadius": {
+      "type": "string",
+      "default": "8px"
+    },
+    "overlapBackgroundColor": {
+      "type": "string",
+      "default": "#ffffff"
+    },
     "itemSpacing": {
       "type": "string",
       "default": "normal",
