@@ -144,7 +144,7 @@
     },
     "heroContentPadding": {
       "type": "string",
-      "default": "30px 24px 24px"
+      "default": "10px 5px 5px"
     },
     "itemSpacing": {
       "type": "string",

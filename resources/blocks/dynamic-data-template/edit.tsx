@@ -430,7 +430,7 @@ export default function Edit({
         heroOverlayGradient = 'linear-gradient(to top,rgba(0,0,0,0.88) 0%,rgba(0,0,0,0.45) 45%,transparent 100%)',
         heroFallbackBackground = 'linear-gradient(135deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%)',
         heroBorderRadius = '12px',
-        heroContentPadding = '30px 24px 24px',
+        heroContentPadding = '10px 5px 5px',
         overlayIcon,
         overlayIconShowMode = 'always-show',
         overlayIconPosition = 'center',
@@ -689,7 +689,7 @@ export default function Edit({
                             label={__('Content Padding', 'jankx')}
                             value={heroContentPadding}
                             onChange={(value: string) => setAttributes({ heroContentPadding: value })}
-                            help={__('e.g. 30px 24px 24px', 'jankx')}
+                            help={__('e.g. 10px 5px 5px', 'jankx')}
                         />
                         <div className="components-base-control">
                             <label className="components-base-control__label">
