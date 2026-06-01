@@ -144,6 +144,7 @@ module.exports = {
     'blocks/dynamic-data-layout/build/editor': './blocks/dynamic-data-layout/editor.scss',
 
     'blocks/dynamic-data-template/build/index': './blocks/dynamic-data-template/index.tsx',
+    'blocks/dynamic-data-template/build/frontend': './blocks/dynamic-data-template/frontend.ts',
     'blocks/dynamic-data-template/build/style': './blocks/dynamic-data-template/style.scss',
     'blocks/dynamic-data-template/build/editor': './blocks/dynamic-data-template/editor.scss',
 

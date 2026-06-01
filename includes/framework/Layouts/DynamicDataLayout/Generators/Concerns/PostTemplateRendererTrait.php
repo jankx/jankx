@@ -29,6 +29,16 @@ trait PostTemplateRendererTrait
         $animationDelay = $templateAttrs['animationDelay'] ?? 0;
         $animationTarget = $templateAttrs['animationTarget'] ?? 'entry';
         $animationReverse = !empty($templateAttrs['animationReverse']);
+        $hoverAnimation = $templateAttrs['hoverAnimation'] ?? 'none';
+        $unhoverAnimation = $templateAttrs['unhoverAnimation'] ?? 'none';
+
+        $hoverDataAttrs = '';
+        if ($hoverAnimation !== 'none') {
+            $hoverDataAttrs .= sprintf(' data-hover-ani="%s"', esc_attr($hoverAnimation));
+        }
+        if ($unhoverAnimation !== 'none') {
+            $hoverDataAttrs .= sprintf(' data-unhover-ani="%s"', esc_attr($unhoverAnimation));
+        }
 
         $itemIndex = 0;
 
@@ -66,13 +76,14 @@ trait PostTemplateRendererTrait
 
             if ($mode === 'carousel') {
                 $output[] = sprintf(
-                    '<div class="embla__slide"><div class="%s"%s>%s</div></div>',
+                    '<div class="embla__slide"><div class="%s"%s%s>%s</div></div>',
                     esc_attr($classes),
                     $currentStyleAttr,
+                    $hoverDataAttrs,
                     $itemContent
                 );
             } else {
-                $output[] = sprintf('<div class="%s"%s>%s</div>', esc_attr($classes), $currentStyleAttr, $itemContent);
+                $output[] = sprintf('<div class="%s"%s%s>%s</div>', esc_attr($classes), $currentStyleAttr, $hoverDataAttrs, $itemContent);
             }
             $itemIndex++;
         }

@@ -7,6 +7,9 @@
  * thành inline styles từ block attributes để fully custom qua Block Editor.
  */
 
+// Import Animate.css for hover/unhover animation support
+@import url('https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css');
+
 .content-loop-layout--overlap-card {
     .overlap-card-content {
         position: relative;

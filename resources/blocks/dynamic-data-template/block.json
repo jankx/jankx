@@ -11,6 +11,7 @@
   "textdomain": "jankx",
   "editorScript": "file:./build/index.js",
   "editorStyle": "file:./build/editor.css",
+  "viewScript": "file:./build/frontend.js",
   "usesContext": [
     "queryId",
     "postType",
@@ -311,6 +312,14 @@
     "animationReverse": {
       "type": "boolean",
       "default": false
+    },
+    "hoverAnimation": {
+      "type": "string",
+      "default": "none"
+    },
+    "unhoverAnimation": {
+      "type": "string",
+      "default": "none"
     }
   }
 }

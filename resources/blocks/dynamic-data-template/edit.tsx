@@ -63,6 +63,8 @@ interface DynamicDataTemplateAttributes {
     animationDuration?: number;
     animationDelay?: number;
     animationReverse?: boolean;
+    hoverAnimation?: string;
+    unhoverAnimation?: string;
     // Overlap Card specific settings
     overlapMarginTop?: string;
     overlapPadding?: string;
@@ -452,6 +454,8 @@ export default function Edit({
         animationDelay = 0,
         animationTarget = 'entry',
         animationReverse = false,
+        hoverAnimation = 'none',
+        unhoverAnimation = 'none',
         overlapMarginTop = '-60px',
         overlapPadding = '20px',
         overlapBorderRadius = '8px',
@@ -787,10 +791,11 @@ export default function Edit({
                 <PanelBody title={__('Overlay Icon Settings', 'jankx')} initialOpen={true}>
                     <SelectControl
                         label={__('Overlay Source', 'jankx')}
-                        value={overlayIconType || 'class'}
+                        value={(overlayIconType || 'class') as 'class' | 'image' | 'text'}
                         options={[
                             { label: __('Icon Class', 'jankx'), value: 'class' },
                             { label: __('Image', 'jankx'), value: 'image' },
+                            { label: __('Small Text/Symbol', 'jankx'), value: 'text' },
                         ]}
                         onChange={(value) => setAttributes({ overlayIconType: value as any })}
                     />
@@ -986,6 +991,51 @@ export default function Edit({
                         </>
                     )}
                 </PanelBody>
+
+                <PanelBody title={__('Hover Animation', 'jankx')} initialOpen={false}>
+                    <SelectControl
+                        label={__('Hover Animation', 'jankx')}
+                        value={hoverAnimation}
+                        options={[
+                            { label: __('None', 'jankx'), value: 'none' },
+                            { label: __('Bounce', 'jankx'), value: 'bounce' },
+                            { label: __('Flash', 'jankx'), value: 'flash' },
+                            { label: __('Pulse', 'jankx'), value: 'pulse' },
+                            { label: __('Rubber Band', 'jankx'), value: 'rubberBand' },
+                            { label: __('Shake', 'jankx'), value: 'shakeX' },
+                            { label: __('Swing', 'jankx'), value: 'swing' },
+                            { label: __('Tada', 'jankx'), value: 'tada' },
+                            { label: __('Wobble', 'jankx'), value: 'wobble' },
+                            { label: __('Jello', 'jankx'), value: 'jello' },
+                            { label: __('Heart Beat', 'jankx'), value: 'heartBeat' },
+                            { label: __('Zoom In', 'jankx'), value: 'zoomIn' },
+                            { label: __('Zoom Out', 'jankx'), value: 'zoomOut' },
+                        ]}
+                        onChange={(value) => setAttributes({ hoverAnimation: value })}
+                        help={__('animate.css effect when hovering over an item', 'jankx')}
+                    />
+                    <SelectControl
+                        label={__('Unhover Animation', 'jankx')}
+                        value={unhoverAnimation}
+                        options={[
+                            { label: __('None', 'jankx'), value: 'none' },
+                            { label: __('Bounce', 'jankx'), value: 'bounce' },
+                            { label: __('Flash', 'jankx'), value: 'flash' },
+                            { label: __('Pulse', 'jankx'), value: 'pulse' },
+                            { label: __('Rubber Band', 'jankx'), value: 'rubberBand' },
+                            { label: __('Shake', 'jankx'), value: 'shakeX' },
+                            { label: __('Swing', 'jankx'), value: 'swing' },
+                            { label: __('Tada', 'jankx'), value: 'tada' },
+                            { label: __('Wobble', 'jankx'), value: 'wobble' },
+                            { label: __('Jello', 'jankx'), value: 'jello' },
+                            { label: __('Heart Beat', 'jankx'), value: 'heartBeat' },
+                            { label: __('Zoom In', 'jankx'), value: 'zoomIn' },
+                            { label: __('Zoom Out', 'jankx'), value: 'zoomOut' },
+                        ]}
+                        onChange={(value) => setAttributes({ unhoverAnimation: value })}
+                        help={__('animate.css effect when mouse leaves an item', 'jankx')}
+                    />
+                </PanelBody>
             </InspectorControls>
             <div {...blockProps}>
                 {displayLayout === 'carousel' ? (
@@ -1139,6 +1189,8 @@ export default function Edit({
                                         key={`item-${index}`}
                                         className={`dynamic-data-template__item ${animationClass}`}
                                         data-item-index={index}
+                                        data-hover-ani={hoverAnimation !== 'none' ? hoverAnimation : undefined}
+                                        data-unhover-ani={unhoverAnimation !== 'none' ? unhoverAnimation : undefined}
                                         style={itemStyle2}
                                     >
                                         {postData ? (
@@ -1172,6 +1224,8 @@ export default function Edit({
                                     key={`item-${index}`}
                                     className={`dynamic-data-template__item dynamic-data-template__item--preview ${animationClass}`}
                                     data-item-index={index}
+                                    data-hover-ani={hoverAnimation !== 'none' ? hoverAnimation : undefined}
+                                    data-unhover-ani={unhoverAnimation !== 'none' ? unhoverAnimation : undefined}
                                     style={itemStyle3}
                                 >
                                     {postData ? (
