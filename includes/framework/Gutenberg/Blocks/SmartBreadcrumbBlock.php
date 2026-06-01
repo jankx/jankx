@@ -197,7 +197,7 @@ class SmartBreadcrumbBlock extends Block {
 
         // Add home link
         if ($showHome) {
-            $breadcrumb_items[] = '<a href="' . esc_url(home_url('/')) . '">' . esc_html($homeText) . '</a>';
+            $breadcrumb_items[] = '<a href="' . esc_url(home_url('/')) . '" class="home-item">' . $this->renderHomeItem($attributes) . '</a>';
         }
 
         // Get current page info
@@ -375,5 +375,50 @@ class SmartBreadcrumbBlock extends Block {
         }
 
         return '';
+    }
+
+    /**
+     * Render Home item content based on type
+     */
+    private function renderHomeItem($attributes) {
+        $type = $attributes['homeItemType'] ?? 'text';
+        $text = $attributes['homeItemText'] ?? __('Home', 'jankx');
+        $showText = $attributes['showHomeText'] ?? true;
+        
+        // Handle legacy homeText attribute if it exists and homeItemText is default
+        if (isset($attributes['homeText']) && $text === __('Trang chủ', 'jankx')) {
+            $text = $attributes['homeText'];
+        }
+
+        $content = '';
+        switch ($type) {
+            case 'css':
+                $icon_class = $attributes['homeItemIcon'] ?? 'fa fa-home';
+                $content = sprintf('<i class="%s" aria-hidden="true"></i>', esc_attr($icon_class));
+                break;
+            case 'svg':
+                $content = $attributes['homeItemSvg'] ?? '';
+                // Basic SVG validation/cleaning could be added here if needed
+                break;
+            case 'image':
+                $image = $attributes['homeItemImage'] ?? null;
+                if ($image && !empty($image['url'])) {
+                    $content = sprintf(
+                        '<img src="%s" alt="%s" class="home-icon" />',
+                        esc_url($image['url']),
+                        esc_attr($text)
+                    );
+                }
+                break;
+            case 'text':
+            default:
+                return esc_html($text);
+        }
+
+        if ($showText) {
+            $content .= sprintf('<span class="home-text">%s</span>', esc_html($text));
+        }
+
+        return $content;
     }
 }

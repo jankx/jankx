@@ -6,9 +6,18 @@
 	"title": "Smart Breadcrumb",
 	"category": "jankx",
 	"icon": "arrow-right-alt",
-	"keywords": [ "breadcrumb", "navigation", "seo", "rankmath", "yoast" ],
+	"keywords": [
+		"breadcrumb",
+		"navigation",
+		"seo",
+		"rankmath",
+		"yoast"
+	],
 	"supports": {
-		"align": [ "wide", "full" ],
+		"align": [
+			"wide",
+			"full"
+		],
 		"html": false,
 		"color": {
 			"background": true,
@@ -53,9 +62,27 @@
 			"type": "boolean",
 			"default": true
 		},
-		"homeText": {
+		"homeItemType": {
+			"type": "string",
+			"default": "text"
+		},
+		"homeItemText": {
 			"type": "string",
 			"default": "Trang chủ"
+		},
+		"homeItemIcon": {
+			"type": "string",
+			"default": "fa fa-home"
+		},
+		"homeItemSvg": {
+			"type": "string"
+		},
+		"homeItemImage": {
+			"type": "object"
+		},
+		"showHomeText": {
+			"type": "boolean",
+			"default": true
 		},
 		"separator": {
 			"type": "string",

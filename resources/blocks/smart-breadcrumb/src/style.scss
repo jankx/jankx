@@ -24,6 +24,27 @@
         font-weight: 500;
         opacity: 0.7;
     }
+
+    .home-item {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+
+        i,
+        svg {
+            width: 1em;
+            height: 1em;
+            fill: currentColor;
+            vertical-align: middle;
+        }
+
+        .home-icon {
+            max-height: 1.2em;
+            width: auto;
+            display: inline-block;
+            vertical-align: middle;
+        }
+    }
 }
 
 /* ==================== Style Presets ==================== */
@@ -254,4 +275,3 @@
         }
     }
 }
-

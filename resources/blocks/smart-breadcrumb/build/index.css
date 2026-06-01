@@ -23,6 +23,24 @@
   font-weight: 500;
   opacity: 0.7;
 }
+.wp-block-jankx-smart-breadcrumb .home-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.wp-block-jankx-smart-breadcrumb .home-item i,
+.wp-block-jankx-smart-breadcrumb .home-item svg {
+  width: 1em;
+  height: 1em;
+  fill: currentColor;
+  vertical-align: middle;
+}
+.wp-block-jankx-smart-breadcrumb .home-item .home-icon {
+  max-height: 1.2em;
+  width: auto;
+  display: inline-block;
+  vertical-align: middle;
+}
 
 /* ==================== Style Presets ==================== */
 /* Default Style */
