@@ -5,6 +5,7 @@
   position: relative;
   border: 0;
   width: var(--divider-width, 50%);
+  height: var(--divider-thickness, 1px);
 }
 
 .wp-block-jankx-divider.align-left {

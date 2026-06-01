@@ -114,6 +114,8 @@ trait PostTemplateRendererTrait
         $autoplayDelay = max(1000, (int) $this->getOption('autoplayDelay', $options['autoplayDelay'] ?? 3000));
         $showArrows = (bool) $this->getOption('showArrows', $options['showArrows'] ?? true);
         $showDots = (bool) $this->getOption('showDots', $options['showDots'] ?? true);
+        $peek = (float) $this->getOption('carouselPeek', $options['carouselPeek'] ?? 0);
+        $effectiveColumns = $columns + ($peek / 100);
 
         $wrapperClasses = [
             'jankx-carousel',
@@ -130,7 +132,7 @@ trait PostTemplateRendererTrait
         }
 
         $styleRules = [
-            '--carousel-columns: ' . $columns,
+            '--carousel-columns: ' . $effectiveColumns,
             '--carousel-columns-tablet: ' . $columnsTablet,
             '--carousel-columns-mobile: ' . $columnsMobile,
         ];
@@ -164,7 +166,8 @@ trait PostTemplateRendererTrait
 
         $dataAttributes = [
             'data-embla-carousel' => '',
-            'data-slides-per-view' => (string) $columns,
+            'data-slides-per-view' => (string) $effectiveColumns,
+            'data-peek-amount' => (string) $peek,
             'data-slides-to-scroll' => (string) $slidesToScroll,
         ];
 

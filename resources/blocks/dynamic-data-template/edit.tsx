@@ -62,6 +62,7 @@ interface DynamicDataTemplateAttributes {
     animationType?: string;
     animationDuration?: number;
     animationDelay?: number;
+    animationTarget?: string;
     animationReverse?: boolean;
     hoverAnimation?: string;
     unhoverAnimation?: string;
@@ -70,6 +71,7 @@ interface DynamicDataTemplateAttributes {
     overlapPadding?: string;
     overlapBorderRadius?: string;
     overlapBackgroundColor?: string;
+    carouselPeek?: number;
 }
 
 
@@ -110,6 +112,7 @@ interface DynamicDataTemplateEditProps {
         postParentIn?: number[];
         postParentNotIn?: number[];
         customQueryId?: string;
+        carouselPeek?: number;
     };
 }
 
@@ -474,6 +477,7 @@ export default function Edit({
     const showArrows: boolean = !!context?.showArrows;
     const showDots: boolean = !!context?.showDots;
     const carouselAlign = context?.carouselAlign || 'start';
+    const carouselPeek = context?.carouselPeek || 0;
 
     const { replaceInnerBlocks } = useDispatch(blockEditorStore);
 
@@ -1067,7 +1071,7 @@ export default function Edit({
                                 {Array.from({ length: totalItems }).map((_, index) => {
                                     const animationClass = animationType && animationType !== 'none' ? `jankx-reveal jankx-reveal--${animationType} jankx-reveal--target-${animationTarget} ${animationReverse ? 'jankx-reveal--reverse' : ''}` : '';
                                     const itemStyle: CSSProperties = {
-                                        flex: `0 0 calc(100% / ${columns})`,
+                                        flex: `0 0 calc(100% / (${columns} + ${carouselPeek / 100}))`,
                                         scrollSnapAlign: carouselAlign,
                                     };
                                     if (animationType !== 'none') {

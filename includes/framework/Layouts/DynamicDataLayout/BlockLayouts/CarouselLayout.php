@@ -57,6 +57,7 @@ class CarouselLayout extends BlockTemplateLayout
             'excerptLength',
             'thumbnailPosition',
             'itemStyle',
+            'carouselPeek',
         ];
     }
 
@@ -68,26 +69,18 @@ class CarouselLayout extends BlockTemplateLayout
     public function getSettingsDefinition(): array
     {
         return [
+
             [
-                'name' => 'slidesPerView',
-                'label' => __('Slides Per View', 'jankx'),
+                'name' => 'carouselPeek',
+                'label' => __('Peeking Amount (%)', 'jankx'),
                 'type' => 'range',
-                'default' => 1,
-                'min' => 1,
-                'max' => 6,
-                'step' => 1,
-                'help' => __('Number of slides visible at once', 'jankx'),
-            ],
-            [
-                'name' => 'spaceBetween',
-                'label' => __('Space Between', 'jankx'),
-                'type' => 'range',
-                'default' => 16,
+                'default' => 0,
                 'min' => 0,
                 'max' => 50,
-                'step' => 4,
-                'help' => __('Space between slides in pixels', 'jankx'),
+                'step' => 5,
+                'help' => __('Reveal portion of the next slide (e.g., 20% shows a bit of the 4th item if 3 columns)', 'jankx'),
             ],
+
             [
                 'name' => 'slidesToScroll',
                 'label' => __('Slides to Scroll', 'jankx'),
@@ -232,6 +225,7 @@ class CarouselLayout extends BlockTemplateLayout
         $structure['attributes']['data-slides-to-scroll'] = (string)($options['slidesToScroll'] ?? 1);
         $structure['attributes']['data-start-index'] = (string)($options['carouselStartIndex'] ?? 0);
         $structure['attributes']['data-drag-threshold'] = (string)($options['carouselDragThreshold'] ?? 10);
+        $structure['attributes']['data-peek-amount'] = (string)($options['carouselPeek'] ?? 0);
         
         if (isset($options['carouselInViewThreshold'])) {
             $structure['attributes']['data-in-view-threshold'] = (string)$options['carouselInViewThreshold'];

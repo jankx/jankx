@@ -92,6 +92,7 @@ class BlockTemplateAttributeSanitizer
             $sanitized['carouselAlign'] = $this->sanitizeCarouselAlign($attributes['carouselAlign'] ?? 'start');
             $sanitized['carouselAxis'] = $this->sanitizeCarouselAxis($attributes['carouselAxis'] ?? 'x');
             $sanitized['carouselDirection'] = $this->sanitizeCarouselDirection($attributes['carouselDirection'] ?? 'ltr');
+            $sanitized['carouselPeek'] = $this->sanitizeNumericValue($attributes, 'carouselPeek', 0, 50, 0);
             $sanitized['carouselDuration'] = $this->sanitizeNumericValue($attributes, 'carouselDuration', 10, 100, 25);
         }
 

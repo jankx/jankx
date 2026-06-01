@@ -426,6 +426,8 @@ class DynamicDataLayoutBlock extends Block
                 'name' => $name,
                 'title' => $layoutInstance->getTitle(),
                 'icon' => $layoutInstance->getIcon(),
+                'supportedOptions' => $layoutInstance->getSupportedOptions(),
+                'settingsDefinition' => $layoutInstance->getSettingsDefinition(),
             ];
         }
 
@@ -433,7 +435,7 @@ class DynamicDataLayoutBlock extends Block
             $layouts_by_post_type[$post_type] = $structured_layouts;
         }
 
-        $common_layouts_names = ['grid', 'list', 'card'];
+        $common_layouts_names = ['grid', 'list', 'card', 'carousel', 'masonry'];
         $commonLayouts = array_intersect_key($structured_layouts, array_flip($common_layouts_names));
 
         // Localize public post types for editor (ensure non-REST CPTs like product/tour appear)

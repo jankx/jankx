@@ -792,7 +792,7 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
     const standardLayoutDefaults: Record<string, string[]> = {
         'grid': ['columns', 'showFeaturedImage', 'showTitle', 'showExcerpt', 'showDate', 'showAuthor', 'showPrice', 'showAddToCart', 'showRating'],
         'card': ['columns', 'showFeaturedImage', 'showTitle', 'showExcerpt', 'showDate', 'showAuthor', 'showPrice', 'showAddToCart', 'showRating'],
-        'carousel': ['columns', 'showFeaturedImage', 'showTitle', 'showExcerpt', 'showDate', 'showAuthor', 'showPrice', 'showAddToCart', 'showRating'],
+        'carousel': ['columns', 'showFeaturedImage', 'showTitle', 'showExcerpt', 'showDate', 'showAuthor', 'showPrice', 'showAddToCart', 'showRating', 'carouselPeek', 'slidesToScroll', 'loop', 'autoplay', 'showArrows', 'showDots'],
         'list': ['showFeaturedImage', 'showTitle', 'showExcerpt', 'showDate', 'showAuthor', 'showPrice', 'showAddToCart', 'showRating'],
     };
 
@@ -1125,14 +1125,13 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                         max={100}
                         help={__('Space between items in pixels', 'jankx')}
                     />
+
+                    {/* Layout Specific Settings (Inline) */}
+                    {settingsDefinition.filter(s => s.type !== 'panel').map((setting, index) => renderSettingsControl(setting, index))}
                 </PanelBody>
 
-                {/* Layout Specific Settings (Dynamic) */}
-                {settingsDefinition.length > 0 && (
-                    <PanelBody title={__('Layout Settings', 'jankx')} initialOpen={true}>
-                        {settingsDefinition.map((setting, index) => renderSettingsControl(setting, index))}
-                    </PanelBody>
-                )}
+                {/* Layout Specific Panels (Dynamic) */}
+                {settingsDefinition.filter(s => s.type === 'panel').map((setting, index) => renderSettingsControl(setting, index))}
 
                 <PanelBody title={__('Display Slicing', 'jankx')} initialOpen={false}>
                     <TextControl

@@ -36,6 +36,7 @@
     "carouselSkipSnaps",
     "carouselContainScroll",
     "carouselInViewThreshold",
+    "carouselPeek",
     "queryPreset",
     "includeStickyPosts",
     "orderBy",
@@ -320,6 +321,10 @@
     "unhoverAnimation": {
       "type": "string",
       "default": "none"
+    },
+    "carouselPeek": {
+      "type": "number",
+      "default": 0
     }
   }
 }
