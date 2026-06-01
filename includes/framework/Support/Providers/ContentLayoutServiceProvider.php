@@ -112,6 +112,14 @@ class ContentLayoutServiceProvider extends ServiceProvider
             .columns-1 > * { flex: 0 0 100%; max-width: 100%; }
             .columns-2 > * { flex: 0 0 calc(50% - var(--jankx-grid-gap, 1.5rem) / 2); max-width: calc(50% - var(--jankx-grid-gap, 1.5rem) / 2); }
             .columns-3 > * { flex: 0 0 calc(33.333% - var(--jankx-grid-gap, 1.5rem) * 2 / 3); max-width: calc(33.333% - var(--jankx-grid-gap, 1.5rem) * 2 / 3); }
+
+            /* Mobile override — chỉ override khi < 768px */
+            @media (max-width: 767px) {
+                .columns-mobile-1 > * { flex: 0 0 100%; max-width: 100%; }
+                .columns-mobile-2 > * { flex: 0 0 calc(50% - var(--jankx-grid-gap, 1.5rem) / 2); max-width: calc(50% - var(--jankx-grid-gap, 1.5rem) / 2); }
+                .columns-mobile-3 > * { flex: 0 0 calc(33.333% - var(--jankx-grid-gap, 1.5rem) * 2 / 3); max-width: calc(33.333% - var(--jankx-grid-gap, 1.5rem) * 2 / 3); }
+                .columns-mobile-4 > * { flex: 0 0 calc(25% - var(--jankx-grid-gap, 1.5rem) * 3 / 4); max-width: calc(25% - var(--jankx-grid-gap, 1.5rem) * 3 / 4); }
+            }        
         ";
         $assetResolver->addInlineCss($coreLayoutCss, \Jankx\Services\AssetResolver::CORE_LAYOUT);
 
