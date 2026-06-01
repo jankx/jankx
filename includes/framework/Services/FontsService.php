@@ -39,9 +39,11 @@ class FontsService
      */
     public function init()
     {
-
         // Repository sẽ tự động load system fonts khi cần
-        $this->fontsRepository->all(); // Trigger initialization
+        $this->fontsRepository->initialize();
+
+        // Cho phép các theme/plugin đăng ký fonts thông qua hook
+        do_action('jankx/fonts/register', $this);
 
         // Đăng ký fonts với WordPress
         $this->registerFontsWithWordPress();
@@ -190,11 +192,33 @@ class FontsService
         $themeJsonFonts = [];
 
         foreach ($activeFonts as $font) {
-            $themeJsonFonts[] = [
+            $fontData = [
                 'fontFamily' => $font->getFamily(),
                 'name' => $font->getName(),
                 'slug' => $font->getId(),
             ];
+
+            // Thêm fontFace nếu là font cục bộ (custom)
+            if ($font->isCustomFont()) {
+                $fontFiles = $font->getMetadata('files') ?? [];
+                if (!empty($fontFiles)) {
+                    $fontFace = [
+                        'fontFamily' => $font->getFamily(),
+                        'fontWeight' => '400', // Mặc định, có thể nâng cấp thêm metadata cho từng file
+                        'fontStyle' => 'normal',
+                        'src' => [],
+                    ];
+
+                    foreach ($fontFiles as $format => $fileUrl) {
+                        // Chuyển đổi đường dẫn tuyệt đối sang file: nếu cần, 
+                        // nhưng ở đây FontEntity lưu link tương đối hoặc tuyệt đối tùy context
+                        $fontFace['src'][] = $fileUrl;
+                    }
+                    $fontData['fontFace'] = [$fontFace];
+                }
+            }
+
+            $themeJsonFonts[] = $fontData;
         }
 
         if (empty($themeJsonFonts)) {
@@ -219,10 +243,13 @@ class FontsService
             if (!isset($themeJson['settings']['typography']['fontFamilies'])) {
                 $themeJson['settings']['typography']['fontFamilies'] = [];
             }
-            $themeJson['settings']['typography']['fontFamilies'] = array_merge(
-                $themeJson['settings']['typography']['fontFamilies'],
-                $themeJsonFonts
-            );
+            // Tránh duplicate bằng cách filter theo slug
+            $existing_slugs = array_column($themeJson['settings']['typography']['fontFamilies'], 'slug');
+            foreach ($themeJsonFonts as $newFont) {
+                if (!in_array($newFont['slug'], $existing_slugs)) {
+                    $themeJson['settings']['typography']['fontFamilies'][] = $newFont;
+                }
+            }
         }
 
         return $themeJson;

@@ -36,6 +36,24 @@ class FontsServiceProvider extends ServiceProvider
             return $fontsService->injectFontsIntoThemeJson($themeJson);
         }, 10, 1);
 
+        // Register default parent theme fonts
+        add_action('jankx/fonts/register', function ($service) {
+            $service->registerFont([
+                'id' => 'inter',
+                'name' => 'Inter',
+                'family' => '"Inter", sans-serif',
+                'category' => 'google',
+                'variants' => ['400', '500', '600', '700', '800'],
+            ]);
+            $service->registerFont([
+                'id' => 'montserrat',
+                'name' => 'Montserrat',
+                'family' => '"Montserrat", sans-serif',
+                'category' => 'google',
+                'variants' => ['700', '800'],
+            ]);
+        });
+
         // Frontend specific
         if ($context === 'frontend') {
             add_action('wp_enqueue_scripts', function () use ($fontsService) {
