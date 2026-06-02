@@ -15,8 +15,6 @@
   --toc-bg-color: var(--wp--preset--color--base, #FFFFFF);
   padding: 0;
   margin: 1rem 0;
-  border: 1px solid var(--toc-border-color);
-  border-radius: 8px;
 }
 .jankx-table-of-content .toc-header {
   margin-bottom: 1rem;
@@ -216,8 +214,6 @@
   color: var(--toc-primary-color);
 }
 .jankx-table-of-content.is-style-minimal {
-  border: none;
-  border-radius: 0;
   padding: 0;
   margin: 1.5rem 0;
   background: transparent;

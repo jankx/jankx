@@ -914,31 +914,15 @@ class TableOfContentBlock extends Block
             $wrapper_class .= ' ' . esc_attr($class_name);
         }
 
-        $outer_attrs = [
+        // Build wrapper attributes using WordPress block supports
+        // This applies background, colors, spacing, borders, etc. to the block root
+        $wrapper_attrs = get_block_wrapper_attributes([
             'class' => $wrapper_class,
             'data-default-expanded' => $default_expanded ? 'true' : 'false',
             'data-expand-first-item' => $expand_first_item ? 'true' : 'false',
             'data-expand-icon-type' => $expand_icon_type,
-        ];
-
-        if (!empty($anchor)) {
-            $outer_attrs['id'] = esc_attr($anchor);
-        }
-
-        // Build outer attributes string
-        $outer_attrs_string = '';
-        foreach ($outer_attrs as $key => $value) {
-            $outer_attrs_string .= sprintf(' %s="%s"', esc_attr($key), esc_attr($value));
-        }
-
-        // Build inner wrapper attributes using WordPress block supports
-        // This applies background, colors, spacing to .toc-wrapper
-        $inner_attrs = [
-            'class' => 'toc-wrapper',
-        ];
-
-        // Get block wrapper attributes for inner wrapper
-        $inner_attrs_string = get_block_wrapper_attributes($inner_attrs);
+            'id' => !empty($anchor) ? $anchor : null,
+        ]);
 
         // Render TOC
         $toc_html = $this->renderTOCList(
@@ -964,9 +948,8 @@ class TableOfContentBlock extends Block
         }
 
         return sprintf(
-            '<div%s><nav %s aria-label="%s">%s%s</nav></div>',
-            $outer_attrs_string,
-            $inner_attrs_string,
+            '<div %s><nav class="toc-wrapper" aria-label="%s">%s%s</nav></div>',
+            $wrapper_attrs,
             esc_attr($heading_text),
             $heading_html,
             $toc_html
