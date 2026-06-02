@@ -34,8 +34,13 @@ class SvgIconBlock extends Block
         $icon = $attributes['icon'] ?? '';
         $iconName = $attributes['iconName'] ?? '';
         $itemsJustification = $attributes['itemsJustification'] ?? '';
+        $iconBackgroundColor = $attributes['iconBackgroundColor'] ?? '';
         $iconBackgroundColorValue = $attributes['iconBackgroundColorValue'] ?? '';
+        $iconColor = $attributes['iconColor'] ?? '';
         $iconColorValue = $attributes['iconColorValue'] ?? '';
+        $gradient = $attributes['gradient'] ?? '';
+        $customGradient = $attributes['customGradient'] ?? '';
+        $hasNoIconFill = $attributes['hasNoIconFill'] ?? false;
         $label = $attributes['label'] ?? '';
         $title = $attributes['title'] ?? '';
         $linkUrl = $attributes['linkUrl'] ?? '';
@@ -46,10 +51,6 @@ class SvgIconBlock extends Block
         $flipVertical = $attributes['flipVertical'] ?? false;
         $width = $attributes['width'] ?? '';
         $height = $attributes['height'] ?? '';
-        $className = $attributes['className'] ?? '';
-
-        // Generate unique ID for this block instance
-        $blockId = 'svg-icon-' . uniqid();
 
         // Decide which icon markup to print on frontend
         $printedIcon = '';
@@ -69,111 +70,117 @@ class SvgIconBlock extends Block
             }
         }
 
-        // Build styles
-        $styles = [];
+        if (empty($printedIcon)) {
+            return $content; // Return empty/original content if no icon compiled
+        }
+
+        // --- Inner Element Classes (icon-container) ---
+        $iconClasses = ['icon-container'];
+        if ($iconColorValue) {
+            $iconClasses[] = 'has-icon-color';
+        }
+        if ($hasNoIconFill) {
+            $iconClasses[] = 'has-no-icon-fill-color';
+        }
+        if ($iconBackgroundColorValue || $iconBackgroundColor || $gradient || $customGradient) {
+            $iconClasses[] = 'has-icon-background-color';
+        }
+        if ($iconBackgroundColor) {
+            $iconClasses[] = "has-{$iconBackgroundColor}-background-color";
+        }
+        if ($iconColor) {
+            $iconClasses[] = "has-{$iconColor}-color";
+        }
+        if ($gradient) {
+            $iconClasses[] = "has-{$gradient}-gradient-background";
+        }
+
+        $iconClassString = implode(' ', $iconClasses);
+
+        // --- Inner Element Styles ---
+        $iconStyles = [];
+        if (!$gradient && $customGradient) {
+            $iconStyles['background'] = $customGradient;
+        }
         if ($iconBackgroundColorValue) {
-            $styles[] = "background-color: {$iconBackgroundColorValue}";
+            $iconStyles['background-color'] = $iconBackgroundColorValue;
         }
         if ($iconColorValue) {
-            $styles[] = "color: {$iconColorValue}";
-        }
-        if ($width) {
-            $styles[] = "width: {$width}";
-        }
-        if ($height) {
-            $styles[] = "height: {$height}";
-        }
-        if ($rotate) {
-            $styles[] = "transform: rotate({$rotate}deg)";
-        }
-        if ($flipHorizontal) {
-            $styles[] = "transform: scaleX(-1)";
-        }
-        if ($flipVertical) {
-            $styles[] = "transform: scaleY(-1)";
+            $iconStyles['color'] = $iconColorValue;
         }
 
-        $styleString = implode('; ', $styles);
+        // Calculate explicit width
+        $iconWidth = empty($height) ? '48px' : '';
+        if (!empty($width)) {
+            if (is_numeric($width)) {
+                $iconWidth = "{$width}px";
+            } elseif (preg_match('/^(\d+(?:\.\d+)?)([a-zA-Z%]*)$/', $width, $matches)) {
+                $iconWidth = $matches[2] ? $width : "{$width}px";
+            } else {
+                $iconWidth = $width;
+            }
+        }
+        if ($iconWidth) {
+            $iconStyles['width'] = $iconWidth;
+        }
+        if (!empty($height)) {
+            if (is_numeric($height)) {
+                $iconStyles['height'] = "{$height}px";
+            } else {
+                $iconStyles['height'] = $height;
+            }
+        }
 
-        // Build classes
-        $classes = ['icon-container'];
+        // Transforms
+        $rotateValue = $rotate ? "{$rotate}deg" : '0deg';
+        $scaleXValue = $flipHorizontal ? '-1' : '1';
+        $scaleYValue = $flipVertical ? '-1' : '1';
+        $iconStyles['transform'] = "rotate({$rotateValue}) scaleX({$scaleXValue}) scaleY({$scaleYValue})";
+
+        $iconStyleString = '';
+        foreach ($iconStyles as $key => $val) {
+            $iconStyleString .= "{$key}: {$val}; ";
+        }
+
+        // Build wrapper element attributes via get_block_wrapper_attributes
+        $wrapperClasses = [];
         if ($itemsJustification) {
-            $classes[] = "justify-{$itemsJustification}";
+            $wrapperClasses[] = "items-justified-{$itemsJustification}";
         }
-        if ($className) {
-            $classes[] = $className;
-        }
+        $wrapperAttrs = get_block_wrapper_attributes(['class' => implode(' ', $wrapperClasses)]);
 
-        $classString = implode(' ', $classes);
-        $classString .= ' ' . $blockId; // Add unique ID as class
+        // If title is set, we append it to wrapper. Actually save.js sets title to wrapper
+        $titleAttr = $title ? ' title="' . esc_attr($title) . '"' : '';
 
-        // Add inline CSS for SVG styling
-        if ($iconColorValue) {
-            $inlineCSS = "
-                .{$blockId} svg {
-                    fill: {$iconColorValue} !important;
-                }
-                .{$blockId} svg path {
-                    fill: {$iconColorValue} !important;
-                }
-                .{$blockId} svg rect {
-                    fill: {$iconColorValue} !important;
-                }
-                .{$blockId} svg circle {
-                    fill: {$iconColorValue} !important;
-                }
-                .{$blockId} svg polygon {
-                    fill: {$iconColorValue} !important;
-                }
-                .{$blockId} svg polyline {
-                    fill: {$iconColorValue} !important;
-                }
-            ";
-            wp_add_inline_style('jankx-theme-style', $inlineCSS);
-        }
-
-        // Build link attributes
-        $linkAttrs = '';
+        // Build inner link attributes
+        $innerAttrs = '';
         if ($linkUrl) {
-            $linkAttrs = "href=\"" . esc_url($linkUrl) . "\"";
-            if ($linkRel) {
-                $linkAttrs .= " rel=\"" . esc_attr($linkRel) . "\"";
-            }
+            $innerAttrs .= ' href="' . esc_url($linkUrl) . '"';
             if ($linkTarget) {
-                $linkAttrs .= " target=\"" . esc_attr($linkTarget) . "\"";
+                $innerAttrs .= ' target="' . esc_attr($linkTarget) . '"';
+            }
+            if ($linkRel) {
+                $innerAttrs .= ' rel="' . esc_attr($linkRel) . '"';
             }
         }
-
-        // Build title attribute
-        $titleAttr = '';
-        if ($title) {
-            $titleAttr = "title=\"" . esc_attr($title) . "\"";
-        }
-
-        // Build aria-label
-        $ariaLabel = '';
         if ($label) {
-            $ariaLabel = "aria-label=\"" . esc_attr($label) . "\"";
+            $innerAttrs .= ' aria-label="' . esc_attr($label) . '"';
         }
 
         ob_start();
-        if (!empty($printedIcon)) :
-            ?>
-        <div class="<?php echo esc_attr($classString); ?>" style="<?php echo esc_attr($styleString); ?>">
+        ?>
+        <div <?php echo $wrapperAttrs; ?><?php echo $titleAttr; ?>>
             <?php if ($linkUrl) : ?>
-                <a <?php echo $linkAttrs; ?> <?php echo $titleAttr; ?> <?php echo $ariaLabel; ?>>
+                <a class="<?php echo esc_attr($iconClassString); ?>" style="<?php echo esc_attr($iconStyleString); ?>"<?php echo $innerAttrs; ?>>
                     <?php echo $printedIcon; ?>
                 </a>
             <?php else : ?>
-                <span <?php echo $titleAttr; ?> <?php echo $ariaLabel; ?>>
+                <div class="<?php echo esc_attr($iconClassString); ?>" style="<?php echo esc_attr($iconStyleString); ?>"<?php echo $innerAttrs; ?>>
                     <?php echo $printedIcon; ?>
-                </span>
+                </div>
             <?php endif; ?>
         </div>
-            <?php
-        else :
-            echo $content;
-        endif;
+        <?php
         return ob_get_clean();
     }
 }
