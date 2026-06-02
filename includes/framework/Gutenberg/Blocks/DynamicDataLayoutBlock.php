@@ -432,11 +432,15 @@ class DynamicDataLayoutBlock extends Block
         }
 
         foreach ($post_types as $post_type => $post_type_obj) {
-            $layouts_by_post_type[$post_type] = $structured_layouts;
+            // array_values() ensures the per-post-type list is a JSON array, not a JSON object.
+            $layouts_by_post_type[$post_type] = array_values($structured_layouts);
         }
 
         $common_layouts_names = ['grid', 'list', 'card', 'carousel', 'masonry'];
-        $commonLayouts = array_intersect_key($structured_layouts, array_flip($common_layouts_names));
+        // array_intersect_key preserves string keys → JSON encodes as object {}.
+        // Use array_values() to get indexed array → JSON encodes as array [].
+        // This is required because JS normalizeLayouts() uses Array.isArray() guard.
+        $commonLayouts = array_values(array_intersect_key($structured_layouts, array_flip($common_layouts_names)));
 
         // Localize public post types for editor (ensure non-REST CPTs like product/tour appear)
         $public_post_types = [];
