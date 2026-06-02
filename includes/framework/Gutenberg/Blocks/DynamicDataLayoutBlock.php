@@ -784,6 +784,7 @@ class DynamicDataLayoutBlock extends Block
             $attrs['data-autoplay'] = !empty($attributes['autoplay']) ? 'true' : 'false';
             $attrs['data-autoplay-delay'] = esc_attr($attributes['autoplayDelay'] ?? 3000);
             $attrs['data-loop'] = !empty($attributes['loop']) ? 'true' : 'false';
+            $attrs['data-peek-amount'] = esc_attr($attributes['carouselPeek'] ?? 0);
 
             // Add carousel container class
             $attrs['class'] .= ' has-carousel';
@@ -805,6 +806,8 @@ class DynamicDataLayoutBlock extends Block
         $columns = isset($attributes['columns']) ? (int) $attributes['columns'] : 3;
         $attrs['data-columns'] = $columns;
         $styleRules[] = '--columns-desktop: ' . $columns;
+        $styleRules[] = '--slides-per-view: ' . $columns;
+        $styleRules[] = '--peek-amount: ' . ($attributes['carouselPeek'] ?? 0) . '%';
 
         if (isset($attributes['postsPerPage'])) {
             $attrs['data-posts-per-page'] = (int) $attributes['postsPerPage'];

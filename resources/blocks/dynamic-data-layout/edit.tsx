@@ -647,6 +647,8 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
         '--columns-desktop': columns,
         '--columns-tablet': columnsTablet,
         '--columns-mobile': columnsMobile,
+        '--peek-amount': `${attributes.carouselPeek || 0}%`,
+        '--slides-per-view': columns, // Initial value for CSS formula
     } as CSSProperties;
 
     if (styleColor) {
@@ -661,7 +663,10 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
     const blockProps = useBlockProps({
         className: editorClassName,
         style: editorStyle,
-    });
+        'data-peek-amount': attributes.carouselPeek || 0,
+        'data-slides-per-view': columns,
+        'data-layout': layout,
+    } as any);
 
     const resolvedResponsiveColumns = responsiveColumns && typeof responsiveColumns === 'object'
         ? responsiveColumns

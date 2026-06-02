@@ -31,6 +31,7 @@ class ViewCarouselLayout extends AbstractViewLayout
         $carouselAxis = $this->getOption('carouselAxis', 'x');
         $carouselDirection = $this->getOption('carouselDirection', 'ltr');
         $carouselDuration = (int) $this->getOption('carouselDuration', 25);
+        $carouselPeek = (int) $this->getOption('carouselPeek', 0);
 
         $navBaseStyle = 'position:absolute;top:50%;transform:translateY(-50%);width:44px;height:44px;background:rgba(0,0,0,0.7);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;z-index:2;border:none;';
         $prevStyle = $navBaseStyle . 'left:10px;';
@@ -52,14 +53,16 @@ class ViewCarouselLayout extends AbstractViewLayout
 
         ob_start();
         ?>
-        <div class="<?php echo esc_attr(implode(' ', $carouselClasses)); ?>" style="position: relative;"
+        <div class="<?php echo esc_attr(implode(' ', $carouselClasses)); ?>" 
+            style="position: relative; --slides-per-view: <?php echo esc_attr($slidesPerView); ?>; --peek-amount: <?php echo esc_attr($carouselPeek); ?>%;"
             data-slides-per-view="<?php echo esc_attr($slidesPerView); ?>"
             data-space-between="<?php echo esc_attr($spaceBetween); ?>" data-loop="<?php echo $loop ? 'true' : 'false'; ?>"
             data-autoplay="<?php echo $autoplay ? 'true' : 'false'; ?>"
             data-autoplay-delay="<?php echo esc_attr($autoplayDelay); ?>" data-align="<?php echo esc_attr($carouselAlign); ?>"
             data-contain-scroll="<?php echo esc_attr($carouselContainScroll); ?>"
             data-axis="<?php echo esc_attr($carouselAxis); ?>" data-direction="<?php echo esc_attr($carouselDirection); ?>"
-            data-duration="<?php echo esc_attr($carouselDuration); ?>">
+            data-duration="<?php echo esc_attr($carouselDuration); ?>"
+            data-peek-amount="<?php echo esc_attr($carouselPeek); ?>">
 
             <div class="jankx-carousel-container carousel-container">
                 <?php
@@ -131,6 +134,7 @@ class ViewCarouselLayout extends AbstractViewLayout
             'excerptLength',
             'thumbnailPosition',
             'itemStyle',
+            'carouselPeek',
         ];
     }
 

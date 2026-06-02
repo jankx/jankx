@@ -7,7 +7,7 @@
     width: 100%;
 }
 
-.has-jankx-responsive-wrapper:has(> *) {
+.has-jankx-responsive-wrapper {
     /* Propagate max-width constraint to direct children via context */
     --jankx-child-max-width: var(--jankx-max-width, none);
 }

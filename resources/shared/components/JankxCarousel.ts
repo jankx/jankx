@@ -50,6 +50,7 @@ export default class JankxCarousel {
         this.config = {
             slidesPerView: (dataSlides || dataColumns || cssSlides || 1),
             spaceBetween: (dataSpace || cssSpace || 16),
+            peekAmount: parseFloat(this.carousel.getAttribute('data-peek-amount') || '0') || 0,
             autoplay: this.carousel.getAttribute('data-autoplay') === 'true' || this.carousel.classList.contains('has-autoplay'),
             autoplayDelay: Math.max(3000, parseInt(this.carousel.getAttribute('data-autoplay-delay')) || 5000),
             showArrows: this.carousel.getAttribute('data-show-arrows') !== 'false' && (this.carousel.classList.contains('has-arrows') || this.carousel.classList.contains('show-arrows')),
@@ -69,6 +70,7 @@ export default class JankxCarousel {
 
         this.container.style.setProperty('--slides-per-view', this.config.slidesPerView);
         this.container.style.setProperty('--space-between', `${this.config.spaceBetween}px`);
+        this.container.style.setProperty('--peek-amount', `${this.config.peekAmount}%`);
     }
 
     prepareDOM() {
