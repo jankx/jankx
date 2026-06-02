@@ -300,7 +300,7 @@ class ThemeOptionsCSSGenerator
             $css[] = 'header.site-header { background-color: var(--jankx-header-bg-color); color: var(--jankx-header-text-color); }';
             if ($this->themeOptions->getOption('enable_sticky_header')) {
                 $css[] = 'header.is-sticky, .main-header.scrolled { background-color: var(--jankx-sticky-header-bg-color, #184962) !important; color: var(--jankx-sticky-header-text-color, #ffffff) !important; position: fixed !important; left: 0 !important; right: 0 !important; width: 100% !important; z-index: 9999 !important; }';
-                $css[] = 'header.is-sticky header a, .main-header.scrolled a, header.is-sticky header .wp-block-navigation-item > a, .main-header.scrolled .wp-block-navigation-item > a { color: var(--jankx-sticky-header-text-color, #ffffff) !important; }';
+                $css[] = 'header.is-sticky header a, .main-header.scrolled a, header.is-sticky header .wp-block-navigation-item > a, header.is-sticky header .wp-block-navigation .wp-block-navigation__submenu-icon, .main-header.scrolled .wp-block-navigation-item > a { color: var(--jankx-sticky-header-text-color, #ffffff) !important; }';
 
                 // .icon-container: chỉ set color để SVG dùng currentColor tự kế thừa.
                 // Không dùng border-color vì mỗi icon có thể có background/border tùy chỉnh.
