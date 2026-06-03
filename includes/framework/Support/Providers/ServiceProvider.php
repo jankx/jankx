@@ -30,7 +30,7 @@ abstract class ServiceProvider implements ServiceProviderContract
      * @param  \Jankx\Foundation\Application|null  $app
      * @return void
      */
-    public function __construct(Application $app = null)
+    public function __construct(?Application $app = null)
     {
         $this->app = $app;
     }

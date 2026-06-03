@@ -27,7 +27,7 @@ class BlockTemplateRenderer
         BlockTemplateAttributeSanitizer $attributeSanitizer,
         callable $templateBlockExtractor,
         callable $templateSanitizer,
-        callable $carouselAssetsCallback = null
+        ?callable $carouselAssetsCallback = null
     ) {
         $this->layoutManager = $layoutManager;
         $this->attributeSanitizer = $attributeSanitizer;
