@@ -332,20 +332,6 @@ class ThemeOptionsCSSGenerator
                 $css[] = '}';
             }
             $css[] = 'footer.site-footer { background-color: var(--jankx-footer-bg-color); color: var(--jankx-footer-text-color); }';
-
-            $css[] = '.button, button, input[type="submit"], .wp-block-button__link {';
-            $css[] = '  background-color: var(--jankx-button-bg-color);';
-            $css[] = '  color: var(--jankx-button-text-color);';
-            $css[] = '  border-radius: var(--jankx-button-border-radius);';
-            $css[] = '  border: none;';
-            $css[] = '  padding: 10px 24px;';
-            $css[] = '  cursor: pointer;';
-            $css[] = '  display: inline-block;';
-            $css[] = '  text-align: center;';
-            $css[] = '  font-weight: 600;';
-            $css[] = '  transition: all 0.2s ease;';
-            $css[] = '}';
-            $css[] = '.button:hover, button:hover, input[type="submit"]:hover, .wp-block-button__link:hover { opacity: 0.9; transform: translateY(-1px); }';
         }
 
         return implode("\n", $css);
