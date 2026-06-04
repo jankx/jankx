@@ -203,8 +203,56 @@
         }
     }
 
+    &--rotate-in {
+        transform: rotate(-15deg);
+
+        &.is-in-view {
+            transform: rotate(0);
+        }
+    }
+
+    &--flip-in-x {
+        transform: perspective(400px) rotate3d(1, 0, 0, 90deg);
+
+        &.is-in-view {
+            transform: perspective(400px) rotate3d(1, 0, 0, 0);
+        }
+    }
+
+    &--flip-in-y {
+        transform: perspective(400px) rotate3d(0, 1, 0, 90deg);
+
+        &.is-in-view {
+            transform: perspective(400px) rotate3d(0, 1, 0, 0);
+        }
+    }
+
     &--slide-in-up {
         clip-path: inset(100% 0 0 0);
+
+        &.is-in-view {
+            clip-path: inset(0 0 0 0);
+        }
+    }
+
+    &--slide-in-down {
+        clip-path: inset(0 0 100% 0);
+
+        &.is-in-view {
+            clip-path: inset(0 0 0 0);
+        }
+    }
+
+    &--slide-in-left {
+        clip-path: inset(0 0 0 100%);
+
+        &.is-in-view {
+            clip-path: inset(0 0 0 0);
+        }
+    }
+
+    &--slide-in-right {
+        clip-path: inset(0 100% 0 0);
 
         &.is-in-view {
             clip-path: inset(0 0 0 0);
@@ -245,6 +293,18 @@
 
         &.jankx-reveal--zoom-in img {
             transform: scale(0.9);
+        }
+
+        &.jankx-reveal--rotate-in img {
+            transform: rotate(-15deg);
+        }
+
+        &.jankx-reveal--flip-in-x img {
+            transform: perspective(400px) rotate3d(1, 0, 0, 90deg);
+        }
+
+        &.jankx-reveal--flip-in-y img {
+            transform: perspective(400px) rotate3d(0, 1, 0, 90deg);
         }
     }
 }
