@@ -6,6 +6,7 @@ import {
     InspectorControls,
     useBlockProps,
     BlockControls,
+    InnerBlocks,
 } from '@wordpress/block-editor';
 import {
     PanelBody,
@@ -544,6 +545,13 @@ export default function Edit({ attributes, setAttributes, clientId }: TableOfCon
                             <p><em>{__('Add headings (H2, H3, H4, etc.) to your post to see the table of content.', 'jankx')}</em></p>
                         </div>
                     )}
+                    <div className="jankx-toc-inner-blocks" style={{ border: '1px dashed #ccc', padding: '10px', marginTop: '10px' }}>
+                        <p style={{ fontSize: '10px', color: '#666', marginBottom: '5px', fontWeight: 'bold' }}>{__('Default content (Navigation):', 'jankx')}</p>
+                        <InnerBlocks
+                            allowedBlocks={['core/navigation']}
+                            template={[['core/navigation', {}]]}
+                        />
+                    </div>
                 </nav>
             </div>
         </>

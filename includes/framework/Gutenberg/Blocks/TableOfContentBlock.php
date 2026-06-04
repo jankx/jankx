@@ -883,23 +883,46 @@ class TableOfContentBlock extends Block
             self::$contentFilterAdded = true;
         }
 
+        // Determine heading text
+        $heading_text = !empty($custom_heading_text) ? $custom_heading_text : __('Table of Contents', 'jankx');
+
         // If no headings found, check if we're in template editor and show mock data
         if (empty($toc_items)) {
             // Check if we're in template editor (site editor)
             $is_template_editor = $this->isTemplateEditor();
-            
+
             if ($is_template_editor) {
                 // Use mock headings for template editor preview
                 $toc_items = $this->getMockHeadings($min_heading_level, $max_heading_level);
             } else {
+                // Build wrapper class for fallback too
+                $wrapper_class = 'jankx-table-of-content heading-style-' . esc_attr($heading_style) . ' has-bullet-' . esc_attr($bullet_type);
+                if (!empty($class_name)) {
+                    $wrapper_class .= ' ' . esc_attr($class_name);
+                }
+                $wrapper_attrs = get_block_wrapper_attributes([
+                    'class' => $wrapper_class,
+                    'id' => !empty($anchor) ? $anchor : null,
+                ]);
+
+                // If we have inner blocks content (like core/navigation), render it
+                if (!empty(trim($content))) {
+                    return sprintf(
+                        '<div %s><nav class="toc-wrapper toc-wrapper--default-content" aria-label="%s">%s</nav></div>',
+                        $wrapper_attrs,
+                        esc_attr($heading_text),
+                        $content
+                    );
+                }
+
                 // Show placeholder for normal posts without headings
                 if ($hide_empty_message) {
                     return '';
                 }
 
                 return sprintf(
-                    '<div class="jankx-table-of-content %s"><div class="toc-placeholder"><p>%s</p></div></div>',
-                    esc_attr($class_name),
+                    '<div %s><div class="toc-placeholder"><p>%s</p></div></div>',
+                    $wrapper_attrs,
                     esc_html__('No headings found in the post content.', 'jankx')
                 );
             }
@@ -934,9 +957,6 @@ class TableOfContentBlock extends Block
             0,
             true
         );
-
-        // Determine heading text
-        $heading_text = !empty($custom_heading_text) ? $custom_heading_text : __('Table of Contents', 'jankx');
 
         // Build heading HTML
         $heading_html = '';

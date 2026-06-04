@@ -3,6 +3,7 @@
  */
 import { __ } from '@wordpress/i18n';
 import { registerBlockType, BlockConfiguration } from '@wordpress/blocks';
+import { InnerBlocks } from '@wordpress/block-editor';
 import { list as icon } from '@wordpress/icons';
 
 /**
@@ -19,8 +20,7 @@ const blockConfig: Partial<BlockConfiguration<TableOfContentAttributes>> = {
     icon,
     edit: Edit,
     save: () => {
-        // Rendered by PHP
-        return null;
+        return <InnerBlocks.Content />;
     },
 };
 

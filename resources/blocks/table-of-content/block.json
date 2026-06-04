@@ -149,6 +149,9 @@
         },
         "shadow": true
     },
+    "allowedBlocks": [
+        "core/navigation"
+    ],
     "editorScript": "file:./build/index.js",
     "editorStyle": "file:./build/editor.css",
     "viewScript": "file:./build/view.js",
