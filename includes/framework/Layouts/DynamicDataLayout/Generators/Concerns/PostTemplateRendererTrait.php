@@ -314,7 +314,7 @@ trait PostTemplateRendererTrait
     protected function buildItemClasses(WP_Post $post): string
     {
         $classes = get_post_class([], $post);
-        array_unshift($classes, 'wp-block-post');
+        array_unshift($classes, 'wp-block-post', 'dynamic-data-template__item');
 
         $customItemClass = $this->getOption('itemClass');
         if (!empty($customItemClass)) {
