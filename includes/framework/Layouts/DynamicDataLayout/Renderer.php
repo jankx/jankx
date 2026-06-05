@@ -147,13 +147,7 @@ class Renderer
     protected function buildQueryForPreset(BlockTemplateLayoutDecorator $decorator, array &$attributes, string $preset, string $postType): WP_Query
     {
         if ($preset === 'default') {
-            $query = DynamicDataLayoutQueryHelper::buildDefaultQuery($attributes);
-            if (defined('WP_DEBUG') && WP_DEBUG) {
-                error_log('[DDL Renderer buildQueryForPreset] Returning query from buildDefaultQuery');
-                error_log(sprintf('[DDL Renderer buildQueryForPreset] Query object ID: %s', spl_object_hash($query)));
-                error_log(sprintf('[DDL Renderer buildQueryForPreset] Query posts count: %d', count($query->posts)));
-            }
-            return $query;
+            return DynamicDataLayoutQueryHelper::buildDefaultQuery($attributes);
         }
         if ($preset === 'related') {
             $attributes = DynamicDataLayoutQueryHelper::buildRelatedQuery($attributes);

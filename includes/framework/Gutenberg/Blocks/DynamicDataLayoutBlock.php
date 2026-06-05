@@ -744,15 +744,7 @@ class DynamicDataLayoutBlock extends Block
         $originalPreset = $sanitizedAttributes['queryPreset'] ?? 'custom';
         $postType = $sanitizedAttributes['postType'] ?? 'post';
 
-        $query = $this->buildQueryForPreset($decorator, $sanitizedAttributes, $originalPreset, $postType);
-
-        if (defined('WP_DEBUG') && WP_DEBUG) {
-            error_log('[DDL buildQuickQuery] Returning query');
-            error_log(sprintf('[DDL buildQuickQuery] Query object ID: %s', spl_object_hash($query)));
-            error_log(sprintf('[DDL buildQuickQuery] Query posts count: %d', count($query->posts)));
-        }
-
-        return $query;
+        return $this->buildQueryForPreset($decorator, $sanitizedAttributes, $originalPreset, $postType);
     }
 
 
