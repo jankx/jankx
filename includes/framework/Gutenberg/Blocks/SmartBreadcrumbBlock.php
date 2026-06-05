@@ -282,7 +282,19 @@ class SmartBreadcrumbBlock extends Block {
     private function getPostBreadcrumb($post, $maxDepth) {
         $items = [];
 
-        // Add category breadcrumb
+        // Add Post Type Archive link for Custom Post Types
+        $post_type = get_post_type($post);
+        if ($post_type !== 'post' && $post_type !== 'page') {
+            $post_type_obj = get_post_type_object($post_type);
+            if ($post_type_obj && $post_type_obj->has_archive) {
+                $archive_link = get_post_type_archive_link($post_type);
+                if ($archive_link) {
+                    $items[] = '<a href="' . esc_url($archive_link) . '">' . esc_html($post_type_obj->labels->name) . '</a>';
+                }
+            }
+        }
+
+        // Add category breadcrumb (primarily for standard posts)
         $categories = get_the_category($post->ID);
         if (!empty($categories)) {
             $category = $categories[0];
