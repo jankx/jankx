@@ -13,6 +13,7 @@
 .has-jankx-responsive-wrapper {
     /* Propagate max-width constraint to direct children via context */
     --jankx-child-max-width: var(--jankx-max-width, none);
+    margin-block-start: 0;
 }
 
 .has-jankx-responsive-wrapper.hide-on-desktop {
