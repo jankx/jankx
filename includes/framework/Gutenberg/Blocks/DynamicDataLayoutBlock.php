@@ -600,7 +600,7 @@ class DynamicDataLayoutBlock extends Block
         $layoutName = $attributes['layout'] ?? $layoutName;
 
         // Sanitize attributes
-        $attributes = $this->attributeSanitizer->sanitize($layoutName, $attributes, true);
+        $attributes = $this->attributeSanitizer->sanitize($attributes, $layoutName, true);
 
         // Create layout decorator
         $layout = $this->layoutManager->createLayout($layoutName);
