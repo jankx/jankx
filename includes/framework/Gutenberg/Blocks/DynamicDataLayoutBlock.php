@@ -869,8 +869,8 @@ class DynamicDataLayoutBlock extends Block
         $this->bootDefaultThumbnailService();
 
         $block_id = isset($_POST['block_id']) ? sanitize_text_field(wp_unslash($_POST['block_id'])) : '';
-        $attributes_json = isset($_POST['attributes']) ? sanitize_text_field(wp_unslash($_POST['attributes'])) : '';
-        $filters_json = isset($_POST['filters']) ? sanitize_text_field(wp_unslash($_POST['filters'])) : '[]';
+        $attributes_json = isset($_POST['attributes']) ? wp_unslash($_POST['attributes']) : '';
+        $filters_json = isset($_POST['filters']) ? wp_unslash($_POST['filters']) : '[]';
         $post_id = isset($_POST['post_id']) ? intval($_POST['post_id']) : 0;
 
         if (empty($block_id)) {

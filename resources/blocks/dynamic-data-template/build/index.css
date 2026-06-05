@@ -36,6 +36,8 @@
 .jankx-hero-overlay-box > .wp-block-post-featured-image,
 .jankx-hero-overlay-box > figure {
   margin: 0;
+  width: 100%;
+  height: auto;
 }
 .jankx-hero-overlay-box > .wp-block-post-featured-image img,
 .jankx-hero-overlay-box > figure img {
