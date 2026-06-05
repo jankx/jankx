@@ -79,6 +79,7 @@ class BlockTemplateAttributeSanitizer
         $sanitized['postIn'] = is_array($attributes['postIn'] ?? null) ? $attributes['postIn'] : [];
         $sanitized['postNotIn'] = is_array($attributes['postNotIn'] ?? null) ? $attributes['postNotIn'] : [];
         $sanitized['postStatus'] = is_array($attributes['postStatus'] ?? null) ? $attributes['postStatus'] : ['publish'];
+        $sanitized['postTemplate'] = $attributes['postTemplate'] ?? null;
 
         // Carousel specific options
         if ($sanitized['layout'] === 'carousel') {

@@ -169,22 +169,10 @@ class DynamicDataLayoutBlock extends Block
         // Empty string causes "Illegal offset type" error in WordPress
         if (
             !isset($parsed_block['attrs']['queryId']) ||
-            !is_scalar($parsed_block['attrs']['queryId']) ||
             (is_string($parsed_block['attrs']['queryId']) && trim($parsed_block['attrs']['queryId']) === '')
         ) {
-            // Generate a unique ID if not set or empty
-            $parsed_block['attrs']['queryId'] = uniqid('ddl-', true);
-        } else {
-            // Ensure it's a string or number (and not empty string)
-            if (is_numeric($parsed_block['attrs']['queryId'])) {
-                $parsed_block['attrs']['queryId'] = (int) $parsed_block['attrs']['queryId'];
-            } else {
-                $parsed_block['attrs']['queryId'] = (string) $parsed_block['attrs']['queryId'];
-                // If it's still empty after casting, generate a new one
-                if (trim($parsed_block['attrs']['queryId']) === '') {
-                    $parsed_block['attrs']['queryId'] = uniqid('ddl-', true);
-                }
-            }
+            // Generate a stable ID based on attributes to ensure consistency between render and AJAX
+            $parsed_block['attrs']['queryId'] = 'ddl-' . substr(md5(serialize($parsed_block['attrs'])), 0, 10);
         }
 
         return $parsed_block;
@@ -225,6 +213,9 @@ class DynamicDataLayoutBlock extends Block
      */
     public function render($attributes, $content = '', $block = null)
     {
+        $blockName = $block instanceof \WP_Block ? $block->name : 'Unknown';
+        error_log("[Jankx DDL Debug] Render called for block: {$blockName}. ID: " . ($attributes['queryId'] ?? 'N/A'));
+
         // Enqueue frontend assets only when block is rendered
         $this->enqueueFrontendAssets();
 
@@ -232,22 +223,10 @@ class DynamicDataLayoutBlock extends Block
         // queryId must be a non-empty scalar value (string or number), not null, empty string, or array
         if (
             !isset($attributes['queryId']) ||
-            !is_scalar($attributes['queryId']) ||
             (is_string($attributes['queryId']) && trim($attributes['queryId']) === '')
         ) {
-            // Generate a unique ID if not set or empty
-            $attributes['queryId'] = uniqid('ddl-', true);
-        } else {
-            // Ensure it's a string or number (and not empty string)
-            if (is_numeric($attributes['queryId'])) {
-                $attributes['queryId'] = (int) $attributes['queryId'];
-            } else {
-                $attributes['queryId'] = (string) $attributes['queryId'];
-                // If it's still empty after casting, generate a new one
-                if (trim($attributes['queryId']) === '') {
-                    $attributes['queryId'] = uniqid('ddl-', true);
-                }
-            }
+            // Fallback to a stable ID based on attributes
+            $attributes['queryId'] = 'ddl-' . substr(md5(serialize($attributes)), 0, 10);
         }
 
         $this->ensureServices();
@@ -255,31 +234,45 @@ class DynamicDataLayoutBlock extends Block
         try {
             // Extract template block attributes (thumbnailPosition) and merge into parent attributes
             if ($block instanceof \WP_Block) {
+                $innerCount = count($block->parsed_block['innerBlocks'] ?? []);
+                error_log("[Jankx DDL Debug] Block has {$innerCount} innerBlocks.");
+                
                 $templateBlock = $this->extractTemplateBlockFromParsedBlock($block->parsed_block ?? []);
-                if ($templateBlock && !empty($templateBlock['attrs'])) {
-                    $templateAttrs = $templateBlock['attrs'];
-                    // Merge template block attributes into parent attributes, overriding defaults
-                    $keysToMerge = [
-                        'thumbnailPosition',
-                        'overlayIcon',
-                        'overlayIconType',
-                        'overlayIconImageUrl',
-                        'overlayIconText',
-                        'overlayIconRotate',
-                        'overlayIconPosition',
-                        'overlayIconSize',
-                        'overlayIconColor',
-                        'overlayIconBackground',
-                        'overlayIconShowMode',
-                        'overlayIconTarget',
-                    ];
-                    foreach ($keysToMerge as $k) {
-                        if (array_key_exists($k, $templateAttrs)) {
-                            $attributes[$k] = $templateAttrs[$k];
-                        }
-                    }
+                error_log('[Jankx DDL Debug] Template extraction result: ' . ($templateBlock ? 'FOUND' : 'NOT FOUND'));
+                
+                if ($templateBlock) {
+                    // Store the template inside attributes so it's included in data-block-settings
+                    // This makes AJAX updates completely stateless and robust against cache misses
+                    $attributes['postTemplate'] = $templateBlock;
+
+                    // Cache it as well for secondary fallback
                     if (!empty($attributes['queryId'])) {
+                        error_log('[Jankx DDL Debug] Caching template for ID: ' . (string) $attributes['queryId']);
                         $this->cacheTemplateByBlockId((string) $attributes['queryId'], $templateBlock);
+                    }
+
+                    if (!empty($templateBlock['attrs'])) {
+                        $templateAttrs = $templateBlock['attrs'];
+                        // Merge template block attributes into parent attributes, overriding defaults
+                        $keysToMerge = [
+                            'thumbnailPosition',
+                            'overlayIcon',
+                            'overlayIconType',
+                            'overlayIconImageUrl',
+                            'overlayIconText',
+                            'overlayIconRotate',
+                            'overlayIconPosition',
+                            'overlayIconSize',
+                            'overlayIconColor',
+                            'overlayIconBackground',
+                            'overlayIconShowMode',
+                            'overlayIconTarget',
+                        ];
+                        foreach ($keysToMerge as $k) {
+                            if (array_key_exists($k, $templateAttrs)) {
+                                $attributes[$k] = $templateAttrs[$k];
+                            }
+                        }
                     }
                 }
             }
@@ -584,9 +577,12 @@ class DynamicDataLayoutBlock extends Block
      */
     public function handleFilterUpdate(array $attributes, array $filters): array
     {
+        error_log('[Jankx DDL Debug] Incoming Filters: ' . json_encode($filters));
+        error_log('[Jankx DDL Debug] Incoming Attributes: ' . json_encode($attributes));
+
         // Check if this is for our block type - must have queryId and postType
         if (empty($attributes['queryId']) || empty($attributes['postType'])) {
-            // Not our block or incomplete data, return empty to let other handlers process
+            error_log('[Jankx DDL Debug] Aborted: Missing queryId or postType');
             return [];
         }
 
@@ -597,6 +593,8 @@ class DynamicDataLayoutBlock extends Block
 
         // Apply filters to attributes
         $attributes = DynamicDataLayoutQueryHelper::applyFiltersToAttributes($attributes, $filters);
+        
+        error_log('[Jankx DDL Debug] Attributes after filter merge: ' . json_encode($attributes));
         $layoutName = $attributes['layout'] ?? $layoutName;
 
         // Sanitize attributes
@@ -616,6 +614,9 @@ class DynamicDataLayoutBlock extends Block
         $templateBlock = null;
         if (!empty($attributes['postTemplate'])) {
             $templateBlock = $attributes['postTemplate'];
+            error_log('[Jankx DDL Debug] postTemplate found in attributes.');
+        } else {
+            error_log('[Jankx DDL Debug] postTemplate is MISSING in attributes.');
         }
 
         // Set content generator if template block exists
@@ -917,7 +918,21 @@ class DynamicDataLayoutBlock extends Block
         if (empty($attributes['postTemplate']) && !empty($attributes['queryId'])) {
             $cachedTemplate = $this->getCachedTemplateByBlockId((string) $attributes['queryId']);
             if (is_array($cachedTemplate)) {
+                error_log('[Jankx DDL Debug] Template FOUND in cache for ID: ' . (string) $attributes['queryId']);
                 $attributes['postTemplate'] = $cachedTemplate;
+            } else {
+                error_log('[Jankx DDL Debug] Template NOT FOUND in cache for ID: ' . (string) $attributes['queryId']);
+                // FALLBACK: If not found in cache, try to parse the page content to find this block and its template
+                if ($post_id > 0) {
+                    error_log('[Jankx DDL Debug] Fallback: Searching post content for template. ID: ' . (string) $attributes['queryId']);
+                    $realAttrs = $this->getBlockAttributes($post_id, (string) $attributes['queryId']);
+                    if (!empty($realAttrs['postTemplate'])) {
+                        $attributes['postTemplate'] = $realAttrs['postTemplate'];
+                        error_log('[Jankx DDL Debug] Fallback SUCCESS: Template found in post content.');
+                        // Cache it now for next time
+                        $this->cacheTemplateByBlockId((string) $attributes['queryId'], $attributes['postTemplate']);
+                    }
+                }
             }
         }
 
