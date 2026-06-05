@@ -28,18 +28,7 @@ class PostContent extends AbstractBlockExtra
      */
     public function handle(string $block_content, array $block): string
     {
-        // Enqueue the CSS file with Child Theme priority
-        $relativePath = 'resources/block-styles/post-content/post-content.css';
-        $styleUrl = $this->getAssetUrl($relativePath);
-
-        if ($styleUrl) {
-            wp_enqueue_style(
-                'jankx-block-post-content',
-                $styleUrl,
-                [],
-                $this->getAssetVersion($relativePath)
-            );
-        }
+        // CSS for post-content is now managed via theme.json / global styles rather than a hardcoded file.
 
         // Define design tokens for Post Content if needed via filter
         $design_tokens = apply_filters('jankx/block/post_content/design_tokens', [
