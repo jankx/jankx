@@ -53,6 +53,7 @@ use Jankx\Gutenberg\Blocks\WrapperBlock;
 use Jankx\Gutenberg\Blocks\TypographyBlock;
 use Jankx\Gutenberg\Extra\ChildOrder as ExtraChildOrder;
 use Jankx\Gutenberg\Extra\ResponsiveVisibility as ExtraResponsiveVisibility;
+use Jankx\Gutenberg\Extra\FlexGrow as ExtraFlexGrow;
 
 /**
  * Gutenberg Service
@@ -449,6 +450,9 @@ class GutenbergService
 
             // Register Responsive Visibility extra
             $extraManager->register(ExtraResponsiveVisibility::class);
+
+            // Register Flex Grow extra
+            $extraManager->register(ExtraFlexGrow::class);
 
             // Allow child themes or plugins to register additional block extras
             do_action('jankx/gutenberg/register-block-extras', $extraManager, $this->app);
