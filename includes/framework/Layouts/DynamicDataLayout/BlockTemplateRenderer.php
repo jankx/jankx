@@ -49,33 +49,36 @@ class BlockTemplateRenderer
         $queryId = $sanitizedAttributes['queryId'] ?? '';
         $query = null;
 
-        // Check if query is cached by queryId
-        if (!empty($queryId) && isset(self::$queryCache[$queryId])) {
-            $query = self::$queryCache[$queryId];
+        // Build query based on preset — no caching by queryId because blocks with the same
+        // queryId but different postsPerPage / renderOffset / renderLimit would incorrectly
+        // share a stale, already-sliced result set.
+        if ($queryPreset === 'default') {
+            $query = \Jankx\Query\DynamicDataLayoutQueryHelper::buildDefaultQuery($sanitizedAttributes);
+        } elseif ($queryPreset === 'related') {
+            $sanitizedAttributes = \Jankx\Query\DynamicDataLayoutQueryHelper::buildRelatedQuery($sanitizedAttributes);
+            $query = $decorator->buildQuery($sanitizedAttributes);
         } else {
-            if ($queryPreset === 'default') {
-                $query = \Jankx\Query\DynamicDataLayoutQueryHelper::buildDefaultQuery($sanitizedAttributes);
-            } elseif ($queryPreset === 'related') {
-                $sanitizedAttributes = \Jankx\Query\DynamicDataLayoutQueryHelper::buildRelatedQuery($sanitizedAttributes);
-                $query = $decorator->buildQuery($sanitizedAttributes);
-            } else {
-                if ($queryPreset !== 'custom') {
-                    $sanitizedAttributes = \Jankx\Query\DynamicDataLayoutQueryHelper::applyQueryBuilderFilter($sanitizedAttributes, $queryPreset);
-                }
-                $query = $decorator->buildQuery($sanitizedAttributes);
+            if ($queryPreset !== 'custom') {
+                $sanitizedAttributes = \Jankx\Query\DynamicDataLayoutQueryHelper::applyQueryBuilderFilter($sanitizedAttributes, $queryPreset);
             }
-
-            // Store in cache if queryId is provided
-            if (!empty($queryId) && $query instanceof \WP_Query) {
-                self::$queryCache[$queryId] = $query;
-            }
+            $query = $decorator->buildQuery($sanitizedAttributes);
         }
 
         // Always clone the query to avoid modifying the original query (especially global $wp_query)
         // and ensure each block has its own independent loop state.
         if ($query instanceof \WP_Query) {
+            if (defined('WP_DEBUG') && WP_DEBUG) {
+                error_log('[DDL BlockTemplateRenderer] BEFORE clone');
+                error_log(sprintf('[DDL BlockTemplateRenderer] Query object ID: %s', spl_object_hash($query)));
+                error_log(sprintf('[DDL BlockTemplateRenderer] Posts count: %d', count($query->posts)));
+            }
             $query = clone $query;
             $query->rewind_posts();
+            if (defined('WP_DEBUG') && WP_DEBUG) {
+                error_log('[DDL BlockTemplateRenderer] AFTER clone');
+                error_log(sprintf('[DDL BlockTemplateRenderer] Query object ID: %s', spl_object_hash($query)));
+                error_log(sprintf('[DDL BlockTemplateRenderer] Posts count: %d', count($query->posts)));
+            }
         }
 
         if (!$query || !$query->have_posts()) {
@@ -87,9 +90,18 @@ class BlockTemplateRenderer
         $renderLimit = isset($sanitizedAttributes['renderLimit']) ? (int)$sanitizedAttributes['renderLimit'] : 0;
 
         if ($renderOffset > 0 || $renderLimit > 0) {
+            if (defined('WP_DEBUG') && WP_DEBUG) {
+                error_log('[DDL BlockTemplateRenderer] BEFORE slicing');
+                error_log(sprintf('[DDL BlockTemplateRenderer] renderOffset: %d, renderLimit: %d', $renderOffset, $renderLimit));
+                error_log(sprintf('[DDL BlockTemplateRenderer] Posts count before slice: %d', count($query->posts)));
+            }
             $sliceLimit = $renderLimit > 0 ? $renderLimit : null;
             $query->posts = array_slice($query->posts, $renderOffset, $sliceLimit);
             $query->post_count = count($query->posts);
+            if (defined('WP_DEBUG') && WP_DEBUG) {
+                error_log('[DDL BlockTemplateRenderer] AFTER slicing');
+                error_log(sprintf('[DDL BlockTemplateRenderer] Posts count after slice: %d', count($query->posts)));
+            }
 
             // Update found_posts and max_num_pages to reflect the sliced set
             // This ensures pagination and other logic correctly handle the subset
@@ -108,6 +120,11 @@ class BlockTemplateRenderer
             $query->rewind_posts();
         }
 
+        if (defined('WP_DEBUG') && WP_DEBUG) {
+            error_log('[DDL BlockTemplateRenderer] Setting query to layout');
+            error_log(sprintf('[DDL BlockTemplateRenderer] Query object ID being set: %s', spl_object_hash($query)));
+            error_log(sprintf('[DDL BlockTemplateRenderer] Posts count being set: %d', count($query->posts)));
+        }
         $layout->setQuery($query);
         $layout->setOptions($sanitizedAttributes);
 
@@ -123,6 +140,17 @@ class BlockTemplateRenderer
         }
 
         $renderedContent = $layout->render();
+
+        // Reset global $post to prevent our layout query from affecting the main page logic
+        wp_reset_postdata();
+
+        // Check if global $wp_query was affected after rendering
+        if (defined('WP_DEBUG') && WP_DEBUG) {
+            global $wp_query;
+            error_log('[DDL BlockTemplateRenderer] AFTER layout->render()');
+            error_log(sprintf('[DDL BlockTemplateRenderer] Global $wp_query post_count: %d', $wp_query->post_count));
+            error_log(sprintf('[DDL BlockTemplateRenderer] Local query post_count: %d', $query->post_count));
+        }
 
         if (!empty($sanitizedAttributes['enablePagination']) && $renderedContent !== '' && $query->max_num_pages > 1) {
             $renderedContent .= PaginationRenderer::render($content, $query, $sanitizedAttributes);

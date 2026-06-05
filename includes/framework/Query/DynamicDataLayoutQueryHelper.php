@@ -30,16 +30,26 @@ class DynamicDataLayoutQueryHelper
 
         $postsPerPage = isset($attributes['postsPerPage']) ? (int)$attributes['postsPerPage'] : (get_option('posts_per_page') ?: 10);
 
-        // If the main query already has enough posts or more than requested, just use it
-        if ($wp_query instanceof WP_Query && $wp_query->post_count >= $postsPerPage) {
-            return $wp_query;
+        if (defined('WP_DEBUG') && WP_DEBUG) {
+            error_log('========== [DDL buildDefaultQuery] START ==========');
+            error_log(sprintf('[DDL buildDefaultQuery] postsPerPage: %d, page: %d', $postsPerPage, $page));
+            error_log(sprintf('[DDL buildDefaultQuery] global $wp_query object ID: %s', spl_object_hash($wp_query)));
+            error_log(sprintf('[DDL buildDefaultQuery] global $wp_query post_count: %d', $wp_query->post_count));
+            error_log(sprintf('[DDL buildDefaultQuery] global $wp_query found_posts: %d', $wp_query->found_posts));
+            error_log('[DDL buildDefaultQuery] Backtrace: ' . wp_debug_backtrace_summary());
         }
 
-        // If we are on a singular page or the main query is limited, 
-        // we need to "re-build" the query to get more posts for the layout.
+        // ALWAYS recreate the query from query_vars to completely decouple from global $wp_query.
+        // As you noted, display slicing or looping can directly affect $wp_query->posts or global states and break other logic.
         if ($wp_query instanceof WP_Query) {
             $query_vars = $wp_query->query_vars;
-            
+
+            if (defined('WP_DEBUG') && WP_DEBUG) {
+                error_log('[DDL buildDefaultQuery] Creating new WP_Query from query_vars to prevent slicing side-effects');
+                error_log(sprintf('[DDL buildDefaultQuery] query_vars posts_per_page: %s', isset($query_vars['posts_per_page']) ? $query_vars['posts_per_page'] : 'not set'));
+                error_log(sprintf('[DDL buildDefaultQuery] query_vars has posts key? %s', isset($query_vars['posts']) ? 'YES' : 'NO'));
+            }
+
             // Ensure we get enough posts as requested by the block
             $query_vars['posts_per_page'] = $postsPerPage;
             $query_vars['paged'] = $page;
@@ -50,11 +60,36 @@ class DynamicDataLayoutQueryHelper
                 unset($query_vars['p'], $query_vars['name'], $query_vars['pagename']);
             }
 
-            return new WP_Query($query_vars);
+            // IMPORTANT: Remove posts from query_vars to prevent WP_Query from using pre-fetched posts
+            // This ensures a fresh query is executed instead of reusing global $wp_query posts
+            unset($query_vars['posts']);
+
+            $newQuery = new WP_Query($query_vars);
+            if (defined('WP_DEBUG') && WP_DEBUG) {
+                error_log('[DDL buildDefaultQuery] Created new WP_Query from query_vars');
+                error_log(sprintf('[DDL buildDefaultQuery] New query object ID: %s', spl_object_hash($newQuery)));
+                error_log(sprintf('[DDL buildDefaultQuery] New query post_count: %d', $newQuery->post_count));
+
+                // Check if $wp_query itself is being modified later
+                error_log(sprintf('[DDL buildDefaultQuery] Global $wp_query post_count BEFORE return: %d', $wp_query->post_count));
+            }
+            return $newQuery;
         }
 
-        // Fallback
-        return current_theme_supports('jankx') ? new WP_Query(['posts_per_page' => $postsPerPage]) : $wp_query;
+        // Fallback - never return the global $wp_query directly to avoid display slicing affecting the main query
+        if (current_theme_supports('jankx')) {
+            $fallbackQuery = new WP_Query(['posts_per_page' => $postsPerPage]);
+            if (defined('WP_DEBUG') && WP_DEBUG) {
+                error_log('[DDL buildDefaultQuery] Fallback: creating new WP_Query (theme supports jankx)');
+                error_log(sprintf('[DDL buildDefaultQuery] Fallback query object ID: %s', spl_object_hash($fallbackQuery)));
+            }
+            return $fallbackQuery;
+        }
+        // If we must use $wp_query as fallback, clone it to prevent modification
+        if (defined('WP_DEBUG') && WP_DEBUG) {
+            error_log('[DDL buildDefaultQuery] Fallback: cloning global $wp_query');
+        }
+        return $wp_query instanceof WP_Query ? clone $wp_query : new WP_Query(['posts_per_page' => $postsPerPage]);
     }
 
     /**
