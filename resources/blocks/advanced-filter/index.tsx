@@ -824,7 +824,6 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                 )}
                 <div className="jankx-advanced-filter__content">
                     <InnerBlocks
-                        template={getFilterTemplate(filterType)}
                         templateLock="insert"
                         allowedBlocks={['core/input', 'core/group', 'jankx/advanced-button', 'core/heading', 'core/paragraph']}
                     />
