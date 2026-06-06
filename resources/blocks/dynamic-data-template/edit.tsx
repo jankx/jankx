@@ -1110,8 +1110,11 @@ export default function Edit({
                             >
                                 {Array.from({ length: totalItems }).map((_, index) => {
                                     const animationClass = animationType && animationType !== 'none' ? `jankx-reveal jankx-reveal--${animationType} jankx-reveal--target-${animationTarget} ${animationReverse ? 'jankx-reveal--reverse' : ''}` : '';
+                                    const effectiveCols = Math.max(0.1, (columns || 1) + ((carouselPeek || 0) / 100));
                                     const itemStyle: CSSProperties = {
-                                        flex: `0 0 calc(100% / (${columns} + ${carouselPeek / 100}))`,
+                                        flex: `0 0 calc(100% / ${effectiveCols})`,
+                                        width: `calc(100% / ${effectiveCols})`,
+                                        maxWidth: `calc(100% / ${effectiveCols})`,
                                         scrollSnapAlign: carouselAlign,
                                     };
                                     if (animationType !== 'none') {

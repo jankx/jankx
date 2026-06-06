@@ -115,7 +115,7 @@ trait PostTemplateRendererTrait
         $showArrows = (bool) $this->getOption('showArrows', $options['showArrows'] ?? true);
         $showDots = (bool) $this->getOption('showDots', $options['showDots'] ?? true);
         $peek = (float) $this->getOption('carouselPeek', $options['carouselPeek'] ?? 0);
-        $effectiveColumns = $columns + ($peek / 100);
+        $effectiveColumns = max(0.1, $columns + ($peek / 100));
 
         $wrapperClasses = [
             'jankx-carousel',

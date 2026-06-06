@@ -647,8 +647,8 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
         '--columns-desktop': columns,
         '--columns-tablet': columnsTablet,
         '--columns-mobile': columnsMobile,
-        '--peek-amount': `${attributes.carouselPeek || 0}%`,
-        '--slides-per-view': columns, // Initial value for CSS formula
+        '--peek-amount': '0%', // Peek is integrated into --slides-per-view to match frontend standard
+        '--slides-per-view': (columns || 1) + ((attributes.carouselPeek || 0) / 100),
     } as CSSProperties;
 
     if (styleColor) {

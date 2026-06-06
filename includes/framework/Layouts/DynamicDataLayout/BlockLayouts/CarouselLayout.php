@@ -80,10 +80,10 @@ class CarouselLayout extends BlockTemplateLayout
                 'label' => __('Peeking Amount (%)', 'jankx'),
                 'type' => 'range',
                 'default' => 0,
-                'min' => 0,
-                'max' => 50,
-                'step' => 5,
-                'help' => __('Reveal portion of the next slide (e.g., 20% shows a bit of the 4th item if 3 columns)', 'jankx'),
+                'min' => -100,
+                'max' => 100,
+                'step' => 1,
+                'help' => __('Reveal portion of the next slide (positive) or previous slide (negative).', 'jankx'),
             ],
 
             [
