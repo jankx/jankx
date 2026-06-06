@@ -3,6 +3,8 @@ import { __ } from '@wordpress/i18n';
 import {
     InspectorControls,
     useBlockProps,
+    InnerBlocks,
+    useInnerBlocksProps,
 } from '@wordpress/block-editor';
 import {
     PanelBody,
@@ -12,8 +14,8 @@ import {
     Spinner,
     Placeholder,
 } from '@wordpress/components';
-import { useEffect, useMemo, useState } from '@wordpress/element';
-import { useSelect } from '@wordpress/data';
+import { useEffect, useMemo, useState, useRef } from '@wordpress/element';
+import { useSelect, dispatch } from '@wordpress/data';
 import metadata from './block.json';
 
 type FilterAttributes = {
@@ -60,6 +62,101 @@ interface EditProps {
     clientId: string;
 }
 
+// Define templates for each filter type
+const getFilterTemplate = (filterType: FilterAttributes['filterType']) => {
+    switch (filterType) {
+        case 'keyword':
+            return [
+                [
+                    'core/input',
+                    {
+                        placeholder: __('Search...', 'jankx'),
+                        type: 'text',
+                        className: 'jankx-filter-keyword-input',
+                    },
+                ],
+                [
+                    'jankx/advanced-button',
+                    {
+                        text: __('Search', 'jankx'),
+                        buttonType: 'submit',
+                        triggerType: 'button',
+                        className: 'jankx-filter-keyword-button',
+                    },
+                ],
+            ];
+        case 'taxonomy':
+            return [
+                [
+                    'core/group',
+                    {
+                        className: 'jankx-filter-taxonomy-group',
+                    },
+                    [],
+                ],
+            ];
+        case 'meta':
+            return [
+                [
+                    'core/input',
+                    {
+                        placeholder: __('Enter value...', 'jankx'),
+                        type: 'text',
+                        className: 'jankx-filter-meta-input',
+                    },
+                ],
+            ];
+        case 'price':
+            return [
+                [
+                    'core/input',
+                    {
+                        placeholder: __('Min price', 'jankx'),
+                        type: 'number',
+                        className: 'jankx-filter-price-min',
+                    },
+                ],
+                [
+                    'core/input',
+                    {
+                        placeholder: __('Max price', 'jankx'),
+                        type: 'number',
+                        className: 'jankx-filter-price-max',
+                    },
+                ],
+            ];
+        case 'date':
+            return [
+                [
+                    'core/input',
+                    {
+                        type: 'date',
+                        className: 'jankx-filter-date-start',
+                    },
+                ],
+                [
+                    'core/input',
+                    {
+                        type: 'date',
+                        className: 'jankx-filter-date-end',
+                    },
+                ],
+            ];
+        case 'author':
+            return [
+                [
+                    'core/group',
+                    {
+                        className: 'jankx-filter-author-group',
+                    },
+                    [],
+                ],
+            ];
+        default:
+            return [];
+    }
+};
+
 function Edit({ attributes, setAttributes, clientId }: EditProps) {
     const {
         filterType,
@@ -105,6 +202,7 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
     const [loadingTaxonomies, setLoadingTaxonomies] = useState(false);
     const [loadingTerms, setLoadingTerms] = useState(false);
     const [loadingAuthors, setLoadingAuthors] = useState(false);
+    const hasInitializedInnerBlocks = useRef(false);
 
     // Kiểm tra parent block và lấy attributes
     const { isSmartTabChild, parentDefaults } = useSelect(
@@ -262,6 +360,38 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
             }
         })();
     }, [filterType]);
+
+    // Auto-insert inner blocks when filterType changes
+    useEffect(() => {
+        if (!filterType) return;
+
+        // Get current inner blocks
+        const { getBlock } = dispatch('core/block-editor');
+        const block = getBlock(clientId);
+        if (!block) return;
+
+        const currentInnerBlocks = block.innerBlocks || [];
+
+        // Only insert blocks if:
+        // 1. This is the first initialization (no inner blocks yet)
+        // 2. Or the filter type has changed and we want to update the template
+        // For now, we'll only insert on first initialization to avoid overwriting user changes
+        if (currentInnerBlocks.length === 0 && !hasInitializedInnerBlocks.current) {
+            const template = getFilterTemplate(filterType);
+            if (template.length > 0) {
+                const { replaceInnerBlocks } = dispatch('core/block-editor');
+                // Create blocks from template
+                const { createBlock } = (window as any).wp.blocks;
+                const newBlocks = template.map((templateBlock) => {
+                    const [blockName, blockAttributes, innerBlocks] = templateBlock;
+                    return createBlock(blockName, blockAttributes, innerBlocks);
+                });
+
+                replaceInnerBlocks(clientId, newBlocks, false);
+                hasInitializedInnerBlocks.current = true;
+            }
+        }
+    }, [filterType, clientId]);
 
     return (
         <>
@@ -689,12 +819,24 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
             </InspectorControls>
 
             <div {...blockProps}>
-                <strong>{filterTitle}</strong>
-                <div style={{ fontSize: '12px', color: '#555' }}>
-                    <div>{__('Type', 'jankx')}: {filterType}</div>
-                    {taxonomy && <div>{__('Taxonomy', 'jankx')}: {taxonomy}</div>}
-                    {label && <div>{__('Label', 'jankx')}: {label}</div>}
+                {resolvedShowLabels && (
+                    <strong className="jankx-advanced-filter__label">{filterTitle}</strong>
+                )}
+                <div className="jankx-advanced-filter__content">
+                    <InnerBlocks
+                        template={getFilterTemplate(filterType)}
+                        templateLock="insert"
+                        allowedBlocks={['core/input', 'core/group', 'jankx/advanced-button', 'core/heading', 'core/paragraph']}
+                    />
                 </div>
+                {/* Debug info - can be removed in production */}
+                {process.env.NODE_ENV === 'development' && (
+                    <div style={{ fontSize: '12px', color: '#555', marginTop: '8px', opacity: 0.7 }}>
+                        <div>{__('Type', 'jankx')}: {filterType}</div>
+                        {taxonomy && <div>{__('Taxonomy', 'jankx')}: {taxonomy}</div>}
+                        {label && <div>{__('Label', 'jankx')}: {label}</div>}
+                    </div>
+                )}
             </div>
         </>
     );

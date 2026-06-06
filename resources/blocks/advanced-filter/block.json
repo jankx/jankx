@@ -14,7 +14,8 @@
   "textdomain": "jankx",
   "supports": {
     "html": false,
-    "reusable": false
+    "reusable": false,
+    "innerBlocks": true
   },
   "attributes": {
     "filterType": {
