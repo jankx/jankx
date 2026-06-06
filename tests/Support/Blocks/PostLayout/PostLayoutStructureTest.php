@@ -287,6 +287,60 @@ class PostLayoutStructureTest extends TestCase
         $emblaContainer = $viewport['children'][0];
         $this->assertEquals('div', $emblaContainer['tag']);
         $this->assertContains('embla__container', $emblaContainer['classes']);
+        $this->assertContains('jankx-carousel-container', $emblaContainer['classes']);
+    }
+
+    public function testCarouselLayoutPeekOptions()
+    {
+        $layout = new CarouselLayout();
+        $layout->setOptions([
+            'carouselPeek' => 20,
+        ]);
+
+        $structure = $layout->getHtmlStructure();
+        $container = $structure['container'];
+        
+        $this->assertArrayHasKey('attributes', $container);
+        $this->assertEquals('20', $container['attributes']['data-peek-amount']);
+    }
+
+    public function testCarouselLayoutResponsiveColumns()
+    {
+        $layout = new CarouselLayout();
+        $layout->setOptions([
+            'columns' => 4,
+            'columnsTablet' => 3,
+            'columnsMobile' => 2,
+        ]);
+
+        $structure = $layout->getHtmlStructure();
+        $container = $structure['container'];
+        
+        $this->assertContains('columns-4', $container['classes']);
+        $this->assertEquals('4', $container['styles']['--columns-desktop']);
+        $this->assertEquals('3', $container['styles']['--columns-tablet']);
+        $this->assertEquals('2', $container['styles']['--columns-mobile']);
+    }
+
+    public function testCarouselLayoutSlidesPerViewFallback()
+    {
+        $layout = new CarouselLayout();
+        
+        // Test fallback to columns=3 (default)
+        $structure1 = $layout->getHtmlStructure(['columns' => 3]);
+        $this->assertEquals('3', $structure1['container']['attributes']['data-slides-per-view']);
+
+        // Test fallback to columns=5
+        $structure2 = $layout->getHtmlStructure(['columns' => 5]);
+        $this->assertEquals('5', $structure2['container']['attributes']['data-slides-per-view']);
+
+        // Test explicit slidesPerView > 1
+        $structure3 = $layout->getHtmlStructure(['slidesPerView' => 4, 'columns' => 3]);
+        $this->assertEquals('4', $structure3['container']['attributes']['data-slides-per-view']);
+        
+        // Test default slidesPerView=1 (should fallback to columns if columns > 1)
+        $structure4 = $layout->getHtmlStructure(['slidesPerView' => 1, 'columns' => 3]);
+        $this->assertEquals('3', $structure4['container']['attributes']['data-slides-per-view']);
     }
 
     public function testCarouselLayoutItemWrapperStructure()

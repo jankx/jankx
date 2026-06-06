@@ -9,6 +9,11 @@ class CarouselLayout extends BlockTemplateLayout
     protected $name = 'carousel';
     protected $title = 'Carousel Layout';
 
+    public function supportsColumns(): bool
+    {
+        return true;
+    }
+
     public function getIcon(): string
     {
         return 'dashicons-images-alt2';
@@ -200,7 +205,7 @@ class CarouselLayout extends BlockTemplateLayout
         $structure['classes'][] = 'dynamic-data-layout--carousel';
         $structure['classes'][] = 'post-type-layout-carousel';
         
-        $slidesPerView = (int) ($options['slidesPerView'] ?? ($options['columns'] ?? 1));
+        $slidesPerView = (int) (isset($options['slidesPerView']) && (int)$options['slidesPerView'] > 1 ? $options['slidesPerView'] : ($options['columns'] ?? 1));
         
         // Embla specific attributes
         $structure['attributes']['data-embla-carousel'] = ''; 
@@ -245,7 +250,7 @@ class CarouselLayout extends BlockTemplateLayout
                 'children' => [
                     [
                         'tag' => 'div',
-                        'classes' => ['carousel-container', 'embla__container'],
+                        'classes' => ['carousel-container', 'jankx-carousel-container', 'embla__container'],
                     ],
                 ],
             ],
