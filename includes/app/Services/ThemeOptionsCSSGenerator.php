@@ -215,8 +215,40 @@ class ThemeOptionsCSSGenerator
      */
     public function generateCSS(): string
     {
-        $css = [];
-        // Global Styles
+        // Build root variables
+        $rootVars = [];
+        foreach ($this->cssVarMapping as $optionKey => $varName) {
+            if (is_array($varName)) {
+                $values = $this->getOption($optionKey, $this->defaults[$optionKey] ?? []);
+                foreach ($varName as $subKey => $actualVar) {
+                    if (isset($values[$subKey])) {
+                        $value = $values[$subKey];
+                        if (is_numeric($value)) {
+                            // Check for keys that need units
+                            if ($subKey === 'font-size') {
+                                $value .= 'px';
+                            }
+                            // line-height usually is unitless if numeric (e.g. 1.6)
+                        }
+                        $rootVars[] = "  {$actualVar}: {$value};";
+                    }
+                }
+            } else {
+                $value = $this->getOption($optionKey, $this->defaults[$optionKey] ?? '');
+                if ($value !== '') {
+                    // Handle numeric values that need px
+                    if (in_array($optionKey, ['container_width', 'sidebar_width', 'button_border_radius']) && is_numeric($value)) {
+                        $value .= 'px';
+                    }
+                    $rootVars[] = "  {$varName}: {$value};";
+                }
+            }
+        }
+
+        if (!empty($rootVars)) {
+            $css[] = ":root {\n" . implode("\n", $rootVars) . "\n}";
+        }
+        
         $css[] = '';
         
         if (!is_admin()) {
