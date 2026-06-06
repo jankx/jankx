@@ -215,6 +215,50 @@ class ThemeOptionsCSSGenerator
      */
     public function generateCSS(): string
     {
+        $css = [];
+        // Global Styles
+        $css[] = '';
+        
+        if (!is_admin()) {
+           
+            $css[] = 'header.site-header { background-color: var(--jankx-header-bg-color); color: var(--jankx-header-text-color); }';
+            if ($this->themeOptions->getOption('enable_sticky_header')) {
+                $css[] = 'header.is-sticky, .main-header.scrolled { background-color: var(--jankx-sticky-header-bg-color, #184962) !important; color: var(--jankx-sticky-header-text-color, #ffffff) !important; position: fixed !important; left: 0 !important; right: 0 !important; width: 100% !important; z-index: 9999 !important; }';
+                $css[] = 'header.is-sticky header a, .main-header.scrolled a, header.is-sticky header .wp-block-navigation-item > a, header.is-sticky header .wp-block-navigation .wp-block-navigation__submenu-icon, .main-header.scrolled .wp-block-navigation-item > a { color: var(--jankx-sticky-header-text-color, #ffffff) !important; }';
+
+                // .icon-container: chỉ set color để SVG dùng currentColor tự kế thừa.
+                // Không dùng border-color vì mỗi icon có thể có background/border tùy chỉnh.
+                $css[] = 'header.is-sticky .wp-block-jankx-svg-icon .icon-container,';
+                $css[] = '.main-header.scrolled .wp-block-jankx-svg-icon .icon-container {';
+                $css[] = '  color: var(--jankx-sticky-header-text-color, #ffffff) !important;';
+                $css[] = '  transition: color 0.3s ease;';
+                $css[] = '}';
+
+                // SVG fill — build fully-qualified selectors (Cartesian: base × svg tag)
+                // để tránh match unrelated SVG elements ngoài sticky header.
+                $stickyBases = [
+                    'header.is-sticky .wp-block-jankx-svg-icon .icon-container',
+                    '.main-header.scrolled .wp-block-jankx-svg-icon .icon-container',
+                ];
+                $svgTags = [
+                    'svg', 'svg path', 'svg g', 'svg rect', 'svg circle',
+                    'svg polygon', 'svg polyline', 'svg line', 'svg ellipse', 'svg text',
+                ];
+                $svgSelectors = [];
+                foreach ($stickyBases as $base) {
+                    foreach ($svgTags as $tag) {
+                        $svgSelectors[] = $base . ' ' . $tag;
+                    }
+                }
+                $css[] = implode(",\n", $svgSelectors) . ' {';
+                $css[] = '  fill: var(--jankx-sticky-header-text-color, #ffffff) !important;';
+                $css[] = '  transition: fill 0.3s ease;';
+                $css[] = '}';
+            }
+            $css[] = 'footer.site-footer { background-color: var(--jankx-footer-bg-color); color: var(--jankx-footer-text-color); }';
+        }
+
+        return implode("\n", $css);
     }
 
     /**
