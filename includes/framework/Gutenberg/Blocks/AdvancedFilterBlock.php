@@ -113,15 +113,19 @@ class AdvancedFilterBlock extends Block
             <?php endif; ?>
             <div <?php echo $contentAttrs; ?>>
                 <?php
-                try {
-                    $renderer = FilterRendererFactory::create($type);
-                    if ($renderer->canHandle($filter)) {
-                        $renderer->render($filter, $global);
+                // If there are inner blocks, we use them. Otherwise, fallback to the default PHP renderer.
+                if (empty(trim($content))) {
+                    try {
+                        $renderer = FilterRendererFactory::create($type);
+                        if ($renderer->canHandle($filter)) {
+                            $renderer->render($filter, $global);
+                        }
+                    } catch (\Throwable $e) {
+                        // Swallow render errors to avoid breaking editor
                     }
-                } catch (\Throwable $e) {
-                    // Swallow render errors to avoid breaking editor
+                } else {
+                    echo $content;
                 }
-                echo $content;
                 ?>
             </div>
         </div>

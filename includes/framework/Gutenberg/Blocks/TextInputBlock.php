@@ -31,7 +31,7 @@ class TextInputBlock extends Block
             'placeholder' => esc_attr($placeholder),
             'class' => 'jankx-text-input',
             'style' => sprintf(
-                'border-radius: %dpx; width: 100%%; padding-%s: 35px;',
+                'border-radius: %dpx; width: 100%%; padding-%s: 40px; min-height: 40px; min-width: 200px; border: 1px solid #ccc; outline: none;',
                 (int) $borderRadius,
                 $iconPosition === 'left' ? 'left' : 'right'
             ),
@@ -64,8 +64,9 @@ class TextInputBlock extends Block
             <?php if ($label) : ?>
                 <label class="jankx-text-input-label"><?php echo esc_html($label); ?></label>
             <?php endif; ?>
-            <div class="jankx-text-input-container" style="position: relative; display: flex; align-items: center;">
-                <div class="jankx-text-input-icon-container" style="position: absolute; <?php echo $iconPosition; ?>: 10px; z-index: 1; pointer-events: none; display: flex;">
+            <div class="jankx-text-input-container" style="position: relative; display: flex; align-items: center; width: 100%;">
+                <div class="jankx-text-input-icon-container" style="position: absolute; <?php echo $iconPosition; ?>: 12px; z-index: 1; pointer-events: none; display: flex; align-items: center; justify-content: center; width: 20px; height: 20px; overflow: hidden;">
+                    <style>.jankx-text-input-icon-container svg { width: 100%; height: 100%; }</style>
                     <?php echo $content; ?>
                 </div>
                 <input <?php echo $inputAttrString; ?>/>
