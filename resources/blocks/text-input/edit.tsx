@@ -1,0 +1,122 @@
+import { useBlockProps, InspectorControls } from '@wordpress/block-editor';
+import { PanelBody, TextControl, SelectControl, ToggleControl, RangeControl } from '@wordpress/components';
+import { __ } from '@wordpress/i18n';
+
+type Props = {
+  attributes: {
+    label?: string;
+    placeholder?: string;
+    inputType?: 'text' | 'email' | 'tel' | 'url' | 'search' | 'password' | 'number';
+    required?: boolean;
+    disabled?: boolean;
+    inputName?: string;
+    inputValue?: string;
+    width?: string;
+    borderRadius?: number;
+  };
+  setAttributes: (attrs: Partial<Props['attributes']>) => void;
+};
+
+export default function Edit({ attributes, setAttributes }: Props): JSX.Element {
+  const {
+    label = '',
+    placeholder = '',
+    inputType = 'text',
+    required = false,
+    disabled = false,
+    inputName = '',
+    inputValue = '',
+    width = '100%',
+    borderRadius = 4,
+  } = attributes;
+
+  const blockProps = useBlockProps({
+    className: 'jankx-text-input-wrapper',
+    style: {
+      width: width,
+    } as React.CSSProperties,
+  });
+
+  return (
+    <>
+      <InspectorControls>
+        <PanelBody title={__('Input Settings', 'jankx')} initialOpen={true}>
+          <TextControl
+            label={__('Label', 'jankx')}
+            value={label}
+            onChange={(v: string) => setAttributes({ label: v })}
+            help={__('Optional label text above the input', 'jankx')}
+          />
+          <TextControl
+            label={__('Placeholder', 'jankx')}
+            value={placeholder}
+            onChange={(v: string) => setAttributes({ placeholder: v })}
+          />
+          <SelectControl
+            label={__('Input Type', 'jankx')}
+            value={inputType}
+            options={[
+              { label: __('Text', 'jankx'), value: 'text' },
+              { label: __('Email', 'jankx'), value: 'email' },
+              { label: __('Phone', 'jankx'), value: 'tel' },
+              { label: __('URL', 'jankx'), value: 'url' },
+              { label: __('Search', 'jankx'), value: 'search' },
+              { label: __('Password', 'jankx'), value: 'password' },
+              { label: __('Number', 'jankx'), value: 'number' },
+            ]}
+            onChange={(v: 'text' | 'email' | 'tel' | 'url' | 'search' | 'password' | 'number') => setAttributes({ inputType: v })}
+          />
+          <TextControl
+            label={__('Input Name', 'jankx')}
+            value={inputName}
+            onChange={(v: string) => setAttributes({ inputName: v })}
+            help={__('Name attribute for form submission', 'jankx')}
+          />
+          <TextControl
+            label={__('Default Value', 'jankx')}
+            value={inputValue}
+            onChange={(v: string) => setAttributes({ inputValue: v })}
+          />
+          <TextControl
+            label={__('Width', 'jankx')}
+            value={width}
+            onChange={(v: string) => setAttributes({ width: v })}
+            help={__('CSS width value (e.g., 100%, 300px, 50%)', 'jankx')}
+          />
+          <RangeControl
+            label={__('Border Radius (px)', 'jankx')}
+            value={borderRadius}
+            onChange={(v?: number) => setAttributes({ borderRadius: v ?? 4 })}
+            min={0}
+            max={50}
+          />
+          <ToggleControl
+            label={__('Required', 'jankx')}
+            checked={required}
+            onChange={(v: boolean) => setAttributes({ required: v })}
+          />
+          <ToggleControl
+            label={__('Disabled', 'jankx')}
+            checked={disabled}
+            onChange={(v: boolean) => setAttributes({ disabled: v })}
+          />
+        </PanelBody>
+      </InspectorControls>
+      <div {...blockProps}>
+        {label && <label className="jankx-text-input-label">{label}</label>}
+        <input
+          type={inputType}
+          placeholder={placeholder}
+          name={inputName}
+          value={inputValue}
+          required={required}
+          disabled={disabled}
+          className="jankx-text-input"
+          style={{
+            borderRadius: `${borderRadius}px`,
+          } as React.CSSProperties}
+        />
+      </div>
+    </>
+  );
+}

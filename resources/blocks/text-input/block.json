@@ -1,0 +1,63 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "jankx/text-input",
+  "title": "Text Input",
+  "category": "jankx",
+  "description": "A text input field for forms and search",
+  "textdomain": "jankx",
+  "supports": {
+    "html": false,
+    "anchor": true,
+    "spacing": {
+      "margin": true,
+      "padding": true
+    },
+    "color": {
+      "text": true,
+      "background": true
+    }
+  },
+  "attributes": {
+    "label": {
+      "type": "string",
+      "default": ""
+    },
+    "placeholder": {
+      "type": "string",
+      "default": ""
+    },
+    "inputType": {
+      "type": "string",
+      "default": "text",
+      "enum": ["text", "email", "tel", "url", "search", "password", "number"]
+    },
+    "required": {
+      "type": "boolean",
+      "default": false
+    },
+    "disabled": {
+      "type": "boolean",
+      "default": false
+    },
+    "inputName": {
+      "type": "string",
+      "default": ""
+    },
+    "inputValue": {
+      "type": "string",
+      "default": ""
+    },
+    "width": {
+      "type": "string",
+      "default": "100%"
+    },
+    "borderRadius": {
+      "type": "number",
+      "default": 4
+    }
+  },
+  "editorScript": "file:./build/index.js",
+  "editorStyle": "file:./build/editor.css",
+  "style": "file:./build/style.css"
+}

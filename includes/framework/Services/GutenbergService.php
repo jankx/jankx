@@ -51,6 +51,7 @@ use Jankx\Gutenberg\Blocks\SafeIframeBlock;
 use Jankx\Gutenberg\Extra\LineClamp as ExtraLineClamp;
 use Jankx\Gutenberg\Blocks\WrapperBlock;
 use Jankx\Gutenberg\Blocks\TypographyBlock;
+use Jankx\Gutenberg\Blocks\TextInputBlock;
 use Jankx\Gutenberg\Extra\ChildOrder as ExtraChildOrder;
 use Jankx\Gutenberg\Extra\ResponsiveVisibility as ExtraResponsiveVisibility;
 use Jankx\Gutenberg\Extra\FlexGrow as ExtraFlexGrow;
@@ -187,6 +188,7 @@ class GutenbergService
         $this->repository->registerBlock(HumanReadablePostDateBlock::class);
         $this->repository->registerBlock(PostTermsBlock::class);
         $this->repository->registerBlock(UserMenuBlock::class);
+        $this->repository->registerBlock(TextInputBlock::class);
         $this->repository->registerBlock(WordPressBlock::class);
     }
 
