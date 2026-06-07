@@ -167,6 +167,10 @@ module.exports = {
     'blocks/divider/build/style': './blocks/divider/style.scss',
     'blocks/divider/build/editor': './blocks/divider/editor.scss',
 
+    'blocks/text-input/build/index': './blocks/text-input/index.tsx',
+    'blocks/text-input/build/style': './blocks/text-input/style.scss',
+    'blocks/text-input/build/editor': './blocks/text-input/editor.scss',
+
     'blocks/post-terms/build/index': './blocks/post-terms/index.ts',
     'blocks/post-terms/build/style': './blocks/post-terms/style.scss',
 
