@@ -15,7 +15,7 @@ import {
     Placeholder,
 } from '@wordpress/components';
 import { useEffect, useMemo, useState, useRef } from '@wordpress/element';
-import { useSelect, dispatch } from '@wordpress/data';
+import { useSelect, dispatch, select } from '@wordpress/data';
 import metadata from './block.json';
 
 type FilterAttributes = {
@@ -366,7 +366,7 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
         if (!filterType) return;
 
         // Get current inner blocks
-        const { getBlock } = dispatch('core/block-editor');
+        const { getBlock } = select('core/block-editor');
         const block = getBlock(clientId);
         if (!block) return;
 
