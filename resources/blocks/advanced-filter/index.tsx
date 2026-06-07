@@ -68,10 +68,10 @@ const getFilterTemplate = (filterType: FilterAttributes['filterType']) => {
         case 'keyword':
             return [
                 [
-                    'core/input',
+                    'jankx/text-input',
                     {
                         placeholder: __('Search...', 'jankx'),
-                        type: 'text',
+                        inputType: 'text',
                         className: 'jankx-filter-keyword-input',
                     },
                 ],
@@ -98,10 +98,10 @@ const getFilterTemplate = (filterType: FilterAttributes['filterType']) => {
         case 'meta':
             return [
                 [
-                    'core/input',
+                    'jankx/text-input',
                     {
                         placeholder: __('Enter value...', 'jankx'),
-                        type: 'text',
+                        inputType: 'text',
                         className: 'jankx-filter-meta-input',
                     },
                 ],
@@ -109,18 +109,18 @@ const getFilterTemplate = (filterType: FilterAttributes['filterType']) => {
         case 'price':
             return [
                 [
-                    'core/input',
+                    'jankx/text-input',
                     {
                         placeholder: __('Min price', 'jankx'),
-                        type: 'number',
+                        inputType: 'number',
                         className: 'jankx-filter-price-min',
                     },
                 ],
                 [
-                    'core/input',
+                    'jankx/text-input',
                     {
                         placeholder: __('Max price', 'jankx'),
-                        type: 'number',
+                        inputType: 'number',
                         className: 'jankx-filter-price-max',
                     },
                 ],
@@ -128,16 +128,16 @@ const getFilterTemplate = (filterType: FilterAttributes['filterType']) => {
         case 'date':
             return [
                 [
-                    'core/input',
+                    'jankx/text-input',
                     {
-                        type: 'date',
+                        inputType: 'date',
                         className: 'jankx-filter-date-start',
                     },
                 ],
                 [
-                    'core/input',
+                    'jankx/text-input',
                     {
-                        type: 'date',
+                        inputType: 'date',
                         className: 'jankx-filter-date-end',
                     },
                 ],
