@@ -18,7 +18,7 @@
     "innerBlocks": true
   },
   "attributes": {
-    "layout": {
+    "containerLayout": {
       "type": "string",
       "default": "row",
       "enum": ["row", "stack"]

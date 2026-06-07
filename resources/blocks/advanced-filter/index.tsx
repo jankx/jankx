@@ -30,7 +30,7 @@ type FilterAttributes = {
     showOnlyTopLevel?: boolean;
     showHierarchy?: boolean;
     multipleSelection?: boolean;
-    layout?: 'horizontal' | 'vertical' | 'dropdown' | 'accordion';
+    layout?: 'horizontal' | 'vertical' | 'dropdown' | 'accordion' | 'row' | 'stack';
     showLabels?: boolean;
     collapsible?: boolean;
     defaultExpanded?: boolean;
@@ -54,9 +54,9 @@ type FilterAttributes = {
     filterValueMax?: string;
     filterValueStart?: string;
     filterValueEnd?: string;
-    layout?: 'row' | 'stack';
-    justifyContent?: string;
-    alignItems?: string;
+    containerLayout?: 'row' | 'stack';
+    justifyContent?: 'flex-start' | 'center' | 'flex-end' | 'space-between' | 'space-around';
+    alignItems?: 'flex-start' | 'center' | 'flex-end' | 'stretch';
     gap?: string;
 };
 
@@ -198,6 +198,10 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
         filterValueMax,
         filterValueStart,
         filterValueEnd,
+        containerLayout,
+        justifyContent,
+        alignItems,
+        gap,
     } = attributes;
 
     const [taxonomies, setTaxonomies] = useState<any[]>([]);
@@ -292,10 +296,10 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
     const resolvedSearchButtonIcon = searchButtonIcon || '';
 
     const blockProps = useBlockProps({
-        className: `jankx-advanced-filter jankx-advanced-filter--layout-${layout || 'row'}`,
+        className: `jankx-advanced-filter jankx-advanced-filter--layout-${containerLayout || 'row'}`,
         style: {
             display: 'flex',
-            flexDirection: layout === 'stack' ? 'column' : 'row',
+            flexDirection: containerLayout === 'stack' ? 'column' : 'row',
             justifyContent: justifyContent,
             alignItems: alignItems,
             gap: gap,
@@ -826,6 +830,46 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                             )}
                         </>
                     )}
+                </PanelBody>
+
+                <PanelBody title={__('Layout Settings', 'jankx')} initialOpen={false}>
+                    <SelectControl
+                        label={__('Layout Type', 'jankx')}
+                        value={containerLayout || 'row'}
+                        options={[
+                            { label: __('Row (Horizontal)', 'jankx'), value: 'row' },
+                            { label: __('Stack (Vertical)', 'jankx'), value: 'stack' },
+                        ]}
+                        onChange={(value) => setAttributes({ containerLayout: value as 'row' | 'stack' })}
+                    />
+                    <SelectControl
+                        label={__('Justify Content', 'jankx')}
+                        value={justifyContent || 'flex-start'}
+                        options={[
+                            { label: __('Flex Start', 'jankx'), value: 'flex-start' },
+                            { label: __('Center', 'jankx'), value: 'center' },
+                            { label: __('Flex End', 'jankx'), value: 'flex-end' },
+                            { label: __('Space Between', 'jankx'), value: 'space-between' },
+                            { label: __('Space Around', 'jankx'), value: 'space-around' },
+                        ]}
+                        onChange={(value) => setAttributes({ justifyContent: value })}
+                    />
+                    <SelectControl
+                        label={__('Align Items', 'jankx')}
+                        value={alignItems || 'center'}
+                        options={[
+                            { label: __('Flex Start', 'jankx'), value: 'flex-start' },
+                            { label: __('Center', 'jankx'), value: 'center' },
+                            { label: __('Flex End', 'jankx'), value: 'flex-end' },
+                            { label: __('Stretch', 'jankx'), value: 'stretch' },
+                        ]}
+                        onChange={(value) => setAttributes({ alignItems: value })}
+                    />
+                    <TextControl
+                        label={__('Gap', 'jankx')}
+                        value={gap || '1rem'}
+                        onChange={(value) => setAttributes({ gap: value })}
+                    />
                 </PanelBody>
 
             </InspectorControls>

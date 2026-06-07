@@ -87,17 +87,17 @@ class AdvancedFilterBlock extends Block
             return '';
         }
 
-        $layout = $attributes['layout'] ?? 'row';
+        $containerLayout = $attributes['containerLayout'] ?? 'row';
         $justifyContent = $attributes['justifyContent'] ?? 'flex-start';
         $alignItems = $attributes['alignItems'] ?? 'center';
         $gap = $attributes['gap'] ?? '1rem';
         $label = $attributes['label'] ?? '';
 
         $wrapperAttrs = get_block_wrapper_attributes([
-            'class' => 'jankx-advanced-filter jankx-advanced-filter--layout-' . esc_attr($layout),
+            'class' => 'jankx-advanced-filter jankx-advanced-filter--layout-' . esc_attr($containerLayout),
             'style' => sprintf(
                 'display: flex; flex-direction: %s; justify-content: %s; align-items: %s; gap: %s; flex-wrap: wrap;',
-                $layout === 'stack' ? 'column' : 'row',
+                $containerLayout === 'stack' ? 'column' : 'row',
                 esc_attr($justifyContent),
                 esc_attr($alignItems),
                 esc_attr($gap)
