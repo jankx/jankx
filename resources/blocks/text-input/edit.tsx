@@ -1,4 +1,4 @@
-import { useBlockProps, InspectorControls } from '@wordpress/block-editor';
+import { useBlockProps, InspectorControls, InnerBlocks } from '@wordpress/block-editor';
 import { PanelBody, TextControl, SelectControl, ToggleControl, RangeControl } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 
@@ -13,6 +13,7 @@ type Props = {
     inputValue?: string;
     width?: string;
     borderRadius?: number;
+    iconPosition?: 'left' | 'right';
   };
   setAttributes: (attrs: Partial<Props['attributes']>) => void;
 };
@@ -28,12 +29,14 @@ export default function Edit({ attributes, setAttributes }: Props): JSX.Element 
     inputValue = '',
     width = '100%',
     borderRadius = 4,
+    iconPosition = 'left',
   } = attributes;
 
   const blockProps = useBlockProps({
-    className: 'jankx-text-input-wrapper',
+    className: `jankx-text-input-wrapper jankx-text-input-wrapper--has-icon jankx-text-input-wrapper--icon-${iconPosition}`,
     style: {
       width: width,
+      position: 'relative',
     } as React.CSSProperties,
   });
 
@@ -100,22 +103,49 @@ export default function Edit({ attributes, setAttributes }: Props): JSX.Element 
             checked={disabled}
             onChange={(v: boolean) => setAttributes({ disabled: v })}
           />
+          <SelectControl
+            label={__('Icon Position', 'jankx')}
+            value={iconPosition}
+            options={[
+              { label: __('Left', 'jankx'), value: 'left' },
+              { label: __('Right', 'jankx'), value: 'right' },
+            ]}
+            onChange={(v: 'left' | 'right') => setAttributes({ iconPosition: v })}
+          />
         </PanelBody>
       </InspectorControls>
       <div {...blockProps}>
         {label && <label className="jankx-text-input-label">{label}</label>}
-        <input
-          type={inputType}
-          placeholder={placeholder}
-          name={inputName}
-          value={inputValue}
-          required={required}
-          disabled={disabled}
-          className="jankx-text-input"
-          style={{
-            borderRadius: `${borderRadius}px`,
-          } as React.CSSProperties}
-        />
+        <div className="jankx-text-input-container" style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+          <div className="jankx-text-input-icon-container" style={{
+            position: 'absolute',
+            [iconPosition]: '10px',
+            zIndex: 1,
+            pointerEvents: 'none',
+            display: 'flex',
+          }}>
+            <InnerBlocks
+              allowedBlocks={['jankx/svg-icon']}
+              template={[['jankx/svg-icon', {}]]}
+              templateLock={false}
+            />
+          </div>
+          <input
+            type={inputType}
+            placeholder={placeholder}
+            name={inputName}
+            value={inputValue}
+            required={required}
+            disabled={disabled}
+            className="jankx-text-input"
+            style={{
+              borderRadius: `${borderRadius}px`,
+              paddingLeft: iconPosition === 'left' ? '35px' : '10px',
+              paddingRight: iconPosition === 'right' ? '35px' : '10px',
+              width: '100%',
+            } as React.CSSProperties}
+          />
+        </div>
       </div>
     </>
   );

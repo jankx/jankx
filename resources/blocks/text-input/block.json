@@ -55,7 +55,15 @@
     "borderRadius": {
       "type": "number",
       "default": 4
+    },
+    "iconPosition": {
+      "type": "string",
+      "default": "left",
+      "enum": ["left", "right"]
     }
+  },
+  "supports": {
+    "innerBlocks": true
   },
   "editorScript": "file:./build/index.js",
   "editorStyle": "file:./build/editor.css",

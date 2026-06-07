@@ -18,6 +18,23 @@
     "innerBlocks": true
   },
   "attributes": {
+    "layout": {
+      "type": "string",
+      "default": "row",
+      "enum": ["row", "stack"]
+    },
+    "justifyContent": {
+      "type": "string",
+      "default": "flex-start"
+    },
+    "alignItems": {
+      "type": "string",
+      "default": "center"
+    },
+    "gap": {
+      "type": "string",
+      "default": "1rem"
+    },
     "filterType": {
       "type": "string",
       "default": "taxonomy",

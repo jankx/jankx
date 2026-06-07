@@ -19,17 +19,22 @@ class TextInputBlock extends Block
         $inputValue = $attributes['inputValue'] ?? '';
         $width = $attributes['width'] ?? '100%';
         $borderRadius = $attributes['borderRadius'] ?? 4;
+        $iconPosition = $attributes['iconPosition'] ?? 'left';
 
         $wrapperAttrs = get_block_wrapper_attributes([
-            'class' => 'jankx-text-input-wrapper',
-            'style' => sprintf('width: %s;', esc_attr($width)),
+            'class' => sprintf('jankx-text-input-wrapper jankx-text-input-wrapper--has-icon jankx-text-input-wrapper--icon-%s', esc_attr($iconPosition)),
+            'style' => sprintf('width: %s; position: relative;', esc_attr($width)),
         ]);
 
         $inputAttrs = [
             'type' => esc_attr($inputType),
             'placeholder' => esc_attr($placeholder),
             'class' => 'jankx-text-input',
-            'style' => sprintf('border-radius: %dpx;', (int) $borderRadius),
+            'style' => sprintf(
+                'border-radius: %dpx; width: 100%; padding-%s: 35px;',
+                (int) $borderRadius,
+                $iconPosition === 'left' ? 'left' : 'right'
+            ),
         ];
 
         if ($inputName) {
@@ -59,7 +64,12 @@ class TextInputBlock extends Block
             <?php if ($label) : ?>
                 <label class="jankx-text-input-label"><?php echo esc_html($label); ?></label>
             <?php endif; ?>
-            <input <?php echo $inputAttrString; ?>/>
+            <div class="jankx-text-input-container" style="position: relative; display: flex; align-items: center;">
+                <div class="jankx-text-input-icon-container" style="position: absolute; <?php echo $iconPosition; ?>: 10px; z-index: 1; pointer-events: none; display: flex;">
+                    <?php echo $content; ?>
+                </div>
+                <input <?php echo $inputAttrString; ?>/>
+            </div>
         </div>
         <?php
         return ob_get_clean();

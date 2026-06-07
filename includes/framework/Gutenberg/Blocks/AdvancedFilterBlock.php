@@ -87,19 +87,45 @@ class AdvancedFilterBlock extends Block
             return '';
         }
 
-        ob_start();
-        try {
-            $renderer = FilterRendererFactory::create($type);
-            if ($renderer->canHandle($filter)) {
-                $renderer->render($filter, $global);
-            }
-        } catch (\Throwable $e) {
-            // Swallow render errors to avoid breaking editor
-        }
-        $filter_output = ob_get_clean();
+        $layout = $attributes['layout'] ?? 'row';
+        $justifyContent = $attributes['justifyContent'] ?? 'flex-start';
+        $alignItems = $attributes['alignItems'] ?? 'center';
+        $gap = $attributes['gap'] ?? '1rem';
+        $label = $attributes['label'] ?? '';
 
-        // Render inner blocks if any
-        return $filter_output . $content;
+        $wrapperAttrs = get_block_wrapper_attributes([
+            'class' => 'jankx-advanced-filter jankx-advanced-filter--layout-' . esc_attr($layout),
+            'style' => sprintf(
+                'display: flex; flex-direction: %s; justify-content: %s; align-items: %s; gap: %s; flex-wrap: wrap;',
+                $layout === 'stack' ? 'column' : 'row',
+                esc_attr($justifyContent),
+                esc_attr($alignItems),
+                esc_attr($gap)
+            ),
+        ]);
+
+        ob_start();
+        ?>
+        <div <?php echo $wrapperAttrs; ?>>
+            <?php if ($label && ($attributes['showLabels'] ?? true)) : ?>
+                <strong class="jankx-advanced-filter__label"><?php echo esc_html($label); ?></strong>
+            <?php endif; ?>
+            <div class="jankx-advanced-filter__content">
+                <?php
+                try {
+                    $renderer = FilterRendererFactory::create($type);
+                    if ($renderer->canHandle($filter)) {
+                        $renderer->render($filter, $global);
+                    }
+                } catch (\Throwable $e) {
+                    // Swallow render errors to avoid breaking editor
+                }
+                echo $content;
+                ?>
+            </div>
+        </div>
+        <?php
+        return ob_get_clean();
     }
 
     /**

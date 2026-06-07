@@ -54,6 +54,10 @@ type FilterAttributes = {
     filterValueMax?: string;
     filterValueStart?: string;
     filterValueEnd?: string;
+    layout?: 'row' | 'stack';
+    justifyContent?: string;
+    alignItems?: string;
+    gap?: string;
 };
 
 interface EditProps {
@@ -288,7 +292,15 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
     const resolvedSearchButtonIcon = searchButtonIcon || '';
 
     const blockProps = useBlockProps({
-        className: 'jankx-advanced-filter',
+        className: `jankx-advanced-filter jankx-advanced-filter--layout-${layout || 'row'}`,
+        style: {
+            display: 'flex',
+            flexDirection: layout === 'stack' ? 'column' : 'row',
+            justifyContent: justifyContent,
+            alignItems: alignItems,
+            gap: gap,
+            flexWrap: 'wrap',
+        } as React.CSSProperties,
     });
 
     const filterTitle = useMemo(() => {
@@ -824,8 +836,8 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                 )}
                 <div className="jankx-advanced-filter__content">
                     <InnerBlocks
-                        templateLock="insert"
-                        allowedBlocks={['core/input', 'core/group', 'jankx/advanced-button', 'core/heading', 'core/paragraph']}
+                        templateLock={false}
+                        allowedBlocks={['jankx/text-input', 'core/group', 'jankx/advanced-button', 'core/heading', 'core/paragraph', 'core/columns', 'core/column']}
                     />
                 </div>
                 {/* Debug info - can be removed in production */}
@@ -844,7 +856,7 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
 registerBlockType(metadata.name, {
     ...metadata,
     edit: Edit,
-    save: () => null,
+    save: () => <InnerBlocks.Content />,
 } as any);
 
 
