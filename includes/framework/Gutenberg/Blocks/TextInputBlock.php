@@ -31,7 +31,7 @@ class TextInputBlock extends Block
             'placeholder' => esc_attr($placeholder),
             'class' => 'jankx-text-input',
             'style' => sprintf(
-                'border-radius: %dpx; width: 100%; padding-%s: 35px;',
+                'border-radius: %dpx; width: 100%%; padding-%s: 35px;',
                 (int) $borderRadius,
                 $iconPosition === 'left' ? 'left' : 'right'
             ),

@@ -95,14 +95,15 @@ class AdvancedFilterBlock extends Block
 
         $wrapperAttrs = get_block_wrapper_attributes([
             'class' => 'jankx-advanced-filter jankx-advanced-filter--layout-' . esc_attr($containerLayout),
-            'style' => sprintf(
-                'display: flex; flex-direction: %s; justify-content: %s; align-items: %s; gap: %s; flex-wrap: wrap;',
-                $containerLayout === 'stack' ? 'column' : 'row',
-                esc_attr($justifyContent),
-                esc_attr($alignItems),
-                esc_attr($gap)
-            ),
         ]);
+
+        $contentAttrs = sprintf(
+            'class="jankx-advanced-filter__content" style="display: flex; flex-direction: %s; justify-content: %s; align-items: %s; gap: %s; flex-wrap: wrap;"',
+            $containerLayout === 'stack' ? 'column' : 'row',
+            esc_attr($justifyContent),
+            esc_attr($alignItems),
+            esc_attr($gap)
+        );
 
         ob_start();
         ?>
@@ -110,7 +111,7 @@ class AdvancedFilterBlock extends Block
             <?php if ($label && ($attributes['showLabels'] ?? true)) : ?>
                 <strong class="jankx-advanced-filter__label"><?php echo esc_html($label); ?></strong>
             <?php endif; ?>
-            <div class="jankx-advanced-filter__content">
+            <div <?php echo $contentAttrs; ?>>
                 <?php
                 try {
                     $renderer = FilterRendererFactory::create($type);

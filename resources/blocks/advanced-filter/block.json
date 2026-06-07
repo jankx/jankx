@@ -82,11 +82,6 @@
       "type": "boolean",
       "default": true
     },
-    "layout": {
-      "type": "string",
-      "default": "horizontal",
-      "enum": ["horizontal", "vertical", "dropdown", "accordion"]
-    },
     "showLabels": {
       "type": "boolean",
       "default": true

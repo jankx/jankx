@@ -23,19 +23,19 @@ type FilterAttributes = {
     label?: string;
     enabled?: boolean;
     taxonomy?: string;
-    displayStyle?: 'buttons' | 'checkboxes' | 'dropdown' | 'select';
-    listingType?: 'ul' | 'ol' | 'none';
+    displayStyle?: 'buttons' | 'checkboxes' | 'dropdown' | 'select' | undefined;
+    listingType?: 'ul' | 'ol' | 'none' | undefined;
     showCount?: boolean;
     showEmptyTerms?: boolean;
     showOnlyTopLevel?: boolean;
     showHierarchy?: boolean;
     multipleSelection?: boolean;
-    layout?: 'horizontal' | 'vertical' | 'dropdown' | 'accordion' | 'row' | 'stack';
+    layout?: 'horizontal' | 'vertical' | 'dropdown' | 'accordion' | 'row' | 'stack' | undefined;
     showLabels?: boolean;
     collapsible?: boolean;
     defaultExpanded?: boolean;
     metaKey?: string;
-    inputType?: 'text' | 'number' | 'range' | 'date' | 'date-range';
+    inputType?: 'text' | 'number' | 'range' | 'date' | 'date-range' | undefined;
     minValue?: string;
     maxValue?: string;
     placeholder?: string;
@@ -77,6 +77,7 @@ const getFilterTemplate = (filterType: FilterAttributes['filterType']) => {
                         placeholder: __('Search...', 'jankx'),
                         inputType: 'text',
                         className: 'jankx-filter-keyword-input',
+                        width: 'auto',
                     },
                 ],
                 [
@@ -107,6 +108,7 @@ const getFilterTemplate = (filterType: FilterAttributes['filterType']) => {
                         placeholder: __('Enter value...', 'jankx'),
                         inputType: 'text',
                         className: 'jankx-filter-meta-input',
+                        width: 'auto',
                     },
                 ],
             ];
@@ -118,6 +120,7 @@ const getFilterTemplate = (filterType: FilterAttributes['filterType']) => {
                         placeholder: __('Min price', 'jankx'),
                         inputType: 'number',
                         className: 'jankx-filter-price-min',
+                        width: 'auto',
                     },
                 ],
                 [
@@ -126,6 +129,7 @@ const getFilterTemplate = (filterType: FilterAttributes['filterType']) => {
                         placeholder: __('Max price', 'jankx'),
                         inputType: 'number',
                         className: 'jankx-filter-price-max',
+                        width: 'auto',
                     },
                 ],
             ];
@@ -136,6 +140,7 @@ const getFilterTemplate = (filterType: FilterAttributes['filterType']) => {
                     {
                         inputType: 'date',
                         className: 'jankx-filter-date-start',
+                        width: 'auto',
                     },
                 ],
                 [
@@ -143,6 +148,7 @@ const getFilterTemplate = (filterType: FilterAttributes['filterType']) => {
                     {
                         inputType: 'date',
                         className: 'jankx-filter-date-end',
+                        width: 'auto',
                     },
                 ],
             ];
@@ -297,15 +303,25 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
 
     const blockProps = useBlockProps({
         className: `jankx-advanced-filter jankx-advanced-filter--layout-${containerLayout || 'row'}`,
-        style: {
-            display: 'flex',
-            flexDirection: containerLayout === 'stack' ? 'column' : 'row',
-            justifyContent: justifyContent,
-            alignItems: alignItems,
-            gap: gap,
-            flexWrap: 'wrap',
-        } as React.CSSProperties,
     });
+
+    const innerBlocksProps = useInnerBlocksProps(
+        {
+            className: 'jankx-advanced-filter__content',
+            style: {
+                display: 'flex',
+                flexDirection: containerLayout === 'stack' ? 'column' : 'row',
+                justifyContent: justifyContent,
+                alignItems: alignItems,
+                gap: gap,
+                flexWrap: 'wrap',
+            } as React.CSSProperties,
+        },
+        {
+            templateLock: false,
+            allowedBlocks: ['jankx/text-input', 'core/group', 'jankx/advanced-button', 'core/heading', 'core/paragraph', 'core/columns', 'core/column'],
+        }
+    );
 
     const filterTitle = useMemo(() => {
         const typeLabel = filterType ? filterType.charAt(0).toUpperCase() + filterType.slice(1) : 'Filter';
@@ -395,7 +411,7 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
         if (currentInnerBlocks.length === 0 && !hasInitializedInnerBlocks.current) {
             const template = getFilterTemplate(filterType);
             if (template.length > 0) {
-                const { replaceInnerBlocks } = dispatch('core/block-editor');
+                const { replaceInnerBlocks } = dispatch('core/block-editor') as any;
                 // Create blocks from template
                 const { createBlock } = (window as any).wp.blocks;
                 const newBlocks = template.map((templateBlock) => {
@@ -878,12 +894,7 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                 {resolvedShowLabels && (
                     <strong className="jankx-advanced-filter__label">{filterTitle}</strong>
                 )}
-                <div className="jankx-advanced-filter__content">
-                    <InnerBlocks
-                        templateLock={false}
-                        allowedBlocks={['jankx/text-input', 'core/group', 'jankx/advanced-button', 'core/heading', 'core/paragraph', 'core/columns', 'core/column']}
-                    />
-                </div>
+                <div {...innerBlocksProps} />
                 {/* Debug info - can be removed in production */}
                 {process.env.NODE_ENV === 'development' && (
                     <div style={{ fontSize: '12px', color: '#555', marginTop: '8px', opacity: 0.7 }}>
