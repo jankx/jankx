@@ -87,7 +87,7 @@ const getFilterTemplate = (filterType: FilterAttributes['filterType']) => {
                         text: __('Search', 'jankx'),
                         buttonType: 'submit',
                         triggerType: 'button',
-                        className: 'jankx-filter-keyword-button',
+                        className: 'jankx-filter-keyword-button filter-search-button',
                     },
                 ],
             ];
@@ -320,7 +320,7 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
         },
         {
             templateLock: false,
-            allowedBlocks: ['jankx/text-input', 'core/group', 'jankx/advanced-button', 'core/heading', 'core/paragraph', 'core/columns', 'core/column'],
+            allowedBlocks: ['jankx/text-input', 'core/group', 'jankx/advanced-button', 'core/heading', 'core/paragraph', 'core/columns', 'core/column', 'jankx/svg-icon'],
         }
     );
 

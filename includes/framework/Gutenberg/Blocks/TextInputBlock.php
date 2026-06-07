@@ -29,7 +29,7 @@ class TextInputBlock extends Block
         $inputAttrs = [
             'type' => esc_attr($inputType),
             'placeholder' => esc_attr($placeholder),
-            'class' => 'jankx-text-input',
+            'class' => 'jankx-text-input filter-input-' . esc_attr($attributes['filterType'] ?? 'keyword') . ' filter-input-keyword',
             'style' => sprintf(
                 'border-radius: %dpx; width: 100%%; padding-%s: 40px; min-height: 40px; min-width: 200px; border: 1px solid #ccc; outline: none;',
                 (int) $borderRadius,

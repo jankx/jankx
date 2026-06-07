@@ -94,11 +94,13 @@ class AdvancedFilterBlock extends Block
         $label = $attributes['label'] ?? '';
 
         $wrapperAttrs = get_block_wrapper_attributes([
-            'class' => 'jankx-advanced-filter jankx-advanced-filter--layout-' . esc_attr($containerLayout),
+            'class' => 'jankx-advanced-filter jankx-advanced-filter--layout-' . esc_attr($containerLayout) . ' filter-group',
+            'data-filter-type' => esc_attr($type),
         ]);
 
         $contentAttrs = sprintf(
-            'class="jankx-advanced-filter__content" style="display: flex; flex-direction: %s; justify-content: %s; align-items: %s; gap: %s; flex-wrap: wrap;"',
+            'class="jankx-advanced-filter__content filter-%s" style="display: flex; flex-direction: %s; justify-content: %s; align-items: %s; gap: %s; flex-wrap: wrap;"',
+            esc_attr($type),
             $containerLayout === 'stack' ? 'column' : 'row',
             esc_attr($justifyContent),
             esc_attr($alignItems),
@@ -107,7 +109,7 @@ class AdvancedFilterBlock extends Block
 
         ob_start();
         ?>
-        <div <?php echo $wrapperAttrs; ?>>
+        <form <?php echo $wrapperAttrs; ?> action="<?php echo esc_url(home_url('/')); ?>" method="get">
             <?php if ($label && ($attributes['showLabels'] ?? true)) : ?>
                 <strong class="jankx-advanced-filter__label"><?php echo esc_html($label); ?></strong>
             <?php endif; ?>
@@ -128,7 +130,7 @@ class AdvancedFilterBlock extends Block
                 }
                 ?>
             </div>
-        </div>
+        </form>
         <?php
         return ob_get_clean();
     }
