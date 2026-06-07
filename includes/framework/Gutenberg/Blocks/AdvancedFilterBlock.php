@@ -96,7 +96,10 @@ class AdvancedFilterBlock extends Block
         } catch (\Throwable $e) {
             // Swallow render errors to avoid breaking editor
         }
-        return ob_get_clean();
+        $filter_output = ob_get_clean();
+
+        // Render inner blocks if any
+        return $filter_output . $content;
     }
 
     /**
