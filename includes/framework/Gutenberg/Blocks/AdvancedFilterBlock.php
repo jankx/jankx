@@ -87,7 +87,7 @@ class AdvancedFilterBlock extends Block
             return '';
         }
 
-        $containerLayout = $attributes['containerLayout'] ?? 'row';
+        $containerLayout = $attributes['containerLayout'] ?? $attributes['layout'] ?? 'row';
         $justifyContent = $attributes['justifyContent'] ?? 'flex-start';
         $alignItems = $attributes['alignItems'] ?? 'center';
         $gap = $attributes['gap'] ?? '1rem';
@@ -109,6 +109,15 @@ class AdvancedFilterBlock extends Block
 
         ob_start();
         ?>
+        <style>
+            .jankx-advanced-filter--layout-row .jankx-advanced-filter__content > * {
+                flex: 0 0 auto;
+                max-width: 100%;
+            }
+            .jankx-advanced-filter--layout-stack .jankx-advanced-filter__content > * {
+                width: 100%;
+            }
+        </style>
         <form <?php echo $wrapperAttrs; ?> action="<?php echo esc_url(home_url('/')); ?>" method="get">
             <?php if ($label && ($attributes['showLabels'] ?? true)) : ?>
                 <strong class="jankx-advanced-filter__label"><?php echo esc_html($label); ?></strong>

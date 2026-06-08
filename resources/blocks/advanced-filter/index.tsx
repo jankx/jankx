@@ -288,7 +288,7 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
     const resolvedTargetPostType = parentDefaults.targetPostType || 'post';
     const resolvedDisplayStyle = displayStyle || parentDefaults.displayStyle || 'buttons';
     const normalizedDisplayStyle = ['buttons', 'checkboxes'].includes(resolvedDisplayStyle || '') ? resolvedDisplayStyle : 'buttons';
-    const resolvedLayout = layout || parentDefaults.layout || 'horizontal';
+    const resolvedLayout = containerLayout || layout || parentDefaults.layout || 'row';
     const resolvedShowLabels = showLabels ?? parentDefaults.showLabels ?? true;
     const resolvedShowCount = showCount ?? parentDefaults.showCount ?? false;
     const resolvedShowEmptyTerms = showEmptyTerms ?? parentDefaults.showEmptyTerms ?? true;
@@ -303,7 +303,7 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
     const resolvedSearchButtonIcon = searchButtonIcon || '';
 
     const blockProps = useBlockProps({
-        className: `jankx-advanced-filter jankx-advanced-filter--layout-${containerLayout || 'row'}`,
+        className: `jankx-advanced-filter jankx-advanced-filter--layout-${resolvedLayout}`,
     });
 
     const innerBlocksProps = useInnerBlocksProps(
@@ -311,10 +311,10 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
             className: 'jankx-advanced-filter__content',
             style: {
                 display: 'flex',
-                flexDirection: containerLayout === 'stack' ? 'column' : 'row',
-                justifyContent: justifyContent,
-                alignItems: alignItems,
-                gap: gap,
+                flexDirection: resolvedLayout === 'stack' ? 'column' : 'row',
+                justifyContent: justifyContent || 'flex-start',
+                alignItems: alignItems || 'center',
+                gap: gap || '1rem',
                 flexWrap: 'wrap',
             } as React.CSSProperties,
         },
@@ -892,6 +892,17 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
             </InspectorControls>
 
             <div {...blockProps}>
+                <style>
+                    {`.jankx-advanced-filter--layout-row .jankx-advanced-filter__content > * {
+                        flex: 0 0 auto !important;
+                        width: auto !important;
+                        max-width: 100% !important;
+                    }
+                    .jankx-advanced-filter--layout-stack .jankx-advanced-filter__content > * {
+                        width: 100% !important;
+                        flex: 0 0 100% !important;
+                    }`}
+                </style>
                 {resolvedShowLabels && (
                     <strong className="jankx-advanced-filter__label">{filterTitle}</strong>
                 )}
