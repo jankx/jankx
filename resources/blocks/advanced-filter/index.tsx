@@ -58,6 +58,7 @@ type FilterAttributes = {
     justifyContent?: 'flex-start' | 'center' | 'flex-end' | 'space-between' | 'space-around';
     alignItems?: 'flex-start' | 'center' | 'flex-end' | 'stretch';
     gap?: string;
+    flexWrap?: 'nowrap' | 'wrap';
 };
 
 interface EditProps {
@@ -209,6 +210,7 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
         justifyContent,
         alignItems,
         gap,
+        flexWrap,
     } = attributes;
 
     const [taxonomies, setTaxonomies] = useState<any[]>([]);
@@ -315,7 +317,7 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                 justifyContent: justifyContent || 'flex-start',
                 alignItems: alignItems || 'center',
                 gap: gap || '1rem',
-                flexWrap: 'wrap',
+                flexWrap: flexWrap || 'nowrap',
             } as React.CSSProperties,
         },
         {
@@ -886,6 +888,12 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                         label={__('Gap', 'jankx')}
                         value={gap || '1rem'}
                         onChange={(value) => setAttributes({ gap: value })}
+                    />
+                    <ToggleControl
+                        label={__('Flex Wrap', 'jankx')}
+                        checked={flexWrap === 'wrap'}
+                        onChange={(value) => setAttributes({ flexWrap: value ? 'wrap' : 'nowrap' })}
+                        help={__('Allow items to wrap to the next line if there is not enough space.', 'jankx')}
                     />
                 </PanelBody>
 

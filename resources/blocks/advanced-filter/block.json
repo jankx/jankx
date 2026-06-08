@@ -35,6 +35,11 @@
       "type": "string",
       "default": "1rem"
     },
+    "flexWrap": {
+      "type": "string",
+      "default": "nowrap",
+      "enum": ["nowrap", "wrap"]
+    },
     "filterType": {
       "type": "string",
       "default": "taxonomy",
