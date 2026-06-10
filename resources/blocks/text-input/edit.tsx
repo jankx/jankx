@@ -1,4 +1,5 @@
 import { useBlockProps, InspectorControls, InnerBlocks } from '@wordpress/block-editor';
+import { useSelect } from '@wordpress/data';
 import { PanelBody, TextControl, SelectControl, ToggleControl, RangeControl } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 
@@ -31,6 +32,15 @@ export default function Edit({ attributes, setAttributes }: Props): JSX.Element 
     borderRadius = 4,
     iconPosition = 'left',
   } = attributes;
+
+  const { clientId } = useBlockProps();
+
+  // Detect if text-input is a child of advanced-filter
+  const isInsideAdvancedFilter = useSelect((select: any) => {
+    const { getBlockParents, getBlock } = select('core/block-editor');
+    const parents: string[] = getBlockParents(clientId) || [];
+    return parents.some((id: string) => getBlock(id)?.name === 'jankx/advanced-filter');
+  }, [clientId]);
 
   const blockProps = useBlockProps({
     className: `jankx-text-input-wrapper jankx-text-input-wrapper--has-icon jankx-text-input-wrapper--icon-${iconPosition}`,
@@ -69,12 +79,19 @@ export default function Edit({ attributes, setAttributes }: Props): JSX.Element 
             ]}
             onChange={(v: 'text' | 'email' | 'tel' | 'url' | 'search' | 'password' | 'number') => setAttributes({ inputType: v })}
           />
-          <TextControl
-            label={__('Input Name', 'jankx')}
-            value={inputName}
-            onChange={(v: string) => setAttributes({ inputName: v })}
-            help={__('Name attribute for form submission', 'jankx')}
-          />
+          {!isInsideAdvancedFilter && (
+            <TextControl
+              label={__('Input Name', 'jankx')}
+              value={inputName}
+              onChange={(v: string) => setAttributes({ inputName: v })}
+              help={__('Name attribute for form submission', 'jankx')}
+            />
+          )}
+          {isInsideAdvancedFilter && (
+            <div style={{ padding: '8px', background: '#f0f0f0', borderRadius: '4px', fontSize: '12px', color: '#555' }}>
+              {__('Input Name is automatically set to "keyword" when inside Advanced Filter', 'jankx')}
+            </div>
+          )}
           <TextControl
             label={__('Default Value', 'jankx')}
             value={inputValue}
@@ -133,7 +150,7 @@ export default function Edit({ attributes, setAttributes }: Props): JSX.Element 
           <input
             type={inputType}
             placeholder={placeholder}
-            name={inputName}
+            name={isInsideAdvancedFilter ? 'keyword' : inputName}
             value={inputValue}
             required={required}
             disabled={disabled}

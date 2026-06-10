@@ -65,7 +65,7 @@ class TextInputBlock extends Block
                 <label class="jankx-text-input-label"><?php echo esc_html($label); ?></label>
             <?php endif; ?>
             <div class="jankx-text-input-container" style="position: relative; display: flex; align-items: center; width: 100%;">
-                <div class="jankx-text-input-icon-container" style="position: absolute; <?php echo $iconPosition; ?>: 12px; z-index: 1; pointer-events: none; display: flex; align-items: center; justify-content: center; width: 20px; height: 20px; overflow: hidden;">
+                <div class="jankx-text-input-icon-container" style="position: absolute; <?php echo $iconPosition; ?>: 15px; z-index: 1; pointer-events: none; display: flex; align-items: center; justify-content: center; width: 20px; height: 20px; overflow: hidden;">
                     <style>.jankx-text-input-icon-container svg { width: 100%; height: 100%; }</style>
                     <?php echo $content; ?>
                 </div>

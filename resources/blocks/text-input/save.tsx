@@ -43,7 +43,7 @@ export default function Save({ attributes }: Props): JSX.Element {
       <div className="jankx-text-input-container" style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
         <div className="jankx-text-input-icon-container" style={{
           position: 'absolute',
-          [iconPosition]: '10px',
+          [iconPosition]: '15px',
           zIndex: 1,
           pointerEvents: 'none',
           display: 'flex',

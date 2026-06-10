@@ -92,10 +92,12 @@ class AdvancedFilterBlock extends Block
         $alignItems = $attributes['alignItems'] ?? 'center';
         $gap = $attributes['gap'] ?? '1rem';
         $flexWrap = $attributes['flexWrap'] ?? 'nowrap';
+        $width = $attributes['width'] ?? 'full';
         $label = $attributes['label'] ?? '';
 
+        $widthClass = 'jankx-advanced-filter--width-' . esc_attr($width);
         $wrapperAttrs = get_block_wrapper_attributes([
-            'class' => 'jankx-advanced-filter jankx-advanced-filter--layout-' . esc_attr($containerLayout) . ' filter-group',
+            'class' => 'jankx-advanced-filter jankx-advanced-filter--layout-' . esc_attr($containerLayout) . ' ' . $widthClass . ' filter-group',
             'data-filter-type' => esc_attr($type),
         ]);
 
@@ -113,13 +115,18 @@ class AdvancedFilterBlock extends Block
         ?>
         <style>
             .jankx-advanced-filter--layout-row .jankx-advanced-filter__content > * {
-                flex: 0 0 auto !important;
                 max-width: 100% !important;
                 width: auto !important;
             }
             .jankx-advanced-filter--layout-stack .jankx-advanced-filter__content > * {
                 width: 100% !important;
                 flex: 0 0 100% !important;
+            }
+            .jankx-advanced-filter--width-full {
+                width: 100% !important;
+            }
+            .jankx-advanced-filter--width-fit {
+                width: fit-content !important;
             }
         </style>
         <form <?php echo $wrapperAttrs; ?> action="<?php echo esc_url(home_url('/')); ?>" method="get">

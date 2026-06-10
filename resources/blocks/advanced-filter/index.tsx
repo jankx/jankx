@@ -80,7 +80,6 @@ const getFilterTemplate = (filterType: FilterAttributes['filterType']) => {
                         inputType: 'text',
                         className: 'jankx-filter-keyword-input',
                         width: 'auto',
-                        inputName: 's',
                     },
                 ],
                 [
