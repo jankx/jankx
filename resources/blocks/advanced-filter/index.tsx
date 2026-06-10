@@ -59,6 +59,7 @@ type FilterAttributes = {
     alignItems?: 'flex-start' | 'center' | 'flex-end' | 'stretch';
     gap?: string;
     flexWrap?: 'nowrap' | 'wrap';
+    width?: 'full' | 'fit';
 };
 
 interface EditProps {
@@ -211,6 +212,7 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
         alignItems,
         gap,
         flexWrap,
+        width,
     } = attributes;
 
     const [taxonomies, setTaxonomies] = useState<any[]>([]);
@@ -305,7 +307,7 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
     const resolvedSearchButtonIcon = searchButtonIcon || '';
 
     const blockProps = useBlockProps({
-        className: `jankx-advanced-filter jankx-advanced-filter--layout-${resolvedLayout}`,
+        className: `jankx-advanced-filter jankx-advanced-filter--layout-${resolvedLayout} jankx-advanced-filter--width-${width || 'full'}`,
     });
 
     const innerBlocksProps = useInnerBlocksProps(
@@ -853,6 +855,16 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
 
                 <PanelBody title={__('Layout Settings', 'jankx')} initialOpen={false}>
                     <SelectControl
+                        label={__('Width', 'jankx')}
+                        value={(attributes as any).width || 'full'}
+                        options={[
+                            { label: __('Full Width', 'jankx'), value: 'full' },
+                            { label: __('Fit Content', 'jankx'), value: 'fit' },
+                        ]}
+                        onChange={(value) => setAttributes({ width: value as 'full' | 'fit' })}
+                        help={__('Choose how the filter should display: full width or fit to content.', 'jankx')}
+                    />
+                    <SelectControl
                         label={__('Layout Type', 'jankx')}
                         value={containerLayout || 'row'}
                         options={[
@@ -909,6 +921,12 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                     .jankx-advanced-filter--layout-stack .jankx-advanced-filter__content > * {
                         width: 100% !important;
                         flex: 0 0 100% !important;
+                    }
+                    .jankx-advanced-filter--width-full {
+                        width: 100% !important;
+                    }
+                    .jankx-advanced-filter--width-fit {
+                        width: fit-content !important;
                     }`}
                 </style>
                 {resolvedShowLabels && (

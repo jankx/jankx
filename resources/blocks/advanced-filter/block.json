@@ -181,6 +181,11 @@
     "filterValueEnd": {
       "type": "string",
       "default": ""
+    },
+    "width": {
+      "type": "string",
+      "default": "full",
+      "enum": ["full", "fit"]
     }
   },
   "editorScript": "file:./build/index.js"
