@@ -24,6 +24,17 @@
     margin-block-start: 0px;
 }
 
+@media (min-width: 1600px) {
+    .has-jankx-responsive-wrapper {
+        padding: var(--jankx-padding-ultrawide, var(--jankx-padding-desktop, initial));
+        margin: var(--jankx-margin-ultrawide, var(--jankx-margin-desktop, initial));
+    }
+
+    .has-jankx-responsive-wrapper.hide-on-ultrawide {
+        display: none !important;
+    }
+}
+
 @media (max-width: 1024px) {
     .has-jankx-responsive-wrapper {
         padding: var(--jankx-padding-tablet, var(--jankx-padding-desktop, initial));

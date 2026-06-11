@@ -3,6 +3,7 @@ import { ButtonGroup, Button, RangeControl } from '@wordpress/components';
 import { useState } from '@wordpress/element';
 
 export interface ResponsiveValue {
+    ultrawide?: number;
     desktop: number;
     tablet: number;
     mobile: number;
@@ -33,7 +34,7 @@ export default function ResponsiveControl({
     help = {},
     className = ''
 }: ResponsiveControlProps) {
-    const [selectedDevice, setSelectedDevice] = useState<'desktop' | 'tablet' | 'mobile'>('desktop');
+    const [selectedDevice, setSelectedDevice] = useState<'ultrawide' | 'desktop' | 'tablet' | 'mobile'>('desktop');
 
     const handleValueChange = (value?: number) => {
         if (value === undefined) return;
@@ -63,6 +64,15 @@ export default function ResponsiveControl({
                     {label}
                 </label>
                 <ButtonGroup>
+                    <Button
+                        isPressed={selectedDevice === 'ultrawide'}
+                        onClick={() => setSelectedDevice('ultrawide')}
+                        variant={selectedDevice === 'ultrawide' ? 'primary' : 'secondary'}
+                        size="small"
+                        title={__('Ultrawide', 'jankx')}
+                    >
+                        🖥️
+                    </Button>
                     <Button
                         isPressed={selectedDevice === 'desktop'}
                         onClick={() => setSelectedDevice('desktop')}

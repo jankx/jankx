@@ -94,7 +94,66 @@ class ThemeOptionsIntegrationServiceProvider extends ServiceProvider
             $bridge->init();
         }
 
+        // Add admin bar menu
+        $this->addAdminBarMenu();
+
         // Log integration status
         do_action('jankx/theme-options-integration/initialized');
+    }
+
+    /**
+     * Add Jankx admin bar menu
+     *
+     * @return void
+     */
+    protected function addAdminBarMenu(): void
+    {
+        add_action('admin_bar_menu', function (\WP_Admin_Bar $wp_admin_bar) {
+            if (!current_user_can('manage_options')) {
+                return;
+            }
+
+            $optionsUrl = admin_url('admin.php?page=jankx-theme-options');
+
+            // Top-level Jankx menu
+            $wp_admin_bar->add_node([
+                'id'    => 'jankx',
+                'title' => '<span class="ab-icon dashicons-admin-generic"></span> Jankx',
+                'href'  => $optionsUrl,
+                'meta'  => ['class' => 'jankx-admin-bar'],
+            ]);
+
+            // Theme Options child
+            $wp_admin_bar->add_node([
+                'parent' => 'jankx',
+                'id'     => 'jankx-theme-options',
+                'title'  => __('Theme Options', 'jankx'),
+                'href'   => $optionsUrl,
+            ]);
+
+            // Extensions
+            $wp_admin_bar->add_node([
+                'parent' => 'jankx',
+                'id'     => 'jankx-extensions',
+                'title'  => __('Extensions', 'jankx'),
+                'href'   => admin_url('admin.php?page=jankx-extensions'),
+            ]);
+
+            // Marketplace
+            $wp_admin_bar->add_node([
+                'parent' => 'jankx',
+                'id'     => 'jankx-marketplace',
+                'title'  => __('Marketplace', 'jankx'),
+                'href'   => admin_url('admin.php?page=jankx-marketplace'),
+            ]);
+
+            // Utilities
+            $wp_admin_bar->add_node([
+                'parent' => 'jankx',
+                'id'     => 'jankx-utilities',
+                'title'  => __('Utilities', 'jankx'),
+                'href'   => admin_url('admin.php?page=jankx-utilities'),
+            ]);
+        }, 90);
     }
 }

@@ -30,6 +30,10 @@ class ResponsiveVisibility extends AbstractBlockExtra
         if (!isset($args['attributes'])) {
             $args['attributes'] = [];
         }
+        $args['attributes']['jankxHideOnUltrawide'] = [
+            'type' => 'boolean',
+            'default' => false,
+        ];
         $args['attributes']['jankxHideOnPc'] = [
             'type' => 'boolean',
             'default' => false,
@@ -50,21 +54,38 @@ class ResponsiveVisibility extends AbstractBlockExtra
         if (self::$cssInjected) {
             return;
         }
+
+        $manager = \App\Services\BreakpointManager::getInstance();
+        $ultrawide = $manager->getBreakpoint('ultrawide');
+        $desktop = $manager->getBreakpoint('desktop');
+        $tablet = $manager->getBreakpoint('tablet');
+        $mobile = $manager->getBreakpoint('mobile');
+
+        $ultrawideMQ = $manager->getMediaQuery('ultrawide');
+        $desktopMQ = $manager->getMediaQuery('desktop');
+        $tabletMQ = $manager->getMediaQuery('tablet');
+        $mobileMQ = $manager->getMediaQuery('mobile');
         ?>
         <style id="jankx-responsive-visibility-css">
-            @media (min-width: 1025px) {
+            <?php echo $ultrawideMQ; ?> {
+                .hide-on-ultrawide {
+                    display: none !important;
+                }
+            }
+
+            <?php echo $desktopMQ; ?> {
                 .hide-on-desktop {
                     display: none !important;
                 }
             }
 
-            @media (max-width: 1024px) and (min-width: 769px) {
+            <?php echo $tabletMQ; ?> {
                 .hide-on-tablet {
                     display: none !important;
                 }
             }
 
-            @media (max-width: 768px) {
+            <?php echo $mobileMQ; ?> {
                 .hide-on-mobile {
                     display: none !important;
                 }
@@ -105,6 +126,9 @@ class ResponsiveVisibility extends AbstractBlockExtra
         $attrs = $block['attrs'] ?? [];
         $classes = [];
 
+        if (!empty($attrs['jankxHideOnUltrawide'])) {
+            $classes[] = 'hide-on-ultrawide';
+        }
         if (!empty($attrs['jankxHideOnPc'])) {
             $classes[] = 'hide-on-desktop';
         }

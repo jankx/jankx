@@ -8,9 +8,11 @@ export default function Edit({ attributes, setAttributes }: any) {
     const blockProps = useBlockProps({
         className: 'jankx-wrapper-block',
         style: {
+            '--jankx-padding-ultrawide': attributes.paddingUltrawide ? `${attributes.paddingUltrawide}px` : undefined,
             '--jankx-padding-desktop': attributes.paddingDesktop ? `${attributes.paddingDesktop}px` : undefined,
             '--jankx-padding-tablet': attributes.paddingTablet ? `${attributes.paddingTablet}px` : undefined,
             '--jankx-padding-mobile': attributes.paddingMobile ? `${attributes.paddingMobile}px` : undefined,
+            '--jankx-margin-ultrawide': attributes.marginUltrawide ? `${attributes.marginUltrawide}px` : undefined,
             '--jankx-margin-desktop': attributes.marginDesktop ? `${attributes.marginDesktop}px` : undefined,
             '--jankx-margin-tablet': attributes.marginTablet ? `${attributes.marginTablet}px` : undefined,
             '--jankx-margin-mobile': attributes.marginMobile ? `${attributes.marginMobile}px` : undefined,
@@ -58,27 +60,27 @@ export default function Edit({ attributes, setAttributes }: any) {
                             return (
                                 <>
                                     <PanelBody title="Padding" initialOpen={true}>
-                                        <ResponsiveControl label="Inner Space">
-                                            {(device) => (
-                                                <RangeControl
-                                                    value={device === 'desktop' ? attributes.paddingDesktop : device === 'tablet' ? attributes.paddingTablet : attributes.paddingMobile}
-                                                    onChange={(val) => {
-                                                        const key = device === 'desktop' ? 'paddingDesktop' : device === 'tablet' ? 'paddingTablet' : 'paddingMobile';
-                                                        setAttributes({ [key]: val });
-                                                    }}
-                                                    min={0}
-                                                    max={200}
-                                                />
-                                            )}
-                                        </ResponsiveControl>
+                                    <ResponsiveControl label="Inner Space">
+                                        {(device) => (
+                                            <RangeControl
+                                                value={device === 'ultrawide' ? attributes.paddingUltrawide : device === 'desktop' ? attributes.paddingDesktop : device === 'tablet' ? attributes.paddingTablet : attributes.paddingMobile}
+                                                onChange={(val) => {
+                                                    const key = device === 'ultrawide' ? 'paddingUltrawide' : device === 'desktop' ? 'paddingDesktop' : device === 'tablet' ? 'paddingTablet' : 'paddingMobile';
+                                                    setAttributes({ [key]: val });
+                                                }}
+                                                min={0}
+                                                max={200}
+                                            />
+                                        )}
+                                    </ResponsiveControl>
                                     </PanelBody>
                                     <PanelBody title="Margin" initialOpen={false}>
                                         <ResponsiveControl label="Outer Space">
                                             {(device) => (
                                                 <RangeControl
-                                                    value={device === 'desktop' ? attributes.marginDesktop : device === 'tablet' ? attributes.marginTablet : attributes.marginMobile}
+                                                    value={device === 'ultrawide' ? attributes.marginUltrawide : device === 'desktop' ? attributes.marginDesktop : device === 'tablet' ? attributes.marginTablet : attributes.marginMobile}
                                                     onChange={(val) => {
-                                                        const key = device === 'desktop' ? 'marginDesktop' : device === 'tablet' ? 'marginTablet' : 'marginMobile';
+                                                        const key = device === 'ultrawide' ? 'marginUltrawide' : device === 'desktop' ? 'marginDesktop' : device === 'tablet' ? 'marginTablet' : 'marginMobile';
                                                         setAttributes({ [key]: val });
                                                     }}
                                                     min={0}
@@ -88,6 +90,11 @@ export default function Edit({ attributes, setAttributes }: any) {
                                         </ResponsiveControl>
                                     </PanelBody>
                                     <PanelBody title="Visibility" initialOpen={false}>
+                                        <ToggleControl
+                                            label="Hide on Ultrawide"
+                                            checked={attributes.hideOnUltrawide}
+                                            onChange={(hideOnUltrawide) => setAttributes({ hideOnUltrawide })}
+                                        />
                                         <ToggleControl
                                             label="Hide on Desktop"
                                             checked={attributes.hideOnDesktop}

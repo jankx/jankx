@@ -2,7 +2,7 @@
 import { createContext, useContext, useState } from '@wordpress/element';
 import { TabPanel } from '@wordpress/components';
 
-export type Device = 'desktop' | 'tablet' | 'mobile';
+export type Device = 'ultrawide' | 'desktop' | 'tablet' | 'mobile';
 
 interface DeviceContextType {
     device: Device;

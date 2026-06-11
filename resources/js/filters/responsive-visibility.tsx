@@ -18,6 +18,10 @@ addFilter(
             ...settings,
             attributes: {
                 ...settings.attributes,
+                jankxHideOnUltrawide: {
+                    type: 'boolean',
+                    default: false
+                },
                 jankxHideOnPc: {
                     type: 'boolean',
                     default: false
@@ -41,7 +45,7 @@ addFilter(
 const withResponsiveVisibilityControl = createHigherOrderComponent((BlockEdit) => {
     return (props: any) => {
         const { attributes, setAttributes, clientId, name } = props;
-        const { jankxHideOnPc, jankxHideOnTablet, jankxHideOnMobile } = attributes;
+        const { jankxHideOnUltrawide, jankxHideOnPc, jankxHideOnTablet, jankxHideOnMobile } = attributes;
 
         // Only show for blocks inside jankx/wrapper
         const isInsideWrapper = useSelect((select: any) => {
@@ -70,7 +74,12 @@ const withResponsiveVisibilityControl = createHigherOrderComponent((BlockEdit) =
                 <InspectorControls>
                     <PanelBody title={__('Responsive Visibility', 'jankx')} initialOpen={false}>
                         <ToggleControl
-                            label={__('Hide on PC', 'jankx')}
+                            label={__('Hide on Ultrawide', 'jankx')}
+                            checked={!!jankxHideOnUltrawide}
+                            onChange={(val) => setAttributes({ jankxHideOnUltrawide: val })}
+                        />
+                        <ToggleControl
+                            label={__('Hide on Desktop', 'jankx')}
                             checked={!!jankxHideOnPc}
                             onChange={(val) => setAttributes({ jankxHideOnPc: val })}
                         />
@@ -103,9 +112,9 @@ addFilter(
 const withResponsiveVisibilityStyle = createHigherOrderComponent((BlockListBlock) => {
     return (props: any) => {
         const { attributes } = props;
-        const { jankxHideOnPc, jankxHideOnTablet, jankxHideOnMobile } = attributes;
+        const { jankxHideOnUltrawide, jankxHideOnPc, jankxHideOnTablet, jankxHideOnMobile } = attributes;
 
-        if (jankxHideOnPc || jankxHideOnTablet || jankxHideOnMobile) {
+        if (jankxHideOnUltrawide || jankxHideOnPc || jankxHideOnTablet || jankxHideOnMobile) {
             const style: any = {
                 ...props.wrapperProps?.style,
             };

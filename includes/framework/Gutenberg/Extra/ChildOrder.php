@@ -56,17 +56,26 @@ class ChildOrder extends AbstractBlockExtra
             return;
         }
 
+        $manager = \App\Services\BreakpointManager::getInstance();
+        $ultrawideMQ = $manager->getMediaQuery('ultrawide');
+        $tabletMQ = $manager->getMediaQuery('tablet');
+        $mobileMQ = $manager->getMediaQuery('mobile');
         ?>
         <style id="jankx-child-order-css">
             .jankx-order-applied {
                 order: var(--jankx-order-desktop) !important;
             }
-            @media (max-width: 1024px) {
+            <?php echo $ultrawideMQ; ?> {
+                .jankx-order-applied {
+                    order: var(--jankx-order-ultrawide, var(--jankx-order-desktop)) !important;
+                }
+            }
+            <?php echo $tabletMQ; ?> {
                 .jankx-order-applied {
                     order: var(--jankx-order-tablet, var(--jankx-order-desktop)) !important;
                 }
             }
-            @media (max-width: 768px) {
+            <?php echo $mobileMQ; ?> {
                 .jankx-order-applied {
                     order: var(--jankx-order-mobile, var(--jankx-order-tablet, var(--jankx-order-desktop))) !important;
                 }
@@ -115,6 +124,10 @@ class ChildOrder extends AbstractBlockExtra
         $style_vars = [];
         $has_value = false;
 
+        if (isset($order['ultrawide']) && $order['ultrawide'] !== null && $order['ultrawide'] !== '') {
+            $style_vars[] = "--jankx-order-ultrawide: {$order['ultrawide']}";
+            $has_value = true;
+        }
         if (isset($order['desktop']) && $order['desktop'] !== null && $order['desktop'] !== '') {
             $style_vars[] = "--jankx-order-desktop: {$order['desktop']}";
             $has_value = true;

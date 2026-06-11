@@ -10,6 +10,9 @@
         "jankx/wrapperId": "anchor"
     },
     "attributes": {
+        "paddingUltrawide": {
+            "type": "number"
+        },
         "paddingDesktop": {
             "type": "number"
         },
@@ -17,6 +20,9 @@
             "type": "number"
         },
         "paddingMobile": {
+            "type": "number"
+        },
+        "marginUltrawide": {
             "type": "number"
         },
         "marginDesktop": {
@@ -27,6 +33,10 @@
         },
         "marginMobile": {
             "type": "number"
+        },
+        "hideOnUltrawide": {
+            "type": "boolean",
+            "default": false
         },
         "hideOnDesktop": {
             "type": "boolean",

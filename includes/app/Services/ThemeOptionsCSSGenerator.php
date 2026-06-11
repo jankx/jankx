@@ -32,6 +32,12 @@ class ThemeOptionsCSSGenerator
      * @var array
      */
     protected $cssVarMapping = [
+        // Breakpoints
+        'breakpoint_ultrawide' => '--jankx-breakpoint-ultrawide',
+        'breakpoint_desktop_min' => '--jankx-breakpoint-desktop-min',
+        'breakpoint_tablet_min' => '--jankx-breakpoint-tablet-min',
+        'breakpoint_mobile_max' => '--jankx-breakpoint-mobile-max',
+
         // Colors
         'primary_color' => '--jankx-primary-color',
         'secondary_color' => '--jankx-secondary-color',
@@ -78,6 +84,11 @@ class ThemeOptionsCSSGenerator
      * @var array
      */
     protected $defaults = [
+        'breakpoint_ultrawide' => '1600',
+        'breakpoint_desktop_min' => '1025',
+        'breakpoint_tablet_min' => '768',
+        'breakpoint_mobile_max' => '767',
+
         'primary_color' => '#3b82f6',
         'secondary_color' => '#10b981',
         'link_color' => '#3b82f6',
@@ -237,7 +248,7 @@ class ThemeOptionsCSSGenerator
                 $value = $this->getOption($optionKey, $this->defaults[$optionKey] ?? '');
                 if ($value !== '') {
                     // Handle numeric values that need px
-                    if (in_array($optionKey, ['container_width', 'sidebar_width', 'button_border_radius']) && is_numeric($value)) {
+                    if (in_array($optionKey, ['container_width', 'sidebar_width', 'button_border_radius', 'breakpoint_ultrawide', 'breakpoint_desktop_min', 'breakpoint_tablet_min', 'breakpoint_mobile_max']) && is_numeric($value)) {
                         $value .= 'px';
                     }
                     $rootVars[] = "  {$varName}: {$value};";

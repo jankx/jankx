@@ -23,6 +23,13 @@ export const ResponsiveControl = ({ label, children, isRelated = true }: Respons
                 <ButtonGroup className="jankx-device-switcher">
                     <Button
                         size="small"
+                        variant={device === 'ultrawide' ? 'primary' : 'secondary'}
+                        onClick={() => setDevice('ultrawide')}
+                        title="Ultrawide"
+                        icon="desktop"
+                    />
+                    <Button
+                        size="small"
                         variant={device === 'desktop' ? 'primary' : 'secondary'}
                         onClick={() => setDevice('desktop')}
                         title="Desktop"

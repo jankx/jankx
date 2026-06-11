@@ -12,6 +12,7 @@ namespace Jankx\Blocks\Integration;
 
 use Jankx\Gutenberg\Controls\Registry\BlockRegistry;
 use Jankx\Gutenberg\Controls\Presets\PresetManager;
+use App\Services\BreakpointManager;
 
 /**
  * Class GutenbergControlsIntegration
@@ -77,6 +78,9 @@ class GutenbergControlsIntegration
 
         // Render hook for frontend CSS
         add_filter('render_block', [$this, 'renderBlockWithControls'], 10, 2);
+
+        // Override responsive breakpoints from theme options
+        add_filter('jankx_responsive_breakpoints', [$this, 'filterResponsiveBreakpoints']);
     }
 
     /**
@@ -403,12 +407,16 @@ class GutenbergControlsIntegration
         $controlsConfig = apply_filters('jankx_blocks_controls_config', []);
         $presets = $this->getPresetsForJS();
 
+        // Get breakpoints from theme options for JS
+        $breakpointManager = BreakpointManager::getInstance();
+
         wp_localize_script('jankx-gutenberg-controls', 'jankxBlocks', [
             'controls' => $controlsConfig,
             'presets' => $presets,
             'categories' => $this->getPresetCategories(),
             'ajaxUrl' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('jankx_controls_nonce'),
+            'breakpoints' => $breakpointManager->toArray(),
         ]);
     }
 
@@ -704,6 +712,24 @@ class GutenbergControlsIntegration
     {
         $vendorUrl = get_template_directory_uri() . '/vendor/jankx/gutenberg-controls';
         return $vendorUrl . '/' . ltrim($path, '/');
+    }
+
+    /**
+     * Filter responsive breakpoints from theme options
+     */
+    public function filterResponsiveBreakpoints(array $breakpoints): array
+    {
+        $manager = BreakpointManager::getInstance();
+        $themeBreakpoints = $manager->getBreakpoints();
+
+        // Merge theme options into breakpoints
+        foreach ($themeBreakpoints as $device => $bp) {
+            if (isset($breakpoints[$device])) {
+                $breakpoints[$device] = array_merge($breakpoints[$device], $bp);
+            }
+        }
+
+        return $breakpoints;
     }
 }
 
