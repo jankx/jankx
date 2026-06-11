@@ -147,10 +147,12 @@ class GutenbergControlsIntegration
                     'type' => 'jankx/typography',
                     'label' => __('Button Text', 'jankx'),
                     'allowFluid' => true,
+                    'responsive' => true,
                 ],
                 'spacing' => [
                     'type' => 'jankx/visual-spacing',
                     'label' => __('Button Spacing', 'jankx'),
+                    'responsive' => true,
                 ],
                 'shadow' => [
                     'type' => 'jankx/shadow',
@@ -181,6 +183,7 @@ class GutenbergControlsIntegration
                 'spacing' => [
                     'type' => 'jankx/visual-spacing',
                     'label' => __('Spacing', 'jankx'),
+                    'responsive' => true,
                 ],
             ],
             'jankx/modal' => [
@@ -211,15 +214,18 @@ class GutenbergControlsIntegration
                     'label' => __('Background', 'jankx'),
                     'allowGradient' => true,
                     'allowDuotone' => true,
+                    'responsive' => true,
                 ],
                 'typography' => [
                     'type' => 'jankx/typography',
                     'label' => __('Typography', 'jankx'),
                     'allowFluid' => true,
+                    'responsive' => true,
                 ],
                 'spacing' => [
                     'type' => 'jankx/visual-spacing',
                     'label' => __('Spacing', 'jankx'),
+                    'responsive' => true,
                 ],
                 'shadow' => [
                     'type' => 'jankx/shadow',
