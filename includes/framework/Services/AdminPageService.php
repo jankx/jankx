@@ -269,8 +269,16 @@ class AdminPageService
             'position' => 15
         ]);
 
-        // Membership page removed - requires Optilarity SDK which has been
-        // removed to eliminate unnecessary commercial dependency.
+        $this->addPage([
+            'id' => 'jankx-membership',
+            'title' => __('Membership & Site Kits', 'jankx'),
+            'subtitle' => __('Pre-built website bundles with extensions, demo data, and templates. One-click full site setup for members.', 'jankx'),
+            'menu_title' => __('Membership & Kits', 'jankx'),
+            'capability' => 'manage_options',
+            'callback' => [$this, 'renderMembershipPage'],
+            'icon' => 'dashicons-awards',
+            'position' => 12
+        ]);
 
         $this->addPage([
             'id' => 'jankx-extensions',
@@ -1217,7 +1225,282 @@ class AdminPageService
 
     public function renderMembershipPage($page)
     {
-        echo '<div class="notice notice-info"><p>' . __('Membership features are not available in this build.', 'jankx') . '</p></div>';
+        $isPro = $this->app->bound('license') && $this->app->make('license')->isActivated();
+
+        if (!$isPro) {
+            ?>
+            <div class="jankx-card" style="max-width: 700px; margin: 40px auto; text-align: center; padding: 60px 40px;">
+                <span class="dashicons dashicons-awards" style="font-size: 48px; width: 48px; height: 48px; color: #f59e0b;"></span>
+                <h2 style="margin: 20px 0 10px;"><?php _e('JANKX Membership', 'jankx'); ?></h2>
+                <p style="color: #64748b; max-width: 500px; margin: 0 auto 30px; line-height: 1.7;">
+                    <?php _e('Membership gives you access to pre-built site kits — complete website bundles with extensions, demo data, and templates. One click to launch a full website that looks exactly like the demo.', 'jankx'); ?>
+                </p>
+                <div style="display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;">
+                    <a href="<?php echo \admin_url('admin.php?page=jankx-license'); ?>" class="button button-primary" style="height: auto; padding: 12px 32px; border-radius: 12px; font-weight: 700; background: #3b82f6; border: none;">
+                        <?php _e('Activate PRO License', 'jankx'); ?>
+                    </a>
+                    <a href="https://jankx.com/membership" target="_blank" rel="noopener" class="button" style="height: auto; padding: 12px 32px; border-radius: 12px; font-weight: 600; border: 2px solid #3b82f6; color: #3b82f6;">
+                        <?php _e('View Plans', 'jankx'); ?>
+                    </a>
+                </div>
+                <div style="margin-top: 30px; padding: 20px; background: #f8fafc; border-radius: 16px; text-align: left;">
+                    <h4 style="margin: 0 0 12px; color: #1e293b;"><?php _e('Membership includes:', 'jankx'); ?></h4>
+                    <ul style="margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                        <li style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #475569;"><span class="dashicons dashicons-yes" style="color: #10b981;"></span> <?php _e('All PRO features', 'jankx'); ?></li>
+                        <li style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #475569;"><span class="dashicons dashicons-yes" style="color: #10b981;"></span> <?php _e('Pre-built site kits', 'jankx'); ?></li>
+                        <li style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #475569;"><span class="dashicons dashicons-yes" style="color: #10b981;"></span> <?php _e('One-click full setup', 'jankx'); ?></li>
+                        <li style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #475569;"><span class="dashicons dashicons-yes" style="color: #10b981;"></span> <?php _e('All premium extensions', 'jankx'); ?></li>
+                        <li style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #475569;"><span class="dashicons dashicons-yes" style="color: #10b981;"></span> <?php _e('Cloud template library', 'jankx'); ?></li>
+                        <li style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #475569;"><span class="dashicons dashicons-yes" style="color: #10b981;"></span> <?php _e('Priority support', 'jankx'); ?></li>
+                    </ul>
+                </div>
+            </div>
+            <?php
+            return;
+        }
+
+        $bundleService = new \App\Services\MembershipBundleService();
+        $bundles = $bundleService->getBundles();
+        $activeBundle = $bundleService->getActiveBundle();
+        $nonce = \wp_create_nonce('jankx_membership_bundle');
+        ?>
+        <div class="jankx-membership-page">
+            <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 30px; padding: 20px 24px; background: linear-gradient(135deg, #f0fdf4, #dcfce7); border-radius: 16px; border: 1px solid #bbf7d0;">
+                <span class="dashicons dashicons-yes-alt" style="color: #10b981; font-size: 32px; width: 32px; height: 32px;"></span>
+                <div>
+                    <h3 style="margin: 0 0 4px; color: #166534;"><?php _e('PRO Membership Active', 'jankx'); ?></h3>
+                    <p style="margin: 0; color: #15803d; font-size: 14px;"><?php _e('Choose a site kit below to automatically set up a complete website with extensions, demo content, and theme options.', 'jankx'); ?></p>
+                </div>
+            </div>
+
+            <?php if ($activeBundle && isset($bundles[$activeBundle])): ?>
+                <div class="jankx-card" style="border-left: 4px solid #3b82f6; margin-bottom: 30px;">
+                    <div style="display: flex; align-items: center; justify-content: space-between;">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <span class="dashicons dashicons-yes-alt" style="color: #10b981; font-size: 24px; width: 24px; height: 24px;"></span>
+                            <div>
+                                <strong style="font-size: 15px;"><?php printf(__('Active Kit: %s', 'jankx'), '<span style="color: #1e293b;">' . esc_html($bundles[$activeBundle]['name']) . '</span>'); ?></strong>
+                                <span style="font-size: 12px; color: #64748b; display: block;"><?php printf(__('Installed on %s', 'jankx'), \get_option('jankx_bundle_installed_at', '')); ?></span>
+                            </div>
+                        </div>
+                        <button class="button jankx-reset-bundle" data-bundle="<?php echo esc_attr($activeBundle); ?>" data-nonce="<?php echo esc_attr($nonce); ?>" style="color: #ef4444; border-color: #ef4444;">
+                            <?php _e('Remove Kit', 'jankx'); ?>
+                        </button>
+                    </div>
+                </div>
+            <?php endif; ?>
+
+            <div class="jankx-bundle-grid" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px;">
+                <?php foreach ($bundles as $id => $bundle):
+                    $isActive = ($activeBundle === $id);
+                    $extCount = count($bundle['required_extensions'] ?? []);
+                    $pluginCount = count($bundle['required_plugins'] ?? []);
+                ?>
+                    <div class="jankx-card bundle-card <?php echo $isActive ? 'active' : ''; ?>" data-bundle="<?php echo esc_attr($id); ?>" style="overflow: hidden; <?php echo $isActive ? 'border-color: #3b82f6;' : ''; ?>">
+                        <div class="bundle-preview" style="height: 180px; background: linear-gradient(135deg, #1e293b, #0f172a); border-radius: 12px; margin: -30px -30px 20px -30px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 48px; position: relative; overflow: hidden;">
+                            <span class="dashicons dashicons-layout" style="opacity: 0.3; font-size: 80px; width: 80px; height: 80px;"></span>
+                            <div style="position: absolute; bottom: 16px; left: 20px;">
+                                <span style="background: rgba(255,255,255,0.15); padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; text-transform: uppercase;"><?php echo esc_html(implode(', ', $bundle['tags'] ?? [])); ?></span>
+                            </div>
+                            <?php if ($isActive): ?>
+                                <div style="position: absolute; top: 16px; right: 16px; background: #10b981; color: #fff; padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 700;">
+                                    <?php _e('Active', 'jankx'); ?>
+                                </div>
+                            <?php endif; ?>
+                        </div>
+
+                        <h3 style="margin: 0 0 8px; font-size: 18px;"><?php echo esc_html($bundle['name']); ?></h3>
+                        <p style="font-size: 14px; color: #64748b; line-height: 1.6; margin: 0 0 16px;"><?php echo esc_html($bundle['description']); ?></p>
+
+                        <div style="display: flex; gap: 16px; margin-bottom: 20px; font-size: 13px; color: #64748b;">
+                            <?php if ($extCount > 0): ?>
+                                <span style="display: flex; align-items: center; gap: 4px;">
+                                    <span class="dashicons dashicons-admin-plugins" style="font-size: 14px; width: 14px; height: 14px;"></span>
+                                    <?php printf(__('%d extensions', 'jankx'), $extCount); ?>
+                                </span>
+                            <?php endif; ?>
+                            <?php if ($pluginCount > 0): ?>
+                                <span style="display: flex; align-items: center; gap: 4px;">
+                                    <span class="dashicons dashicons-admin-plugins" style="font-size: 14px; width: 14px; height: 14px;"></span>
+                                    <?php printf(__('%d plugins', 'jankx'), $pluginCount); ?>
+                                </span>
+                            <?php endif; ?>
+                            <span style="display: flex; align-items: center; gap: 4px;">
+                                <span class="dashicons dashicons-database" style="font-size: 14px; width: 14px; height: 14px;"></span>
+                                <?php _e('Demo data', 'jankx'); ?>
+                            </span>
+                        </div>
+
+                        <div style="display: flex; gap: 10px;">
+                            <?php if ($isActive): ?>
+                                <button class="button button-primary" disabled style="flex: 1; justify-content: center;">
+                                    <?php _e('Installed', 'jankx'); ?>
+                                </button>
+                            <?php else: ?>
+                                <button class="button button-primary jankx-install-bundle" data-bundle="<?php echo esc_attr($id); ?>" data-nonce="<?php echo esc_attr($nonce); ?>" style="flex: 1; justify-content: center;">
+                                    <span class="dashicons dashicons-download" style="font-size: 16px; width: 16px; height: 16px;"></span>
+                                    <?php _e('Setup Website', 'jankx'); ?>
+                                </button>
+                            <?php endif; ?>
+                            <a href="https://jankx.com/preview/<?php echo esc_attr($id); ?>" target="_blank" rel="noopener" class="button" style="display: flex; align-items: center; gap: 4px;">
+                                <span class="dashicons dashicons-external" style="font-size: 14px; width: 14px; height: 14px;"></span>
+                                <?php _e('Preview', 'jankx'); ?>
+                            </a>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+
+            <div class="jankx-bundle-progress" style="display:none; margin-top: 30px;">
+                <div class="jankx-card">
+                    <div class="card-header">
+                        <span class="dashicons dashicons-update spinning"></span>
+                        <h3><?php _e('Setting up your website...', 'jankx'); ?></h3>
+                    </div>
+                    <div class="card-body">
+                        <div style="margin-bottom: 20px;">
+                            <div style="height: 8px; background: #f1f5f9; border-radius: 10px; overflow: hidden;">
+                                <div class="jankx-bundle-progress-fill" style="height: 100%; width: 0%; background: linear-gradient(90deg, #3b82f6, #2563eb); border-radius: 10px; transition: width 0.5s ease;"></div>
+                            </div>
+                        </div>
+                        <div class="jankx-bundle-progress-steps" style="display: flex; flex-direction: column; gap: 12px;">
+                            <div class="step" data-step="plugins">
+                                <span class="dashicons dashicons-admin-plugins"></span>
+                                <span class="step-label"><?php _e('Installing required plugins...', 'jankx'); ?></span>
+                                <span class="step-status"></span>
+                            </div>
+                            <div class="step" data-step="extensions">
+                                <span class="dashicons dashicons-admin-plugins"></span>
+                                <span class="step-label"><?php _e('Installing extensions...', 'jankx'); ?></span>
+                                <span class="step-status"></span>
+                            </div>
+                            <div class="step" data-step="demo">
+                                <span class="dashicons dashicons-database"></span>
+                                <span class="step-label"><?php _e('Importing demo content...', 'jankx'); ?></span>
+                                <span class="step-status"></span>
+                            </div>
+                            <div class="step" data-step="options">
+                                <span class="dashicons dashicons-admin-settings"></span>
+                                <span class="step-label"><?php _e('Applying theme options...', 'jankx'); ?></span>
+                                <span class="step-status"></span>
+                            </div>
+                            <div class="step" data-step="pages">
+                                <span class="dashicons dashicons-welcome-add-page"></span>
+                                <span class="step-label"><?php _e('Setting up pages...', 'jankx'); ?></span>
+                                <span class="step-status"></span>
+                            </div>
+                        </div>
+                        <div class="jankx-bundle-result" style="display:none; margin-top: 20px; padding: 16px; border-radius: 12px;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <style>
+            .jankx-bundle-grid .bundle-card.active { border-color: #3b82f6; box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2); }
+            .jankx-bundle-progress-steps .step { display: flex; align-items: center; gap: 10px; padding: 10px; border-radius: 10px; background: #f8fafc; font-size: 14px; }
+            .jankx-bundle-progress-steps .step .dashicons { font-size: 18px; width: 18px; height: 18px; color: #94a3b8; }
+            .jankx-bundle-progress-steps .step.done .dashicons { color: #10b981; }
+            .jankx-bundle-progress-steps .step.done .step-status:after { content: '✓'; color: #10b981; font-weight: 700; }
+            .jankx-bundle-progress-steps .step.running .dashicons { animation: spin 1s linear infinite; color: #3b82f6; }
+            .jankx-bundle-progress-steps .step.running .step-status:after { content: '...'; color: #3b82f6; font-weight: 700; }
+            .jankx-bundle-progress-steps .step.error .dashicons { color: #ef4444; }
+            .jankx-bundle-progress-steps .step.error .step-status:after { content: '✗'; color: #ef4444; font-weight: 700; }
+            @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+            .spinning { animation: spin 1s linear infinite; }
+        </style>
+
+        <script>
+        jQuery(function($) {
+            var currentBundle = null;
+
+            $(document).on('click', '.jankx-install-bundle', function() {
+                var $btn = $(this);
+                var bundle = $btn.data('bundle');
+                var nonce = $btn.data('nonce');
+
+                if (!confirm('<?php echo esc_js(__('This will install extensions, import demo content, and configure theme options. Continue?', 'jankx')); ?>')) return;
+
+                currentBundle = bundle;
+                $btn.prop('disabled', true).text('<?php echo esc_js(__('Processing...', 'jankx')); ?>');
+
+                $('.jankx-bundle-progress').show();
+                $('.jankx-bundle-progress-steps .step').removeClass('done running error');
+                $('.jankx-bundle-progress-fill').css('width', '0%');
+                $('.jankx-bundle-result').hide();
+
+                var steps = ['plugins', 'extensions', 'demo', 'options', 'pages'];
+                var stepIndex = 0;
+                var totalSteps = steps.length;
+
+                function runNextStep() {
+                    if (stepIndex >= totalSteps) {
+                        $('.jankx-bundle-progress-fill').css('width', '100%');
+                        $('.jankx-bundle-result').removeClass('notice-error').addClass('notice-success')
+                            .html('<p><strong><?php echo esc_js(__('Success!', 'jankx')); ?></strong> <?php echo esc_js(__('Your website has been set up successfully.', 'jankx')); ?></p>')
+                            .show();
+                        $btn.text('<?php echo esc_js(__('Done', 'jankx')); ?>');
+                        setTimeout(function() { location.reload(); }, 2000);
+                        return;
+                    }
+
+                    var step = steps[stepIndex];
+                    var progress = Math.round(((stepIndex) / totalSteps) * 100);
+
+                    $('.jankx-bundle-progress-steps .step[data-step="' + step + '"]').addClass('running');
+                    $('.jankx-bundle-progress-fill').css('width', progress + '%');
+
+                    $.post(ajaxurl, {
+                        action: 'jankx_install_bundle',
+                        bundle: currentBundle,
+                        step: step,
+                        nonce: nonce
+                    }, function(res) {
+                        $('.jankx-bundle-progress-steps .step[data-step="' + step + '"]').removeClass('running').addClass('done');
+                        stepIndex++;
+                        runNextStep();
+                    }).fail(function(xhr) {
+                        $('.jankx-bundle-progress-steps .step[data-step="' + step + '"]').removeClass('running').addClass('error');
+                        var msg = '<?php echo esc_js(__('Installation failed.', 'jankx')); ?>';
+                        try { var r = JSON.parse(xhr.responseText); if (r.data && r.data.message) msg = r.data.message; } catch(e) {}
+                        $('.jankx-bundle-result').removeClass('notice-success').addClass('notice-error')
+                            .html('<p><strong><?php echo esc_js(__('Error:', 'jankx')); ?></strong> ' + msg + '</p>')
+                            .show();
+                        $btn.prop('disabled', false).text('<?php echo esc_js(__('Retry', 'jankx')); ?>');
+                    });
+                }
+
+                runNextStep();
+            });
+
+            $(document).on('click', '.jankx-reset-bundle', function() {
+                var $btn = $(this);
+                var bundle = $btn.data('bundle');
+                var nonce = $btn.data('nonce');
+
+                if (!confirm('<?php echo esc_js(__('Remove all demo data and reset? This cannot be undone.', 'jankx')); ?>')) return;
+
+                $btn.prop('disabled', true).text('<?php echo esc_js(__('Removing...', 'jankx')); ?>');
+
+                $.post(ajaxurl, {
+                    action: 'jankx_reset_bundle',
+                    bundle: bundle,
+                    nonce: nonce
+                }, function(res) {
+                    if (res.success) {
+                        location.reload();
+                    } else {
+                        alert(res.data.message || '<?php echo esc_js(__('Failed to remove kit.', 'jankx')); ?>');
+                        $btn.prop('disabled', false).text('<?php echo esc_js(__('Remove Kit', 'jankx')); ?>');
+                    }
+                }).fail(function() {
+                    alert('<?php echo esc_js(__('Connection error.', 'jankx')); ?>');
+                    $btn.prop('disabled', false).text('<?php echo esc_js(__('Remove Kit', 'jankx')); ?>');
+                });
+            });
+        });
+        </script>
+        <?php
     }
 
     protected function renderCommonStyles()

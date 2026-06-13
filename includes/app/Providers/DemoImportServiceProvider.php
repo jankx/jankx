@@ -28,6 +28,9 @@ class DemoImportServiceProvider extends ServiceProvider
         add_action('wp_ajax_jankx_get_demos', [$this, 'ajaxGetDemos']);
         add_action('wp_ajax_jankx_import_demo', [$this, 'ajaxImportDemo']);
         add_action('wp_ajax_jankx_reset_demo', [$this, 'ajaxResetDemo']);
+
+        add_action('wp_ajax_jankx_install_bundle', [$this, 'ajaxInstallBundle']);
+        add_action('wp_ajax_jankx_reset_bundle', [$this, 'ajaxResetBundle']);
     }
 
     public function registerAdminPage()
@@ -307,5 +310,182 @@ class DemoImportServiceProvider extends ServiceProvider
         }
 
         do_action('jankx/demo/reset', $demoId);
+    }
+
+    public function ajaxInstallBundle()
+    {
+        \check_ajax_referer('jankx_membership_bundle', 'nonce');
+
+        $bundle = \sanitize_text_field($_POST['bundle'] ?? '');
+        $step = \sanitize_text_field($_POST['step'] ?? '');
+
+        if (empty($bundle) || empty($step)) {
+            \wp_send_json_error(['message' => \__('Invalid request.', 'jankx')]);
+        }
+
+        $service = new \App\Services\MembershipBundleService();
+        $bundles = $service->getBundles();
+
+        if (!isset($bundles[$bundle])) {
+            \wp_send_json_error(['message' => \__('Bundle not found.', 'jankx')]);
+        }
+
+        $bundleData = $bundles[$bundle];
+
+        try {
+            switch ($step) {
+                case 'plugins':
+                    $this->installBundlePlugins($bundleData['required_plugins'] ?? []);
+                    break;
+                case 'extensions':
+                    $this->installBundleExtensions($bundleData['required_extensions'] ?? []);
+                    break;
+                case 'demo':
+                    $this->runSeedersForDemo($bundleData['demo_package'] ?? $bundle);
+                    \update_option('jankx_active_demo', $bundleData['demo_package'] ?? $bundle);
+                    \update_option('jankx_demo_imported_at', \current_time('mysql'));
+                    break;
+                case 'options':
+                    $this->applyBundleOptions($bundleData['theme_options_preset'] ?? '');
+                    break;
+                case 'pages':
+                    $this->setupBundlePages($bundleData['page_setup'] ?? []);
+                    $service->setActiveBundle($bundle);
+                    break;
+            }
+
+            \wp_send_json_success(['message' => \__('Step completed.', 'jankx')]);
+        } catch (\Throwable $e) {
+            \wp_send_json_error(['message' => $e->getMessage()]);
+        }
+    }
+
+    protected function installBundlePlugins(array $plugins): void
+    {
+        if (empty($plugins)) {
+            return;
+        }
+
+        require_once ABSPATH . 'wp-admin/includes/plugin.php';
+        require_once ABSPATH . 'wp-admin/includes/plugin-install.php';
+        require_once ABSPATH . 'wp-admin/includes/file.php';
+        require_once ABSPATH . 'wp-admin/includes/class-wp-upgrader.php';
+
+        foreach ($plugins as $pluginSlug) {
+            if (\is_plugin_active($pluginSlug . '/' . $pluginSlug . '.php')) {
+                continue;
+            }
+
+            $api = \plugins_api('plugin_information', [
+                'slug' => $pluginSlug,
+                'fields' => ['short_description' => false],
+            ]);
+
+            if (\is_wp_error($api)) {
+                continue;
+            }
+
+            $upgrader = new \Plugin_Upgrader(new \WP_Ajax_Upgrader_Skin());
+            $result = $upgrader->install($api->download_link);
+
+            if ($result && !\is_wp_error($result)) {
+                \activate_plugin($pluginSlug . '/' . $pluginSlug . '.php');
+            }
+        }
+    }
+
+    protected function installBundleExtensions(array $extensions): void
+    {
+        if (empty($extensions)) {
+            return;
+        }
+
+        try {
+            $marketplace = $this->app->make('extension.marketplace');
+            foreach ($extensions as $slug) {
+                try {
+                    $marketplace->installExtension($slug);
+                } catch (\Throwable $e) {
+                    continue;
+                }
+            }
+        } catch (\Throwable $e) {
+        }
+    }
+
+    protected function applyBundleOptions(string $preset): void
+    {
+        if (empty($preset)) {
+            return;
+        }
+
+        $path = \get_template_directory() . '/config/presets/' . $preset . '.php';
+        if (\file_exists($path)) {
+            $options = include $path;
+            if (\is_array($options)) {
+                foreach ($options as $key => $value) {
+                    \update_option($key, $value);
+                }
+            }
+        }
+    }
+
+    protected function setupBundlePages(array $pageSetup): void
+    {
+        if (empty($pageSetup)) {
+            return;
+        }
+
+        if (!empty($pageSetup['homepage'])) {
+            $page = \get_page_by_path($pageSetup['homepage']);
+            if ($page) {
+                \update_option('page_on_front', $page->ID);
+                \update_option('show_on_front', 'page');
+            }
+        }
+
+        if (!empty($pageSetup['blog'])) {
+            $page = \get_page_by_path($pageSetup['blog']);
+            if ($page) {
+                \update_option('page_for_posts', $page->ID);
+            }
+        }
+
+        if (!empty($pageSetup['menu_location'])) {
+            $locations = \get_theme_mod('nav_menu_locations', []);
+            foreach ($pageSetup['menu_location'] as $location => $menuName) {
+                $menu = \wp_get_nav_menu_object($menuName);
+                if ($menu) {
+                    $locations[$location] = $menu->term_id;
+                }
+            }
+            \set_theme_mod('nav_menu_locations', $locations);
+        }
+    }
+
+    public function ajaxResetBundle()
+    {
+        \check_ajax_referer('jankx_membership_bundle', 'nonce');
+
+        $bundle = \sanitize_text_field($_POST['bundle'] ?? '');
+        if (empty($bundle)) {
+            \wp_send_json_error(['message' => \__('No bundle specified.', 'jankx')]);
+        }
+
+        try {
+            \delete_option('jankx_active_bundle');
+            \delete_option('jankx_bundle_installed_at');
+
+            $activeDemo = \get_option('jankx_active_demo', '');
+            if ($activeDemo) {
+                $this->rollbackSeedersForDemo($activeDemo);
+                \delete_option('jankx_active_demo');
+                \delete_option('jankx_demo_imported_at');
+            }
+
+            \wp_send_json_success(['message' => \__('Bundle reset successfully.', 'jankx')]);
+        } catch (\Throwable $e) {
+            \wp_send_json_error(['message' => $e->getMessage()]);
+        }
     }
 }
