@@ -77,9 +77,14 @@ class JankxAdminPagesServiceProvider extends ServiceProvider
 
         // 1. Register Jankx Dashboard (Main Top-Level)
         $dashboardId = 'jankx-dashboard';
+
+        $isPro = $this->app->bound('license') && $this->app->make('license')->isActivated();
+        $menuTitle = Config::get('app.menu_title', __('Jankx Admin', 'jankx'));
+        $menuSuffix = $isPro ? '' : ' (' . __('FREE', 'jankx') . ')';
+
         add_menu_page(
             Config::get('app.admin_page_title', __('Jankx Dashboard', 'jankx')),
-            Config::get('app.menu_title', __('Jankx Admin', 'jankx')),
+            $menuTitle . $menuSuffix,
             'manage_options',
             $dashboardId,
             [$this, 'renderSubPage'],

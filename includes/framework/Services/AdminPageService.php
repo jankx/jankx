@@ -317,6 +317,28 @@ class AdminPageService
         ]);
 
         $this->addPage([
+            'id' => 'jankx-support',
+            'title' => __('Support & Tickets', 'jankx'),
+            'subtitle' => __('Submit support tickets and view your request history. Available for PRO users.', 'jankx'),
+            'menu_title' => __('Support & Tickets', 'jankx'),
+            'capability' => 'manage_options',
+            'callback' => [$this, 'renderSupportPage'],
+            'icon' => 'dashicons-sos',
+            'position' => 30
+        ]);
+
+        $this->addPage([
+            'id' => 'jankx-sponsor',
+            'title' => __('Sponsor & Donate', 'jankx'),
+            'subtitle' => __('Support the development of Jankx Framework by becoming a sponsor.', 'jankx'),
+            'menu_title' => __('Sponsor & Donate', 'jankx'),
+            'capability' => 'manage_options',
+            'callback' => [$this, 'renderSponsorPage'],
+            'icon' => 'dashicons-heart',
+            'position' => 40
+        ]);
+
+        $this->addPage([
             'id' => 'jankx-debug',
             'title' => __('System Information', 'jankx'),
             'subtitle' => __('Detailed information about the server environment and system error logs.', 'jankx'),
@@ -829,6 +851,10 @@ class AdminPageService
         $framework_version = $this->app->make('jankx.version') ?? '1.0.0';
         $icon = $page['icon'] ?? 'dashicons-admin-generic';
         $subtitle = $page['subtitle'] ?? __('Premium WordPress experience by Jankx Framework.', 'jankx');
+
+        $isPro = $this->app->bound('license') && $this->app->make('license')->isActivated();
+        $edition = $isPro ? 'PRO' : 'FREE';
+        $badgeClass = $isPro ? 'edition-badge-pro' : 'edition-badge-free';
         
         echo '<div class="jankx-admin-page-container">';
         $this->renderCommonStyles();
@@ -839,11 +865,17 @@ class AdminPageService
                     <span class="dashicons <?php echo esc_attr($icon); ?>"></span>
                 </div>
                 <div class="header-text">
-                    <h1><?php echo esc_html($page['title']); ?> <span class="version-badge">v<?php echo $framework_version; ?></span></h1>
+                    <h1><?php echo esc_html($page['title']); ?> <span class="version-badge">v<?php echo $framework_version; ?></span> <span class="edition-badge <?php echo $badgeClass; ?>"><?php echo $edition; ?></span></h1>
                     <p class="subtitle"><?php echo esc_html($subtitle); ?></p>
                 </div>
             </div>
         </header>
+        <?php if (!$isPro): ?>
+        <div class="jankx-free-notice">
+            <span class="dashicons dashicons-info"></span>
+            <span><?php _e('You are using JANKX FREE.', 'jankx'); ?> <a href="<?php echo \admin_url('admin.php?page=jankx-license'); ?>"><?php _e('Activate PRO', 'jankx'); ?></a> <?php _e('to unlock premium extensions, automatic updates, and priority support.', 'jankx'); ?></span>
+        </div>
+        <?php endif; ?>
         <div class="jankx-universal-content">
         <?php
     }
@@ -853,10 +885,18 @@ class AdminPageService
      */
     protected function renderPageFooter($page)
     {
+        $isPro = $this->app->bound('license') && $this->app->make('license')->isActivated();
+        $editionLabel = $isPro ? 'JANKX PRO' : 'JANKX FREE';
         ?>
         </div> <!-- .jankx-universal-content -->
         <footer class="jankx-admin-footer">
-            <p><?php echo sprintf(__('&copy; %1$s JANKX PRO. Made with %2$s by %3$s', 'jankx'), date('Y'), '<span class="dashicons dashicons-heart" style="color: #ef4444; font-size: 14px; width: 14px; height: 14px;"></span>', 'Puleeno'); ?></p>
+            <p><?php echo sprintf(__('&copy; %1$s %2$s. Made with %3$s by %4$s', 'jankx'), date('Y'), $editionLabel, '<span class="dashicons dashicons-heart" style="color: #ef4444; font-size: 14px; width: 14px; height: 14px;"></span>', 'Puleeno'); ?>
+            <?php if ($isPro): ?>
+                <span class="footer-license-badge"><?php _e('Licensed', 'jankx'); ?></span>
+            <?php else: ?>
+                <span class="footer-license-badge free"><?php _e('Unlicensed', 'jankx'); ?></span>
+            <?php endif; ?>
+            </p>
         </footer>
         </div> <!-- .jankx-admin-page-container -->
         <?php
@@ -990,6 +1030,191 @@ class AdminPageService
         <?php
     }
 
+    public function renderSupportPage($page)
+    {
+        if (!$this->app->bound('license') || !$this->app->make('license')->isActivated()) {
+            ?>
+            <div class="jankx-card" style="max-width: 700px; margin: 40px auto; text-align: center; padding: 60px 40px;">
+                <span class="dashicons dashicons-lock" style="font-size: 48px; width: 48px; height: 48px; color: #94a3b8;"></span>
+                <h2 style="margin: 20px 0 10px;"><?php _e('PRO Feature', 'jankx'); ?></h2>
+                <p style="color: #64748b; max-width: 400px; margin: 0 auto 30px;">
+                    <?php _e('Support tickets are available exclusively for JANKX PRO users. Activate your license to access priority technical support.', 'jankx'); ?>
+                </p>
+                <a href="<?php echo \admin_url('admin.php?page=jankx-license'); ?>" class="button button-primary" style="height: auto; padding: 12px 32px; border-radius: 12px; font-weight: 700; background: #3b82f6; border: none;">
+                    <?php _e('Activate PRO License', 'jankx'); ?>
+                </a>
+            </div>
+            <?php
+            return;
+        }
+
+        $tickets = \get_option('jankx_support_tickets', []);
+        $nonce = \wp_create_nonce('jankx_support_ticket');
+        ?>
+        <div class="jankx-support-page">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
+                <div class="jankx-card">
+                    <div class="card-header">
+                        <span class="dashicons dashicons-email-alt"></span>
+                        <h3><?php _e('Submit a Ticket', 'jankx'); ?></h3>
+                    </div>
+                    <div class="card-body">
+                        <form method="post" action="">
+                            <?php \wp_nonce_field('jankx_support_ticket', 'jankx_ticket_nonce'); ?>
+                            <input type="hidden" name="jankx_action" value="support_ticket">
+
+                            <div class="form-group" style="margin-bottom: 20px;">
+                                <label style="display: block; margin-bottom: 8px; font-weight: 600; font-size: 14px;"><?php _e('Subject', 'jankx'); ?> <span style="color: #ef4444;">*</span></label>
+                                <input type="text" name="ticket_subject" required
+                                    style="width: 100%; padding: 12px 16px; border-radius: 10px; border: 1px solid #e2e8f0; background: #f8fafc;"
+                                    placeholder="<?php esc_attr_e('Brief description of your issue', 'jankx'); ?>">
+                            </div>
+
+                            <div class="form-group" style="margin-bottom: 20px;">
+                                <label style="display: block; margin-bottom: 8px; font-weight: 600; font-size: 14px;"><?php _e('Priority', 'jankx'); ?></label>
+                                <select name="ticket_priority"
+                                    style="width: 100%; padding: 12px 16px; border-radius: 10px; border: 1px solid #e2e8f0; background: #f8fafc;">
+                                    <option value="low"><?php _e('Low', 'jankx'); ?></option>
+                                    <option value="normal" selected><?php _e('Normal', 'jankx'); ?></option>
+                                    <option value="high"><?php _e('High', 'jankx'); ?></option>
+                                    <option value="urgent"><?php _e('Urgent', 'jankx'); ?></option>
+                                </select>
+                            </div>
+
+                            <div class="form-group" style="margin-bottom: 20px;">
+                                <label style="display: block; margin-bottom: 8px; font-weight: 600; font-size: 14px;"><?php _e('Message', 'jankx'); ?> <span style="color: #ef4444;">*</span></label>
+                                <textarea name="ticket_message" required rows="8"
+                                    style="width: 100%; padding: 12px 16px; border-radius: 10px; border: 1px solid #e2e8f0; background: #f8fafc; resize: vertical;"
+                                    placeholder="<?php esc_attr_e('Describe your issue in detail. Include steps to reproduce if applicable.', 'jankx'); ?>"></textarea>
+                            </div>
+
+                            <div class="form-group" style="margin-bottom: 24px;">
+                                <label style="display: block; margin-bottom: 8px; font-weight: 600; font-size: 14px;">
+                                    <input type="checkbox" name="include_system_info" value="1" checked>
+                                    <?php _e('Attach system information', 'jankx'); ?>
+                                </label>
+                                <p style="font-size: 12px; color: #94a3b8; margin: 4px 0 0 24px;">
+                                    <?php _e('Includes PHP version, WordPress version, active plugins, theme version, and server info. Helps us resolve your issue faster.', 'jankx'); ?>
+                                </p>
+                            </div>
+
+                            <button type="submit" class="button button-primary" style="height: auto; padding: 12px 32px; border-radius: 10px; font-weight: 700; background: #3b82f6; border: none;">
+                                <span class="dashicons dashicons-yes-alt" style="font-size: 16px; width: 16px; height: 16px; margin-top: -2px;"></span>
+                                <?php _e('Submit Ticket', 'jankx'); ?>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="jankx-card">
+                    <div class="card-header">
+                        <span class="dashicons dashicons-list-view"></span>
+                        <h3><?php _e('Recent Tickets', 'jankx'); ?></h3>
+                    </div>
+                    <div class="card-body" style="max-height: 500px; overflow-y: auto;">
+                        <?php if (empty($tickets)): ?>
+                            <div style="text-align: center; padding: 40px 20px; color: #94a3b8;">
+                                <span class="dashicons dashicons-email-alt" style="font-size: 32px; width: 32px; height: 32px; margin-bottom: 12px;"></span>
+                                <p style="margin: 0;"><?php _e('No tickets submitted yet.', 'jankx'); ?></p>
+                            </div>
+                        <?php else:
+                            $tickets = array_reverse($tickets);
+                            foreach (array_slice($tickets, 0, 10) as $index => $ticket):
+                                $priority = $ticket['priority'] ?? 'normal';
+                                $priorityColors = ['low' => '#94a3b8', 'normal' => '#3b82f6', 'high' => '#f97316', 'urgent' => '#ef4444'];
+                                $pColor = $priorityColors[$priority] ?? '#3b82f6';
+                                $status = $ticket['status'] ?? 'open';
+                                $statusColors = ['open' => '#10b981', 'closed' => '#94a3b8', 'pending' => '#f97316'];
+                                $sColor = $statusColors[$status] ?? '#10b981';
+                            ?>
+                                <div style="padding: 16px; border: 1px solid #f1f5f9; border-radius: 12px; margin-bottom: 12px; background: #f8fafc; border-left: 3px solid <?php echo $pColor; ?>;">
+                                    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 8px;">
+                                        <strong style="font-size: 14px; color: #1e293b;"><?php echo esc_html($ticket['subject'] ?? ''); ?></strong>
+                                        <span style="font-size: 11px; padding: 2px 10px; border-radius: 10px; background: <?php echo $sColor; ?>20; color: <?php echo $sColor; ?>; font-weight: 700; text-transform: uppercase;">
+                                            <?php echo esc_html($status); ?>
+                                        </span>
+                                    </div>
+                                    <div style="font-size: 12px; color: #94a3b8;">
+                                        <span><?php echo esc_html($ticket['date'] ?? ''); ?></span>
+                                        <span style="margin: 0 8px;">·</span>
+                                        <span style="text-transform: capitalize;"><?php echo esc_html($priority); ?></span>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <?php
+    }
+
+    public function renderSponsorPage($page)
+    {
+        ?>
+        <div class="jankx-sponsor-page" style="max-width: 800px;">
+            <div class="jankx-card" style="margin-bottom: 30px;">
+                <div class="card-header">
+                    <span class="dashicons dashicons-heart" style="color: #ef4444;"></span>
+                    <h3><?php _e('Support Jankx Development', 'jankx'); ?></h3>
+                </div>
+                <div class="card-body">
+                    <p style="font-size: 15px; color: #475569; line-height: 1.7; margin-bottom: 24px;">
+                        <?php _e('Jankx Framework is an open-source project maintained by a small team. Your sponsorship helps us dedicate more time to development, create new features, and provide better support for the community.', 'jankx'); ?>
+                    </p>
+
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 30px;">
+                        <div style="padding: 24px; background: #f8fafc; border-radius: 16px; border: 1px solid #f1f5f9; text-align: center;">
+                            <span class="dashicons dashicons-star-filled" style="color: #f59e0b; font-size: 32px; width: 32px; height: 32px;"></span>
+                            <h4 style="margin: 12px 0 4px;"><?php _e('Supporter', 'jankx'); ?></h4>
+                            <p style="font-size: 24px; font-weight: 700; color: #1e293b; margin: 8px 0;">Tự nguyện</p>
+                            <p style="font-size: 13px; color: #64748b; margin: 0;"><?php _e('Any amount you choose', 'jankx'); ?></p>
+                        </div>
+                        <div style="padding: 24px; background: #fffbeb; border-radius: 16px; border: 2px solid #f59e0b; text-align: center;">
+                            <span class="dashicons dashicons-awards" style="color: #f59e0b; font-size: 32px; width: 32px; height: 32px;"></span>
+                            <h4 style="margin: 12px 0 4px;"><?php _e('Gold Sponsor', 'jankx'); ?></h4>
+                            <p style="font-size: 24px; font-weight: 700; color: #1e293b; margin: 8px 0;">2,000k+</p>
+                            <p style="font-size: 13px; color: #64748b; margin: 0;"><?php _e('VND / year', 'jankx'); ?></p>
+                        </div>
+                        <div style="padding: 24px; background: #f0fdf4; border-radius: 16px; border: 2px solid #10b981; text-align: center;">
+                            <span class="dashicons dashicons-shield" style="color: #10b981; font-size: 32px; width: 32px; height: 32px;"></span>
+                            <h4 style="margin: 12px 0 4px;"><?php _e('Platinum Sponsor', 'jankx'); ?></h4>
+                            <p style="font-size: 24px; font-weight: 700; color: #1e293b; margin: 8px 0;">10,000k+</p>
+                            <p style="font-size: 13px; color: #64748b; margin: 0;"><?php _e('VND / year', 'jankx'); ?></p>
+                        </div>
+                    </div>
+
+                    <div style="padding: 24px; background: #f1f5f9; border-radius: 16px; margin-bottom: 30px;">
+                        <h4 style="margin: 0 0 16px;"><?php _e('Donation Methods', 'jankx'); ?></h4>
+                        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;">
+                            <a href="https://github.com/sponsors/puleeno" target="_blank" rel="noopener" class="button" style="display: flex; align-items: center; gap: 10px; padding: 16px; height: auto; border-radius: 12px; border: 1px solid #e2e8f0; text-decoration: none; color: #1e293b;">
+                                <span class="dashicons dashicons-markdown" style="color: #24292e;"></span>
+                                <span><strong>GitHub Sponsors</strong><br><small style="color: #64748b;"><?php _e('Sponsor via GitHub', 'jankx'); ?></small></span>
+                            </a>
+                            <a href="https://www.buymeacoffee.com/puleeno" target="_blank" rel="noopener" class="button" style="display: flex; align-items: center; gap: 10px; padding: 16px; height: auto; border-radius: 12px; border: 1px solid #e2e8f0; text-decoration: none; color: #1e293b;">
+                                <span class="dashicons dashicons-coffee" style="color: #FF813F;"></span>
+                                <span><strong>Buy Me a Coffee</strong><br><small style="color: #64748b;"><?php _e('One-time donation', 'jankx'); ?></small></span>
+                            </a>
+                            <a href="#" target="_blank" rel="noopener" class="button" style="display: flex; align-items: center; gap: 10px; padding: 16px; height: auto; border-radius: 12px; border: 1px solid #e2e8f0; text-decoration: none; color: #1e293b;">
+                                <span class="dashicons dashicons-bank" style="color: #009A44;"></span>
+                                <span><strong>VietQR</strong><br><small style="color: #64748b;"><?php _e('Scan to pay (Vietcombank)', 'jankx'); ?></small></span>
+                            </a>
+                            <a href="#" target="_blank" rel="noopener" class="button" style="display: flex; align-items: center; gap: 10px; padding: 16px; height: auto; border-radius: 12px; border: 1px solid #e2e8f0; text-decoration: none; color: #1e293b;">
+                                <span class="dashicons dashicons-smartphone" style="color: #DA291C;"></span>
+                                <span><strong>Momo</strong><br><small style="color: #64748b;"><?php _e('Transfer via Momo', 'jankx'); ?></small></span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <p style="font-size: 13px; color: #94a3b8; text-align: center; margin: 0;">
+                        <?php _e('All sponsors and donors will be listed in the Jankx PRO dashboard and website credits section. Thank you for your support!', 'jankx'); ?> ❤️
+                    </p>
+                </div>
+            </div>
+        </div>
+        <?php
+    }
+
     public function renderMembershipPage($page)
     {
         echo '<div class="notice notice-info"><p>' . __('Membership features are not available in this build.', 'jankx') . '</p></div>';
@@ -1050,6 +1275,31 @@ class AdminPageService
                 color: #64748b;
                 font-size: 13px;
                 text-align: center;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                gap: 12px;
+                flex-wrap: wrap;
+            }
+            .jankx-admin-footer p {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                margin: 0;
+            }
+            .footer-license-badge {
+                font-size: 10px;
+                font-weight: 700;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                padding: 3px 10px;
+                border-radius: 10px;
+                background: #d1fae5;
+                color: #059669;
+            }
+            .footer-license-badge.free {
+                background: #fef3c7;
+                color: #d97706;
             }
 
             /* Jankx News Portal Styles */
@@ -1119,6 +1369,55 @@ class AdminPageService
                 color: #94a3b8;
                 font-weight: 500;
                 margin-top: auto;
+            }
+
+            /* Edition Badge */
+            .edition-badge {
+                font-size: 11px;
+                font-weight: 700;
+                padding: 4px 12px;
+                border-radius: 20px;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+            }
+            .edition-badge-pro {
+                background: #10b981;
+                color: #fff;
+                box-shadow: 0 0 20px rgba(16, 185, 129, 0.4);
+            }
+            .edition-badge-free {
+                background: #f59e0b;
+                color: #fff;
+            }
+
+            /* Free Notice Banner */
+            .jankx-free-notice {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                background: linear-gradient(135deg, #fef3c7, #fde68a);
+                border: 1px solid #f59e0b;
+                border-radius: 16px;
+                padding: 16px 24px;
+                margin: -20px 0 30px 0;
+                color: #92400e;
+                font-size: 14px;
+                font-weight: 500;
+            }
+            .jankx-free-notice .dashicons {
+                color: #f59e0b;
+                font-size: 24px;
+                width: 24px;
+                height: 24px;
+                flex-shrink: 0;
+            }
+            .jankx-free-notice a {
+                color: #dc2626;
+                font-weight: 700;
+                text-decoration: underline;
+            }
+            .jankx-free-notice a:hover {
+                color: #b91c1c;
             }
 
             @media (max-width: 1024px) {
@@ -2058,6 +2357,7 @@ class AdminPageService
         $themeUpdate  = ($cachedUpdate && isset($cachedUpdate['version'])) ? $cachedUpdate : false;
 
         $nonce = wp_create_nonce('jankx_marketplace_nonce');
+        $isPro = $this->app->bound('license') && $this->app->make('license')->isActivated();
         ?>
         <div class="jankx-marketplace-modern">
             <div id="jankx-install-notice" style="display:none; margin-bottom:20px;" class="notice"></div>
@@ -2172,6 +2472,11 @@ class AdminPageService
                                                 <span class="dashicons dashicons-yes"></span>
                                                 <?php _e('Already Installed', 'jankx'); ?>
                                             </button>
+                                        <?php elseif ($isPremium && !$isPro): ?>
+                                            <a href="https://jankx.com/download/<?php echo esc_attr($slug); ?>/" target="_blank" rel="noopener" class="button jankx-btn-secondary" style="text-decoration: none;">
+                                                <span class="dashicons dashicons-external"></span>
+                                                <?php _e('Download', 'jankx'); ?>
+                                            </a>
                                         <?php else: ?>
                                             <button class="button jankx-btn-primary install-extension" 
                                                     data-slug="<?php echo esc_attr($slug); ?>"

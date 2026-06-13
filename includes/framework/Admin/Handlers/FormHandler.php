@@ -76,6 +76,10 @@ class FormHandler
                     $this->handleDeactivateLicense($data);
                     break;
 
+                case 'support_ticket':
+                    $this->handleSubmitSupportTicket($data);
+                    break;
+
                 case 'disconnect_membership':
                     $this->handleDisconnectMembership($data);
                     break;
@@ -126,7 +130,7 @@ class FormHandler
             \add_action('admin_notices', function () {
                 \printf(
                     '<div class="notice notice-success is-dismissible"><p>%s</p></div>',
-                    \esc_html__('Theme JANKX PRO activated successfully via Optilarity!', 'jankx')
+                    \esc_html__('JANKX PRO activated successfully!', 'jankx')
                 );
             });
         }
@@ -176,6 +180,93 @@ class FormHandler
             \printf(
                 '<div class="notice notice-info is-dismissible"><p>%s</p></div>',
                 \esc_html__('Membership disconnected.', 'jankx')
+            );
+        });
+    }
+
+    /**
+     * Handle support ticket submission
+     */
+    protected function handleSubmitSupportTicket(array $data): void
+    {
+        if (!\wp_verify_nonce($data['jankx_ticket_nonce'] ?? '', 'jankx_support_ticket')) {
+            \wp_die(\__('Security check failed', 'jankx'));
+        }
+
+        if (!\current_user_can('manage_options')) {
+            \wp_die(\__('You do not have permission to perform this action.', 'jankx'));
+        }
+
+        $subject = \sanitize_text_field($data['ticket_subject'] ?? '');
+        $message = \sanitize_textarea_field($data['ticket_message'] ?? '');
+        $priority = \sanitize_text_field($data['ticket_priority'] ?? 'normal');
+        $includeInfo = !empty($data['include_system_info']);
+
+        if (empty($subject) || empty($message)) {
+            \add_action('admin_notices', function () {
+                \printf('<div class="notice notice-error is-dismissible"><p>%s</p></div>', \esc_html__('Subject and message are required.', 'jankx'));
+            });
+            return;
+        }
+
+        $license = $this->app->make('license');
+        $licenseData = $license->getLicenseData();
+
+        $systemInfo = '';
+        if ($includeInfo) {
+            $activePlugins = \get_option('active_plugins', []);
+            $pluginList = [];
+            foreach ($activePlugins as $pluginPath) {
+                if (\file_exists(WP_PLUGIN_DIR . '/' . $pluginPath)) {
+                    $pluginData = \get_plugin_data(WP_PLUGIN_DIR . '/' . $pluginPath);
+                    $pluginList[] = $pluginData['Name'] . ' ' . $pluginData['Version'];
+                }
+            }
+
+            $theme = \wp_get_theme();
+            $systemInfo = "\n\n--- System Information ---\n"
+                . "Site URL: " . \get_site_url() . "\n"
+                . "Home URL: " . \get_home_url() . "\n"
+                . "Domain: " . \parse_url(\get_site_url(), \PHP_URL_HOST) . "\n"
+                . "PHP Version: " . \PHP_VERSION . "\n"
+                . "WordPress Version: " . \get_bloginfo('version') . "\n"
+                . "Theme: " . $theme->get('Name') . ' ' . $theme->get('Version') . "\n"
+                . "Server: " . ($_SERVER['SERVER_SOFTWARE'] ?? 'Unknown') . "\n"
+                . "License: " . ($licenseData['key'] ?? 'N/A') . "\n"
+                . "License Email: " . ($licenseData['email'] ?? 'N/A') . "\n"
+                . "Active Plugins: " . \implode(', ', $pluginList) . "\n";
+        }
+
+        $ticketId = 'JANKX-' . \strtoupper(\wp_generate_password(8, false));
+
+        $fullMessage = "Ticket ID: {$ticketId}\n"
+            . "Priority: " . \strtoupper($priority) . "\n"
+            . "Subject: {$subject}\n"
+            . "---\n\n"
+            . $message
+            . $systemInfo;
+
+        $supportEmail = \apply_filters('jankx/support_email', 'support@jankx.com');
+        $headers = ['Content-Type: text/plain; charset=UTF-8'];
+        $headers[] = 'Reply-To: ' . \get_option('admin_email');
+
+        \wp_mail($supportEmail, "[Jankx Support] {$ticketId}: {$subject}", $fullMessage, $headers);
+
+        $tickets = \get_option('jankx_support_tickets', []);
+        $tickets[] = [
+            'id' => $ticketId,
+            'subject' => $subject,
+            'priority' => $priority,
+            'message' => \wp_trim_words($message, 30),
+            'date' => \current_time('mysql'),
+            'status' => 'open',
+        ];
+        \update_option('jankx_support_tickets', $tickets);
+
+        \add_action('admin_notices', function () use ($ticketId) {
+            \printf(
+                '<div class="notice notice-success is-dismissible"><p>%s</p></div>',
+                \sprintf(\esc_html__('Ticket #%s submitted successfully. Our team will get back to you within 24 hours.', 'jankx'), \esc_html($ticketId))
             );
         });
     }
