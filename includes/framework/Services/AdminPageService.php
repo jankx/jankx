@@ -1175,19 +1175,19 @@ class AdminPageService
                         <div style="padding: 24px; background: #f8fafc; border-radius: 16px; border: 1px solid #f1f5f9; text-align: center;">
                             <span class="dashicons dashicons-star-filled" style="color: #f59e0b; font-size: 32px; width: 32px; height: 32px;"></span>
                             <h4 style="margin: 12px 0 4px;"><?php _e('Supporter', 'jankx'); ?></h4>
-                            <p style="font-size: 24px; font-weight: 700; color: #1e293b; margin: 8px 0;">Tự nguyện</p>
+                            <p style="font-size: 24px; font-weight: 700; color: #1e293b; margin: 8px 0;"><?php _e('Voluntary', 'jankx'); ?></p>
                             <p style="font-size: 13px; color: #64748b; margin: 0;"><?php _e('Any amount you choose', 'jankx'); ?></p>
                         </div>
                         <div style="padding: 24px; background: #fffbeb; border-radius: 16px; border: 2px solid #f59e0b; text-align: center;">
                             <span class="dashicons dashicons-awards" style="color: #f59e0b; font-size: 32px; width: 32px; height: 32px;"></span>
                             <h4 style="margin: 12px 0 4px;"><?php _e('Gold Sponsor', 'jankx'); ?></h4>
-                            <p style="font-size: 24px; font-weight: 700; color: #1e293b; margin: 8px 0;">2,000k+</p>
+                            <p style="font-size: 24px; font-weight: 700; color: #1e293b; margin: 8px 0;"><?php _x('2,000k+', 'Sponsorship Amount', 'jankx'); ?></p>
                             <p style="font-size: 13px; color: #64748b; margin: 0;"><?php _e('VND / year', 'jankx'); ?></p>
                         </div>
                         <div style="padding: 24px; background: #f0fdf4; border-radius: 16px; border: 2px solid #10b981; text-align: center;">
                             <span class="dashicons dashicons-shield" style="color: #10b981; font-size: 32px; width: 32px; height: 32px;"></span>
                             <h4 style="margin: 12px 0 4px;"><?php _e('Platinum Sponsor', 'jankx'); ?></h4>
-                            <p style="font-size: 24px; font-weight: 700; color: #1e293b; margin: 8px 0;">10,000k+</p>
+                            <p style="font-size: 24px; font-weight: 700; color: #1e293b; margin: 8px 0;"><?php _x('10,000k+', 'Sponsorship Amount', 'jankx'); ?></p>
                             <p style="font-size: 13px; color: #64748b; margin: 0;"><?php _e('VND / year', 'jankx'); ?></p>
                         </div>
                     </div>
