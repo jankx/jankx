@@ -1279,7 +1279,7 @@ class AdminPageService
                         <div style="display: flex; align-items: center; gap: 12px;">
                             <span class="dashicons dashicons-yes-alt" style="color: #10b981; font-size: 24px; width: 24px; height: 24px;"></span>
                             <div>
-                                <strong style="font-size: 15px;"><?php printf(__('Active Kit: %s', 'jankx'), '<span style="color: #1e293b;">' . esc_html($bundles[$activeBundle]['name']) . '</span>'); ?></strong>
+                                <strong style="font-size: 15px;"><?php printf(__('Active Kit: %s', 'jankx'), '<span style="color: #1e293b;">' . esc_html(__($bundles[$activeBundle]['name'], 'jankx')) . '</span>'); ?></strong>
                                 <span style="font-size: 12px; color: #64748b; display: block;"><?php printf(__('Installed on %s', 'jankx'), \get_option('jankx_bundle_installed_at', '')); ?></span>
                             </div>
                         </div>
@@ -1309,8 +1309,8 @@ class AdminPageService
                             <?php endif; ?>
                         </div>
 
-                        <h3 style="margin: 0 0 8px; font-size: 18px;"><?php echo esc_html($bundle['name']); ?></h3>
-                        <p style="font-size: 14px; color: #64748b; line-height: 1.6; margin: 0 0 16px;"><?php echo esc_html($bundle['description']); ?></p>
+                        <h3 style="margin: 0 0 8px; font-size: 18px;"><?php echo esc_html(__($bundle['name'], 'jankx')); ?></h3>
+                        <p style="font-size: 14px; color: #64748b; line-height: 1.6; margin: 0 0 16px;"><?php echo esc_html(__($bundle['description'], 'jankx')); ?></p>
 
                         <div style="display: flex; gap: 16px; margin-bottom: 20px; font-size: 13px; color: #64748b;">
                             <?php if ($extCount > 0): ?>
