@@ -80,11 +80,20 @@ class JankxAdminPagesServiceProvider extends ServiceProvider
 
         $isPro = $this->app->bound('license') && $this->app->make('license')->isActivated();
         $menuTitle = Config::get('app.menu_title', __('Jankx Admin', 'jankx'));
-        $menuSuffix = $isPro ? '' : ' (' . __('FREE', 'jankx') . ')';
+        
+        if (strtoupper($menuTitle) === 'JANKX PRO' || strtoupper($menuTitle) === 'JANKX') {
+            $menuTitle = 'Jankx';
+        }
+
+        if ($isPro) {
+            $badgeHTML = '<span style="display:inline-block; margin-left:6px; padding:2px 6px; border-radius:4px; background:linear-gradient(135deg, #F59E0B 0%, #EF4444 100%); color:#fff; font-size:9px; font-weight:800; line-height:1; vertical-align:middle; letter-spacing:0.5px; box-shadow:0 2px 4px rgba(239, 68, 68, 0.3);">' . __('PRO', 'jankx') . '</span>';
+        } else {
+            $badgeHTML = '<span style="display:inline-block; margin-left:6px; padding:2px 6px; border-radius:4px; background:linear-gradient(135deg, #10B981 0%, #3B82F6 100%); color:#fff; font-size:9px; font-weight:800; line-height:1; vertical-align:middle; letter-spacing:0.5px; box-shadow:0 2px 4px rgba(59, 130, 246, 0.3);">' . __('FREE', 'jankx') . '</span>';
+        }
 
         add_menu_page(
             Config::get('app.admin_page_title', __('Jankx Dashboard', 'jankx')),
-            $menuTitle . $menuSuffix,
+            $menuTitle . $badgeHTML,
             'manage_options',
             $dashboardId,
             [$this, 'renderSubPage'],
