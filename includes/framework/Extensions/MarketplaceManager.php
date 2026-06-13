@@ -24,10 +24,10 @@ class MarketplaceManager
     const FREE_HUB_URL = 'https://jankx.pages.dev';
 
     /**
-     * Hub Base URL (Purchase)
+     * Hub Base URL (Purchase - currently disabled, using free hub)
      * @var string
      */
-    const PURCHASE_HUB_URL = 'https://optilarity.top';
+    const PURCHASE_HUB_URL = 'https://jankx.pages.dev';
 
     /**
      * Default Hub Base URL

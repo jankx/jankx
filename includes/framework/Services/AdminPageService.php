@@ -33,15 +33,17 @@ class AdminPageService
      */
     public function registerDashboardWidgets()
     {
-        $license = $this->app->make('license');
-        $isActivated = $license->isActivated();
+        if ($this->app->bound('license')) {
+            $license = $this->app->make('license');
+            $isActivated = $license->isActivated();
 
-        if (!$isActivated) {
-            \wp_add_dashboard_widget(
-                'jankx_license_widget',
-                \__('JANKX PRO Activation Required', 'jankx'),
-                [$this, 'renderLicenseWidget']
-            );
+            if (!$isActivated) {
+                \wp_add_dashboard_widget(
+                    'jankx_license_widget',
+                    \__('JANKX PRO Activation Required', 'jankx'),
+                    [$this, 'renderLicenseWidget']
+                );
+            }
         }
 
         \wp_add_dashboard_widget(
@@ -85,7 +87,7 @@ class AdminPageService
             </div>
             <div style="display: flex; gap: 10px;">
                 <a href="<?php echo \admin_url('admin.php?page=jankx-license'); ?>" class="button button-primary" style="background: #3b82f6; border: none; border-radius: 8px; font-weight: 600;"><?php \_e('Activate Now', 'jankx'); ?></a>
-                <a href="https://optilarity.top" target="_blank" class="button" style="border-radius: 8px;"><?php \_e('Buy License', 'jankx'); ?></a>
+                <a href="https://jankx.com" target="_blank" class="button" style="border-radius: 8px;"><?php \_e('Get Support', 'jankx'); ?></a>
             </div>
         </div>
         <?php
@@ -267,16 +269,8 @@ class AdminPageService
             'position' => 15
         ]);
 
-        $this->addPage([
-            'id' => 'jankx-membership',
-            'title' => __('Membership', 'jankx'),
-            'subtitle' => __('Connect your Optilarity account to unlock premium templates and services.', 'jankx'),
-            'menu_title' => __('Membership', 'jankx'),
-            'capability' => 'manage_options',
-            'callback' => [$this, 'renderMembershipPage'],
-            'icon' => 'dashicons-admin-users',
-            'position' => 16
-        ]);
+        // Membership page removed - requires Optilarity SDK which has been
+        // removed to eliminate unnecessary commercial dependency.
 
         $this->addPage([
             'id' => 'jankx-extensions',
@@ -873,6 +867,11 @@ class AdminPageService
      */
     public function renderLicensePage($page)
     {
+        if (!$this->app->bound('license')) {
+            echo '<div class="notice notice-warning"><p>' . __('License service is not available.', 'jankx') . '</p></div>';
+            return;
+        }
+
         $licenseService = $this->app->make('license');
         $isActivated = $licenseService->isActivated();
         $licenseData = $licenseService->getLicenseData();
@@ -962,7 +961,7 @@ class AdminPageService
                         <h4 style="margin: 0;"><?php _e('Need Help?', 'jankx'); ?></h4>
                     </div>
                     <p style="font-size: 13px; color: #64748b; margin-bottom: 15px;"><?php _e('If you lost your license key or need help activating, visit our portal.', 'jankx'); ?></p>
-                    <a href="https://optilarity.top" target="_blank" class="button button-secondary" style="width: 100%; text-align: center; border-radius: 10px;"><?php _e('Optilarity Portal', 'jankx'); ?></a>
+                    <a href="https://jankx.com" target="_blank" class="button button-secondary" style="width: 100%; text-align: center; border-radius: 10px;"><?php _e('Jankx Support', 'jankx'); ?></a>
                 </div>
 
                 <div class="jankx-card" style="padding: 24px; background: #f1f5f9; border: none;">
@@ -993,107 +992,7 @@ class AdminPageService
 
     public function renderMembershipPage($page)
     {
-        $membershipService = $this->app->make('membership');
-        $isActivated = $membershipService->isActivated();
-        $plan = $membershipService->getPlan();
-        $redirectUri = admin_url('index.php?state=jankx_auth');
-        $authUrl = $membershipService->getAuthorizeUrl($redirectUri);
-        ?>
-        <div class="jankx-dashboard-grid">
-            <!-- Account Status Card -->
-            <div class="jankx-card" style="grid-column: span 2;">
-                <div class="card-header">
-                    <span class="dashicons dashicons-admin-users"></span>
-                    <h3><?php _e('Account Overview', 'jankx'); ?></h3>
-                    <?php if ($isActivated) : ?>
-                        <span class="status-badge installed" style="margin-left: auto; background: #3b82f6; color: #fff;"><?php echo strtoupper($membershipService->getPlanSlug()); ?></span>
-                    <?php endif; ?>
-                </div>
-
-                <div class="card-body">
-                    <?php if (!$isActivated) : ?>
-                        <div class="membership-connect-hero" style="text-align: center; padding: 40px 20px;">
-                            <div style="width: 80px; height: 80px; background: #f1f5f9; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 24px;">
-                                <span class="dashicons dashicons-cloud" style="font-size: 40px; width: 40px; height: 40px; color: #94a3b8;"></span>
-                            </div>
-                            <h2 style="margin: 0 0 12px 0; font-size: 24px; color: #1e293b;"><?php _e('Connect to Optilarity', 'jankx'); ?></h2>
-                            <p style="color: #64748b; max-width: 500px; margin: 0 auto 30px; line-height: 1.6;">
-                                <?php _e('Link your website to the Optilarity network to sync your settings and access the global template library.', 'jankx'); ?>
-                            </p>
-                            <a href="<?php echo esc_url($authUrl); ?>" class="button button-primary" style="height: auto; padding: 14px 40px; border-radius: 12px; font-weight: 700; background: #8b5cf6; border: none; box-shadow: 0 4px 14px rgba(139, 92, 246, 0.4);">
-                                <span class="dashicons dashicons-external" style="margin-top: 4px; margin-right: 8px;"></span>
-                                <?php _e('Authorize with OAuth2', 'jankx'); ?>
-                            </a>
-                        </div>
-                    <?php else : ?>
-                        <div class="nexus-info-block" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
-                            <div class="info-row" style="background: #f8fafc; padding: 20px; border-radius: 16px; border: 1px solid #f1f5f9;">
-                                <span style="display: block; font-size: 11px; text-transform: uppercase; color: #94a3b8; font-weight: 700; margin-bottom: 6px;"><?php _e('Current Membership', 'jankx'); ?></span>
-                                <span style="font-size: 18px; font-weight: 700; color: #1e293b;"><?php echo esc_html($plan['name']); ?></span>
-                            </div>
-                            <div class="info-row" style="background: #f8fafc; padding: 20px; border-radius: 16px; border: 1px solid #f1f5f9;">
-                                <span style="display: block; font-size: 11px; text-transform: uppercase; color: #94a3b8; font-weight: 700; margin-bottom: 6px;"><?php _e('Expiration Date', 'jankx'); ?></span>
-                                <span style="font-size: 18px; font-weight: 700; color: #1e293b;"><?php echo isset($plan['expires_at']) && $plan['expires_at'] !== 'Never' ? date_i18n(get_option('date_format'), strtotime($plan['expires_at'])) : __('Lifetime Active', 'jankx'); ?></span>
-                            </div>
-                        </div>
-                        
-                        <div style="margin-top: 30px; display: flex; align-items: center; gap: 12px; padding: 16px; background: #f0f9ff; border-radius: 12px; border: 1px solid #e0f2fe;">
-                            <span class="dashicons dashicons-update" style="color: #0ea5e9;"></span>
-                            <span style="font-size: 13px; color: #0369a1;"><?php _e('Your account is currently synced with Optilarity Cloud Services.', 'jankx'); ?></span>
-                        </div>
-
-                        <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #f1f5f9; display: flex; justify-content: flex-end;">
-                            <form method="post" action="">
-                                <?php wp_nonce_field('jankx_disconnect_membership', 'jankx_membership_nonce'); ?>
-                                <input type="hidden" name="jankx_action" value="disconnect_membership">
-                                <button type="submit" class="button button-link" style="color: #ef4444; font-size: 13px; text-decoration: none;" onclick="return confirm('Disconnect membership?');">
-                                    <span class="dashicons dashicons-exit" style="font-size: 16px; width: 16px; height: 16px; margin-top: -2px;"></span>
-                                    <?php _e('Disconnect Account', 'jankx'); ?>
-                                </button>
-                            </form>
-                        </div>
-                    <?php endif; ?>
-                </div>
-            </div>
-
-            <!-- Stats & Benefits -->
-            <div class="sidebar-cards">
-                <div class="jankx-card" style="padding: 24px;">
-                    <div class="card-header" style="margin-bottom: 20px;">
-                        <span class="dashicons dashicons-cloud"></span>
-                        <h4 style="margin: 0;"><?php _e('Cloud Resources', 'jankx'); ?></h4>
-                    </div>
-                    
-                    <div style="display: flex; flex-direction: column; gap: 16px;">
-                        <div style="display: flex; align-items: center; gap: 12px;">
-                            <div style="width: 32px; height: 32px; background: #ede9fe; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #8b5cf6;">
-                                <span class="dashicons dashicons-layout" style="font-size: 16px; width: 16px; height: 16px;"></span>
-                            </div>
-                            <div>
-                                <span style="display: block; font-size: 14px; font-weight: 600;">500+</span>
-                                <span style="display: block; font-size: 11px; color: #94a3b8;"><?php _e('Premium Templates', 'jankx'); ?></span>
-                            </div>
-                        </div>
-                        <div style="display: flex; align-items: center; gap: 12px;">
-                            <div style="width: 32px; height: 32px; background: #dcfce7; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #10b981;">
-                                <span class="dashicons dashicons-admin-site" style="font-size: 16px; width: 16px; height: 16px;"></span>
-                            </div>
-                            <div>
-                                <span style="display: block; font-size: 14px; font-weight: 600;"><?php _e('Managed', 'jankx'); ?></span>
-                                <span style="display: block; font-size: 11px; color: #94a3b8;"><?php _e('Cloud Deployment', 'jankx'); ?></span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="jankx-card" style="padding: 24px; background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); border: none; color: #fff;">
-                    <h4 style="margin: 0 0 12px 0; color: #fff;"><?php _e('Upgrade Options', 'jankx'); ?></h4>
-                    <p style="font-size: 12px; color: rgba(255,255,255,0.8); margin-bottom: 20px;"><?php _e('Need more sites or advanced features? Explore our professional plans.', 'jankx'); ?></p>
-                    <a href="https://optilarity.top/pricing" target="_blank" style="display: block; width: 100%; text-align: center; padding: 10px; background: #fff; color: #3b82f6; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 13px;"><?php _e('Compare Plans', 'jankx'); ?></a>
-                </div>
-            </div>
-        </div>
-        <?php
+        echo '<div class="notice notice-info"><p>' . __('Membership features are not available in this build.', 'jankx') . '</p></div>';
     }
 
     protected function renderCommonStyles()

@@ -22,8 +22,11 @@ if (!defined('ABSPATH')) {
 
 $app = new Application(get_template_directory());
 
-// Register Optilarity Service Provider for Membership and License
-$app->register(\App\Providers\OptilarityServiceProvider::class);
+// Optilarity Service Provider has been removed to eliminate
+// unnecessary commercial dependency and phone-home functionality.
+// The EnvatoServiceProvider (registered via config/app.php) handles
+// license verification if needed.
+// $app->register(\App\Providers\OptilarityServiceProvider::class);
 
 // Return the application instance
 return $app;
