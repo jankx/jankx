@@ -321,6 +321,7 @@ class DemoImportServiceProvider extends ServiceProvider
 
         if (empty($bundle) || empty($step)) {
             \wp_send_json_error(['message' => \__('Invalid request.', 'jankx')]);
+            return;
         }
 
         $service = new \App\Services\MembershipBundleService();
@@ -328,6 +329,7 @@ class DemoImportServiceProvider extends ServiceProvider
 
         if (!isset($bundles[$bundle])) {
             \wp_send_json_error(['message' => \__('Bundle not found.', 'jankx')]);
+            return;
         }
 
         $bundleData = $bundles[$bundle];
@@ -353,11 +355,12 @@ class DemoImportServiceProvider extends ServiceProvider
                     $service->setActiveBundle($bundle);
                     break;
             }
-
-            \wp_send_json_success(['message' => \__('Step completed.', 'jankx')]);
         } catch (\Throwable $e) {
             \wp_send_json_error(['message' => $e->getMessage()]);
+            return;
         }
+
+        \wp_send_json_success(['message' => \__('Step completed.', 'jankx')]);
     }
 
     protected function installBundlePlugins(array $plugins): void
@@ -470,6 +473,7 @@ class DemoImportServiceProvider extends ServiceProvider
         $bundle = \sanitize_text_field($_POST['bundle'] ?? '');
         if (empty($bundle)) {
             \wp_send_json_error(['message' => \__('No bundle specified.', 'jankx')]);
+            return;
         }
 
         try {
@@ -482,10 +486,11 @@ class DemoImportServiceProvider extends ServiceProvider
                 \delete_option('jankx_active_demo');
                 \delete_option('jankx_demo_imported_at');
             }
-
-            \wp_send_json_success(['message' => \__('Bundle reset successfully.', 'jankx')]);
         } catch (\Throwable $e) {
             \wp_send_json_error(['message' => $e->getMessage()]);
+            return;
         }
+
+        \wp_send_json_success(['message' => \__('Bundle reset successfully.', 'jankx')]);
     }
 }

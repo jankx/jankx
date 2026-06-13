@@ -2,7 +2,7 @@
 
 namespace Tests\Services;
 
-use PHPUnit\Framework\TestCase;
+use Tests\Helpers\TestCase;
 use Jankx\Services\AdminPageService;
 use Jankx\Foundation\Application;
 use Jankx\Extensions\ThemeExtensionManager;
@@ -29,6 +29,26 @@ class AdminPageServiceTest extends TestCase
         }
         
         $this->adminPageService = new AdminPageService($this->app);
+    }
+
+    protected function mockFreeLicense()
+    {
+        $license = $this->getMockBuilder(\stdClass::class)->addMethods(['isActivated', 'getLicenseData'])->getMock();
+        $license->method('isActivated')->willReturn(false);
+        $this->app->method('bound')->with('license')->willReturn(true);
+        $this->app->method('make')->with('license')->willReturn($license);
+    }
+
+    protected function mockProLicense()
+    {
+        $license = $this->getMockBuilder(\stdClass::class)->addMethods(['isActivated', 'getLicenseData'])->getMock();
+        $license->method('isActivated')->willReturn(true);
+        $license->method('getLicenseData')->willReturn([
+            'key' => 'PRO-KEY',
+            'email' => 'pro@example.com',
+        ]);
+        $this->app->method('bound')->with('license')->willReturn(true);
+        $this->app->method('make')->with('license')->willReturn($license);
     }
 
     public function testRenderExtensionsPageCorrectlyUsesIdAndVersion()
@@ -95,5 +115,202 @@ class AdminPageServiceTest extends TestCase
         $this->assertStringContainsString('Hello World', $output);
         $this->assertStringNotContainsString('<strong>*</strong>', $output, 'It should not output * as extension name');
         $this->assertStringContainsString('hello-extension', $output, 'It should include data-slug="hello-extension"');
+    }
+
+    public function testRenderSupportPageShowsProUpsellForFreeUsers()
+    {
+        $this->mockFreeLicense();
+
+        ob_start();
+        $this->adminPageService->renderSupportPage(['id' => 'jankx-support']);
+        $output = ob_get_clean();
+
+        $this->assertStringContainsString('PRO Feature', $output);
+        $this->assertStringContainsString('Activate PRO License', $output);
+        $this->assertStringContainsString('page=jankx-license', $output);
+    }
+
+    public function testRenderSupportPageShowsFormForProUsers()
+    {
+        $this->mockProLicense();
+
+        ob_start();
+        $this->adminPageService->renderSupportPage(['id' => 'jankx-support']);
+        $output = ob_get_clean();
+
+        $this->assertStringContainsString('Submit a Ticket', $output);
+        $this->assertStringContainsString('ticket_subject', $output);
+        $this->assertStringContainsString('ticket_message', $output);
+        $this->assertStringContainsString('include_system_info', $output);
+        $this->assertStringNotContainsString('PRO Feature', $output);
+    }
+
+    public function testRenderSupportPageShowsNoTicketsMessage()
+    {
+        $this->mockProLicense();
+
+        ob_start();
+        $this->adminPageService->renderSupportPage(['id' => 'jankx-support']);
+        $output = ob_get_clean();
+
+        $this->assertStringContainsString('No tickets submitted yet', $output);
+    }
+
+    public function testRenderSponsorPageContainsLinks()
+    {
+        ob_start();
+        $this->adminPageService->renderSponsorPage(['id' => 'jankx-sponsor']);
+        $output = ob_get_clean();
+
+        $this->assertStringContainsString('GitHub Sponsors', $output);
+        $this->assertStringContainsString('Buy Me a Coffee', $output);
+        $this->assertStringContainsString('Supporter', $output);
+        $this->assertStringContainsString('Gold', $output);
+        $this->assertStringContainsString('Platinum', $output);
+    }
+
+    public function testRenderMembershipPageShowsUpsellForFreeUsers()
+    {
+        $this->mockFreeLicense();
+
+        ob_start();
+        $this->adminPageService->renderMembershipPage(['id' => 'jankx-membership']);
+        $output = ob_get_clean();
+
+        $this->assertStringContainsString('JANKX Membership', $output);
+        $this->assertStringContainsString('Activate PRO License', $output);
+    }
+
+    public function testRenderMembershipPageShowsBundlesForProUsers()
+    {
+        $this->mockProLicense();
+
+        ob_start();
+        $this->adminPageService->renderMembershipPage(['id' => 'jankx-membership']);
+        $output = ob_get_clean();
+
+        $this->assertStringContainsString('PRO Membership Active', $output);
+    }
+
+    public function testRenderPageHeaderShowsEditionBadge()
+    {
+        // Setup mock that handles both license and url services
+        $licenseMock = $this->getMockBuilder(\stdClass::class)->addMethods(['isActivated', 'getLicenseData'])->getMock();
+        $licenseMock->method('isActivated')->willReturn(false);
+
+        $this->app->method('bound')->with('license')->willReturn(true);
+        $this->app->method('make')->willReturnCallback(function($abstract) use ($licenseMock) {
+            if ($abstract === 'license') return $licenseMock;
+            if ($abstract === 'jankx.version') return '2.0.0';
+            if ($abstract === 'jankx.urls') return ['base' => 'http://example.com/wp-content/themes/jankx'];
+            return null;
+        });
+
+        ob_start();
+        $this->callProtectedMethod($this->adminPageService, 'renderPageHeader', ['id' => 'jankx-license', 'title' => 'License']);
+        $output = ob_get_clean();
+
+        $this->assertStringContainsString('FREE', $output);
+        $this->assertStringContainsString('edition-badge-free', $output);
+        $this->assertStringContainsString('You are using JANKX FREE', $output);
+    }
+
+    public function testRenderPageFooterShowsLicensedState()
+    {
+        $licenseMock = $this->getMockBuilder(\stdClass::class)->addMethods(['isActivated', 'getLicenseData'])->getMock();
+        $licenseMock->method('isActivated')->willReturn(true);
+
+        $this->app->method('bound')->with('license')->willReturn(true);
+        $this->app->method('make')->willReturnCallback(function($abstract) use ($licenseMock) {
+            if ($abstract === 'license') return $licenseMock;
+            return null;
+        });
+
+        ob_start();
+        $this->callProtectedMethod($this->adminPageService, 'renderPageFooter', ['id' => 'jankx-license']);
+        $output = ob_get_clean();
+
+        $this->assertStringContainsString('Licensed', $output);
+    }
+
+    public function testRenderPageFooterShowsUnlicensedForFree()
+    {
+        $licenseMock = $this->getMockBuilder(\stdClass::class)->addMethods(['isActivated', 'getLicenseData'])->getMock();
+        $licenseMock->method('isActivated')->willReturn(false);
+
+        $this->app->method('bound')->with('license')->willReturn(true);
+        $this->app->method('make')->willReturnCallback(function($abstract) use ($licenseMock) {
+            if ($abstract === 'license') return $licenseMock;
+            return null;
+        });
+
+        ob_start();
+        $this->callProtectedMethod($this->adminPageService, 'renderPageFooter', ['id' => 'jankx-license']);
+        $output = ob_get_clean();
+
+        $this->assertStringContainsString('Unlicensed', $output);
+    }
+
+    public function testRenderLicensePageHasActivationForm()
+    {
+        $this->mockFreeLicense();
+
+        ob_start();
+        $this->adminPageService->renderLicensePage(['id' => 'jankx-license', 'title' => 'License']);
+        $output = ob_get_clean();
+
+        $this->assertStringContainsString('Activate JANKX PRO', $output);
+        $this->assertStringContainsString('license_key', $output);
+    }
+
+    public function testRenderLicensePageShowsDeactivateForPro()
+    {
+        $this->mockProLicense();
+
+        ob_start();
+        $this->adminPageService->renderLicensePage(['id' => 'jankx-license', 'title' => 'License']);
+        $output = ob_get_clean();
+
+        $this->assertStringContainsString('Deactivate', $output);
+        $this->assertStringContainsString('Pro Enabled', $output);
+    }
+
+    public function testMarketplacePageContainsExtensionsHub()
+    {
+        $mockMarketplace = $this->getMockBuilder(\stdClass::class)->addMethods(['getAvailableExtensions', 'getLocale'])->getMock();
+        $mockMarketplace->method('getAvailableExtensions')->willReturn(['data' => [], 'pagination' => []]);
+        $mockMarketplace->method('getLocale')->willReturn('en');
+
+        $this->app->method('make')->willReturnCallback(function($abstract) use ($mockMarketplace) {
+            if ($abstract === 'extension.marketplace') {
+                return $mockMarketplace;
+            }
+            if ($abstract === 'license') {
+                $l = $this->getMockBuilder(\stdClass::class)->addMethods(['isActivated', 'getLicenseData'])->getMock();
+                $l->method('isActivated')->willReturn(false);
+                $l->method('getLicenseData')->willReturn(['key' => '', 'email' => '']);
+                return $l;
+            }
+            return null;
+        });
+        $this->app->method('bound')->with('license')->willReturn(false);
+
+        ob_start();
+        $this->adminPageService->renderMarketplacePage(['id' => 'jankx-marketplace']);
+        $output = ob_get_clean();
+
+        $this->assertStringContainsString('Extension Library', $output);
+    }
+
+    public function testHasAllNewRenderMethods()
+    {
+        $methods = [
+            'renderSupportPage', 'renderSponsorPage', 'renderMembershipPage',
+            'renderLicensePage', 'renderMarketplacePage',
+        ];
+
+        foreach ($methods as $method) {
+            $this->assertTrue(method_exists($this->adminPageService, $method), "Method {$method} should exist");
+        }
     }
 }

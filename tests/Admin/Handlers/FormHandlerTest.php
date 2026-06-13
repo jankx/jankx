@@ -433,6 +433,143 @@ class FormHandlerTest extends TestCase
         $formHandlerMock->handleRequests();
     }
 
+    public function testHandleSupportTicket()
+    {
+        $_SERVER['REQUEST_METHOD'] = 'POST';
+        $_POST = [
+            'jankx_action' => 'support_ticket',
+            'jankx_ticket_nonce' => 'valid_nonce',
+            'ticket_subject' => 'Test issue with theme',
+            'ticket_message' => 'I am having a problem with the layout.',
+            'ticket_priority' => 'high',
+            'include_system_info' => '1',
+        ];
+
+        $GLOBALS['mock_wp_verify_nonce'] = true;
+        $GLOBALS['mock_current_user_can'] = true;
+
+        // Mock license service as pro
+        $mockLicense = Mockery::mock('LicenseService');
+        $mockLicense->shouldReceive('getLicenseData')->andReturn([
+            'key' => 'PRO-KEY',
+            'email' => 'pro@user.com',
+        ]);
+        $this->app->instance('license', $mockLicense);
+
+        $this->formHandler->handleRequests();
+
+        // Verify email was sent
+        $this->assertNotEmpty($GLOBALS['wp_mails']);
+        $lastMail = end($GLOBALS['wp_mails']);
+        $this->assertStringContainsString('[Jankx Support]', $lastMail['subject']);
+        $this->assertStringContainsString('Test issue with theme', $lastMail['subject']);
+        $this->assertStringContainsString('I am having a problem', $lastMail['message']);
+        $this->assertStringContainsString('System Information', $lastMail['message']);
+        $this->assertStringContainsString('PRO-KEY', $lastMail['message']);
+
+        // Verify admin notice
+        $this->assertNotEmpty($GLOBALS['admin_notices']);
+        $callback = end($GLOBALS['admin_notices']);
+        $output = $this->captureCallbackOutput($callback);
+        $this->assertStringContainsString('submitted successfully', $output);
+    }
+
+    public function testHandleSupportTicketWithoutSystemInfo()
+    {
+        $_SERVER['REQUEST_METHOD'] = 'POST';
+        $_POST = [
+            'jankx_action' => 'support_ticket',
+            'jankx_ticket_nonce' => 'valid_nonce',
+            'ticket_subject' => 'Quick question',
+            'ticket_message' => 'Just a quick question.',
+            'ticket_priority' => 'low',
+            'include_system_info' => '0',
+        ];
+
+        $GLOBALS['mock_wp_verify_nonce'] = true;
+        $GLOBALS['mock_current_user_can'] = true;
+
+        $mockLicense = Mockery::mock('LicenseService');
+        $mockLicense->shouldReceive('getLicenseData')->andReturn(['key' => 'K', 'email' => 'e@e.com']);
+        $this->app->instance('license', $mockLicense);
+
+        $this->formHandler->handleRequests();
+
+        $this->assertNotEmpty($GLOBALS['wp_mails']);
+        $lastMail = end($GLOBALS['wp_mails']);
+        $this->assertStringNotContainsString('System Information', $lastMail['message']);
+    }
+
+    public function testHandleSupportTicketFailsWithInvalidNonce()
+    {
+        $_SERVER['REQUEST_METHOD'] = 'POST';
+        $_POST = [
+            'jankx_action' => 'support_ticket',
+            'jankx_ticket_nonce' => 'invalid',
+            'ticket_subject' => 'Test',
+            'ticket_message' => 'Test message',
+        ];
+
+        $GLOBALS['mock_wp_verify_nonce'] = false;
+
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('An error occurred');
+
+        $this->formHandler->handleRequests();
+    }
+
+    public function testHandleSupportTicketRequiresSubject()
+    {
+        $_SERVER['REQUEST_METHOD'] = 'POST';
+        $_POST = [
+            'jankx_action' => 'support_ticket',
+            'jankx_ticket_nonce' => 'valid_nonce',
+            'ticket_subject' => '',
+            'ticket_message' => 'Message without subject',
+        ];
+
+        $GLOBALS['mock_wp_verify_nonce'] = true;
+        $GLOBALS['mock_current_user_can'] = true;
+
+        $this->formHandler->handleRequests();
+
+        $this->assertNotEmpty($GLOBALS['admin_notices']);
+        $callback = end($GLOBALS['admin_notices']);
+        $output = $this->captureCallbackOutput($callback);
+        $this->assertStringContainsString('required', $output);
+    }
+
+    public function testHandleActivateLicenseUpdatedMessage()
+    {
+        $_SERVER['REQUEST_METHOD'] = 'POST';
+        $_POST = [
+            'jankx_action' => 'activate_license',
+            'jankx_license_nonce' => 'valid_nonce',
+            'license_key' => 'test-key',
+            'email' => 'test@example.com'
+        ];
+
+        $GLOBALS['mock_wp_verify_nonce'] = true;
+        $GLOBALS['mock_current_user_can'] = true;
+
+        $mockLicenseService = Mockery::mock('LicenseService');
+        $mockLicenseService->shouldReceive('verify')
+            ->with('test-key', 'test@example.com')
+            ->andReturn(['success' => true, 'message' => 'Activated']);
+
+        $this->app->instance('license', $mockLicenseService);
+
+        $this->formHandler->handleRequests();
+
+        $this->assertNotEmpty($GLOBALS['admin_notices']);
+        $callback = $GLOBALS['admin_notices'][0];
+        $output = $this->captureCallbackOutput($callback);
+
+        // The updated message no longer says "via Optilarity"
+        $this->assertStringContainsString('success', $output);
+        $this->assertStringNotContainsString('Optilarity', $output);
+    }
+
     public function testHandleRequestsCatchesExceptions()
     {
         $_SERVER['REQUEST_METHOD'] = 'POST';

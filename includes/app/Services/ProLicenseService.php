@@ -93,6 +93,30 @@ class ProLicenseService
         return true;
     }
 
+    public function activate(string $licenseKey, string $email, array $extra = []): array
+    {
+        $data = \array_merge([
+            'key' => $licenseKey,
+            'email' => $email,
+            'domain' => \parse_url(\get_site_url(), \PHP_URL_HOST),
+            'activated_at' => \current_time('mysql'),
+            'status' => 'active',
+            'plan' => 'pro',
+            'expires_at' => null,
+            'license_id' => '',
+        ], $extra);
+
+        \update_option(self::OPTION_KEY, $data);
+        \set_transient(self::CACHE_KEY, $data, 6 * HOUR_IN_SECONDS);
+        $this->data = $data;
+
+        return [
+            'success' => true,
+            'message' => \__('License activated successfully!', 'jankx'),
+            'data' => $data,
+        ];
+    }
+
     public function isActivated(): bool
     {
         if (empty($this->data)) {
