@@ -1,0 +1,229 @@
+.jankx-demo-import-wrap {
+    max-width: 1200px;
+    margin: 20px auto;
+}
+
+.jankx-demo-import-wrap h1 {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.jankx-demo-import-wrap .description {
+    font-size: 14px;
+    color: #64748b;
+    margin-bottom: 24px;
+}
+
+.jankx-demo-active-notice {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    border-radius: 8px;
+    margin-bottom: 24px;
+    font-weight: 500;
+    color: #166534;
+}
+
+.jankx-demo-active-notice .dashicons-yes-alt {
+    color: #16a34a;
+}
+
+.jankx-demo-active-notice .button {
+    margin-left: auto;
+}
+
+.jankx-demo-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 24px;
+    margin-bottom: 24px;
+}
+
+.jankx-demo-card {
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: box-shadow 0.2s, border-color 0.2s;
+}
+
+.jankx-demo-card:hover {
+    border-color: #3b82f6;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.1);
+}
+
+.jankx-demo-card.active {
+    border-color: #16a34a;
+    box-shadow: 0 0 0 1px #16a34a;
+}
+
+.jankx-demo-thumb {
+    position: relative;
+    aspect-ratio: 16/10;
+    background: #f1f5f9;
+    overflow: hidden;
+}
+
+.jankx-demo-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.jankx-demo-thumb-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: #94a3b8;
+}
+
+.jankx-demo-thumb-placeholder .dashicons {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+}
+
+.jankx-demo-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: #16a34a;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.jankx-demo-info {
+    padding: 16px;
+}
+
+.jankx-demo-info h3 {
+    margin: 0 0 8px;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.jankx-demo-info p {
+    margin: 0 0 12px;
+    font-size: 13px;
+    color: #64748b;
+    line-height: 1.5;
+}
+
+.jankx-demo-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-bottom: 8px;
+}
+
+.jankx-demo-tag {
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    padding: 2px 8px;
+    background: #f1f5f9;
+    color: #475569;
+    border-radius: 10px;
+}
+
+.jankx-demo-requires {
+    font-size: 12px;
+    color: #64748b;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    align-items: center;
+}
+
+.jankx-demo-requires strong {
+    color: #475569;
+}
+
+.jankx-demo-plugin-ok {
+    color: #16a34a;
+    font-weight: 500;
+}
+
+.jankx-demo-plugin-missing {
+    color: #dc2626;
+    font-weight: 500;
+}
+
+.jankx-demo-actions {
+    padding: 12px 16px;
+    border-top: 1px solid #f1f5f9;
+    display: flex;
+    gap: 8px;
+}
+
+.jankx-demo-actions .button-primary {
+    background: #3b82f6;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    padding: 4px 16px;
+}
+
+.jankx-demo-actions .button-primary:hover {
+    background: #2563eb;
+}
+
+.jankx-demo-progress {
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 24px;
+}
+
+.jankx-demo-progress-bar {
+    height: 8px;
+    background: #f1f5f9;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 12px;
+}
+
+.jankx-demo-progress-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #3b82f6, #2563eb);
+    border-radius: 4px;
+    transition: width 0.3s ease;
+}
+
+.jankx-demo-progress-text {
+    margin: 0;
+    font-size: 13px;
+    color: #64748b;
+    text-align: center;
+}
+
+.jankx-demo-result {
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 24px;
+}
+
+.jankx-demo-result.success {
+    border-color: #bbf7d0;
+    background: #f0fdf4;
+}
+
+.jankx-demo-result.error {
+    border-color: #fecaca;
+    background: #fef2f2;
+}

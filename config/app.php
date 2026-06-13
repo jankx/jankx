@@ -22,6 +22,8 @@ return [
         Jankx\Support\Providers\EnvatoServiceProvider::class,
 
         App\Providers\GutenbergServiceProvider::class,
+        App\Providers\DemoImportServiceProvider::class,
+        App\Providers\SetupWizardServiceProvider::class,
         App\MenuBuilder\ServiceProvider::class,
         Jankx\Support\Providers\ContentLayoutServiceProvider::class,
 

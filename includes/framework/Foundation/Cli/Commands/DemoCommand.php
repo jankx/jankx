@@ -30,7 +30,7 @@ class DemoCommand extends WP_CLI_Command
     /**
      * Manifest path relative to the theme root.
      */
-    protected const MANIFEST_FILE = 'demos/manifest.json';
+    protected const MANIFEST_FILE = 'demo/manifest.json';
 
     // ─────────────────────────────────────────────────────────────────────────
 
@@ -55,7 +55,7 @@ class DemoCommand extends WP_CLI_Command
         $demos  = $this->loadManifest();
 
         if (empty($demos)) {
-            WP_CLI::warning('No demo packages found. Place a demos/manifest.json in your theme directory.');
+            WP_CLI::warning('No demo packages found. Place a demo/manifest.json in your theme directory.');
             return;
         }
 
@@ -341,7 +341,7 @@ class DemoCommand extends WP_CLI_Command
 
         // Also check child theme
         $childManifest = get_stylesheet_directory() . '/' . self::MANIFEST_FILE;
-        if ($childManifest !== $manifestPath && file_exists($childManifest)) {
+        if (is_file($childManifest) && realpath($childManifest) !== realpath($manifestPath)) {
             $childData = json_decode(file_get_contents($childManifest), true);
             if (is_array($childData)) {
                 $demos = array_merge($demos, $childData);
@@ -360,12 +360,12 @@ class DemoCommand extends WP_CLI_Command
     protected function getDemoPath(string $demoId): string
     {
         // Child theme demo takes priority
-        $childPath = get_stylesheet_directory() . '/demos/' . $demoId;
+        $childPath = get_stylesheet_directory() . '/demo/demos/' . $demoId;
         if (is_dir($childPath)) {
             return $childPath;
         }
 
-        return get_template_directory() . '/demos/' . $demoId;
+        return get_template_directory() . '/demo/demos/' . $demoId;
     }
 
     /**
