@@ -207,10 +207,10 @@
 }
 
 .block-editor-block-list__block[data-type="jankx/offcanvas-sidebar"] .offcanvas-sidebar-preview .offcanvas-sidebar {
-  position: relative !important;
-  transform: translateX(0) !important;
-  opacity: 1 !important;
-  visibility: visible !important;
+  position: relative;
+  transform: translateX(0);
+  opacity: 1;
+  visibility: visible;
   /* Close Button - Editor Preview Styles */
 }
 .block-editor-block-list__block[data-type="jankx/offcanvas-sidebar"] .offcanvas-sidebar-preview .offcanvas-sidebar .close-button {

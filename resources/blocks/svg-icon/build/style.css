@@ -98,7 +98,7 @@
 .has-light-text-color .wp-block-jankx-svg-icon svg line,
 .has-light-text-color .wp-block-jankx-svg-icon svg ellipse,
 .has-light-text-color .wp-block-jankx-svg-icon svg text {
-  fill: var(--wp--preset--color--light-text) !important;
+  fill: var(--wp--preset--color--light-text);
 }
 
 .has-dark-text-color .wp-block-jankx-svg-icon svg,
@@ -111,7 +111,7 @@
 .has-dark-text-color .wp-block-jankx-svg-icon svg line,
 .has-dark-text-color .wp-block-jankx-svg-icon svg ellipse,
 .has-dark-text-color .wp-block-jankx-svg-icon svg text {
-  fill: var(--wp--preset--color--dark-text) !important;
+  fill: var(--wp--preset--color--dark-text);
 }
 
 /*# sourceMappingURL=style.css.map*/

@@ -50,7 +50,7 @@
 header.is-sticky {
     .hamburger-container {
         .bar {
-            background-color: var(--jankx-sticky-header-text-color, #333) !important;
+            background-color: var(--jankx-sticky-header-text-color, #333);
         }
     }
 }
@@ -243,21 +243,21 @@ html.sidebar-open {
 // Desktop only - hide on tablet and mobile
 .offcanvas-trigger-block.display-desktop {
     @media (max-width: 1024px) {
-        display: none !important;
+        display: none;
     }
 }
 
 // Tablet and below - hide on desktop
 .offcanvas-trigger-block.display-tablet-down {
     @media (min-width: 1025px) {
-        display: none !important;
+        display: none;
     }
 }
 
 // Mobile only - hide on tablet and desktop
 .offcanvas-trigger-block.display-mobile {
     @media (min-width: 768px) {
-        display: none !important;
+        display: none;
     }
 }
 
@@ -266,13 +266,13 @@ html.sidebar-open {
 
     @media (max-width: 767px),
     (min-width: 1025px) {
-        display: none !important;
+        display: none;
     }
 }
 
 // Always visible in editor regardless of display setting
 .editor-styles-wrapper .offcanvas-trigger-block.editor-always-visible {
-    display: inline-block !important;
+    display: inline-block;
 }
 
 /* ========================================

@@ -45,7 +45,7 @@
 
                     // Fix alignment: remove top margin from the first block in preview
                     > :first-child {
-                        margin-top: 0 !important;
+                        margin-top: 0;
                     }
                 }
             }
@@ -78,7 +78,7 @@
         // Fix alignment: remove top margin from the first block in editable area
         // Target the inner block list layout wrapper
         .block-editor-block-list__layout> :first-child {
-            margin-top: 0 !important;
+            margin-top: 0;
         }
     }
 }
@@ -97,32 +97,32 @@
     }
 
     &__group {
-        display: grid !important;
+        display: grid;
         grid-template-columns: repeat(3, 1fr);
         gap: 8px;
         width: 100%;
 
         .components-button {
-            height: 56px !important;
-            padding: 8px !important;
-            justify-content: center !important;
-            border-radius: 4px !important;
-            border: 1px solid #ccc !important;
-            background: #fff !important;
+            height: 56px;
+            padding: 8px;
+            justify-content: center;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            background: #fff;
             transition: all 0.2s ease;
-            display: flex !important;
-            align-items: center !important;
+            display: flex;
+            align-items: center;
 
             &:hover {
-                border-color: var(--wp-admin-theme-color) !important;
-                background: #f0f6fc !important;
-                color: var(--wp-admin-theme-color) !important;
+                border-color: var(--wp-admin-theme-color);
+                background: #f0f6fc;
+                color: var(--wp-admin-theme-color);
             }
 
             &.is-pressed {
-                border-color: var(--wp-admin-theme-color) !important;
-                background: var(--wp-admin-theme-color) !important;
-                color: #fff !important;
+                border-color: var(--wp-admin-theme-color);
+                background: var(--wp-admin-theme-color);
+                color: #fff;
                 box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             }
 

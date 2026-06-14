@@ -27,14 +27,14 @@
   pointer-events: none;
 }
 .wp-block-jankx-carousel-slide.image-size-contain {
-  background-size: contain !important;
+  background-size: contain;
 }
 .wp-block-jankx-carousel-slide.image-size-cover {
-  background-size: cover !important;
+  background-size: cover;
 }
 .wp-block-jankx-carousel-slide.image-size-fullwidth {
-  background-size: 100% 100% !important;
-  background-position: center !important;
+  background-size: 100% 100%;
+  background-position: center;
 }
 
 /*# sourceMappingURL=style.css.map*/

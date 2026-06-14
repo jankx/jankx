@@ -44,7 +44,7 @@
 
 /* Avatar styling */
 .wp-block-avatar img {
-    border-radius: 50% !important;
+    border-radius: 50%;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
 }
 
@@ -116,7 +116,7 @@
     }
 
     .wp-block-columns {
-        flex-wrap: nowrap !important;
+        flex-wrap: nowrap;
     }
 }
 
@@ -151,19 +151,19 @@
 
 .comment-form .submit {
     margin-top: 1.5rem;
-    background-color: var(--wp--preset--color--primary, #ff5c00) !important;
-    color: #fff !important;
-    border: none !important;
-    padding: 10px 25px !important;
-    font-weight: 700 !important;
-    text-transform: uppercase !important;
-    border-radius: 4px !important;
+    background-color: var(--wp--preset--color--primary, #ff5c00);
+    color: #fff;
+    border: none;
+    padding: 10px 25px;
+    font-weight: 700;
+    text-transform: uppercase;
+    border-radius: 4px;
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
 
 .comment-form .submit:hover {
-    background-color: var(--wp--preset--color--secondary, #123897) !important;
+    background-color: var(--wp--preset--color--secondary, #123897);
 }
 
 .logged-in-as {

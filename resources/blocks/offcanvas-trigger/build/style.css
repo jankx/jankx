@@ -47,7 +47,7 @@
 }
 
 header.is-sticky .hamburger-container .bar {
-  background-color: var(--jankx-sticky-header-text-color, #333) !important;
+  background-color: var(--jankx-sticky-header-text-color, #333);
 }
 
 /* ========================================
@@ -184,30 +184,30 @@ html.sidebar-open .offcanvas-trigger.hamburger-trigger .hamburger-container.skin
    ======================================== */
 @media (max-width: 1024px) {
   .offcanvas-trigger-block.display-desktop {
-    display: none !important;
+    display: none;
   }
 }
 
 @media (min-width: 1025px) {
   .offcanvas-trigger-block.display-tablet-down {
-    display: none !important;
+    display: none;
   }
 }
 
 @media (min-width: 768px) {
   .offcanvas-trigger-block.display-mobile {
-    display: none !important;
+    display: none;
   }
 }
 
 @media (max-width: 767px), (min-width: 1025px) {
   .offcanvas-trigger-block.display-tablet {
-    display: none !important;
+    display: none;
   }
 }
 
 .editor-styles-wrapper .offcanvas-trigger-block.editor-always-visible {
-  display: inline-block !important;
+  display: inline-block;
 }
 
 /* ========================================

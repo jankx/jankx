@@ -27,8 +27,8 @@
     }
 
     &.image-size-fullwidth {
-      background-size: 100% 100% !important;
-      background-position: center !important;
+      background-size: 100% 100%;
+      background-position: center;
     }
   }
 
@@ -164,16 +164,16 @@
 
   // ─── Image-size classes on wrapper (for specificity) ─────────────────────
   &.image-size-contain .embla-banner__image {
-    background-size: contain !important;
+    background-size: contain;
   }
 
   &.image-size-cover .embla-banner__image {
-    background-size: cover !important;
+    background-size: cover;
   }
 
   &.image-size-fullwidth .embla-banner__image {
-    background-size: 100% 100% !important;
-    background-position: center !important;
+    background-size: 100% 100%;
+    background-position: center;
   }
 }
 

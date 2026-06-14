@@ -12,7 +12,7 @@
  */
 .wp-block-jankx-advanced-button {
   box-sizing: border-box;
-  padding: 0 !important;
+  padding: 0;
 }
 .wp-block-jankx-advanced-button[style*=width] {
   width: var(--wp--custom--button--width, auto);
@@ -24,36 +24,36 @@
   border-color: transparent;
 }
 .wp-block-jankx-advanced-button:not(.is-style-outline):not(.is-style-text-link) .jankx-advanced-button__link.is-default-colors {
-  background-color: var(--wp--preset--color--primary, #503AA8) !important;
-  color: var(--wp--preset--color--base, #fff) !important;
+  background-color: var(--wp--preset--color--primary, #503AA8);
+  color: var(--wp--preset--color--base, #fff);
 }
 .wp-block-jankx-advanced-button.is-style-outline .jankx-advanced-button__link {
-  background-color: transparent !important;
-  border-color: currentColor !important;
-  border-width: 2px !important;
-  border-style: solid !important;
+  background-color: transparent;
+  border-color: currentColor;
+  border-width: 2px;
+  border-style: solid;
 }
 .wp-block-jankx-advanced-button.is-style-outline .jankx-advanced-button__link.is-default-colors {
-  color: var(--wp--preset--color--primary, #503AA8) !important;
-  border-color: var(--wp--preset--color--primary, #503AA8) !important;
+  color: var(--wp--preset--color--primary, #503AA8);
+  border-color: var(--wp--preset--color--primary, #503AA8);
 }
 .wp-block-jankx-advanced-button.is-style-outline:hover .jankx-advanced-button__link {
-  background-color: var(--wp--preset--color--primary, #503AA8) !important;
-  color: var(--wp--preset--color--base, #fff) !important;
-  border-color: transparent !important;
+  background-color: var(--wp--preset--color--primary, #503AA8);
+  color: var(--wp--preset--color--base, #fff);
+  border-color: transparent;
 }
 .wp-block-jankx-advanced-button.is-style-text-link .jankx-advanced-button__link {
-  background-color: transparent !important;
-  border: none !important;
-  padding: 0 !important;
-  width: auto !important;
-  display: inline-flex !important;
+  background-color: transparent;
+  border: none;
+  padding: 0;
+  width: auto;
+  display: inline-flex;
 }
 .wp-block-jankx-advanced-button.is-style-text-link .jankx-advanced-button__link.is-default-colors {
-  color: var(--wp--preset--color--primary, #503AA8) !important;
+  color: var(--wp--preset--color--primary, #503AA8);
 }
 .wp-block-jankx-advanced-button.is-style-text-link .jankx-advanced-button__link:hover {
-  text-decoration: underline !important;
+  text-decoration: underline;
 }
 .wp-block-jankx-advanced-button .jankx-advanced-button__link.is-animating {
   animation-duration: 1s;

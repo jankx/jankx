@@ -83,7 +83,7 @@ figure.wp-block-jankx-advanced-image-box__overlay--right {
 .has-overlay:hover figure.wp-block-jankx-advanced-image-box__overlay {
   opacity: 1;
   visibility: visible;
-  background: none !important;
+  background: none;
 }
 .wp-block-jankx-advanced-image-box:hover figure.wp-block-jankx-advanced-image-box__overlay.has-hover-zoom {
   transform: scale(1.05);
@@ -173,7 +173,7 @@ figure.wp-block-jankx-advanced-image-box.is-style-modern .wp-block-jankx-advance
   border-radius: 0;
 }
 figure.wp-block-jankx-advanced-image-box.is-style-overlay .wp-block-jankx-advanced-image-box__overlay {
-  background: none !important;
+  background: none;
 }
 @media (max-width: 768px) {
   figure.wp-block-jankx-advanced-image-box__overlay {

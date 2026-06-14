@@ -22,16 +22,16 @@
 
     // Image size variations for background images in editor
     &.image-size-contain {
-      background-size: contain !important;
+      background-size: contain;
     }
 
     &.image-size-cover {
-      background-size: cover !important;
+      background-size: cover;
     }
 
     &.image-size-fullwidth {
-      background-size: 100% 100% !important;
-      background-position: center !important;
+      background-size: 100% 100%;
+      background-position: center;
     }
   }
 }

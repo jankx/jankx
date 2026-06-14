@@ -240,7 +240,7 @@
 					color: rgb(255 255 255 / 80%);
 
 					&:hover {
-						color: #fff !important;
+						color: #fff;
 					}
 
 					svg {
@@ -536,7 +536,7 @@
 			word-break: break-word;
 
 			&:hover {
-				color: var(--wp-admin-theme-color) !important;
+				color: var(--wp-admin-theme-color);
 			}
 
 			&.has-no-icon-fill {

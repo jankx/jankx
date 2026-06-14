@@ -7,7 +7,7 @@
   --wrapper-padding-right: var(--wp--style--padding--right, 0);
   --wrapper-padding-bottom: var(--wp--style--padding--bottom, 0);
   --wrapper-padding-left: var(--wp--style--padding--left, 0);
-  padding: 0 !important;
+  padding: 0;
 }
 .wp-block-jankx-advanced-filters .advanced-filters-container {
   box-sizing: border-box;
@@ -86,10 +86,10 @@
   display: none;
 }
 .wp-block-jankx-advanced-filters .filter-collapsible .filter-group-content[style*="display: block"], .wp-block-jankx-advanced-filters .filter-collapsible .filter-group-content.expanded {
-  display: block !important;
+  display: block;
 }
 .wp-block-jankx-advanced-filters .filter-collapsible.filter-expanded .filter-group-content {
-  display: block !important;
+  display: block;
 }
 
 .filter-group {

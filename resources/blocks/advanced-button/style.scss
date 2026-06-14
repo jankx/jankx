@@ -13,7 +13,7 @@
 	box-sizing: border-box;
 
 	// Remove padding from wrapper - padding will be applied to link instead
-	padding: 0 !important;
+	padding: 0;
 
 	// Margin stays on wrapper (WordPress controls apply here)
 	// No default margin, let WordPress controls handle it
@@ -36,8 +36,8 @@
 
 			// Fallback colors if none set
 			&.is-default-colors {
-				background-color: var(--wp--preset--color--primary, #503AA8) !important;
-				color: var(--wp--preset--color--base, #fff) !important;
+				background-color: var(--wp--preset--color--primary, #503AA8);
+				color: var(--wp--preset--color--base, #fff);
 			}
 		}
 	}
@@ -45,43 +45,43 @@
 	// Outline style variant
 	&.is-style-outline {
 		.jankx-advanced-button__link {
-			background-color: transparent !important;
-			border-color: currentColor !important;
-			border-width: 2px !important;
-			border-style: solid !important;
+			background-color: transparent;
+			border-color: currentColor;
+			border-width: 2px;
+			border-style: solid;
 
 			// Fallback text/border color if none set
 			&.is-default-colors {
-				color: var(--wp--preset--color--primary, #503AA8) !important;
-				border-color: var(--wp--preset--color--primary, #503AA8) !important;
+				color: var(--wp--preset--color--primary, #503AA8);
+				border-color: var(--wp--preset--color--primary, #503AA8);
 			}
 		}
 
 		// Hover state for Outline
 		&:hover .jankx-advanced-button__link {
-			background-color: var(--wp--preset--color--primary, #503AA8) !important;
-			color: var(--wp--preset--color--base, #fff) !important;
-			border-color: transparent !important;
+			background-color: var(--wp--preset--color--primary, #503AA8);
+			color: var(--wp--preset--color--base, #fff);
+			border-color: transparent;
 		}
 	}
 
 	// Text Link style variant
 	&.is-style-text-link {
 		.jankx-advanced-button__link {
-			background-color: transparent !important;
-			border: none !important;
-			padding: 0 !important;
-			width: auto !important;
-			display: inline-flex !important;
+			background-color: transparent;
+			border: none;
+			padding: 0;
+			width: auto;
+			display: inline-flex;
 
 			// Fallback text color if none set
 			&.is-default-colors {
-				color: var(--wp--preset--color--primary, #503AA8) !important;
+				color: var(--wp--preset--color--primary, #503AA8);
 			}
 
 			// Add underline on hover for text link
 			&:hover {
-				text-decoration: underline !important;
+				text-decoration: underline;
 			}
 		}
 	}

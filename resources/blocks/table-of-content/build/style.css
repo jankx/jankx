@@ -75,7 +75,7 @@
   padding-left: 1.5em;
 }
 .jankx-table-of-content .toc-list:is(ul) li::before {
-  display: none !important;
+  display: none;
 }
 .jankx-table-of-content .toc-list.toc-list--root:is(ol) {
   counter-reset: toc-ol-counter;
@@ -122,7 +122,7 @@
   list-style-type: none;
 }
 .jankx-table-of-content.has-bullet-custom .toc-list:is(ul) li::before {
-  display: inline-block !important;
+  display: inline-block;
 }
 .jankx-table-of-content.is-flat-hierarchy .toc-list:not(.toc-list--root) {
   margin-left: 0;

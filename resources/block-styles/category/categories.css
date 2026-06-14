@@ -5,9 +5,9 @@
  */
 
 .wp-block-categories {
-    list-style: none !important;
-    padding: 0 !important;
-    margin: 0 !important;
+    list-style: none;
+    padding: 0;
+    margin: 0;
     font-family: var(--jankx-font-family, system-ui, -apple-system, sans-serif);
     border: 1px solid var(--jankx-cat-border, #ececec);
     border-radius: 4px;
@@ -18,8 +18,8 @@
 /* Category Item Container */
 .wp-block-categories .cat-item {
     position: relative;
-    list-style: none !important;
-    margin: 0 !important;
+    list-style: none;
+    margin: 0;
 }
 
 .wp-block-categories .cat-item:not(:last-child) {
@@ -57,14 +57,14 @@
 
 /* Nested Categories (Sub-menu / Tree structure) */
 .wp-block-categories .children {
-    list-style: none !important;
-    padding: 0 !important;
-    margin: 0 !important;
+    list-style: none;
+    padding: 0;
+    margin: 0;
     background: rgba(0, 0, 0, 0.01);
 }
 
 .wp-block-categories .children .cat-item {
-    border-bottom: none !important;
+    border-bottom: none;
     border-top: 1px solid var(--jankx-cat-border, #f1f1f1);
 }
 

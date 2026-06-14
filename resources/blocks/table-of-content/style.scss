@@ -98,7 +98,7 @@
 
             // Remove default ::before bullets from some themes to prevent double markers
             li::before {
-                display: none !important;
+                display: none;
             }
         }
 
@@ -168,7 +168,7 @@
         list-style-type: none;
 
         li::before {
-            display: inline-block !important; // Restore theme custom bullets
+            display: inline-block; // Restore theme custom bullets
         }
     }
 

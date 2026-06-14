@@ -110,7 +110,7 @@ figure.wp-block-jankx-advanced-image-box {
 			.has-overlay:hover & {
 				opacity: 1;
 				visibility: visible;
-				background: none !important;
+				background: none;
 			}
 
 			// Đồng bộ hiệu ứng hover với ảnh
@@ -233,7 +233,7 @@ figure.wp-block-jankx-advanced-image-box {
 		// Remove all overlay background on hover for overlay style
 		&.is-style-overlay {
 			.wp-block-jankx-advanced-image-box__overlay {
-				background: none !important;
+				background: none;
 			}
 		}
 

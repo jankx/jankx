@@ -32,15 +32,15 @@ body.jankx-header-overlay header.has-background {
   right: 0;
   width: 100%;
   z-index: 1000;
-  background-color: transparent !important;
-  background-image: none !important;
+  background-color: transparent;
+  background-image: none;
 }
 body.jankx-header-overlay header.wp-block-template-part.is-sticky,
 body.jankx-header-overlay header.wp-block-group.is-sticky,
 body.jankx-header-overlay header.has-contrast-background-color.is-sticky,
 body.jankx-header-overlay header.has-background.is-sticky {
   position: fixed;
-  background-color: var(--jankx-sticky-header-bg-color, #184962) !important;
+  background-color: var(--jankx-sticky-header-bg-color, #184962);
 }
 body.jankx-header-overlay.admin-bar header.is-sticky header.wp-block-template-part,
 body.jankx-header-overlay.admin-bar header.is-sticky header.wp-block-group,
@@ -61,23 +61,23 @@ header.is-sticky {
   z-index: 10000;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
   animation: jankxHeaderSlideDown 0.5s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
-  background-color: rgba(24, 73, 98, 0.85) !important;
+  background-color: rgba(24, 73, 98, 0.85);
   backdrop-filter: blur(15px);
   -webkit-backdrop-filter: blur(15px);
 }
 @supports (background-color: var(--jankx-sticky-header-bg-color)) {
   header.is-sticky {
-    background-color: var(--jankx-sticky-header-bg-color) !important;
+    background-color: var(--jankx-sticky-header-bg-color);
   }
 }
 header.is-sticky {
-  padding-top: 10px !important;
-  padding-bottom: 10px !important;
+  padding-top: 10px;
+  padding-bottom: 10px;
   transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1), background-color 0.4s ease, opacity 0.4s ease;
 }
 
 body.jankx-header-overlay header.is-sticky header.has-contrast-background-color {
-  background-color: var(--jankx-sticky-header-bg-color, #1a1a1a) !important;
+  background-color: var(--jankx-sticky-header-bg-color, #1a1a1a);
 }
 
 @keyframes jankxHeaderSlideDown {
@@ -136,109 +136,109 @@ body.jankx-header-overlay header.is-sticky header.has-contrast-background-color 
 
 @media (max-width: 767.98px) {
   .hide-mobile {
-    display: none !important;
+    display: none;
   }
 }
 
 @media (min-width: 768px) and (max-width: 1023.98px) {
   .hide-tablet {
-    display: none !important;
+    display: none;
   }
 }
 
 @media (min-width: 1024px) and (max-width: 1439.98px) {
   .hide-desktop {
-    display: none !important;
+    display: none;
   }
 }
 
 @media (min-width: 1440px) {
   .hide-fluid {
-    display: none !important;
+    display: none;
   }
 }
 
 @media (min-width: 768px) {
   .only-mobile {
-    display: none !important;
+    display: none;
   }
 }
 
 @media (max-width: 767.98px) {
   .only-tablet {
-    display: none !important;
+    display: none;
   }
 }
 @media (min-width: 1024px) {
   .only-tablet {
-    display: none !important;
+    display: none;
   }
 }
 
 @media (max-width: 1023.98px) {
   .only-desktop {
-    display: none !important;
+    display: none;
   }
 }
 @media (min-width: 1440px) {
   .only-desktop {
-    display: none !important;
+    display: none;
   }
 }
 
 @media (max-width: 1439.98px) {
   .only-fluid {
-    display: none !important;
+    display: none;
   }
 }
 
 @media (max-width: 767.98px) {
   .no-dimensions-mobile {
-    margin: 0 !important;
-    padding: 0 !important;
+    margin: 0;
+    padding: 0;
   }
 }
 @media (min-width: 768px) and (max-width: 1023.98px) {
   .no-dimensions-tablet {
-    margin: 0 !important;
-    padding: 0 !important;
+    margin: 0;
+    padding: 0;
   }
 }
 @media (min-width: 1024px) and (max-width: 1439.98px) {
   .no-dimensions-desktop {
-    margin: 0 !important;
-    padding: 0 !important;
+    margin: 0;
+    padding: 0;
   }
 }
 @media (min-width: 1440px) {
   .no-dimensions-fluid {
-    margin: 0 !important;
-    padding: 0 !important;
+    margin: 0;
+    padding: 0;
   }
 }
 
 @media (max-width: 767.98px) {
   .small-dimensions-mobile {
-    margin: 10px !important;
-    padding: 10px !important;
+    margin: 10px;
+    padding: 10px;
   }
 }
 @media (min-width: 768px) and (max-width: 1023.98px) {
   .small-dimensions-tablet {
-    margin: 10px !important;
-    padding: 10px !important;
+    margin: 10px;
+    padding: 10px;
   }
 }
 @media (min-width: 1024px) and (max-width: 1439.98px) {
   .small-dimensions-desktop {
-    margin: 10px !important;
-    padding: 10px !important;
+    margin: 10px;
+    padding: 10px;
   }
 }
 @media (min-width: 1440px) {
   .small-dimensions-fluid {
-    margin: 10px !important;
-    padding: 10px !important;
+    margin: 10px;
+    padding: 10px;
   }
 }
 

@@ -114,7 +114,7 @@
 		svg line,
 		svg ellipse,
 		svg text {
-			fill: var(--wp--preset--color--light-text) !important;
+			fill: var(--wp--preset--color--light-text);
 		}
 	}
 }
@@ -130,7 +130,7 @@
 		svg line,
 		svg ellipse,
 		svg text {
-			fill: var(--wp--preset--color--dark-text) !important;
+			fill: var(--wp--preset--color--dark-text);
 		}
 	}
 }

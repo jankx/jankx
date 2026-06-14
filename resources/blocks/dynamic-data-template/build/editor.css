@@ -35,7 +35,7 @@
   margin-right: 0;
 }
 .wp-block-jankx-dynamic-data-template .dynamic-data-template__item.dynamic-data-template__item--preview .block-editor-block-preview .block-editor-block-preview__content > :first-child {
-  margin-top: 0 !important;
+  margin-top: 0;
 }
 .wp-block-jankx-dynamic-data-template .dynamic-data-template__items-container {
   width: 100%;
@@ -52,7 +52,7 @@
   height: auto;
 }
 .wp-block-jankx-dynamic-data-template .dynamic-data-template__inner-blocks .block-editor-block-list__layout > :first-child {
-  margin-top: 0 !important;
+  margin-top: 0;
 }
 
 .jankx-layout-chooser {
@@ -67,31 +67,31 @@
   color: #1e1e1e;
 }
 .jankx-layout-chooser__group {
-  display: grid !important;
+  display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 8px;
   width: 100%;
 }
 .jankx-layout-chooser__group .components-button {
-  height: 56px !important;
-  padding: 8px !important;
-  justify-content: center !important;
-  border-radius: 4px !important;
-  border: 1px solid #ccc !important;
-  background: #fff !important;
+  height: 56px;
+  padding: 8px;
+  justify-content: center;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  background: #fff;
   transition: all 0.2s ease;
-  display: flex !important;
-  align-items: center !important;
+  display: flex;
+  align-items: center;
 }
 .jankx-layout-chooser__group .components-button:hover {
-  border-color: var(--wp-admin-theme-color) !important;
-  background: #f0f6fc !important;
-  color: var(--wp-admin-theme-color) !important;
+  border-color: var(--wp-admin-theme-color);
+  background: #f0f6fc;
+  color: var(--wp-admin-theme-color);
 }
 .jankx-layout-chooser__group .components-button.is-pressed {
-  border-color: var(--wp-admin-theme-color) !important;
-  background: var(--wp-admin-theme-color) !important;
-  color: #fff !important;
+  border-color: var(--wp-admin-theme-color);
+  background: var(--wp-admin-theme-color);
+  color: #fff;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 .jankx-layout-chooser__group .components-button svg {

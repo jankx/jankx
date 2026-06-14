@@ -191,7 +191,7 @@
   color: rgba(255, 255, 255, 0.8);
 }
 .wp-block-outermost-icon-inserter__modal .icon-inserter__content .icons-list .icons-list__item.is-active:hover {
-  color: #fff !important;
+  color: #fff;
 }
 .wp-block-outermost-icon-inserter__modal .icon-inserter__content .icons-list .icons-list__item.is-active svg {
   fill: #fff;
@@ -422,7 +422,7 @@
 }
 .wp-block-outermost-icon-inserter__modal .icons-list .icons-list__item:hover,
 .wp-block-outermost-icon-inserter__quick-inserter .icons-list .icons-list__item:hover {
-  color: var(--wp-admin-theme-color) !important;
+  color: var(--wp-admin-theme-color);
 }
 .wp-block-outermost-icon-inserter__modal .icons-list .icons-list__item.has-no-icon-fill svg,
 .wp-block-outermost-icon-inserter__quick-inserter .icons-list .icons-list__item.has-no-icon-fill svg {

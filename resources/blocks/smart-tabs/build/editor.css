@@ -6,7 +6,7 @@
  * Minimal styling to match frontend exactly
  */
 .editor-styles-wrapper .smart-tabs__add-tab {
-  display: inline-flex !important;
+  display: inline-flex;
   margin-left: 10px;
 }
 

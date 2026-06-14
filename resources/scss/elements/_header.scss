@@ -16,13 +16,13 @@ body.jankx-header-overlay {
         right: 0;
         width: 100%;
         z-index: 1000;
-        background-color: transparent !important;
-        background-image: none !important;
+        background-color: transparent;
+        background-image: none;
 
         // When sticky, it should gain background again
         &.is-sticky {
             position: fixed;
-            background-color: var(--jankx-sticky-header-bg-color, #184962) !important;
+            background-color: var(--jankx-sticky-header-bg-color, #184962);
         }
     }
 
@@ -54,19 +54,19 @@ header {
         animation: jankxHeaderSlideDown 0.5s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
 
         // Premium Glassmorphism Vibe
-        background-color: rgba(24, 73, 98, 0.85) !important; // Navy with transparency
+        background-color: rgba(24, 73, 98, 0.85); // Navy with transparency
         backdrop-filter: blur(15px);
         -webkit-backdrop-filter: blur(15px);
 
         // Use the variable if set, but override the transparency logic
         @supports (background-color: var(--jankx-sticky-header-bg-color)) {
-            background-color: var(--jankx-sticky-header-bg-color) !important;
+            background-color: var(--jankx-sticky-header-bg-color);
             // If the user wants a solid color they can set it, but we add blur anyway
         }
 
         // Slight height reduction for vibe
-        padding-top: 10px !important;
-        padding-bottom: 10px !important;
+        padding-top: 10px;
+        padding-bottom: 10px;
 
         // Smart Slide effect
         transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1),
@@ -79,7 +79,7 @@ header {
 body.jankx-header-overlay {
     header.is-sticky {
         header.has-contrast-background-color {
-            background-color: var(--jankx-sticky-header-bg-color, #1a1a1a) !important;
+            background-color: var(--jankx-sticky-header-bg-color, #1a1a1a);
         }
     }
 }

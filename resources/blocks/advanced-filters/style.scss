@@ -16,7 +16,7 @@
     
     // Remove padding from wrapper (will be moved to inner container)
     // WordPress adds padding via inline styles, so we need to override it
-    padding: 0 !important;
+    padding: 0;
     
     // Move padding to inner container so it's inside the border
     .advanced-filters-container {
@@ -123,13 +123,13 @@
 
             &[style*="display: block"],
             &.expanded {
-                display: block !important;
+                display: block;
             }
         }
 
         &.filter-expanded {
             .filter-group-content {
-                display: block !important;
+                display: block;
             }
         }
     }

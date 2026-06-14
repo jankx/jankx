@@ -163,9 +163,9 @@
 
 				.block-editor-inserter {
 					.block-editor-inserter__toggle {
-						background-color: #fff !important;
-						border: 2px solid #fff !important;
-						color: #000 !important;
+						background-color: #fff;
+						border: 2px solid #fff;
+						color: #000;
 						border-radius: 4px;
 						padding: 0.5rem 1rem;
 						transition: all 0.3s ease;
@@ -173,16 +173,16 @@
 						box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 
 						&:hover {
-							background-color: #f0f0f0 !important;
-							border-color: #f0f0f0 !important;
-							color: #000 !important;
+							background-color: #f0f0f0;
+							border-color: #f0f0f0;
+							color: #000;
 							box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 						}
 
 						&:focus {
-							background-color: #fff !important;
-							border-color: #007cba !important;
-							color: #000 !important;
+							background-color: #fff;
+							border-color: #007cba;
+							color: #000;
 							box-shadow: 0 0 0 1px #007cba;
 						}
 					}
@@ -191,9 +191,9 @@
 
 			// Button block appender styling
 			.block-editor-button-block-appender {
-				background-color: #fff !important;
-				border: 2px solid #fff !important;
-				color: #000 !important;
+				background-color: #fff;
+				border: 2px solid #fff;
+				color: #000;
 				border-radius: 4px;
 				padding: 0.5rem 1rem;
 				transition: all 0.3s ease;
@@ -202,16 +202,16 @@
 				margin: 0.5rem 0;
 
 				&:hover {
-					background-color: #f0f0f0 !important;
-					border-color: #f0f0f0 !important;
-					color: #000 !important;
+					background-color: #f0f0f0;
+					border-color: #f0f0f0;
+					color: #000;
 					box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 				}
 
 				&:focus {
-					background-color: #fff !important;
-					border-color: #007cba !important;
-					color: #000 !important;
+					background-color: #fff;
+					border-color: #007cba;
+					color: #000;
 					box-shadow: 0 0 0 1px #007cba;
 				}
 			}
@@ -569,6 +569,6 @@
 	}
 
 	.animated {
-		animation: none !important;
+		animation: none;
 	}
 }

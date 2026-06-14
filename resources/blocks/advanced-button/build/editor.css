@@ -45,10 +45,10 @@ button.jankx-advanced-button__link {
   margin: 0;
 }
 .wp-block-jankx-advanced-button .jankx-advanced-button__link .button-icon-wrapper .components-resizable-box__container {
-  max-width: none !important;
-  max-height: none !important;
-  min-width: auto !important;
-  min-height: auto !important;
+  max-width: none;
+  max-height: none;
+  min-width: auto;
+  min-height: auto;
 }
 .wp-block-jankx-advanced-button .jankx-advanced-button__link .button-icon-wrapper .block-editor-block-list__layout > .wp-block:not(.block-list-appender) {
   position: relative;
@@ -63,17 +63,17 @@ button.jankx-advanced-button__link {
 }
 .wp-block-jankx-advanced-button .button-icon-wrapper .block-list-appender {
   display: inline-flex;
-  pointer-events: auto !important;
+  pointer-events: auto;
 }
 .wp-block-jankx-advanced-button .button-icon-wrapper .block-list-appender button {
   padding: 2px;
   min-width: 24px;
   min-height: 24px;
-  pointer-events: auto !important;
+  pointer-events: auto;
 }
 
 .wp-block-jankx-advanced-button .block-list-appender {
-  pointer-events: auto !important;
+  pointer-events: auto;
 }
 .wp-block-jankx-advanced-button .block-list-appender *,
 .wp-block-jankx-advanced-button .block-list-appender button,
@@ -81,11 +81,11 @@ button.jankx-advanced-button__link {
 .wp-block-jankx-advanced-button .block-list-appender .block-editor-button-block-appender,
 .wp-block-jankx-advanced-button .block-list-appender .components-dropdown,
 .wp-block-jankx-advanced-button .block-list-appender svg {
-  pointer-events: auto !important;
-  cursor: pointer !important;
+  pointer-events: auto;
+  cursor: pointer;
 }
 .wp-block-jankx-advanced-button .block-list-appender .components-button {
-  height: 24px !important;
+  height: 24px;
 }
 
 .block-editor-iframe__html .offcanvas-sidebar-block {
@@ -96,10 +96,10 @@ button.jankx-advanced-button__link {
   left: 0;
 }
 .is-root-container.wp-site-blocks > .wp-block-jankx-offcanvas-sidebar .offcanvas-sidebar-preview {
-  opacity: 1 !important;
+  opacity: 1;
 }
 .is-root-container.wp-site-blocks header.wp-block-template-part .offcanvas-sidebar-block {
-  display: none !important;
+  display: none;
 }
 
 /*# sourceMappingURL=editor.css.map*/

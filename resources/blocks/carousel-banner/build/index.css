@@ -26,8 +26,8 @@
   background-size: cover;
 }
 .embla-banner__image.image-size-fullwidth {
-  background-size: 100% 100% !important;
-  background-position: center !important;
+  background-size: 100% 100%;
+  background-position: center;
 }
 .embla-banner__overlay {
   position: absolute;
@@ -130,14 +130,14 @@
   border-radius: 8px;
 }
 .embla-banner.image-size-contain .embla-banner__image {
-  background-size: contain !important;
+  background-size: contain;
 }
 .embla-banner.image-size-cover .embla-banner__image {
-  background-size: cover !important;
+  background-size: cover;
 }
 .embla-banner.image-size-fullwidth .embla-banner__image {
-  background-size: 100% 100% !important;
-  background-position: center !important;
+  background-size: 100% 100%;
+  background-position: center;
 }
 
 @media (max-width: 768px) {
@@ -186,8 +186,8 @@
   background-size: cover;
 }
 .embla-banner__image.image-size-fullwidth {
-  background-size: 100% 100% !important;
-  background-position: center !important;
+  background-size: 100% 100%;
+  background-position: center;
 }
 .embla-banner__overlay {
   position: absolute;

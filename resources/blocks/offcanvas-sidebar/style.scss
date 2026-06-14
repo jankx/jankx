@@ -72,9 +72,9 @@
         height: 100vh;
         min-height: 100vh;
         background: transparent;
-        background-size: cover !important;
-        background-repeat: no-repeat !important;
-        background-position: center !important;
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: center;
         color: inherit;
         z-index: 9999;
         transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.3s;
