@@ -700,6 +700,46 @@ class AdminPageService
                 </tbody>
             </table>
         </div>
+
+        <?php if ($this->app->bound('font-icons.repository')) : 
+            $repository = $this->app->make('font-icons.repository');
+            $stats = $repository->getStats();
+            $storage = $stats['storage'] ?? [];
+        ?>
+        <div class="jankx-card system-info-card" style="margin-top: 25px;">
+            <div class="card-header">
+                <span class="dashicons dashicons-database"></span>
+                <h3><?php _e('Database & Storage', 'jankx'); ?></h3>
+            </div>
+            <table class="jankx-info-table" style="width: 100%; border-collapse: separate; border-spacing: 0 8px;">
+                <tbody>
+                    <?php
+                    $storage_type = strtoupper($storage['type'] ?? 'unknown');
+                    $storage_path = ($storage['type'] ?? '') === 'sqlite' ? ($storage['db_path'] ?? '') : ($storage['directory'] ?? '');
+                    $storage_count = ($storage['type'] ?? '') === 'sqlite' ? ($storage['icon_sets_count'] ?? 0) : ($storage['cache_files'] ?? 0);
+                    $count_label = ($storage['type'] ?? '') === 'sqlite' ? __('Total Stored Sets', 'jankx') : __('Total JSON Files', 'jankx');
+
+                    $icon_storage_info = [
+                        'Icon Storage System' => $storage_type,
+                        'Icon Storage Path'   => $storage_path,
+                        $count_label          => $storage_count,
+                    ];
+
+                    foreach ($icon_storage_info as $label => $value):
+                    ?>
+                    <tr>
+                        <td style="padding: 12px 16px; background: #f8fafc; border-radius: 10px 0 0 10px; width: 250px; font-weight: 600; color: #475569; border: 1px solid #f1f5f9; border-right: none;">
+                            <?php echo esc_html($label); ?>
+                        </td>
+                        <td style="padding: 12px 16px; background: #fff; border-radius: 0 10px 10px 0; color: #1e293b; border: 1px solid #f1f5f9; border-left: none; font-family: monospace;">
+                            <?php echo esc_html($value); ?>
+                        </td>
+                    </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+        <?php endif; ?>
         <?php
     }
 

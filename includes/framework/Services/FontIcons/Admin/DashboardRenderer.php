@@ -51,28 +51,8 @@ class DashboardRenderer
         }
 
         $allConfigs = $repository->getAllTypes();
-        $stats = $repository->getStats();
-        $storage = $stats['storage'] ?? [];
         ?>
         <div class="jankx-repository-management">
-            <div class="jankx-storage-info-banner">
-                <div class="storage-type">
-                    <span class="dashicons dashicons-database"></span>
-                    <strong><?php _e('Storage System:', 'jankx'); ?></strong>
-                    <span class="badge <?php echo $storage['type'] === 'sqlite' ? 'sqlite' : 'json'; ?>">
-                        <?php echo strtoupper($storage['type'] ?? 'unknown'); ?>
-                    </span>
-                </div>
-                <div class="storage-details">
-                    <?php if (($storage['type'] ?? '') === 'sqlite'): ?>
-                        <span><?php printf(__('Database Path: %s', 'jankx'), '<code>' . esc_html($storage['db_path']) . '</code>'); ?></span>
-                        <span><?php printf(__('Total Stored Sets: %d', 'jankx'), $storage['icon_sets_count']); ?></span>
-                    <?php else: ?>
-                        <span><?php printf(__('Storage Directory: %s', 'jankx'), '<code>' . esc_html($storage['directory']) . '</code>'); ?></span>
-                        <span><?php printf(__('Total JSON Files: %d', 'jankx'), $storage['cache_files']); ?></span>
-                    <?php endif; ?>
-                </div>
-            </div>
 
             <div class="jankx-manage-header">
                 <h2><?php _e('Icon Pack Management', 'jankx'); ?></h2>
