@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Services\TemplateBundle\TemplateBundle;
+use App\Services\TemplateBundle\TemplateBundleManager;
 use Jankx\Foundation\Application;
 use Jankx\Support\Providers\ServiceProvider;
 
@@ -27,6 +29,7 @@ class SetupWizardServiceProvider extends ServiceProvider
         add_action('wp_ajax_jankx_wizard_dismiss', [$this, 'ajaxDismissWizard']);
         add_action('wp_ajax_jankx_wizard_skip', [$this, 'ajaxSkipWizard']);
         add_action('wp_ajax_jankx_wizard_save_branding', [$this, 'ajaxSaveBranding']);
+        add_action('wp_ajax_jankx_wizard_apply_bundle', [$this, 'ajaxApplyBundle']);
     }
 
     public function maybeRedirectToWizard()
@@ -100,15 +103,27 @@ class SetupWizardServiceProvider extends ServiceProvider
             true
         );
 
+        $manager = $this->getBundleManager();
+        $bundles = [];
+        if ($manager) {
+            foreach ($manager->getBundles() as $id => $bundle) {
+                $bundles[$id] = $this->bundleToPreviewData($bundle);
+            }
+        }
+
         wp_localize_script('jankx-wizard', 'jankxWizard', [
             'ajaxUrl' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('jankx_wizard'),
-            'demoImportUrl' => admin_url('admin.php?page=jankx-demo-import'),
+            'bundleNonce' => wp_create_nonce('jankx_template_bundle'),
+            'bundles' => $bundles,
+            'activeBundle' => $manager ? $manager->getActiveBundleId() : '',
             'themeOptionsUrl' => admin_url('admin.php?page=jankx-theme-options'),
             'customizerUrl' => admin_url('customize.php'),
             'strings' => [
-                'importing' => __('Importing demo...', 'jankx'),
+                'applying' => __('Applying template bundle...', 'jankx'),
                 'done' => __('Setup complete!', 'jankx'),
+                'selectBundle' => __('Please select a template bundle.', 'jankx'),
+                'importing' => __('Importing content...', 'jankx'),
             ],
         ]);
     }
@@ -134,7 +149,7 @@ class SetupWizardServiceProvider extends ServiceProvider
                 </div>
                 <div class="jankx-wizard-step <?php echo $step >= 2 ? 'active' : ''; ?>">
                     <span class="step-number">2</span>
-                    <span class="step-label"><?php esc_html_e('Choose Demo', 'jankx'); ?></span>
+                    <span class="step-label"><?php esc_html_e('Choose Template', 'jankx'); ?></span>
                 </div>
                 <div class="jankx-wizard-step <?php echo $step >= 3 ? 'active' : ''; ?>">
                     <span class="step-number">3</span>
@@ -160,7 +175,7 @@ class SetupWizardServiceProvider extends ServiceProvider
                 $this->renderWelcomeStep();
                 break;
             case 2:
-                $this->renderDemoStep();
+                $this->renderTemplateStep();
                 break;
             case 3:
                 $this->renderBrandingStep();
@@ -178,7 +193,7 @@ class SetupWizardServiceProvider extends ServiceProvider
             <h2><?php esc_html_e('Welcome! Let\'s set up your site.', 'jankx'); ?></h2>
             <p><?php esc_html_e('Jankx Framework gives you everything you need to create a beautiful WordPress site. This quick setup wizard will help you:', 'jankx'); ?></p>
             <ul>
-                <li><?php esc_html_e('Choose a pre-built demo to start with', 'jankx'); ?></li>
+                <li><?php esc_html_e('Choose a pre-built template style to start with', 'jankx'); ?></li>
                 <li><?php esc_html_e('Set up your logo and brand colors', 'jankx'); ?></li>
                 <li><?php esc_html_e('Configure basic site settings', 'jankx'); ?></li>
             </ul>
@@ -195,27 +210,57 @@ class SetupWizardServiceProvider extends ServiceProvider
         <?php
     }
 
-    protected function renderDemoStep()
+    protected function renderTemplateStep()
     {
-        $demos = $this->getDemos();
-        $activeDemo = get_option('jankx_active_demo', '');
+        $manager = $this->getBundleManager();
+        $bundles = $manager ? $manager->getBundles() : [];
+        $activeBundle = $manager ? $manager->getActiveBundleId() : '';
         ?>
         <div class="jankx-wizard-card">
-            <h2><?php esc_html_e('Choose a Demo', 'jankx'); ?></h2>
-            <p><?php esc_html_e('Start with a pre-built design. You can customize everything later.', 'jankx'); ?></p>
-            <div class="jankx-wizard-demo-grid">
-                <?php foreach ($demos as $id => $demo) : ?>
-                    <div class="jankx-wizard-demo-card <?php echo $activeDemo === $id ? 'active' : ''; ?>" data-demo="<?php echo esc_attr($id); ?>">
-                        <h3><?php echo esc_html($demo['name']); ?></h3>
-                        <p><?php echo esc_html($demo['description'] ?? ''); ?></p>
-                        <div class="jankx-wizard-demo-tags">
-                            <?php foreach (($demo['tags'] ?? []) as $tag) : ?>
-                                <span><?php echo esc_html($tag); ?></span>
-                            <?php endforeach; ?>
+            <h2><?php esc_html_e('Choose a Template Style', 'jankx'); ?></h2>
+            <p><?php esc_html_e('Each template includes pre-designed colors, header layout, typography, and page templates. You can customize everything later.', 'jankx'); ?></p>
+
+            <div class="jankx-wizard-bundle-grid">
+                <?php foreach ($bundles as $id => $bundle) : ?>
+                    <?php
+                    $colors = $bundle->getPreset();
+                    $primaryColor = $colors['colors']['primary'] ?? '#3b82f6';
+                    $secondaryColor = $colors['colors']['secondary'] ?? '#10b981';
+                    $headerPreset = $bundle->getHeaderPreset();
+                    $headerLabels = [
+                        'classic' => __('Classic Header', 'jankx'),
+                        'centered' => __('Centered Header', 'jankx'),
+                        'split' => __('Split Header', 'jankx'),
+                        'topbar' => __('Top Bar Header', 'jankx'),
+                    ];
+                    $headerLabel = $headerLabels[$headerPreset] ?? $headerPreset;
+                    ?>
+                    <div class="jankx-wizard-bundle-card <?php echo $activeBundle === $id ? 'active' : ''; ?>" data-bundle="<?php echo esc_attr($id); ?>">
+                        <div class="jankx-bundle-visual">
+                            <div class="jankx-bundle-color-bar">
+                                <span class="jankx-bundle-color-swatch" style="background: <?php echo esc_attr($primaryColor); ?>"></span>
+                                <span class="jankx-bundle-color-swatch" style="background: <?php echo esc_attr($secondaryColor); ?>"></span>
+                            </div>
+                            <div class="jankx-bundle-header-preview jankx-header-<?php echo esc_attr($headerPreset); ?>">
+                                <span class="jankx-bundle-header-label"><?php echo esc_html($headerLabel); ?></span>
+                            </div>
+                        </div>
+                        <div class="jankx-bundle-info">
+                            <h3><?php echo esc_html($bundle->getName()); ?></h3>
+                            <p><?php echo esc_html($bundle->getDescription()); ?></p>
+                            <div class="jankx-bundle-tags">
+                                <?php foreach ($bundle->getTags() as $tag) : ?>
+                                    <span class="jankx-bundle-tag"><?php echo esc_html($tag); ?></span>
+                                <?php endforeach; ?>
+                            </div>
+                        </div>
+                        <div class="jankx-bundle-check">
+                            <span class="dashicons dashicons-yes-alt"></span>
                         </div>
                     </div>
                 <?php endforeach; ?>
             </div>
+
             <div class="jankx-wizard-actions">
                 <a href="<?php echo esc_url(admin_url('admin.php?page=jankx-setup-wizard&step=3')); ?>" class="button button-primary jankx-wizard-next">
                     <?php esc_html_e('Next Step', 'jankx'); ?>
@@ -224,17 +269,20 @@ class SetupWizardServiceProvider extends ServiceProvider
                     <?php esc_html_e('Skip — I\'ll choose later', 'jankx'); ?>
                 </a>
             </div>
-            <div class="jankx-wizard-import-status" style="display:none;"></div>
         </div>
         <?php
     }
 
     protected function renderBrandingStep()
     {
+        $manager = $this->getBundleManager();
+        $activeBundle = $manager ? $manager->getActiveBundle() : null;
+        $primaryColor = $activeBundle ? $activeBundle->getPresetColor('primary', '#3b82f6') : '#3b82f6';
+        $secondaryColor = $activeBundle ? $activeBundle->getPresetColor('secondary', '#10b981') : '#10b981';
         ?>
         <div class="jankx-wizard-card">
             <h2><?php esc_html_e('Customize Your Brand', 'jankx'); ?></h2>
-            <p><?php esc_html_e('Set up your site title, logo, and brand colors.', 'jankx'); ?></p>
+            <p><?php esc_html_e('Set up your site title, tagline, and brand colors. These will be applied together with your chosen template.', 'jankx'); ?></p>
 
             <table class="form-table">
                 <tr>
@@ -252,15 +300,30 @@ class SetupWizardServiceProvider extends ServiceProvider
                 <tr>
                     <th><label for="jankx-wizard-primary-color"><?php esc_html_e('Primary Color', 'jankx'); ?></label></th>
                     <td>
-                        <input type="color" id="jankx-wizard-primary-color" value="#ff5722">
+                        <input type="color" id="jankx-wizard-primary-color" value="<?php echo esc_attr($primaryColor); ?>">
+                    </td>
+                </tr>
+                <tr>
+                    <th><label for="jankx-wizard-secondary-color"><?php esc_html_e('Secondary Color', 'jankx'); ?></label></th>
+                    <td>
+                        <input type="color" id="jankx-wizard-secondary-color" value="<?php echo esc_attr($secondaryColor); ?>">
                     </td>
                 </tr>
             </table>
 
+            <div class="jankx-wizard-import-status" style="display:none;">
+                <p class="jankx-wizard-import-message"></p>
+                <div class="jankx-wizard-progress">
+                    <div class="jankx-wizard-progress-bar">
+                        <div class="jankx-wizard-progress-fill"></div>
+                    </div>
+                </div>
+            </div>
+
             <div class="jankx-wizard-actions">
-                <a href="<?php echo esc_url(admin_url('admin.php?page=jankx-setup-wizard&step=4')); ?>" class="button button-primary jankx-wizard-save-branding">
-                    <?php esc_html_e('Save & Continue', 'jankx'); ?>
-                </a>
+                <button class="button button-primary jankx-wizard-apply-bundle">
+                    <?php esc_html_e('Apply & Continue', 'jankx'); ?>
+                </button>
                 <a href="<?php echo esc_url(admin_url('admin.php?page=jankx-setup-wizard&step=4')); ?>" class="button">
                     <?php esc_html_e('Skip', 'jankx'); ?>
                 </a>
@@ -338,30 +401,123 @@ class SetupWizardServiceProvider extends ServiceProvider
         if (isset($_POST['site_tagline'])) {
             update_option('blogdescription', sanitize_text_field($_POST['site_tagline']));
         }
+
+        $options = get_option('jankx_options', []);
+        if (!is_array($options)) {
+            $options = [];
+        }
+
         if (isset($_POST['primary_color'])) {
             $color = sanitize_hex_color($_POST['primary_color']);
             if ($color) {
-                $options = get_option('jankx_options', []);
                 $options['primary_color'] = $color;
-                update_option('jankx_options', $options);
             }
         }
+        if (isset($_POST['secondary_color'])) {
+            $color = sanitize_hex_color($_POST['secondary_color']);
+            if ($color) {
+                $options['secondary_color'] = $color;
+            }
+        }
+
+        update_option('jankx_options', $options);
+        do_action('jankx/options/updated');
 
         wp_send_json_success(['message' => __('Settings saved!', 'jankx')]);
     }
 
-    protected function getDemos(): array
+    public function ajaxApplyBundle()
     {
-        $demos = apply_filters('jankx/demo/available', []);
+        check_ajax_referer('jankx_template_bundle', 'nonce');
 
-        $manifestPath = get_template_directory() . '/demo/manifest.json';
-        if (file_exists($manifestPath)) {
-            $data = json_decode(file_get_contents($manifestPath), true);
-            if (is_array($data)) {
-                $demos = array_merge($demos, $data);
-            }
+        $bundleId = sanitize_text_field($_POST['bundle'] ?? '');
+
+        if (empty($bundleId)) {
+            wp_send_json_error(['message' => __('No template bundle specified.', 'jankx')]);
+            return;
         }
 
-        return $demos;
+        if (isset($_POST['site_title'])) {
+            update_option('blogname', sanitize_text_field($_POST['site_title']));
+        }
+        if (isset($_POST['site_tagline'])) {
+            update_option('blogdescription', sanitize_text_field($_POST['site_tagline']));
+        }
+
+        $options = get_option('jankx_options', []);
+        if (!is_array($options)) {
+            $options = [];
+        }
+        if (isset($_POST['primary_color'])) {
+            $color = sanitize_hex_color($_POST['primary_color']);
+            if ($color) {
+                $options['primary_color'] = $color;
+            }
+        }
+        if (isset($_POST['secondary_color'])) {
+            $color = sanitize_hex_color($_POST['secondary_color']);
+            if ($color) {
+                $options['secondary_color'] = $color;
+            }
+        }
+        update_option('jankx_options', $options);
+        do_action('jankx/options/updated');
+
+        try {
+            if ($this->app->bound('template-bundle.applier')) {
+                $applier = $this->app->make('template-bundle.applier');
+                $result = $applier->apply($bundleId);
+
+                if ($result['success']) {
+                    wp_send_json_success($result);
+                } else {
+                    wp_send_json_error($result);
+                }
+            } else {
+                $manager = $this->getBundleManager();
+                if ($manager) {
+                    $manager->setActiveBundle($bundleId);
+                }
+                wp_send_json_success([
+                    'message' => __('Template bundle selected.', 'jankx'),
+                ]);
+            }
+        } catch (\Throwable $e) {
+            wp_send_json_error([
+                'message' => sprintf(
+                    __('Failed to apply template bundle: %s', 'jankx'),
+                    $e->getMessage()
+                ),
+            ]);
+        }
+    }
+
+    protected function getBundleManager(): ?TemplateBundleManager
+    {
+        try {
+            if ($this->app->bound('template-bundle.manager')) {
+                return $this->app->make('template-bundle.manager');
+            }
+        } catch (\Throwable $e) {
+        }
+
+        return null;
+    }
+
+    protected function bundleToPreviewData(TemplateBundle $bundle): array
+    {
+        $colors = $bundle->getPreset();
+
+        return [
+            'id' => $bundle->getId(),
+            'name' => $bundle->getName(),
+            'description' => $bundle->getDescription(),
+            'primaryColor' => $colors['colors']['primary'] ?? '#3b82f6',
+            'secondaryColor' => $colors['colors']['secondary'] ?? '#10b981',
+            'headerPreset' => $bundle->getHeaderPreset(),
+            'tags' => $bundle->getTags(),
+            'templates' => array_keys($bundle->getTemplates()),
+            'templateParts' => array_keys($bundle->getTemplateParts()),
+        ];
     }
 }
