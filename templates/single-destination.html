@@ -1,0 +1,53 @@
+<!-- wp:template-part {"slug":"header"} /-->
+
+<!-- wp:group {"tagName":"main","align":"full","style":{"spacing":{"padding":{"top":"48px","bottom":"80px"}}},"layout":{"type":"constrained"}} -->
+<main class="wp-block-group alignfull" style="padding-top:48px;padding-bottom:80px">
+
+    <!-- wp:group {"align":"wide","layout":{"type":"constrained","contentSize":"820px"}} -->
+    <div class="wp-block-group alignwide">
+
+        <!-- wp:post-terms {"term":"destination_region"} /-->
+
+        <!-- wp:post-title {"level":1,"style":{"spacing":{"margin":{"top":"12px","bottom":"24px"}}}} /-->
+
+        <!-- wp:post-featured-image {"aspectRatio":"16/9","style":{"border":{"radius":"16px"},"spacing":{"margin":{"bottom":"32px"}}}} /-->
+
+        <!-- wp:post-content {"layout":{"type":"constrained"}} /-->
+
+        <!-- wp:heading -->
+        <h2 class="wp-block-heading">Các tour tại điểm đến này</h2>
+        <!-- /wp:heading -->
+
+        <!-- wp:query {"queryId":1,"query":{"perPage":6,"pages":0,"offset":0,"postType":"tour","order":"desc","orderBy":"date","author":"","search":"","exclude":[],"sticky":"","inherit":false}} -->
+        <div class="wp-block-query">
+            <!-- wp:post-template {"layout":{"type":"grid","columnCount":3}} -->
+
+            <!-- wp:group {"style":{"border":{"radius":"12px","width":"1px"},"spacing":{"padding":{"top":"0","right":"0","bottom":"0","left":"0"},"blockGap":"0"}},"layout":{"type":"default"},"className":"jankx-tour-card"} -->
+            <div class="wp-block-group jankx-tour-card" style="border-width:1px;border-radius:12px;padding-top:0;padding-right:0;padding-bottom:0;padding-left:0">
+                <!-- wp:post-featured-image {"isLink":true,"aspectRatio":"4/3","style":{"border":{"radius":{"topLeft":"12px","topRight":"12px","bottomLeft":"0","bottomRight":"0"}},"spacing":{"margin":{"top":"0","bottom":"0","left":"0","right":"0"}}}} /-->
+                <!-- wp:group {"style":{"spacing":{"padding":{"top":"20px","right":"20px","bottom":"20px","left":"20px"},"blockGap":"10px"}},"layout":{"type":"default"}} -->
+                <div class="wp-block-group" style="padding-top:20px;padding-right:20px;padding-bottom:20px;padding-left:20px">
+                    <!-- wp:post-title {"isLink":true,"level":3,"style":{"typography":{"fontSize":"18px","fontWeight":"700"},"spacing":{"margin":{"top":"0","bottom":"0"}}}} /-->
+                    <!-- wp:jankx-travel/tour-meta /-->
+                </div>
+                <!-- /wp:group -->
+            </div>
+            <!-- /wp:group -->
+
+            <!-- /wp:post-template -->
+
+            <!-- wp:query-no-results -->
+            <!-- wp:paragraph -->
+            <p>Chưa có tour nào cho điểm đến này.</p>
+            <!-- /wp:paragraph -->
+            <!-- /wp:query-no-results -->
+        </div>
+        <!-- /wp:query -->
+
+    </div>
+    <!-- /wp:group -->
+
+</main>
+<!-- /wp:group -->
+
+<!-- wp:template-part {"slug":"footer"} /-->
