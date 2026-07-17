@@ -1,15 +1,88 @@
-<!-- wp:group {"style":{"spacing":{"padding":{"top":"var:preset|spacing|40","bottom":"var:preset|spacing|40"}}},"backgroundColor":"contrast","textColor":"base"} -->
-<div class="wp-block-group has-base-color has-contrast-background-color has-text-color has-background" style="padding-top:var(--wp--preset--spacing--40);padding-bottom:var(--wp--preset--spacing--40)">
-    <!-- wp:group {"layout":{"type":"constrained"}} -->
-    <div class="wp-block-group">
-        <!-- wp:group {"layout":{"type":"flex","justifyContent":"space-between","alignItems":"center"}} -->
-        <div class="wp-block-group">
-            <!-- wp:site-title {"level":0} /-->
-            <!-- wp:paragraph {"fontSize":"small"} -->
-            <p class="has-small-font-size">© 2024 Bookix Theme. Built with Jankx Framework.</p>
-            <!-- /wp:paragraph -->
+<!-- wp:group {"tagName":"div","align":"full","style":{"spacing":{"padding":{"top":"60px","bottom":"30px","left":"0","right":"0"}},"border":{"top":{"color":"rgba(255,255,255,0.06)","width":"1px"}}},"backgroundColor":"contrast","textColor":"base","layout":{"type":"constrained"}} -->
+<div class="wp-block-group alignfull has-base-color has-contrast-background-color has-text-color has-background"
+    style="border-top-color:rgba(255,255,255,0.06);border-top-width:1px;padding-top:60px;padding-bottom:30px;padding-left:0;padding-right:0">
+    <!-- wp:group {"align":"wide","layout":{"type":"constrained"}} -->
+    <div class="wp-block-group alignwide">
+        <!-- wp:columns {"style":{"spacing":{"blockGap":{"left":"50px"}}}} -->
+        <div class="wp-block-columns">
+            <!-- wp:column {"width":"40%"} -->
+            <div class="wp-block-column" style="flex-basis:40%">
+                <!-- wp:group {"layout":{"type":"flex","verticalAlignment":"center","blockGap":"10px"},"style":{"spacing":{"margin":{"bottom":"20px"}}}} -->
+                <div class="wp-block-group" style="margin-bottom:20px">
+                    <!-- wp:site-logo {"width":35} /-->
+                    <!-- wp:site-title {"textColor":"base","style":{"typography":{"fontSize":"24px","fontWeight":"800","fontFamily":"var:preset|font-family|montserrat"}}} /-->
+                </div>
+                <!-- /wp:group -->
+                <!-- wp:paragraph {"style":{"typography":{"fontSize":"13px","lineHeight":"1.7"}},"textColor":"base"} -->
+                <p class="has-base-color has-text-color" style="font-size:13px;line-height:1.7;opacity:0.6">Cổng thông
+                    tin điện từ về Game và Công nghệ hàng đầu Việt Nam. Nơi cập nhật những tin tức nóng hổi và đánh giá
+                    chuyên sâu nhất.</p>
+                <!-- /wp:paragraph -->
+            </div>
+            <!-- /wp:column -->
+
+            <!-- wp:column {"width":"20%"} -->
+            <div class="wp-block-column" style="flex-basis:20%">
+                <!-- wp:heading {"level":4,"style":{"typography":{"textTransform":"uppercase","fontSize":"14px","fontWeight":"800","fontFamily":"var:preset|font-family|montserrat","letterSpacing":"0.5px"}},"textColor":"base"} -->
+                <h4 class="wp-block-heading has-base-color has-text-color"
+                    style="font-family:var(--wp--preset--font-family--montserrat);font-size:14px;font-weight:800;letter-spacing:0.5px;text-transform:uppercase">
+                    Danh mục</h4>
+                <!-- /wp:heading -->
+                <!-- wp:navigation {"overlayMenu":"never","orientation":"vertical","style":{"typography":{"fontSize":"13px","lineHeight":"2"},"spacing":{"blockGap":"8px"}}} -->
+                <!-- wp:navigation-link {"label":"Tin Game","url":"/category/tin-game/"} /-->
+                <!-- wp:navigation-link {"label":"Esports","url":"/category/esports/"} /-->
+                <!-- wp:navigation-link {"label":"Công nghệ","url":"/category/cong-nghe/"} /-->
+                <!-- wp:navigation-link {"label":"Cộng đồng","url":"/category/cong-dong/"} /-->
+                <!-- /wp:navigation -->
+            </div>
+            <!-- /wp:column -->
+
+            <!-- wp:column {"width":"20%"} -->
+            <div class="wp-block-column" style="flex-basis:20%">
+                <!-- wp:heading {"level":4,"style":{"typography":{"textTransform":"uppercase","fontSize":"14px","fontWeight":"800","fontFamily":"var:preset|font-family|montserrat","letterSpacing":"0.5px"}},"textColor":"base"} -->
+                <h4 class="wp-block-heading has-base-color has-text-color"
+                    style="font-family:var(--wp--preset--font-family--montserrat);font-size:14px;font-weight:800;letter-spacing:0.5px;text-transform:uppercase">
+                    Liên hệ</h4>
+                <!-- /wp:heading -->
+                <!-- wp:navigation {"overlayMenu":"never","orientation":"vertical","style":{"typography":{"fontSize":"13px","lineHeight":"2"},"spacing":{"blockGap":"8px"}}} -->
+                <!-- wp:navigation-link {"label":"Giới thiệu","url":"/gioi-thieu/"} /-->
+                <!-- wp:navigation-link {"label":"Quảng cáo","url":"/quang-cao/"} /-->
+                <!-- wp:navigation-link {"label":"Tuyển dụng","url":"/tuyen-dung/"} /-->
+                <!-- wp:navigation-link {"label":"Liên hệ","url":"/lien-he/"} /-->
+                <!-- /wp:navigation -->
+            </div>
+            <!-- /wp:column -->
+
+            <!-- wp:column {"width":"20%"} -->
+            <div class="wp-block-column" style="flex-basis:20%">
+                <!-- wp:heading {"level":4,"style":{"typography":{"textTransform":"uppercase","fontSize":"14px","fontWeight":"800","fontFamily":"var:preset|font-family|montserrat","letterSpacing":"0.5px"}},"textColor":"base"} -->
+                <h4 class="wp-block-heading has-base-color has-text-color"
+                    style="font-family:var(--wp--preset--font-family--montserrat);font-size:14px;font-weight:800;letter-spacing:0.5px;text-transform:uppercase">
+                    Theo dõi</h4>
+                <!-- /wp:heading -->
+                <!-- wp:social-links {"iconColor":"base","iconColorValue":"#FFFFFF","size":"has-small-icon-size","className":"is-style-logos-only","style":{"spacing":{"blockGap":"12px","margin":{"top":"20px"}}}} -->
+                <ul class="wp-block-social-links has-small-icon-size has-icon-color is-style-logos-only"
+                    style="margin-top:20px">
+                    <!-- wp:social-link {"url":"#","service":"facebook"} /-->
+                    <!-- wp:social-link {"url":"#","service":"twitter"} /-->
+                    <!-- wp:social-link {"url":"#","service":"youtube"} /-->
+                    <!-- wp:social-link {"url":"#","service":"twitch"} /-->
+                    <!-- wp:social-link {"url":"#","service":"instagram"} /-->
+                </ul>
+                <!-- /wp:social-links -->
+            </div>
+            <!-- /wp:column -->
         </div>
-        <!-- /wp:group -->
+        <!-- /wp:columns -->
+
+        <!-- wp:separator {"style":{"spacing":{"margin":{"top":"50px","bottom":"25px"}},"border":{"top":{"color":"rgba(255,255,255,0.06)","style":"solid","width":"1px"}}}} -->
+        <hr class="wp-block-separator has-alpha-channel-opacity"
+            style="border-top-color:rgba(255,255,255,0.06);border-top-style:solid;border-top-width:1px;margin-top:50px;margin-bottom:25px" />
+        <!-- /wp:separator -->
+        <!-- wp:paragraph {"align":"center","style":{"typography":{"fontSize":"12px"}}} -->
+        <p class="has-text-align-center" style="font-size:12px;opacity:0.4">© 2024 Gametnews. Tất cả các quyền được bảo
+            lưu.</p>
+        <!-- /wp:paragraph -->
     </div>
     <!-- /wp:group -->
 </div>

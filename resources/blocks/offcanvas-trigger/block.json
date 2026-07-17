@@ -1,0 +1,68 @@
+{
+    "apiVersion": 3,
+    "name": "jankx/offcanvas-trigger",
+    "title": "Offcanvas Trigger",
+    "category": "jankx",
+    "icon": "button",
+    "description": "A trigger button to open offcanvas sidebar",
+    "keywords": [
+        "button",
+        "trigger",
+        "sidebar",
+        "offcanvas",
+        "menu"
+    ],
+    "supports": {
+        "html": false,
+        "align": [
+            "left",
+            "center",
+            "right"
+        ],
+        "spacing": {
+            "margin": true,
+            "padding": true
+        }
+    },
+    "attributes": {
+        "targetSidebarId": {
+            "type": "string",
+            "default": ""
+        },
+        "animationSkin": {
+            "type": "string",
+            "default": "hamburger-to-x"
+        },
+        "barColor": {
+            "type": "string",
+            "default": "#333333"
+        },
+        "barThickness": {
+            "type": "number",
+            "default": 3
+        },
+        "barWidth": {
+            "type": "number",
+            "default": 30
+        },
+        "barSpacing": {
+            "type": "number",
+            "default": 5
+        },
+        "barLengths": {
+            "type": "string",
+            "default": "equal"
+        },
+        "displayOn": {
+            "type": "string",
+            "default": "all"
+        },
+        "className": {
+            "type": "string"
+        }
+    },
+    "textdomain": "jankx",
+    "editorScript": "file:./build/index.js",
+    "style": "file:./build/style.css",
+    "editorStyle": "file:./build/editor.css"
+}

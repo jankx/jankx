@@ -1,0 +1,87 @@
+/**
+ * Offcanvas Trigger Block - Editor Styles
+ */
+
+.editor-styles-wrapper .offcanvas-trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: #ffffff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    font-family: inherit;
+
+    &:focus {
+        outline: none;
+    }
+
+    .trigger-icon {
+        display: flex;
+        align-items: center;
+        font-size: 16px;
+    }
+
+    .trigger-text {
+        font-weight: 500;
+    }
+
+    // Size variants
+    &.size-small {
+        padding: 8px 12px;
+        font-size: 14px;
+
+        .trigger-icon {
+            font-size: 14px;
+        }
+    }
+
+    &.size-large {
+        padding: 16px 24px;
+        font-size: 18px;
+
+        .trigger-icon {
+            font-size: 18px;
+        }
+    }
+
+
+
+}
+
+// Color picker controls
+.color-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 15px 0;
+
+    .color-control {
+        position: relative;
+
+        .components-button {
+            width: 100%;
+            justify-content: flex-start;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .color-picker-popup {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            z-index: 1000;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            padding: 10px;
+            margin-top: 5px;
+        }
+    }
+}

@@ -1,0 +1,78 @@
+{
+  "gaming-portal": {
+    "name": "Gaming Portal",
+    "description": "A full-featured gaming news & esports portal demo with categories, articles, featured posts, and hero sections.",
+    "version": "1.0.0",
+    "author": "Jankx Team",
+    "preview_url": "https://demo.jankx.com/gaming-portal",
+    "thumbnail": "demos/gaming-portal/thumbnail.jpg",
+    "tags": ["gaming", "esports", "news", "magazine"],
+    "requires": {
+      "plugins": []
+    },
+    "files": {
+      "content":    "content.xml",
+      "widgets":    "widgets.json",
+      "customizer": "customizer.json",
+      "menus":      "menus.json",
+      "options":    "options.json"
+    },
+    "next_steps": [
+      "Visit your site: run `wp option get siteurl`",
+      "Assign menus via Appearance → Menus",
+      "Customize colors via Appearance → Customize → Colors",
+      "Clear caches: wp jankx cache clear"
+    ]
+  },
+
+  "blog-magazine": {
+    "name": "Blog Magazine",
+    "description": "A clean, modern blog & magazine demo with lifestyle, travel, food, and technology categories.",
+    "version": "1.0.0",
+    "author": "Jankx Team",
+    "preview_url": "https://demo.jankx.com/blog-magazine",
+    "thumbnail": "demos/blog-magazine/thumbnail.jpg",
+    "tags": ["blog", "magazine", "lifestyle", "minimal"],
+    "requires": {
+      "plugins": []
+    },
+    "files": {
+      "content":    "content.xml",
+      "widgets":    "widgets.json",
+      "customizer": "customizer.json",
+      "menus":      "menus.json",
+      "options":    "options.json"
+    },
+    "next_steps": [
+      "Visit your site home page",
+      "Set the front page via Settings → Reading",
+      "Clear caches: wp jankx cache clear"
+    ]
+  },
+
+  "pet-shop": {
+    "name": "Pet Shop & Services",
+    "description": "An ecommerce + services demo for pet shops, veterinary clinics, and pet blogs. Requires WooCommerce.",
+    "version": "1.0.0",
+    "author": "Jankx Team",
+    "preview_url": "https://demo.jankx.com/pet-shop",
+    "thumbnail": "demos/pet-shop/thumbnail.jpg",
+    "tags": ["ecommerce", "woocommerce", "pets", "shop"],
+    "requires": {
+      "plugins": ["woocommerce"]
+    },
+    "files": {
+      "content":    "content.xml",
+      "widgets":    "widgets.json",
+      "customizer": "customizer.json",
+      "menus":      "menus.json",
+      "options":    "options.json"
+    },
+    "next_steps": [
+      "Ensure WooCommerce is active and configured",
+      "Import products via WooCommerce → Products",
+      "Set up payment gateways",
+      "Clear caches: wp jankx cache clear"
+    ]
+  }
+}

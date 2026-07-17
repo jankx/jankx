@@ -1,0 +1,202 @@
+// Slideshow Item Block Editor Styles
+@use 'style.scss';
+
+.slideshow-item-block {
+
+  // Editor-specific overrides
+  .slideshow-item-content {
+    // Highlight editable content in editor
+    position: relative;
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: -2px;
+      left: -2px;
+      right: -2px;
+      bottom: -2px;
+      border: 2px solid transparent;
+      border-radius: 8px;
+      z-index: 1;
+      transition: border-color 0.2s ease;
+    }
+
+    &:hover::before {
+      border-color: var(--wp--preset--color--primary);
+    }
+
+    &.selected::before {
+      border-color: var(--wp--preset--color--primary);
+      box-shadow: 0 0 0 2px color-mix(in srgb, var(--wp--preset--color--primary) 20%, transparent);
+    }
+  }
+
+  .slideshow-item-image {
+    // Show editing indicators
+    .slideshow-item-overlay {
+      .change-image-btn {
+        background: var(--wp--preset--color--primary);
+        color: white;
+
+        &:hover {
+          background: color-mix(in srgb, var(--wp--preset--color--primary) 80%, black);
+        }
+
+        &::after {
+          content: ' 📷';
+          font-size: 14px;
+        }
+      }
+
+      .remove-image-btn {
+        &::after {
+          content: ' 🗑️';
+          font-size: 14px;
+        }
+      }
+    }
+  }
+
+  .slideshow-item-caption,
+  .slideshow-caption {
+    // RichText editor specific styling
+    .rich-text {
+      border: 1px solid transparent;
+      border-radius: 4px;
+      padding: 8px;
+      transition: border-color 0.2s ease;
+
+      &:focus,
+      &:hover {
+        border-color: var(--wp--preset--color--primary);
+        outline: none;
+      }
+
+      // Placeholder styling
+      &[data-is-placeholder-visible="true"] {
+        border-color: #ddd;
+        background: #f9f9f9;
+      }
+    }
+
+    // Block toolbar integration
+    .block-editor-rich-text__editable {
+      min-height: 40px;
+      padding: 8px;
+      border: 1px solid transparent;
+      border-radius: 4px;
+      transition: all 0.2s ease;
+
+      &:focus {
+        border-color: var(--wp--preset--color--primary);
+        outline: none;
+        box-shadow: 0 0 0 2px color-mix(in srgb, var(--wp--preset--color--primary) 20%, transparent);
+      }
+
+      &:hover {
+        border-color: #ddd;
+      }
+    }
+
+    // Formatting toolbar
+    .rich-text__toolbar {
+      background: rgba(255, 255, 255, 0.95);
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      backdrop-filter: blur(4px);
+    }
+  }
+
+  // WordPress block editor specific styles
+  &.is-selected {
+    .slideshow-item-content {
+      outline: 2px solid var(--wp--preset--color--primary);
+      outline-offset: 2px;
+    }
+  }
+
+  &.is-hovered {
+    .slideshow-item-content {
+      outline: 1px dashed var(--wp--preset--color--primary);
+      outline-offset: 1px;
+    }
+  }
+
+  // Block toolbar
+  .block-editor-block-toolbar {
+    .components-toolbar-group {
+      background: color-mix(in srgb, var(--wp--preset--color--primary) 90%, transparent);
+      border-radius: 4px;
+    }
+  }
+
+  // Appender button styling
+  .block-list-appender {
+    .block-editor-button-block-appender {
+      background: #f0f0f0;
+      border: 2px dashed #ccc;
+      border-radius: 8px;
+      color: #666;
+      padding: 20px;
+      width: 100%;
+      min-height: 100px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+
+      &:hover {
+        background: #e0e0e0;
+        border-color: var(--wp--preset--color--primary);
+        color: var(--wp--preset--color--primary);
+      }
+
+      &::before {
+        content: '+';
+        font-size: 24px;
+        font-weight: bold;
+        margin-right: 8px;
+      }
+    }
+  }
+
+  // Responsive preview in editor
+  @media (max-width: 768px) {
+    .slideshow-item-caption,
+    .slideshow-caption {
+      .rich-text {
+        font-size: 13px;
+        padding: 6px;
+      }
+    }
+  }
+}
+
+// Block editor container styling
+.block-editor-block-list__layout {
+  .slideshow-item-block {
+    margin: 8px 0;
+
+    &:first-child {
+      margin-top: 0;
+    }
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+}
+
+// Inline editing styles
+.block-editor-rich-text__editable {
+  .slideshow-item-block & {
+    // Ensure proper cursor styling
+    cursor: text;
+
+    // Selection styling
+    &::selection {
+      background: color-mix(in srgb, var(--wp--preset--color--primary) 20%, transparent);
+    }
+  }
+}

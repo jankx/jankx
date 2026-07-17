@@ -1,0 +1,294 @@
+/**
+ * Smart Tabs Block - Frontend & Editor Styles
+ * Using CSS variables from theme.json color presets
+ */
+
+.smart-tabs {
+    // CSS Custom Properties with theme.json color presets
+    // Using contrast for text and primary for active/highlight color
+    --smart-tabs-border-color: var(--wp--preset--color--accent-5, #FBFAF3);
+    --smart-tabs-text-color: var(--wp--preset--color--contrast, #111111);
+    --smart-tabs-primary-color: var(--wp--preset--color--primary, #503AA8);
+    --smart-tabs-bg-light: var(--wp--preset--color--accent-5, #FBFAF3);
+    --smart-tabs-bg-white: var(--wp--preset--color--base, #FFFFFF);
+    --smart-tabs-shadow: rgba(0, 0, 0, 0.1);
+
+    margin: 20px 0;
+
+    // Navigation
+    &__navigation {
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 0;
+        flex-wrap: wrap;
+    }
+
+    // Label
+    &__label {
+        background-color: #000000;
+        color: #ffffff;
+        padding: 0.625rem 1.25rem; // 10px 20px
+        font-size: 0.875rem; // 14px
+        font-weight: 700;
+        line-height: 1.4;
+        white-space: nowrap;
+        margin-right: 0;
+        flex-shrink: 0;
+    }
+
+    &__nav-list {
+        display: flex;
+        gap: 10px;
+        border-bottom: 2px solid var(--smart-tabs-border-color);
+        position: relative;
+        flex: 1;
+
+        // Alignment options
+        &.align-left {
+            justify-content: flex-start;
+        }
+
+        &.align-center {
+            justify-content: center;
+        }
+
+        &.align-right {
+            justify-content: flex-end;
+        }
+
+        &.align-justify {
+            justify-content: space-between;
+            gap: 0;
+
+            .smart-tabs__nav-item {
+                flex: 1;
+                justify-content: center;
+            }
+        }
+    }
+
+    &__nav-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 12px 20px;
+        border: none;
+        border-bottom: 3px solid transparent;
+        background: transparent;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: 500;
+        color: var(--smart-tabs-text-color);
+        transition: all 0.3s ease;
+        margin-bottom: -2px;
+
+        &:hover {
+            color: var(--smart-tabs-primary-color);
+        }
+
+        &.is-active {
+            color: var(--smart-tabs-primary-color);
+            border-bottom-color: var(--smart-tabs-primary-color);
+        }
+    }
+
+    &__nav-icon {
+        display: inline-flex;
+        align-items: center;
+
+        svg {
+            width: 1em;
+            height: 1em;
+            fill: currentColor;
+        }
+    }
+
+    &__nav-label {
+        line-height: 1;
+    }
+
+    &__add-tab {
+        margin-left: auto;
+        opacity: 0.6;
+
+        &:hover {
+            opacity: 1;
+        }
+    }
+
+    // Content
+    &__content {
+        padding: 20px 0;
+    }
+
+    // Hide border bottom option
+    &--hide-border-bottom {
+        .smart-tabs__nav-list {
+            border-bottom: none;
+        }
+    }
+
+    // Center navigation option
+    &--center-navigation {
+        .smart-tabs__navigation .smart-tabs__nav-list {
+            width: fit-content;
+            margin: 0 auto;
+        }
+    }
+
+    // Vertical layout
+    &--vertical {
+        display: flex;
+        gap: 20px;
+
+        .smart-tabs__navigation {
+            margin-bottom: 0;
+            min-width: 200px;
+        }
+
+        .smart-tabs__nav-list {
+            flex-direction: column;
+            border-bottom: none;
+            border-right: 2px solid var(--smart-tabs-border-color);
+        }
+
+        .smart-tabs__nav-item {
+            border-bottom: none;
+            border-right: 3px solid transparent;
+            margin-bottom: 0;
+            margin-right: -2px;
+            justify-content: flex-start;
+
+            &.is-active {
+                border-bottom-color: transparent;
+                border-right-color: var(--smart-tabs-primary-color);
+            }
+        }
+
+        .smart-tabs__content {
+            flex: 1;
+            padding: 0;
+        }
+    }
+
+    // Style variations
+    &--style-minimal {
+        .smart-tabs__nav-list {
+            border-bottom: 1px solid var(--smart-tabs-border-color);
+        }
+
+        .smart-tabs__nav-item {
+            padding: 8px 16px;
+            border-bottom-width: 2px;
+        }
+    }
+
+    &--style-modern {
+        .smart-tabs__nav-list {
+            border-bottom: none;
+            background: var(--smart-tabs-bg-light);
+            border-radius: 8px;
+            padding: 4px;
+        }
+
+        .smart-tabs__nav-item {
+            border-bottom: none;
+            border-radius: 6px;
+            margin-bottom: 0;
+
+            &.is-active {
+                background: var(--smart-tabs-bg-white);
+                box-shadow: 0 2px 4px var(--smart-tabs-shadow);
+            }
+        }
+    }
+
+    &--style-boxed {
+        .smart-tabs__nav-item {
+            border: 1px solid var(--smart-tabs-border-color);
+            border-bottom: none;
+            border-radius: 4px 4px 0 0;
+            margin-bottom: 0;
+
+            &.is-active {
+                border-color: var(--smart-tabs-primary-color);
+                border-bottom: 2px solid var(--smart-tabs-bg-white);
+                position: relative;
+                z-index: 1;
+            }
+        }
+
+        .smart-tabs__content {
+            border: 1px solid var(--smart-tabs-border-color);
+            border-radius: 0 4px 4px 4px;
+            padding: 20px;
+            margin-top: -2px;
+        }
+    }
+
+    &--style-bordered {
+        .smart-tabs__nav-list {
+            border: 2px solid var(--smart-tabs-primary-color);
+            border-radius: 6px;
+            background: var(--smart-tabs-bg-white);
+            padding: 0;
+            gap: 0;
+        }
+
+        .smart-tabs__nav-item {
+            border: none;
+            border-right: 1px solid var(--smart-tabs-primary-color);
+            border-radius: 0;
+            margin: 0;
+            padding: 12px 20px;
+            color: var(--smart-tabs-primary-color);
+            font-weight: 500;
+            transition: all 0.3s ease;
+
+            &:last-child {
+                border-right: none;
+            }
+
+            &.is-active {
+                background: var(--smart-tabs-primary-color);
+                color: var(--smart-tabs-bg-white);
+                border-bottom: none;
+                border-right: 1px solid var(--smart-tabs-primary-color);
+                position: relative;
+
+                &:last-child {
+                    border-right: none;
+                }
+            }
+        }
+    }
+}
+
+// Smart Tab Item
+.smart-tab {
+    &__header {
+        margin-bottom: 15px;
+        display: none; // Hidden in frontend, shown in editor
+    }
+
+    &__title-edit {
+        font-size: 18px;
+        font-weight: 600;
+        padding: 8px;
+        border: 1px dashed var(--smart-tabs-border-color);
+        border-radius: 4px;
+        background: var(--smart-tabs-bg-light);
+    }
+
+    &__content {
+        > * {
+            margin-top: 0;
+            margin-bottom: 1em;
+
+            &:last-child {
+                margin-bottom: 0;
+            }
+        }
+    }
+}

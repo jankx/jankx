@@ -12,12 +12,33 @@ class JankxAdminPagesServiceProvider extends ServiceProvider
 {
     protected $app;
 
+    public function shouldLoadAdmin(): bool
+    {
+        return true;
+    }
+
+    public function shouldLoadFrontend(): bool
+    {
+        return false;
+    }
+
+    public function shouldLoadAjax(): bool
+    {
+        return false;
+    }
+
+    public function shouldLoadCron(): bool
+    {
+        return false;
+    }
+
+    public function shouldLoadRest(): bool
+    {
+        return false;
+    }
+
     public function register(Application $app)
     {
-        if (!is_admin()) {
-            return;
-        }
-
         $this->app = $app;
 
         // Register AdminPageService
@@ -25,18 +46,14 @@ class JankxAdminPagesServiceProvider extends ServiceProvider
             return new AdminPageService($app);
         });
 
-        // Register IconImportService
-        $app->singleton('jankx.icon-import', function ($app) {
-            return new \Jankx\Services\FontIcons\IconImportService($app);
+        // Register FormHandler
+        $app->singleton(\Jankx\Admin\Handlers\FormHandler::class, function ($app) {
+            return new \Jankx\Admin\Handlers\FormHandler($app);
         });
     }
 
     public function boot(Application $app)
     {
-        if (!is_admin()) {
-            return;
-        }
-
         // Register admin menu
         add_action('admin_menu', [$this, 'registerAdminMenu']);
 
@@ -50,100 +67,118 @@ class JankxAdminPagesServiceProvider extends ServiceProvider
     /**
      * Đăng ký admin menu chính cho Jankx Framework
      */
+    /**
+     * Register main admin menu for Jankx Framework
+     */
     public function registerAdminMenu()
     {
-        // Main menu
-        add_menu_page(
-            Config::get('app.admin_page_title', 'Jankx Framework'), // Page title
-            Config::get('app.menu_title', 'Jankx Framework'), // Menu title
-            'manage_options', // Capability
-            Framework::jankx(), // Menu slug - sử dụng Framework facade
-            [$this, 'renderMainPage'], // Callback
-            'dashicons-art', // Icon
-            Config::get('app.menu_position', 59) // Position
-        );
-
-        // Get admin pages service
         $adminPages = $this->app->make('jankx.admin-pages');
         $pages = $adminPages->getAllPages();
 
-        // Register submenus
-        foreach ($pages as $page) {
-            if ($page['id'] === 'jankx-dashboard') {
-                // Dashboard is the main page
-                continue;
-            }
+        // 1. Register Jankx Dashboard (Main Top-Level)
+        $dashboardId = 'jankx-dashboard';
 
-            add_submenu_page(
-                Framework::jankx(), // Parent slug - sử dụng Framework facade
-                $page['title'], // Page title
-                $page['menu_title'], // Menu title
-                $page['capability'], // Capability
-                $page['id'], // Menu slug
-                [$this, 'renderSubPage'] // Callback
+        $isPro = $this->app->bound('license') && $this->app->make('license')->isActivated();
+        $menuTitle = Config::get('app.menu_title', __('Jankx Admin', 'jankx'));
+        
+        if (strtoupper($menuTitle) === 'JANKX PRO' || strtoupper($menuTitle) === 'JANKX') {
+            $menuTitle = 'Jankx';
+        }
+
+        if ($isPro) {
+            $badgeHTML = '<span style="display:inline-block; margin-left:6px; padding:2px 6px; border-radius:4px; background:linear-gradient(135deg, #F59E0B 0%, #EF4444 100%); color:#fff; font-size:9px; font-weight:800; line-height:1; vertical-align:middle; letter-spacing:0.5px; box-shadow:0 2px 4px rgba(239, 68, 68, 0.3);">' . __('PRO', 'jankx') . '</span>';
+        } else {
+            $badgeHTML = '<span style="display:inline-block; margin-left:6px; padding:2px 6px; border-radius:4px; background:linear-gradient(135deg, #10B981 0%, #3B82F6 100%); color:#fff; font-size:9px; font-weight:800; line-height:1; vertical-align:middle; letter-spacing:0.5px; box-shadow:0 2px 4px rgba(59, 130, 246, 0.3);">' . __('FREE', 'jankx') . '</span>';
+        }
+
+        add_menu_page(
+            Config::get('app.admin_page_title', __('Jankx Dashboard', 'jankx')),
+            $menuTitle . $badgeHTML,
+            'manage_options',
+            $dashboardId,
+            [$this, 'renderSubPage'],
+            'dashicons-art',
+            Config::get('app.menu_position', 59)
+        );
+
+        // Submenu: Dashboard
+        add_submenu_page(
+            $dashboardId,
+            __('Jankx Dashboard', 'jankx'),
+            __('Dashboard', 'jankx'),
+            'manage_options',
+            $dashboardId,
+            [$this, 'renderSubPage']
+        );
+
+        // 2. Promote Extensions to Top Level
+        if (isset($pages['jankx-extensions'])) {
+            $ext = $pages['jankx-extensions'];
+            add_menu_page(
+                $ext['title'],
+                $ext['menu_title'],
+                $ext['capability'],
+                $ext['id'],
+                $ext['callback'],
+                $ext['icon'],
+                60
             );
         }
 
-        // Tích hợp Theme Options từ ThemeOptionsService
-        $this->integrateThemeOptions();
-    }
+        // 3. Promote Marketplace to Top Level
+        if (isset($pages['jankx-marketplace'])) {
+            $market = $pages['jankx-marketplace'];
+            add_menu_page(
+                $market['title'],
+                $market['menu_title'],
+                $market['capability'],
+                $market['id'],
+                $market['callback'],
+                $market['icon'],
+                61
+            );
+        }
 
-    /**
-     * Tích hợp Theme Options từ ThemeOptionsService
-     */
-    protected function integrateThemeOptions()
-    {
-        try {
+        // 4. Register Theme Options as Submenu under Dashboard
+        if ($this->app->has('theme-options')) {
             $themeOptions = $this->app->make('theme-options');
             if ($themeOptions && method_exists($themeOptions, 'getMenuArgs')) {
-                $menuArgs = $themeOptions->getMenuArgs();
-
-                // Thay đổi parent slug để làm submenu của Jankx
-                $menuArgs['page_parent'] = Framework::jankx();
-
-                // Đăng ký Theme Options như submenu của Jankx
+                $args = $themeOptions->getMenuArgs();
                 add_submenu_page(
-                    Framework::jankx(), // Parent slug
-                    $menuArgs['page_title'] ?? 'Theme Options',
-                    $menuArgs['menu_title'] ?? 'Theme Options',
-                    $menuArgs['page_permissions'] ?? 'manage_options',
-                    $menuArgs['page_slug'] ?? 'jankx-theme-options',
+                    $dashboardId,
+                    $args['page_title'],
+                    $args['menu_title'],
+                    $args['page_permissions'] ?? 'manage_options',
+                    $args['page_slug'],
                     [$themeOptions, 'renderOptionsPage']
                 );
             }
-        } catch (\Exception $e) {
-            // Fallback: tạo Theme Options submenu đơn giản
+        }
+
+        // 5. Register other submenus under Dashboard
+        uasort($pages, function ($a, $b) {
+            return ($a['position'] ?? 50) <=> ($b['position'] ?? 50);
+        });
+
+        $topLevelPages = ['jankx-dashboard', 'jankx-extensions', 'jankx-marketplace'];
+
+        foreach ($pages as $page) {
+            if (in_array($page['id'], $topLevelPages)) {
+                continue; // Already registered or promoted
+            }
+
             add_submenu_page(
-                Framework::jankx(),
-                'Theme Options',
-                'Theme Options',
-                'manage_options',
-                'jankx-theme-options',
-                [$this, 'renderThemeOptionsFallback']
+                $dashboardId,
+                $page['title'],
+                $page['menu_title'],
+                $page['capability'],
+                $page['id'],
+                [$this, 'renderSubPage']
             );
         }
     }
 
-    /**
-     * Render Theme Options fallback nếu service không khả dụng
-     */
-    public function renderThemeOptionsFallback()
-    {
-        echo '<div class="wrap">';
-        echo '<h1>Theme Options</h1>';
-        echo '<p>Theme options are managed through the framework adapter.</p>';
-        echo '<p>Please ensure the Theme Options service is properly configured.</p>';
-        echo '</div>';
-    }
 
-    /**
-     * Render trang chính (Dashboard)
-     */
-    public function renderMainPage()
-    {
-        $adminPages = $this->app->make('jankx.admin-pages');
-        $adminPages->renderPage('jankx-dashboard');
-    }
 
     /**
      * Render sub pages
@@ -164,14 +199,29 @@ class JankxAdminPagesServiceProvider extends ServiceProvider
      */
     public function enqueueAdminStyles()
     {
+        $pageId = $_GET['page'] ?? '';
+        $adminPages = $this->app->make('jankx.admin-pages');
+        
+        if ($pageId) {
+            $adminPages->setCurrentPage($pageId);
+        }
+
         $screen = get_current_screen();
-        if (strpos($screen->id, 'jankx') !== false) {
-            wp_enqueue_style(
-                'jankx-admin-pages',
-                $this->app->make('jankx.urls')['base'] . '/resources/assets/css/admin-pages.css',
-                [],
-                $this->app->make('jankx.version') ?? '1.0.0'
-            );
+        if ($screen && strpos($screen->id, 'jankx') !== false) {
+            try {
+                $urls = $this->app->make('jankx.urls');
+                $baseUrl = $urls['base'] ?? '';
+                if ($baseUrl) {
+                    wp_enqueue_style(
+                        'jankx-admin-pages',
+                        $baseUrl . '/resources/assets/css/admin-pages.css',
+                        [],
+                        $this->app->make('jankx.version') ?? '1.0.0'
+                    );
+                }
+            } catch (\Exception $e) {
+                // Ignore if base URL or version not setup
+            }
         }
     }
 
@@ -180,154 +230,8 @@ class JankxAdminPagesServiceProvider extends ServiceProvider
      */
     public function handlePageRequests()
     {
-        // Handle AJAX requests if needed
-        if (wp_doing_ajax()) {
-            $this->handleAjaxRequests();
-        }
-
-        // Handle form submissions if needed
-        if ($_POST && isset($_POST['jankx_action'])) {
-            $this->handleFormSubmission($_POST);
-        }
-    }
-
-    /**
-     * Handle AJAX requests
-     */
-    public function handleAjaxRequests()
-    {
-        $action = $_POST['action'] ?? '';
-
-        switch ($action) {
-            case 'jankx_load_icons':
-                $adminPages = $this->app->make('jankx.admin-pages');
-                $adminPages->handleLoadIconsAjax();
-                break;
-        }
-    }
-
-    /**
-     * Handle form submissions
-     */
-    protected function handleFormSubmission($data)
-    {
-        $action = $data['jankx_action'] ?? '';
-
-        switch ($action) {
-            case 'update_icon_settings':
-                $this->handleIconSettingsUpdate($data);
-                break;
-            case 'refresh_icons':
-                $this->handleIconsRefresh($data);
-                break;
-            default:
-                // Unknown action
-                break;
-        }
-    }
-
-    /**
-     * Handle icon settings update
-     */
-    protected function handleIconSettingsUpdate($data)
-    {
-        // Verify nonce
-        if (!wp_verify_nonce($data['_wpnonce'] ?? '', 'jankx_icon_settings')) {
-            wp_die('Security check failed');
-        }
-
-        // Update icon settings
-        $iconType = $data['icon_type'] ?? '';
-        $enabled = isset($data['enabled']);
-        $autoLoad = isset($data['auto_load']);
-
-        if (!empty($iconType)) {
-            // Update configuration
-            $this->updateIconTypeConfig($iconType, [
-                'enabled' => $enabled,
-                'auto_load' => $autoLoad
-            ]);
-
-            // Redirect with success message
-            wp_redirect(add_query_arg('updated', '1', admin_url('admin.php?page=jankx-icons')));
-            exit;
-        }
-    }
-
-    /**
-     * Handle icons refresh
-     */
-    protected function handleIconsRefresh($data)
-    {
-        // Verify nonce
-        if (!wp_verify_nonce($data['_wpnonce'] ?? '', 'jankx_refresh_icons')) {
-            wp_die('Security check failed');
-        }
-
-        $iconType = $data['icon_type'] ?? '';
-
-        if (!empty($iconType)) {
-            try {
-                // Get transformer service
-                $transformer = $this->app->make('font-icons.transformer');
-                if ($transformer) {
-                    // Refresh icons for specific type
-                    $this->refreshIconType($iconType, $transformer);
-
-                    // Redirect with success message
-                    wp_redirect(add_query_arg('refreshed', '1', admin_url('admin.php?page=jankx-icons')));
-                    exit;
-                }
-            } catch (\Exception $e) {
-                // Redirect with error message
-                wp_redirect(add_query_arg('error', urlencode($e->getMessage()), admin_url('admin.php?page=jankx-icons')));
-                exit;
-            }
-        }
-    }
-
-    /**
-     * Update icon type configuration
-     */
-    protected function updateIconTypeConfig($iconType, $config)
-    {
-        // Get current config
-        $currentConfig = $this->app->make('config')->get("font-icons.icon_types.{$iconType}", []);
-
-        // Merge with new config
-        $newConfig = array_merge($currentConfig, $config);
-
-        // Update config
-        $this->app->make('config')->set("font-icons.icon_types.{$iconType}", $newConfig);
-
-        // Save to WordPress options for persistence
-        update_option("jankx_icon_type_{$iconType}_config", $newConfig);
-    }
-
-    /**
-     * Refresh icon type
-     */
-    protected function refreshIconType($iconType, $transformer)
-    {
-        // Get icon type config
-        $typeConfig = $this->app->make('config')->get("font-icons.icon_types.{$iconType}", []);
-
-        if (empty($typeConfig['cdn_url'])) {
-            throw new \Exception("No CDN URL configured for icon type: {$iconType}");
-        }
-
-        // Transform CSS to JSON
-        $cssUrl = $typeConfig['cdn_url'];
-        $outputPath = $this->app->make('jankx.paths')['base'] . "/resources/icons/{$iconType}/icons.json";
-
-        // Ensure output directory exists
-        $outputDir = dirname($outputPath);
-        if (!is_dir($outputDir)) {
-            mkdir($outputDir, 0755, true);
-        }
-
-        // Transform and save
-        $transformer->transformAndSave($cssUrl, $iconType, $outputPath);
+        $handler = $this->app->make(\Jankx\Admin\Handlers\FormHandler::class);
+        $handler->handleRequests();
     }
 
     /**

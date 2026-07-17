@@ -1,0 +1,441 @@
+@use "sass:color";
+
+// Global layout classes - apply to wrapper for consistent editor/frontend styling
+.wp-block-jankx-advanced-filters {
+    // Ensure padding is inside border (not outside)
+    // WordPress applies padding via inline styles on the wrapper
+    // We need to move padding from wrapper to inner container
+    box-sizing: border-box;
+    
+    // Store padding values in CSS custom properties before removing from wrapper
+    // This allows us to read padding from inline styles and apply to container
+    --wrapper-padding-top: var(--wp--style--padding--top, 0);
+    --wrapper-padding-right: var(--wp--style--padding--right, 0);
+    --wrapper-padding-bottom: var(--wp--style--padding--bottom, 0);
+    --wrapper-padding-left: var(--wp--style--padding--left, 0);
+    
+    // Remove padding from wrapper (will be moved to inner container)
+    // WordPress adds padding via inline styles, so we need to override it
+    padding: 0;
+    
+    // Move padding to inner container so it's inside the border
+    .advanced-filters-container {
+        box-sizing: border-box;
+        // Apply padding from CSS custom properties
+        // This ensures padding is inside the border
+        padding-top: var(--wrapper-padding-top);
+        padding-right: var(--wrapper-padding-right);
+        padding-bottom: var(--wrapper-padding-bottom);
+        padding-left: var(--wrapper-padding-left);
+    }
+    
+    // Also apply padding to reset button if it exists
+    .filter-reset-button {
+        margin-left: var(--wrapper-padding-left, 0);
+        margin-right: var(--wrapper-padding-right, 0);
+        margin-bottom: var(--wrapper-padding-bottom, 0);
+    }
+    
+    &.layout-horizontal {
+        .advanced-filters-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            align-items: flex-start;
+        }
+
+        // Ensure checkbox display styles align horizontally
+        .filter-options.display-checkboxes {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem 1rem;
+            padding-left: 0;
+            list-style: none;
+
+            .filter-option-wrapper {
+                list-style: none;
+                display: block;
+            }
+
+            .filter-option {
+                padding: 0.25rem 0.5rem;
+            }
+        }
+    }
+
+    &.layout-vertical {
+        .advanced-filters-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+    }
+
+    &.layout-accordion {
+        .advanced-filters-container {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            
+            .filter-group {
+                border-bottom: 1px solid var(--wp--preset--color--neutral, #ddd);
+                padding-bottom: 1rem;
+                margin-bottom: 1rem;
+
+                &:last-child {
+                    border-bottom: none;
+                    margin-bottom: 0;
+                }
+            }
+        }
+    }
+
+    // Collapsible filter groups - consistent styling
+    .filter-collapsible {
+        .filter-group-header {
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+
+            .filter-group-label {
+                margin: 0;
+            }
+
+            .filter-group-toggle {
+                background: none;
+                border: none;
+                font-size: 1.2rem;
+                cursor: pointer;
+                padding: 0;
+                color: var(--wp--preset--color--contrast, #000);
+
+                &:hover {
+                    color: var(--wp--preset--color--primary, #503AA8);
+                }
+            }
+        }
+
+        .filter-group-content {
+            padding-top: 1rem;
+            display: none;
+
+            &[style*="display: block"],
+            &.expanded {
+                display: block;
+            }
+        }
+
+        &.filter-expanded {
+            .filter-group-content {
+                display: block;
+            }
+        }
+    }
+}
+
+.filter-group {
+    flex: 0 0 auto;
+
+    .filter-group-label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+        font-size: 0.9rem;
+        color: var(--wp--preset--color--contrast, #000);
+    }
+
+    .filter-options {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+
+        &.display-buttons {
+            .filter-option {
+                padding: 0.5rem 1rem;
+                border: 2px solid var(--wp--preset--color--neutral, #ddd);
+                background: var(--wp--preset--color--base, #fff);
+                border-radius: 6px;
+                cursor: pointer;
+                transition: all 0.2s ease;
+                font-size: 0.9rem;
+                text-decoration: none;
+                display: inline-flex;
+                align-items: center;
+                gap: 0.5rem;
+
+                &:hover {
+                    border-color: var(--wp--preset--color--primary, #503AA8);
+                    color: var(--wp--preset--color--primary, #503AA8);
+                }
+
+                &.active {
+                    background: var(--wp--preset--color--primary, #503AA8);
+                    border-color: var(--wp--preset--color--primary, #503AA8);
+                    color: var(--wp--preset--color--base, #fff);
+                }
+            }
+        }
+
+        &.display-checkboxes {
+            // Default flex layout for div-based lists
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+
+            // List types (ul, ol)
+            &.filter-list-ul,
+            &.filter-list-ol {
+                list-style: none;
+                padding-left: 1.5em;
+                margin: 0;
+                display: block;
+                flex-direction: column;
+            }
+
+            &.filter-list-ul {
+                list-style: disc;
+                padding-left: 1.5em;
+            }
+
+            &.filter-list-ol {
+                list-style: decimal;
+                padding-left: 1.5em;
+                
+                // Use CSS counter for hierarchical numbering
+                counter-reset: filter-term-counter;
+                
+                > .filter-option-wrapper {
+                    counter-increment: filter-term-counter;
+                    
+                    &::before {
+                        content: counter(filter-term-counter) '. ';
+                        display: inline-block;
+                        min-width: 1.5em;
+                        margin-right: 0.25em;
+                    }
+                }
+                
+                // Nested lists - reset counter for each nested level
+                .filter-terms-nested {
+                    counter-reset: filter-term-counter;
+                    
+                    > .filter-option-wrapper {
+                        counter-increment: filter-term-counter;
+                        
+                        &::before {
+                            content: counter(filter-term-counter) '. ';
+                        }
+                    }
+                }
+            }
+
+            &.filter-list-none {
+                display: block;
+                list-style: none;
+                padding-left: 0;
+            }
+
+            .filter-option-wrapper {
+                display: list-item;
+                list-style: inherit;
+            }
+
+            .filter-option {
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+                padding: 0.5rem;
+                cursor: pointer;
+
+                input[type="checkbox"],
+                input[type="radio"] {
+                    margin: 0;
+                }
+
+                label {
+                    cursor: pointer;
+                    margin: 0;
+                }
+            }
+        }
+
+        &.display-dropdown,
+        &.display-select {
+            .filter-select {
+                padding: 0.5rem 1rem;
+                border: 2px solid var(--wp--preset--color--neutral, #ddd);
+                border-radius: 6px;
+                font-size: 0.9rem;
+                background: var(--wp--preset--color--base, #fff);
+                min-width: 200px;
+            }
+        }
+    }
+
+    .filter-input {
+        padding: 0.5rem 1rem;
+        border: 2px solid var(--wp--preset--color--neutral, #ddd);
+        border-radius: 6px;
+        font-size: 0.9rem;
+        min-width: 200px;
+
+        &:focus {
+            outline: none;
+            border-color: var(--wp--preset--color--primary, #503AA8);
+        }
+    }
+
+    // Range inputs - consistent styling for price, meta, date ranges
+    .filter-range {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+
+        .filter-range-input {
+            flex: 1;
+            padding: 0.5rem 1rem;
+            border: 2px solid var(--wp--preset--color--neutral, #ddd);
+            border-radius: 6px;
+            font-size: 0.9rem;
+            min-width: 0;
+
+            &:focus {
+                outline: none;
+                border-color: var(--wp--preset--color--primary, #503AA8);
+            }
+        }
+
+        .filter-range-separator {
+            color: var(--wp--preset--color--contrast, #000);
+            font-weight: 500;
+        }
+    }
+
+    // Price range specific
+    .filter-price-range {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+
+        .filter-range {
+            margin-bottom: 0.5rem;
+        }
+
+        .filter-currency {
+            font-size: 0.85rem;
+            color: var(--wp--preset--color--contrast, #666);
+        }
+    }
+
+    // Keyword wrapper
+    .filter-keyword-wrapper {
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+
+        .filter-input-keyword {
+            flex: 1;
+        }
+
+        .filter-search-button {
+            padding: 0.5rem 1.5rem;
+            background: var(--wp--preset--color--primary, #503AA8);
+            color: var(--wp--preset--color--base, #fff);
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+
+            &:hover {
+                background: var(--wp--preset--color--contrast, #000);
+            }
+        }
+    }
+}
+
+.filter-reset-button {
+    margin-top: 1rem;
+    padding: 0.75rem 1.5rem;
+    background: var(--wp--preset--color--contrast, #000);
+    color: var(--wp--preset--color--base, #fff);
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+
+    &:hover {
+        background: var(--wp--preset--color--primary, #503AA8);
+    }
+}
+
+// Loading spinner for dynamic-data-layout blocks (target blocks)
+.dynamic-data-layout-loading {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.9);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    text-align: center;
+
+    &.active {
+        display: flex;
+    }
+
+    .dynamic-data-layout-spinner {
+        display: inline-block;
+        width: 40px;
+        height: 40px;
+        border: 4px solid var(--wp--preset--color--neutral, #ddd);
+        border-top-color: var(--wp--preset--color--primary, #503AA8);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+}
+
+// Ensure dynamic-data-layout block has relative positioning for absolute loading overlay
+.wp-block-jankx-dynamic-data-layout {
+    position: relative;
+    min-height: 100px; // Ensure there's space for loading overlay
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+// Hierarchy styles
+.filter-term-child {
+    font-size: 0.95em;
+    opacity: 0.95;
+}
+
+// Responsive
+@media (max-width: 768px) {
+    .layout-horizontal .advanced-filters-container {
+        flex-direction: column;
+    }
+
+    .filter-group {
+        width: 100%;
+
+        .filter-options.display-buttons {
+            flex-direction: column;
+
+            .filter-option {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    }
+}

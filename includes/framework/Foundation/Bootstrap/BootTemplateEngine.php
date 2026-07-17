@@ -1,0 +1,88 @@
+<?php
+
+namespace Jankx\Foundation\Bootstrap;
+
+use Jankx\Foundation\Application;
+
+/**
+ * Boot Template Engine
+ *
+ * This bootstrap class initializes the Latte template engine for Jankx Framework.
+ * It sets up the Latte engine with proper caching, filters, and WordPress integration.
+ *
+ * @package Jankx\Foundation\Bootstrap
+ * @since 2.0.0
+ */
+class BootTemplateEngine
+{
+    /**
+     * Bootstrap the given application.
+     *
+     * @param  \Jankx\Foundation\Application  $app
+     * @return void
+     */
+    public function bootstrap(Application $app)
+    {
+        // Setup Latte template engine
+        $this->setupLatteEngine($app);
+    }
+
+    /**
+     * Setup Latte template engine with proper configuration.
+     *
+     * @param  \Jankx\Foundation\Application  $app
+     * @return void
+     */
+    protected function setupLatteEngine(Application $app)
+    {
+        // Check if Latte is available
+        if (!class_exists('Latte\Engine')) {
+            // Try to load from vendor
+            $vendorLatte = $app->basePath('vendor/latte/latte/src/Latte/Engine.php');
+            if (file_exists($vendorLatte)) {
+                require_once $vendorLatte;
+            }
+        }
+        
+        if (!class_exists('Latte\Engine')) {
+            // Create a simple fallback template engine
+            $app->singleton('latte.engine', function () {
+                return new class {
+                    public function render($template, $params = []) {
+                        // Simple PHP template fallback
+                        extract($params);
+                        include $template;
+                    }
+                    
+                    public function setTempDirectory($dir) {}
+                    public function setAutoRefresh($bool) {}
+                    public function addFilter($name, $callback) {}
+                };
+            });
+            return;
+        }
+        
+        $latte = new \Latte\Engine();
+        
+        // Configure cache based on WP_DEBUG
+        $uploads = wp_upload_dir();
+        $cache_base_dir = $uploads['basedir'] . '/jankx/cache/views';
+        
+        // Ensure cache directories exist
+        if (!wp_mkdir_p($cache_base_dir)) {
+            throw new \RuntimeException("Failed to create cache directory: {$cache_base_dir}");
+        }
+        $latte->setTempDirectory($cache_base_dir);
+
+        if (defined('WP_DEBUG') && WP_DEBUG) {
+            $latte->setAutoRefresh(true);
+        } else {
+            $latte->setAutoRefresh(false);
+        }
+
+        // Register the configured Latte engine in the container
+        $app->singleton('latte.engine', function () use ($latte) {
+            return $latte;
+        });
+    }
+}

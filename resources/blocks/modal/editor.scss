@@ -1,0 +1,266 @@
+/**
+ * Modal Block Editor Styles
+ */
+
+.wp-block-jankx-modal {
+    // Editor wrapper
+    .wp-block-jankx-modal-wrapper {
+        border: 2px dashed #ccc;
+        padding: 20px;
+        border-radius: 8px;
+        background-color: #f9f9f9;
+        margin: 10px 0;
+    }
+
+    // Editor content - Always visible for editing
+    .wp-block-jankx-modal__editor-content {
+        display: block;
+        margin-top: 20px;
+    }
+
+    // Trigger preview in editor
+    .wp-block-jankx-modal__trigger {
+        display: inline-block;
+        padding: 12px 24px;
+        background-color: #007cba;
+        color: #ffffff;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: 500;
+        text-decoration: none;
+        margin-bottom: 15px;
+
+        &:hover {
+            background-color: #005a87;
+            color: #ffffff;
+            text-decoration: none;
+        }
+    }
+
+    // Modal preview in editor
+    .wp-block-jankx-modal {
+        position: relative;
+        display: block;
+        background-color: rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        margin-top: 15px;
+        padding: 20px;
+
+        .wp-block-jankx-modal__overlay {
+            position: relative;
+            background-color: transparent;
+            cursor: default;
+        }
+
+        .wp-block-jankx-modal__container {
+            position: relative;
+            display: block;
+            padding: 0;
+        }
+
+        .wp-block-jankx-modal__content {
+            position: relative;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transform: none;
+            max-height: none;
+            overflow: visible;
+        }
+
+        .wp-block-jankx-modal__close {
+            display: none; // Hide close button in editor
+        }
+    }
+
+    // Custom selector preview
+    .wp-block-jankx-modal__custom-trigger {
+        display: block;
+        padding: 10px;
+        background-color: #e9ecef;
+        border: 1px solid #dee2e6;
+        border-radius: 4px;
+        font-size: 14px;
+        color: #6c757d;
+        text-align: center;
+        margin-bottom: 15px;
+
+        &::before {
+            content: "Custom Selector: ";
+            font-weight: bold;
+        }
+    }
+
+    // Trigger preview section
+    .wp-block-jankx-modal__trigger-preview {
+        margin-bottom: 20px;
+        padding: 15px;
+        background: #f0f6fc;
+        border-radius: 6px;
+        border: 1px solid #c5d9ed;
+
+        .wp-block-jankx-modal__label {
+            margin-bottom: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #0073aa;
+        }
+    }
+
+    // Editor content area for inner blocks
+    .wp-block-jankx-modal__editor-content {
+        padding: 15px;
+        background-color: #ffffff;
+        border: 2px solid #007cba;
+        border-radius: 6px;
+        box-shadow: 0 2px 4px rgba(0, 124, 186, 0.1);
+
+        .wp-block-jankx-modal__label {
+            margin-bottom: 12px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #007cba;
+            color: #007cba;
+            font-size: 13px;
+            font-weight: 600;
+
+            code {
+                background: #f0f6fc;
+                padding: 2px 6px;
+                border-radius: 3px;
+                font-size: 11px;
+                color: #0073aa;
+            }
+        }
+
+        // Modal content editor wrapper
+        .wp-block-jankx-modal__content-editor {
+            position: relative;
+            background-color: #ffffff;
+            border: 1px dashed #c3c4c7;
+            border-radius: 4px;
+            padding: 20px;
+            min-height: 200px;
+        }
+
+        // Close button preview
+        .wp-block-jankx-modal__close-preview {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 24px;
+            height: 24px;
+            background: #f0f0f0;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            color: #666;
+            cursor: help;
+            z-index: 10;
+        }
+
+        // Style the inner blocks container
+        .wp-block-jankx-modal__inner {
+            background-color: transparent;
+            border: none;
+            box-shadow: none;
+            padding: 0;
+            margin: 0;
+            border-radius: 0;
+        }
+    }
+
+    // Size indicators in editor
+    .wp-block-jankx-modal__container--small .wp-block-jankx-modal__content {
+        max-width: 400px;
+    }
+
+    .wp-block-jankx-modal__container--medium .wp-block-jankx-modal__content {
+        max-width: 600px;
+    }
+
+    .wp-block-jankx-modal__container--large .wp-block-jankx-modal__content {
+        max-width: 800px;
+    }
+
+    .wp-block-jankx-modal__container--fullscreen .wp-block-jankx-modal__content {
+        max-width: 100%;
+        width: 100%;
+    }
+
+    // Editor placeholder
+    .wp-block-jankx-modal__placeholder {
+        text-align: center;
+        padding: 40px 20px;
+        color: #666;
+        font-style: italic;
+
+        .dashicons {
+            font-size: 48px;
+            color: #ccc;
+            margin-bottom: 15px;
+        }
+    }
+
+    // Inspector controls styling
+    .wp-block-jankx-modal__inspector {
+        .components-panel__body {
+            margin-bottom: 16px;
+        }
+
+        .components-base-control__label {
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .components-text-control__input {
+            width: 100%;
+        }
+
+        .components-select-control__input {
+            width: 100%;
+        }
+
+        .components-toggle-control {
+            margin-bottom: 16px;
+        }
+
+        .components-range-control {
+            margin-bottom: 16px;
+        }
+    }
+
+    // Animation preview in editor
+    .wp-block-jankx-modal__animation-preview {
+        .wp-block-jankx-modal__content {
+            transition: all 0.3s ease;
+        }
+
+        &.modal-animation-fade .wp-block-jankx-modal__content {
+            opacity: 0.8;
+        }
+
+        &.modal-animation-slide .wp-block-jankx-modal__content {
+            transform: translateY(10px);
+        }
+
+        &.modal-animation-zoom .wp-block-jankx-modal__content {
+            transform: scale(0.95);
+        }
+    }
+
+    // Responsive preview
+    @media (max-width: 768px) {
+        .wp-block-jankx-modal__container {
+            padding: 10px;
+        }
+
+        .wp-block-jankx-modal__content {
+            padding: 15px;
+        }
+    }
+}
+

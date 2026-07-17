@@ -1,0 +1,277 @@
+/**
+ * Frontend Styles for Smart Breadcrumb Block
+ */
+
+.wp-block-jankx-smart-breadcrumb {
+    font-size: 0.9em;
+    line-height: 1.6;
+
+    a {
+        text-decoration: none;
+        transition: all 0.2s ease;
+
+        &:hover {
+            opacity: 0.8;
+        }
+    }
+
+    .separator {
+        margin: 0 0.5em;
+        opacity: 0.6;
+    }
+
+    .current {
+        font-weight: 500;
+        opacity: 0.7;
+    }
+
+    .home-item {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+
+        i,
+        svg {
+            width: 1em;
+            height: 1em;
+            fill: currentColor;
+            vertical-align: middle;
+        }
+
+        .home-icon {
+            max-height: 1.2em;
+            width: auto;
+            display: inline-block;
+            vertical-align: middle;
+        }
+    }
+}
+
+/* ==================== Style Presets ==================== */
+
+/* Default Style */
+.wp-block-jankx-smart-breadcrumb.breadcrumb-style-default {
+    a {
+        color: inherit;
+
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+}
+
+/* Minimal Style */
+.wp-block-jankx-smart-breadcrumb.breadcrumb-style-minimal {
+    font-size: 0.85em;
+    color: #666;
+
+    a {
+        color: #666;
+
+        &:hover {
+            color: #000;
+        }
+    }
+
+    .separator {
+        margin: 0 0.3em;
+    }
+}
+
+/* Modern Style */
+.wp-block-jankx-smart-breadcrumb.breadcrumb-style-modern {
+    padding: 0.5em 0;
+
+    a {
+        color: var(--wp--preset--color--primary, #0073aa);
+        padding: 0.2em 0.4em;
+        border-radius: 3px;
+
+        &:hover {
+            background: rgba(0, 115, 170, 0.1);
+            opacity: 1;
+        }
+    }
+
+    .separator {
+        color: var(--wp--preset--color--primary, #0073aa);
+        font-weight: bold;
+    }
+}
+
+/* Boxed Style */
+.wp-block-jankx-smart-breadcrumb.breadcrumb-style-boxed {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5em;
+
+    a,
+    .current {
+        background: #f5f5f5;
+        padding: 0.4em 0.8em;
+        border-radius: 4px;
+        transition: all 0.2s ease;
+    }
+
+    a {
+        color: #333;
+
+        &:hover {
+            background: #e0e0e0;
+            opacity: 1;
+        }
+    }
+
+    .separator {
+        margin: 0;
+        opacity: 0.5;
+    }
+}
+
+/* Underlined Style */
+.wp-block-jankx-smart-breadcrumb.breadcrumb-style-underlined {
+    a {
+        color: var(--wp--preset--color--primary, #0073aa);
+        border-bottom: 2px solid transparent;
+        padding-bottom: 2px;
+
+        &:hover {
+            border-bottom-color: var(--wp--preset--color--primary, #0073aa);
+            opacity: 1;
+        }
+    }
+}
+
+/* Badge Style */
+.wp-block-jankx-smart-breadcrumb.breadcrumb-style-badge {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5em;
+
+    a,
+    .current {
+        background: var(--wp--preset--color--primary, #0073aa);
+        color: #ffffff;
+        padding: 0.3em 0.8em;
+        border-radius: 20px;
+        font-size: 0.9em;
+        font-weight: 500;
+        transition: all 0.2s ease;
+    }
+
+    a {
+        &:hover {
+            background: var(--wp--preset--color--primary, #005177);
+            opacity: 1;
+            transform: translateY(-1px);
+        }
+    }
+
+    .current {
+        background: #999;
+    }
+
+    .separator {
+        margin: 0;
+        color: var(--wp--preset--color--primary, #0073aa);
+        font-weight: bold;
+    }
+}
+
+/* ==================== SEO Plugin Compatibility ==================== */
+
+/* RankMath Breadcrumb */
+.rank-math-breadcrumb {
+    p {
+        margin: 0;
+    }
+
+    a {
+        text-decoration: none;
+
+        &:hover {
+            opacity: 0.8;
+        }
+    }
+}
+
+/* Yoast SEO Breadcrumb */
+.yoast-breadcrumb,
+#breadcrumbs {
+    a {
+        text-decoration: none;
+
+        &:hover {
+            opacity: 0.8;
+        }
+    }
+}
+
+/* SEOPress Breadcrumb */
+.seopress-breadcrumbs {
+    a {
+        text-decoration: none;
+
+        &:hover {
+            opacity: 0.8;
+        }
+    }
+}
+
+/* Breadcrumb NavXT */
+.breadcrumb-navxt {
+    a {
+        text-decoration: none;
+
+        &:hover {
+            opacity: 0.8;
+        }
+    }
+}
+
+/* WooCommerce Breadcrumb */
+.woocommerce-breadcrumb {
+    a {
+        text-decoration: none;
+
+        &:hover {
+            opacity: 0.8;
+        }
+    }
+}
+
+/* ==================== Responsive ==================== */
+
+@media (max-width: 768px) {
+    .wp-block-jankx-smart-breadcrumb {
+        font-size: 0.85em;
+
+        .separator {
+            margin: 0 0.3em;
+        }
+
+        &.breadcrumb-style-boxed,
+        &.breadcrumb-style-badge {
+            gap: 0.3em;
+
+            a,
+            .current {
+                padding: 0.3em 0.6em;
+                font-size: 0.85em;
+            }
+        }
+    }
+}
+
+/* ==================== Accessibility ==================== */
+
+.wp-block-jankx-smart-breadcrumb {
+    a {
+        &:focus {
+            outline: 2px solid var(--wp--preset--color--primary, #0073aa);
+            outline-offset: 2px;
+        }
+    }
+}

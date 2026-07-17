@@ -1,0 +1,211 @@
+// Embla Banner Styles — supports inner blocks overlay layout
+.embla-banner {
+  position: relative;
+  overflow: hidden;
+  border-radius: inherit;
+  width: 100%;
+  height: 100%;
+  min-height: 200px;
+
+  // ─── Layer 1: Background image ───────────────────────────────────────────
+  &__image {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    z-index: 0;
+
+    &.image-size-contain {
+      background-size: contain;
+    }
+
+    &.image-size-cover {
+      background-size: cover;
+    }
+
+    &.image-size-fullwidth {
+      background-size: 100% 100%;
+      background-position: center;
+    }
+  }
+
+  // ─── Layer 2: Dark/color overlay ─────────────────────────────────────────
+  &__overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  // ─── Layer 3: Inner blocks content (heading, paragraph, search, …) ───────
+  &__overlay-content {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    width: 100%;
+    box-sizing: border-box;
+    color: #fff;
+
+    // Forward WordPress block styles for text color inside overlay
+    * {
+      color: inherit;
+    }
+
+    // Headings inside banner
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      color: #fff;
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+      margin: 0 0 0.5em;
+      line-height: 1.25;
+    }
+
+    // Paragraphs inside banner
+    p {
+      color: rgba(255, 255, 255, 0.9);
+      text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+      margin: 0 0 1em;
+      line-height: 1.6;
+    }
+
+    // Last block no bottom margin
+    >*:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  // ─── Clickable link wraps entire slide ───────────────────────────────────
+  &__link {
+    display: block;
+    width: 100%;
+    height: 100%;
+    text-decoration: none;
+    color: inherit;
+    position: relative;
+  }
+
+  // ─── Legacy caption (kept for backward compat) ───────────────────────────
+  &__caption {
+    position: relative;
+    z-index: 2;
+    padding: 2rem;
+    max-width: 80%;
+
+    &-content {
+      color: white;
+      font-size: 1.5rem;
+      font-weight: 600;
+      line-height: 1.4;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    }
+  }
+
+  // ─── Content alignment ───────────────────────────────────────────────────
+  &.text-left .embla-banner__overlay-content {
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  &.text-center .embla-banner__overlay-content {
+    align-items: center;
+    text-align: center;
+  }
+
+  &.text-right .embla-banner__overlay-content {
+    align-items: flex-end;
+    text-align: right;
+  }
+
+  // ─── Content vertical position ───────────────────────────────────────────
+  &.text-position-top .embla-banner__overlay-content {
+    justify-content: flex-start;
+    padding-top: 3rem;
+  }
+
+  &.text-position-middle .embla-banner__overlay-content {
+    justify-content: center;
+  }
+
+  &.text-position-bottom .embla-banner__overlay-content {
+    justify-content: flex-end;
+    padding-bottom: 3rem;
+  }
+
+  // ─── Style variations ────────────────────────────────────────────────────
+  &--circles {
+    border-radius: 50%;
+    aspect-ratio: 1;
+    flex-shrink: 0;
+
+    .embla-banner__image {
+      border-radius: 50%;
+    }
+  }
+
+  &--square {
+    aspect-ratio: 1;
+
+    .embla-banner__image {
+      border-radius: 8px;
+    }
+  }
+
+  // ─── Image-size classes on wrapper (for specificity) ─────────────────────
+  &.image-size-contain .embla-banner__image {
+    background-size: contain;
+  }
+
+  &.image-size-cover .embla-banner__image {
+    background-size: cover;
+  }
+
+  &.image-size-fullwidth .embla-banner__image {
+    background-size: 100% 100%;
+    background-position: center;
+  }
+}
+
+// ─── Responsive ────────────────────────────────────────────────────────────
+@media (max-width: 768px) {
+  .embla-banner {
+    &__overlay-content {
+      padding: 1.5rem;
+
+      h1,
+      h2,
+      h3 {
+        font-size: clamp(1.25rem, 4vw, 2rem);
+      }
+
+      p {
+        font-size: 0.95rem;
+      }
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .embla-banner {
+    &__overlay-content {
+      padding: 1rem;
+
+      h1,
+      h2,
+      h3 {
+        font-size: clamp(1rem, 5vw, 1.5rem);
+      }
+    }
+  }
+}

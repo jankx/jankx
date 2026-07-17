@@ -1,0 +1,99 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "jankx/safe-iframe",
+    "version": "1.0.0",
+    "title": "Safe Iframe Embed",
+    "category": "jankx",
+    "icon": "embed-generic",
+    "description": "Safely embed external content via iframe with customizable settings and live preview",
+    "textdomain": "jankx",
+    "editorScript": "file:./build/index.js",
+    "editorStyle": "file:./build/editor.css",
+    "style": "file:./build/style.css",
+    "supports": {
+        "html": false,
+        "align": [
+            "wide",
+            "full"
+        ],
+        "anchor": true,
+        "spacing": {
+            "margin": true,
+            "padding": true
+        }
+    },
+    "attributes": {
+        "url": {
+            "type": "string",
+            "default": ""
+        },
+        "title": {
+            "type": "string",
+            "default": "Embedded Content"
+        },
+        "width": {
+            "type": "string",
+            "default": "100%"
+        },
+        "height": {
+            "type": "string",
+            "default": "500px"
+        },
+        "aspectRatio": {
+            "type": "string",
+            "default": ""
+        },
+        "useAspectRatio": {
+            "type": "boolean",
+            "default": false
+        },
+        "allowFullscreen": {
+            "type": "boolean",
+            "default": true
+        },
+        "loading": {
+            "type": "string",
+            "default": "lazy",
+            "enum": [
+                "lazy",
+                "eager"
+            ]
+        },
+        "sandbox": {
+            "type": "array",
+            "default": [
+                "allow-scripts",
+                "allow-same-origin"
+            ]
+        },
+        "allow": {
+            "type": "string",
+            "default": ""
+        },
+        "borderRadius": {
+            "type": "number",
+            "default": 0
+        },
+        "showBorder": {
+            "type": "boolean",
+            "default": false
+        },
+        "borderWidth": {
+            "type": "number",
+            "default": 1
+        },
+        "borderColor": {
+            "type": "string",
+            "default": "#ddd"
+        },
+        "showShadow": {
+            "type": "boolean",
+            "default": false
+        },
+        "customCSS": {
+            "type": "string",
+            "default": ""
+        }
+    }
+}

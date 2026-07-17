@@ -1,0 +1,187 @@
+@use "sass:color";
+
+.wp-block-jankx-social-sharing {
+    margin: 2rem 0;
+
+    .sharing-title {
+        font-size: 1rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+        color: #333;
+    }
+
+    .sharing-buttons {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    .sharing-button {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        border: none;
+        background: var(--wp--preset--color--primary, #f0f0f0);
+        color: var(--wp--preset--color--base, #fff);
+        cursor: pointer;
+        transition: all 0.2s ease;
+        font-size: 0.9rem;
+        text-decoration: none;
+
+        &:hover {
+            background: var(--wp--preset--color--secondary, #e0e0e0);
+            transform: translateY(-2px);
+        }
+
+        .sharing-icon {
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    }
+
+    // Alignment
+    &.alignment-left .sharing-buttons {
+        justify-content: flex-start;
+    }
+
+    &.alignment-center .sharing-buttons {
+        justify-content: center;
+    }
+
+    &.alignment-right .sharing-buttons {
+        justify-content: flex-end;
+    }
+
+    // Sizes
+    &.size-small .sharing-button {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.8rem;
+
+        .sharing-icon {
+            width: 16px;
+            height: 16px;
+        }
+    }
+
+    &.size-large .sharing-button {
+        padding: 0.75rem 1.5rem;
+        font-size: 1.1rem;
+
+        .sharing-icon {
+            width: 24px;
+            height: 24px;
+        }
+    }
+
+    // Styles
+    &.style-outlined .sharing-button {
+        background: transparent;
+        border: 2px solid #ddd;
+
+        &:hover {
+            border-color: #333;
+            background: transparent;
+        }
+    }
+
+    &.style-filled .sharing-button {
+        color: white;
+
+        &.facebook {
+            background: #1877f2;
+
+            &:hover {
+                background: color.adjust(#1877f2, $lightness: -10%);
+            }
+        }
+
+        &.twitter {
+            background: #1da1f2;
+
+            &:hover {
+                background: color.adjust(#1da1f2, $lightness: -10%);
+            }
+        }
+
+        &.linkedin {
+            background: #0077b5;
+
+            &:hover {
+                background: color.adjust(#0077b5, $lightness: -10%);
+            }
+        }
+
+        &.whatsapp {
+            background: #25d366;
+
+            &:hover {
+                background: color.adjust(#25d366, $lightness: -10%);
+            }
+        }
+
+        &.telegram {
+            background: #0088cc;
+
+            &:hover {
+                background: color.adjust(#0088cc, $lightness: -10%);
+            }
+        }
+
+        &.pinterest {
+            background: #bd081c;
+
+            &:hover {
+                background: color.adjust(#bd081c, $lightness: -10%);
+            }
+        }
+
+        &.reddit {
+            background: #ff4500;
+
+            &:hover {
+                background: color.adjust(#ff4500, $lightness: -10%);
+            }
+        }
+
+        &.email {
+            background: #666;
+
+            &:hover {
+                background: color.adjust(#666, $lightness: -10%);
+            }
+        }
+
+        &.copy {
+            background: #999;
+
+            &:hover {
+                background: color.adjust(#999, $lightness: -10%);
+            }
+        }
+    }
+
+    &.style-rounded .sharing-button {
+        border-radius: 50%;
+        padding: 0.75rem;
+        width: 45px;
+        height: 45px;
+        justify-content: center;
+
+        .sharing-label {
+            display: none;
+        }
+    }
+
+    .no-networks {
+        color: #999;
+        font-style: italic;
+        padding: 1rem;
+        text-align: center;
+        border: 2px dashed #ddd;
+        border-radius: 8px;
+    }
+}

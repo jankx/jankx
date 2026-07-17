@@ -6,9 +6,11 @@
  * @package Jankx\Extensions
  */
 
-namespace Jankx\Extensions;
+namespace Jankx\Services;
 
 use Jankx\Contracts\Extension\ExtensionServiceInterface;
+use Jankx\Extensions\ExtensionManager;
+use Jankx\Extensions\AbstractExtension;
 
 class ExtensionService implements ExtensionServiceInterface
 {
@@ -39,10 +41,12 @@ class ExtensionService implements ExtensionServiceInterface
 
     /**
      * Constructor
+     * 
+     * @param ExtensionManager $extensionManager
      */
-    public function __construct()
+    public function __construct(ExtensionManager $extensionManager)
     {
-        $this->extensionManager = ExtensionManager::getInstance();
+        $this->extensionManager = $extensionManager;
         $this->loadExtensionSettings();
         $this->init();
     }
@@ -55,6 +59,8 @@ class ExtensionService implements ExtensionServiceInterface
         add_action('init', [$this, 'applyExtensionFilters'], 1);
         add_action('admin_init', [$this, 'registerAdminHooks']);
         add_action('wp_ajax_jankx_toggle_extension', [$this, 'handleToggleExtension']);
+        add_action('wp_ajax_jankx_delete_extension', [$this, 'handleDeleteExtension']);
+        add_action('wp_ajax_jankx_install_extension', [$this, 'handleInstallExtension']);
         add_action('wp_ajax_jankx_get_extension_manifest', [$this, 'handleGetExtensionManifest']);
         add_action('wp_ajax_jankx_get_extension_settings', [$this, 'handleGetExtensionSettings']);
         add_action('wp_ajax_jankx_save_extension_settings', [$this, 'handleSaveExtensionSettings']);
@@ -79,19 +85,20 @@ class ExtensionService implements ExtensionServiceInterface
         $extensions = $this->extensionManager->get_extensions();
 
         foreach ($extensions as $extensionName => $extension) {
-            // Check if extension is explicitly disabled
-            if (in_array($extensionName, $this->disabledExtensions)) {
-                $extension->deactivate();
+            // Respect the manifest-based 'enabled' flag
+            $manifest = $extension->get_manifest_data();
+            if (!empty($manifest)) {
+                if (isset($manifest['enabled'])) {
+                    $manifest['enabled'] ? $extension->activate() : $extension->deactivate();
+                } else {
+                    // Fallback: use auto_activate
+                    $autoActivate = isset($manifest['auto_activate']) ? (bool)$manifest['auto_activate'] : false;
+                    $autoActivate ? $extension->activate() : $extension->deactivate();
+                }
                 continue;
             }
 
-            // Check if extension is explicitly enabled
-            if (in_array($extensionName, $this->enabledExtensions)) {
-                $extension->activate();
-                continue;
-            }
-
-            // Apply custom filters
+            // No manifest: apply custom filters
             if (!$this->shouldLoadExtension($extensionName, $extension)) {
                 $extension->deactivate();
                 continue;
@@ -105,7 +112,7 @@ class ExtensionService implements ExtensionServiceInterface
     /**
      * Check if extension should be loaded based on filters
      */
-    private function shouldLoadExtension(string $extensionName, Extension $extension): bool
+    private function shouldLoadExtension(string $extensionName, AbstractExtension $extension): bool
     {
         // Apply global filters
         $shouldLoad = apply_filters('jankx/extension/should_load', true, $extensionName, $extension);
@@ -197,29 +204,7 @@ class ExtensionService implements ExtensionServiceInterface
      */
     public function enableExtension(string $extensionName): bool
     {
-        $extension = $this->extensionManager->get_extension($extensionName);
-
-        if (!$extension) {
-            return false;
-        }
-
-        // Remove from disabled list
-        $this->disabledExtensions = array_diff($this->disabledExtensions, [$extensionName]);
-
-        // Add to enabled list
-        if (!in_array($extensionName, $this->enabledExtensions)) {
-            $this->enabledExtensions[] = $extensionName;
-        }
-
-        // Update database
-        $this->saveExtensionSettings();
-
-        // Activate extension
-        $extension->activate();
-
-        do_action('jankx/extension/enabled', $extensionName, $extension);
-
-        return true;
+        return $this->updateAutoActivate($extensionName, true);
     }
 
     /**
@@ -227,29 +212,7 @@ class ExtensionService implements ExtensionServiceInterface
      */
     public function disableExtension(string $extensionName): bool
     {
-        $extension = $this->extensionManager->get_extension($extensionName);
-
-        if (!$extension) {
-            return false;
-        }
-
-        // Remove from enabled list
-        $this->enabledExtensions = array_diff($this->enabledExtensions, [$extensionName]);
-
-        // Add to disabled list
-        if (!in_array($extensionName, $this->disabledExtensions)) {
-            $this->disabledExtensions[] = $extensionName;
-        }
-
-        // Update database
-        $this->saveExtensionSettings();
-
-        // Deactivate extension
-        $extension->deactivate();
-
-        do_action('jankx/extension/disabled', $extensionName, $extension);
-
-        return true;
+        return $this->updateAutoActivate($extensionName, false);
     }
 
     /**
@@ -257,11 +220,78 @@ class ExtensionService implements ExtensionServiceInterface
      */
     public function toggleExtension(string $extensionName): bool
     {
-        if (in_array($extensionName, $this->enabledExtensions)) {
-            return $this->disableExtension($extensionName);
-        } else {
-            return $this->enableExtension($extensionName);
+        $extension = $this->extensionManager->get_extension($extensionName);
+        if (!$extension) {
+            return false;
         }
+
+        $isActive = $extension->is_active();
+        return $this->updateAutoActivate($extensionName, !$isActive);
+    }
+
+    /**
+     * Update extension enabled status in manifest.json
+     */
+    protected function getFilesystem()
+    {
+        global $wp_filesystem;
+        if (empty($wp_filesystem)) {
+            require_once ABSPATH . 'wp-admin/includes/file.php';
+            WP_Filesystem();
+        }
+        return $wp_filesystem;
+    }
+
+    /**
+     * Update extension enabled status in manifest.json
+     */
+    protected function updateAutoActivate(string $extensionName, bool $value): bool
+    {
+        $manifestPath = null;
+        $extension = $this->extensionManager->get_extension($extensionName);
+
+        if ($extension) {
+            $manifestPath = $extension->get_extension_path() . '/manifest.json';
+        } else {
+            // Check ThemeExtensionManager for disabled extensions
+            try {
+                $themeExtManager = \Jankx\Facades\App::make('theme_extension.manager');
+                $disabledManifests = $themeExtManager->getDisabledManifests();
+                if (isset($disabledManifests[$extensionName])) {
+                    $manifestPath = $disabledManifests[$extensionName]['path'];
+                } else {
+                    // Also check if it's already active but maybe not in the global manager?
+                    $activeThemeExts = $themeExtManager->getExtensions();
+                    if (isset($activeThemeExts[$extensionName])) {
+                        $manifestPath = $activeThemeExts[$extensionName]->get_extension_path() . '/manifest.json';
+                    }
+                }
+            } catch (\Exception $e) {}
+        }
+
+        if (!$manifestPath) {
+            return false;
+        }
+
+        $wp_filesystem = $this->getFilesystem();
+        if (!$wp_filesystem->exists($manifestPath)) {
+            return false;
+        }
+
+        if (!$wp_filesystem->is_writable($manifestPath)) {
+            return false;
+        }
+
+        $manifestJson = $wp_filesystem->get_contents($manifestPath);
+        $manifest = json_decode($manifestJson, true);
+        if (!$manifest) {
+            return false;
+        }
+
+        $manifest['enabled'] = $value;
+        $json = json_encode($manifest, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+
+        return $wp_filesystem->put_contents($manifestPath, $json, FS_CHMOD_FILE);
     }
 
     /**
@@ -340,12 +370,10 @@ class ExtensionService implements ExtensionServiceInterface
         return $this->extensionFilters;
     }
 
-    /**
-     * Check if extension is enabled
-     */
     public function isExtensionEnabled(string $extensionName): bool
     {
-        return in_array($extensionName, $this->enabledExtensions);
+        $extension = $this->extensionManager->get_extension($extensionName);
+        return $extension && $extension->is_active();
     }
 
     /**
@@ -353,7 +381,8 @@ class ExtensionService implements ExtensionServiceInterface
      */
     public function isExtensionDisabled(string $extensionName): bool
     {
-        return in_array($extensionName, $this->disabledExtensions);
+        $extension = $this->extensionManager->get_extension($extensionName);
+        return $extension && !$extension->is_active();
     }
 
     /**
@@ -361,15 +390,7 @@ class ExtensionService implements ExtensionServiceInterface
      */
     public function getExtensionStatus(string $extensionName): string
     {
-        if ($this->isExtensionEnabled($extensionName)) {
-            return 'enabled';
-        }
-
-        if ($this->isExtensionDisabled($extensionName)) {
-            return 'disabled';
-        }
-
-        return 'auto';
+        return $this->isExtensionEnabled($extensionName) ? 'enabled' : 'disabled';
     }
 
     /**
@@ -438,24 +459,146 @@ class ExtensionService implements ExtensionServiceInterface
         check_ajax_referer('jankx_extension_manager_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_die('Unauthorized');
+            wp_send_json_error(['message' => 'Unauthorized'], 403);
+            return;
         }
 
         $extensionName = sanitize_text_field($_POST['extension'] ?? '');
-
         if (empty($extensionName)) {
-            wp_send_json_error('Extension name is required');
+            wp_send_json_error(['message' => 'Extension name is required']);
+            return;
         }
 
-        $success = $this->toggleExtension($extensionName);
+        // Try to find the extension to determine current state
+        $isActive = false;
+        $extension = $this->extensionManager->get_extension($extensionName);
+        $manifestPath = null;
+
+        if ($extension) {
+            $isActive = $extension->is_active();
+            $manifestPath = $extension->get_extension_path() . '/manifest.json';
+        } else {
+            // Check ThemeExtensionManager
+            try {
+                $themeExtManager = \Jankx\Facades\App::make('theme_extension.manager');
+                $disabledEx = $themeExtManager->getDisabledManifests();
+                if (isset($disabledEx[$extensionName])) {
+                    $isActive = false;
+                    $manifestPath = $disabledEx[$extensionName]['path'];
+                } else {
+                    $activeThemeExts = $themeExtManager->getExtensions();
+                    if (isset($activeThemeExts[$extensionName])) {
+                        $isActive = true;
+                        $manifestPath = $activeThemeExts[$extensionName]->get_extension_path() . '/manifest.json';
+                    }
+                }
+            } catch (\Exception $e) {}
+        }
+
+        if (!$manifestPath) {
+            wp_send_json_error(['message' => sprintf('Extension "%s" not found.', $extensionName)]);
+            return;
+        }
+
+        if (!is_writable($manifestPath)) {
+            wp_send_json_error([
+                'message' => 'File manifest.json is not writable. Please check file permissions.',
+                'path'    => $manifestPath
+            ]);
+            return;
+        }
+
+        $success = $this->updateAutoActivate($extensionName, !$isActive);
 
         if ($success) {
             wp_send_json_success([
-                'message' => 'Extension toggled successfully',
-                'status' => $this->getExtensionStatus($extensionName),
+                'message' => 'Extension status updated successfully in manifest.json.',
             ]);
         } else {
-            wp_send_json_error('Failed to toggle extension');
+            wp_send_json_error([
+                'message' => 'Failed to update manifest.json. The file might be locked or corrupted.',
+            ]);
+        }
+    }
+
+     /**
+     * Handle AJAX delete extension
+     */
+    public function handleDeleteExtension()
+    {
+        check_ajax_referer('jankx_extension_manager_nonce', 'nonce');
+
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(['message' => 'Unauthorized'], 403);
+            return;
+        }
+
+        $extensionName = sanitize_text_field($_POST['extension'] ?? '');
+        if (empty($extensionName)) {
+            wp_send_json_error(['message' => 'Extension name is required']);
+            return;
+        }
+
+        $extensionPath = null;
+        $extension = $this->extensionManager->get_extension($extensionName);
+
+        if ($extension) {
+            $extensionPath = $extension->get_extension_path();
+        } else {
+            // Check disabled ones
+            try {
+                $themeExtManager = \Jankx\Facades\App::make('theme_extension.manager');
+                $disabled = $themeExtManager->getDisabledManifests();
+                if (isset($disabled[$extensionName])) {
+                    $extensionPath = $disabled[$extensionName]['dir'];
+                }
+            } catch (\Exception $e) {}
+        }
+
+        if (!$extensionPath || !is_dir($extensionPath)) {
+            wp_send_json_error(['message' => 'Extension directory not found']);
+            return;
+        }
+
+        // Safety check: ensure it's inside an /extensions/ directory
+        if (strpos($extensionPath, '/extensions/') === false) {
+             wp_send_json_error(['message' => 'Security: Invalid extension path']);
+             return;
+        }
+
+        $wp_filesystem = $this->getFilesystem();
+        $wp_filesystem->delete($extensionPath, true);
+
+        // Invalidate directory cache
+        delete_transient('jankx_extensions_dirs_' . get_stylesheet());
+
+        wp_send_json_success(['message' => 'Extension deleted successfully']);
+    }
+
+    /**
+     * Handle AJAX install extension
+     */
+    public function handleInstallExtension()
+    {
+        check_ajax_referer('jankx_extension_manager_nonce', 'nonce');
+
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(['message' => 'Unauthorized'], 403);
+            return;
+        }
+
+        $extensionName = sanitize_text_field($_POST['extension'] ?? '');
+        if (empty($extensionName)) {
+            wp_send_json_error(['message' => 'Extension name is required']);
+            return;
+        }
+
+        $result = $this->extensionManager->install_extension_from_hub($extensionName);
+
+        if (is_wp_error($result)) {
+            wp_send_json_error(['message' => $result->get_error_message()]);
+        } else {
+            wp_send_json_success(['message' => __('Extension installed successfully.', 'jankx')]);
         }
     }
 

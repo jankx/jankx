@@ -1,0 +1,75 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "jankx/social-sharing",
+  "version": "1.0.0",
+  "title": "Social Sharing",
+  "category": "jankx",
+  "icon": "share",
+  "description": "Chia sẻ nội dung lên mạng xã hội",
+  "textdomain": "jankx",
+  "editorScript": "file:./build/index.js",
+  "script": "file:./build/frontend.js",
+  "editorStyle": "file:./build/editor.css",
+  "style": "file:./build/style.css",
+  "supports": {
+    "html": false,
+    "align": ["wide", "full"],
+    "spacing": {
+      "margin": true,
+      "padding": true,
+      "blockGap": true
+    },
+    "color": {
+      "background": true,
+      "text": true,
+      "link": true,
+      "gradients": true
+    },
+    "background": {
+      "backgroundImage": true,
+      "backgroundSize": true
+    },
+    "typography": {
+      "fontSize": true,
+      "lineHeight": true
+    },
+    "__experimentalBorder": {
+      "color": true,
+      "radius": true,
+      "style": true,
+      "width": true
+    }
+  },
+  "attributes": {
+    "networks": {
+      "type": "array",
+      "default": ["facebook", "twitter", "linkedin", "whatsapp", "telegram"]
+    },
+    "iconSize": {
+      "type": "string",
+      "default": "medium"
+    },
+    "showLabels": {
+      "type": "boolean",
+      "default": true
+    },
+    "style": {
+      "type": "string",
+      "default": "default"
+    },
+    "alignment": {
+      "type": "string",
+      "default": "left"
+    },
+    "showHeading": {
+      "type": "boolean",
+      "default": true
+    },
+    "headingText": {
+      "type": "string",
+      "default": "Chia sẻ:"
+    }
+  }
+}
+

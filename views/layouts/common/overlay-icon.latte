@@ -1,0 +1,16 @@
+{var $type = isset($type) ? $type : 'class'}
+{var $className = isset($className) ? $className : ''}
+{var $imageUrl = isset($imageUrl) ? $imageUrl : ''}
+{var $text = isset($text) ? $text : ''}
+{var $rotate = isset($rotate) ? (int) $rotate : 0}
+{var $size = isset($size) ? (int) $size : 24}
+
+{if $type === 'class'}
+    <i class="{$className}" style="{if $rotate}transform: rotate({$rotate}deg){/if}"></i>
+{/if}
+{if $type === 'image'}
+    <img src="{$imageUrl}" alt="" style="width: {$size}px; height: {$size}px; object-fit: contain;" />
+{/if}
+{if $type === 'text'}
+    <span class="overlay-icon-text" style="{if $rotate}transform: rotate({$rotate}deg){/if}">{$text}</span>
+{/if}

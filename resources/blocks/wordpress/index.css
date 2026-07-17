@@ -1,0 +1,11 @@
+
+.jankx-wordpress-legacy-editor {
+    border: 1px dashed #ccc;
+    padding: 20px;
+    background: #f9f9f9;
+    border-radius: 4px;
+}
+
+.legacy-preview {
+    text-align: center;
+}

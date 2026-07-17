@@ -1,0 +1,42 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "jankx/layout-switcher",
+    "version": "1.0.0",
+    "title": "Layout Switcher",
+    "category": "jankx",
+    "icon": "layout",
+    "description": "Cho phép người dùng chuyển đổi layout của Dynamic Data Layout",
+    "textdomain": "jankx",
+    "parent": [
+        "jankx/dynamic-data-layout",
+        "jankx/dynamic-ssr-layout"
+    ],
+    "usesContext": [
+        "queryId",
+        "postType",
+        "displayLayout"
+    ],
+    "attributes": {
+        "supportedLayouts": {
+            "type": "array",
+            "default": [
+                "grid",
+                "list",
+                "masonry",
+                "carousel"
+            ]
+        },
+        "displayType": {
+            "type": "string",
+            "default": "icons"
+        },
+        "alignment": {
+            "type": "string",
+            "default": "left"
+        }
+    },
+    "editorScript": "file:./build/index.js",
+    "viewScript": "file:./build/view.js",
+    "style": "file:./build/style.css"
+}

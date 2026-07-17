@@ -1,0 +1,63 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "jankx/social-sharing-icon",
+  "version": "1.0.0",
+  "title": "Social Sharing Icon",
+  "category": "jankx",
+  "parent": ["jankx/social-sharing"],
+  "icon": "share-alt",
+  "description": "Icon chia sẻ mạng xã hội đơn lẻ",
+  "textdomain": "jankx",
+  "editorScript": "file:./build/index.js",
+  "script": "file:./build/frontend.js",
+  "editorStyle": "file:./build/editor.css",
+  "style": "file:./build/style.css",
+  "supports": {
+    "html": false,
+    "reusable": false,
+    "spacing": {
+      "margin": false,
+      "padding": false
+    }
+  },
+  "providesContext": {},
+  "usesContext": [],
+  "attributes": {
+    "network": {
+      "type": "string",
+      "default": "facebook"
+    },
+    "iconStyle": {
+      "type": "string",
+      "default": "default",
+      "enum": ["default", "outlined", "filled", "rounded", "square"]
+    },
+    "iconSize": {
+      "type": "string",
+      "default": "medium",
+      "enum": ["small", "medium", "large"]
+    },
+    "showLabel": {
+      "type": "boolean",
+      "default": true
+    },
+    "customIcon": {
+      "type": "string",
+      "default": ""
+    },
+    "customLabel": {
+      "type": "string",
+      "default": ""
+    },
+    "url": {
+      "type": "string",
+      "default": ""
+    },
+    "title": {
+      "type": "string",
+      "default": ""
+    }
+  }
+}
+

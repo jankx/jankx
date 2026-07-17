@@ -27,14 +27,13 @@ class ThemeOptionsServiceProvider extends ServiceProvider
     public function boot(Application $app)
     {
 
-        // Đăng ký init hook để khởi tạo theme options
-        add_action('init', function () use ($app) {
-
+        // Đăng ký theme options sớm (trong after_setup_theme) để kịp Customizer
+        add_action('after_setup_theme', function () use ($app) {
             try {
                 $themeOptions = $app->get('theme-options');
-
                 $themeOptions->init();
             } catch (\Exception $e) {
+                error_log('Theme Options Error: ' . $e->getMessage());
             }
         }, 10);
 

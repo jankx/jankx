@@ -1,0 +1,73 @@
+// Frontend styles for Safe Iframe block
+.safe-iframe-block {
+    position: relative;
+    margin: 1.5rem 0;
+
+    iframe {
+        display: block;
+        max-width: 100%;
+    }
+
+    // Responsive container for aspect ratio
+    &__container {
+        position: relative;
+        width: 100%;
+
+        &--aspect-ratio {
+            height: 0;
+
+            iframe {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+            }
+        }
+    }
+
+    // Loading state
+    &__loading {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 200px;
+        background: #f8f9fa;
+        border-radius: 4px;
+
+        &::after {
+            content: '';
+            width: 40px;
+            height: 40px;
+            border: 4px solid #e2e8f0;
+            border-top-color: #4299e1;
+            border-radius: 50%;
+            animation: safe-iframe-spin 0.8s linear infinite;
+        }
+    }
+}
+
+@keyframes safe-iframe-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+// Accessibility improvements
+.safe-iframe-block iframe {
+    &:focus {
+        outline: 2px solid #4299e1;
+        outline-offset: 2px;
+    }
+}
+
+// Print styles
+@media print {
+    .safe-iframe-block {
+        page-break-inside: avoid;
+
+        iframe {
+            border: 1px solid #ddd;
+        }
+    }
+}

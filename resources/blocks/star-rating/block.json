@@ -1,0 +1,107 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "jankx/star-rating",
+  "title": "Star Rating",
+  "category": "jankx",
+  "icon": "star-filled",
+  "description": "Display star rating from various sources (WooCommerce, Meta, Crawler, Manual).",
+  "keywords": [
+    "rating",
+    "star",
+    "review",
+    "score"
+  ],
+  "textdomain": "jankx",
+  "attributes": {
+    "ratingSource": {
+      "type": "string",
+      "default": "manual",
+      "enum": [
+        "manual",
+        "woocommerce",
+        "meta",
+        "crawler"
+      ]
+    },
+    "manualRating": {
+      "type": "number",
+      "default": 5
+    },
+    "metaKey": {
+      "type": "string",
+      "default": "rating_score"
+    },
+    "crawlerTable": {
+      "type": "string",
+      "default": ""
+    },
+    "starSize": {
+      "type": "number",
+      "default": 16
+    },
+    "starColor": {
+      "type": "string",
+      "default": "#f1c40f"
+    },
+    "starEmptyColor": {
+      "type": "string",
+      "default": "#dddddd"
+    },
+    "iconType": {
+      "type": "string",
+      "default": "text",
+      "enum": [
+        "text",
+        "svg"
+      ]
+    },
+    "svgFull": {
+      "type": "string",
+      "default": ""
+    },
+    "svgHalf": {
+      "type": "string",
+      "default": ""
+    },
+    "svgEmpty": {
+      "type": "string",
+      "default": ""
+    },
+    "showCount": {
+      "type": "boolean",
+      "default": false
+    },
+    "showScoreText": {
+      "type": "boolean",
+      "default": false
+    },
+    "countMetaKey": {
+      "type": "string",
+      "default": "rating_count"
+    },
+    "align": {
+      "type": "string",
+      "default": "left"
+    }
+  },
+  "supports": {
+    "html": false,
+    "align": [
+      "left",
+      "center",
+      "right"
+    ],
+    "spacing": {
+      "margin": true,
+      "padding": true
+    },
+    "color": {
+      "text": true,
+      "background": true
+    }
+  },
+  "editorScript": "file:./build/index.js",
+  "style": "file:./build/style.css",
+  "editorStyle": "file:./build/editor.css"
+}

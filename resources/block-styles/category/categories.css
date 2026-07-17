@@ -1,0 +1,145 @@
+/**
+ * Block Styles: Categories List
+ * Design: Tree Style (Flatsome Inspiration)
+ * Location: resources/block-styles/category/categories.css
+ */
+
+.wp-block-categories {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    font-family: var(--jankx-font-family, system-ui, -apple-system, sans-serif);
+    border: 1px solid var(--jankx-cat-border, #ececec);
+    border-radius: 4px;
+    background: #fff;
+    overflow: hidden;
+}
+
+/* Category Item Container */
+.wp-block-categories .cat-item {
+    position: relative;
+    list-style: none;
+    margin: 0;
+}
+
+.wp-block-categories .cat-item:not(:last-child) {
+    border-bottom: 1px solid var(--jankx-cat-border, #ececec);
+}
+
+/* Category Link */
+.wp-block-categories .cat-item a {
+    display: flex;
+    align-items: center;
+    padding: 12px 15px;
+    color: var(--jankx-cat-text, #555);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    transition: all 0.2s ease;
+    background: transparent;
+}
+
+.wp-block-categories .cat-item a:hover {
+    color: var(--jankx-cat-primary, #446084);
+    background-color: rgba(0, 0, 0, 0.02);
+}
+
+/* Current Category (Active State) */
+.wp-block-categories .cat-item.current-cat>a {
+    color: var(--jankx-cat-primary, #446084);
+    background-color: rgba(0, 0, 0, 0.03);
+    border-left: 3px solid var(--jankx-cat-primary, #446084);
+    padding-left: 12px;
+    /* Adjust for border */
+}
+
+/* Nested Categories (Sub-menu / Tree structure) */
+.wp-block-categories .children {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    background: rgba(0, 0, 0, 0.01);
+}
+
+.wp-block-categories .children .cat-item {
+    border-bottom: none;
+    border-top: 1px solid var(--jankx-cat-border, #f1f1f1);
+}
+
+.wp-block-categories .children .cat-item a {
+    padding: 10px 15px 10px 30px;
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: none;
+    letter-spacing: normal;
+    color: #777;
+}
+
+.wp-block-categories .children .cat-item a::before {
+    content: '\2014';
+    /* Em dash */
+    position: absolute;
+    left: 15px;
+    opacity: 0.4;
+    font-weight: normal;
+}
+
+.wp-block-categories .children .children .cat-item a {
+    padding-left: 45px;
+}
+
+.wp-block-categories .children .children .cat-item a::before {
+    left: 30px;
+}
+
+/* Count badge styling - Flatsome style (Circle or simple text) */
+.wp-block-categories .cat-item a .count,
+.wp-block-categories .cat-item a::after {
+    content: attr(data-count);
+    /* Handle if count is via attribute */
+    margin-left: auto;
+    font-size: 11px;
+    font-weight: normal;
+    color: #999;
+    background: #f1f1f1;
+    padding: 2px 6px;
+    border-radius: 10px;
+    min-width: 20px;
+    text-align: center;
+    line-height: 1;
+    text-transform: none;
+}
+
+.wp-block-categories .cat-item.current-cat>a .count {
+    background: var(--jankx-cat-primary, #446084);
+    color: #fff;
+}
+
+/* Icon indicator for sub-categories - Flatsome style arrow */
+.wp-block-categories .cat-item-has-children>a::after {
+    content: '';
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-right: 2px solid currentColor;
+    border-bottom: 2px solid currentColor;
+    transform: rotate(45deg);
+    margin-left: 10px;
+    opacity: 0.5;
+    transition: transform 0.3s ease;
+}
+
+.wp-block-categories .cat-item-has-children:hover>a::after {
+    transform: rotate(-135deg);
+    /* Simple flip or rotation for indicator */
+}
+
+/* Sidebar Widget specific overrides if needed */
+.widget_product_categories .wp-block-categories,
+.sidebar .wp-block-categories {
+    box-shadow: none;
+    border: none;
+    border-top: 2px solid var(--jankx-cat-primary, #446084);
+}

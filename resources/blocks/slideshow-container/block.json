@@ -1,0 +1,41 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "jankx/slideshow-container",
+  "title": "Slideshow Container",
+  "category": "jankx",
+  "description": "Container for slideshow items",
+  "keywords": ["slideshow", "container", "wrapper"],
+  "textdomain": "jankx",
+  "parent": ["jankx/slideshow"],
+  "attributes": {
+    "containerId": {
+      "type": "string"
+    },
+    "images": {
+      "type": "array",
+      "default": []
+    }
+  },
+  "supports": {
+    "html": false,
+    "reusable": false,
+    "lock": false,
+    "spacing": {
+      "margin": false,
+      "padding": true
+    },
+    "color": {
+      "background": true,
+      "text": true
+    }
+  },
+  "providesContext": {
+    "jankx/slideshowContainerId": "containerId"
+  },
+  "usesContext": ["jankx/slideShowId", "jankx/showThumbnails", "jankx/showNavigation", "jankx/transitionEffect", "jankx/captionPosition"],
+  "editorScript": "file:./build/index.js",
+  "editorStyle": "file:./build/editor.css",
+  "style": "file:./build/style.css"
+}
+

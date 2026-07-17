@@ -1,0 +1,11 @@
+.jankx-human-readable-post-date {
+    display: inline-flex;
+    align-items: center;
+    font-size: 0.875em;
+    opacity: 0.75;
+    gap: 4px;
+
+    .post-date-icon {
+        line-height: 1;
+    }
+}

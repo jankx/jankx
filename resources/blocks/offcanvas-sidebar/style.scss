@@ -1,0 +1,415 @@
+/**
+ * Offcanvas Sidebar Block Styles
+ * Based on SidebarTransitions with all animation effects
+ */
+
+/* Main block container */
+.offcanvas-sidebar-block {
+    display: block;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: -99999px;
+}
+
+/* Trigger Button */
+.offcanvas-trigger {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    text-decoration: none;
+
+    &:focus {
+        outline: none;
+    }
+
+    .trigger-icon {
+        display: flex;
+        align-items: center;
+        font-size: 16px;
+    }
+
+    .trigger-text {
+        font-weight: 500;
+    }
+}
+
+/* Overlay */
+.offcanvas-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.2);
+    z-index: 9998;
+    transition: opacity 0.5s ease, visibility 0.5s ease;
+    cursor: pointer;
+    opacity: 0;
+    visibility: hidden;
+}
+
+/* Sidebar Container - Shared styles for both preview (editor) and container (frontend) */
+.offcanvas-sidebar-container {
+    position: relative;
+    height: 100vh;
+    overflow: hidden;
+
+    /* Base sidebar styles */
+    .offcanvas-sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 300px;
+        height: 100vh;
+        min-height: 100vh;
+        background: transparent;
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: center;
+        color: inherit;
+        z-index: 9999;
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.3s;
+        transform: translateX(-100%);
+        overflow-x: hidden;
+        overflow-y: auto;
+        visibility: hidden;
+        min-width: 300px;
+        display: flex;
+        flex-direction: column;
+
+        /* Close Button - Base styles */
+        .close-button {
+            position: absolute;
+            border: none;
+            color: inherit;
+            font-size: 28px;
+            line-height: 1;
+            cursor: pointer;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            z-index: 10;
+            font-weight: 300;
+
+            &:hover {
+                transform: rotate(90deg);
+            }
+
+            &:focus {
+                outline: 2px solid rgba(255, 255, 255, 0.3);
+                outline-offset: 2px;
+            }
+
+            &:disabled {
+                cursor: not-allowed;
+                opacity: 0.5;
+            }
+
+            /* Position variants */
+            &.position-top-right {
+                top: 15px;
+                right: 15px;
+            }
+
+            &.position-top-left {
+                top: 15px;
+                left: 15px;
+            }
+
+            &.position-bottom-right {
+                bottom: 15px;
+                right: 15px;
+            }
+
+            &.position-bottom-left {
+                bottom: 15px;
+                left: 15px;
+            }
+
+            &.position-center-right {
+                top: 50%;
+                right: 15px;
+                transform: translateY(-50%);
+
+                &:hover {
+                    transform: translateY(-50%) rotate(90deg);
+                }
+            }
+
+            &.position-center-left {
+                top: 50%;
+                left: 15px;
+                transform: translateY(-50%);
+
+                &:hover {
+                    transform: translateY(-50%) rotate(90deg);
+                }
+            }
+
+            /* Size variants */
+            &.size-small {
+                width: 28px;
+                height: 28px;
+                font-size: 20px;
+            }
+
+            &.size-medium {
+                width: 36px;
+                height: 36px;
+                font-size: 28px;
+            }
+
+            &.size-large {
+                width: 44px;
+                height: 44px;
+                font-size: 32px;
+            }
+
+            /* Style variants */
+            &.style-circle {
+                border-radius: 50%;
+                background: rgba(0, 0, 0, 0.1);
+
+                &:hover {
+                    background: rgba(0, 0, 0, 0.2);
+                }
+            }
+
+            &.style-square {
+                border-radius: 0;
+                background: rgba(0, 0, 0, 0.1);
+
+                &:hover {
+                    background: rgba(0, 0, 0, 0.2);
+                }
+            }
+
+            &.style-rounded {
+                border-radius: 8px;
+                background: rgba(0, 0, 0, 0.1);
+
+                &:hover {
+                    background: rgba(0, 0, 0, 0.2);
+                }
+            }
+
+            &.style-minimal {
+                background: transparent;
+                border-radius: 0;
+
+                &:hover {
+                    background: rgba(0, 0, 0, 0.1);
+                    border-radius: 50%;
+                }
+            }
+        }
+
+        /* Sidebar Content - Allow scrolling for long content */
+        .sidebar-content {
+            flex: 1;
+            overflow-y: auto;
+            overflow-x: hidden;
+            -webkit-overflow-scrolling: touch;
+            /* Smooth scrolling on iOS */
+
+            /* Custom scrollbar styling */
+            &::-webkit-scrollbar {
+                width: 8px;
+            }
+
+            &::-webkit-scrollbar-track {
+                background: rgba(255, 255, 255, 0.1);
+            }
+
+            &::-webkit-scrollbar-thumb {
+                background: rgba(255, 255, 255, 0.3);
+                border-radius: 4px;
+
+                &:hover {
+                    background: rgba(255, 255, 255, 0.5);
+                }
+            }
+        }
+
+        /* Sidebar Menu */
+        .sidebar-menu {
+            padding: 0;
+            margin: 0;
+
+            ul {
+                list-style: none;
+                margin: 0;
+                padding: 0;
+            }
+
+            li {
+                margin: 0;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+
+                &:last-child {
+                    border-bottom: none;
+                }
+            }
+
+            a {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                padding: 16px 20px;
+                color: inherit;
+                text-decoration: none;
+                transition: all 0.3s ease;
+                font-weight: 500;
+
+                &:hover {
+                    background: rgba(255, 255, 255, 0.1);
+                    text-decoration: none;
+                }
+
+                .menu-icon {
+                    display: flex;
+                    align-items: center;
+                    font-size: 16px;
+                    width: 20px;
+                    text-align: center;
+                }
+
+                .menu-text {
+                    flex: 1;
+                }
+            }
+        }
+    }
+
+    /* Right position */
+    &.position-right .offcanvas-sidebar {
+        left: auto;
+        right: 0;
+        transform: translateX(100%);
+    }
+
+}
+
+/* Admin bar offset - applied immediately, not on open */
+body.admin-bar {
+    .offcanvas-sidebar-block {
+        .offcanvas-sidebar {
+            padding-top: 45px;
+
+            .close-button.position-top-right,
+            .close-button.position-top-left {
+                top: 55px;
+                /* Reduced from 60px to 20px for better alignment */
+            }
+        }
+    }
+}
+
+/* Open state */
+.offcanvas-sidebar-block.active {
+    .offcanvas-sidebar-container {
+        .offcanvas-sidebar {
+            transform: translateX(0);
+            visibility: visible;
+        }
+
+        &.position-right .offcanvas-sidebar {
+            transform: translateX(0);
+        }
+
+        .offcanvas-overlay {
+            opacity: 1;
+            visibility: visible;
+        }
+    }
+}
+
+html.sidebar-open {
+    overflow: hidden;
+}
+
+/* ========================================
+   ANIMATION EFFECTS
+   ======================================== */
+
+/* Effect 1: Slide In */
+.effect-slide-in .offcanvas-sidebar {
+    transform: translateX(-100%);
+}
+
+.effect-slide-in.position-right .offcanvas-sidebar {
+    transform: translateX(100%);
+}
+
+.offcanvas-sidebar-block.active .effect-slide-in .offcanvas-sidebar {
+    transform: translateX(0);
+}
+
+.offcanvas-sidebar-block.active .effect-slide-in.position-right .offcanvas-sidebar {
+    transform: translateX(0);
+}
+
+
+/* Effect 2: Slide Down */
+.effect-slide-down .offcanvas-sidebar {
+    left: 0;
+    right: 0;
+    top: 0;
+    width: 100%;
+    height: 100vh;
+    transform: translateY(-100%);
+}
+
+.offcanvas-sidebar-block.active .effect-slide-down .offcanvas-sidebar {
+    transform: translateY(0);
+}
+
+
+
+/* ========================================
+   RESPONSIVE DESIGN
+   ======================================== */
+
+@media (max-width: 768px) {
+    .offcanvas-sidebar-container {
+        .offcanvas-sidebar {
+            width: 280px;
+        }
+
+        .offcanvas-trigger {
+            padding: 10px 14px;
+            font-size: 13px;
+
+            .trigger-icon {
+                font-size: 14px;
+            }
+        }
+    }
+}
+
+@media (max-width: 480px) {
+    .offcanvas-sidebar-container {
+        .offcanvas-sidebar {
+            width: 100%;
+        }
+
+        .offcanvas-trigger {
+            font-size: 12px;
+
+            .trigger-text {
+                display: none;
+            }
+        }
+    }
+}

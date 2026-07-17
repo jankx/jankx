@@ -1,0 +1,85 @@
+{
+    "colors": {
+        "base": {
+            "name": "Base (White)",
+            "value": "#FFFFFF",
+            "variable": "var(--wp--preset--color--base)"
+        },
+        "contrast": {
+            "name": "Contrast (Dark)",
+            "value": "#0d1117",
+            "variable": "var(--wp--preset--color--contrast)"
+        },
+        "primary": {
+            "name": "Primary (Gaming Blue)",
+            "value": "#3B82F6",
+            "variable": "var(--wp--preset--color--primary)"
+        },
+        "secondary": {
+            "name": "Secondary (Esports Pink)",
+            "value": "#e83e8c",
+            "variable": "var(--wp--preset--color--secondary)"
+        },
+        "accent-game": {
+            "name": "Game Accent (Cyan)",
+            "value": "#17a2b8",
+            "variable": "var(--wp--preset--color--accent-game)"
+        },
+        "light-bg": {
+            "name": "Light Background",
+            "value": "#F9FAFB",
+            "variable": "var(--wp--preset--color--light-bg)"
+        },
+        "dark-text": {
+            "name": "Dark Text",
+            "value": "#111827",
+            "variable": "var(--wp--preset--color--dark-text)"
+        },
+        "grey-text": {
+            "name": "Grey Text",
+            "value": "#6B7280",
+            "variable": "var(--wp--preset--color--grey-text)"
+        }
+    },
+    "typography": {
+        "fontFamilies": {
+            "inter": {
+                "name": "Inter",
+                "variable": "var(--wp--preset--font-family--inter)"
+            },
+            "montserrat": {
+                "name": "Montserrat",
+                "variable": "var(--wp--preset--font-family--montserrat)"
+            }
+        },
+        "fontSizes": {
+            "small": {
+                "name": "Small",
+                "value": "12px",
+                "variable": "var(--wp--preset--font-size--small)"
+            },
+            "normal": {
+                "name": "Normal",
+                "value": "15px",
+                "variable": "var(--wp--preset--font-size--normal)"
+            },
+            "medium": {
+                "name": "Medium",
+                "value": "18px",
+                "variable": "var(--wp--preset--font-size--medium)"
+            },
+            "large": {
+                "name": "Large",
+                "value": "28px",
+                "variable": "var(--wp--preset--font-size--large)"
+            }
+        }
+    },
+    "spacing": {
+        "sizes": []
+    },
+    "layout": {
+        "contentSize": "1200px",
+        "wideSize": "1320px"
+    }
+}

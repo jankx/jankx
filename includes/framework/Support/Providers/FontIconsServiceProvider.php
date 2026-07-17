@@ -8,7 +8,8 @@ use Jankx\Facades\Config;
 use Jankx\Services\FontIcons\IconRepository;
 use Jankx\Services\FontIcons\IconRenderer;
 use Jankx\Services\FontIcons\IconTransformerService;
-use Jankx\Facades\FontIcons;
+use Jankx\Services\FontIcons\Manager as FontIconsManager;
+use Jankx\Facades\Icon;
 
 class FontIconsServiceProvider extends ServiceProvider
 {
@@ -31,31 +32,57 @@ class FontIconsServiceProvider extends ServiceProvider
         $app->singleton('font-icons.transformer', function ($app) {
             return new IconTransformerService($app);
         });
+
+        $app->singleton('font-icons.manager', function ($app) {
+            return new FontIconsManager($app);
+        });
     }
 
     public function boot(Application $app)
     {
-        // Register default icons
-        add_action('init', [$this, 'registerDefaultIcons'], 5);
+        $context = $this->getLoadingContext();
 
-        // Action hook để register thêm icons
-        add_action('jankx_register_font_icons', [$this, 'registerAdditionalIcons']);
+        // Core registration needed by both frontend and admin
+        if (in_array($context, ['frontend', 'admin'])) {
+            // Register default icons
+            add_action('init', [$this, 'registerDefaultIcons'], 5);
 
-        // Auto-load active icon types
-        add_action('wp_enqueue_scripts', [$this, 'autoLoadActiveIcons']);
-        add_action('admin_enqueue_scripts', [$this, 'autoLoadActiveIcons']);
+            // Action hook để register thêm icons
+            add_action('jankx_register_font_icons', [$this, 'registerAdditionalIcons']);
 
-        // Schedule auto-update
-        add_action('init', [$this, 'scheduleAutoUpdate']);
-        add_action('jankx_icons_auto_update', [$this, 'autoUpdateIcons']);
+            // Auto-load active icon types
+            add_action('wp_enqueue_scripts', [$this, 'autoLoadActiveIcons']);
+            add_action('admin_enqueue_scripts', [$this, 'autoLoadActiveIcons']);
+        }
+
+        // Only schedule/run updates in cron or admin context occasionally
+        if ($context === 'cron' || ($context === 'admin' && !wp_doing_ajax())) {
+            add_action('init', [$this, 'scheduleAutoUpdate']);
+            add_action('jankx_icons_auto_update', [$this, 'autoUpdateIcons']);
+        }
+
+        if ($context === 'admin') {
+            add_action('admin_init', [$this, 'registerSettings']);
+        }
+
+        if (in_array($context, ['admin', 'ajax'])) {
+            $ajaxHandler = new \Jankx\Services\FontIcons\Admin\AjaxHandler($app);
+            $ajaxHandler->init();
+        }
+    }
+
+    public function registerSettings()
+    {
+        register_setting('jankx_icons_settings', 'jankx_default_icon_set');
+        register_setting('jankx_icons_settings', 'jankx_icons_cdn');
     }
 
     public function registerAdminMenu()
     {
         add_submenu_page(
             'jankx-settings', // Parent slug
-            'Icons Repository', // Page title
-            'Icons Repository', // Menu title
+            __('Icons Repository', 'jankx'), // Page title
+            __('Icons Repository', 'jankx'), // Menu title
             'manage_options', // Capability
             'jankx-icons', // Menu slug
             [$this, 'renderAdminPage'] // Callback
@@ -68,13 +95,13 @@ class FontIconsServiceProvider extends ServiceProvider
     public function registerDefaultIcons()
     {
         // Register FontAwesome (không auto-load)
-        if (!FontIcons::has('fontawesome')) {
-            FontIcons::fontAwesome('6.5.1', false);
+        if (!Icon::has('fontawesome')) {
+            Icon::fontAwesome('6.5.1', false);
         }
 
         // Register Material Icons (auto-load)
-        if (!FontIcons::has('material')) {
-            FontIcons::materialIcons(true);
+        if (!Icon::has('material')) {
+            Icon::materialIcons(true);
         }
     }
 
@@ -105,14 +132,14 @@ class FontIconsServiceProvider extends ServiceProvider
     protected function enqueueIconCss($cssUrl, $type)
     {
         $sanitizedType = sanitize_title($type);
+        $handle        = "jankx-icon-{$sanitizedType}";
 
-        add_action('wp_head', function () use ($cssUrl, $sanitizedType) {
-            echo "<link rel=\"stylesheet\" id=\"jankx-icon-{$sanitizedType}-css\" href=\"{$cssUrl}\" media=\"all\" />\n";
-        });
-
-        add_action('admin_head', function () use ($cssUrl, $sanitizedType) {
-            echo "<link rel=\"stylesheet\" id=\"jankx-icon-{$sanitizedType}-css\" href=\"{$cssUrl}\" media=\"all\" />\n";
-        });
+        wp_enqueue_style(
+            $handle,
+            $cssUrl,
+            [],
+            null
+        );
     }
 
 
@@ -147,23 +174,23 @@ class FontIconsServiceProvider extends ServiceProvider
         $iconTypes = $this->app->make('font-icons.repository')->getIconTypes();
 
         echo '<div class="wrap">';
-        echo '<h1>Font Icons Repository</h1>';
-        echo '<p>Manage your font icons collection.</p>';
+        echo '<h1>' . __('Font Icons Repository', 'jankx') . '</h1>';
+        echo '<p>' . __('Manage your font icons collection.', 'jankx') . '</p>';
 
         if (!empty($iconTypes)) {
-            echo '<h2>Registered Icon Types:</h2>';
+            echo '<h2>' . __('Registered Icon Types:', 'jankx') . '</h2>';
             echo '<ul>';
             foreach ($iconTypes as $type => $data) {
                 $config = $data['config'] ?? [];
                 echo '<li>';
                 echo '<strong>' . ($config['display_name'] ?? $type) . '</strong> ';
                 echo '(' . count($data['icons'] ?? []) . ' icons) ';
-                echo $config['auto_load'] ? '[Auto-load]' : '[Manual]';
+                echo $config['auto_load'] ? __(' [Auto-load]', 'jankx') : __(' [Manual]', 'jankx');
                 echo '</li>';
             }
             echo '</ul>';
         } else {
-            echo '<p>No icon types registered yet.</p>';
+            echo '<p>' . __('No icon types registered yet.', 'jankx') . '</p>';
         }
 
         echo '</div>';

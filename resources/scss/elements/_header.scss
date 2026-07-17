@@ -1,0 +1,116 @@
+body.jankx-header-overlay {
+
+    // The wp-site-blocks needs to be the containing block for absolute positioning
+    .wp-site-blocks {
+        position: relative;
+    }
+
+    // Target both the template-part wrapper and the inner group block
+    header.wp-block-template-part,
+    header.wp-block-group,
+    header.has-contrast-background-color,
+    header.has-background {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        width: 100%;
+        z-index: 1000;
+        background-color: transparent;
+        background-image: none;
+
+        // When sticky, it should gain background again
+        &.is-sticky {
+            position: fixed;
+            background-color: var(--jankx-sticky-header-bg-color, #184962);
+        }
+    }
+
+    &.admin-bar {
+        header.is-sticky {
+
+            header.wp-block-template-part,
+            header.wp-block-group,
+            header.has-contrast-background-color,
+            header.has-background {
+                top: 32px;
+            }
+        }
+    }
+}
+
+
+header {
+    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    will-change: transform, background-color, backdrop-filter;
+
+    &.is-sticky {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 10000;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        animation: jankxHeaderSlideDown 0.5s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+
+        // Premium Glassmorphism Vibe
+        background-color: rgba(24, 73, 98, 0.85); // Navy with transparency
+        backdrop-filter: blur(15px);
+        -webkit-backdrop-filter: blur(15px);
+
+        // Use the variable if set, but override the transparency logic
+        @supports (background-color: var(--jankx-sticky-header-bg-color)) {
+            background-color: var(--jankx-sticky-header-bg-color);
+            // If the user wants a solid color they can set it, but we add blur anyway
+        }
+
+        // Slight height reduction for vibe
+        padding-top: 10px;
+        padding-bottom: 10px;
+
+        // Smart Slide effect
+        transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1),
+        background-color 0.4s ease,
+        opacity 0.4s ease;
+
+    }
+}
+
+body.jankx-header-overlay {
+    header.is-sticky {
+        header.has-contrast-background-color {
+            background-color: var(--jankx-sticky-header-bg-color, #1a1a1a);
+        }
+    }
+}
+
+@keyframes jankxHeaderSlideDown {
+    from {
+        transform: translateY(-100%);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+// Admin bar support
+.admin-bar {
+    header.is-sticky {
+        top: 32px;
+    }
+
+    @media (max-width: 782px) {
+        header.is-sticky {
+            top: 46px;
+        }
+    }
+
+    @media (max-width: 600px) {
+        header.is-sticky {
+            top: 0; // WordPress hides admin bar at this width or it flows
+        }
+    }
+}

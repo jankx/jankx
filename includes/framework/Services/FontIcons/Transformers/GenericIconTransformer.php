@@ -9,8 +9,9 @@ class GenericIconTransformer extends CssToJsonTransformer
 {
     protected $iconType;
 
-    public function __construct($iconType)
+    public function __construct($iconType = 'generic')
     {
+        parent::__construct($iconType);
         $this->iconType = $iconType;
     }
 
@@ -20,15 +21,14 @@ class GenericIconTransformer extends CssToJsonTransformer
     public function transform($css)
     {
         $icons = $this->parseCssForIcons($css);
-        $fontFamily = $this->extractFontFamily($css);
-        $prefixes = $this->extractPrefixes($css);
 
         return [
-            'version' => '1.0.0',
-            'font_family' => $fontFamily,
-            'prefixes' => $prefixes,
+            'version' => $this->extractVersion($css),
+            'font_family' => $this->extractFontFamily($css),
+            'prefixes' => $this->extractPrefixes($css),
+            'icons' => $icons,
             'categories' => $this->extractCategories($icons),
-            'icons' => $icons
+            'render_type' => ($this->iconType === 'material') ? 'content' : 'prefix',
         ];
     }
 
@@ -39,52 +39,40 @@ class GenericIconTransformer extends CssToJsonTransformer
     {
         $icons = [];
 
-        // Pattern 1: .icon-name:before { content: "\unicode"; }
-        preg_match_all('/\.([a-zA-Z0-9-_]+):before\s*\{[^}]*content:\s*["\']\\\\([0-9a-fA-F]+)["\']/', $css, $matches1);
+        // Note: In PHP single-quoted string, \\\\ results in a literal \\ for the regex engine
+        // which matches a single literal backslash in the input CSS text.
+        $patterns = [
+            // Matches .icon-name:before { content: "\f123"; } or content: \f123;
+            '/\\.([a-zA-Z0-9-_]+):{1,2}(?:before|after)\s*\{[^}]*content:\s*["\']?(?:\\\\|\\\\\\\\)?([0-9a-fA-F]{2,6})["\']?/i',
+        ];
 
-        if (!empty($matches1[1])) {
-            for ($i = 0; $i < count($matches1[1]); $i++) {
-                $iconName = $matches1[1][$i];
-                $unicode = $matches1[2][$i];
+        foreach ($patterns as $pattern) {
+            if (preg_match_all($pattern, $css, $matches)) {
+                foreach ($matches[1] as $index => $iconName) {
+                    $unicode = $matches[2][$index];
 
-                $icons[] = $this->createIconData($iconName, $unicode);
+                    // Filter out common utility or base classes
+                    if (in_array($iconName, ['fa-lg', 'fa-fw', 'fa-li', 'fa-ul', 'fa-spin', 'fa-pulse'])) {
+                        continue;
+                    }
+                    if (strpos($iconName, 'fa-2x') === 0 || strpos($iconName, 'fa-3x') === 0 || strpos($iconName, 'fa-4x') === 0 || strpos($iconName, 'fa-5x') === 0) {
+                        continue;
+                    }
+
+                    $icons[$iconName] = $this->createIconData($iconName, $unicode);
+                }
             }
         }
 
-        // Pattern 2: .fa-icon:before { content: "\f000"; }
-        preg_match_all('/\.fa-([a-zA-Z0-9-_]+):before\s*\{[^}]*content:\s*["\']\\\\([0-9a-fA-F]+)["\']/', $css, $matches2);
-
-        if (!empty($matches2[1])) {
-            for ($i = 0; $i < count($matches2[1]); $i++) {
-                $iconName = $matches2[1][$i];
-                $unicode = $matches2[2][$i];
-
-                $icons[] = $this->createIconData($iconName, $unicode);
-            }
-        }
-
-        // Pattern 3: .material-icons { font-family: "Material Icons"; }
-        if (strpos($css, 'material-icons') !== false) {
+        // Material Icons Ligatures Detection
+        if (strpos($css, 'material') !== false || strpos($css, 'Material') !== false) {
             $materialIcons = $this->getMaterialIconsList();
             foreach ($materialIcons as $iconName) {
-                $icons[] = $this->createIconData($iconName, '', 'material');
+                if (!isset($icons[$iconName])) {
+                    $icons[$iconName] = $this->createIconData($iconName, '', 'material');
+                }
             }
         }
-
-        // Pattern 4: .bi-icon::before { content: "\unicode"; }
-        preg_match_all('/\.bi-([a-zA-Z0-9-_]+)::before\s*\{[^}]*content:\s*["\']\\\\([0-9a-fA-F]+)["\']/', $css, $matches3);
-
-        if (!empty($matches3[1])) {
-            for ($i = 0; $i < count($matches3[1]); $i++) {
-                $iconName = $matches3[1][$i];
-                $unicode = $matches3[2][$i];
-
-                $icons[] = $this->createIconData($iconName, $unicode);
-            }
-        }
-
-        // Remove duplicates
-        $icons = array_unique($icons, SORT_REGULAR);
 
         return array_values($icons);
     }
@@ -92,14 +80,17 @@ class GenericIconTransformer extends CssToJsonTransformer
     /**
      * Tạo icon data
      */
-    protected function createIconData($iconName, $unicode = '', $category = 'general')
+    protected function createIconData($name, $unicode = '', $category = 'regular')
     {
+        $usageType = ($this->iconType === 'material') ? 'ligature' : 'class';
+        
         return [
-            'name' => $iconName,
+            'name' => $name,
             'unicode' => $unicode,
             'category' => $category,
-            'tags' => $this->generateTags($iconName),
-            'description' => $this->generateDescription($iconName)
+            'tags' => $this->generateTags($name),
+            'description' => $this->generateDescription($name),
+            'usage_type' => $usageType,
         ];
     }
 
@@ -127,6 +118,20 @@ class GenericIconTransformer extends CssToJsonTransformer
     protected function generateDescription($iconName)
     {
         return ucfirst(str_replace('-', ' ', $iconName)) . ' icon';
+    }
+
+    /**
+     * Extract version từ CSS comments
+     */
+    protected function extractVersion($css)
+    {
+        // Thường version nằm trong comment header: /*! v1.2.3 ... */
+        preg_match('/v?([0-9]+\.[0-9]+\.[0-9]+)/i', substr($css, 0, 1000), $matches);
+        if (!empty($matches[1])) {
+            return $matches[1];
+        }
+
+        return '1.0.0';
     }
 
     /**
@@ -167,34 +172,38 @@ class GenericIconTransformer extends CssToJsonTransformer
     protected function extractPrefixes($css)
     {
         $prefixes = [];
-
-        // Tìm các class prefixes
-        preg_match_all('/\.([a-zA-Z0-9-_]+)-[a-zA-Z0-9-_]+:/', $css, $matches);
-
-        foreach ($matches[1] as $prefix) {
-            if (strlen($prefix) > 1 && !in_array($prefix, $prefixes)) {
-                $prefixes[] = $prefix;
+        
+        // Cố gắng tìm các base prefixes phổ biến (như fa, bi, dashicons)
+        // Dựa vào pattern .prefix-icon:
+        if (preg_match_all('/\.([a-zA-Z0-9]{2,10})-[a-zA-Z0-9-_]+:/', $css, $matches)) {
+            $counts = array_count_values($matches[1]);
+            arsort($counts); // Sắp xếp theo số lượng xuất hiện nhiều nhất
+            
+            $totalMatches = count($matches[0]);
+            foreach ($counts as $prefix => $count) {
+                // Nếu prefix xuất hiện trong > 5% số icons hoặc > 20 lần
+                if ($count > 20 || ($totalMatches > 0 && ($count / $totalMatches) > 0.05)) {
+                    // Tránh bắt nhầm các icon names quá phổ biến nếu có
+                    if (!in_array($prefix, ['icon', 'item', 'btn', 'nav'])) {
+                        $prefixes[] = $prefix;
+                    }
+                }
             }
         }
 
-        // Default prefixes
+        // Bổ sung các prefixes chuẩn cho các bộ icon phổ biến nếu chưa có
+        if ($this->iconType === 'fontawesome') {
+            $faPrefixes = ['fa', 'fas', 'far', 'fab', 'fal', 'fad', 'fat', 'fa-solid', 'fa-regular', 'fa-brands'];
+            $prefixes = array_unique(array_merge($prefixes, $faPrefixes));
+        } elseif ($this->iconType === 'material') {
+            $prefixes[] = 'material-icons';
+        }
+
         if (empty($prefixes)) {
-            switch ($this->iconType) {
-                case 'fontawesome':
-                    $prefixes = ['fa', 'fas', 'far', 'fab'];
-                    break;
-                case 'material':
-                    $prefixes = ['material-icons'];
-                    break;
-                case 'bootstrap':
-                    $prefixes = ['bi'];
-                    break;
-                default:
-                    $prefixes = [$this->iconType];
-            }
+            $prefixes[] = $this->iconType;
         }
 
-        return array_unique($prefixes);
+        return array_values(array_unique($prefixes));
     }
 
     /**
@@ -221,6 +230,7 @@ class GenericIconTransformer extends CssToJsonTransformer
      */
     protected function getMaterialIconsList()
     {
+        // Phổ biến nhất (Expanded list)
         return [
             'home', 'user', 'settings', 'search', 'menu', 'close', 'add', 'remove',
             'edit', 'delete', 'save', 'cancel', 'check', 'warning', 'error', 'info',
@@ -228,7 +238,22 @@ class GenericIconTransformer extends CssToJsonTransformer
             'forward', 'play', 'pause', 'stop', 'volume', 'mute', 'camera', 'image',
             'video', 'audio', 'file', 'folder', 'link', 'email', 'phone', 'location',
             'time', 'date', 'calendar', 'notification', 'bell', 'lock', 'unlock',
-            'key', 'shield', 'security', 'privacy', 'visibility', 'visibility-off'
+            'key', 'shield', 'security', 'privacy', 'visibility', 'visibility-off',
+            'account_circle', 'shopping_cart', 'dashboard', 'assessment', 'credit_card',
+            'receipt', 'attach_file', 'cloud', 'backup', 'build', 'reusable', 'code',
+            'terminal', 'bug_report', 'thumb_up', 'thumb_down', 'verified_user', 'public',
+            'language', 'translate', 'explore', 'map', 'navigation', 'directions',
+            'place', 'local_shipping', 'flight', 'train', 'directions_bus', 'directions_car',
+            'commute', 'ev_station', 'restaurant', 'local_cafe', 'hotel', 'wc', 'pool',
+            'fitness_center', 'spa', 'local_hospital', 'work', 'domain', 'business', 'group',
+            'person', 'people', 'supervisor_account', 'school', 'history_edu', 'contact_page',
+            'support_agent', 'help', 'question_answer', 'chat', 'forum', 'mail', 'send',
+            'drafts', 'inbox', 'outbox', 'archive', 'delete_sweep', 'report', 'flag', 'label',
+            'bookmark', 'grade', 'dynamic_feed', 'rss_feed', 'wifi', 'bluetooth', 'usb',
+            'storage', 'cpu', 'memory', 'mouse', 'keyboard', 'headset', 'mic', 'speaker',
+            'tv', 'videogame_asset', 'smartphone', 'tablet', 'laptop', 'desktop_windows',
+            'print', 'scanner', 'copy', 'paste', 'cut', 'save_alt', 'cloud_download',
+            'cloud_upload', 'folder_open', 'create_new_folder', 'restore', 'update', 'event'
         ];
     }
 }

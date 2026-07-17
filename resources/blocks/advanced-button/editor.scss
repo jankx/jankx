@@ -1,0 +1,149 @@
+/**
+ * Advanced Button Block Editor Styles
+ *
+ * Styles specific to the block editor
+ */
+
+.wp-block-jankx-advanced-button__link-popover {
+	z-index: 99999;
+}
+
+// Text alignment support in editor - just center content
+.wp-block-jankx-advanced-button {
+	&.has-text-align-left .jankx-advanced-button__link {
+		justify-content: flex-start;
+	}
+
+	&.has-text-align-center .jankx-advanced-button__link {
+		justify-content: center;
+	}
+
+	&.has-text-align-right .jankx-advanced-button__link {
+		justify-content: flex-end;
+	}
+}
+
+// Reset button element defaults to match link appearance
+button.jankx-advanced-button__link {
+	appearance: none;
+	background: none;
+	font-family: inherit;
+	font-size: inherit;
+	line-height: inherit;
+	cursor: pointer;
+	margin: 0;
+}
+
+.wp-block-jankx-advanced-button {
+
+	// Inner blocks should be inline with button content
+	.jankx-advanced-button__link {
+
+		// Icon wrapper contains InnerBlocks
+		.button-icon-wrapper {
+			display: inline-flex;
+			align-items: center;
+
+			>.block-editor-inner-blocks {
+				display: inline-flex;
+				align-items: center;
+
+				>.block-editor-block-list__layout {
+					display: inline-flex;
+					align-items: center;
+					gap: 4px;
+					margin: 0;
+				}
+			}
+
+			// Reset size constraints for icon blocks
+			.components-resizable-box__container {
+				max-width: none;
+				max-height: none;
+				min-width: auto;
+				min-height: auto;
+			}
+
+			// Icon blocks in editor - allow interactions
+			.block-editor-block-list__layout {
+
+				// Icon blocks should be fully interactive
+				>.wp-block {
+					&:not(.block-list-appender) {
+						position: relative;
+
+						// Allow all interactions with icon blocks
+						pointer-events: auto;
+					}
+
+					// Appender should be fully enabled
+					&.block-list-appender {
+						opacity: 1;
+						position: relative;
+					}
+				}
+			}
+		}
+
+		// Empty wrapper should be hidden
+		.button-icon-wrapper:empty {
+			display: none;
+		}
+	}
+
+	// Button appender styling - ensure it's always clickable
+	.button-icon-wrapper {
+		.block-list-appender {
+			display: inline-flex;
+			pointer-events: auto; // Override any parent disabled pointer events
+
+			button {
+				padding: 2px;
+				min-width: 24px;
+				min-height: 24px;
+				pointer-events: auto;
+			}
+		}
+	}
+}
+
+// Global override for appender - highest specificity
+.wp-block-jankx-advanced-button .block-list-appender {
+	pointer-events: auto;
+
+	*,
+	button,
+	.components-button,
+	.block-editor-button-block-appender,
+	.components-dropdown,
+	svg {
+		pointer-events: auto;
+		cursor: pointer;
+	}
+
+	.components-button {
+		height: 24px;
+	}
+}
+
+.block-editor-iframe__html {
+	.offcanvas-sidebar-block {
+		left: 0;
+	}
+}
+
+.is-root-container.wp-site-blocks {
+	>.wp-block-jankx-offcanvas-sidebar {
+		left: 0;
+
+		.offcanvas-sidebar-preview {
+			opacity: 1;
+		}
+	}
+
+	header.wp-block-template-part {
+		.offcanvas-sidebar-block {
+			display: none;
+		}
+	}
+}

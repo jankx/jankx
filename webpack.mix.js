@@ -1,6 +1,8 @@
 const mix = require('laravel-mix');
 const LiveReloadPlugin = require('webpack-livereload-plugin');
 
+mix.setPublicPath('./');
+
 /*
  |--------------------------------------------------------------------------
  | Mix Asset Management

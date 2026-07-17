@@ -16,6 +16,8 @@ class GutenbergServiceProvider extends FrameworkGutenbergServiceProvider
      */
     public function register(Application $app)
     {
+        parent::register($app);
+
         // Register Gutenberg service
         $app->singleton('gutenberg.service', function ($app) {
             return new GutenbergService($app);
@@ -23,7 +25,32 @@ class GutenbergServiceProvider extends FrameworkGutenbergServiceProvider
 
         // Register Gutenberg repository
         $app->singleton('gutenberg.repository', function ($app) {
-            return new \Jankx\Gutenberg\GutenbergRepository();
+            return new \Jankx\Gutenberg\GutenbergRepository($app);
         });
+    }
+
+    /**
+     * Bootstrap any application services.
+     *
+     * @param  \Jankx\Foundation\Application  $app
+     * @return void
+     */
+    public function boot(Application $app)
+    {
+        parent::boot($app);
+
+        if (apply_filters('jankx/gutenberg/enabled', true) === false) {
+            return;
+        }
+
+        $gutenbergService = $app->make('gutenberg.service');
+
+
+        add_filter('use_block_editor_for_post_type', function ($use_block_editor, $post_type) {
+            if ($post_type === 'video') {
+                return false;
+            }
+            return $use_block_editor;
+        }, 10, 2);
     }
 }

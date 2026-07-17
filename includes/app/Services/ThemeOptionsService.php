@@ -32,7 +32,7 @@ class ThemeOptionsService
     /**
      * @var string
      */
-    protected $optionName = 'bookix_theme_options';
+    protected $optionName = 'jankx_options';
 
     /**
      * @var \Jankx\Adapter\Options\Interfaces\Adapter
@@ -42,7 +42,13 @@ class ThemeOptionsService
     public function __construct(Application $app)
     {
         $this->app = $app;
-        $this->optionsPath = get_stylesheet_directory() . '/resources/options';
+        $childThemeOptions = get_stylesheet_directory() . '/theme-options';
+        $defaultOptions = get_stylesheet_directory() . '/resources/options';
+        
+        $this->optionsPath = Config::get(
+            'app.paths.options', 
+            file_exists($childThemeOptions) ? $childThemeOptions : $defaultOptions
+        );
 
         // Set framework từ config
         try {
@@ -53,6 +59,7 @@ class ThemeOptionsService
                 }
             }
         } catch (\Exception $e) {
+            Log::error('Theme Options: Error setting framework - ' . $e->getMessage());
         }
 
         $this->loadOptionsData();
@@ -71,6 +78,9 @@ class ThemeOptionsService
         if (!is_null($this->adapter)) {
             // Tạo sections cho adapter
             $this->createSectionsForAdapter();
+
+            // Cho phép các service khác "tiêm" thêm options
+            do_action('jankx/options/after_create_sections', $this->adapter, $this);
         }
     }
 
@@ -137,6 +147,7 @@ class ThemeOptionsService
                 }
             }
         } catch (\Exception $e) {
+            Log::error('Theme Options: Error loading options data - ' . $e->getMessage());
         }
     }
 
@@ -154,15 +165,16 @@ class ThemeOptionsService
         // Thiết lập arguments cho adapter
         $args = [
             'opt_name' => $this->optionName,
-            'display_name' => 'Bookix Theme Options',
+            'display_name' => __('Jankx Theme Options', 'jankx'),
             'display_version' => '1.0.0',
             'menu_type' => 'submenu',
             'allow_sub_menu' => true,
-            'menu_title' => 'Theme Options',
-            'page_title' => 'Bookix Theme Options',
+            'menu_title' => __('Theme Options', 'jankx'),
+            'page_title' => __('Jankx Theme Options', 'jankx'),
             'page_parent' => 'themes.php',
             'page_permissions' => 'manage_options',
-            'page_slug' => 'bookix-theme-options',
+            'page_slug' => 'jankx-theme-options',
+            'sync_with_customizer' => (bool) Config::get('app.options.sync_with_customizer', true),
         ];
 
         $this->adapter->setArgs($args);
@@ -183,14 +195,16 @@ class ThemeOptionsService
                 // Tạo OptionsReader instance bằng getInstance
             $optionsReader = \Jankx\Adapter\Options\OptionsReader::getInstance();
 
-            // Set options directory path (relative path)
-            $optionsReader->setOptionsDirectoryPath('resources/options');
+            // Set options directory path (relative path) - default is includes/theme-options
+            // No need to set if using default, but can override if needed
+            // $optionsReader->setOptionsDirectoryPath('includes/theme-options');
             $optionsReader->setChildThemeOverrideEnabled(true);
 
 
             // Gọi createSections trên adapter
             $this->adapter->createSections($optionsReader);
         } catch (\Exception $e) {
+            Log::error('Theme Options: Error creating sections - ' . $e->getMessage());
         }
     }
 
@@ -219,75 +233,16 @@ class ThemeOptionsService
     {
         return [
             'opt_name' => $this->optionName,
-            'display_name' => 'Bookix Theme Options',
+            'display_name' => __('Jankx Theme Options', 'jankx'),
             'display_version' => '1.0.0',
             'menu_type' => 'submenu',
             'allow_sub_menu' => true,
-            'menu_title' => 'Theme Options',
-            'page_title' => 'Bookix Theme Options',
+            'menu_title' => __('Theme Options', 'jankx'),
+            'page_title' => __('Jankx Theme Options', 'jankx'),
             'page_parent' => 'themes.php', // Sẽ được thay đổi bởi JankxAdminPagesServiceProvider
             'page_permissions' => 'manage_options',
             'page_slug' => 'jankx-theme-options', // Sử dụng slug thống nhất
         ];
-    }
-
-    /**
-     * Đăng ký admin menu
-     *
-     * @deprecated Sử dụng JankxAdminPagesServiceProvider thay thế
-     */
-    public function registerAdminMenu(): void
-    {
-        // Vô hiệu hóa việc tạo menu riêng biệt
-        // Menu sẽ được tích hợp thông qua JankxAdminPagesServiceProvider
-        return;
-
-        /*
-        // Tạo menu trực tiếp nếu adapter không có
-        if (!$this->adapter) {
-            $this->createDirectMenu();
-            return;
-        }
-
-        try {
-            $this->adapter->register_admin_menu('Theme Options', 'Bookix Theme Options');
-        } catch (\Exception $e) {
-            $this->createDirectMenu();
-        }
-        */
-    }
-
-    /**
-     * Tạo menu trực tiếp
-     *
-     * @return void
-     */
-    protected function createDirectMenu(): void
-    {
-        add_menu_page(
-            'Bookix Theme Options',
-            'Theme Options',
-            'manage_options',
-            'bookix-theme-options',
-            [$this, 'renderOptionsPage'],
-            'dashicons-admin-generic',
-            60
-        );
-    }
-
-    /**
-     * Render options page
-     *
-     * @return void
-     */
-    public function renderOptionsPage(): void
-    {
-        echo '<div class="wrap">';
-        echo '<h1>Bookix Theme Options</h1>';
-        echo '<p>Framework Mode: ' . $this->getCurrentFrameworkMode() . '</p>';
-        echo '<p>Adapter: ' . ($this->adapter ? get_class($this->adapter) : 'Not loaded') . '</p>';
-        echo '<p>Options Data: ' . (empty($this->getOptionsData()) ? 'Empty' : 'Loaded') . '</p>';
-        echo '</div>';
     }
 
     /**
@@ -318,6 +273,29 @@ class ThemeOptionsService
     public function getCurrentFrameworkMode(): string
     {
         return OptionFramework::getCurrentMode();
+    }
+
+    /**
+     * Render theme options page
+     *
+     * @return void
+     */
+    public function renderOptionsPage(): void
+    {
+        if (!$this->adapter) {
+            wp_die(__('Theme options adapter not initialized.', 'jankx'));
+        }
+
+        $framework = null;
+        if (method_exists($this->adapter, 'getFramework')) {
+            $framework = $this->adapter->getFramework();
+        }
+
+        if ($framework && method_exists($framework, 'renderOptionsPage')) {
+            $framework->renderOptionsPage();
+        } else {
+            wp_die(__('Theme options framework not found or does not support rendering.', 'jankx'));
+        }
     }
 
     /**

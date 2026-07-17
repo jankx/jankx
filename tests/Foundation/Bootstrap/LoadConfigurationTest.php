@@ -25,6 +25,14 @@ class LoadConfigurationTest extends TestCase
             ->willReturn($this->config);
     }
 
+    public function testDebugGlob()
+    {
+        $path = __DIR__ . '/../../../config';
+        $files = glob($path . '/*.php');
+        // var_dump($path, $files);
+        $this->assertNotEmpty($files, "Glob should find files in {$path}");
+    }
+
     public function testBootstrapCallsLoadThemeConfiguration()
     {
         $this->config->method('set')
@@ -39,15 +47,16 @@ class LoadConfigurationTest extends TestCase
     {
         // Mock config path
         $this->app->method('configPath')
-            ->willReturn(__DIR__ . '/../../../../config');
+            ->willReturn(__DIR__ . '/../../../config');
 
         $this->config->expects($this->atLeastOnce())
             ->method('set')
             ->withConsecutive(
                 ['app', $this->arrayHasKey('name')],
-                ['providers', $this->arrayHasKey('http')],
                 ['error', $this->arrayHasKey('suppression')],
-                ['layout', $this->arrayHasKey('menu')]
+                ['font-icons', $this->arrayHasKey('icon_types')],
+                ['layout', $this->arrayHasKey('menu')],
+                ['woocommerce', $this->isType('array')]
             );
 
         $this->loadConfiguration->bootstrap($this->app);
@@ -56,15 +65,15 @@ class LoadConfigurationTest extends TestCase
     public function testLoadThemeConfigurationWithEnvConfigPath()
     {
         // Set environment variable for testing
-        putenv('JANKX_CONFIG_PATH=' . __DIR__ . '/../../../tests/config');
+        putenv('JANKX_CONFIG_PATH=' . __DIR__ . '/../../../tests/Config');
 
         $this->config->expects($this->atLeastOnce())
             ->method('set')
             ->withConsecutive(
                 ['app', $this->arrayHasKey('name')],
-                ['providers', $this->arrayHasKey('http')],
                 ['error', $this->arrayHasKey('suppression')],
-                ['layout', $this->arrayHasKey('menu')]
+                ['layout', $this->arrayHasKey('menu')],
+                ['providers', $this->arrayHasKey('http')]
             );
 
         $this->loadConfiguration->bootstrap($this->app);
@@ -90,7 +99,7 @@ class LoadConfigurationTest extends TestCase
         file_put_contents($childConfigDir . '/app.php', '<?php return ' . var_export($childAppConfig, true) . ';');
 
         // Set environment variables for testing
-        putenv('JANKX_CONFIG_PATH=' . __DIR__ . '/../../../tests/config');
+        putenv('JANKX_CONFIG_PATH=' . __DIR__ . '/../../../tests/Config');
         putenv('JANKX_CHILD_CONFIG_PATH=' . $childConfigDir);
 
         // Expect all config files to be loaded in order: app, providers, error, layout
@@ -103,9 +112,9 @@ class LoadConfigurationTest extends TestCase
                            $config['version'] === '2.0.0' &&
                            $config['debug'] === true;
                 })],
-                ['providers', $this->arrayHasKey('http')],
                 ['error', $this->arrayHasKey('suppression')],
-                ['layout', $this->arrayHasKey('menu')]
+                ['layout', $this->arrayHasKey('menu')],
+                ['providers', $this->arrayHasKey('http')]
             );
 
         $this->loadConfiguration->bootstrap($this->app);
@@ -127,13 +136,13 @@ class LoadConfigurationTest extends TestCase
         if (!function_exists('get_template_directory')) {
             function get_template_directory()
             {
-                return __DIR__ . '/../../../../'; // Points to theme root
+                return __DIR__ . '/../../../'; // Points to theme root
             }
         }
         if (!function_exists('get_stylesheet_directory')) {
             function get_stylesheet_directory()
             {
-                return __DIR__ . '/../../../../'; // Points to theme root
+                return __DIR__ . '/../../../'; // Points to theme root
             }
         }
 

@@ -15,6 +15,231 @@ class AdminPageService
     {
         $this->app = $app;
         $this->registerDefaultPages();
+        $this->registerShortcodes();
+
+        \add_action('wp_dashboard_setup', [$this, 'registerDashboardWidgets'], 5);
+        \add_action('admin_enqueue_scripts', [$this, 'enqueueDashboardAssets']);
+    }
+
+    /**
+     * Enqueue assets cho Dashboard chính
+     */
+    public function enqueueDashboardAssets($hook)
+    {
+    }
+
+    /**
+     * Đăng ký Dashboard Widgets
+     */
+    public function registerDashboardWidgets()
+    {
+        if ($this->app->bound('license')) {
+            $license = $this->app->make('license');
+            $isActivated = $license->isActivated();
+
+            if (!$isActivated) {
+                \wp_add_dashboard_widget(
+                    'jankx_license_widget',
+                    \__('JANKX PRO Activation Required', 'jankx'),
+                    [$this, 'renderLicenseWidget']
+                );
+            }
+        }
+
+        \wp_add_dashboard_widget(
+            'jankx_dashboard_widget',
+            \__('JANKX PRO News & Status', 'jankx'),
+            [$this, 'renderMainDashboardWidget']
+        );
+
+        // Move to top
+        global $wp_meta_boxes;
+        
+        $dashboard = $wp_meta_boxes['dashboard']['normal']['core'];
+        $new_order = [];
+        
+        if (isset($dashboard['jankx_dashboard_widget'])) {
+            $new_order['jankx_dashboard_widget'] = $dashboard['jankx_dashboard_widget'];
+            unset($dashboard['jankx_dashboard_widget']);
+        }
+        
+        if (isset($dashboard['jankx_license_widget'])) {
+            $new_order['jankx_license_widget'] = $dashboard['jankx_license_widget'];
+            unset($dashboard['jankx_license_widget']);
+        }
+        
+        $wp_meta_boxes['dashboard']['normal']['core'] = array_merge($new_order, $dashboard);
+    }
+
+    /**
+     * Render License Activation Widget
+     */
+    public function renderLicenseWidget()
+    {
+        ?>
+        <div class="jankx-license-widget-content" style="padding: 15px; background: #fff; border-left: 4px solid #ef4444; border-radius: 8px;">
+            <div style="display: flex; align-items: flex-start; gap: 12px; margin-bottom: 12px;">
+                <span class="dashicons dashicons-shield-plugins" style="color: #ef4444; font-size: 24px; width: 24px; height: 24px;"></span>
+                <div>
+                    <h4 style="margin: 0 0 5px 0; font-size: 15px; font-weight: 700; color: #1e293b;"><?php \_e('Activate JANKX PRO', 'jankx'); ?></h4>
+                    <p style="margin: 0; font-size: 13px; color: #64748b; line-height: 1.5;"><?php \_e('Activate JANKX PRO to receive automatic updates, access the premium extension repository and receive technical support from the development team.', 'jankx'); ?></p>
+                </div>
+            </div>
+            <div style="display: flex; gap: 10px;">
+                <a href="<?php echo \admin_url('admin.php?page=jankx-license'); ?>" class="button button-primary" style="background: #3b82f6; border: none; border-radius: 8px; font-weight: 600;"><?php \_e('Activate Now', 'jankx'); ?></a>
+                <a href="https://jankx.com" target="_blank" class="button" style="border-radius: 8px;"><?php \_e('Get Support', 'jankx'); ?></a>
+            </div>
+        </div>
+        <?php
+    }
+
+    /**
+     * Nội dung của Dashboard Widget chính
+     */
+    public function renderMainDashboardWidget()
+    {
+        $version = $this->app->make('jankx.version') ?? '1.0.0';
+        ?>
+        <div class="jankx-dashboard-widget-content">
+            <div class="jankx-widget-header" style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid #eee;">
+                <span class="dashicons dashicons-art" style="color: #3b82f6;"></span>
+                <strong><?php \printf(\__('JANKX PRO v%s', 'jankx'), \esc_html($version)); ?></strong>
+                <span style="margin-left: auto; font-size: 11px; background: #dcfce7; color: #166534; padding: 2px 8px; border-radius: 10px;"><?php \_e('Operational', 'jankx'); ?></span>
+            </div>
+            
+            <p style="font-size: 13px; color: #64748b;"><?php \_e('Welcome back! Here are the latest updates from Jankx Portal:', 'jankx'); ?></p>
+            
+            <div class="jankx-widget-news-wrapper" style="margin: 15px 0;">
+                <?php $this->renderNewsWidget(3); ?>
+            </div>
+
+            <div class="jankx-widget-footer" style="padding-top: 10px; border-top: 1px solid #eee; display: flex; gap: 15px;">
+                <a href="<?php echo \admin_url('admin.php?page=jankx-dashboard'); ?>" class="button button-primary"><?php \_e('Jankx Dashboard', 'jankx'); ?></a>
+                <a href="<?php echo \admin_url('admin.php?page=jankx-theme-options'); ?>" class="button"><?php \_e('Theme Options', 'jankx'); ?></a>
+            </div>
+
+            <style>
+                #jankx_dashboard_widget .inside { padding: 0; margin-top: 0; }
+                .jankx-dashboard-widget-content { 
+                    padding: 15px; 
+                }
+                
+                /* News Grid & Cards for Widget */
+                #jankx_dashboard_widget .news-portal-grid { 
+                    display: grid; 
+                    grid-template-columns: 1fr; 
+                    gap: 12px; 
+                }
+                #jankx_dashboard_widget .news-card {
+                    display: flex; flex-direction: column; background: #fff; border: 1px solid #e2e8f0;
+                    border-radius: 12px; padding: 12px; text-decoration: none; color: #1e293b;
+                    transition: all 0.2s ease; border-top: 3px solid #cbd5e1;
+                }
+                #jankx_dashboard_widget .news-card:hover { border-color: #3b82f6; background: #f8fafc; }
+                #jankx_dashboard_widget .news-card--announcement { border-top-color: #8b5cf6; }
+                #jankx_dashboard_widget .news-card--release      { border-top-color: #10b981; }
+                #jankx_dashboard_widget .news-card--tutorial     { border-top-color: #f59e0b; }
+                #jankx_dashboard_widget .news-card--news         { border-top-color: #3b82f6; }
+                
+                #jankx_dashboard_widget .news-badge {
+                    display: inline-block; font-size: 9px; font-weight: 700; text-transform: uppercase;
+                    padding: 2px 6px; border-radius: 10px; background: #f1f5f9; color: #64748b; margin-bottom: 6px; width: fit-content;
+                }
+                #jankx_dashboard_widget .news-card--announcement .news-badge { background: #ede9fe; color: #7c3aed; }
+                #jankx_dashboard_widget .news-card--release .news-badge      { background: #d1fae5; color: #059669; }
+                #jankx_dashboard_widget .news-title { font-size: 13px; font-weight: 600; line-height: 1.4; color: #1e293b; margin: 0; }
+                #jankx_dashboard_widget .news-excerpt, #jankx_dashboard_widget .news-date { display: none; }
+            </style>
+        </div>
+        <?php
+    }
+
+    /**
+     * Đăng ký các shortcode của Jankx
+     */
+    protected function registerShortcodes()
+    {
+        \add_shortcode('jankx_news', function ($atts) {
+            $atts = \shortcode_atts([
+                'limit' => 5,
+                'type'  => '',
+            ], $atts);
+
+            \ob_start();
+            $this->renderNewsWidget((int)$atts['limit'], $atts['type']);
+            return \ob_get_clean();
+        });
+    }
+
+    /**
+     * Lấy dữ liệu tin tức từ API với Cache
+     */
+    protected function getPortalNews($limit = 6, $type = '')
+    {
+        $cache_key = 'jankx_portal_news_v1_' . \md5($limit . $type);
+        $news_data = \get_transient($cache_key);
+
+        if (false === $news_data) {
+            $api_url = 'https://jankx.pages.dev/api/portal/news';
+            $url = \add_query_arg([
+                'limit' => $limit,
+                'type'  => $type,
+            ], $api_url);
+
+            $response = \wp_remote_get($url, [
+                'timeout'   => 5,
+                'sslverify' => false,
+            ]);
+
+            if (!\is_wp_error($response) && \wp_remote_retrieve_response_code($response) === 200) {
+                $body = \json_decode(\wp_remote_retrieve_body($response), true);
+                $news_data = (!empty($body['status']) && $body['status'] === 'success') ? $body['data'] : [];
+            } else {
+                $news_data = [];
+            }
+            \set_transient($cache_key, $news_data, 4 * HOUR_IN_SECONDS);
+        }
+
+        return $news_data;
+    }
+
+    /**
+     * Render News Widget (Dùng cho cả Dashboard và Shortcode)
+     */
+    public function renderNewsWidget($limit = 6, $type = '')
+    {
+        $news_data = $this->getPortalNews($limit, $type);
+        
+        // Luôn render Common Styles nếu ở ngoài frontend để đảm bảo giao diện
+        if (!\is_admin()) {
+            $this->renderCommonStyles();
+        }
+
+        if (empty($news_data)) : ?>
+            <div class="news-portal-empty">
+                <span class="dashicons dashicons-cloud"></span>
+                <p><?php \_e('Could not load news at this time. Please try again later.', 'jankx'); ?></p>
+                <a href="https://jankx.pages.dev/news" target="_blank" class="button"><?php \_e('View on Jankx Hub', 'jankx'); ?></a>
+            </div>
+        <?php else : ?>
+            <div class="news-portal-grid">
+                <?php foreach ($news_data as $item) :
+                    $slug    = $item['slug'] ?? $item['id'];
+                    $url     = "https://jankx.pages.dev/news/{$slug}";
+                    $date    = \date_i18n(\get_option('date_format'), \strtotime($item['created_at']));
+                    $excerpt = \mb_substr(\strip_tags($item['content'] ?? ''), 0, 120);
+                    $item_type = \strtolower($item['type'] ?? 'news');
+                    $labels  = ['announcement' => \__('Announcement', 'jankx'), 'release' => \__('Release', 'jankx'), 'tutorial' => \__('Tutorial', 'jankx'), 'news' => \__('News', 'jankx')];
+                ?>
+                <a href="<?php echo \esc_url($url); ?>" target="_blank" rel="noopener" class="news-card news-card--<?php echo \esc_attr($item_type); ?>">
+                    <span class="news-badge"><?php echo \esc_html($labels[$item_type] ?? \ucfirst($item_type)); ?></span>
+                    <h4 class="news-title"><?php echo \esc_html($item['title']); ?></h4>
+                    <p class="news-excerpt"><?php echo \esc_html($excerpt); ?>...</p>
+                    <time class="news-date"><?php echo \esc_html($date); ?></time>
+                </a>
+                <?php endforeach; ?>
+            </div>
+        <?php endif;
     }
 
     /**
@@ -24,37 +249,112 @@ class AdminPageService
     {
         $this->addPage([
             'id' => 'jankx-dashboard',
-            'title' => 'Dashboard',
-            'menu_title' => 'Dashboard',
+            'title' => \__('JANKX PRO Dashboard', 'jankx'),
+            'subtitle' => \__('Dashboard for your website with system information and quick management utilities.', 'jankx'),
+            'menu_title' => \__('Dashboard', 'jankx'),
             'capability' => 'manage_options',
             'callback' => [$this, 'renderDashboardPage'],
-            'icon' => 'dashicons-dashboard',
+            'icon' => 'dashicons-performance',
             'position' => 10
         ]);
 
-        // Theme Options được tích hợp thông qua ThemeOptionsService
-        // và JankxAdminPagesServiceProvider
+        $this->addPage([
+            'id' => 'jankx-license',
+            'title' => __('Theme Activation', 'jankx'),
+            'subtitle' => __('Activate your JANKX PRO license to receive automatic updates and premium support.', 'jankx'),
+            'menu_title' => __('Theme Activation', 'jankx'),
+            'capability' => 'manage_options',
+            'callback' => [$this, 'renderLicensePage'],
+            'icon' => 'dashicons-shield-plugins',
+            'position' => 15
+        ]);
+
+        $this->addPage([
+            'id' => 'jankx-membership',
+            'title' => __('Membership & Site Kits', 'jankx'),
+            'subtitle' => __('Pre-built website bundles with extensions, demo data, and templates. One-click full site setup for members.', 'jankx'),
+            'menu_title' => __('Membership & Kits', 'jankx'),
+            'capability' => 'manage_options',
+            'callback' => [$this, 'renderMembershipPage'],
+            'icon' => 'dashicons-awards',
+            'position' => 12
+        ]);
+
+        $this->addPage([
+            'id' => 'jankx-extensions',
+            'title' => __('Managed Extensions', 'jankx'),
+            'subtitle' => __('Manage functional extensions for the Jankx Framework.', 'jankx'),
+            'menu_title' => __('Extensions', 'jankx'),
+            'capability' => 'manage_options',
+            'callback' => [$this, 'renderExtensionsPage'],
+            'icon' => 'dashicons-admin-plugins',
+            'position' => 20
+        ]);
+
+        $this->addPage([
+            'id' => 'jankx-marketplace',
+            'title' => __('Extension Marketplace', 'jankx'),
+            'subtitle' => __('Explore and install hundreds of extensions from the Jankx community.', 'jankx'),
+            'menu_title' => __('Marketplace', 'jankx'),
+            'capability' => 'manage_options',
+            'callback' => [$this, 'renderMarketplacePage'],
+            'icon' => 'dashicons-store',
+            'position' => 21
+        ]);
 
         $this->addPage([
             'id' => 'jankx-icons',
-            'title' => 'Icons Repository',
-            'menu_title' => 'Icons Repository',
+            'title' => __('Icon Repository', 'jankx'),
+            'subtitle' => __('Centralized icon library for the theme and website content.', 'jankx'),
+            'menu_title' => __('Icon Repository', 'jankx'),
             'capability' => 'manage_options',
             'callback' => [$this, 'renderIconsPage'],
-            'icon' => 'dashicons-admin-appearance',
+            'icon' => 'dashicons-format-image',
+            'position' => 25
+        ]);
+
+        $this->addPage([
+            'id' => 'jankx-utilities',
+            'title' => __('Utilities', 'jankx'),
+            'subtitle' => __('System optimization tools, images and advanced configuration.', 'jankx'),
+            'menu_title' => __('Utilities', 'jankx'),
+            'capability' => 'manage_options',
+            'callback' => [$this, 'renderUtilitiesPage'],
+            'icon' => 'dashicons-admin-tools',
+            'position' => 55
+        ]);
+
+        $this->addPage([
+            'id' => 'jankx-support',
+            'title' => __('Support & Tickets', 'jankx'),
+            'subtitle' => __('Submit support tickets and view your request history. Available for PRO users.', 'jankx'),
+            'menu_title' => __('Support & Tickets', 'jankx'),
+            'capability' => 'manage_options',
+            'callback' => [$this, 'renderSupportPage'],
+            'icon' => 'dashicons-sos',
             'position' => 30
         ]);
 
-
+        $this->addPage([
+            'id' => 'jankx-sponsor',
+            'title' => __('Sponsor & Donate', 'jankx'),
+            'subtitle' => __('Support the development of Jankx Framework by becoming a sponsor.', 'jankx'),
+            'menu_title' => __('Sponsor & Donate', 'jankx'),
+            'capability' => 'manage_options',
+            'callback' => [$this, 'renderSponsorPage'],
+            'icon' => 'dashicons-heart',
+            'position' => 40
+        ]);
 
         $this->addPage([
-            'id' => 'jankx-framework-info',
-            'title' => 'Framework Info',
-            'menu_title' => 'Framework Info',
+            'id' => 'jankx-debug',
+            'title' => __('System Information', 'jankx'),
+            'subtitle' => __('Detailed information about the server environment and system error logs.', 'jankx'),
+            'menu_title' => __('System Information', 'jankx'),
             'capability' => 'manage_options',
-            'callback' => [$this, 'renderFrameworkInfoPage'],
-            'icon' => 'dashicons-info',
-            'position' => 40
+            'callback' => [$this, 'renderDebugPage'],
+            'icon' => 'dashicons-sos',
+            'position' => 99
         ]);
     }
 
@@ -77,7 +377,7 @@ class AdminPageService
             'styles' => []
         ];
 
-        $page = array_merge($defaults, $pageData);
+        $page = \wp_parse_args($pageData, $defaults);
 
         if (empty($page['id']) || empty($page['title'])) {
             throw new \InvalidArgumentException('Page ID and title are required');
@@ -116,6 +416,10 @@ class AdminPageService
     public function setCurrentPage($pageId)
     {
         $this->currentPage = $pageId;
+        $page = $this->getPage($pageId);
+        if ($page) {
+            $this->enqueuePageAssets($page);
+        }
     }
 
     /**
@@ -125,18 +429,17 @@ class AdminPageService
     {
         $page = $this->getPage($pageId);
         if (!$page) {
-            wp_die('Page not found');
+            \wp_die('Page not found');
         }
 
         $this->setCurrentPage($pageId);
-        $this->enqueuePageAssets($page);
 
         // Render page header
         $this->renderPageHeader($page);
 
         // Render page content
-        if (is_callable($page['callback'])) {
-            call_user_func($page['callback'], $page);
+        if (\is_callable($page['callback'])) {
+            \call_user_func($page['callback'], $page);
         } else {
             $this->renderDefaultPageContent($page);
         }
@@ -145,1063 +448,328 @@ class AdminPageService
         $this->renderPageFooter($page);
     }
 
+
+    /**
+     * Lấy 3 extension nổi bật đã cài đặt trên website hiện tại
+     */
+    protected function getFeaturedExtensions($limit = 3)
+    {
+        $extensionManager = $this->app->make('extension.manager');
+        $allExtensions = $extensionManager->get_extensions();
+
+        if (empty($allExtensions)) {
+            return [];
+        }
+
+        $featured = [];
+        foreach ($allExtensions as $slug => $extension) {
+            $info = $extension->get_info();
+            $manifest = $extension->get_manifest_data();
+            
+            // Determine icon
+            $icon_svg = $manifest['icon_svg'] ?? '';
+            $icon_url = '';
+            
+            if (empty($icon_svg)) {
+                $ext_path = $extension->get_extension_path();
+                $ext_url = $extension->get_extension_url();
+                
+                if (file_exists($ext_path . '/assets/icon.svg')) {
+                    $icon_svg = file_get_contents($ext_path . '/assets/icon.svg');
+                } elseif (file_exists($ext_path . '/assets/icon.png')) {
+                    $icon_url = $ext_url . '/assets/icon.png';
+                } elseif (file_exists($ext_path . '/icon.png')) {
+                    $icon_url = $ext_url . '/icon.png';
+                }
+            }
+
+            $featured[] = [
+                'slug' => $slug,
+                'name' => $info['name'] ?? $slug,
+                'version' => $info['version'] ?? '1.0.0',
+                'active' => $info['active'] ?? false,
+                'icon_svg' => $icon_svg,
+                'icon' => $icon_url,
+                'install_count' => 0, // Not applicable for local
+            ];
+
+            if (count($featured) >= $limit + 5) break; // Get a bit more to filter if needed
+        }
+
+        // Ưu tiên các extension đang active
+        usort($featured, function($a, $b) {
+            if ($a['active'] === $b['active']) return 0;
+            return $a['active'] ? -1 : 1;
+        });
+
+        return array_slice($featured, 0, $limit);
+    }
+
     /**
      * Render trang Dashboard
      */
     public function renderDashboardPage($page)
     {
-        echo '<div class="jankx-dashboard-widgets">';
-
-        // Quick Actions Widget
-        echo '<div class="jankx-widget">';
-        echo '<h3>Quick Actions</h3>';
-        echo '<ul>';
-        echo '<li><a href="' . admin_url('admin.php?page=jankx-icons') . '">Manage Icons</a></li>';
-        echo '<li><a href="' . admin_url('admin.php?page=jankx-import-icons') . '">Import Icons</a></li>';
-        echo '<li><a href="' . admin_url('admin.php?page=jankx-framework-info') . '">View Framework Info</a></li>';
-        echo '</ul>';
-        echo '</div>';
-
-        // System Status Widget
-        echo '<div class="jankx-widget">';
-        echo '<h3>System Status</h3>';
-        echo '<ul>';
-        echo '<li>Framework Version: ' . ($this->app->make('jankx.version') ?? 'Unknown') . '</li>';
-        echo '<li>Environment: ' . ($this->app->make('jankx.environment') ?? 'Unknown') . '</li>';
-        echo '<li>Debug Mode: ' . (WP_DEBUG ? 'Enabled' : 'Disabled') . '</li>';
-        echo '<li>PHP Version: ' . PHP_VERSION . '</li>';
-        echo '<li>WordPress Version: ' . get_bloginfo('version') . '</li>';
-        echo '</ul>';
-        echo '</div>';
-
-        // Services Status Widget
-        echo '<div class="jankx-widget">';
-        echo '<h3>Services Status</h3>';
-        echo '<ul>';
-        $services = ['font-icons.repository', 'font-icons.manager', 'font-icons.renderer'];
-        foreach ($services as $service) {
-            try {
-                $instance = $this->app->make($service);
-                echo '<li><span class="dashicons dashicons-yes-alt" style="color: green;"></span> ' . esc_html($service) . '</li>';
-            } catch (\Exception $e) {
-                echo '<li><span class="dashicons dashicons-no-alt" style="color: red;"></span> ' . esc_html($service) . ' (Error: ' . esc_html($e->getMessage()) . ')</li>';
-            }
-        }
-        echo '</ul>';
-        echo '</div>';
-
-        echo '</div>';
-    }
-
-        /**
-         * Render trang Theme Options
-         */
-    public function renderThemeOptionsPage($page)
-    {
-        // Try to get theme options service
-        try {
-            $themeOptions = $this->app->make('theme-options');
-            if ($themeOptions && method_exists($themeOptions, 'renderOptionsPage')) {
-                $themeOptions->renderOptionsPage();
-                return;
-            }
-        } catch (\Exception $e) {
-            // Service not available
-        }
-
-        // Fallback content
-        echo '<div class="jankx-theme-options-fallback">';
-        echo '<h2>Theme Options</h2>';
-        echo '<p>Theme options are managed through the framework adapter.</p>';
-
-        try {
-            $frameworkMode = $this->app->make('jankx.framework_mode');
-            echo '<p>Current Framework Mode: <strong>' . esc_html($frameworkMode ?? 'Unknown') . '</strong></p>';
-        } catch (\Exception $e) {
-            echo '<p>Framework Mode: <strong>Unknown</strong></p>';
-        }
-
-        echo '<div class="jankx-framework-info">';
-        echo '<h3>Available Framework Adapters</h3>';
-        echo '<ul>';
-        echo '<li><strong>Kirki:</strong> Customizer-based theme options</li>';
-        echo '<li><strong>Redux:</strong> Standalone options panel</li>';
-        echo '<li><strong>WordPress Settings API:</strong> Native WordPress options</li>';
-        echo '<li><strong>Jankx Native:</strong> Built-in options framework</li>';
-        echo '</ul>';
-        echo '</div>';
-        echo '</div>';
-    }
-
-    /**
-     * Render trang Icons Repository
-     */
-    public function renderIconsPage($page)
-    {
-        $activeTab = $_GET['tab'] ?? 'icon-sets';
-
-        // Try to get icon repository service
-        try {
-            $iconRepository = $this->app->make('font-icons.repository');
-            if ($iconRepository) {
-                $this->renderIconsRepositoryContent($iconRepository, $activeTab);
-                return;
-            }
-        } catch (\Exception $e) {
-            // Service not available
-        }
-
-        // Fallback content
-        echo '<div class="jankx-icons-fallback">';
-        echo '<h2>Icons Repository</h2>';
-        echo '<p>Icons repository service is not available.</p>';
-        echo '<p>Please ensure the Font Icons system is properly configured.</p>';
-        echo '</div>';
-    }
-
-    /**
-     * Render nội dung Icons Repository
-     */
-    protected function renderIconsRepositoryContent($iconRepository, $activeTab)
-    {
-        $iconTypes = $iconRepository->getIconTypes();
-
-        // Navigation tabs
-        echo '<nav class="nav-tab-wrapper">';
-        echo '<a href="' . admin_url('admin.php?page=jankx-icons&tab=icon-sets') . '" class="nav-tab ' . ($activeTab === 'icon-sets' ? 'nav-tab-active' : '') . '">Icon Sets</a>';
-        echo '<a href="' . admin_url('admin.php?page=jankx-icons&tab=manage') . '" class="nav-tab ' . ($activeTab === 'manage' ? 'nav-tab-active' : '') . '">Manage Icons</a>';
-        echo '<a href="' . admin_url('admin.php?page=jankx-icons&tab=import') . '" class="nav-tab ' . ($activeTab === 'import' ? 'nav-tab-active' : '') . '">Import/Export</a>';
-        echo '</nav>';
-
-        // Tab content
-        switch ($activeTab) {
-            case 'icon-sets':
-                $this->renderIconSetsTab($iconTypes);
-                break;
-            case 'manage':
-                $this->renderManageTab($iconTypes);
-                break;
-            case 'import':
-                $this->renderImportTab($iconTypes);
-                break;
-            default:
-                $this->renderIconSetsTab($iconTypes);
-        }
-    }
-
-        /**
-     * Render tab Icon Sets
-     */
-    protected function renderIconSetsTab($iconTypes)
-    {
-        // Xử lý các actions trước khi render
-        $this->handleIconActions();
-
-        echo '<div class="tab-content">';
-        echo '<h2>Available Icon Sets</h2>';
-
-        $allIconTypes = Config::get('font-icons.icon_types', []);
-
-        if (empty($allIconTypes)) {
-            echo '<div class="notice notice-warning">';
-            echo '<p>No icon types configured yet.</p>';
-            echo '</div>';
-            echo '</div>';
-            return;
-        }
-
-        echo '<div class="jankx-icon-sets-grid">';
-
-        foreach ($allIconTypes as $type => $config) {
-            $enabled = $config['enabled'] ?? false;
-            $autoLoad = $config['auto_load'] ?? false;
-            $version = $config['version'] ?? 'Unknown';
-            $prefixes = $config['prefixes'] ?? [];
-            $categories = $config['categories'] ?? [];
-            $iconCount = $this->getIconCountForType($type);
-
-            echo '<div class="jankx-icon-set-card">';
-
-            // Header với icon type name
-            echo '<div class="card-header">';
-            echo '<h3>' . esc_html(ucfirst($type)) . '</h3>';
-            echo '<div class="card-status">';
-            echo $enabled ? '<span class="status-badge enabled">Enabled</span>' : '<span class="status-badge disabled">Disabled</span>';
-            echo '</div>';
-            echo '</div>';
-
-            // Card content
-            echo '<div class="card-content">';
-
-            // Info grid
-            echo '<div class="info-grid">';
-            echo '<div class="info-item">';
-            echo '<strong>Version:</strong> ' . esc_html($version);
-            echo '</div>';
-            echo '<div class="info-item">';
-            echo '<strong>Auto-load:</strong> ' . ($autoLoad ? 'Yes' : 'No');
-            echo '</div>';
-            echo '<div class="info-item">';
-            echo '<strong>Icons:</strong> ~' . $iconCount;
-            echo '</div>';
-            if (!empty($prefixes)) {
-                echo '<div class="info-item">';
-                echo '<strong>Prefixes:</strong> ' . esc_html(implode(', ', $prefixes));
-                echo '</div>';
-            }
-            if (!empty($categories)) {
-                echo '<div class="info-item">';
-                echo '<strong>Categories:</strong> ' . esc_html(implode(', ', $categories));
-                echo '</div>';
-            }
-            echo '</div>';
-
-            // Action buttons
-            echo '<div class="card-actions">';
-
-            // Primary actions
-            echo '<div class="primary-actions">';
-            echo '<a href="' . admin_url('admin.php?page=jankx-icons&tab=manage&type=' . $type) . '" class="button button-primary">Manage Icons</a>';
-            echo '<a href="' . admin_url('admin.php?page=jankx-icons&tab=import&type=' . $type) . '" class="button button-secondary">Import/Export</a>';
-            echo '</div>';
-
-            // Control buttons
-            echo '<div class="control-actions">';
-
-            // Enable/Disable button
-            echo '<form method="post" action="" style="display: inline;">';
-            echo '<input type="hidden" name="jankx_action" value="toggle_icon_type">';
-            echo '<input type="hidden" name="icon_type" value="' . esc_attr($type) . '">';
-            echo '<input type="hidden" name="action_type" value="' . ($enabled ? 'disable' : 'enable') . '">';
-            echo '<button type="submit" class="button button-small ' . ($enabled ? 'button-secondary' : 'button-primary') . '">';
-            echo ($enabled ? 'Disable' : 'Enable') . '</button>';
-            echo '</form>';
-
-            // Auto-load toggle
-            echo '<form method="post" action="" style="display: inline;">';
-            echo '<input type="hidden" name="jankx_action" value="toggle_auto_load">';
-            echo '<input type="hidden" name="icon_type" value="' . esc_attr($type) . '">';
-            echo '<input type="hidden" name="auto_load" value="' . ($autoLoad ? '0' : '1') . '">';
-            echo '<button type="submit" class="button button-small ' . ($autoLoad ? 'button-secondary' : 'button-primary') . '">';
-            echo ($autoLoad ? 'Disable Auto-load' : 'Enable Auto-load') . '</button>';
-            echo '</form>';
-
-            // Remove button
-            echo '<form method="post" action="" style="display: inline;" onsubmit="return confirm(\'Are you sure you want to remove this icon set? This action cannot be undone.\');">';
-            echo '<input type="hidden" name="jankx_action" value="remove_icon_type">';
-            echo '<input type="hidden" name="icon_type" value="' . esc_attr($type) . '">';
-            echo '<button type="submit" class="button button-small button-link-delete">Remove</button>';
-            echo '</form>';
-            echo '</div>';
-
-            echo '</div>'; // .card-actions
-            echo '</div>'; // .card-content
-            echo '</div>'; // .jankx-icon-set-card
-        }
-
-        echo '</div>'; // .jankx-icon-sets-grid
-        echo '</div>'; // .tab-content
-    }
-
-    /**
-     * Render tab Manage
-     */
-    protected function renderManageTab($iconTypes)
-    {
-        $iconType = $_GET['type'] ?? '';
-
-        if (empty($iconType)) {
-            $this->renderManageTypeSelector();
-            return;
-        }
-
-        $this->renderManageIconsByType($iconType);
-    }
-
-    /**
-     * Render selector để chọn icon type
-     */
-    protected function renderManageTypeSelector()
-    {
-        echo '<div class="tab-content">';
-        echo '<h2>Select Icon Type to Manage</h2>';
-        echo '<p>Choose an icon type to manage its icons:</p>';
-
-        $allIconTypes = Config::get('font-icons.icon_types', []);
-
-        if (empty($allIconTypes)) {
-            echo '<p>No icon types configured.</p>';
-            return;
-        }
-
-        echo '<div class="jankx-icon-type-grid">';
-        foreach ($allIconTypes as $type => $config) {
-            $enabled = $config['enabled'] ?? false;
-            $iconCount = $this->getIconCountForType($type);
-
-            echo '<div class="jankx-icon-type-card">';
-            echo '<h3>' . esc_html(ucfirst($type)) . '</h3>';
-            echo '<p><strong>Status:</strong> ' . ($enabled ? 'Enabled' : 'Disabled') . '</p>';
-            echo '<p><strong>Icons:</strong> ' . $iconCount . '</p>';
-            echo '<a href="' . admin_url('admin.php?page=jankx-icons&tab=manage&type=' . $type) . '" class="button button-primary">Manage Icons</a>';
-            echo '</div>';
-        }
-        echo '</div>';
-        echo '</div>';
-    }
-
-    /**
-     * Render quản lý icons theo type cụ thể
-     */
-    protected function renderManageIconsByType($iconType)
-    {
-        $allIconTypes = Config::get('font-icons.icon_types', []);
-
-        if (!isset($allIconTypes[$iconType])) {
-            echo '<div class="tab-content">';
-            echo '<p>Invalid icon type: ' . esc_html($iconType) . '</p>';
-            echo '<a href="' . admin_url('admin.php?page=jankx-icons&tab=manage') . '" class="button">← Back to Type Selection</a>';
-            echo '</div>';
-            return;
-        }
-
-        $config = $allIconTypes[$iconType];
-        $enabled = $config['enabled'] ?? false;
-
-        echo '<div class="tab-content">';
-        echo '<div class="jankx-manage-header">';
-        echo '<h2>Manage ' . esc_html(ucfirst($iconType)) . ' Icons</h2>';
-        echo '<a href="' . admin_url('admin.php?page=jankx-icons&tab=manage') . '" class="button">← Back to Type Selection</a>';
-        echo '</div>';
-
-        if (!$enabled) {
-            echo '<div class="notice notice-warning">';
-            echo '<p><strong>Warning:</strong> This icon type is currently disabled. Enable it first to manage icons.</p>';
-            echo '</div>';
-        }
-
-        // Icon type info
-        echo '<div class="jankx-icon-type-info">';
-        echo '<h3>Icon Type Information</h3>';
-        echo '<table class="form-table">';
-        echo '<tr><th>Type</th><td>' . esc_html(ucfirst($iconType)) . '</td></tr>';
-        echo '<tr><th>Status</th><td>' . ($enabled ? 'Enabled' : 'Disabled') . '</td></tr>';
-        echo '<tr><th>Auto-load</th><td>' . ($config['auto_load'] ?? false ? 'Yes' : 'No') . '</td></tr>';
-        echo '<tr><th>Version</th><td>' . esc_html($config['version'] ?? 'Unknown') . '</td></tr>';
-        echo '<tr><th>Prefixes</th><td>' . esc_html(implode(', ', $config['prefixes'] ?? [])) . '</td></tr>';
-        echo '</table>';
-        echo '</div>';
-
-        // Icon management interface
-        $this->renderIconManagementInterface($iconType, $config);
-
-        echo '</div>';
-    }
-
-    /**
-     * Render giao diện quản lý icons
-     */
-    protected function renderIconManagementInterface($iconType, $config)
-    {
-        // Icon Type Information với controls tích hợp (ở trên cùng)
-        $this->renderIconTypeInfoWithControls($iconType);
-
-        echo '<div class="jankx-icon-management">';
-        echo '<h3>Icon Management</h3>';
-
-        // Search and filter
-        echo '<div class="jankx-icon-filters">';
-        echo '<input type="text" id="icon-search" placeholder="Search icons..." class="regular-text">';
-        echo '<select id="icon-category-filter">';
-        echo '<option value="">All Categories</option>';
-        if (isset($config['categories'])) {
-            foreach ($config['categories'] as $category) {
-                echo '<option value="' . esc_attr($category) . '">' . esc_html(ucfirst($category)) . '</option>';
-            }
-        }
-        echo '</select>';
-        echo '<button type="button" class="button" onclick="refreshIconList()">Refresh</button>';
-        echo '</div>';
-
-        // Icon list container
-        echo '<div id="icon-list-container">';
-        echo '<div class="jankx-loading">Loading icons...</div>';
-        echo '</div>';
-
-        // Icon preview
-        echo '<div id="icon-preview" class="jankx-icon-preview" style="display: none;">';
-        echo '<h4>Icon Preview</h4>';
-        echo '<div id="icon-preview-content"></div>';
-        echo '<div id="icon-preview-code"></div>';
-        echo '</div>';
-
-        echo '</div>';
-
-        // JavaScript for icon management
-        $this->renderIconManagementScript($iconType);
-    }
-
-        /**
-     * Render icon type info với controls tích hợp
-     */
-    protected function renderIconTypeInfoWithControls($iconType)
-    {
-        $allIconTypes = Config::get('font-icons.icon_types', []);
-        $config = $allIconTypes[$iconType] ?? [];
-
-        $enabled = $config['enabled'] ?? false;
-        $autoLoad = $config['auto_load'] ?? false;
-        $version = $config['version'] ?? 'Unknown';
-        $cdnUrl = $config['cdn_url'] ?? '';
-        $prefixes = $config['prefixes'] ?? [];
-        $categories = $config['categories'] ?? [];
-
-        echo '<div class="jankx-icon-type-info">';
-        echo '<h3>Icon Type Information - ' . esc_html(ucfirst($iconType)) . '</h3>';
-
-        // Information grid
-        echo '<div class="jankx-info-grid">';
-
-        // Status info
-        echo '<div class="jankx-info-item">';
-        echo '<strong>Status:</strong> ';
-        echo $enabled ? '<span class="status-enabled">Enabled</span>' : '<span class="status-disabled">Disabled</span>';
-        echo '</div>';
-
-        echo '<div class="jankx-info-item">';
-        echo '<strong>Auto-load:</strong> ';
-        echo $autoLoad ? '<span class="status-enabled">Yes</span>' : '<span class="status-disabled">No</span>';
-        echo '</div>';
-
-        echo '<div class="jankx-info-item">';
-        echo '<strong>Version:</strong> ' . esc_html($version);
-        echo '</div>';
-
-        if ($cdnUrl) {
-            echo '<div class="jankx-info-item">';
-            echo '<strong>CDN URL:</strong> <a href="' . esc_url($cdnUrl) . '" target="_blank">' . esc_html($cdnUrl) . '</a>';
-            echo '</div>';
-        }
-
-        if (!empty($prefixes)) {
-            echo '<div class="jankx-info-item">';
-            echo '<strong>Prefixes:</strong> ' . esc_html(implode(', ', $prefixes));
-            echo '</div>';
-        }
-
-        if (!empty($categories)) {
-            echo '<div class="jankx-info-item">';
-            echo '<strong>Categories:</strong> ' . esc_html(implode(', ', $categories));
-            echo '</div>';
-        }
-
-        echo '</div>';
-
-        // Control buttons
-        echo '<div class="jankx-control-actions">';
-        echo '<form method="post" action="" style="display: inline;">';
-        echo '<input type="hidden" name="jankx_action" value="toggle_icon_type">';
-        echo '<input type="hidden" name="icon_type" value="' . esc_attr($iconType) . '">';
-        echo '<input type="hidden" name="action_type" value="' . ($enabled ? 'disable' : 'enable') . '">';
-        echo '<button type="submit" class="button ' . ($enabled ? 'button-secondary' : 'button-primary') . '">';
-        echo ($enabled ? 'Disable' : 'Enable') . ' Icon Type</button>';
-        echo '</form> ';
-
-        echo '<form method="post" action="" style="display: inline;">';
-        echo '<input type="hidden" name="jankx_action" value="toggle_auto_load">';
-        echo '<input type="hidden" name="icon_type" value="' . esc_attr($iconType) . '">';
-        echo '<input type="hidden" name="auto_load" value="' . ($autoLoad ? '0' : '1') . '">';
-        echo '<button type="submit" class="button ' . ($autoLoad ? 'button-secondary' : 'button-primary') . '">';
-        echo ($autoLoad ? 'Disable Auto-load' : 'Enable Auto-load') . '</button>';
-        echo '</form> ';
-
-        echo '<form method="post" action="" style="display: inline;" onsubmit="return confirm(\'Are you sure you want to remove this icon set? This action cannot be undone.\');">';
-        echo '<input type="hidden" name="jankx_action" value="remove_icon_type">';
-        echo '<input type="hidden" name="icon_type" value="' . esc_attr($iconType) . '">';
-        echo '<button type="submit" class="button button-link-delete">Remove Icon Type</button>';
-        echo '</form>';
-        echo '</div>';
-
-        echo '</div>';
-    }
-
-    /**
-     * Render JavaScript cho icon management
-     */
-    protected function renderIconManagementScript($iconType)
-    {
         ?>
-        <script>
-        jQuery(document).ready(function($) {
-            let currentIcons = [];
-            let filteredIcons = [];
-            const iconType = '<?php echo esc_js($iconType); ?>';
+            <div class="jankx-dashboard-grid">
+                <!-- Quick Actions -->
+                <div class="jankx-card action-card">
+                    <div class="card-header">
+                        <span class="dashicons dashicons-lightning"></span>
+                        <h3><?php \_e('Quick Actions', 'jankx'); ?></h3>
+                    </div>
+                    <div class="card-body">
+                        <ul class="action-list">
+                            <li>
+                                <a href="<?php echo \admin_url('admin.php?page=jankx-icons'); ?>">
+                                    <span class="dashicons dashicons-format-image"></span>
+                                    <span class="text"><?php \_e('Manage Icons', 'jankx'); ?></span>
+                                    <span class="dashicons dashicons-arrow-right-alt2 arrow"></span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="<?php echo \admin_url('admin.php?page=jankx-utilities'); ?>">
+                                    <span class="dashicons dashicons-admin-tools"></span>
+                                    <span class="text"><?php \_e('Utilities', 'jankx'); ?></span>
+                                    <span class="dashicons dashicons-arrow-right-alt2 arrow"></span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="<?php echo \admin_url('customize.php'); ?>">
+                                    <span class="dashicons dashicons-admin-customizer"></span>
+                                    <span class="text"><?php \_e('Customize Theme', 'jankx'); ?></span>
+                                    <span class="dashicons dashicons-arrow-right-alt2 arrow"></span>
+                                </a>
+                            </li>
+                            <?php
+                            $license = $this->app->make('license');
+                            if (!$license->isActivated()) : ?>
+                            <li>
+                                <a href="<?php echo \admin_url('admin.php?page=jankx-license'); ?>" style="color: #ef4444;">
+                                    <span class="dashicons dashicons-shield-plugins"></span>
+                                    <span class="text"><?php \_e('Activate License', 'jankx'); ?></span>
+                                    <span class="dashicons dashicons-arrow-right-alt2 arrow"></span>
+                                </a>
+                            </li>
+                            <?php endif; ?>
+                        </ul>
+                    </div>
+                </div>
 
-            // Load icons on page load
-            loadIcons(iconType);
+                <!-- Theme Status -->
+                <div class="jankx-card status-card">
+                    <div class="card-header">
+                        <span class="dashicons dashicons-performance"></span>
+                        <h3><?php _e('System Health', 'jankx'); ?></h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="health-indicator success">
+                            <span class="dot"></span>
+                            <span class="text"><?php _e('All systems operational', 'jankx'); ?></span>
+                        </div>
+                        <p class="card-desc"><?php _e('Your website is running smoothly. Check the debug page for detailed system information.', 'jankx'); ?></p>
+                        <a href="<?php echo admin_url('admin.php?page=jankx-debug'); ?>" class="button button-link">
+                            <?php _e('View full report', 'jankx'); ?>
+                        </a>
+                    </div>
+                </div>
 
-            // Search functionality
-            $('#icon-search').on('input', function() {
-                filterIcons();
-            });
+                <!-- Extensions -->
+                <div class="jankx-card extension-card">
+                    <div class="card-header">
+                        <span class="dashicons dashicons-admin-plugins"></span>
+                        <h3><?php _e('Installed Extensions', 'jankx'); ?></h3>
+                        <a href="<?php echo admin_url('admin.php?page=jankx-extensions'); ?>" class="header-link"><?php _e('Manage All', 'jankx'); ?></a>
+                    </div>
+                    <div class="card-body">
+                        <?php
+                        $featured = $this->getFeaturedExtensions(3);
+                        if (!empty($featured)) : ?>
+                            <div class="featured-extensions-list">
+                                <?php foreach ($featured as $ext) : ?>
+                                <div class="featured-ext-item">
+                                    <div class="ext-icon">
+                                        <?php if (!empty($ext['icon_svg'])) : ?>
+                                            <?php echo $ext['icon_svg']; ?>
+                                        <?php elseif (!empty($ext['icon'])) : ?>
+                                            <img src="<?php echo esc_url($ext['icon']); ?>" alt="">
+                                        <?php else : ?>
+                                            <span class="dashicons dashicons-admin-plugins"></span>
+                                        <?php endif; ?>
+                                    </div>
+                                    <div class="ext-info">
+                                        <h4><?php echo esc_html($ext['name'] ?? 'Unknown'); ?></h4>
+                                        <div class="ext-meta">
+                                            <span class="version"><span class="dashicons dashicons-tag"></span> v<?php echo esc_html($ext['version'] ?? '1.0.0'); ?></span>
+                                            <?php if (!empty($ext['active'])) : ?>
+                                                <span class="status-badge installed"><?php _e('Active', 'jankx'); ?></span>
+                                            <?php else : ?>
+                                                <span class="status-badge inactive" style="background:#f1f5f9; color:#64748b;"><?php _e('Inactive', 'jankx'); ?></span>
+                                            <?php endif; ?>
+                                        </div>
+                                    </div>
+                                </div>
+                                <?php endforeach; ?>
+                            </div>
+                        <?php else : ?>
+                            <p class="card-desc"><?php _e('You have not installed any extensions for the theme yet.', 'jankx'); ?></p>
+                        <?php endif; ?>
+                        
+                        <div style="margin-top: 20px;">
+                            <a href="<?php echo admin_url('admin.php?page=jankx-marketplace'); ?>" class="button jankx-btn-modern">
+                                <?php _e('Explore Marketplace', 'jankx'); ?>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-            // Category filter
-            $('#icon-category-filter').on('change', function() {
-                filterIcons();
-            });
-
-            function loadIcons(type) {
-                $('#icon-list-container').html('<div class="jankx-loading">Loading icons...</div>');
-
-                // AJAX call để load icons thực tế từ server
-                $.ajax({
-                    url: ajaxurl,
-                    type: 'POST',
-                    data: {
-                        action: 'jankx_load_icons',
-                        icon_type: type,
-                        nonce: '<?php echo wp_create_nonce("jankx_load_icons"); ?>'
-                    },
-                    success: function(response) {
-                        if (response.success) {
-                            displayIcons(response.data.icons);
-                        } else {
-                            $('#icon-list-container').html('<p>Error loading icons: ' + (response.data.message || 'Unknown error') + '</p>');
-                        }
-                    },
-                    error: function() {
-                        $('#icon-list-container').html('<p>Error: Could not load icons from server.</p>');
-                    }
-                });
-            }
-
-            function displayIcons(icons) {
-                currentIcons = icons;
-                filteredIcons = icons;
-
-                if (icons.length === 0) {
-                    $('#icon-list-container').html('<p>No icons found for this type.</p>');
-                    return;
-                }
-
-                let html = '<div class="jankx-icon-grid">';
-                icons.forEach(function(icon) {
-                    html += '<div class="jankx-icon-item" data-icon="' + icon.name + '">';
-                    html += '<div class="jankx-icon-display">';
-                    html += '<span class="' + (icon.prefixes[0] || '') + '">' + icon.name + '</span>';
-                    html += '</div>';
-                    html += '<div class="jankx-icon-info">';
-                    html += '<strong>' + icon.name + '</strong><br>';
-                    html += '<small>Category: ' + icon.category + '</small><br>';
-                    html += '<small>Unicode: ' + icon.unicode + '</small>';
-                    html += '</div>';
-                    html += '<div class="jankx-icon-actions">';
-                    html += '<button type="button" class="button button-small" onclick="previewIcon(\'' + icon.name + '\')">Preview</button>';
-                    html += '<button type="button" class="button button-small" onclick="copyIconCode(\'' + icon.name + '\')">Copy Code</button>';
-                    html += '</div>';
-                    html += '</div>';
-                });
-                html += '</div>';
-
-                $('#icon-list-container').html(html);
-            }
-
-            function filterIcons() {
-                const searchTerm = $('#icon-search').val().toLowerCase();
-                const categoryFilter = $('#icon-category-filter').val();
-
-                filteredIcons = currentIcons.filter(function(icon) {
-                    const matchesSearch = icon.name.toLowerCase().includes(searchTerm);
-                    const matchesCategory = !categoryFilter || icon.category === categoryFilter;
-                    return matchesSearch && matchesCategory;
-                });
-
-                displayIcons(filteredIcons);
-            }
-
-                                    // Global functions for button actions
-            window.previewIcon = function(iconName) {
-                const icon = currentIcons.find(i => i.name === iconName);
-                if (icon) {
-                    $('#icon-preview-content').html('<span class="' + (icon.prefixes[0] || '') + '">' + icon.name + '</span>');
-                    $('#icon-preview-code').html('<code>&lt;i class="' + (icon.prefixes[0] || '') + ' ' + icon.name + '"&gt;&lt;/i&gt;</code>');
-                    $('#icon-preview').show();
-                }
-            };
-
-            window.copyIconCode = function(iconName) {
-                const icon = currentIcons.find(i => i.name === iconName);
-                if (icon) {
-                    const code = '<i class="' + (icon.prefixes[0] || '') + ' ' + icon.name + '"></i>';
-                    navigator.clipboard.writeText(code).then(function() {
-                        alert('Icon code copied to clipboard!');
-                    }).catch(function() {
-                        // Fallback for older browsers
-                        const textArea = document.createElement('textarea');
-                        textArea.value = code;
-                        document.body.appendChild(textArea);
-                        textArea.select();
-                        document.execCommand('copy');
-                        textArea.remove();
-                        alert('Icon code copied to clipboard!');
-                    });
-                }
-            };
-
-            window.refreshIconList = function() {
-                loadIcons(iconType);
-            };
-        });
-        </script>
+            <!-- Jankx News Portal -->
+            <div class="jankx-news-portal-section">
+                <div class="news-portal-header">
+                    <span class="dashicons dashicons-rss"></span>
+                    <h2><?php _e('Jankx News & Updates', 'jankx'); ?></h2>
+                    <a href="https://jankx.pages.dev/news" target="_blank" rel="noopener" class="news-portal-see-all">
+                        <?php _e('See all', 'jankx'); ?> →
+                    </a>
+                </div>
+                <?php $this->renderNewsWidget(6); ?>
+            </div>
         <?php
     }
 
-        /**
-     * Lấy số lượng icons cho một type
-     */
-    protected function getIconCountForType($iconType)
-    {
-        // Lấy số lượng icons từ config hoặc sample data
-        $allIconTypes = Config::get('font-icons.icon_types', []);
-
-        if (isset($allIconTypes[$iconType])) {
-            $config = $allIconTypes[$iconType];
-
-            // Nếu có categories, ước tính số lượng icons
-            if (isset($config['categories'])) {
-                $categoryCount = count($config['categories']);
-                // Ước tính trung bình 20 icons per category
-                return $categoryCount * 20;
-            }
-
-            // Fallback cho các type không có categories
-            switch ($iconType) {
-                case 'material':
-                    return 12; // Sample icons hiện tại
-                case 'fontawesome':
-                    return 12; // Sample icons hiện tại
-                case 'custom':
-                    return 8; // Sample icons hiện tại
-                default:
-                    return 50;
-            }
-        }
-
-        return 0;
-    }
-
-
-
-
-
-
-
-            /**
-     * Handle import/export form actions
-     */
-    protected function handleImportExportActions($data)
-    {
-
-        $action = $data['jankx_action'] ?? '';
-
-        switch ($action) {
-            case 'import_new_icon_set':
-                                $this->handleImportNewIconSet($data);
-                break;
-            case 'export_icon_sets':
-                                $this->handleExportIconSets($data);
-                break;
-            default:
-                break;
-        }
-    }
-
-        /**
-     * Handle import new icon set
-     */
-    protected function handleImportNewIconSet($data)
-    {
-
-        // Verify nonce
-        if (!wp_verify_nonce($data['_wpnonce'] ?? '', 'jankx_import_icons')) {
-                        wp_die('Security check failed');
-        }
-
-
-        try {
-            $iconSetName = sanitize_text_field($data['icon_set_name'] ?? '');
-            $cssUrl = esc_url_raw($data['css_url'] ?? '');
-            $cssFile = $_FILES['css_file'] ?? null;
-            $iconPrefix = sanitize_text_field($data['icon_prefix'] ?? '');
-            $iconCategories = sanitize_text_field($data['icon_categories'] ?? '');
-            $autoLoad = isset($data['auto_load']);
-
-
-            // Validate required fields
-            if (empty($iconSetName) || (empty($cssUrl) && empty($cssFile['name']))) {
-                                throw new \Exception('Icon set name and CSS source are required');
-            }
-
-
-            // Create icon type from name
-            $iconType = $this->createIconTypeFromName($iconSetName);
-
-            // Import icons
-                        $importService = $this->app->make('jankx.icon-import');
-
-                        $result = $importService->importFromCssUrl($cssUrl, $iconType, $iconSetName);
-
-            if ($result['success']) {
-                                // Show success message
-                echo '<div class="notice notice-success is-dismissible">';
-                echo '<p>' . esc_html($result['message']) . '</p>';
-                echo '</div>';
-            } else {
-                                // Show error message
-                echo '<div class="notice notice-error is-dismissible">';
-                echo '<p>' . esc_html($result['message']) . '</p>';
-                echo '</div>';
-            }
-        } catch (\Exception $e) {
-                                    echo '<div class="notice notice-error is-dismissible">';
-            echo '<p>Import failed: ' . esc_html($e->getMessage()) . '</p>';
-            echo '</div>';
-        }
-    }
-
     /**
-     * Create icon type from display name
+     * Render Debug Page
      */
-    protected function createIconTypeFromName($displayName)
+    public function renderDebugPage($page)
     {
-        // Convert display name to icon type (lowercase, hyphens)
-        $iconType = strtolower(preg_replace('/[^a-zA-Z0-9]+/', '-', $displayName));
-        $iconType = trim($iconType, '-');
+        $active_tab = isset($_GET['tab']) ? $_GET['tab'] : 'system_info';
+        ?>
+            <nav class="nav-tab-wrapper">
+                <a href="?page=jankx-debug&tab=system_info"
+                    class="nav-tab <?php echo $active_tab == 'system_info' ? 'nav-tab-active' : ''; ?>"><?php _e('System Information', 'jankx'); ?></a>
+                <a href="?page=jankx-debug&tab=log"
+                    class="nav-tab <?php echo $active_tab == 'log' ? 'nav-tab-active' : ''; ?>"><?php _e('Debug Log', 'jankx'); ?></a>
+            </nav>
 
-        // Ensure it starts with a letter
-        if (!preg_match('/^[a-z]/', $iconType)) {
-            $iconType = 'icon-' . $iconType;
-        }
-
-        return $iconType;
+            <div class="jankx-tab-content modern-tabs-content" style="margin-top: 30px;">
+                <?php
+                switch ($active_tab) {
+                    case 'system_info':
+                        $this->renderSystemInformationContent();
+                        break;
+                    case 'log':
+                        $this->renderDebugLogContent();
+                        break;
+                }
+                ?>
+            </div>
+        <?php
     }
 
-    /**
-     * Handle export icon sets
-     */
-    protected function handleExportIconSets($data)
+    protected function renderSystemInformationContent()
     {
-        // Verify nonce
-        if (!wp_verify_nonce($data['_wpnonce'] ?? '', 'jankx_export_icons')) {
-            wp_die('Security check failed');
-        }
+        ?>
+        <div class="jankx-card system-info-card">
+            <div class="card-header">
+                <span class="dashicons dashicons-info-outline"></span>
+                <h3><?php _e('Services Status', 'jankx'); ?></h3>
+            </div>
+            <table class="jankx-info-table" style="width: 100%; border-collapse: separate; border-spacing: 0 8px;">
+                <tbody>
+                    <?php
+                    $info = [
+                        'Framework Version' => $this->app->make('jankx.version') ?? 'Unknown',
+                        'Environment'       => $this->app->make('jankx.environment') ?? 'Unknown',
+                        'Debug Mode'        => WP_DEBUG ? 'Enabled' : 'Disabled',
+                        'PHP Version'       => PHP_VERSION,
+                        'WordPress Version' => get_bloginfo('version'),
+                        'Server Software'   => $_SERVER['SERVER_SOFTWARE'] ?? 'Unknown',
+                    ];
+                    foreach ($info as $label => $value):
+                    ?>
+                    <tr>
+                        <td style="padding: 12px 16px; background: #f8fafc; border-radius: 10px 0 0 10px; width: 250px; font-weight: 600; color: #475569; border: 1px solid #f1f5f9; border-right: none;">
+                            <?php echo esc_html($label); ?>
+                        </td>
+                        <td style="padding: 12px 16px; background: #fff; border-radius: 0 10px 10px 0; color: #1e293b; border: 1px solid #f1f5f9; border-left: none; font-family: monospace;">
+                            <?php echo esc_html($value); ?>
+                        </td>
+                    </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
 
-        $exportTypes = $data['export_types'] ?? [];
+        <?php if ($this->app->bound('font-icons.repository')) : 
+            $repository = $this->app->make('font-icons.repository');
+            $stats = $repository->getStats();
+            $storage = $stats['storage'] ?? [];
+        ?>
+        <div class="jankx-card system-info-card" style="margin-top: 25px;">
+            <div class="card-header">
+                <span class="dashicons dashicons-database"></span>
+                <h3><?php _e('Database & Storage', 'jankx'); ?></h3>
+            </div>
+            <table class="jankx-info-table" style="width: 100%; border-collapse: separate; border-spacing: 0 8px;">
+                <tbody>
+                    <?php
+                    $storage_type = strtoupper($storage['type'] ?? 'unknown');
+                    $storage_path = ($storage['type'] ?? '') === 'sqlite' ? ($storage['db_path'] ?? '') : ($storage['directory'] ?? '');
+                    $storage_count = ($storage['type'] ?? '') === 'sqlite' ? ($storage['icon_sets_count'] ?? 0) : ($storage['cache_files'] ?? 0);
+                    $count_label = ($storage['type'] ?? '') === 'sqlite' ? __('Total Stored Sets', 'jankx') : __('Total JSON Files', 'jankx');
 
-        if (empty($exportTypes)) {
-            echo '<div class="notice notice-warning is-dismissible">';
-            echo '<p>Please select at least one icon type to export.</p>';
-            echo '</div>';
+                    $icon_storage_info = [
+                        'Icon Storage System' => $storage_type,
+                        'Icon Storage Path'   => $storage_path,
+                        $count_label          => $storage_count,
+                    ];
+
+                    foreach ($icon_storage_info as $label => $value):
+                    ?>
+                    <tr>
+                        <td style="padding: 12px 16px; background: #f8fafc; border-radius: 10px 0 0 10px; width: 250px; font-weight: 600; color: #475569; border: 1px solid #f1f5f9; border-right: none;">
+                            <?php echo esc_html($label); ?>
+                        </td>
+                        <td style="padding: 12px 16px; background: #fff; border-radius: 0 10px 10px 0; color: #1e293b; border: 1px solid #f1f5f9; border-left: none; font-family: monospace;">
+                            <?php echo esc_html($value); ?>
+                        </td>
+                    </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+        <?php endif; ?>
+        <?php
+    }
+
+    protected function renderDebugLogContent()
+    {
+        $log_file = WP_CONTENT_DIR . '/debug.log';
+        if (!file_exists($log_file)) {
+            echo '<div class="notice notice-info"><p>' . __('Debug log file not found.', 'jankx') . '</p></div>';
             return;
         }
 
-        // TODO: Implement export functionality
-        echo '<div class="notice notice-info is-dismissible">';
-        echo '<p>Export functionality will be implemented soon.</p>';
-        echo '</div>';
-    }
+        $log_content = file_get_contents($log_file);
+        // Get last 100 lines
+        $lines = explode("\n", $log_content);
+        $lines = array_slice($lines, -100);
+        $log_content = implode("\n", $lines);
 
-    /**
-     * Render tab Import (complete import/export interface)
-     */
-    protected function renderImportTab($iconTypes)
-    {
-
-        echo '<div class="tab-content">';
-
-        // Hiển thị thông tin về icon types hiện có
-        // Lấy data trực tiếp từ config thay vì dùng $iconTypes parameter
-        $allIconTypes = Config::get('font-icons.icon_types', []);
-
-        if (!empty($allIconTypes) && is_array($allIconTypes)) {
-            echo '<div class="jankx-current-icon-types">';
-            echo '<h3>Current Icon Types:</h3>';
-            echo '<p>You currently have <strong>' . count($allIconTypes) . ' icon type(s)</strong> configured:</p>';
-            echo '<ul>';
-            foreach ($allIconTypes as $type => $config) {
-                $enabled = $config['enabled'] ?? false;
-                $autoLoad = $config['auto_load'] ?? false;
-                $version = $config['version'] ?? 'Unknown';
-                $iconCount = $this->getIconCountForType($type);
-
-                $status = $enabled ? 'Enabled' : 'Disabled';
-                $autoLoadText = $autoLoad ? 'Yes' : 'No';
-
-                echo '<li>';
-                echo '<strong>' . esc_html(ucfirst($type)) . '</strong>';
-                echo ' - Version: ' . esc_html($version);
-                echo ', Icons: ~' . $iconCount;
-                echo ', Status: ' . $status;
-                echo ', Auto-load: ' . $autoLoadText;
-                echo '</li>';
-            }
-            echo '</ul>';
-            echo '</div>';
-        } else {
-            echo '<div class="jankx-current-icon-types">';
-            echo '<h3>Current Icon Types:</h3>';
-            echo '<p>No icon types are currently configured.</p>';
-            echo '</div>';
-        }
-
-        // Import new icon set section
-        echo '<div class="jankx-import-new-section">';
-        echo '<h2>Import New Icon Set</h2>';
-        echo '<p>Import a completely new icon set from CSS files. This will create a new icon type.</p>';
-
-        echo '<form method="post" action="" enctype="multipart/form-data">';
-        echo '<input type="hidden" name="jankx_action" value="import_new_icon_set">';
-        echo '<input type="hidden" name="_wpnonce" value="' . wp_create_nonce('jankx_import_icons') . '">';
-
-        echo '<table class="form-table">';
-        echo '<tr>';
-        echo '<th><label for="icon_set_name">Icon Set Name</label></th>';
-        echo '<td>';
-        echo '<input type="text" id="icon_set_name" name="icon_set_name" class="regular-text" placeholder="e.g., My Custom Icons" required>';
-        echo '<p class="description">Give your icon set a unique name (only letters, numbers, and hyphens).</p>';
-        echo '</td>';
-        echo '</tr>';
-        echo '<tr>';
-        echo '<th><label for="css_url">CSS File URL</label></th>';
-        echo '<td>';
-        echo '<input type="url" id="css_url" name="css_url" class="regular-text" placeholder="https://example.com/icons.css">';
-        echo '<p class="description">Enter the URL of a CSS file containing icon definitions.</p>';
-        echo '</td>';
-        echo '</tr>';
-        echo '<tr>';
-        echo '<th><label for="css_file">Or Upload CSS File</label></th>';
-        echo '<td>';
-        echo '<input type="file" id="css_file" name="css_file" accept=".css">';
-        echo '<p class="description">Upload a CSS file from your computer.</p>';
-        echo '</td>';
-        echo '</tr>';
-        echo '<tr>';
-        echo '<th><label for="icon_prefix">Icon Prefix</label></th>';
-        echo '<td>';
-        echo '<input type="text" id="icon_prefix" name="icon_prefix" class="regular-text" placeholder="e.g., my-icon" required>';
-        echo '<p class="description">The CSS class prefix for icons (e.g., "fas" for Font Awesome, "my-icon" for custom).</p>';
-        echo '</td>';
-        echo '</tr>';
-        echo '<tr>';
-        echo '<th><label for="icon_categories">Categories</label></th>';
-        echo '<td>';
-        echo '<input type="text" id="icon_categories" name="icon_categories" class="regular-text" placeholder="general, navigation, action, status">';
-        echo '<p class="description">Comma-separated list of icon categories (optional).</p>';
-        echo '</td>';
-        echo '</tr>';
-        echo '<tr>';
-        echo '<th><label for="auto_load">Auto-load</label></th>';
-        echo '<td>';
-        echo '<label><input type="checkbox" id="auto_load" name="auto_load" value="1"> Automatically load this icon set</label>';
-        echo '<p class="description">Enable this to automatically load the icon set on all pages.</p>';
-        echo '</td>';
-        echo '</tr>';
-        echo '</table>';
-
-        echo '<p class="submit">';
-        echo '<input type="submit" name="submit" id="submit" class="button button-primary" value="Import New Icon Set">';
-        echo '</p>';
-        echo '</form>';
-        echo '</div>';
-
-
-
-        // Export section
-        echo '<div class="jankx-export-section">';
-        echo '<h2>Export Icon Sets</h2>';
-        echo '<p>Export your icon sets for backup or sharing.</p>';
-
-        if (!empty($allIconTypes)) {
-                    echo '<form method="post" action="">';
-            echo '<input type="hidden" name="jankx_action" value="export_icon_sets">';
-            echo '<input type="hidden" name="_wpnonce" value="' . wp_create_nonce('jankx_export_icons') . '">';
-
-            echo '<table class="form-table">';
-            echo '<tr>';
-            echo '<th><label for="export_type">Export Type</label></th>';
-            echo '<td>';
-            echo '<select id="export_type" name="export_type">';
-            echo '<option value="all">All Icon Sets</option>';
-            foreach ($allIconTypes as $type => $config) {
-                echo '<option value="' . esc_attr($type) . '">' . esc_html(ucfirst($type)) . '</option>';
-            }
-            echo '</select>';
-            echo '<p class="description">Choose which icon sets to export.</p>';
-            echo '</td>';
-            echo '</tr>';
-            echo '<tr>';
-            echo '<th><label for="export_format">Export Format</label></th>';
-            echo '<td>';
-            echo '<select id="export_format" name="export_format">';
-            echo '<option value="json">JSON</option>';
-            echo '<option value="css">CSS</option>';
-            echo '<option value="html">HTML Preview</option>';
-            echo '</select>';
-            echo '<p class="description">Choose the export format.</p>';
-            echo '</td>';
-            echo '</tr>';
-            echo '</table>';
-
-            echo '<p class="submit">';
-            echo '<input type="submit" name="submit" id="submit" class="button" value="Export Icon Sets">';
-            echo '</p>';
-            echo '</form>';
-        } else {
-            echo '<p>No icon sets available for export.</p>';
-        }
-        echo '</div>';
-
-        // Recent imports
-        echo '<div class="jankx-recent-imports">';
-        echo '<h2>Recent Imports</h2>';
-        echo '<p>No recent imports found.</p>';
-        echo '</div>';
-
-        echo '</div>';
-    }
-
-    /**
-     * AJAX handler để load icons cho một icon type
-     */
-    public function handleLoadIconsAjax()
-    {
-        // Verify nonce
-        if (!wp_verify_nonce($_POST['nonce'], 'jankx_load_icons')) {
-            wp_die('Security check failed');
-        }
-
-        $iconType = sanitize_text_field($_POST['icon_type']);
-
-        if (empty($iconType)) {
-            wp_send_json_error(['message' => 'Icon type is required']);
-        }
-
-        try {
-            $icons = $this->loadIconsFromType($iconType);
-            wp_send_json_success(['icons' => $icons]);
-        } catch (Exception $e) {
-            wp_send_json_error(['message' => $e->getMessage()]);
-        }
-    }
-
-    /**
-     * Load icons thực tế từ một icon type
-     */
-    protected function loadIconsFromType($iconType)
-    {
-        // Lấy config cho icon type
-        $allIconTypes = Config::get('font-icons.icon_types', []);
-
-        if (!isset($allIconTypes[$iconType])) {
-            throw new Exception('Icon type not found: ' . $iconType);
-        }
-
-        $config = $allIconTypes[$iconType];
-
-        // Kiểm tra xem có JSON metadata file không
-        $jsonFile = $this->getIconMetadataPath($iconType);
-
-        if (file_exists($jsonFile)) {
-            $jsonContent = file_get_contents($jsonFile);
-            $metadata = json_decode($jsonContent, true);
-
-            if ($metadata && isset($metadata['icons'])) {
-                return $metadata['icons'];
-            }
-        }
-
-        // Fallback: tạo sample icons dựa trên config
-        return $this->generateFallbackIcons($iconType, $config);
-    }
-
-    /**
-     * Lấy đường dẫn đến file metadata của icon type
-     */
-    protected function getIconMetadataPath($iconType)
-    {
-        $basePath = get_template_directory();
-        return $basePath . '/resources/icons/' . $iconType . '/icons.json';
-    }
-
-    /**
-     * Tạo fallback icons dựa trên config
-     */
-    protected function generateFallbackIcons($iconType, $config)
-    {
-        $prefixes = $config['prefixes'] ?? [];
-        $categories = $config['categories'] ?? [];
-
-        if (empty($prefixes) || empty($categories)) {
-            return [];
-        }
-
-        $prefix = $prefixes[0];
-        $fallbackIcons = [];
-
-        // Tạo một số icons mẫu dựa trên categories
-        foreach ($categories as $index => $category) {
-            $fallbackIcons[] = [
-                'name' => $prefix . '-' . $category,
-                'category' => $category,
-                'unicode' => 'e' . str_pad($index + 1, 3, '0', STR_PAD_LEFT),
-                'prefixes' => $prefixes
-            ];
-        }
-
-        return $fallbackIcons;
-    }
-
-    /**
-     * Render trang Framework Info
-     */
-    public function renderFrameworkInfoPage($page)
-    {
-        echo '<div class="jankx-framework-info-page">';
-        echo '<h2>Jankx Framework Information</h2>';
-
-        echo '<div class="jankx-info-grid">';
-
-        // Basic Info
-        echo '<div class="jankx-info-section">';
-        echo '<h3>Basic Information</h3>';
-        echo '<table class="form-table">';
-        echo '<tr><th>Framework Version</th><td>' . ($this->app->make('jankx.version') ?? 'Unknown') . '</td></tr>';
-        echo '<tr><th>Environment</th><td>' . ($this->app->make('jankx.environment') ?? 'Unknown') . '</td></tr>';
-        echo '<tr><th>Base Path</th><td>' . ($this->app->make('jankx.paths')['base'] ?? 'Unknown') . '</td></tr>';
-        echo '<tr><th>Base URL</th><td>' . ($this->app->make('jankx.urls')['base'] ?? 'Unknown') . '</td></tr>';
-        echo '<tr><th>PHP Version</th><td>' . PHP_VERSION . '</td></tr>';
-        echo '<tr><th>WordPress Version</th><td>' . get_bloginfo('version') . '</td></tr>';
-        echo '</table>';
-        echo '</div>';
-
-        // Services
-        echo '<div class="jankx-info-section">';
-        echo '<h3>Registered Services</h3>';
-        echo '<ul>';
-        $services = ['font-icons.repository', 'font-icons.manager', 'font-icons.renderer'];
-        foreach ($services as $service) {
-            try {
-                $instance = $this->app->make($service);
-                echo '<li><span class="dashicons dashicons-yes-alt" style="color: green;"></span> ' . esc_html($service) . '</li>';
-            } catch (\Exception $e) {
-                echo '<li><span class="dashicons dashicons-no-alt" style="color: red;"></span> ' . esc_html($service) . ' (Error: ' . esc_html($e->getMessage()) . ')</li>';
-            }
-        }
-        echo '</ul>';
-        echo '</div>';
-
-        echo '</div>';
-        echo '</div>';
+        ?>
+        <div class="card" style="max-width: 1000px; padding: 20px;">
+            <h2><?php _e('Last 100 lines of debug.log', 'jankx'); ?></h2>
+            <pre style="background: #f1f1f1; padding: 15px; overflow: auto; max-height: 500px; font-size: 12px; border: 1px solid #ddd; border-radius: 4px;"><?php echo esc_html($log_content); ?></pre>
+            <form method="post" action="">
+                <?php wp_nonce_field('jankx_clear_log', 'jankx_debug_nonce'); ?>
+                <input type="hidden" name="jankx_action" value="clear_debug_log">
+                <p class="submit">
+                    <input type="submit" class="button button-secondary" value="<?php _e('Clear Log', 'jankx'); ?>" onclick="return confirm('Are you sure?');">
+                </p>
+            </form>
+        </div>
+        <?php
     }
 
     /**
@@ -1209,12 +777,36 @@ class AdminPageService
      */
     protected function renderPageHeader($page)
     {
-        echo '<div class="wrap">';
-        echo '<h1>' . esc_html($page['title']) . '</h1>';
+        $framework_version = $this->app->make('jankx.version') ?? '1.0.0';
+        $icon = $page['icon'] ?? 'dashicons-admin-generic';
+        $subtitle = $page['subtitle'] ?? __('Premium WordPress experience by Jankx Framework.', 'jankx');
 
-        if (!empty($page['tabs'])) {
-            $this->renderTabs($page);
-        }
+        $isPro = $this->app->bound('license') && $this->app->make('license')->isActivated();
+        $edition = $isPro ? 'PRO' : 'FREE';
+        $badgeClass = $isPro ? 'edition-badge-pro' : 'edition-badge-free';
+        
+        echo '<div class="jankx-admin-page-container">';
+        $this->renderCommonStyles();
+        ?>
+        <header class="jankx-universal-header">
+            <div class="header-content">
+                <div class="header-icon">
+                    <span class="dashicons <?php echo esc_attr($icon); ?>"></span>
+                </div>
+                <div class="header-text">
+                    <h1><?php echo esc_html($page['title']); ?> <span class="version-badge">v<?php echo $framework_version; ?></span> <span class="edition-badge <?php echo $badgeClass; ?>"><?php echo $edition; ?></span></h1>
+                    <p class="subtitle"><?php echo esc_html($subtitle); ?></p>
+                </div>
+            </div>
+        </header>
+        <?php if (!$isPro): ?>
+        <div class="jankx-free-notice">
+            <span class="dashicons dashicons-info"></span>
+            <span><?php _e('You are using JANKX FREE.', 'jankx'); ?> <a href="<?php echo \admin_url('admin.php?page=jankx-license'); ?>"><?php _e('Activate PRO', 'jankx'); ?></a> <?php _e('to unlock premium extensions, automatic updates, and priority support.', 'jankx'); ?></span>
+        </div>
+        <?php endif; ?>
+        <div class="jankx-universal-content">
+        <?php
     }
 
     /**
@@ -1222,22 +814,595 @@ class AdminPageService
      */
     protected function renderPageFooter($page)
     {
-        echo '</div>'; // Close .wrap
+        $isPro = $this->app->bound('license') && $this->app->make('license')->isActivated();
+        $editionLabel = $isPro ? 'JANKX PRO' : 'JANKX FREE';
+        ?>
+        </div> <!-- .jankx-universal-content -->
+        <footer class="jankx-admin-footer">
+            <p><?php echo sprintf(__('&copy; %1$s %2$s. Made with %3$s by %4$s', 'jankx'), date('Y'), $editionLabel, '<span class="dashicons dashicons-heart" style="color: #ef4444; font-size: 14px; width: 14px; height: 14px;"></span>', 'Puleeno'); ?>
+            <?php if ($isPro): ?>
+                <span class="footer-license-badge"><?php _e('Licensed', 'jankx'); ?></span>
+            <?php else: ?>
+                <span class="footer-license-badge free"><?php _e('Unlicensed', 'jankx'); ?></span>
+            <?php endif; ?>
+            </p>
+        </footer>
+        </div> <!-- .jankx-admin-page-container -->
+        <?php
     }
 
     /**
-     * Render tabs navigation
+     * Render Theme Activation (License) Page
      */
-    protected function renderTabs($page)
+    public function renderLicensePage($page)
     {
-        $activeTab = $_GET['tab'] ?? array_key_first($page['tabs']);
-
-        echo '<nav class="nav-tab-wrapper">';
-        foreach ($page['tabs'] as $tabId => $tabData) {
-            $activeClass = $activeTab === $tabId ? 'nav-tab-active' : '';
-            echo '<a href="' . admin_url('admin.php?page=' . $page['id'] . '&tab=' . $tabId) . '" class="nav-tab ' . $activeClass . '">' . esc_html($tabData['title']) . '</a>';
+        if (!$this->app->bound('license')) {
+            echo '<div class="notice notice-warning"><p>' . __('License service is not available.', 'jankx') . '</p></div>';
+            return;
         }
-        echo '</nav>';
+
+        $licenseService = $this->app->make('license');
+        $isActivated = $licenseService->isActivated();
+        $licenseData = $licenseService->getLicenseData();
+        ?>
+        <div class="jankx-dashboard-grid">
+            <!-- License Status Card -->
+            <div class="jankx-card <?php echo $isActivated ? 'license-active' : 'license-inactive'; ?>" style="grid-column: span 2;">
+                <div class="card-header">
+                    <span class="dashicons <?php echo $isActivated ? 'dashicons-shield-plugins' : 'dashicons-warning'; ?>"></span>
+                    <h3><?php echo $isActivated ? __('License Activated', 'jankx') : __('License Activation Required', 'jankx'); ?></h3>
+                    <?php if ($isActivated) : ?>
+                        <span class="status-badge installed" style="margin-left: auto;"><?php _e('Pro Enabled', 'jankx'); ?></span>
+                    <?php endif; ?>
+                </div>
+                
+                <div class="card-body">
+                    <?php if (!$isActivated) : ?>
+                        <div class="license-info-box" style="margin-bottom: 30px; padding: 20px; background: #fff7ed; border-radius: 16px; border: 1px solid #ffedd5; display: flex; gap: 16px; align-items: flex-start;">
+                            <span class="dashicons dashicons-info" style="color: #f97316; margin-top: 2px;"></span>
+                            <div>
+                                <h4 style="margin: 0 0 5px 0; color: #9a3412;"><?php _e('Activate JANKX PRO', 'jankx'); ?></h4>
+                                <p style="margin: 0; color: #c2410c; font-size: 14px;"><?php _e('Enter your license key below to unlock cloud assets, premium templates, and automatic updates.', 'jankx'); ?></p>
+                            </div>
+                        </div>
+
+                        <form method="post" action="" class="jankx-modern-form">
+                            <?php wp_nonce_field('jankx_activate_license', 'jankx_license_nonce'); ?>
+                            <input type="hidden" name="jankx_action" value="activate_license">
+                            
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+                                <div class="form-group">
+                                    <label style="display: block; margin-bottom: 10px; font-weight: 600; font-size: 14px;"><?php _e('License Key', 'jankx'); ?></label>
+                                    <input type="text" name="license_key" placeholder="XXXX-XXXX-XXXX-XXXX" style="width: 100%; padding: 12px 16px; border-radius: 12px; border: 1px solid #e2e8f0; background: #f8fafc;" required>
+                                </div>
+                                <div class="form-group">
+                                    <label style="display: block; margin-bottom: 10px; font-weight: 600; font-size: 14px;"><?php _e('Email Address', 'jankx'); ?></label>
+                                    <input type="email" name="email" placeholder="customer@email.com" style="width: 100%; padding: 12px 16px; border-radius: 12px; border: 1px solid #e2e8f0; background: #f8fafc;" required>
+                                </div>
+                            </div>
+                            
+                            <div style="margin-top: 30px;">
+                                <button type="submit" class="button button-primary" style="height: auto; padding: 12px 40px; border-radius: 12px; font-weight: 700; background: #3b82f6; border: none; box-shadow: 0 4px 14px rgba(59, 130, 246, 0.4);"><?php _e('Activate JANKX PRO', 'jankx'); ?></button>
+                            </div>
+                        </form>
+                    <?php else : ?>
+                        <div class="license-details-grid" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px;">
+                            <div class="detail-item-box" style="padding: 20px; background: #f8fafc; border-radius: 16px; border: 1px solid #f1f5f9;">
+                                <span style="display: block; font-size: 11px; text-transform: uppercase; color: #94a3b8; font-weight: 700; margin-bottom: 8px; letter-spacing: 0.5px;"><?php _e('Bound License Key', 'jankx'); ?></span>
+                                <code style="font-size: 15px; color: #1e293b; background: #fff; padding: 4px 8px; border-radius: 6px; border: 1px solid #e2e8f0;"><?php echo esc_html($licenseData['key'] ?? '****'); ?></code>
+                            </div>
+                            <div class="detail-item-box" style="padding: 20px; background: #f8fafc; border-radius: 16px; border: 1px solid #f1f5f9;">
+                                <span style="display: block; font-size: 11px; text-transform: uppercase; color: #94a3b8; font-weight: 700; margin-bottom: 8px; letter-spacing: 0.5px;"><?php _e('Owner Account', 'jankx'); ?></span>
+                                <span style="font-size: 15px; color: #1e293b; font-weight: 600;"><?php echo esc_html($licenseData['email'] ?? 'N/A'); ?></span>
+                            </div>
+                            <div class="detail-item-box" style="padding: 20px; background: #f8fafc; border-radius: 16px; border: 1px solid #f1f5f9;">
+                                <span style="display: block; font-size: 11px; text-transform: uppercase; color: #94a3b8; font-weight: 700; margin-bottom: 8px; letter-spacing: 0.5px;"><?php _e('Authorized Domain', 'jankx'); ?></span>
+                                <span style="font-size: 15px; color: #1e293b; font-weight: 600;"><?php echo esc_html($licenseData['domain'] ?? parse_url(get_site_url(), PHP_URL_HOST)); ?></span>
+                            </div>
+                            <div class="detail-item-box" style="padding: 20px; background: #f8fafc; border-radius: 16px; border: 1px solid #f1f5f9;">
+                                <span style="display: block; font-size: 11px; text-transform: uppercase; color: #94a3b8; font-weight: 700; margin-bottom: 8px; letter-spacing: 0.5px;"><?php _e('Support Status', 'jankx'); ?></span>
+                                <span style="font-size: 14px; color: #10b981; font-weight: 700; display: flex; align-items: center; gap: 6px;">
+                                    <span class="dashicons dashicons-yes-alt" style="font-size: 18px; width: 18px; height: 18px;"></span>
+                                    <?php _e('Premium Support Active', 'jankx'); ?>
+                                </span>
+                            </div>
+                        </div>
+
+                        <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #f1f5f9; display: flex; justify-content: flex-end;">
+                            <form method="post" action="" onsubmit="return confirm('<?php _e('Deactivating will remove PRO features. Continue?', 'jankx'); ?>');">
+                                <?php wp_nonce_field('jankx_deactivate_license', 'jankx_license_nonce'); ?>
+                                <input type="hidden" name="jankx_action" value="deactivate_license">
+                                <button type="submit" class="button button-link" style="color: #ef4444; font-size: 13px; text-decoration: none;">
+                                    <span class="dashicons dashicons-no-alt" style="font-size: 16px; width: 16px; height: 16px; margin-top: -2px;"></span>
+                                    <?php _e('Deactivate this license', 'jankx'); ?>
+                                </button>
+                            </form>
+                        </div>
+                    <?php endif; ?>
+                </div>
+            </div>
+
+            <!-- Help Sidebar -->
+            <div class="sidebar-cards">
+                <div class="jankx-card" style="padding: 24px;">
+                    <div class="card-header" style="margin-bottom: 15px;">
+                        <span class="dashicons dashicons-sos"></span>
+                        <h4 style="margin: 0;"><?php _e('Need Help?', 'jankx'); ?></h4>
+                    </div>
+                    <p style="font-size: 13px; color: #64748b; margin-bottom: 15px;"><?php _e('If you lost your license key or need help activating, visit our portal.', 'jankx'); ?></p>
+                    <a href="https://jankx.com" target="_blank" class="button button-secondary" style="width: 100%; text-align: center; border-radius: 10px;"><?php _e('Jankx Support', 'jankx'); ?></a>
+                </div>
+
+                <div class="jankx-card" style="padding: 24px; background: #f1f5f9; border: none;">
+                    <div class="card-header" style="margin-bottom: 10px;">
+                        <span class="dashicons dashicons-awards" style="color: #6366f1;"></span>
+                        <h4 style="margin: 0;"><?php _e('Pro Benefits', 'jankx'); ?></h4>
+                    </div>
+                    <ul style="margin: 0; padding: 0; list-style: none; font-size: 12px; color: #475569;">
+                        <li style="margin-bottom: 8px; display: flex; align-items: center; gap: 8px;"><span class="dashicons dashicons-yes" style="font-size: 14px; color: #10b981;"></span> <?php _e('500+ Cloud Templates', 'jankx'); ?></li>
+                        <li style="margin-bottom: 8px; display: flex; align-items: center; gap: 8px;"><span class="dashicons dashicons-yes" style="font-size: 14px; color: #10b981;"></span> <?php _e('Automatic Updates', 'jankx'); ?></li>
+                        <li style="margin-bottom: 0; display: flex; align-items: center; gap: 8px;"><span class="dashicons dashicons-yes" style="font-size: 14px; color: #10b981;"></span> <?php _e('Priority Support', 'jankx'); ?></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <?php
+    }
+
+    public function renderSupportPage($page)
+    {
+        if (!$this->app->bound('license') || !$this->app->make('license')->isActivated()) {
+            ?>
+            <div class="jankx-card" style="max-width: 700px; margin: 40px auto; text-align: center; padding: 60px 40px;">
+                <span class="dashicons dashicons-lock" style="font-size: 48px; width: 48px; height: 48px; color: #94a3b8;"></span>
+                <h2 style="margin: 20px 0 10px;"><?php _e('PRO Feature', 'jankx'); ?></h2>
+                <p style="color: #64748b; max-width: 400px; margin: 0 auto 30px;">
+                    <?php _e('Support tickets are available exclusively for JANKX PRO users. Activate your license to access priority technical support.', 'jankx'); ?>
+                </p>
+                <a href="<?php echo \admin_url('admin.php?page=jankx-license'); ?>" class="button button-primary" style="height: auto; padding: 12px 32px; border-radius: 12px; font-weight: 700; background: #3b82f6; border: none;">
+                    <?php _e('Activate PRO License', 'jankx'); ?>
+                </a>
+            </div>
+            <?php
+            return;
+        }
+
+        $tickets = \get_option('jankx_support_tickets', []);
+        $nonce = \wp_create_nonce('jankx_support_ticket');
+        ?>
+        <div class="jankx-support-page">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
+                <div class="jankx-card">
+                    <div class="card-header">
+                        <span class="dashicons dashicons-email-alt"></span>
+                        <h3><?php _e('Submit a Ticket', 'jankx'); ?></h3>
+                    </div>
+                    <div class="card-body">
+                        <form method="post" action="">
+                            <?php \wp_nonce_field('jankx_support_ticket', 'jankx_ticket_nonce'); ?>
+                            <input type="hidden" name="jankx_action" value="support_ticket">
+
+                            <div class="form-group" style="margin-bottom: 20px;">
+                                <label style="display: block; margin-bottom: 8px; font-weight: 600; font-size: 14px;"><?php _e('Subject', 'jankx'); ?> <span style="color: #ef4444;">*</span></label>
+                                <input type="text" name="ticket_subject" required
+                                    style="width: 100%; padding: 12px 16px; border-radius: 10px; border: 1px solid #e2e8f0; background: #f8fafc;"
+                                    placeholder="<?php esc_attr_e('Brief description of your issue', 'jankx'); ?>">
+                            </div>
+
+                            <div class="form-group" style="margin-bottom: 20px;">
+                                <label style="display: block; margin-bottom: 8px; font-weight: 600; font-size: 14px;"><?php _e('Priority', 'jankx'); ?></label>
+                                <select name="ticket_priority"
+                                    style="width: 100%; padding: 12px 16px; border-radius: 10px; border: 1px solid #e2e8f0; background: #f8fafc;">
+                                    <option value="low"><?php _e('Low', 'jankx'); ?></option>
+                                    <option value="normal" selected><?php _e('Normal', 'jankx'); ?></option>
+                                    <option value="high"><?php _e('High', 'jankx'); ?></option>
+                                    <option value="urgent"><?php _e('Urgent', 'jankx'); ?></option>
+                                </select>
+                            </div>
+
+                            <div class="form-group" style="margin-bottom: 20px;">
+                                <label style="display: block; margin-bottom: 8px; font-weight: 600; font-size: 14px;"><?php _e('Message', 'jankx'); ?> <span style="color: #ef4444;">*</span></label>
+                                <textarea name="ticket_message" required rows="8"
+                                    style="width: 100%; padding: 12px 16px; border-radius: 10px; border: 1px solid #e2e8f0; background: #f8fafc; resize: vertical;"
+                                    placeholder="<?php esc_attr_e('Describe your issue in detail. Include steps to reproduce if applicable.', 'jankx'); ?>"></textarea>
+                            </div>
+
+                            <div class="form-group" style="margin-bottom: 24px;">
+                                <label style="display: block; margin-bottom: 8px; font-weight: 600; font-size: 14px;">
+                                    <input type="checkbox" name="include_system_info" value="1" checked>
+                                    <?php _e('Attach system information', 'jankx'); ?>
+                                </label>
+                                <p style="font-size: 12px; color: #94a3b8; margin: 4px 0 0 24px;">
+                                    <?php _e('Includes PHP version, WordPress version, active plugins, theme version, and server info. Helps us resolve your issue faster.', 'jankx'); ?>
+                                </p>
+                            </div>
+
+                            <button type="submit" class="button button-primary" style="height: auto; padding: 12px 32px; border-radius: 10px; font-weight: 700; background: #3b82f6; border: none;">
+                                <span class="dashicons dashicons-yes-alt" style="font-size: 16px; width: 16px; height: 16px; margin-top: -2px;"></span>
+                                <?php _e('Submit Ticket', 'jankx'); ?>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="jankx-card">
+                    <div class="card-header">
+                        <span class="dashicons dashicons-list-view"></span>
+                        <h3><?php _e('Recent Tickets', 'jankx'); ?></h3>
+                    </div>
+                    <div class="card-body" style="max-height: 500px; overflow-y: auto;">
+                        <?php if (empty($tickets)): ?>
+                            <div style="text-align: center; padding: 40px 20px; color: #94a3b8;">
+                                <span class="dashicons dashicons-email-alt" style="font-size: 32px; width: 32px; height: 32px; margin-bottom: 12px;"></span>
+                                <p style="margin: 0;"><?php _e('No tickets submitted yet.', 'jankx'); ?></p>
+                            </div>
+                        <?php else:
+                            $tickets = array_reverse($tickets);
+                            foreach (array_slice($tickets, 0, 10) as $index => $ticket):
+                                $priority = $ticket['priority'] ?? 'normal';
+                                $priorityColors = ['low' => '#94a3b8', 'normal' => '#3b82f6', 'high' => '#f97316', 'urgent' => '#ef4444'];
+                                $pColor = $priorityColors[$priority] ?? '#3b82f6';
+                                $status = $ticket['status'] ?? 'open';
+                                $statusColors = ['open' => '#10b981', 'closed' => '#94a3b8', 'pending' => '#f97316'];
+                                $sColor = $statusColors[$status] ?? '#10b981';
+                            ?>
+                                <div style="padding: 16px; border: 1px solid #f1f5f9; border-radius: 12px; margin-bottom: 12px; background: #f8fafc; border-left: 3px solid <?php echo $pColor; ?>;">
+                                    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 8px;">
+                                        <strong style="font-size: 14px; color: #1e293b;"><?php echo esc_html($ticket['subject'] ?? ''); ?></strong>
+                                        <span style="font-size: 11px; padding: 2px 10px; border-radius: 10px; background: <?php echo $sColor; ?>20; color: <?php echo $sColor; ?>; font-weight: 700; text-transform: uppercase;">
+                                            <?php echo esc_html($status); ?>
+                                        </span>
+                                    </div>
+                                    <div style="font-size: 12px; color: #94a3b8;">
+                                        <span><?php echo esc_html($ticket['date'] ?? ''); ?></span>
+                                        <span style="margin: 0 8px;">·</span>
+                                        <span style="text-transform: capitalize;"><?php echo esc_html($priority); ?></span>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <?php
+    }
+
+    public function renderSponsorPage($page)
+    {
+        ?>
+        <div class="jankx-sponsor-page" style="max-width: 800px;">
+            <div class="jankx-card" style="margin-bottom: 30px;">
+                <div class="card-header">
+                    <span class="dashicons dashicons-heart" style="color: #ef4444;"></span>
+                    <h3><?php _e('Support Jankx Development', 'jankx'); ?></h3>
+                </div>
+                <div class="card-body">
+                    <p style="font-size: 15px; color: #475569; line-height: 1.7; margin-bottom: 24px;">
+                        <?php _e('Jankx Framework is an open-source project maintained by a small team. Your sponsorship helps us dedicate more time to development, create new features, and provide better support for the community.', 'jankx'); ?>
+                    </p>
+
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 30px;">
+                        <div style="padding: 24px; background: #f8fafc; border-radius: 16px; border: 1px solid #f1f5f9; text-align: center;">
+                            <span class="dashicons dashicons-star-filled" style="color: #f59e0b; font-size: 32px; width: 32px; height: 32px;"></span>
+                            <h4 style="margin: 12px 0 4px;"><?php _e('Supporter', 'jankx'); ?></h4>
+                            <p style="font-size: 24px; font-weight: 700; color: #1e293b; margin: 8px 0;"><?php _e('Voluntary', 'jankx'); ?></p>
+                            <p style="font-size: 13px; color: #64748b; margin: 0;"><?php _e('Any amount you choose', 'jankx'); ?></p>
+                        </div>
+                        <div style="padding: 24px; background: #fffbeb; border-radius: 16px; border: 2px solid #f59e0b; text-align: center;">
+                            <span class="dashicons dashicons-awards" style="color: #f59e0b; font-size: 32px; width: 32px; height: 32px;"></span>
+                            <h4 style="margin: 12px 0 4px;"><?php _e('Gold Sponsor', 'jankx'); ?></h4>
+                            <p style="font-size: 24px; font-weight: 700; color: #1e293b; margin: 8px 0;"><?php _x('2,000k+', 'Sponsorship Amount', 'jankx'); ?></p>
+                            <p style="font-size: 13px; color: #64748b; margin: 0;"><?php _e('VND / year', 'jankx'); ?></p>
+                        </div>
+                        <div style="padding: 24px; background: #f0fdf4; border-radius: 16px; border: 2px solid #10b981; text-align: center;">
+                            <span class="dashicons dashicons-shield" style="color: #10b981; font-size: 32px; width: 32px; height: 32px;"></span>
+                            <h4 style="margin: 12px 0 4px;"><?php _e('Platinum Sponsor', 'jankx'); ?></h4>
+                            <p style="font-size: 24px; font-weight: 700; color: #1e293b; margin: 8px 0;"><?php _x('10,000k+', 'Sponsorship Amount', 'jankx'); ?></p>
+                            <p style="font-size: 13px; color: #64748b; margin: 0;"><?php _e('VND / year', 'jankx'); ?></p>
+                        </div>
+                    </div>
+
+                    <div style="padding: 24px; background: #f1f5f9; border-radius: 16px; margin-bottom: 30px;">
+                        <h4 style="margin: 0 0 16px;"><?php _e('Donation Methods', 'jankx'); ?></h4>
+                        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;">
+                            <a href="https://github.com/sponsors/puleeno" target="_blank" rel="noopener" class="button" style="display: flex; align-items: center; gap: 10px; padding: 16px; height: auto; border-radius: 12px; border: 1px solid #e2e8f0; text-decoration: none; color: #1e293b;">
+                                <span class="dashicons dashicons-markdown" style="color: #24292e;"></span>
+                                <span><strong>GitHub Sponsors</strong><br><small style="color: #64748b;"><?php _e('Sponsor via GitHub', 'jankx'); ?></small></span>
+                            </a>
+                            <a href="https://www.buymeacoffee.com/puleeno" target="_blank" rel="noopener" class="button" style="display: flex; align-items: center; gap: 10px; padding: 16px; height: auto; border-radius: 12px; border: 1px solid #e2e8f0; text-decoration: none; color: #1e293b;">
+                                <span class="dashicons dashicons-coffee" style="color: #FF813F;"></span>
+                                <span><strong>Buy Me a Coffee</strong><br><small style="color: #64748b;"><?php _e('One-time donation', 'jankx'); ?></small></span>
+                            </a>
+                            <a href="#" target="_blank" rel="noopener" class="button" style="display: flex; align-items: center; gap: 10px; padding: 16px; height: auto; border-radius: 12px; border: 1px solid #e2e8f0; text-decoration: none; color: #1e293b;">
+                                <span class="dashicons dashicons-bank" style="color: #009A44;"></span>
+                                <span><strong>VietQR</strong><br><small style="color: #64748b;"><?php _e('Scan to pay (Vietcombank)', 'jankx'); ?></small></span>
+                            </a>
+                            <a href="#" target="_blank" rel="noopener" class="button" style="display: flex; align-items: center; gap: 10px; padding: 16px; height: auto; border-radius: 12px; border: 1px solid #e2e8f0; text-decoration: none; color: #1e293b;">
+                                <span class="dashicons dashicons-smartphone" style="color: #DA291C;"></span>
+                                <span><strong>Momo</strong><br><small style="color: #64748b;"><?php _e('Transfer via Momo', 'jankx'); ?></small></span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <p style="font-size: 13px; color: #94a3b8; text-align: center; margin: 0;">
+                        <?php _e('All sponsors and donors will be listed in the Jankx PRO dashboard and website credits section. Thank you for your support!', 'jankx'); ?> ❤️
+                    </p>
+                </div>
+            </div>
+        </div>
+        <?php
+    }
+
+    public function renderMembershipPage($page)
+    {
+        $isPro = $this->app->bound('license') && $this->app->make('license')->isActivated();
+
+        if (!$isPro) {
+            ?>
+            <div class="jankx-card" style="max-width: 700px; margin: 40px auto; text-align: center; padding: 60px 40px;">
+                <span class="dashicons dashicons-awards" style="font-size: 48px; width: 48px; height: 48px; color: #f59e0b;"></span>
+                <h2 style="margin: 20px 0 10px;"><?php _e('JANKX Membership', 'jankx'); ?></h2>
+                <p style="color: #64748b; max-width: 500px; margin: 0 auto 30px; line-height: 1.7;">
+                    <?php _e('Membership gives you access to pre-built site kits — complete website bundles with extensions, demo data, and templates. One click to launch a full website that looks exactly like the demo.', 'jankx'); ?>
+                </p>
+                <div style="display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;">
+                    <a href="<?php echo \admin_url('admin.php?page=jankx-license'); ?>" class="button button-primary" style="height: auto; padding: 12px 32px; border-radius: 12px; font-weight: 700; background: #3b82f6; border: none;">
+                        <?php _e('Activate PRO License', 'jankx'); ?>
+                    </a>
+                    <a href="https://jankx.com/membership" target="_blank" rel="noopener" class="button" style="height: auto; padding: 12px 32px; border-radius: 12px; font-weight: 600; border: 2px solid #3b82f6; color: #3b82f6;">
+                        <?php _e('View Plans', 'jankx'); ?>
+                    </a>
+                </div>
+                <div style="margin-top: 30px; padding: 20px; background: #f8fafc; border-radius: 16px; text-align: left;">
+                    <h4 style="margin: 0 0 12px; color: #1e293b;"><?php _e('Membership includes:', 'jankx'); ?></h4>
+                    <ul style="margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                        <li style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #475569;"><span class="dashicons dashicons-yes" style="color: #10b981;"></span> <?php _e('All PRO features', 'jankx'); ?></li>
+                        <li style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #475569;"><span class="dashicons dashicons-yes" style="color: #10b981;"></span> <?php _e('Pre-built site kits', 'jankx'); ?></li>
+                        <li style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #475569;"><span class="dashicons dashicons-yes" style="color: #10b981;"></span> <?php _e('One-click full setup', 'jankx'); ?></li>
+                        <li style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #475569;"><span class="dashicons dashicons-yes" style="color: #10b981;"></span> <?php _e('All premium extensions', 'jankx'); ?></li>
+                        <li style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #475569;"><span class="dashicons dashicons-yes" style="color: #10b981;"></span> <?php _e('Cloud template library', 'jankx'); ?></li>
+                        <li style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #475569;"><span class="dashicons dashicons-yes" style="color: #10b981;"></span> <?php _e('Priority support', 'jankx'); ?></li>
+                    </ul>
+                </div>
+            </div>
+            <?php
+            return;
+        }
+
+        $bundleService = new \App\Services\MembershipBundleService();
+        $bundles = $bundleService->getBundles();
+        $activeBundle = $bundleService->getActiveBundle();
+        $nonce = \wp_create_nonce('jankx_membership_bundle');
+        ?>
+        <div class="jankx-membership-page">
+            <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 30px; padding: 20px 24px; background: linear-gradient(135deg, #f0fdf4, #dcfce7); border-radius: 16px; border: 1px solid #bbf7d0;">
+                <span class="dashicons dashicons-yes-alt" style="color: #10b981; font-size: 32px; width: 32px; height: 32px;"></span>
+                <div>
+                    <h3 style="margin: 0 0 4px; color: #166534;"><?php _e('PRO Membership Active', 'jankx'); ?></h3>
+                    <p style="margin: 0; color: #15803d; font-size: 14px;"><?php _e('Choose a site kit below to automatically set up a complete website with extensions, demo content, and theme options.', 'jankx'); ?></p>
+                </div>
+            </div>
+
+            <?php if ($activeBundle && isset($bundles[$activeBundle])): ?>
+                <div class="jankx-card" style="border-left: 4px solid #3b82f6; margin-bottom: 30px;">
+                    <div style="display: flex; align-items: center; justify-content: space-between;">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <span class="dashicons dashicons-yes-alt" style="color: #10b981; font-size: 24px; width: 24px; height: 24px;"></span>
+                            <div>
+                                <strong style="font-size: 15px;"><?php printf(__('Active Kit: %s', 'jankx'), '<span style="color: #1e293b;">' . esc_html(__($bundles[$activeBundle]['name'], 'jankx')) . '</span>'); ?></strong>
+                                <span style="font-size: 12px; color: #64748b; display: block;"><?php printf(__('Installed on %s', 'jankx'), \get_option('jankx_bundle_installed_at', '')); ?></span>
+                            </div>
+                        </div>
+                        <button class="button jankx-reset-bundle" data-bundle="<?php echo esc_attr($activeBundle); ?>" data-nonce="<?php echo esc_attr($nonce); ?>" style="color: #ef4444; border-color: #ef4444;">
+                            <?php _e('Remove Kit', 'jankx'); ?>
+                        </button>
+                    </div>
+                </div>
+            <?php endif; ?>
+
+            <div class="jankx-bundle-grid" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px;">
+                <?php foreach ($bundles as $id => $bundle):
+                    $isActive = ($activeBundle === $id);
+                    $extCount = count($bundle['required_extensions'] ?? []);
+                    $pluginCount = count($bundle['required_plugins'] ?? []);
+                ?>
+                    <div class="jankx-card bundle-card <?php echo $isActive ? 'active' : ''; ?>" data-bundle="<?php echo esc_attr($id); ?>" style="overflow: hidden; <?php echo $isActive ? 'border-color: #3b82f6;' : ''; ?>">
+                        <div class="bundle-preview" style="height: 180px; background: linear-gradient(135deg, #1e293b, #0f172a); border-radius: 12px; margin: -30px -30px 20px -30px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 48px; position: relative; overflow: hidden;">
+                            <span class="dashicons dashicons-layout" style="opacity: 0.3; font-size: 80px; width: 80px; height: 80px;"></span>
+                            <div style="position: absolute; bottom: 16px; left: 20px;">
+                                <span style="background: rgba(255,255,255,0.15); padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; text-transform: uppercase;"><?php echo esc_html(implode(', ', $bundle['tags'] ?? [])); ?></span>
+                            </div>
+                            <?php if ($isActive): ?>
+                                <div style="position: absolute; top: 16px; right: 16px; background: #10b981; color: #fff; padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 700;">
+                                    <?php _e('Active', 'jankx'); ?>
+                                </div>
+                            <?php endif; ?>
+                        </div>
+
+                        <h3 style="margin: 0 0 8px; font-size: 18px;"><?php echo esc_html(__($bundle['name'], 'jankx')); ?></h3>
+                        <p style="font-size: 14px; color: #64748b; line-height: 1.6; margin: 0 0 16px;"><?php echo esc_html(__($bundle['description'], 'jankx')); ?></p>
+
+                        <div style="display: flex; gap: 16px; margin-bottom: 20px; font-size: 13px; color: #64748b;">
+                            <?php if ($extCount > 0): ?>
+                                <span style="display: flex; align-items: center; gap: 4px;">
+                                    <span class="dashicons dashicons-admin-plugins" style="font-size: 14px; width: 14px; height: 14px;"></span>
+                                    <?php printf(__('%d extensions', 'jankx'), $extCount); ?>
+                                </span>
+                            <?php endif; ?>
+                            <?php if ($pluginCount > 0): ?>
+                                <span style="display: flex; align-items: center; gap: 4px;">
+                                    <span class="dashicons dashicons-admin-plugins" style="font-size: 14px; width: 14px; height: 14px;"></span>
+                                    <?php printf(__('%d plugins', 'jankx'), $pluginCount); ?>
+                                </span>
+                            <?php endif; ?>
+                            <span style="display: flex; align-items: center; gap: 4px;">
+                                <span class="dashicons dashicons-database" style="font-size: 14px; width: 14px; height: 14px;"></span>
+                                <?php _e('Demo data', 'jankx'); ?>
+                            </span>
+                        </div>
+
+                        <div style="display: flex; gap: 10px;">
+                            <?php if ($isActive): ?>
+                                <button class="button button-primary" disabled style="flex: 1; justify-content: center;">
+                                    <?php _e('Installed', 'jankx'); ?>
+                                </button>
+                            <?php else: ?>
+                                <button class="button button-primary jankx-install-bundle" data-bundle="<?php echo esc_attr($id); ?>" data-nonce="<?php echo esc_attr($nonce); ?>" style="flex: 1; justify-content: center;">
+                                    <span class="dashicons dashicons-download" style="font-size: 16px; width: 16px; height: 16px;"></span>
+                                    <?php _e('Setup Website', 'jankx'); ?>
+                                </button>
+                            <?php endif; ?>
+                            <a href="https://jankx.com/preview/<?php echo esc_attr($id); ?>" target="_blank" rel="noopener" class="button" style="display: flex; align-items: center; gap: 4px;">
+                                <span class="dashicons dashicons-external" style="font-size: 14px; width: 14px; height: 14px;"></span>
+                                <?php _e('Preview', 'jankx'); ?>
+                            </a>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+
+            <div class="jankx-bundle-progress" style="display:none; margin-top: 30px;">
+                <div class="jankx-card">
+                    <div class="card-header">
+                        <span class="dashicons dashicons-update spinning"></span>
+                        <h3><?php _e('Setting up your website...', 'jankx'); ?></h3>
+                    </div>
+                    <div class="card-body">
+                        <div style="margin-bottom: 20px;">
+                            <div style="height: 8px; background: #f1f5f9; border-radius: 10px; overflow: hidden;">
+                                <div class="jankx-bundle-progress-fill" style="height: 100%; width: 0%; background: linear-gradient(90deg, #3b82f6, #2563eb); border-radius: 10px; transition: width 0.5s ease;"></div>
+                            </div>
+                        </div>
+                        <div class="jankx-bundle-progress-steps" style="display: flex; flex-direction: column; gap: 12px;">
+                            <div class="step" data-step="plugins">
+                                <span class="dashicons dashicons-admin-plugins"></span>
+                                <span class="step-label"><?php _e('Installing required plugins...', 'jankx'); ?></span>
+                                <span class="step-status"></span>
+                            </div>
+                            <div class="step" data-step="extensions">
+                                <span class="dashicons dashicons-admin-plugins"></span>
+                                <span class="step-label"><?php _e('Installing extensions...', 'jankx'); ?></span>
+                                <span class="step-status"></span>
+                            </div>
+                            <div class="step" data-step="demo">
+                                <span class="dashicons dashicons-database"></span>
+                                <span class="step-label"><?php _e('Importing demo content...', 'jankx'); ?></span>
+                                <span class="step-status"></span>
+                            </div>
+                            <div class="step" data-step="options">
+                                <span class="dashicons dashicons-admin-settings"></span>
+                                <span class="step-label"><?php _e('Applying theme options...', 'jankx'); ?></span>
+                                <span class="step-status"></span>
+                            </div>
+                            <div class="step" data-step="pages">
+                                <span class="dashicons dashicons-welcome-add-page"></span>
+                                <span class="step-label"><?php _e('Setting up pages...', 'jankx'); ?></span>
+                                <span class="step-status"></span>
+                            </div>
+                        </div>
+                        <div class="jankx-bundle-result" style="display:none; margin-top: 20px; padding: 16px; border-radius: 12px;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+        jQuery(function($) {
+            var currentBundle = null;
+
+            $(document).on('click', '.jankx-install-bundle', function() {
+                var $btn = $(this);
+                var bundle = $btn.data('bundle');
+                var nonce = $btn.data('nonce');
+
+                if (!confirm('<?php echo esc_js(__('This will install extensions, import demo content, and configure theme options. Continue?', 'jankx')); ?>')) return;
+
+                currentBundle = bundle;
+                $btn.prop('disabled', true).text('<?php echo esc_js(__('Processing...', 'jankx')); ?>');
+
+                $('.jankx-bundle-progress').show();
+                $('.jankx-bundle-progress-steps .step').removeClass('done running error');
+                $('.jankx-bundle-progress-fill').css('width', '0%');
+                $('.jankx-bundle-result').hide();
+
+                var steps = ['plugins', 'extensions', 'demo', 'options', 'pages'];
+                var stepIndex = 0;
+                var totalSteps = steps.length;
+
+                function runNextStep() {
+                    if (stepIndex >= totalSteps) {
+                        $('.jankx-bundle-progress-fill').css('width', '100%');
+                        $('.jankx-bundle-result').removeClass('notice-error').addClass('notice-success')
+                            .html('<p><strong><?php echo esc_js(__('Success!', 'jankx')); ?></strong> <?php echo esc_js(__('Your website has been set up successfully.', 'jankx')); ?></p>')
+                            .show();
+                        $btn.text('<?php echo esc_js(__('Done', 'jankx')); ?>');
+                        setTimeout(function() { location.reload(); }, 2000);
+                        return;
+                    }
+
+                    var step = steps[stepIndex];
+                    var progress = Math.round(((stepIndex) / totalSteps) * 100);
+
+                    $('.jankx-bundle-progress-steps .step[data-step="' + step + '"]').addClass('running');
+                    $('.jankx-bundle-progress-fill').css('width', progress + '%');
+
+                    $.post(ajaxurl, {
+                        action: 'jankx_install_bundle',
+                        bundle: currentBundle,
+                        step: step,
+                        nonce: nonce
+                    }, function(res) {
+                        $('.jankx-bundle-progress-steps .step[data-step="' + step + '"]').removeClass('running').addClass('done');
+                        stepIndex++;
+                        runNextStep();
+                    }).fail(function(xhr) {
+                        $('.jankx-bundle-progress-steps .step[data-step="' + step + '"]').removeClass('running').addClass('error');
+                        var msg = '<?php echo esc_js(__('Installation failed.', 'jankx')); ?>';
+                        try { var r = JSON.parse(xhr.responseText); if (r.data && r.data.message) msg = r.data.message; } catch(e) {}
+                        $('.jankx-bundle-result').removeClass('notice-success').addClass('notice-error')
+                            .html('<p><strong><?php echo esc_js(__('Error:', 'jankx')); ?></strong> ' + msg + '</p>')
+                            .show();
+                        $btn.prop('disabled', false).text('<?php echo esc_js(__('Retry', 'jankx')); ?>');
+                    });
+                }
+
+                runNextStep();
+            });
+
+            $(document).on('click', '.jankx-reset-bundle', function() {
+                var $btn = $(this);
+                var bundle = $btn.data('bundle');
+                var nonce = $btn.data('nonce');
+
+                if (!confirm('<?php echo esc_js(__('Remove all demo data and reset? This cannot be undone.', 'jankx')); ?>')) return;
+
+                $btn.prop('disabled', true).text('<?php echo esc_js(__('Removing...', 'jankx')); ?>');
+
+                $.post(ajaxurl, {
+                    action: 'jankx_reset_bundle',
+                    bundle: bundle,
+                    nonce: nonce
+                }, function(res) {
+                    if (res.success) {
+                        location.reload();
+                    } else {
+                        alert(res.data.message || '<?php echo esc_js(__('Failed to remove kit.', 'jankx')); ?>');
+                        $btn.prop('disabled', false).text('<?php echo esc_js(__('Remove Kit', 'jankx')); ?>');
+                    }
+                }).fail(function() {
+                    alert('<?php echo esc_js(__('Connection error.', 'jankx')); ?>');
+                    $btn.prop('disabled', false).text('<?php echo esc_js(__('Remove Kit', 'jankx')); ?>');
+                });
+            });
+        });
+        </script>
+        <?php
+    }
+
+    protected function renderCommonStyles()
+    {
     }
 
     /**
@@ -1246,8 +1411,19 @@ class AdminPageService
     protected function renderDefaultPageContent($page)
     {
         echo '<div class="jankx-default-content">';
-        echo '<p>This page is under construction.</p>';
+        echo '<p>' . __('This page is under construction.', 'jankx') . '</p>';
         echo '</div>';
+    }
+
+    /**
+     * Enqueue page assets
+     */
+    public function renderIconsPage($page)
+    {
+        $activeTab = $_GET['tab'] ?? 'packs';
+        $renderer = new \Jankx\Services\FontIcons\Admin\DashboardRenderer($this->app);
+        
+        $renderer->render($activeTab);
     }
 
     /**
@@ -1255,208 +1431,1168 @@ class AdminPageService
      */
     protected function enqueuePageAssets($page)
     {
-        if (!empty($page['scripts'])) {
-            foreach ($page['scripts'] as $script) {
-                wp_enqueue_script($script['handle'], $script['src'], $script['deps'] ?? [], $script['version'] ?? '1.0.0', $script['in_footer'] ?? false);
+        if ($page['id'] === 'jankx-icons') {
+            $repository = $this->app->make('font-icons.repository');
+            $activeStyles = $repository->getAllActiveStyles();
+
+            foreach ($activeStyles as $type => $url) {
+                wp_enqueue_style('jankx-icon-' . sanitize_title($type), $url, [], null);
+            }
+
+            wp_enqueue_style('jankx-admin-pages');
+        }
+    }
+
+    /**
+     * Render Utilities Page
+     */
+    public function renderUtilitiesPage($page)
+    {
+        $all_sizes = $this->getAllImageSizes();
+        $enabled_sizes = get_option('jankx_enabled_image_sizes', array_keys($all_sizes));
+
+        if (!is_array($enabled_sizes)) {
+            $enabled_sizes = array_keys($all_sizes);
+        }
+
+        ?>
+        <div class="jankx-utilities-grid-wrapper">
+            <div class="utilities-grid">
+                <div class="utilities-main-column">
+                <div class="utility-card main-card jankx-card">
+                    <div class="card-header">
+                        <div class="card-header-title">
+                            <span class="dashicons dashicons-images-alt2"></span>
+                            <h3><?php _e('Media Optimization', 'jankx'); ?></h3>
+                        </div>
+                        <div class="card-header-action">
+                            <label class="select-all-label">
+                                <input type="checkbox" id="cb-select-all-1" <?php checked(count($enabled_sizes) === count($all_sizes)); ?>>
+                                <span><?php _e('Select All', 'jankx'); ?></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                        <p class="section-desc"><?php _e('Enable or disable specific image sizes. Unused image sizes consume disk space and slow down your site. Disabling them will prevent WordPress from generating these sizes for new uploads.', 'jankx'); ?></p>
+
+                        <form method="post" action="" id="jankx-utilities-form">
+                            <?php wp_nonce_field('jankx_save_utilities', 'jankx_utilities_nonce'); ?>
+                            <input type="hidden" name="jankx_action" value="save_image_sizes">
+
+                            <div class="image-sizes-grid">
+                                <?php foreach ($all_sizes as $name => $size):
+                                    $is_enabled = in_array($name, $enabled_sizes);
+                                ?>
+                                    <div class="size-item <?php echo $is_enabled ? 'is-active' : ''; ?>">
+                                        <div class="size-info">
+                                            <div class="size-name"><?php echo esc_html(ucwords(str_replace(['_', '-'], ' ', $name))); ?></div>
+                                            <div class="size-meta">
+                                                <span class="dimension"><?php echo esc_html($size['width'] . ' × ' . $size['height']); ?></span>
+                                                <span class="dot"></span>
+                                                <span class="crop-status"><?php echo $size['crop'] ? __('Crop: Yes', 'jankx') : __('Crop: No', 'jankx'); ?></span>
+                                            </div>
+                                            <div class="size-slug"><code><?php echo esc_html($name); ?></code></div>
+                                        </div>
+                                        <div class="size-toggle">
+                                            <label class="jankx-switch">
+                                                <input type="checkbox" name="enabled_sizes[]" value="<?php echo esc_attr($name); ?>" <?php checked($is_enabled); ?>>
+                                                <span class="slider round"></span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                <?php endforeach; ?>
+                            </div>
+
+                            <div class="card-footer">
+                                <button type="submit" name="submit" id="submit" class="jankx-btn-save">
+                                    <span class="dashicons dashicons-saved"></span>
+                                    <?php _e('Save Media Settings', 'jankx'); ?>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="utility-card main-card jankx-card" style="margin-top: 24px;">
+                    <div class="card-header">
+                        <div class="card-header-title">
+                            <span class="dashicons dashicons-performance"></span>
+                            <h3><?php _e('Frontend Performance Settings', 'jankx'); ?></h3>
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                        <p class="section-desc"><?php _e('Optimize your website\'s frontend loading speed by disabling unused core features and enabling safe HTML/Asset optimizations.', 'jankx'); ?></p>
+
+                        <form method="post" action="">
+                            <?php wp_nonce_field('jankx_save_performance', 'jankx_performance_nonce'); ?>
+                            <input type="hidden" name="jankx_action" value="save_performance_settings">
+
+                            <?php 
+                            $perf_html = get_option('jankx_perf_optimize_html', 'yes');
+                            $perf_emojis = get_option('jankx_perf_remove_emojis', 'yes');
+                            $perf_dashicons = get_option('jankx_perf_optimize_dashicons', 'yes');
+                            $perf_defer = get_option('jankx_perf_defer_scripts', 'yes');
+                            ?>
+
+                            <div class="image-sizes-grid">
+                                <!-- HTML Header -->
+                                <div class="size-item <?php echo $perf_html === 'yes' ? 'is-active' : ''; ?>">
+                                    <div class="size-info">
+                                        <div class="size-name"><?php _e('Optimize HTML Header', 'jankx'); ?></div>
+                                        <div class="size-meta"><?php _e('Remove rsd_link, wlwmanifest, and wp_generator', 'jankx'); ?></div>
+                                    </div>
+                                    <div class="size-toggle">
+                                        <label class="jankx-switch">
+                                            <input type="checkbox" name="perf_html" value="yes" <?php checked($perf_html, 'yes'); ?>>
+                                            <span class="slider round"></span>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <!-- Emojis -->
+                                <div class="size-item <?php echo $perf_emojis === 'yes' ? 'is-active' : ''; ?>">
+                                    <div class="size-info">
+                                        <div class="size-name"><?php _e('Disable Native Emojis', 'jankx'); ?></div>
+                                        <div class="size-meta"><?php _e('Removes heavy emoji detection scripts', 'jankx'); ?></div>
+                                    </div>
+                                    <div class="size-toggle">
+                                        <label class="jankx-switch">
+                                            <input type="checkbox" name="perf_emojis" value="yes" <?php checked($perf_emojis, 'yes'); ?>>
+                                            <span class="slider round"></span>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <!-- Dashicons -->
+                                <div class="size-item <?php echo $perf_dashicons === 'yes' ? 'is-active' : ''; ?>">
+                                    <div class="size-info">
+                                        <div class="size-name"><?php _e('Unload Dashicons', 'jankx'); ?></div>
+                                        <div class="size-meta"><?php _e('Stop loading dashicons.min.css for guests', 'jankx'); ?></div>
+                                    </div>
+                                    <div class="size-toggle">
+                                        <label class="jankx-switch">
+                                            <input type="checkbox" name="perf_dashicons" value="yes" <?php checked($perf_dashicons, 'yes'); ?>>
+                                            <span class="slider round"></span>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <!-- Defer JS -->
+                                <div class="size-item <?php echo $perf_defer === 'yes' ? 'is-active' : ''; ?>">
+                                    <div class="size-info">
+                                        <div class="size-name"><?php _e('Defer Javascripts', 'jankx'); ?></div>
+                                        <div class="size-meta"><?php _e('Add defer attribute (skips jQuery core)', 'jankx'); ?></div>
+                                    </div>
+                                    <div class="size-toggle">
+                                        <label class="jankx-switch">
+                                            <input type="checkbox" name="perf_defer" value="yes" <?php checked($perf_defer, 'yes'); ?>>
+                                            <span class="slider round"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card-footer">
+                                <button type="submit" class="jankx-btn-save">
+                                    <span class="dashicons dashicons-saved"></span>
+                                    <?php _e('Save Performance', 'jankx'); ?>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                </div><!-- /.utilities-main-column -->
+
+                <div class="utility-sidebar">
+                    <div class="utility-card sidebar-card jankx-card">
+                        <div class="card-header">
+                            <div class="card-header-title">
+                                <span class="dashicons dashicons-performance"></span>
+                                <h3><?php _e('System Actions', 'jankx'); ?></h3>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <ul class="quick-actions">
+                                <li>
+                                    <div class="action-info">
+                                        <strong><?php _e('Regenerate Thumbnails', 'jankx'); ?></strong>
+                                        <span><?php _e('Fix broken images and create new sizes.', 'jankx'); ?></span>
+                                    </div>
+                                    <button class="action-btn" title="<?php _e('Requires plugin', 'jankx'); ?>" disabled>
+                                        <span class="dashicons dashicons-update"></span>
+                                    </button>
+                                </li>
+                                <li>
+                                    <div class="action-info">
+                                        <strong><?php _e('Clear Image Cache', 'jankx'); ?></strong>
+                                        <span><?php _e('Remove transient image metadata.', 'jankx'); ?></span>
+                                    </div>
+                                    <form method="post" action="" style="display:inline; margin:0;">
+                                        <?php wp_nonce_field('jankx_utilities_actions', 'jankx_utilities_nonce'); ?>
+                                        <input type="hidden" name="jankx_action" value="clear_image_cache">
+                                        <button type="submit" class="action-btn" onclick="return confirm('<?php esc_attr_e('Are you sure you want to clear the image cache?', 'jankx'); ?>');">
+                                            <span class="dashicons dashicons-trash"></span>
+                                        </button>
+                                    </form>
+                                </li>
+                                <li>
+                                    <div class="action-info">
+                                        <strong><?php _e('Export Settings', 'jankx'); ?></strong>
+                                        <span><?php _e('Download your configuration.', 'jankx'); ?></span>
+                                    </div>
+                                    <form method="post" action="" style="display:inline; margin:0;">
+                                        <?php wp_nonce_field('jankx_utilities_actions', 'jankx_utilities_nonce'); ?>
+                                        <input type="hidden" name="jankx_action" value="export_settings">
+                                        <button type="submit" class="action-btn">
+                                            <span class="dashicons dashicons-download"></span>
+                                        </button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="utility-card help-card jankx-card">
+                        <div class="card-body">
+                            <div class="help-content">
+                                <span class="dashicons dashicons-editor-help"></span>
+                                <h4><?php _e('Need Help?', 'jankx'); ?></h4>
+                                <p><?php _e('Check our documentation for advanced media optimization tips.', 'jankx'); ?></p>
+                                <a href="#" class="help-link"><?php _e('Read Docs', 'jankx'); ?> →</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            jQuery(document).ready(function ($) {
+                // Select all functionality
+                $('#cb-select-all-1').click(function () {
+                    $('.jankx-switch input[name="enabled_sizes[]"]').prop('checked', this.checked).trigger('change');
+                });
+
+                // Update row styling on change
+                $('.jankx-switch input').on('change', function() {
+                    var $item = $(this).closest('.size-item');
+                    if (this.checked) {
+                        $item.addClass('is-active');
+                    } else {
+                        $item.removeClass('is-active');
+                    }
+                });
+            });
+        </script>
+        <?php
+    }
+
+    /**
+     * Get all registered image sizes
+     */
+    protected function getAllImageSizes()
+    {
+        $sizes = [];
+        $intermediate_sizes = get_intermediate_image_sizes();
+        $additional_sizes = wp_get_additional_image_sizes();
+
+        foreach ($intermediate_sizes as $size) {
+            if (in_array($size, ['thumbnail', 'medium', 'medium_large', 'large'])) {
+                $sizes[$size] = [
+                    'width' => get_option("{$size}_size_w"),
+                    'height' => get_option("{$size}_size_h"),
+                    'crop' => (bool) get_option("{$size}_crop"),
+                ];
+            } elseif (isset($additional_sizes[$size])) {
+                $sizes[$size] = [
+                    'width' => $additional_sizes[$size]['width'],
+                    'height' => $additional_sizes[$size]['height'],
+                    'crop' => $additional_sizes[$size]['crop'],
+                ];
             }
         }
 
-        if (!empty($page['styles'])) {
-            foreach ($page['styles'] as $style) {
-                wp_enqueue_style($style['handle'], $style['src'], $style['deps'] ?? [], $style['version'] ?? '1.0.0', $style['media'] ?? 'all');
+        return $sizes;
+    }
+
+    /**
+     * Render Extensions Management Page
+     */
+    public function renderExtensionsPage($page)
+    {
+        $extensionManager  = $this->app->make('extension.manager');
+        $themeExtManager   = $this->app->make('theme_extension.manager');
+
+        $extensions        = $extensionManager->get_extensions();           // active/loaded
+        $disabledManifests = $themeExtManager->getDisabledManifests();      // disabled (not instantiated)
+
+        $totalActive   = count($extensions);
+        $totalInactive = count($disabledManifests);
+        $total         = $totalActive + $totalInactive;
+        $nonce         = wp_create_nonce('jankx_extension_manager_nonce');
+
+        $status = isset($_GET['extension_status']) ? $_GET['extension_status'] : 'all';
+        ?>
+        <div class="jankx-extensions-page">
+            <div id="jankx-extension-notice" style="display:none; margin: 10px 0 15px;" class="notice"></div>
+            <?php
+            if (isset($_GET['jankx_bulk_success'])) {
+                $success = (int)$_GET['jankx_bulk_success'];
+                $error   = (int)$_GET['jankx_bulk_error'];
+                $action  = sanitize_text_field($_GET['jankx_bulk_action']);
+                
+                $class = $error === 0 ? 'notice-success' : ($success > 0 ? 'notice-warning' : 'notice-error');
+                $verb = '';
+                switch ($action) {
+                    case 'activate-selected': $verb = __('activated', 'jankx'); break;
+                    case 'deactivate-selected': $verb = __('deactivated', 'jankx'); break;
+                    case 'delete-selected': $verb = __('deleted', 'jankx'); break;
+                }
+                
+                printf(
+                    '<div class="notice %s is-dismissible"><p>%s</p></div>',
+                    esc_attr($class),
+                    sprintf(
+                        __('Bulk action completed: %d extensions %s, %d failed.', 'jankx'),
+                        $success,
+                        $verb,
+                        $error
+                    )
+                );
+            }
+            ?>
+
+            <ul class="subsubsub">
+                <li class="all"><a href="<?php echo admin_url('admin.php?page=jankx-extensions'); ?>" class="<?php echo $status == 'all' ? 'current' : ''; ?>"><?php _e('All', 'jankx'); ?> <span class="count">(<?php echo $total; ?>)</span></a> |</li>
+                <li class="active"><a href="<?php echo add_query_arg('extension_status', 'active'); ?>" class="<?php echo $status == 'active' ? 'current' : ''; ?>"><?php _e('Active', 'jankx'); ?> <span class="count">(<?php echo $totalActive; ?>)</span></a> |</li>
+                <li class="inactive"><a href="<?php echo add_query_arg('extension_status', 'inactive'); ?>" class="<?php echo $status == 'inactive' ? 'current' : ''; ?>"><?php _e('Inactive', 'jankx'); ?> <span class="count">(<?php echo $totalInactive; ?>)</span></a>
+                <?php
+                $unmet_required = $extensionManager->get_missing_required_extensions();
+                $recommended = $extensionManager->get_recommended_extensions();
+                $unmet_recommended = [];
+                foreach ($recommended as $id => $version) {
+                    if (!$extensionManager->has_extension_id($id) || !$extensionManager->is_extension_active_by_id($id, $version)) {
+                        $unmet_recommended[] = $id;
+                    }
+                }
+                
+                if (!empty($unmet_required) || !empty($unmet_recommended)) : ?>
+                    | </li><li class="required"><a href="<?php echo add_query_arg('extension_status', 'required'); ?>" class="<?php echo $status == 'required' ? 'current' : ''; ?>"><?php _e('Required', 'jankx'); ?> <span class="count">(<?php echo count($unmet_required) + count($unmet_recommended); ?>)</span></a>
+                <?php endif; ?>
+                </li>
+            </ul>
+
+            <form method="post" action="">
+                <?php wp_nonce_field('jankx_bulk_extensions', 'jankx_bulk_nonce'); ?>
+                <input type="hidden" name="jankx_action" value="bulk_extensions">
+
+                <div class="tablenav top">
+                    <div class="alignleft actions bulkactions">
+                        <label for="bulk-action-selector-top" class="screen-reader-text"><?php _e('Select bulk action'); ?></label>
+                        <select name="action" id="bulk-action-selector-top">
+                            <option value="-1"><?php _e('Bulk actions'); ?></option>
+                            <option value="activate-selected"><?php _e('Activate'); ?></option>
+                            <option value="deactivate-selected"><?php _e('Deactivate'); ?></option>
+                            <option value="delete-selected"><?php _e('Delete'); ?></option>
+                        </select>
+                        <input type="submit" id="doaction" class="button action" value="<?php esc_attr_e('Apply'); ?>">
+                    </div>
+                </div>
+
+                <table class="wp-list-table widefat plugins">
+                    <thead>
+                        <tr>
+                            <td id="cb" class="manage-column column-cb check-column"><label class="screen-reader-text" for="cb-select-all-1"><?php _e('Select All'); ?></label><input id="cb-select-all-1" type="checkbox"></td>
+                            <th scope="col" id="name" class="manage-column column-name column-primary"><?php _e('Extension', 'jankx'); ?></th>
+                            <th scope="col" id="description" class="manage-column column-description"><?php _e('Description', 'jankx'); ?></th>
+                        </tr>
+                    </thead>
+
+                <tbody id="the-list">
+                    <?php
+                    $required_ids = $extensionManager->get_required_extensions();
+                    $recommended_ids = $extensionManager->get_recommended_extensions();
+                    $hasHubItems = !empty($required_ids) || !empty($recommended_ids);
+                    $showNoItems = empty($extensions) && empty($disabledManifests);
+
+                    if ($status === 'required' && $hasHubItems) {
+                        $showNoItems = false;
+                    }
+
+                    if ($showNoItems): ?>
+                        <tr class="no-items">
+                            <td class="colspanchange" colspan="2"><?php _e('No extensions found.', 'jankx'); ?></td>
+                        </tr>
+                    <?php else: ?>
+                        <?php
+                        /* --- Active (loaded) extensions --- */
+                        if ($status === 'all' || $status === 'active'):
+                            $required_ids = $extensionManager->get_required_extensions();
+                            $recommended_ids = $extensionManager->get_recommended_extensions();
+
+                            foreach ($extensions as $name => $extension):
+                                $info     = $extension->get_info();
+                                $type = '';
+                                // Check if this extension is required or recommended
+                                // We check by its name which is often the ID, or we could find its ID
+                                if (in_array($name, $required_ids)) $type = 'required';
+                                elseif (in_array($name, $recommended_ids)) $type = 'recommended';
+
+                                $this->renderExtensionRow($name, $info, true, $nonce, $type);
+                            endforeach;
+                        endif;
+
+                        /* --- Required & Recommended extensions --- */
+                        if ($status === 'required'):
+                            $required_ids = $extensionManager->get_required_extensions();
+                            $recommended_ids = $extensionManager->get_recommended_extensions();
+                            
+                            foreach ($required_ids as $id => $req_version):
+                                $extension = $extensionManager->get_extension_by_id($id);
+                                if ($extension) {
+                                    $info = $extension->get_info();
+                                    $this->renderExtensionRow($id, $info, true, $nonce, 'required');
+                                } else {
+                                    if (isset($disabledManifests[$id])) {
+                                        $m = $disabledManifests[$id]['manifest'];
+                                        $info = [
+                                            'name'                    => $m['name']        ?? $id,
+                                            'version'                 => $m['version']     ?? '1.0.0',
+                                            'description'             => $m['description'] ?? '',
+                                            'author'                  => $m['author']      ?? 'Jankx Team',
+                                            'is_child_theme_extension'=> false,
+                                        ];
+                                        $this->renderExtensionRow($id, $info, false, $nonce, 'required');
+                                    } else {
+                                        $hubInfo = $extensionManager->get_hub_extension_info($id);
+                                        $this->renderExtensionRow($id, [
+                                            'name'        => $hubInfo['name']        ?? $id,
+                                            'description' => $hubInfo['description'] ?? __('This extension is required by the theme but not installed.', 'jankx'),
+                                            'version'     => $hubInfo['version']     ?? 'N/A',
+                                            'author'      => $hubInfo['author']      ?? 'N/A'
+                                        ], false, $nonce, 'required', true);
+                                    }
+                                }
+                            endforeach;
+
+                            foreach ($recommended_ids as $id => $rec_version):
+                                $extension = $extensionManager->get_extension_by_id($id);
+                                if ($extension) {
+                                    $info = $extension->get_info();
+                                    $this->renderExtensionRow($id, $info, true, $nonce, 'recommended');
+                                } else {
+                                    if (isset($disabledManifests[$id])) {
+                                        $m = $disabledManifests[$id]['manifest'];
+                                        $info = [
+                                            'name'                    => $m['name']        ?? $id,
+                                            'version'                 => $m['version']     ?? '1.0.0',
+                                            'description'             => $m['description'] ?? '',
+                                            'author'                  => $m['author']      ?? 'Jankx Team',
+                                            'is_child_theme_extension'=> false,
+                                        ];
+                                        $this->renderExtensionRow($id, $info, false, $nonce, 'recommended');
+                                    } else {
+                                        $hubInfo = $extensionManager->get_hub_extension_info($id);
+                                        $this->renderExtensionRow($id, [
+                                            'name'        => $hubInfo['name']        ?? $id,
+                                            'description' => $hubInfo['description'] ?? __('This extension is recommended by the theme but not installed.', 'jankx'),
+                                            'version'     => $hubInfo['version']     ?? 'N/A',
+                                            'author'      => $hubInfo['author']      ?? 'N/A'
+                                        ], false, $nonce, 'recommended', true);
+                                    }
+                                }
+                            endforeach;
+                        endif;
+
+                        /* --- Disabled extensions (not instantiated) --- */
+                        if ($status === 'all' || $status === 'inactive'):
+                            $required_ids = $extensionManager->get_required_extensions();
+                            $recommended_ids = $extensionManager->get_recommended_extensions();
+
+                            foreach ($disabledManifests as $name => $data):
+                                $m = $data['manifest'];
+                                $info = [
+                                    'name'                    => $m['name']        ?? $name,
+                                    'version'                 => $m['version']     ?? '1.0.0',
+                                    'description'             => $m['description'] ?? '',
+                                    'author'                  => $m['author']      ?? 'Jankx Team',
+                                    'is_child_theme_extension'=> false,
+                                ];
+                                $type = '';
+                                if (in_array($name, $required_ids)) $type = 'required';
+                                elseif (in_array($name, $recommended_ids)) $type = 'recommended';
+
+                                $this->renderExtensionRow($name, $info, false, $nonce, $type);
+                            endforeach;
+                        endif;
+                        ?>
+                    <?php endif; ?>
+                </tbody>
+
+                <tfoot>
+                    <tr>
+                        <td class="manage-column column-cb check-column"><label class="screen-reader-text" for="cb-select-all-2"><?php _e('Select All'); ?></label><input id="cb-select-all-2" type="checkbox"></td>
+                        <th scope="col" class="manage-column column-name column-primary"><?php _e('Extension', 'jankx'); ?></th>
+                        <th scope="col" class="manage-column column-description"><?php _e('Description', 'jankx'); ?></th>
+                    </tr>
+                </tfoot>
+            </table>
+
+            <div class="tablenav bottom">
+                <div class="alignleft actions bulkactions">
+                    <label for="bulk-action-selector-bottom" class="screen-reader-text"><?php _e('Select bulk action'); ?></label>
+                    <select name="action2" id="bulk-action-selector-bottom">
+                        <option value="-1"><?php _e('Bulk actions'); ?></option>
+                        <option value="activate-selected"><?php _e('Activate'); ?></option>
+                        <option value="deactivate-selected"><?php _e('Deactivate'); ?></option>
+                        <option value="delete-selected"><?php _e('Delete'); ?></option>
+                    </select>
+                    <input type="submit" id="doaction2" class="button action" value="<?php esc_attr_e('Apply'); ?>">
+                </div>
+            </div>
+            </form>
+        </div>
+
+        <script>
+        jQuery(function($) {
+            var $notice = $('#jankx-extension-notice');
+
+            $(document).on('click', '.toggle-extension', function() {
+                var $btn = $(this);
+                var name = $btn.data('extension');
+                var nonce = $btn.data('nonce');
+
+                $btn.addClass('loading').prop('disabled', true);
+                $notice.hide();
+
+                $.post(ajaxurl, {
+                    action: 'jankx_toggle_extension',
+                    extension: name,
+                    nonce: nonce
+                }, function(res) {
+                    if (res.success) {
+                        location.reload();
+                    } else {
+                        var errMsg = (res.data && res.data.message) ? res.data.message : (res.data || 'Error');
+                        $notice.removeClass('notice-success').addClass('notice-error')
+                               .html('<p>' + errMsg + '</p>').show();
+                        $btn.removeClass('loading').prop('disabled', false);
+                    }
+                }).fail(function() {
+                    $notice.removeClass('notice-success').addClass('notice-error')
+                           .html('<p><?php echo esc_js(__('An error occurred.', 'jankx')); ?></p>').show();
+                    $btn.removeClass('loading').prop('disabled', false);
+                });
+            });
+
+            $(document).on('click', '.install-extension-ajax', function(e) {
+                e.preventDefault();
+                var $btn = $(this);
+                var name = $btn.data('extension');
+                var nonce = $btn.data('nonce');
+
+                $btn.addClass('loading').text('<?php echo esc_js(__('Installing...', 'jankx')); ?>');
+                $notice.hide();
+
+                $.post(ajaxurl, {
+                    action: 'jankx_install_extension',
+                    extension: name,
+                    nonce: nonce
+                }, function(res) {
+                    if (res.success) {
+                        $notice.removeClass('notice-error').addClass('notice-success')
+                               .html('<p>' + res.data.message + '</p>').show();
+                        location.reload();
+                    } else {
+                        var errMsg = (res.data && res.data.message) ? res.data.message : (res.data || 'Error');
+                        $notice.removeClass('notice-success').addClass('notice-error')
+                               .html('<p>' + errMsg + '</p>').show();
+                        $btn.removeClass('loading').text('<?php echo esc_js(__('Install Now', 'jankx')); ?>');
+                    }
+                }).fail(function() {
+                    $notice.removeClass('notice-success').addClass('notice-error')
+                           .html('<p><?php echo esc_js(__('An error occurred during installation.', 'jankx')); ?></p>').show();
+                    $btn.removeClass('loading').text('<?php echo esc_js(__('Install Now', 'jankx')); ?>');
+                });
+            });
+
+            $(document).on('click', '.delete-extension', function() {
+                var $btn = $(this);
+                var name = $btn.data('extension');
+                var nonce = $btn.data('nonce');
+
+                if (!confirm('<?php echo esc_js(__('Are you sure you want to delete this extension? This action cannot be undone.', 'jankx')); ?>')) {
+                    return;
+                }
+
+                $btn.prop('disabled', true).css('opacity', 0.5);
+                $notice.hide();
+
+                $.post(ajaxurl, {
+                    action: 'jankx_delete_extension',
+                    extension: name,
+                    nonce: nonce
+                }, function(res) {
+                    if (res.success) {
+                        location.reload();
+                    } else {
+                        alert(res.data.message || 'Error');
+                        $btn.prop('disabled', false).css('opacity', 1);
+                    }
+                });
+            });
+
+            // Bulk select functionality
+            $('#cb-select-all-1, #cb-select-all-2').on('change', function() {
+                var checked = $(this).prop('checked');
+                $('input[name="checked[]"]').prop('checked', checked);
+                $('#cb-select-all-1, #cb-select-all-2').prop('checked', checked);
+            });
+        });
+        </script>
+        <?php
+    }
+
+    /**
+     * Render a single extension item row
+     */
+    protected function renderExtensionRow(string $name, array $info, bool $isActive, string $nonce, string $type = '', bool $isMissing = false): void
+    {
+        $statusClass = $isActive ? 'active' : 'inactive';
+        if ($isMissing) {
+            $statusClass .= ' missing';
+        }
+
+        $settings_url = null;
+        $is_application = false;
+        $extensionManager = $this->app->make('extension.manager');
+        $extension = $extensionManager->get_extension($name);
+        $dependencies = [];
+        if ($extension) {
+            $settings_url = $extension->get_settings_url();
+            $is_application = $extension->is_application();
+            
+            $manifest = $extension->get_manifest_data();
+            if (isset($manifest['requirements']['extensions'])) {
+                $dependencies = $manifest['requirements']['extensions'];
             }
         }
+        ?>
+        <tr class="<?php echo $statusClass; ?>" data-slug="<?php echo esc_attr($name); ?>">
+            <th scope="row" class="check-column">
+                <label class="screen-reader-text" for="checkbox_<?php echo md5($name); ?>"><?php printf(__('Select %s'), $info['name'] ?? $name); ?></label>
+                <input type="checkbox" name="checked[]" value="<?php echo esc_attr($name); ?>" id="checkbox_<?php echo md5($name); ?>">
+            </th>
+            <td class="plugin-title column-primary">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <strong><?php echo esc_html($info['name'] ?? $name); ?></strong>
+                    <?php if ($type === 'required'): ?>
+                        <span class="jankx-badge-required" style="background: #ef4444; color: #fff; font-size: 9px; padding: 2px 6px; border-radius: 4px; font-weight: 700; text-transform: uppercase;"><?php _e('Required', 'jankx'); ?></span>
+                    <?php elseif ($type === 'recommended'): ?>
+                        <span class="jankx-badge-recommended" style="background: #3b82f6; color: #fff; font-size: 9px; padding: 2px 6px; border-radius: 4px; font-weight: 700; text-transform: uppercase;"><?php _e('Recommended', 'jankx'); ?></span>
+                    <?php endif; ?>
+                    <?php if ($is_application): ?>
+                        <span class="jankx-badge-app" style="background: #8b5cf6; color: #fff; font-size: 9px; padding: 2px 6px; border-radius: 4px; font-weight: 700; text-transform: uppercase;"><?php _e('App', 'jankx'); ?></span>
+                    <?php endif; ?>
+                </div>
+                <div class="row-actions visible">
+                    <?php if ($isMissing): ?>
+                        <span class="install">
+                            <a href="javascript:void(0);" class="install-extension-ajax" data-extension="<?php echo esc_attr($name); ?>" data-nonce="<?php echo esc_attr($nonce); ?>">
+                                <?php _e('Install Now', 'jankx'); ?>
+                            </a>
+                        </span>
+                    <?php elseif ($isActive): ?>
+                        <span class="deactivate">
+                            <a href="javascript:void(0);" class="toggle-extension" data-extension="<?php echo esc_attr($name); ?>" data-nonce="<?php echo esc_attr($nonce); ?>">
+                                <?php _e('Deactivate', 'jankx'); ?>
+                            </a>
+                        </span>
+                        <?php if ($settings_url): ?>
+                            | <span class="settings">
+                                <a href="<?php echo esc_url($settings_url); ?>">
+                                    <?php _e('Settings', 'jankx'); ?>
+                                </a>
+                            </span>
+                        <?php endif; ?>
+                        |
+                    <?php else: ?>
+                        <span class="activate">
+                            <a href="javascript:void(0);" class="toggle-extension" data-extension="<?php echo esc_attr($name); ?>" data-nonce="<?php echo esc_attr($nonce); ?>">
+                                <?php _e('Activate', 'jankx'); ?>
+                            </a> |
+                        </span>
+                    <?php endif; ?>
+                    <?php if (!$isMissing): ?>
+                        <span class="delete">
+                            <a href="javascript:void(0);" class="delete-extension" data-extension="<?php echo esc_attr($name); ?>" data-nonce="<?php echo esc_attr($nonce); ?>" style="color: #d63638;">
+                                <?php _e('Delete', 'jankx'); ?>
+                            </a>
+                        </span>
+                    <?php endif; ?>
+                </div>
+                <button type="button" class="toggle-row"><span class="screen-reader-text"><?php _e('Show more details'); ?></span></button>
+            </td>
+            <td class="column-description desc">
+                <div class="plugin-description">
+                    <p><?php echo esc_html($info['description'] ?? ''); ?></p>
+                    <?php if (!empty($dependencies)): ?>
+                        <div class="extension-dependencies" style="margin-top: 8px; font-size: 12px; color: #64748b;">
+                            <strong><?php _e('Requires:', 'jankx'); ?></strong>
+                            <span style="display: inline-flex; gap: 5px; flex-wrap: wrap; margin-left: 5px;">
+                                <?php foreach ($dependencies as $dep_id => $dep_version): 
+                                    $dep_ext = $extensionManager->get_extension_by_id($dep_id);
+                                    $dep_name = $dep_ext ? $dep_ext->get_info()['name'] : $dep_id;
+                                    $is_dep_active = $extensionManager->is_extension_active_by_id($dep_id);
+                                ?>
+                                    <span style="background: <?php echo $is_dep_active ? '#f0fdf4' : '#fef2f2'; ?>; color: <?php echo $is_dep_active ? '#166534' : '#991b1b'; ?>; padding: 1px 6px; border-radius: 4px; border: 1px solid <?php echo $is_dep_active ? '#bbf7d0' : '#fecaca'; ?>;">
+                                        <?php echo esc_html($dep_name); ?> <?php echo $dep_version !== '*' ? '(' . esc_html($dep_version) . ')' : ''; ?>
+                                    </span>
+                                <?php endforeach; ?>
+                            </span>
+                        </div>
+                    <?php endif; ?>
+                </div>
+                <div class="<?php echo $statusClass; ?> second plugin-version-author-uri">
+                    <?php printf(__('Version %s', 'jankx'), esc_html($info['version'] ?? '1.0.0')); ?> |
+                    <?php printf(__('By %s', 'jankx'), esc_html($info['author'] ?? 'Jankx Team')); ?>
+                    <?php if (!empty($info['is_child_theme_extension'])): ?>
+                        | <span class="jankx-child-badge" style="background:#e5f5fa; color:#005e7e; padding:1px 6px; border-radius:3px; font-size: 11px;"><?php _e('Child Theme', 'jankx'); ?></span>
+                    <?php endif; ?>
+                </div>
+            </td>
+        </tr>
+        <?php
     }
 
     /**
-     * Xử lý các actions cho icon types
+     * Render Marketplace Page
      */
-    protected function handleIconActions()
+    public function renderMarketplacePage($page)
     {
-        if (!isset($_POST['jankx_action'])) {
-            return;
+        $currentPage = isset($_GET['paged']) ? max(1, (int)$_GET['paged']) : 1;
+        $marketplace = $this->app->make('extension.marketplace');
+
+        if (isset($_GET['force_refresh'])) {
+            $locale = method_exists($marketplace, 'getLocale') ? $marketplace->getLocale() : 'en';
+            delete_transient(sprintf('jankx_marketplace_extensions_%s_p%d_s12', $locale, $currentPage));
+            delete_transient('jankx_theme_update_check');
         }
 
-        $action = $_POST['jankx_action'];
-        $iconType = $_POST['icon_type'] ?? '';
+        $result      = $marketplace->getAvailableExtensions($currentPage);
+        $extensions  = $result['data'] ?? [];
+        $pagination  = $result['pagination'] ?? [];
 
-        if (empty($iconType)) {
-            return;
-        }
+        // Read from transient ONLY - never block on live API
+        $cachedUpdate = get_transient('jankx_theme_update_check');
+        $themeUpdate  = ($cachedUpdate && isset($cachedUpdate['version'])) ? $cachedUpdate : false;
 
-        switch ($action) {
-            case 'toggle_icon_type':
-                $this->toggleIconType($iconType);
-                break;
-            case 'toggle_auto_load':
-                $this->toggleAutoLoad($iconType);
-                break;
-            case 'remove_icon_type':
-                $this->removeIconType($iconType);
-                break;
-        }
-    }
+        $nonce = wp_create_nonce('jankx_marketplace_nonce');
+        $isPro = $this->app->bound('license') && $this->app->make('license')->isActivated();
+        ?>
+        <div class="jankx-marketplace-modern">
+            <div id="jankx-install-notice" style="display:none; margin-bottom:20px;" class="notice"></div>
+            <header class="marketplace-header">
+                <div class="header-content">
+                    <h1><?php _e('Extension Library', 'jankx'); ?></h1>
+                    <p class="subtitle"><?php _e('Explore and install functional extensions for your Jankx theme. All extensions are automatically compatible with the current PHP and Jankx versions.', 'jankx'); ?></p>
+                </div>
+            </header>
 
-    /**
-     * Toggle trạng thái enable/disable của icon type
-     */
-    protected function toggleIconType($iconType)
-    {
-        $configPath = $this->app->make('jankx.paths')['base'] . '/config/font-icons.php';
+            <nav class="marketplace-toolbar">
+                <div class="search-wrapper">
+                    <span class="dashicons dashicons-search"></span>
+                    <input type="text" id="extension-search" placeholder="<?php esc_attr_e('Search extensions...', 'jankx'); ?>">
+                </div>
+                <div class="filter-tabs">
+                    <button class="filter-tab active" data-filter="all"><?php _e('All', 'jankx'); ?></button>
+                    <button class="filter-tab" data-filter="popular"><?php _e('Most Popular', 'jankx'); ?></button>
+                    <button class="filter-tab" data-filter="free"><?php _e('Free', 'jankx'); ?></button>
+                    <button class="filter-tab" data-filter="premium"><?php _e('Premium', 'jankx'); ?></button>
+                    <button class="filter-tab" data-filter="newest"><?php _e('Newest', 'jankx'); ?></button>
+                </div>
+            </nav>
 
-        if (!file_exists($configPath)) {
-            return;
-        }
+            <div class="jankx-extension-grid">
+                <?php if (empty($extensions) && !is_array($extensions)): ?>
+                    <div class="empty-state">
+                        <div class="empty-icon"><span class="dashicons dashicons-store"></span></div>
+                        <h3><?php _e('No extensions found', 'jankx'); ?></h3>
+                        <p><?php _e('The extension library is currently being updated. Please come back in a few minutes or try refreshing the data.', 'jankx'); ?></p>
+                        <a href="<?php echo add_query_arg('force_refresh', '1'); ?>" class="button jankx-btn-primary" style="width:auto;"><?php _e('Refresh Data', 'jankx'); ?></a>
+                    </div>
+                <?php else: ?>
+                    <?php foreach ($extensions as $ext):
+                        $slug = isset($ext['slug']) ? $ext['slug'] : (isset($ext['id']) ? (string)$ext['id'] : '');
+                        $isPremium = isset($ext['is_premium']) && $ext['is_premium'];
+                        $rating = $ext['rating'] ?? 5;
+                        $reviews = $ext['rating_count'] ?? 0;
+                        $installs = $ext['install_count'] ?? 0;
+                        
+                        $lastUpdated = __('Just now', 'jankx');
+                        if (!empty($ext['updated_at'])) {
+                            $lastUpdated = sprintf(__('%s ago', 'jankx'), human_time_diff(strtotime($ext['updated_at'])));
+                        }
+                    ?>
+                        <div class="extension-card-modern <?php echo $isPremium ? 'is-premium' : ''; ?>" data-slug="<?php echo esc_attr($slug); ?>" data-installs="<?php echo (int)$installs; ?>" data-date="<?php echo esc_attr(strtotime($ext['updated_at'] ?? '0')); ?>" data-is-free="<?php echo $isPremium ? '0' : '1'; ?>">
+                            <div class="card-body">
+                                <div class="extension-head">
+                                        <div class="extension-icon">
+                                            <?php if (!empty($ext['icon_svg'])): ?>
+                                                <div class="svg-icon-wrapper">
+                                                    <?php echo $ext['icon_svg']; ?>
+                                                </div>
+                                            <?php elseif (!empty($ext['icon'])): ?>
+                                                <img src="<?php echo esc_url($ext['icon']); ?>" alt="<?php echo esc_attr($ext['name']); ?>">
+                                            <?php elseif (!empty($ext['icon_name'])):
+                                                // Map "Blocks" or other names to Dashicons
+                                                $dashicon = 'dashicons-' . strtolower($ext['icon_name']);
+                                                $bg_color = $ext['icon_color'] ?? '#3b82f6';
+                                            ?>
+                                                <div class="default-icon" style="background: <?php echo esc_attr($bg_color); ?>;">
+                                                    <span class="dashicons <?php echo esc_attr($dashicon); ?>"></span>
+                                                </div>
+                                            <?php else:
+                                                $iconData = $this->getRandomGradient($slug);
+                                            ?>
+                                                <div class="default-icon" style="background: <?php echo $iconData['grad']; ?>;">
+                                                    <span class="dashicons <?php echo esc_attr($iconData['icon']); ?>"></span>
+                                                </div>
+                                            <?php endif; ?>
+                                        </div>
+                                    <div class="extension-title-block">
+                                        <h3 class="extension-title"><?php echo esc_html($ext['name'] ?? 'Unknown Extension'); ?></h3>
+                                        <?php if ($isPremium): ?>
+                                            <span class="badge premium"><?php _e('Premium', 'jankx'); ?></span>
+                                        <?php else: ?>
+                                            <span class="badge free"><?php _e('Free', 'jankx'); ?></span>
+                                        <?php endif; ?>
+                                    </div>
+                                </div>
 
-        // Đọc config hiện tại
-        $config = include $configPath;
+                                <p class="extension-desc"><?php echo esc_html($ext['description'] ?? __('No description available.', 'jankx')); ?></p>
 
-        if (!isset($config['icon_types'][$iconType])) {
-            return;
-        }
+                                <div class="extension-ratings">
+                                    <div class="stars">
+                                        <?php for ($i = 1; $i <= 5; $i++): ?>
+                                            <span class="dashicons dashicons-star-filled <?php echo $i <= $rating ? 'active' : ''; ?>"></span>
+                                        <?php endfor; ?>
+                                    </div>
+                                    <span class="rating-text">(<?php printf(__('%s reviews', 'jankx'), number_format($reviews)); ?>)</span>
+                                </div>
 
-        // Toggle trạng thái
-        $currentStatus = $config['icon_types'][$iconType]['enabled'] ?? false;
-        $config['icon_types'][$iconType]['enabled'] = !$currentStatus;
+                                <div class="extension-stats-modern">
+                                    <div class="stat-item">
+                                        <span class="dashicons dashicons-download"></span>
+                                        <span><?php printf(__('%s installs', 'jankx'), number_format($installs)); ?></span>
+                                    </div>
+                                </div>
 
-        // Ghi lại config
-        $this->writeConfigFile($configPath, $config);
+                                <div class="extension-footer-meta">
+                                    <span class="version">v<?php echo esc_html($ext['latest_version'] ?? '1.0.0'); ?></span>
+                                    <span class="author"><?php printf(__('by %s', 'jankx'), '<span class="author-name">' . esc_html($ext['author_name'] ?? 'Jankx Team') . '</span>'); ?></span>
+                                </div>
 
-        // Hiển thị thông báo
-        $newStatus = $config['icon_types'][$iconType]['enabled'] ? 'enabled' : 'disabled';
-        add_action('admin_notices', function () use ($iconType, $newStatus) {
-            echo '<div class="notice notice-success is-dismissible">';
-            echo '<p>Icon type <strong>' . esc_html(ucfirst($iconType)) . '</strong> has been <strong>' . esc_html($newStatus) . '</strong>.</p>';
-            echo '</div>';
-        });
-    }
+                                <div class="card-action-area">
+                                    <div class="action-buttons">
+                                        <button class="button detail-extension" data-ext='<?php echo json_encode($ext); ?>'>
+                                            <?php _e('Details', 'jankx'); ?>
+                                        </button>
+                                        <?php if ($this->isExtensionInstalled($slug)): ?>
+                                            <button class="button installed" disabled>
+                                                <span class="dashicons dashicons-yes"></span>
+                                                <?php _e('Already Installed', 'jankx'); ?>
+                                            </button>
+                                        <?php elseif ($isPremium && !$isPro): ?>
+                                            <a href="https://jankx.com/download/<?php echo esc_attr($slug); ?>/" target="_blank" rel="noopener" class="button jankx-btn-secondary" style="text-decoration: none;">
+                                                <span class="dashicons dashicons-external"></span>
+                                                <?php _e('Download', 'jankx'); ?>
+                                            </a>
+                                        <?php else: ?>
+                                            <button class="button jankx-btn-primary install-extension" 
+                                                    data-slug="<?php echo esc_attr($slug); ?>"
+                                                    data-nonce="<?php echo esc_attr($nonce); ?>">
+                                                <span class="dashicons dashicons-download"></span>
+                                                <?php _e('Install', 'jankx'); ?>
+                                            </button>
+                                        <?php endif; ?>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                <?php endif; ?>
+            </div>
 
-    /**
-     * Toggle trạng thái auto-load của icon type
-     */
-    protected function toggleAutoLoad($iconType)
-    {
-        $configPath = $this->app->make('jankx.paths')['base'] . '/config/font-icons.php';
+            <div class="marketplace-pagination">
+                <?php if (!empty($pagination)): ?>
+                    <a href="<?php echo $pagination['has_prev'] ? add_query_arg('paged', $currentPage - 1) : '#'; ?>"
+                       class="page-nav prev <?php echo !$pagination['has_prev'] ? 'disabled' : ''; ?>">
+                        <span class="dashicons dashicons-arrow-left-alt2"></span>
+                    </a>
+                    <div class="page-numbers">
+                        <?php
+                        $total_pages = $pagination['total_pages'] ?? 1;
+                        for ($i = 1; $i <= $total_pages; $i++):
+                            $is_active = ($i === $currentPage);
+                        ?>
+                            <a href="<?php echo add_query_arg('paged', $i); ?>" class="page-number <?php echo $is_active ? 'active' : ''; ?>">
+                                <?php echo $i; ?>
+                            </a>
+                        <?php endfor; ?>
+                    </div>
+                    <a href="<?php echo $pagination['has_next'] ? add_query_arg('paged', $currentPage + 1) : '#'; ?>"
+                       class="page-nav next <?php echo !$pagination['has_next'] ? 'disabled' : ''; ?>">
+                        <span class="dashicons dashicons-arrow-right-alt2"></span>
+                    </a>
+                <?php endif; ?>
+            </div>
 
-        if (!file_exists($configPath)) {
-            return;
-        }
+            <footer class="marketplace-footer">
+                <p><?php printf(__('Developed with %s by Jankx Team', 'jankx'), '<span class="heart" style="color:#e91e63;">❤</span>'); ?></p>
+            </footer>
+        </div>
 
-        // Đọc config hiện tại
-        $config = include $configPath;
 
-        if (!isset($config['icon_types'][$iconType])) {
-            return;
-        }
 
-        // Toggle trạng thái auto-load
-        $currentAutoLoad = $config['icon_types'][$iconType]['auto_load'] ?? false;
-        $config['icon_types'][$iconType]['auto_load'] = !$currentAutoLoad;
+        <div class="jankx-modal-overlay" id="extension-modal">
+            <div class="jankx-modal-content">
+                <div class="modal-header">
+                    <div class="modal-close"><span class="dashicons dashicons-no-alt"></span></div>
+                    <div class="modal-icon-wrapper" id="m-icon-bg">
+                        <div id="m-icon-content"></div>
+                    </div>
+                    <div class="modal-title-area">
+                        <h2 id="m-title"><?php _e('Extension Name', 'jankx'); ?></h2>
+                        <span id="m-badge" class="badge"><?php _e('Free', 'jankx'); ?></span>
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <div class="modal-description" id="m-desc"></div>
+                    <div class="modal-metadata">
+                        <div class="meta-item">
+                            <span class="meta-lbl"><?php _e('Author', 'jankx'); ?></span>
+                            <span class="meta-val" id="m-author"><?php _e('Jankx Team', 'jankx'); ?></span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-lbl"><?php _e('Version', 'jankx'); ?></span>
+                            <span class="meta-val" id="m-version">1.0.0</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-lbl"><?php _e('Installs', 'jankx'); ?></span>
+                            <span class="meta-val" id="m-installs">0</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-lbl"><?php _e('Rating', 'jankx'); ?></span>
+                            <span class="meta-val" id="m-rating">5.0</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="button jankx-btn-secondary modal-close-btn"><?php _e('Close', 'jankx'); ?></button>
+                </div>
+            </div>
+        </div>
 
-        // Ghi lại config
-        $this->writeConfigFile($configPath, $config);
+        <script>
+        jQuery(function($) {
+            var $notice = $('#jankx-install-notice');
 
-        // Hiển thị thông báo
-        $newAutoLoad = $config['icon_types'][$iconType]['auto_load'] ? 'enabled' : 'disabled';
-        add_action('admin_notices', function () use ($iconType, $newAutoLoad) {
-            echo '<div class="notice notice-success is-dismissible">';
-            echo '<p>Auto-load for <strong>' . esc_html(ucfirst($iconType)) . '</strong> has been <strong>' . esc_html($newAutoLoad) . '</strong>.</p>';
-            echo '</div>';
-        });
-    }
+            $(document).on('click', '.install-extension', function() {
+                var $btn  = $(this);
+                var slug  = $btn.data('slug');
+                var nonce = $btn.data('nonce');
 
-    /**
-     * Xóa icon type
-     */
-    protected function removeIconType($iconType)
-    {
-        $configPath = $this->app->make('jankx.paths')['base'] . '/config/font-icons.php';
+                if (!slug) return;
 
-        if (!file_exists($configPath)) {
-            return;
-        }
+                $btn.addClass('loading').prop('disabled', true).text('<?php echo esc_js(__('Installing...', 'jankx')); ?>');
+                $notice.hide();
 
-        // Đọc config hiện tại
-        $config = include $configPath;
+                $.post(ajaxurl, {
+                    action: 'jankx_marketplace_install_extension',
+                    slug:   slug,
+                    nonce:  nonce
+                }, function(res) {
+                    if (res.success) {
+                        $notice.removeClass('notice-error').addClass('notice-success')
+                               .html('<p><strong><?php echo esc_js(__('Success:', 'jankx')); ?></strong> ' + res.data.message + '</p>').show();
+                        $btn.text('<?php echo esc_js(__('Installed', 'jankx')); ?>');
+                        $btn.addClass('installed').prop('disabled', true).css('background', '#10b981');
+                        $('html, body').animate({ scrollTop: $notice.offset().top - 80 }, 400);
+                    } else {
+                        var errMsg = (res.data && res.data.message)
+                            ? res.data.message
+                            : '<?php echo esc_js(__('Installation failed.', 'jankx')); ?>';
+                        $notice.removeClass('notice-success').addClass('notice-error')
+                               .html('<p><strong><?php echo esc_js(__('Error:', 'jankx')); ?></strong> ' + errMsg + '</p>').show();
+                        $btn.removeClass('loading').prop('disabled', false).text('<?php echo esc_js(__('Install Now', 'jankx')); ?>');
+                        $('html, body').animate({ scrollTop: $notice.offset().top - 80 }, 400);
+                    }
+                }).fail(function(xhr) {
+                    var errMsg = '<?php echo esc_js(__('Connection error. Please try again.', 'jankx')); ?>';
+                    try {
+                        var parsed = JSON.parse(xhr.responseText);
+                        if (parsed && parsed.data && parsed.data.message) {
+                            errMsg = parsed.data.message;
+                        }
+                    } catch(e) {}
+                    $notice.removeClass('notice-success').addClass('notice-error')
+                           .html('<p><strong><?php echo esc_js(__('Error:', 'jankx')); ?></strong> ' + errMsg + '</p>').show();
+                    $btn.removeClass('loading').prop('disabled', false).text('<?php echo esc_js(__('Install Now', 'jankx')); ?>');
+                    $('html, body').animate({ scrollTop: $notice.offset().top - 80 }, 400);
+                });
+            });
 
-        if (!isset($config['icon_types'][$iconType])) {
-            return;
-        }
+            // Apply both search and filter logic
+            function applyFiltersAndSort() {
+                var q = $('#extension-search').val().toLowerCase();
+                var activeFilter = $('.filter-tab.active').data('filter');
+                var $cards = $('.extension-card-modern');
+                var $grid = $('.jankx-extension-grid');
 
-        // Lưu thông tin icon type trước khi xóa để hiển thị thông báo
-        $iconTypeName = ucfirst($iconType);
+                // 1. Filter
+                $cards.each(function() {
+                    var text = $(this).text().toLowerCase();
+                    var isFree = $(this).data('is-free') == 1;
+                    var matchSearch = q === '' || text.indexOf(q) > -1;
+                    var matchFilter = activeFilter === 'all' || activeFilter === 'popular' || activeFilter === 'newest' || 
+                                      (activeFilter === 'free' && isFree) || 
+                                      (activeFilter === 'premium' && !isFree);
+                    
+                    $(this).toggle(matchSearch && matchFilter);
+                });
 
-        // Xóa icon type khỏi config
-        unset($config['icon_types'][$iconType]);
+                // 2. Sort
+                var cardsArray = $cards.toArray();
+                if (activeFilter === 'popular') {
+                    cardsArray.sort(function(a, b) {
+                        return parseInt($(b).data('installs')) - parseInt($(a).data('installs'));
+                    });
+                } else if (activeFilter === 'newest') {
+                    cardsArray.sort(function(a, b) {
+                        return parseInt($(b).data('date')) - parseInt($(a).data('date'));
+                    });
+                } else {
+                    cardsArray.sort(function(a, b) {
+                        return parseInt($(a).data('index')) - parseInt($(b).data('index'));
+                    });
+                }
 
-        // Ghi lại config
-        $this->writeConfigFile($configPath, $config);
-
-        // Xóa các file liên quan nếu có
-        $this->cleanupIconTypeFiles($iconType);
-
-        // Hiển thị thông báo
-        add_action('admin_notices', function () use ($iconTypeName) {
-            echo '<div class="notice notice-success is-dismissible">';
-            echo '<p>Icon type <strong>' . esc_html($iconTypeName) . '</strong> has been <strong>removed</strong> successfully.</p>';
-            echo '</div>';
-        });
-    }
-
-    /**
-     * Dọn dẹp files liên quan đến icon type đã xóa
-     */
-    protected function cleanupIconTypeFiles($iconType)
-    {
-        $basePath = $this->app->make('jankx.paths')['base'];
-
-        // Xóa thư mục icons nếu có
-        $iconDir = $basePath . '/resources/icons/' . $iconType;
-        if (is_dir($iconDir)) {
-            $this->recursiveDelete($iconDir);
-        }
-
-        // Xóa file JSON metadata nếu có
-        $jsonFile = $basePath . '/resources/icons/' . $iconType . '.json';
-        if (file_exists($jsonFile)) {
-            unlink($jsonFile);
-        }
-
-        // Xóa file CSS nếu có
-        $cssFile = $basePath . '/resources/icons/' . $iconType . '.css';
-        if (file_exists($cssFile)) {
-            unlink($cssFile);
-        }
-    }
-
-    /**
-     * Xóa thư mục và tất cả nội dung bên trong
-     */
-    protected function recursiveDelete($dir)
-    {
-        if (!is_dir($dir)) {
-            return;
-        }
-
-        $files = array_diff(scandir($dir), array('.', '..'));
-        foreach ($files as $file) {
-            $path = $dir . '/' . $file;
-            if (is_dir($path)) {
-                $this->recursiveDelete($path);
-            } else {
-                unlink($path);
+                $.each(cardsArray, function(i, card) {
+                    $grid.append(card);
+                });
             }
-        }
-        rmdir($dir);
+
+            // Store original index for sorting
+            $('.extension-card-modern').each(function(index) {
+                $(this).attr('data-index', index);
+            });
+
+            // Search functionality
+            $('#extension-search').on('input', function() {
+                applyFiltersAndSort();
+            });
+
+            // Filter Tabs functionality
+            $('.filter-tab').on('click', function() {
+                $('.filter-tab').removeClass('active');
+                $(this).addClass('active');
+                applyFiltersAndSort();
+            });
+
+            // Modal Functionality
+            var $modal = $('#extension-modal');
+            var closeModal = function() {
+                $modal.removeClass('is-active');
+                $('body').removeClass('modal-open');
+            };
+
+            $(document).on('click', '.detail-extension', function() {
+                var $card = $(this).closest('.extension-card-modern');
+                var data = $(this).data('ext');
+
+                // Fill data
+                $('#m-title').text(data.name || 'Unknown');
+                $('#m-desc').text(data.description || '');
+                $('#m-version').text('v' + (data.latest_version || '1.0.0'));
+                $('#m-author').text(data.author_name || 'Jankx Team');
+                $('#m-installs').text((data.install_count || 0).toLocaleString());
+                $('#m-rating').text((data.rating || 5).toFixed(1) + ' / 5.0');
+                
+                var $badge = $('#m-badge');
+                if (data.is_premium) {
+                    $badge.text('Premium').attr('class', 'badge premium');
+                } else {
+                    $badge.text('<?php echo esc_js(__('Free', 'jankx')); ?>').attr('class', 'badge free');
+                }
+
+                // Icon handling
+                var $iconParent = $card.find('.extension-icon');
+                $('#m-icon-content').html($iconParent.html());
+                var $defIcon = $iconParent.find('.default-icon');
+                if ($defIcon.length) {
+                    $('#m-icon-bg').css('background', $defIcon.css('background'));
+                    $('#m-icon-content').find('.default-icon').css('background', 'transparent');
+                } else {
+                    $('#m-icon-bg').css('background', '#fff');
+                }
+
+                $modal.addClass('is-active');
+                $('body').addClass('modal-open');
+            });
+
+            // Close modal events
+            $(document).on('click', '.modal-close, .modal-close-btn', function() {
+                closeModal();
+            });
+
+            $modal.on('click', function(e) {
+                if ($(e.target).closest('.jankx-modal-content').length === 0) {
+                    closeModal();
+                }
+            });
+
+            $(document).on('keydown', function(e) {
+                if (e.key === 'Escape' && $modal.hasClass('is-active')) {
+                    closeModal();
+                }
+            });
+        });
+        </script>
+        <?php
     }
 
     /**
-     * Ghi config file
+     * Get a random premium icon and gradient for extension icon fallback
      */
-    protected function writeConfigFile($configPath, $config)
+    private function getRandomGradient($seed)
     {
-        $content = "<?php\n\nreturn " . var_export($config, true) . ";\n";
-        file_put_contents($configPath, $content);
+        $options = [
+            ['grad' => 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)', 'icon' => 'dashicons-chart-area'],
+            ['grad' => 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)', 'icon' => 'dashicons-performance'],
+            ['grad' => 'linear-gradient(135deg, #10b981 0%, #059669 100%)', 'icon' => 'dashicons-share-alt2'],
+            ['grad' => 'linear-gradient(135deg, #a855f7 0%, #9333ea 100%)', 'icon' => 'dashicons-menu-alt3'],
+            ['grad' => 'linear-gradient(135deg, #38bdf8 0%, #0284c7 100%)', 'icon' => 'dashicons-email-alt'],
+            ['grad' => 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)', 'icon' => 'dashicons-analytics'],
+            ['grad' => 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)', 'icon' => 'dashicons-admin-network'],
+        ];
+        $index = abs(crc32($seed)) % count($options);
+        return $options[$index];
+    }
+
+    /**
+     * Check if an extension is already installed
+     *
+     * @param string $slug Extension slug
+     * @return bool
+     */
+    public function isExtensionInstalled($slug)
+    {
+        $extensionManager = \Jankx\Extensions\ExtensionManager::getInstance();
+        return $extensionManager->has_extension_id($slug);
     }
 
     /**

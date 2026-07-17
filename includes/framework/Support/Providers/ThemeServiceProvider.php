@@ -8,9 +8,9 @@ use Jankx\Services\ThemeService;
 use Jankx\Services\DefaultThumbnailService;
 use Jankx\Support\Providers\ServiceProvider;
 use Jankx\Support\TemplateEngine\TemplateEngineManager;
-use Jankx\Support\TemplateEngine\Engines\PlatesEngine;
-use Jankx\Layouts\PostLayout\PostLayoutManager;
-use Jankx\Layouts\PostLayout\Supports\DefaultContent;
+use Jankx\Layouts\DynamicDataLayout\DynamicDataLayoutManager;
+use Jankx\Layouts\DynamicDataLayout\Supports\DefaultContent;
+use Jankx\Layouts\DynamicDataLayout\ViewLayouts\ViewLayoutManager;
 
 /**
  * Theme Service Provider
@@ -28,7 +28,7 @@ use Jankx\Layouts\PostLayout\Supports\DefaultContent;
  * - Meta tags and head content
  * - Footer scripts and analytics
  * - Template engine registration and initialization
- * - TemplateEngineManager and PlatesEngine setup
+ * - TemplateEngineManager and LatteEngine setup
  * - PostLayout PostsFetcher initialization and AJAX actions
  *
  * @package Jankx\Support\Providers
@@ -56,6 +56,11 @@ class ThemeServiceProvider extends ServiceProvider
 
         // Register DefaultThumbnail service
         $this->registerDefaultThumbnailService($app);
+
+        // Register ViewLayoutManager binding for container resolution
+        $app->singleton(ViewLayoutManager::class, function () {
+            return ViewLayoutManager::getInstance();
+        });
     }
 
     /**
@@ -93,16 +98,9 @@ class ThemeServiceProvider extends ServiceProvider
             return new TemplateEngineManager($app);
         });
 
-        // Register PlatesEngine as singleton
-        $app->singleton(PlatesEngine::class, function (Application $app) {
-            return new PlatesEngine($app);
-        });
-
         // Register aliases for easy access
         $app->alias(TemplateEngineManager::class, 'template.engine');
-        $app->alias(PlatesEngine::class, 'template.engine.plates');
         $app->alias(TemplateEngineManager::class, 'template');
-        $app->alias(PlatesEngine::class, 'template.engine.jankx');
     }
 
     /**
@@ -133,12 +131,12 @@ class ThemeServiceProvider extends ServiceProvider
         // Register PostLayoutManager as singleton
         // Use both names for backward compatibility
         $app->singleton('postlayout.manager', function (Application $app) {
-            return PostLayoutManager::getInstance();
+            return DynamicDataLayoutManager::getInstance();
         });
         
         // Also register with dot notation for facade compatibility
         $app->singleton('post.layout.manager', function (Application $app) {
-            return PostLayoutManager::getInstance();
+            return DynamicDataLayoutManager::getInstance();
         });
     }
 

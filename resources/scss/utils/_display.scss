@@ -1,0 +1,117 @@
+// Breakpoints
+$mobile-max: 767.98px;
+$tablet-min: 768px;
+$tablet-max: 1023.98px;
+$desktop-min: 1024px;
+$desktop-max: 1439.98px;
+$fluid-min: 1440px;
+
+// Hide Utilities
+.hide-mobile {
+  @media (max-width: #{$mobile-max}) {
+    display: none;
+  }
+}
+
+.hide-tablet {
+  @media (min-width: #{$tablet-min}) and (max-width: #{$tablet-max}) {
+    display: none;
+  }
+}
+
+.hide-desktop {
+  @media (min-width: #{$desktop-min}) and (max-width: #{$desktop-max}) {
+    display: none;
+  }
+}
+
+.hide-fluid {
+  @media (min-width: #{$fluid-min}) {
+    display: none;
+  }
+}
+
+// Only Utilities
+.only-mobile {
+  @media (min-width: #{$tablet-min}) {
+    display: none;
+  }
+}
+
+.only-tablet {
+  @media (max-width: #{$mobile-max}) {
+    display: none;
+  }
+  @media (min-width: #{$desktop-min}) {
+    display: none;
+  }
+}
+
+.only-desktop {
+  @media (max-width: #{$tablet-max}) {
+    display: none;
+  }
+  @media (min-width: #{$fluid-min}) {
+    display: none;
+  }
+}
+
+.only-fluid {
+  @media (max-width: #{$desktop-max}) {
+    display: none;
+  }
+}
+
+.no-dimensions {
+  &-mobile {
+    @media (max-width: #{$mobile-max}) {
+      margin: 0;
+      padding: 0;
+    }
+  }
+  &-tablet {
+    @media (min-width: #{$tablet-min}) and (max-width: #{$tablet-max}) {
+      margin: 0;
+      padding: 0;
+    }
+  }
+  &-desktop {
+    @media (min-width: #{$desktop-min}) and (max-width: #{$desktop-max}) {
+      margin: 0;
+      padding: 0;
+    }
+  }
+  &-fluid {
+    @media (min-width: #{$fluid-min}) {
+      margin: 0;
+      padding: 0;
+    }
+  }
+}
+
+.small-dimensions {
+  &-mobile {
+    @media (max-width: #{$mobile-max}) {
+      margin: 10px;
+      padding: 10px;
+    }
+  }
+  &-tablet {
+    @media (min-width: #{$tablet-min}) and (max-width: #{$tablet-max}) {
+      margin: 10px;
+      padding: 10px;
+    }
+  }
+  &-desktop {
+    @media (min-width: #{$desktop-min}) and (max-width: #{$desktop-max}) {
+      margin: 10px;
+      padding: 10px;
+    }
+  }
+  &-fluid {
+    @media (min-width: #{$fluid-min}) {
+      margin: 10px;
+      padding: 10px;
+    }
+  }
+}

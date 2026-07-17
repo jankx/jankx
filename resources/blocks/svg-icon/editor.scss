@@ -13,13 +13,13 @@
 			width: 24px;
 			margin-bottom: 10px;
 		}
-		
+
 		// Only show the icon if the dropzone is too small.
 		@container (max-width: 150px)  {
 			.components-drop-zone__content-icon {
 				margin-bottom: 0;
 			}
-			
+
 			.components-drop-zone__content-text {
 				display: none;
 			}
@@ -29,13 +29,13 @@
 			.components-drop-zone__content-icon {
 				margin-bottom: 0;
 			}
-			
+
 			.components-drop-zone__content-text {
 				display: none;
 			}
 		}
 	}
-	  
+
 	// Placeholder styles.
 	.components-placeholder {
 
@@ -240,7 +240,7 @@
 					color: rgb(255 255 255 / 80%);
 
 					&:hover {
-						color: #fff !important;
+						color: #fff;
 					}
 
 					svg {
@@ -436,16 +436,16 @@
 				width: 100%;
 				-webkit-box-align: center;
 				-webkit-box-pack: justify;
-		
+
 				h2 {
 					font-weight: 500;
 					margin: 0;
 				}
-		
+
 				.options-panel-header__dropdown-menus {
 					line-height: 0;
 					margin: -4px 0;
-		
+
 					.components-button {
 						padding: 0px;
 						min-width: 24px;
@@ -478,7 +478,7 @@
 			grid-column: 1 / -1;
 			margin-top: 8px;
 			margin-bottom: 24px;
-	
+
 			&:first-child {
 				margin-top: 0;
 			}
@@ -517,7 +517,7 @@
 	.icons-list {
 		display: flex;
 		flex-wrap: wrap;
-	
+
 		.icons-list__item {
 			align-items: stretch;
 			background: transparent;
@@ -534,24 +534,24 @@
 			position: relative;
 			transition: all .05s ease-in-out;
 			word-break: break-word;
-	
+
 			&:hover {
-				color: var(--wp-admin-theme-color) !important;
+				color: var(--wp-admin-theme-color);
 			}
-	
+
 			&.has-no-icon-fill {
 				svg {
 					fill: none;
 				}
 			}
-	
+
 			.icons-list__item-icon {
 				border-radius: 2px;
 				color: #1e1e1e;
 				padding: 12px;
 				transition: all .05s ease-in-out;
 			}
-	
+
 			.icons-list__item-title {
 				font-size: 12px;
 				padding: 4px 2px 8px;
@@ -565,7 +565,7 @@
 
 // Styles for the options dropdown popover.
 .options-panel__option-popover {
-	// Same size as core popovers. 
+	// Same size as core popovers.
 	.components-popover__content {
 		min-width: 240px;
 	}
@@ -606,12 +606,27 @@
 	padding-left: 0;
 }
 
+// Justify alignment classes for editor
+.wp-block-outermost-icon-block {
+	&.items-justified-left {
+		justify-content: flex-start;
+	}
+
+	&.items-justified-center {
+		justify-content: center;
+	}
+
+	&.items-justified-right {
+		justify-content: flex-end;
+	}
+}
+
 .wp-block-outermost-icon-block__toolbar_content {
 	width: 250px;
 }
 
 .wp-block-outermost-icon-block__link-popover {
-	
+
 	.block-editor-link-control__field {
 		margin: 8px;
 	}

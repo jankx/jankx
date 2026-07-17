@@ -1,0 +1,86 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "jankx/wrapper",
+    "version": "1.0.0",
+    "title": "Wrapper",
+    "category": "design",
+    "description": "A layout wrapper block with advanced responsive controls.",
+    "providesContext": {
+        "jankx/wrapperId": "anchor"
+    },
+    "attributes": {
+        "paddingUltrawide": {
+            "type": "number"
+        },
+        "paddingDesktop": {
+            "type": "number"
+        },
+        "paddingTablet": {
+            "type": "number"
+        },
+        "paddingMobile": {
+            "type": "number"
+        },
+        "marginUltrawide": {
+            "type": "number"
+        },
+        "marginDesktop": {
+            "type": "number"
+        },
+        "marginTablet": {
+            "type": "number"
+        },
+        "marginMobile": {
+            "type": "number"
+        },
+        "hideOnUltrawide": {
+            "type": "boolean",
+            "default": false
+        },
+        "hideOnDesktop": {
+            "type": "boolean",
+            "default": false
+        },
+        "hideOnTablet": {
+            "type": "boolean",
+            "default": false
+        },
+        "hideOnMobile": {
+            "type": "boolean",
+            "default": false
+        },
+        "tagName": {
+            "type": "string",
+            "default": "div"
+        },
+        "maxWidth": {
+            "type": "string"
+        },
+        "renderMode": {
+            "type": "string",
+            "default": "dynamic"
+        }
+    },
+    "supports": {
+        "anchor": true,
+        "layout": {
+            "allowSwitching": true,
+            "allowInheriting": true,
+            "default": {
+                "type": "constrained"
+            }
+        },
+        "spacing": {
+            "margin": true,
+            "padding": true,
+            "blockGap": true
+        },
+        "dimensions": {
+            "minHeight": true
+        }
+    },
+    "editorScript": "file:./build/index.js",
+    "style": "file:./build/style.css",
+    "editorStyle": "file:./build/style.css"
+}

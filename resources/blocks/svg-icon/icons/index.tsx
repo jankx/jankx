@@ -71,7 +71,6 @@ import {
 	drawerLeft,
 	drawerRight,
 	download,
-	edit,
 	external,
 	file,
 	filter,
@@ -90,7 +89,7 @@ import {
 	formatLowercase,
 	formatOutdent,
 	formatOutdentRTL,
-	formatRtl,
+	formatRTL,
 	formatStrikethrough,
 	formatUnderline,
 	formatUppercase,
@@ -142,7 +141,6 @@ import {
 	mobile,
 	more,
 	moreHorizontal,
-	moreHorizontalMobile,
 	moreVertical,
 	moveTo,
 	navigation,
@@ -252,7 +250,7 @@ import {
 	upload,
 	verse,
 	video,
-	warning,
+	caution,
 	widget,
 } from '@wordpress/icons';
 
@@ -973,7 +971,7 @@ const wordpressIcons = [
 	{
 		name: 'edit',
 		title: __( 'Edit', 'icon-block' ),
-		icon: edit,
+		icon: pencil,
 	},
 	{
 		name: 'external',
@@ -1081,7 +1079,7 @@ const wordpressIcons = [
 	{
 		name: 'formatRtl',
 		title: __( 'Format RTL', 'icon-block' ),
-		icon: formatRtl,
+		icon: formatRTL,
 		categories: [ 'editor' ],
 	},
 	{
@@ -1374,7 +1372,7 @@ const wordpressIcons = [
 	{
 		name: 'moreHorizontalMobile',
 		title: __( 'More Horizontal - Mobile', 'icon-block' ),
-		icon: moreHorizontalMobile,
+		icon: moreHorizontal,
 	},
 	{
 		name: 'moreVertical',
@@ -1983,7 +1981,7 @@ const wordpressIcons = [
 	{
 		name: 'warning',
 		title: __( 'Warning', 'icon-block' ),
-		icon: warning,
+		icon: caution,
 	},
 	{
 		name: 'widget',

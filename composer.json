@@ -18,7 +18,8 @@
     "illuminate/container": "^6.0|^7.0|^8.0|^9.0|^10.0|^11.0",
     "jankx/option-adapter": "*",
     "jankx/dashboard-framework": "*",
-    "league/plates": "^3.5|^3.6"
+    "latte/latte": "^2.11|^3.0",
+    "jankx/gutenberg-controls": "*"
   },
   "require-dev": {
     "phpunit/phpunit": "^9.5|^10.0",
@@ -31,9 +32,11 @@
     "psr-4": {
       "Jankx\\": "./includes/framework",
       "Jankx\\Features\\": "./features",
-      "Jankx\\Features\\Metrics\\": "./features/metrics",
       "Jankx\\Features\\ContentTemplates\\": "./features/content-templates",
-      "App\\": "./includes/app"
+      "Jankx\\Foundation\\Cli\\Seeders\\": "./includes/framework/Foundation/Cli/Seeders",
+      "Jankx\\Demo\\": "./demo",
+      "App\\": "./includes/app",
+      "App\\Console\\": "./includes/app/Console"
     }
   },
   "autoload-dev": {
@@ -41,8 +44,7 @@
       "Tests\\": "./tests"
     }
   },
-  "scripts": {
-  },
+  "scripts": {},
   "suggest": {
     "monolog/monolog": "Allows more advanced logging of the application flow",
     "jankx/dashboard-framework": "Official option framework for Jankx theme"

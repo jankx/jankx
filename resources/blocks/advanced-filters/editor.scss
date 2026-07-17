@@ -1,0 +1,45 @@
+/**
+ * Advanced Filters Block - Editor Styles
+ *
+ * Editor should look exactly like frontend
+ * Import all styles from style.scss
+ */
+
+// Import frontend styles to ensure editor looks exactly like frontend
+@use './style.scss';
+
+// Minimal editor-specific overrides
+.wp-block-jankx-advanced-filters {
+    // Placeholder only shows when no target block is selected
+    .components-placeholder {
+        min-height: 100px;
+        padding: 1.5rem;
+        text-align: center;
+
+        .components-placeholder__label {
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+    }
+
+    // ServerSideRender container should not have extra spacing
+    .wp-block-embed__wrapper {
+        margin: 0;
+        padding: 0;
+        border: none;
+        background: transparent;
+    }
+
+    // Override any editor-specific wrapper styles that might interfere
+    // Remove editor-specific styling from block wrapper
+    &.block-editor-block-list__block {
+        // Remove any editor-specific borders or backgrounds
+        border: none;
+        box-shadow: none;
+        background: transparent;
+    }
+
+    // Ensure rendered content from ServerSideRender looks exactly like frontend
+    // ServerSideRender content should be identical to frontend
+}
+

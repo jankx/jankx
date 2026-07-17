@@ -4,4 +4,8 @@ coverage
 coverage.txt
 node_modules
 /composer.lock
-package-lock.json
+*.log
+*.txt
+pnpm-lock.yaml
+.phpunit.cache
+.DS_Store

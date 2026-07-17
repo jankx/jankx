@@ -1,0 +1,82 @@
+name: CI
+
+on:
+  push:
+    branches: [ master, main, develop, v2 ]
+  pull_request:
+    branches: [ master, main, develop, v2 ]
+
+jobs:
+  php-tests:
+    name: PHP Tests (PHP ${{ matrix.php }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        php: [ '8.0', '8.1', '8.2', '8.3', '8.4' ]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: mbstring, intl, igbinary, bcmath, curl, gd, zip, mysqli, sqlite3
+          coverage: xdebug
+          tools: composer:v2
+
+      - name: Get Composer Cache Directory
+        id: composer-cache
+        run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+
+      - name: Cache Composer dependencies
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: ${{ runner.os }}-composer-
+
+      - name: Install Composer dependencies
+        run: composer update --prefer-dist --no-progress --no-interaction
+
+      - name: Run PHPUnit
+        run: |
+          chmod +x vendor/bin/phpunit
+          vendor/bin/phpunit --coverage-clover coverage.xml
+
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./coverage.xml
+          fail_ci_if_error: false
+
+  build-assets:
+    name: Build Assets
+    needs: php-tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install NPM dependencies (theme root / Mix)
+        run: npm ci --no-interaction
+
+      - name: Build Production Assets (Mix)
+        run: npm run production --no-interaction
+
+      - name: Install NPM dependencies (resources blocks)
+        run: npm install --no-interaction
+        working-directory: resources
+
+      - name: Build Gutenberg Blocks (Webpack)
+        run: npm run build --no-interaction
+        working-directory: resources

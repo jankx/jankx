@@ -1,0 +1,361 @@
+/**
+ * Advanced Button Block Styles
+ *
+ * Styles for icon positioning using flex order
+ */
+
+// Import Animate.css for animations
+@import url('https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css');
+
+// Block wrapper
+.wp-block-jankx-advanced-button {
+	// Box sizing để width fixed bao gồm padding và border
+	box-sizing: border-box;
+
+	// Remove padding from wrapper - padding will be applied to link instead
+	padding: 0;
+
+	// Margin stays on wrapper (WordPress controls apply here)
+	// No default margin, let WordPress controls handle it
+
+	// Width settings support
+	&[style*="width"] {
+		width: var(--wp--custom--button--width, auto);
+	}
+
+	.jankx-advanced-button__link {
+		box-sizing: border-box;
+		border-width: 2px;
+		border-style: solid;
+		border-color: transparent;
+	}
+
+	// Default behavior for FILL mode (Not Outline and Not Text Link)
+	&:not(.is-style-outline):not(.is-style-text-link) {
+		.jankx-advanced-button__link {
+
+			// Fallback colors if none set
+			&.is-default-colors {
+				background-color: var(--wp--preset--color--primary, #503AA8);
+				color: var(--wp--preset--color--base, #fff);
+			}
+		}
+	}
+
+	// Outline style variant
+	&.is-style-outline {
+		.jankx-advanced-button__link {
+			background-color: transparent;
+			border-color: currentColor;
+			border-width: 2px;
+			border-style: solid;
+
+			// Fallback text/border color if none set
+			&.is-default-colors {
+				color: var(--wp--preset--color--primary, #503AA8);
+				border-color: var(--wp--preset--color--primary, #503AA8);
+			}
+		}
+
+		// Hover state for Outline
+		&:hover .jankx-advanced-button__link {
+			background-color: var(--wp--preset--color--primary, #503AA8);
+			color: var(--wp--preset--color--base, #fff);
+			border-color: transparent;
+		}
+	}
+
+	// Text Link style variant
+	&.is-style-text-link {
+		.jankx-advanced-button__link {
+			background-color: transparent;
+			border: none;
+			padding: 0;
+			width: auto;
+			display: inline-flex;
+
+			// Fallback text color if none set
+			&.is-default-colors {
+				color: var(--wp--preset--color--primary, #503AA8);
+			}
+
+			// Add underline on hover for text link
+			&:hover {
+				text-decoration: underline;
+			}
+		}
+	}
+
+
+	// Animation logic
+	.jankx-advanced-button__link {
+		&.is-animating {
+			animation-duration: 1s;
+			animation-fill-mode: both;
+		}
+
+		// CSS-only hover fallback for the editor/basic use
+		&[class*="hover-ani-"]:hover {
+			animation-duration: 1s;
+			animation-fill-mode: both;
+		}
+
+		// List of animations (shared by CSS-only hover and JS-triggered)
+		&.hover-ani-bounce:hover,
+		&.ani-bounce {
+			animation-name: bounce;
+		}
+
+		&.hover-ani-flash:hover,
+		&.ani-flash {
+			animation-name: flash;
+		}
+
+		&.hover-ani-pulse:hover,
+		&.ani-pulse {
+			animation-name: pulse;
+		}
+
+		&.hover-ani-rubberBand:hover,
+		&.ani-rubberBand {
+			animation-name: rubberBand;
+		}
+
+		&.hover-ani-shakeX:hover,
+		&.ani-shakeX {
+			animation-name: shakeX;
+		}
+
+		&.hover-ani-swing:hover,
+		&.ani-swing {
+			animation-name: swing;
+		}
+
+		&.hover-ani-tada:hover,
+		&.ani-tada {
+			animation-name: tada;
+		}
+
+		&.hover-ani-wobble:hover,
+		&.ani-wobble {
+			animation-name: wobble;
+		}
+
+		&.hover-ani-jello:hover,
+		&.ani-jello {
+			animation-name: jello;
+		}
+
+		&.hover-ani-heartBeat:hover,
+		&.ani-heartBeat {
+			animation-name: heartBeat;
+		}
+	}
+
+
+	// Text alignment support
+	&.has-text-align-left .jankx-advanced-button__link {
+		justify-content: flex-start;
+	}
+
+	&.has-text-align-center .jankx-advanced-button__link {
+		justify-content: center;
+	}
+
+	&.has-text-align-right .jankx-advanced-button__link {
+		justify-content: flex-end;
+	}
+
+	// Icon position classes
+	// Support both: class on wrapper div OR class on button element
+	&.icon-position-left .jankx-advanced-button__link,
+	.jankx-advanced-button__link.icon-position-left {
+		flex-direction: row;
+
+		.button-icon-wrapper {
+			order: 0;
+		}
+
+		.button-text {
+			order: 1;
+		}
+	}
+
+	&.icon-position-right .jankx-advanced-button__link,
+	.jankx-advanced-button__link.icon-position-right {
+		flex-direction: row;
+
+		.button-icon-wrapper {
+			order: 1;
+		}
+
+		.button-text {
+			order: 0;
+		}
+	}
+
+	&.icon-position-top .jankx-advanced-button__link,
+	.jankx-advanced-button__link.icon-position-top {
+		flex-direction: column;
+
+		.button-icon-wrapper {
+			order: 0;
+		}
+
+		.button-text {
+			order: 1;
+		}
+	}
+
+	&.icon-position-bottom .jankx-advanced-button__link,
+	.jankx-advanced-button__link.icon-position-bottom {
+		flex-direction: column;
+
+		.button-icon-wrapper {
+			order: 1;
+		}
+
+		.button-text {
+			order: 0;
+		}
+	}
+}
+
+// Global icon position classes (for button element directly)
+// This ensures icon-position works even when class is on button element
+.jankx-advanced-button__link.icon-position-left,
+.jankx-advanced-button__link.icon-position-right,
+.jankx-advanced-button__link.icon-position-top,
+.jankx-advanced-button__link.icon-position-bottom {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.jankx-advanced-button__link.icon-position-right {
+	flex-direction: row;
+
+	.button-icon-wrapper {
+		order: 1;
+	}
+
+	.button-text {
+		order: 0;
+	}
+}
+
+.jankx-advanced-button__link.icon-position-left {
+	flex-direction: row;
+
+	.button-icon-wrapper {
+		order: 0;
+	}
+
+	.button-text {
+		order: 1;
+	}
+}
+
+.jankx-advanced-button__link.icon-position-top {
+	flex-direction: column;
+
+	.button-icon-wrapper {
+		order: 0;
+	}
+
+	.button-text {
+		order: 1;
+	}
+}
+
+.jankx-advanced-button__link.icon-position-bottom {
+	flex-direction: column;
+
+	.button-icon-wrapper {
+		order: 1;
+	}
+
+	.button-text {
+		order: 0;
+	}
+}
+
+// Link trong flex layout group
+.wp-block-group.is-layout-flex .wp-block-jankx-advanced-button .jankx-advanced-button__link {
+	display: flex;
+}
+
+.jankx-advanced-button__link {
+	box-sizing: border-box;
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	text-decoration: none;
+	color: inherit;
+	width: 100%;
+	cursor: pointer;
+
+	// Default padding - inherit from parent or use default
+	padding: var(--wp--custom--button--padding-top, 0.5rem) var(--wp--custom--button--padding-right, 1rem) var(--wp--custom--button--padding-bottom, 0.5rem) var(--wp--custom--button--padding-left, 1rem);
+}
+
+// Reset button element defaults to match link appearance
+button.jankx-advanced-button__link {
+	appearance: none;
+	background: none;
+	font-family: inherit;
+	font-size: inherit;
+	line-height: inherit;
+	cursor: pointer;
+	margin: 0;
+}
+
+.jankx-advanced-button__link {
+
+	// Icon wrapper
+	.button-icon-wrapper {
+		display: inline-flex;
+		align-items: center;
+
+		&:empty {
+			display: none;
+		}
+	}
+
+	// Icon blocks styling (các block con như jankx/icon-picker, jankx/svg-icon, core/image)
+	.button-icon-wrapper>*,
+	>.wp-block-jankx-icon-picker,
+	>.wp-block-jankx-svg-icon,
+	>.wp-block-image {
+		display: inline-flex;
+		align-items: center;
+		flex-shrink: 0;
+		margin: 0;
+	}
+
+	// SVG icons inherit text color from button by default
+	.button-icon-wrapper {
+		svg {
+			// SVG elements inherit color from parent button
+			color: inherit;
+
+			// Apply currentColor to fill and stroke
+			// This makes SVG icons match the button text color
+			fill: currentColor;
+			stroke: currentColor;
+
+			// Ensure all SVG shapes inherit the color
+			// This applies to path, circle, rect, etc.
+			path,
+			circle,
+			rect,
+			polygon,
+			line,
+			polyline,
+			ellipse {
+				fill: currentColor;
+				stroke: currentColor;
+			}
+		}
+	}
+}

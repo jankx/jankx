@@ -39,25 +39,75 @@ abstract class Block implements BlockInterface
         return $this->blockId;
     }
 
-     /**
+    /**
      * Constructor
      *
      * @param string|null $blockPath Path to the directory containing block.json
-     * @throws \RuntimeException When block path cannot be resolved
      */
     public function __construct($blockPath = null)
     {
-        // Resolve blockPath if not provided
-        if (!$blockPath) {
-            $blockPath = $this->resolveBlockPathFromContainer();
-            if (!$blockPath) {
-                throw new \RuntimeException(
-                    sprintf('Cannot resolve block path for block ID: %s', $this->getBlockId())
-                );
-            }
+        $this->blockPath = $blockPath;
+    }
+
+    /**
+     * Set block path
+     *
+     * @param string $path
+     * @return void
+     */
+    public function setBlockPath(string $path): void
+    {
+        $this->blockPath = $path;
+    }
+
+    /**
+     * Boot block and initialize its components
+     *
+     * @return void
+     */
+    public function boot(): void
+    {
+        if (!$this->blockPath) {
+            $this->blockPath = $this->resolveBlockPathFromContainer();
         }
 
-        $this->blockPath = $blockPath;
+        $this->registerHooks();
+
+        if (is_admin()) {
+            $this->registerEditorAssets();
+        } else {
+            $this->registerFrontendAssets();
+        }
+    }
+
+    /**
+     * Register WordPress hooks for this block
+     *
+     * @return void
+     */
+    protected function registerHooks(): void
+    {
+        // Override in child classes to register actions/filters
+    }
+
+    /**
+     * Register assets for the block editor
+     *
+     * @return void
+     */
+    protected function registerEditorAssets(): void
+    {
+        // Override in child classes to enqueue editor scripts/styles
+    }
+
+    /**
+     * Register assets for the frontend
+     *
+     * @return void
+     */
+    protected function registerFrontendAssets(): void
+    {
+        // Override in child classes to enqueue frontend scripts/styles
     }
 
     public function register(): void
@@ -68,13 +118,9 @@ abstract class Block implements BlockInterface
         }
         $registered = register_block_type_from_metadata($this->blockPath, $args);
         
-        // Load JavaScript translations for the block
-        if ($registered && !empty($registered->editor_script)) {
-            $this->loadScriptTranslations($registered->editor_script);
-        }
-        if ($registered && !empty($registered->view_script)) {
-            $this->loadScriptTranslations($registered->view_script);
-        }
+        // Note: Script translations are loaded automatically by WordPress
+        // when scripts are enqueued. We don't need to manually load them here
+        // to avoid warnings when scripts haven't been built yet.
     }
     
     /**
@@ -85,12 +131,20 @@ abstract class Block implements BlockInterface
      */
     protected function loadScriptTranslations($handle)
     {
-        if (is_string($handle)) {
-            wp_set_script_translations(
-                $handle,
-                'jankx',
-                get_template_directory() . '/languages'
-            );
+        if (!is_string($handle) || empty($handle)) {
+            return;
+        }
+        
+        // Only load translations if script is registered and languages directory exists
+        if (wp_script_is($handle, 'registered')) {
+            $languages_path = get_template_directory() . '/languages';
+            if (is_dir($languages_path)) {
+                wp_set_script_translations(
+                    $handle,
+                    'jankx',
+                    $languages_path
+                );
+            }
         }
     }
 

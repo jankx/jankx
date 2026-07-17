@@ -31,7 +31,7 @@ class BootChildTheme
             return;
         }
 
-        $this->loadChildThemeComposer($childThemePath, $composerJsonPath, $vendorPath);
+        $this->loadChildThemeComposer($app, $childThemePath, $composerJsonPath, $vendorPath);
 
         // Defer loading child theme translations until after theme setup
         // to ensure text domains and locale are initialized properly
@@ -111,12 +111,6 @@ class BootChildTheme
                 $mo = new \MO();
                 $mo->import_from_file($moFile);
                 $l10n[$textDomain] = $mo;
-            } else {
-                Log::warning('Child theme MO file not found for manual loading', [
-                    'text_domain' => $textDomain,
-                    'locale' => $locale,
-                    'mo_file' => $moFile
-                ]);
             }
         }
     }
@@ -260,21 +254,17 @@ class BootChildTheme
      * @param string $vendorPath
      * @return void
      */
-    protected function loadChildThemeComposer($childThemePath, $composerJsonPath, $vendorPath)
+    protected function loadChildThemeComposer(Application $app, $childThemePath, $composerJsonPath, $vendorPath)
     {
         try {
             // Load composer autoloader
             $autoloadPath = $vendorPath . '/autoload.php';
             require_once $autoloadPath;
             // Register child theme composer info with application
-            $this->registerChildThemeComposerInfo($childThemePath, $composerJsonPath);
+            $this->registerChildThemeComposerInfo($app, $childThemePath, $composerJsonPath);
         } catch (\Exception $e) {
-            Log::error('Failed to load child theme composer autoloader', [
-                'error' => $e->getMessage(),
-                'child_theme_path' => $childThemePath,
-                'composer_json' => $composerJsonPath,
-                'vendor_path' => $vendorPath
-            ]);
+            // Use native error_log to avoid facade dependency during bootstrap
+            error_log('[BootChildTheme] Failed to load child theme composer autoloader: ' . $e->getMessage());
         }
     }
 
@@ -285,13 +275,15 @@ class BootChildTheme
      * @param string $composerJsonPath
      * @return void
      */
-    protected function registerChildThemeComposerInfo($childThemePath, $composerJsonPath)
+    protected function registerChildThemeComposerInfo(Application $app, $childThemePath, $composerJsonPath)
     {
         try {
             // Read composer.json to get package information
             $composerData = json_decode(file_get_contents($composerJsonPath), true);
 
-            if ($composerData) {
+            if ($composerData !== null) {
+                // Extract all known fields plus any extra fields
+                $knownFields = ['name', 'version', 'description', 'authors', 'require', 'require-dev', 'autoload', 'autoload-dev'];
                 $packageInfo = [
                     'name' => $composerData['name'] ?? 'unknown/child-theme',
                     'version' => $composerData['version'] ?? '1.0.0',
@@ -305,14 +297,17 @@ class BootChildTheme
                     'composer_json_path' => $composerJsonPath,
                     'vendor_path' => $childThemePath . '/vendor'
                 ];
+                // Merge all extra fields from composer.json
+                foreach ($composerData as $key => $value) {
+                    if (!in_array($key, $knownFields)) {
+                        $packageInfo[$key] = $value;
+                    }
+                }
 
                 // Store in application for later use
-                $app = Application::getInstance();
-                if ($app) {
-                    $app->singleton('child_theme.composer', function () use ($packageInfo) {
-                        return $packageInfo;
-                    });
-                }
+                $app->singleton('child_theme.composer', function () use ($packageInfo) {
+                    return $packageInfo;
+                });
             }
         } catch (\Exception $e) {
             if (Environment::isDebugLog()) {
@@ -331,8 +326,7 @@ class BootChildTheme
      */
     public static function getChildThemeComposerInfo()
     {
-
-        $app = Jankx\Facades\App::getInstance();
+        $app = Application::getInstance();
         if (!$app) {
             return null;
         }
@@ -351,7 +345,7 @@ class BootChildTheme
      */
     public static function getChildThemeTranslationInfo()
     {
-        $app = Jankx\Facades\App::getInstance();
+        $app = Application::getInstance();
         if (!$app) {
             return null;
         }

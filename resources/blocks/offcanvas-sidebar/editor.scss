@@ -1,0 +1,405 @@
+/**
+ * Offcanvas Sidebar Block - Editor Styles
+ * Styles specifically for Gutenberg editor
+ */
+
+.editor-styles-wrapper {
+    .offcanvas-sidebar-block {
+        .offcanvas-sidebar-preview {
+            /* Width is set dynamically via inline style from sidebarWidth attribute */
+            min-height: 100vh;
+            border: 2px dashed #007cba;
+            border-radius: 8px;
+            background: transparent;
+            position: relative;
+
+            .offcanvas-trigger {
+                position: relative;
+                z-index: 1;
+            }
+
+            .offcanvas-sidebar {
+                position: relative;
+                transform: none;
+                box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+                border-radius: 8px;
+                margin: 0;
+                height: auto;
+                min-height: 300px;
+                opacity: 1;
+                visibility: visible;
+                display: flex;
+                flex-direction: column;
+
+                /* Inherit background classes from parent block */
+                &.has-background {
+                    /* This will be handled by inline styles from React */
+                }
+
+                /* Close Button - Editor styles */
+                .close-button {
+                    position: absolute;
+                    border: none;
+                    color: inherit;
+                    font-size: 28px;
+                    line-height: 1;
+                    cursor: pointer;
+                    padding: 0;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    transition: all 0.3s ease;
+                    z-index: 10;
+                    font-weight: 300;
+
+                    &:hover {
+                        transform: rotate(90deg);
+                    }
+
+                    &:focus {
+                        outline: 2px solid rgba(255, 255, 255, 0.3);
+                        outline-offset: 2px;
+                    }
+
+                    &:disabled {
+                        cursor: not-allowed;
+                        opacity: 0.5;
+                    }
+
+                    /* Position variants */
+                    &.position-top-right {
+                        top: 15px;
+                        right: 15px;
+                    }
+
+                    &.position-top-left {
+                        top: 15px;
+                        left: 15px;
+                    }
+
+                    &.position-bottom-right {
+                        bottom: 15px;
+                        right: 15px;
+                    }
+
+                    &.position-bottom-left {
+                        bottom: 15px;
+                        left: 15px;
+                    }
+
+                    &.position-center-right {
+                        top: 50%;
+                        right: 15px;
+                        transform: translateY(-50%);
+
+                        &:hover {
+                            transform: translateY(-50%) rotate(90deg);
+                        }
+                    }
+
+                    &.position-center-left {
+                        top: 50%;
+                        left: 15px;
+                        transform: translateY(-50%);
+
+                        &:hover {
+                            transform: translateY(-50%) rotate(90deg);
+                        }
+                    }
+
+                    /* Size variants */
+                    &.size-small {
+                        width: 28px;
+                        height: 28px;
+                        font-size: 20px;
+                    }
+
+                    &.size-medium {
+                        width: 36px;
+                        height: 36px;
+                        font-size: 28px;
+                    }
+
+                    &.size-large {
+                        width: 44px;
+                        height: 44px;
+                        font-size: 32px;
+                    }
+
+                    /* Style variants */
+                    &.style-circle {
+                        border-radius: 50%;
+                        background: rgba(0, 0, 0, 0.1);
+
+                        &:hover {
+                            background: rgba(0, 0, 0, 0.2);
+                        }
+                    }
+
+                    &.style-square {
+                        border-radius: 0;
+                        background: rgba(0, 0, 0, 0.1);
+
+                        &:hover {
+                            background: rgba(0, 0, 0, 0.2);
+                        }
+                    }
+
+                    &.style-rounded {
+                        border-radius: 8px;
+                        background: rgba(0, 0, 0, 0.1);
+
+                        &:hover {
+                            background: rgba(0, 0, 0, 0.2);
+                        }
+                    }
+
+                    &.style-minimal {
+                        background: transparent;
+                        border-radius: 0;
+
+                        &:hover {
+                            background: rgba(0, 0, 0, 0.1);
+                            border-radius: 50%;
+                        }
+                    }
+                }
+
+                /* Content Wrapper */
+                .sidebar-content-wrapper {
+                    position: relative;
+                    min-height: 100%;
+                    height: 100%;
+                    flex: 1;
+
+                    .content-area-indicator {
+                        position: absolute;
+                        top: 50%;
+                        left: 50%;
+                        transform: translate(-50%, -50%);
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        gap: 8px;
+                        color: rgba(255, 255, 255, 0.7);
+                        font-size: 14px;
+                        font-weight: 500;
+                        pointer-events: none;
+                        z-index: 1;
+                        transition: opacity 0.3s ease;
+
+                        .dashicons {
+                            font-size: 24px;
+                            width: 24px;
+                            height: 24px;
+                            opacity: 0.7;
+                        }
+                    }
+
+                    /* Hide indicator when content exists */
+                    &:has(.wp-block) .content-area-indicator {
+                        opacity: 0;
+                    }
+
+                    /* Style content blocks */
+                    .wp-block {
+                        position: relative;
+                        z-index: 2;
+                    }
+                }
+            }
+        }
+    }
+}
+
+/* Block Editor Specific Improvements */
+.block-editor-block-list__layout {
+    .offcanvas-sidebar-block {
+        .offcanvas-sidebar-preview {
+
+            .offcanvas-sidebar {
+                .sidebar-content-wrapper {
+                    min-height: 120px;
+
+                    .content-area-indicator {
+                        font-size: 12px;
+
+                        .dashicons {
+                            font-size: 20px;
+                            width: 20px;
+                            height: 20px;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+// Extra specificity to override any inline styles
+.block-editor-block-list__block[data-type="jankx/offcanvas-sidebar"] {
+    .offcanvas-sidebar-preview {
+        .offcanvas-sidebar {
+            position: relative;
+            transform: translateX(0);
+            opacity: 1;
+            visibility: visible;
+
+            /* Close Button - Editor Preview Styles */
+            .close-button {
+                position: absolute;
+                border: none;
+                color: inherit;
+                font-size: 28px;
+                line-height: 1;
+                cursor: pointer;
+                padding: 0;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: all 0.3s ease;
+                z-index: 10;
+                font-weight: 300;
+
+                &:hover {
+                    transform: rotate(90deg);
+                }
+
+                &:focus {
+                    outline: 2px solid rgba(255, 255, 255, 0.3);
+                    outline-offset: 2px;
+                }
+
+                &:disabled {
+                    cursor: not-allowed;
+                    opacity: 0.5;
+                }
+
+                /* Position variants */
+                &.position-top-right {
+                    top: 15px;
+                    right: 15px;
+                }
+
+                &.position-top-left {
+                    top: 15px;
+                    left: 15px;
+                }
+
+                &.position-bottom-right {
+                    bottom: 15px;
+                    right: 15px;
+                }
+
+                &.position-bottom-left {
+                    bottom: 15px;
+                    left: 15px;
+                }
+
+                &.position-center-right {
+                    top: 50%;
+                    right: 15px;
+                    transform: translateY(-50%);
+
+                    &:hover {
+                        transform: translateY(-50%) rotate(90deg);
+                    }
+                }
+
+                &.position-center-left {
+                    top: 50%;
+                    left: 15px;
+                    transform: translateY(-50%);
+
+                    &:hover {
+                        transform: translateY(-50%) rotate(90deg);
+                    }
+                }
+
+                /* Size variants */
+                &.size-small {
+                    width: 28px;
+                    height: 28px;
+                    font-size: 20px;
+                }
+
+                &.size-medium {
+                    width: 36px;
+                    height: 36px;
+                    font-size: 28px;
+                }
+
+                &.size-large {
+                    width: 44px;
+                    height: 44px;
+                    font-size: 32px;
+                }
+
+                /* Style variants */
+                &.style-circle {
+                    border-radius: 50%;
+                    background: rgba(0, 0, 0, 0.1);
+
+                    &:hover {
+                        background: rgba(0, 0, 0, 0.2);
+                    }
+                }
+
+                &.style-square {
+                    border-radius: 0;
+                    background: rgba(0, 0, 0, 0.1);
+
+                    &:hover {
+                        background: rgba(0, 0, 0, 0.2);
+                    }
+                }
+
+                &.style-rounded {
+                    border-radius: 8px;
+                    background: rgba(0, 0, 0, 0.1);
+
+                    &:hover {
+                        background: rgba(0, 0, 0, 0.2);
+                    }
+                }
+
+                &.style-minimal {
+                    background: transparent;
+                    border-radius: 0;
+
+                    &:hover {
+                        background: rgba(0, 0, 0, 0.1);
+                        border-radius: 50%;
+                    }
+                }
+            }
+        }
+    }
+}
+/* Toolbar Toggle Show/Hide Styles */
+.offcanvas-sidebar-block {
+    &.sidebar-hidden {
+        .offcanvas-sidebar-preview {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease, opacity 0.3s ease;
+            opacity: 0;
+            margin: 0;
+            padding: 0;
+            border: none;
+
+            .offcanvas-sidebar {
+                visibility: hidden;
+            }
+        }
+    }
+
+    &:not(.sidebar-hidden) {
+        .offcanvas-sidebar-preview {
+            max-height: none;
+            overflow: visible;
+            opacity: 1;
+            transition: max-height 0.3s ease, opacity 0.3s ease;
+        }
+    }
+}

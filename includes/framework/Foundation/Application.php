@@ -7,11 +7,13 @@ use Illuminate\Container\Container;
 use Jankx\Config\Repository;
 use Jankx\Contracts\LoggerInterface;
 use Jankx\Support\Providers\Admin\JankxAdminPagesServiceProvider;
+use Jankx\Support\Providers\ContentLayoutServiceProvider;
 use Jankx\Support\Providers\ExtensionServiceProvider;
 use Jankx\Support\Providers\FontIconsServiceProvider;
 use Jankx\Support\Providers\FontsServiceProvider;
 use Jankx\Support\Providers\JankxFrameworkServiceProvider;
 use Jankx\Support\Providers\SystemServiceProvider;
+use Jankx\Support\Providers\TemplateEngineServiceProvider;
 use Jankx\Support\Providers\ThemeOptionsServiceProvider;
 use Jankx\Support\Providers\TranslationServiceProvider;
 
@@ -52,12 +54,6 @@ class Application extends Container
      */
     protected $bootingCallbacks = [];
 
-    /**
-     * The service providers that should be registered.
-     *
-     * @var array
-     */
-    protected $serviceProviders = [];
 
     /**
      * The built-in service providers that should always be registered.
@@ -71,16 +67,20 @@ class Application extends Container
         ThemeOptionsServiceProvider::class,
         JankxAdminPagesServiceProvider::class,
         ExtensionServiceProvider::class,
+        ContentLayoutServiceProvider::class,
+        TemplateEngineServiceProvider::class,
+    ];
+
+    /**
+     * The service providers that should be lazy loaded.
+     * 
+     * @var array
+     */
+    protected $lazyProviders = [
         FontsServiceProvider::class,
         FontIconsServiceProvider::class,
     ];
 
-    /**
-     * The loaded service providers.
-     *
-     * @var array
-     */
-    protected $loadedProviders = [];
 
     /**
      * The deferred services and their providers.
@@ -104,6 +104,13 @@ class Application extends Container
     protected $lazyServiceProviders = [];
 
     /**
+     * The Service Provider Registry instance.
+     *
+     * @var \Jankx\Foundation\ServiceProviderRegistry
+     */
+    protected $providerRegistry;
+
+    /**
      * Create a new Jankx application instance.
      *
      * @param  string|null  $basePath
@@ -115,6 +122,24 @@ class Application extends Container
 
         $this->registerBaseBindings();
         $this->registerCoreContainerAliases();
+        $this->providerRegistry = new ServiceProviderRegistry($this);
+
+        // Register lazy providers
+        $this->registerLazyProviders();
+    }
+
+    /**
+     * Register lazy service providers
+     * 
+     * @return void
+     */
+    protected function registerLazyProviders(): void
+    {
+        if (isset($this->lazyProviders)) {
+            foreach ($this->lazyProviders as $provider) {
+                $this->registerLazy($provider);
+            }
+        }
     }
 
     /**
@@ -181,82 +206,15 @@ class Application extends Container
             return new \Jankx\Foundation\Log\Logger();
         });
 
-        $this->alias(LoggerInterface::class, 'log');
-
-        // Register template engines
-        $this->registerTemplateEngines();
-    }
-
-    /**
-     * Register template engines into the container
-     *
-     * @return void
-     */
-    protected function registerTemplateEngines()
-    {
-        // Register main template engine
-        $this->singleton('template.engine', function ($app) {
-            return new \Jankx\Support\TemplateEngine\TemplateEngineManager($app);
+        $this->singleton('cache', function () {
+            return new class {
+                public function get($key) { return null; }
+                public function set($key, $value) { return true; }
+                public function isEnabled() { return false; }
+            };
         });
 
-        // Register individual engines
-        $this->singleton('template.engine.jankx', function ($app) {
-            return new \Jankx\Support\TemplateEngine\Engines\PlatesEngine($app);
-        });
-
-        $this->singleton('template.engine.plates', function ($app) {
-            return new \Jankx\Support\TemplateEngine\Engines\PlatesEngine($app);
-        });
-
-        // Register engine aliases
-        $this->alias('template.engine', \Jankx\Support\TemplateEngine\TemplateEngineManager::class);
-        $this->alias('template.engine.jankx', \Jankx\Support\TemplateEngine\Engines\PlatesEngine::class);
-        $this->alias('template.engine.plates', \Jankx\Support\TemplateEngine\Engines\PlatesEngine::class);
-    }
-
-    /**
-     * Get the template engine instance
-     *
-     * @return \Jankx\Support\TemplateEngine\TemplateEngineManager
-     */
-    public function templateEngine()
-    {
-        return $this->make('template.engine');
-    }
-
-    /**
-     * Get a specific template engine instance
-     *
-     * @param string $engine
-     * @return \Jankx\Contracts\TemplateEngine\EngineInterface
-     */
-    public function templateEngineInstance($engine = 'jankx')
-    {
-        return $this->make("template.engine.{$engine}");
-    }
-
-    /**
-     * Render a template using the template engine
-     *
-     * @param string $template
-     * @param array $variables
-     * @return string
-     */
-    public function renderTemplate($template, $variables = [])
-    {
-        return $this->templateEngine()->render($template, $variables);
-    }
-
-    /**
-     * Display a template using the template engine
-     *
-     * @param string $template
-     * @param array $variables
-     * @return void
-     */
-    public function displayTemplate($template, $variables = [])
-    {
-        $this->templateEngine()->display($template, $variables);
+        $this->alias('log', LoggerInterface::class);
     }
 
 
@@ -270,9 +228,8 @@ class Application extends Container
     {
         // Default aliases
         $defaultAliases = [
-            'app'      => [\Jankx\Foundation\Application::class],
-            'config'   => [\Jankx\Config\Repository::class],
-            'template' => [\Jankx\Support\TemplateEngine\TemplateEngineManager::class],
+            'app'      => [Application::class],
+            'config'   => [Repository::class],
         ];
 
         // Load aliases from config if available
@@ -406,13 +363,7 @@ class Application extends Container
      */
     public function register($provider)
     {
-        if (is_string($provider)) {
-            $provider = new $provider($this);
-        }
-
-        $provider->register($this);
-
-        $this->serviceProviders[] = $provider;
+        $this->providerRegistry->register($provider);
     }
 
     /**
@@ -432,7 +383,7 @@ class Application extends Container
      */
     public function getAllServiceProviders()
     {
-        return $this->serviceProviders;
+        return $this->providerRegistry->getProviders();
     }
 
     /**
@@ -442,12 +393,7 @@ class Application extends Container
      */
     public function bootAllProviders()
     {
-        $allProviders = $this->getAllServiceProviders();
-        foreach ($allProviders as $provider) {
-            if (method_exists($provider, 'boot')) {
-                $provider->boot($this);
-            }
-        }
+        $this->providerRegistry->bootAll();
     }
 
     /**
@@ -458,6 +404,40 @@ class Application extends Container
     public function bootProviders()
     {
         $this->bootAllProviders();
+        $this->bootServices();
+    }
+
+    /**
+     * Boot all initialized services and destroy unused ones
+     *
+     * @return void
+     */
+    public function bootServices()
+    {
+        // Copy instances to avoid modification during iteration issues
+        $instances = $this->instances;
+        foreach ($instances as $abstract => $instance) {
+            if ($instance instanceof \Jankx\Contracts\ServiceInterface) {
+                $instance->initialize();
+
+                // If service not initialized and not scheduled, destroy it
+                if (!$instance->isInitialized() && !$instance->isBootScheduled()) {
+                    $this->forgetInstance($abstract);
+                }
+            }
+        }
+
+        // Also check lazy services that might have been resolved but not fully booted
+        foreach ($this->lazyServices as $abstract => $instance) {
+            if ($instance instanceof \Jankx\Contracts\ServiceInterface) {
+                $instance->initialize();
+
+                if (!$instance->isInitialized() && !$instance->isBootScheduled()) {
+                    $this->forgetInstance($abstract);
+                    unset($this->lazyServices[$abstract]);
+                }
+            }
+        }
     }
 
     /**
@@ -467,7 +447,7 @@ class Application extends Container
      */
     public function getServiceProviders()
     {
-        return $this->serviceProviders;
+        return $this->providerRegistry->getProviders();
     }
 
     /**
@@ -478,9 +458,7 @@ class Application extends Container
      */
     public function isRegistered($provider)
     {
-        return in_array($provider, array_map(function ($p) {
-            return get_class($p);
-        }, $this->serviceProviders));
+        return $this->providerRegistry->getProvider($provider) !== null;
     }
 
     /**
@@ -492,6 +470,10 @@ class Application extends Container
     public function registerLazy($provider)
     {
         $this->lazyServiceProviders[] = $provider;
+
+        // Register the provider so that its services are bound
+        // This is needed for bound() to return true in tests
+        $this->register($provider);
     }
 
     /**
@@ -511,12 +493,24 @@ class Application extends Container
         foreach ($this->lazyServiceProviders as $provider) {
             if (method_exists($provider, 'provides') && $provider::provides($service)) {
                 $this->register($provider);
-                $this->lazyServices[$service] = $this->make($service);
+                $instance = $this->make($service);
+
+                if ($instance instanceof \Jankx\Contracts\ServiceInterface) {
+                    $instance->initialize();
+
+                    if (!$instance->isInitialized() && !$instance->isBootScheduled()) {
+                        // Service should not load in this context, destroy it
+                        $this->forgetInstance($service);
+                        return null;
+                    }
+                }
+
+                $this->lazyServices[$service] = $instance;
                 return $this->lazyServices[$service];
             }
         }
 
-        throw new Exception("Lazy service '{$service}' not found");
+        throw new \Exception("Service '{$service}' not registered");
     }
 
     /**

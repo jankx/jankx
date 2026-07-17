@@ -30,13 +30,7 @@ class TranslationServiceProvider extends ServiceProvider
      */
     public function register(Application $app)
     {
-        // Load text domain after init to avoid timing issues
-        add_action('after_setup_theme', [$this, 'loadTextDomain']);
-
-        // Add direction support
-        add_filter('body_class', [$this, 'addDirectionBodyClass']);
     }
-
 
     /**
      * Bootstrap any application services.
@@ -46,30 +40,30 @@ class TranslationServiceProvider extends ServiceProvider
      */
     public function boot(Application $app)
     {
-        add_filter('frontpage_template_hierarchy', [$this, 'filterFrontpageTemplateHierarchy']);
-        add_filter('404_template_hierarchy', [$this, 'filterFrontpageTemplateHierarchy']);
-        add_filter('archive_template_hierarchy', [$this, 'filterFrontpageTemplateHierarchy']);
-        add_filter('attachment_template_hierarchy', [$this, 'filterFrontpageTemplateHierarchy']);
-        add_filter('author_template_hierarchy', [$this, 'filterFrontpageTemplateHierarchy']);
-        add_filter('category_template_hierarchy', [$this, 'filterFrontpageTemplateHierarchy']);
-        add_filter('date_template_hierarchy', [$this, 'filterFrontpageTemplateHierarchy']);
-        add_filter('embed_template_hierarchy', [$this, 'filterFrontpageTemplateHierarchy']);
-        add_filter('frontpage_template_hierarchy', [$this, 'filterFrontpageTemplateHierarchy']);
-        add_filter('home_template_hierarchy', [$this, 'filterFrontpageTemplateHierarchy']);
-        add_filter('index_template_hierarchy', [$this, 'filterFrontpageTemplateHierarchy']);
-        add_filter('page_template_hierarchy', [$this, 'filterFrontpageTemplateHierarchy']);
-        add_filter('paged_template_hierarchy', [$this, 'filterFrontpageTemplateHierarchy']);
-        add_filter('privacypolicy_template_hierarchy', [$this, 'filterFrontpageTemplateHierarchy']);
-        add_filter('search_template_hierarchy', [$this, 'filterFrontpageTemplateHierarchy']);
-        add_filter('single_template_hierarchy', [$this, 'filterFrontpageTemplateHierarchy']);
-        add_filter('singular_template_hierarchy', [$this, 'filterFrontpageTemplateHierarchy']);
-        add_filter('tag_template_hierarchy', [$this, 'filterFrontpageTemplateHierarchy']);
-        add_filter('taxonomy_template_hierarchy', [$this, 'filterFrontpageTemplateHierarchy']);
+        // Load text domain early to avoid "too early" notice in WP 6.7+
+        add_action('after_setup_theme', [$this, 'loadTextDomain'], 5);
+
+        // Direction support
+        add_filter('body_class', [$this, 'addDirectionBodyClass']);
+
+        // Register template hierarchy filters
+        $hierarchies = [
+            'frontpage', '404', 'archive', 'attachment', 'author', 'category', 'date',
+            'embed', 'home', 'index', 'page', 'paged', 'privacypolicy', 'search',
+            'single', 'singular', 'tag', 'taxonomy'
+        ];
+
+        foreach ($hierarchies as $hierarchy) {
+            add_filter("{$hierarchy}_template_hierarchy", [$this, 'filterTemplateHierarchy']);
+        }
     }
 
-    public function filterFrontpageTemplateHierarchy($templates)
+    public function filterTemplateHierarchy($templates)
     {
         $currentLanguage = $this->getCurrentLanguage();
+        if (!$currentLanguage) {
+            return $templates;
+        }
         foreach ($templates as $index => $template) {
             if (strpos($template, '.php') === false) {
                 continue;

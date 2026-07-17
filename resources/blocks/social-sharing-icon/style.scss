@@ -1,0 +1,237 @@
+.wp-block-jankx-social-sharing-icon {
+    display: inline-block;
+
+    .sharing-icon-button {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        border: none;
+        background: var(--wp--preset--color--primary, #f0f0f0);
+        color: var(--wp--preset--color--base, #fff);
+        cursor: pointer;
+        transition: all 0.2s ease;
+        font-size: 0.9rem;
+        text-decoration: none;
+        font-family: inherit;
+        border-radius: 4px;
+
+        &:hover {
+            background: var(--wp--preset--color--secondary, #e0e0e0);
+            transform: translateY(-2px);
+        }
+
+        &:focus {
+            outline: 2px solid #0073aa;
+            outline-offset: 2px;
+        }
+
+        .sharing-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2em;
+
+            // Fallback icon when no inner blocks
+            &.sharing-icon-with-fallback:empty::before {
+                content: attr(data-fallback-icon);
+            }
+
+            // Style for inner blocks (icon-picker, svg-icon, image)
+            .sharing-icon-inner {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 100%;
+                height: 100%;
+
+                img {
+                    max-width: 100%;
+                    max-height: 100%;
+                    object-fit: contain;
+                }
+
+                svg {
+                    width: 1em;
+                    height: 1em;
+                }
+            }
+        }
+
+        .sharing-label {
+            white-space: nowrap;
+        }
+
+        // Sizes
+        &.size-small {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.8rem;
+
+            .sharing-icon {
+                font-size: 1em;
+            }
+        }
+
+        &.size-large {
+            padding: 0.75rem 1.5rem;
+            font-size: 1.1rem;
+
+            .sharing-icon {
+                font-size: 1.4em;
+            }
+        }
+
+        // Styles
+        &.style-outlined {
+            background: transparent;
+            border: 2px solid #ddd;
+
+            &:hover {
+                border-color: #333;
+                background: transparent;
+            }
+        }
+
+        &.style-filled {
+            color: white;
+
+            &.facebook {
+                background: #1877f2;
+
+                &:hover {
+                    background: #0c63d4;
+                }
+            }
+
+            &.twitter {
+                background: #1da1f2;
+
+                &:hover {
+                    background: #0d8bd9;
+                }
+            }
+
+            &.linkedin {
+                background: #0077b5;
+
+                &:hover {
+                    background: #005e94;
+                }
+            }
+
+            &.whatsapp {
+                background: #25d366;
+
+                &:hover {
+                    background: #1ebe57;
+                }
+            }
+
+            &.telegram {
+                background: #0088cc;
+
+                &:hover {
+                    background: #006ca8;
+                }
+            }
+
+            &.pinterest {
+                background: #bd081c;
+
+                &:hover {
+                    background: #9a0616;
+                }
+            }
+
+            &.reddit {
+                background: #ff4500;
+
+                &:hover {
+                    background: #e03d00;
+                }
+            }
+
+            &.email {
+                background: #666;
+
+                &:hover {
+                    background: #555;
+                }
+            }
+
+            &.copy {
+                background: #999;
+
+                &:hover {
+                    background: #888;
+                }
+            }
+
+            &.messenger {
+                background: #0084ff;
+
+                &:hover {
+                    background: #006de0;
+                }
+            }
+
+            &.viber {
+                background: #665CAC;
+
+                &:hover {
+                    background: #574d94;
+                }
+            }
+
+            &.line {
+                background: #00B900;
+
+                &:hover {
+                    background: #009900;
+                }
+            }
+        }
+
+        &.style-rounded,
+        &.style-square {
+            padding: 0.75rem;
+            width: 45px;
+            height: 45px;
+            justify-content: center;
+
+            .sharing-label {
+                display: none;
+            }
+
+            &.size-small {
+                width: 36px;
+                height: 36px;
+                padding: 0.5rem;
+            }
+
+            &.size-large {
+                width: 56px;
+                height: 56px;
+                padding: 1rem;
+            }
+        }
+
+        &.style-rounded {
+            border-radius: 50%;
+        }
+
+        &.style-square {
+            border-radius: 8px;
+        }
+    }
+}
+
+// Editor specific styles
+.editor-styles-wrapper {
+    .wp-block-jankx-social-sharing-icon {
+        .sharing-icon-button {
+            pointer-events: none;
+        }
+    }
+}

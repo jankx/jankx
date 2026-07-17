@@ -92,5 +92,136 @@ abstract class BaseFilterRenderer implements FilterRendererInterface
 
         echo '<label class="filter-group-label">' . esc_html($label) . '</label>';
     }
+
+    /**
+     * Sanitize and render SVG/HTML icon
+     * 
+     * Allows SVG tags and common SVG attributes while preventing XSS
+     *
+     * @param string $icon SVG/HTML string
+     * @return string Sanitized HTML
+     */
+    protected function renderSvgIcon(string $icon): string
+    {
+        $allowed_html = [
+            'svg' => [
+                'xmlns' => true,
+                'viewBox' => true,
+                'width' => true,
+                'height' => true,
+                'class' => true,
+                'style' => true,
+                'fill' => true,
+                'stroke' => true,
+                'stroke-width' => true,
+                'stroke-linecap' => true,
+                'stroke-linejoin' => true,
+                'data-*' => true,
+            ],
+            'path' => [
+                'd' => true,
+                'fill' => true,
+                'stroke' => true,
+                'stroke-width' => true,
+                'class' => true,
+                'style' => true,
+                'data-*' => true,
+            ],
+            'circle' => [
+                'cx' => true,
+                'cy' => true,
+                'r' => true,
+                'fill' => true,
+                'stroke' => true,
+                'stroke-width' => true,
+                'class' => true,
+                'style' => true,
+                'data-*' => true,
+            ],
+            'line' => [
+                'x1' => true,
+                'y1' => true,
+                'x2' => true,
+                'y2' => true,
+                'stroke' => true,
+                'stroke-width' => true,
+                'class' => true,
+                'style' => true,
+                'data-*' => true,
+            ],
+            'rect' => [
+                'x' => true,
+                'y' => true,
+                'width' => true,
+                'height' => true,
+                'fill' => true,
+                'stroke' => true,
+                'stroke-width' => true,
+                'class' => true,
+                'style' => true,
+                'rx' => true,
+                'ry' => true,
+                'data-*' => true,
+            ],
+            'g' => [
+                'class' => true,
+                'style' => true,
+                'fill' => true,
+                'stroke' => true,
+                'transform' => true,
+                'data-*' => true,
+            ],
+            'text' => [
+                'x' => true,
+                'y' => true,
+                'class' => true,
+                'style' => true,
+                'text-anchor' => true,
+                'data-*' => true,
+            ],
+            'tspan' => [
+                'x' => true,
+                'y' => true,
+                'class' => true,
+                'style' => true,
+                'data-*' => true,
+            ],
+            'polygon' => [
+                'points' => true,
+                'fill' => true,
+                'stroke' => true,
+                'stroke-width' => true,
+                'class' => true,
+                'style' => true,
+                'data-*' => true,
+            ],
+            'polyline' => [
+                'points' => true,
+                'fill' => true,
+                'stroke' => true,
+                'stroke-width' => true,
+                'class' => true,
+                'style' => true,
+                'data-*' => true,
+            ],
+            'use' => [
+                'href' => true,
+                'xlink:href' => true,
+                'x' => true,
+                'y' => true,
+                'width' => true,
+                'height' => true,
+                'class' => true,
+                'style' => true,
+                'data-*' => true,
+            ],
+            'defs' => [],
+            'style' => [],
+            'title' => [],
+            'desc' => [],
+        ];
+
+        return wp_kses($icon, $allowed_html);
+    }
 }
 

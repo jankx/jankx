@@ -1,344 +1,2466 @@
-# Copyright (C) 2025 Jankx Framework
-# This file is distributed under the same license as the Jankx Framework package.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Jankx Framework\n"
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-04-14 18:12+0700\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2025-10-25 14:06+0000\n"
-"X-Poedit-Basepath: ..\n"
-"X-Poedit-KeywordsList: __;_e;_ex:1,2c;_n:1,2;_n_noop:1,2;_nx:1,2,4c;_nx_noop:1,2,3c;_x:1,2c;esc_attr__;esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c\n"
-"X-Poedit-SearchPath-0: .\n"
-"X-Poedit-SearchPathExcluded-0: *.js\n"
-"X-Poedit-SourceCharset: UTF-8\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
-#: ../features/metrics/MetricServiceProvider.php:57
-msgid "Post Views (Lượt xem)"
+#: includes/theme-options/typography/fonts.php:8
+msgid "Fonts"
 msgstr ""
 
-#: ../includes/app/Services/NavigationBlockService.php:72, ../includes/framework/Patches/NavigationBlockPatch.php:35, ../includes/framework/Patches/NavigationBlockPatch.php:102, ../includes/framework/Patches/PatchesLoader.php:139, ../includes/framework/Patches/PatchesLoader.php:189, ../includes/framework/Patches/WordPressCorePatch.php:170
-msgid "Link"
+#: includes/theme-options/typography/fonts.php:9
+msgid "Configure fonts for headings and content"
 msgstr ""
 
-#: ../includes/app/Services/NavigationBlockService.php:90, ../includes/framework/Patches/NavigationBlockPatch.php:53, ../includes/framework/Patches/NavigationBlockPatch.php:114
-msgid "Submenu"
+#: includes/theme-options/typography/fonts.php:13
+msgid "Body Font"
 msgstr ""
 
-#: ../includes/framework/Gutenberg/QueryOptions.php:25
-msgid "Date (Ngày đăng)"
+#: includes/theme-options/layout/layout.php:8
+#: includes/theme-options/pages.php:27
+msgid "Layout & Spacing"
 msgstr ""
 
-#: ../includes/framework/Gutenberg/QueryOptions.php:29
-msgid "Modified (Ngày sửa)"
+#: includes/theme-options/layout/layout.php:9
+msgid "General layout options"
 msgstr ""
 
-#: ../includes/framework/Gutenberg/QueryOptions.php:33
-msgid "Title (Tiêu đề)"
+#: includes/theme-options/layout/layout.php:13
+msgid "Container Width"
 msgstr ""
 
-#: ../includes/framework/Gutenberg/QueryOptions.php:37
-msgid "Name (Slug)"
+#: includes/theme-options/layout/layout.php:23
+msgid "Sidebar Position"
 msgstr ""
 
-#: ../includes/framework/Gutenberg/QueryOptions.php:41
-msgid "Author (Tác giả)"
+#: includes/theme-options/layout/layout.php:26
+msgid "Right"
 msgstr ""
 
-#: ../includes/framework/Gutenberg/QueryOptions.php:45
-msgid "Type (Post Type)"
+#: includes/theme-options/layout/layout.php:27
+msgid "Left"
 msgstr ""
 
-#: ../includes/framework/Gutenberg/QueryOptions.php:49
-msgid "ID"
+#: includes/theme-options/layout/layout.php:28
+msgid "No Sidebar"
 msgstr ""
 
-#: ../includes/framework/Gutenberg/QueryOptions.php:53
-msgid "Menu Order"
+#: includes/theme-options/general/base.php:8
+msgid "General Settings"
 msgstr ""
 
-#: ../includes/framework/Gutenberg/QueryOptions.php:57
-msgid "Random (Ngẫu nhiên)"
+#: includes/theme-options/general/base.php:9
+msgid "Basic configuration options"
 msgstr ""
 
-#: ../includes/framework/Gutenberg/QueryOptions.php:61
-msgid "Comment Count (Số bình luận)"
+#: includes/theme-options/general/base.php:13
+msgid "Site Title"
 msgstr ""
 
-#: ../includes/framework/Gutenberg/QueryOptions.php:65
-msgid "Relevance (Độ liên quan)"
+#: includes/theme-options/general/base.php:17
+msgid "Displayed in the header and as an SEO title fallback"
 msgstr ""
 
-#: ../includes/framework/Gutenberg/QueryOptions.php:69
-msgid "Meta Value (Giá trị meta)"
+#: includes/theme-options/general/base.php:21
+msgid "Tagline"
 msgstr ""
 
-#: ../includes/framework/Gutenberg/QueryOptions.php:73
-msgid "Meta Value Num (Giá trị meta số)"
+#: includes/theme-options/general/base.php:24
+msgid "Displayed in some hero and footer blocks"
 msgstr ""
 
-#: ../includes/framework/Gutenberg/QueryOptions.php:77
-msgid "Post__in (Thứ tự trong mảng)"
+#: includes/theme-options/general/base.php:28
+msgid "Enable Back to Top"
 msgstr ""
 
-#: ../includes/framework/Gutenberg/QueryOptions.php:81
-msgid "Post Name__in (Thứ tự slug)"
+#: includes/theme-options/general/base.php:31
+msgid "On"
 msgstr ""
 
-#: ../includes/framework/Gutenberg/QueryOptions.php:85
-msgid "Post Parent__in (Thứ tự parent)"
+#: includes/theme-options/general/base.php:32
+msgid "Off"
 msgstr ""
 
-#: ../includes/framework/Gutenberg/QueryOptions.php:120
-msgid "Descending (Giảm dần)"
+#: includes/theme-options/general/base.php:33
+msgid "Display a scroll-to-top button"
 msgstr ""
 
-#: ../includes/framework/Gutenberg/QueryOptions.php:124
-msgid "Ascending (Tăng dần)"
+#: includes/theme-options/pages.php:9
+msgid "General"
 msgstr ""
 
-#: ../includes/framework/Gutenberg/QueryOptions.php:150
-msgid "Equal (=)"
+#: includes/theme-options/pages.php:11
+msgid "Basic configuration for the entire site"
 msgstr ""
 
-#: ../includes/framework/Gutenberg/QueryOptions.php:154
-msgid "Not Equal (!=)"
+#: includes/theme-options/pages.php:18
+msgid "Branding"
 msgstr ""
 
-#: ../includes/framework/Gutenberg/QueryOptions.php:158
-msgid "Greater Than (>)"
+#: includes/theme-options/pages.php:20
+msgid "Logo and brand identity colors"
 msgstr ""
 
-#: ../includes/framework/Gutenberg/QueryOptions.php:162
-msgid "Greater Than or Equal (>=)"
+#: includes/theme-options/pages.php:29
+msgid "Layout, spacing, and slider options"
 msgstr ""
 
-#: ../includes/framework/Gutenberg/QueryOptions.php:166
-msgid "Less Than (<)"
+#: includes/theme-options/pages.php:36
+msgid "Typography"
 msgstr ""
 
-#: ../includes/framework/Gutenberg/QueryOptions.php:170
-msgid "Less Than or Equal (<=)"
+#: includes/theme-options/pages.php:38
+msgid "Fonts and font sizes"
 msgstr ""
 
-#: ../includes/framework/Gutenberg/QueryOptions.php:174
-msgid "Like (LIKE)"
+#: includes/theme-options/pages.php:45
+#: includes/theme-options/preset/presets_overview.php:161
+msgid "Blog"
 msgstr ""
 
-#: ../includes/framework/Gutenberg/QueryOptions.php:178
-msgid "Not Like (NOT LIKE)"
+#: includes/theme-options/pages.php:47
+msgid "Blog and post configuration"
 msgstr ""
 
-#: ../includes/framework/Gutenberg/QueryOptions.php:182, ../includes/framework/Gutenberg/QueryOptions.php:262
-msgid "In (IN)"
+#: includes/theme-options/pages.php:54
+msgid "Social Media"
 msgstr ""
 
-#: ../includes/framework/Gutenberg/QueryOptions.php:186, ../includes/framework/Gutenberg/QueryOptions.php:266
-msgid "Not In (NOT IN)"
+#: includes/theme-options/pages.php:56
+msgid "Social links and sharing options"
 msgstr ""
 
-#: ../includes/framework/Gutenberg/QueryOptions.php:190, ../includes/framework/Gutenberg/QueryOptions.php:274
-msgid "Exists (EXISTS)"
+#: includes/theme-options/pages.php:63
+#: includes/theme-options/preset/presets_overview.php:137
+msgid "Preset & Layout"
 msgstr ""
 
-#: ../includes/framework/Gutenberg/QueryOptions.php:194, ../includes/framework/Gutenberg/QueryOptions.php:278
-msgid "Not Exists (NOT EXISTS)"
+#: includes/theme-options/pages.php:65
+msgid "Choose UI presets and page layouts"
 msgstr ""
 
-#: ../includes/framework/Gutenberg/QueryOptions.php:218
-msgid "-- Auto --"
+#: includes/theme-options/branding/colors.php:8
+msgid "Colors & Logo"
 msgstr ""
 
-#: ../includes/framework/Gutenberg/QueryOptions.php:270
-msgid "And (AND)"
+#: includes/theme-options/branding/colors.php:9
+msgid "Configure brand colors and logo"
 msgstr ""
 
-#: ../includes/framework/Services/JankxMenuItemsService.php:211, ../includes/framework/Services/JankxMenuItemsService.php:215
-msgid "Add to menu"
+#: includes/theme-options/branding/colors.php:13
+msgid "Primary Logo"
 msgstr ""
 
-#: ../includes/app/Services/WooCommerce/BuyNowService.php:42
-msgid "MUA NGAY"
+#: includes/theme-options/branding/colors.php:15
+msgid "Logo displayed in the header"
 msgstr ""
 
-#: ../includes/framework/Gutenberg/Blocks/AuthorBoxBlock.php:44
-msgid "No author found"
+#: includes/theme-options/branding/colors.php:19
+msgid "Primary Color"
 msgstr ""
 
-#: ../includes/framework/Gutenberg/Blocks/AuthorBoxBlock.php:51
-msgid "Author not found"
+#: includes/theme-options/branding/colors.php:25
+msgid "Secondary Color"
 msgstr ""
 
-#: ../includes/framework/Gutenberg/Blocks/AuthorBoxBlock.php:93
-msgid "Recent Posts"
+#: includes/theme-options/socials/links.php:8
+msgid "Social Media Links"
 msgstr ""
 
-#: ../includes/framework/Gutenberg/Blocks/AuthorBoxBlock.php:185
-msgid "No posts found"
+#: includes/theme-options/socials/links.php:9
+msgid ""
+"Add social media URLs to display in the header, footer, or widgets. You can "
+"add custom profiles using the \"Add Custom Profile\" button."
 msgstr ""
 
-#: ../includes/framework/Gutenberg/Blocks/IconPickerBlock.php:174
-msgid "Chọn icon từ Jankx Font Icons System để hiển thị ở đây."
+#: includes/theme-options/socials/links.php:13
+msgid "Social Profiles"
 msgstr ""
 
-#: ../includes/framework/Gutenberg/Blocks/ImageMasonryGalleryBlock.php:161
-msgid "Gallery Image"
+#: includes/theme-options/socials/links.php:15
+msgid ""
+"Manage your social links. Click an icon to toggle on/off, and drag-and-drop "
+"to reorder items."
 msgstr ""
 
-#: ../includes/framework/Gutenberg/Blocks/ImageMasonryGalleryBlock.php:192
-msgid "No images selected. Please add images to the gallery."
+#: includes/theme-options/blog/posts.php:8
+msgid "Blog Posts"
 msgstr ""
 
-#: ../includes/framework/Gutenberg/Blocks/LanguageSwitcherBlock.php:284
-msgid "Polylang plugin is not active. Language switcher cannot be displayed."
+#: includes/theme-options/blog/posts.php:9
+msgid "Display and metadata settings for blog posts"
 msgstr ""
 
-#: ../includes/framework/Gutenberg/Blocks/OffcanvasSidebarBlock.php:181
-msgid "Sidebar navigation"
+#: includes/theme-options/blog/posts.php:13
+msgid "Blog Layout"
 msgstr ""
 
-#: ../includes/framework/Gutenberg/Blocks/OffcanvasSidebarBlock.php:257
-msgid "Close sidebar"
+#: includes/theme-options/blog/posts.php:16
+msgid "Grid"
 msgstr ""
 
-#: ../includes/framework/Gutenberg/Blocks/OffcanvasSidebarBlock.php:293
-msgid "Add your content here using any available blocks."
+#: includes/theme-options/blog/posts.php:17
+#: includes/theme-options/preset/presets_overview.php:187
+msgid "List"
 msgstr ""
 
-#: ../includes/framework/Gutenberg/Blocks/OffcanvasTriggerBlock.php:79
-msgid "Toggle menu"
+#: includes/theme-options/blog/posts.php:18
+#: includes/theme-options/preset/presets_overview.php:188
+msgid "Masonry"
 msgstr ""
 
-#: ../includes/framework/Gutenberg/Blocks/PostTypeLayoutBlock.php:92
-msgid "&laquo; Trước"
+#: includes/theme-options/blog/posts.php:24
+msgid "Show Post Metadata (Author, Date)"
 msgstr ""
 
-#: ../includes/framework/Gutenberg/Blocks/PostTypeLayoutBlock.php:93
-msgid "Sau &raquo;"
+#: includes/theme-options/preset/presets_overview.php:138
+msgid "Choose the overall visual style preset, post layout, and header layout"
 msgstr ""
 
-#: ../includes/framework/Gutenberg/Blocks/PostTypeLayoutBlock.php:114
-msgid "Trước"
+#: includes/theme-options/preset/presets_overview.php:144
+msgid "Theme Presets"
 msgstr ""
 
-#: ../includes/framework/Gutenberg/Blocks/PostTypeLayoutBlock.php:117
-msgid "Sau"
+#: includes/theme-options/preset/presets_overview.php:151
+msgid "Theme Preset"
 msgstr ""
 
-#: ../includes/framework/Gutenberg/Blocks/PostTypeLayoutBlock.php:148, ../views/post-layouts/common/pagination.php:8
+#: includes/theme-options/preset/presets_overview.php:153
+msgid ""
+"Choose the overall style for the entire site. Each preset has unique colors, "
+"fonts, and layouts."
+msgstr ""
+
+#: includes/theme-options/preset/presets_overview.php:158
+#: includes/theme-options/preset/presets_overview.php:211
+msgid "Classic"
+msgstr ""
+
+#: includes/theme-options/preset/presets_overview.php:159
+msgid "Magazine"
+msgstr ""
+
+#: includes/theme-options/preset/presets_overview.php:160
+msgid "Minimal"
+msgstr ""
+
+#: includes/theme-options/preset/presets_overview.php:162
+msgid "E-Commerce"
+msgstr ""
+
+#: includes/theme-options/preset/presets_overview.php:163
+msgid "Landing"
+msgstr ""
+
+#: includes/theme-options/preset/presets_overview.php:171
+msgid "Post Layouts"
+msgstr ""
+
+#: includes/theme-options/preset/presets_overview.php:178
+msgid "Post Layout"
+msgstr ""
+
+#: includes/theme-options/preset/presets_overview.php:180
+msgid "Choose how post lists are displayed on the Blog / Archive pages."
+msgstr ""
+
+#: includes/theme-options/preset/presets_overview.php:185
+msgid "3-Column Grid"
+msgstr ""
+
+#: includes/theme-options/preset/presets_overview.php:186
+msgid "2-Column Grid"
+msgstr ""
+
+#: includes/theme-options/preset/presets_overview.php:189
+msgid "Featured"
+msgstr ""
+
+#: includes/theme-options/preset/presets_overview.php:197
+msgid "Header Layouts"
+msgstr ""
+
+#: includes/theme-options/preset/presets_overview.php:204
+msgid "Header Layout"
+msgstr ""
+
+#: includes/theme-options/preset/presets_overview.php:206
+msgid ""
+"Choose the arrangement of the logo, menu, and action buttons in the header."
+msgstr ""
+
+#: includes/theme-options/preset/presets_overview.php:212
+msgid "Centered"
+msgstr ""
+
+#: includes/theme-options/preset/presets_overview.php:213
+msgid "Split CTA"
+msgstr ""
+
+#: includes/theme-options/preset/presets_overview.php:214
+msgid "Top Bar"
+msgstr ""
+
+#: includes/framework/Rest/AdvancedFiltersRestApiHandler.php:87
+msgid "Current post ID"
+msgstr ""
+
+#: includes/framework/Rest/PostTypeLayoutAjaxHandler.php:59
+msgid "You must be logged in to access this endpoint."
+msgstr ""
+
+#: includes/framework/Rest/PostTypeLayoutAjaxHandler.php:80
+#: includes/framework/Rest/PostTypeLayoutAjaxHandler.php:135
+msgid "Invalid post type specified."
+msgstr ""
+
+#: includes/framework/Rest/PostTypeLayoutAjaxHandler.php:91
+#, php-format
+msgid "You do not have permission to edit %s."
+msgstr ""
+
+#: includes/framework/Rest/PostTypeLayoutAjaxHandler.php:105
+#, php-format
+msgid "You do not have permission to read %s."
+msgstr ""
+
+#: includes/framework/Rest/PostTypeLayoutAjaxHandler.php:144
+msgid "Failed to fetch posts data"
+msgstr ""
+
+#: includes/framework/Rest/PostTypeLayoutAjaxHandler.php:277
+#: includes/framework/Gutenberg/Blocks/DynamicDataLayoutBlock.php:833
+#: extensions/dynamic-ssr/includes/Blocks/DynamicSsrLayoutBlock.php:622
+msgid "Block ID is required"
+msgstr ""
+
+#: includes/framework/Rest/PostTypeLayoutAjaxHandler.php:312
+#: includes/framework/Gutenberg/Blocks/DynamicDataLayoutBlock.php:866
+msgid "Block attributes not found"
+msgstr ""
+
+#: includes/framework/Layouts/DynamicDataLayout/BlockTemplateRenderer.php:82
+#: includes/framework/Layouts/DynamicDataLayout/ViewLayouts/ViewRenderer.php:92
+#: includes/framework/Layouts/DynamicDataLayout/ViewLayouts/ViewAttributeSanitizer.php:60
+#: includes/framework/Layouts/DynamicDataLayout/BlockTemplateAttributeSanitizer.php:60
+#: includes/framework/Layouts/DynamicDataLayout/BlockTemplateLayout.php:333
+msgid "No posts found."
+msgstr ""
+
+#: includes/framework/Layouts/DynamicDataLayout/ViewLayouts/AbstractViewLayout.php:251
+msgid "No views found."
+msgstr ""
+
+#: includes/framework/Layouts/DynamicDataLayout/ViewLayouts/AbstractViewLayout.php:384
+#: includes/framework/Layouts/DynamicDataLayout/ViewLayouts/Generators/ViewSsrGenerator.php:211
+msgid "Read More"
+msgstr ""
+
+#: includes/framework/Layouts/DynamicDataLayout/ViewLayouts/TaxonomyRenderer.php:78
+msgid "No terms found."
+msgstr ""
+
+#: includes/framework/Layouts/DynamicDataLayout/ViewLayouts/Generators/ViewSsrGenerator.php:416
+#: includes/framework/Layouts/DynamicDataLayout/ViewLayouts/Generators/ViewTemplateContentGenerator.php:113
+msgid "Sample Title"
+msgstr ""
+
+#: includes/framework/Layouts/DynamicDataLayout/ViewLayouts/Generators/ViewSsrGenerator.php:418
+msgid "Sample content preview..."
+msgstr ""
+
+#: includes/framework/Layouts/DynamicDataLayout/ViewLayouts/Generators/ViewSsrGenerator.php:422
+msgid "Sample preview content"
+msgstr ""
+
+#: includes/framework/Layouts/DynamicDataLayout/ViewLayouts/Generators/ViewTemplateContentGenerator.php:114
+msgid "January 1, 2024"
+msgstr ""
+
+#: includes/framework/Layouts/DynamicDataLayout/ViewLayouts/Generators/ViewTemplateContentGenerator.php:115
+msgid "Sample excerpt content for preview..."
+msgstr ""
+
+#: includes/framework/Layouts/DynamicDataLayout/Renderer.php:46
+#, php-format
+msgid "Layout \"%s\" does not exist for post type \"%s\"."
+msgstr ""
+
+#: includes/framework/Layouts/DynamicDataLayout/BlockLayouts/CarouselLayout.php:73
+msgid "Slides Per View"
+msgstr ""
+
+#: includes/framework/Layouts/DynamicDataLayout/BlockLayouts/CarouselLayout.php:79
+msgid "Number of slides visible at once"
+msgstr ""
+
+#: includes/framework/Layouts/DynamicDataLayout/BlockLayouts/CarouselLayout.php:83
+msgid "Space Between"
+msgstr ""
+
+#: includes/framework/Layouts/DynamicDataLayout/BlockLayouts/CarouselLayout.php:89
+msgid "Space between slides in pixels"
+msgstr ""
+
+#: includes/framework/Layouts/DynamicDataLayout/BlockLayouts/CarouselLayout.php:93
+msgid "Slides to Scroll"
+msgstr ""
+
+#: includes/framework/Layouts/DynamicDataLayout/BlockLayouts/CarouselLayout.php:99
+msgid "Number of slides to scroll at a time"
+msgstr ""
+
+#: includes/framework/Layouts/DynamicDataLayout/BlockLayouts/CarouselLayout.php:103
+msgid "Loop"
+msgstr ""
+
+#: includes/framework/Layouts/DynamicDataLayout/BlockLayouts/CarouselLayout.php:106
+msgid "Enable infinite loop"
+msgstr ""
+
+#: includes/framework/Layouts/DynamicDataLayout/BlockLayouts/CarouselLayout.php:110
+#: includes/framework/Gutenberg/Blocks/SlideshowBlock.php:187
+msgid "Autoplay"
+msgstr ""
+
+#: includes/framework/Layouts/DynamicDataLayout/BlockLayouts/CarouselLayout.php:113
+msgid "Automatically advance slides"
+msgstr ""
+
+#: includes/framework/Layouts/DynamicDataLayout/BlockLayouts/CarouselLayout.php:117
+msgid "Autoplay Delay (ms)"
+msgstr ""
+
+#: includes/framework/Layouts/DynamicDataLayout/BlockLayouts/CarouselLayout.php:124
+msgid "Time between autoplay transitions"
+msgstr ""
+
+#: includes/framework/Layouts/DynamicDataLayout/BlockLayouts/CarouselLayout.php:128
+msgid "Show Arrows"
+msgstr ""
+
+#: includes/framework/Layouts/DynamicDataLayout/BlockLayouts/CarouselLayout.php:131
+msgid "Display navigation arrows"
+msgstr ""
+
+#: includes/framework/Layouts/DynamicDataLayout/BlockLayouts/CarouselLayout.php:135
+msgid "Show Dots"
+msgstr ""
+
+#: includes/framework/Layouts/DynamicDataLayout/BlockLayouts/CarouselLayout.php:138
+msgid "Display pagination dots"
+msgstr ""
+
+#: includes/framework/Layouts/DynamicDataLayout/BlockLayouts/CarouselLayout.php:142
+msgid "Alignment"
+msgstr ""
+
+#: includes/framework/Layouts/DynamicDataLayout/BlockLayouts/CarouselLayout.php:146
+msgid "Start"
+msgstr ""
+
+#: includes/framework/Layouts/DynamicDataLayout/BlockLayouts/CarouselLayout.php:147
+#: includes/framework/Layouts/AdvancedImageBox/Presets/BorderedFramePreset.php:34
+msgid "Center"
+msgstr ""
+
+#: includes/framework/Layouts/DynamicDataLayout/BlockLayouts/CarouselLayout.php:148
+msgid "End"
+msgstr ""
+
+#: includes/framework/Layouts/DynamicDataLayout/BlockLayouts/CarouselLayout.php:150
+msgid "Align slides within the viewport"
+msgstr ""
+
+#: includes/framework/Layouts/DynamicDataLayout/BlockLayouts/CarouselLayout.php:154
+msgid "Scroll Containment"
+msgstr ""
+
+#: includes/framework/Layouts/DynamicDataLayout/BlockLayouts/CarouselLayout.php:158
+msgid "False (No constrain)"
+msgstr ""
+
+#: includes/framework/Layouts/DynamicDataLayout/BlockLayouts/CarouselLayout.php:159
+msgid "Trim Snaps"
+msgstr ""
+
+#: includes/framework/Layouts/DynamicDataLayout/BlockLayouts/CarouselLayout.php:160
+msgid "Keep Snaps"
+msgstr ""
+
+#: includes/framework/Layouts/DynamicDataLayout/BlockLayouts/CarouselLayout.php:162
+msgid "Constrain scrolling to bounds"
+msgstr ""
+
+#: includes/framework/Layouts/DynamicDataLayout/BlockLayouts/CarouselLayout.php:166
+msgid "Advanced Carousel Settings"
+msgstr ""
+
+#: includes/framework/Layouts/DynamicDataLayout/BlockLayouts/CarouselLayout.php:171
+msgid "Axis"
+msgstr ""
+
+#: includes/framework/Layouts/DynamicDataLayout/BlockLayouts/CarouselLayout.php:175
+msgid "Horizontal (X)"
+msgstr ""
+
+#: includes/framework/Layouts/DynamicDataLayout/BlockLayouts/CarouselLayout.php:176
+msgid "Vertical (Y)"
+msgstr ""
+
+#: includes/framework/Layouts/DynamicDataLayout/BlockLayouts/CarouselLayout.php:181
+msgid "Direction"
+msgstr ""
+
+#: includes/framework/Layouts/DynamicDataLayout/BlockLayouts/CarouselLayout.php:185
+msgid "LTR (Left to Right)"
+msgstr ""
+
+#: includes/framework/Layouts/DynamicDataLayout/BlockLayouts/CarouselLayout.php:186
+msgid "RTL (Right to Left)"
+msgstr ""
+
+#: includes/framework/Layouts/DynamicDataLayout/BlockLayouts/CarouselLayout.php:191
+msgid "Duration (ms)"
+msgstr ""
+
+#: includes/framework/Layouts/DynamicDataLayout/BlockLayouts/CarouselLayout.php:196
+msgid "Transition duration"
+msgstr ""
+
+#: includes/framework/Layouts/DynamicDataLayout/PaginationRenderer.php:24
+msgid "&laquo; Previous"
+msgstr ""
+
+#: includes/framework/Layouts/DynamicDataLayout/PaginationRenderer.php:25
+msgid "Next &raquo;"
+msgstr ""
+
+#: includes/framework/Layouts/DynamicDataLayout/PaginationRenderer.php:42
+msgid "Previous"
+msgstr ""
+
+#: includes/framework/Layouts/DynamicDataLayout/PaginationRenderer.php:45
+msgid "Next"
+msgstr ""
+
+#: includes/framework/Layouts/DynamicDataLayout/PaginationRenderer.php:76
 msgid "Posts navigation"
 msgstr ""
 
-#: ../includes/framework/Gutenberg/Blocks/PostTypeLayoutBlock.php:177
-msgid "Tải thêm"
+#: includes/framework/Layouts/DynamicDataLayout/PaginationRenderer.php:101
+msgid "Load More"
 msgstr ""
 
-#: ../includes/framework/Gutenberg/Blocks/PostTypeLayoutBlock.php:342
-msgid "Layout \"%s\" không tồn tại."
+#: includes/framework/Layouts/DynamicDataLayout/PaginationRenderer.php:102
+msgid "Loading..."
 msgstr ""
 
-#: ../includes/framework/Gutenberg/Blocks/SlideshowBlock.php:83
-msgid "Fullscreen"
+#: includes/framework/Layouts/DynamicDataLayout/Generators/SsrViewGenerator.php:96
+msgid "SSR View Generator"
 msgstr ""
 
-#: ../includes/framework/Gutenberg/Blocks/SlideshowBlock.php:188
-msgid "Xem tự động"
+#: includes/framework/Layouts/DynamicDataLayout/Generators/PostTemplateBlockGenerator.php:97
+msgid "Post Template Block Generator"
 msgstr ""
 
-#: ../includes/framework/Gutenberg/Blocks/SlideshowContainerBlock.php:105
+#: includes/framework/Layouts/DynamicDataLayout/Generators/Concerns/PostTemplateRendererTrait.php:204
+#: includes/framework/Layouts/templates/post-layout/carousel.php:21
+#: includes/framework/Gutenberg/Blocks/SlideshowContainerBlock.php:105
 msgid "Previous slide"
 msgstr ""
 
-#: ../includes/framework/Gutenberg/Blocks/SlideshowContainerBlock.php:109
+#: includes/framework/Layouts/DynamicDataLayout/Generators/Concerns/PostTemplateRendererTrait.php:211
+#: includes/framework/Layouts/templates/post-layout/carousel.php:28
+#: includes/framework/Gutenberg/Blocks/SlideshowContainerBlock.php:109
 msgid "Next slide"
 msgstr ""
 
-#: ../includes/framework/Gutenberg/Blocks/SmartBreadcrumbBlock.php:13, ../includes/framework/Gutenberg/Blocks/SmartBreadcrumbBlock.php:191
-msgid "Trang chủ"
+#: includes/framework/Layouts/DynamicDataLayout/Generators/DefaultTaxonomyContentGenerator.php:32
+msgid "Default Taxonomy Content Generator"
 msgstr ""
 
-#: ../includes/framework/Gutenberg/Blocks/SmartBreadcrumbBlock.php:35
+#: includes/framework/Layouts/DynamicDataLayout/Generators/ViewTemplateContentGenerator.php:98
+msgid "View Template Content Generator"
+msgstr ""
+
+#: includes/framework/Layouts/DynamicDataLayout/Generators/ViewTemplateContentGenerator.php:178
+msgid "Template rendering error: "
+msgstr ""
+
+#: includes/framework/Layouts/AdvancedFilters/Renderers/TaxonomyFilterRenderer.php:122
+#: includes/framework/Layouts/AdvancedFilters/Renderers/KeywordFilterRenderer.php:66
+#: includes/framework/Services/AdminPageService.php:1599
+#: includes/framework/Services/AdminPageService.php:1950
+msgid "All"
+msgstr ""
+
+#: includes/framework/Layouts/AdvancedFilters/Renderers/KeywordFilterRenderer.php:37
+msgid "Search..."
+msgstr ""
+
+#: includes/framework/Layouts/AdvancedFilters/Renderers/KeywordFilterRenderer.php:40
+msgid "Search"
+msgstr ""
+
+#: includes/framework/Layouts/AdvancedFilters/Renderers/KeywordFilterRenderer.php:45
+msgid "Keyword"
+msgstr ""
+
+#: includes/framework/Layouts/AdvancedFilters/Renderers/KeywordFilterRenderer.php:64
+msgid "Post Type"
+msgstr ""
+
+#: includes/framework/Layouts/AdvancedImageBox/Presets/BorderedFramePreset.php:11
+msgid "Bordered Frame"
+msgstr ""
+
+#: includes/framework/Layouts/AdvancedImageBox/Presets/BorderedFramePreset.php:12
+msgid "Image with inner border frame and title box"
+msgstr ""
+
+#: includes/framework/Layouts/AdvancedImageBox/Presets/BorderedFramePreset.php:17
+msgid "Border Width"
+msgstr ""
+
+#: includes/framework/Layouts/AdvancedImageBox/Presets/BorderedFramePreset.php:17
+msgid "Width of the inner border frame in pixels"
+msgstr ""
+
+#: includes/framework/Layouts/AdvancedImageBox/Presets/BorderedFramePreset.php:18
+msgid "Border Color"
+msgstr ""
+
+#: includes/framework/Layouts/AdvancedImageBox/Presets/BorderedFramePreset.php:18
+msgid "Color of the inner border frame"
+msgstr ""
+
+#: includes/framework/Layouts/AdvancedImageBox/Presets/BorderedFramePreset.php:19
+msgid "Border Offset"
+msgstr ""
+
+#: includes/framework/Layouts/AdvancedImageBox/Presets/BorderedFramePreset.php:19
+msgid "Distance from image edges to border in pixels"
+msgstr ""
+
+#: includes/framework/Layouts/AdvancedImageBox/Presets/BorderedFramePreset.php:20
+msgid "Title Full Width"
+msgstr ""
+
+#: includes/framework/Layouts/AdvancedImageBox/Presets/BorderedFramePreset.php:20
+msgid "Make title box full width of the frame"
+msgstr ""
+
+#: includes/framework/Layouts/AdvancedImageBox/Presets/BorderedFramePreset.php:21
+msgid "Title Position"
+msgstr ""
+
+#: includes/framework/Layouts/AdvancedImageBox/Presets/BorderedFramePreset.php:22
+msgid "Top Left"
+msgstr ""
+
+#: includes/framework/Layouts/AdvancedImageBox/Presets/BorderedFramePreset.php:23
+msgid "Top Center"
+msgstr ""
+
+#: includes/framework/Layouts/AdvancedImageBox/Presets/BorderedFramePreset.php:24
+msgid "Top Right"
+msgstr ""
+
+#: includes/framework/Layouts/AdvancedImageBox/Presets/BorderedFramePreset.php:25
+msgid "Bottom Left"
+msgstr ""
+
+#: includes/framework/Layouts/AdvancedImageBox/Presets/BorderedFramePreset.php:26
+msgid "Bottom Center"
+msgstr ""
+
+#: includes/framework/Layouts/AdvancedImageBox/Presets/BorderedFramePreset.php:27
+msgid "Bottom Right"
+msgstr ""
+
+#: includes/framework/Layouts/AdvancedImageBox/Presets/BorderedFramePreset.php:28
+msgid "Left Top"
+msgstr ""
+
+#: includes/framework/Layouts/AdvancedImageBox/Presets/BorderedFramePreset.php:29
+msgid "Left Center"
+msgstr ""
+
+#: includes/framework/Layouts/AdvancedImageBox/Presets/BorderedFramePreset.php:30
+msgid "Left Bottom"
+msgstr ""
+
+#: includes/framework/Layouts/AdvancedImageBox/Presets/BorderedFramePreset.php:31
+msgid "Right Top"
+msgstr ""
+
+#: includes/framework/Layouts/AdvancedImageBox/Presets/BorderedFramePreset.php:32
+msgid "Right Center"
+msgstr ""
+
+#: includes/framework/Layouts/AdvancedImageBox/Presets/BorderedFramePreset.php:33
+msgid "Right Bottom"
+msgstr ""
+
+#: includes/framework/Layouts/AdvancedImageBox/Presets/BorderedFramePreset.php:35
+msgid "Position of the title box (only applies when Full Width is disabled)"
+msgstr ""
+
+#: includes/framework/Layouts/AdvancedImageBox/Presets/BorderedFramePreset.php:36
+msgid "Title Background"
+msgstr ""
+
+#: includes/framework/Layouts/AdvancedImageBox/Presets/BorderedFramePreset.php:36
+msgid "Background color of the title box"
+msgstr ""
+
+#: includes/framework/Layouts/AdvancedImageBox/Presets/BorderedFramePreset.php:37
+msgid "Title Color"
+msgstr ""
+
+#: includes/framework/Layouts/AdvancedImageBox/Presets/BorderedFramePreset.php:37
+msgid "Text color of the title"
+msgstr ""
+
+#: includes/framework/Layouts/AdvancedImageBox/Presets/BorderedFramePreset.php:38
+msgid "Title Margin Top"
+msgstr ""
+
+#: includes/framework/Layouts/AdvancedImageBox/Presets/BorderedFramePreset.php:38
+msgid "Top margin of the title box in pixels"
+msgstr ""
+
+#: includes/framework/Layouts/AdvancedImageBox/Presets/BorderedFramePreset.php:39
+msgid "Title Margin Right"
+msgstr ""
+
+#: includes/framework/Layouts/AdvancedImageBox/Presets/BorderedFramePreset.php:39
+msgid "Right margin of the title box in pixels"
+msgstr ""
+
+#: includes/framework/Layouts/AdvancedImageBox/Presets/BorderedFramePreset.php:40
+msgid "Title Margin Bottom"
+msgstr ""
+
+#: includes/framework/Layouts/AdvancedImageBox/Presets/BorderedFramePreset.php:40
+msgid "Bottom margin of the title box in pixels"
+msgstr ""
+
+#: includes/framework/Layouts/AdvancedImageBox/Presets/BorderedFramePreset.php:41
+msgid "Title Margin Left"
+msgstr ""
+
+#: includes/framework/Layouts/AdvancedImageBox/Presets/BorderedFramePreset.php:41
+msgid "Left margin of the title box in pixels"
+msgstr ""
+
+#: includes/framework/Layouts/AdvancedImageBox/Presets/BorderedFramePreset.php:42
+msgid "Title Width"
+msgstr ""
+
+#: includes/framework/Layouts/AdvancedImageBox/Presets/BorderedFramePreset.php:42
+msgid "Width of the title box (0 = auto)"
+msgstr ""
+
+#: includes/framework/Layouts/AdvancedImageBox/Presets/BorderedFramePreset.php:43
+msgid "Title Width Unit"
+msgstr ""
+
+#: includes/framework/Layouts/AdvancedImageBox/Presets/BorderedFramePreset.php:44
+msgid "Pixels (px)"
+msgstr ""
+
+#: includes/framework/Layouts/AdvancedImageBox/Presets/BorderedFramePreset.php:45
+msgid "Percent (%)"
+msgstr ""
+
+#: includes/framework/Layouts/AdvancedImageBox/Presets/BorderedFramePreset.php:46
+msgid "Rem"
+msgstr ""
+
+#: includes/framework/Layouts/AdvancedImageBox/Presets/BorderedFramePreset.php:47
+msgid "Unit for the title box width"
+msgstr ""
+
+#: includes/framework/Layouts/AdvancedImageBox/Presets/BorderedFramePreset.php:48
+msgid "Title Min Width"
+msgstr ""
+
+#: includes/framework/Layouts/AdvancedImageBox/Presets/BorderedFramePreset.php:48
+msgid "Minimum width of the title box in pixels"
+msgstr ""
+
+#: includes/framework/Layouts/AdvancedImageBox/Presets/BorderedFramePreset.php:49
+msgid "Title Padding Top"
+msgstr ""
+
+#: includes/framework/Layouts/AdvancedImageBox/Presets/BorderedFramePreset.php:49
+msgid "Top padding of the title box in pixels"
+msgstr ""
+
+#: includes/framework/Layouts/AdvancedImageBox/Presets/BorderedFramePreset.php:50
+msgid "Title Padding Right"
+msgstr ""
+
+#: includes/framework/Layouts/AdvancedImageBox/Presets/BorderedFramePreset.php:50
+msgid "Right padding of the title box in pixels"
+msgstr ""
+
+#: includes/framework/Layouts/AdvancedImageBox/Presets/BorderedFramePreset.php:51
+msgid "Title Padding Bottom"
+msgstr ""
+
+#: includes/framework/Layouts/AdvancedImageBox/Presets/BorderedFramePreset.php:51
+msgid "Bottom padding of the title box in pixels"
+msgstr ""
+
+#: includes/framework/Layouts/AdvancedImageBox/Presets/BorderedFramePreset.php:52
+msgid "Title Padding Left"
+msgstr ""
+
+#: includes/framework/Layouts/AdvancedImageBox/Presets/BorderedFramePreset.php:52
+msgid "Left padding of the title box in pixels"
+msgstr ""
+
+#: includes/framework/Layouts/AdvancedImageBox/Presets/BorderedFramePreset.php:58
+msgid "Enter image title"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:45
+msgid "JANKX PRO Activation Required"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:52
+msgid "JANKX PRO News & Status"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:85
+#: includes/framework/Services/AdminPageService.php:900
+#: includes/framework/Services/AdminPageService.php:921
+msgid "Activate JANKX PRO"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:86
+msgid ""
+"Activate JANKX PRO to receive automatic updates, access the premium "
+"extension repository and receive technical support from the development team."
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:90
+msgid "Activate Now"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:91
+msgid "Buy License"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:107
+#, php-format
+msgid "JANKX PRO v%s"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:108
+msgid "Operational"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:111
+msgid "Welcome back! Here are the latest updates from Jankx Portal:"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:118
+#: includes/framework/Support/Providers/Admin/JankxAdminPagesServiceProvider.php:81
+#: includes/framework/Support/Providers/Admin/JankxAdminPagesServiceProvider.php:93
+msgid "Jankx Dashboard"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:119
+#: includes/app/Services/ThemeOptionsService.php:163
+#: includes/app/Services/ThemeOptionsService.php:230
+#: includes/app/Services/ThemeOptionsService.php:273
+msgid "Theme Options"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:223
+msgid "Could not load news at this time. Please try again later."
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:224
+msgid "View on Jankx Hub"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:234
+msgid "Announcement"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:234
+msgid "Release"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:234
+msgid "Tutorial"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:234
+msgid "News"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:254
+msgid "JANKX PRO Dashboard"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:255
+msgid ""
+"Dashboard for your website with system information and quick management "
+"utilities."
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:256
+#: includes/framework/Support/Providers/Admin/JankxAdminPagesServiceProvider.php:94
+msgid "Dashboard"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:265
+#: includes/framework/Services/AdminPageService.php:267
+msgid "Theme Activation"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:266
+msgid ""
+"Activate your JANKX PRO license to receive automatic updates and premium "
+"support."
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:276
+#: includes/framework/Services/AdminPageService.php:278
+msgid "Membership"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:277
+msgid ""
+"Connect your Optilarity account to unlock premium templates and services."
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:287
+msgid "Managed Extensions"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:288
+msgid "Manage functional extensions for the Jankx Framework."
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:289
+msgid "Extensions"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:298
+msgid "Extension Marketplace"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:299
+msgid "Explore and install hundreds of extensions from the Jankx community."
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:300
+msgid "Marketplace"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:309
+#: includes/framework/Services/AdminPageService.php:311
+msgid "Icon Repository"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:310
+msgid "Centralized icon library for the theme and website content."
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:320
+#: includes/framework/Services/AdminPageService.php:322
+#: includes/framework/Services/AdminPageService.php:513
+msgid "Utilities"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:321
+msgid "System optimization tools, images and advanced configuration."
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:331
+#: includes/framework/Services/AdminPageService.php:333
+#: includes/framework/Services/AdminPageService.php:733
+msgid "System Information"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:332
+msgid ""
+"Detailed information about the server environment and system error logs."
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:499
+msgid "Quick Actions"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:506
+msgid "Manage Icons"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:520
+msgid "Customize Theme"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:530
+msgid "Activate License"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:543
+msgid "System Health"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:548
+msgid "All systems operational"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:550
+msgid ""
+"Your website is running smoothly. Check the debug page for detailed system "
+"information."
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:552
+msgid "View full report"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:561
+msgid "Installed Extensions"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:562
+msgid "Manage All"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:585
+#: includes/framework/Services/AdminPageService.php:1600
+msgid "Active"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:587
+#: includes/framework/Services/AdminPageService.php:1601
+msgid "Inactive"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:595
+msgid "You have not installed any extensions for the theme yet."
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:600
+msgid "Explore Marketplace"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:625
+msgid "Jankx News & Updates"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:627
+msgid "See all"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:735
+msgid "Debug Log"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:775
+msgid "Services Status"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:809
+msgid "Debug log file not found."
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:821
+msgid "Last 100 lines of debug.log"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:827
+msgid "Clear Log"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:841
+msgid "Premium WordPress experience by Jankx Framework."
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:869
+#, php-format
+msgid "&copy; %1$s JANKX PRO. Made with %2$s by %3$s"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:889
+msgid "License Activated"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:889
+msgid "License Activation Required"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:891
+msgid "Pro Enabled"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:901
+msgid ""
+"Enter your license key below to unlock cloud assets, premium templates, and "
+"automatic updates."
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:911
+msgid "License Key"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:915
+msgid "Email Address"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:927
+msgid "Bound License Key"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:931
+msgid "Owner Account"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:935
+msgid "Authorized Domain"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:939
+msgid "Support Status"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:942
+msgid "Premium Support Active"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:948
+msgid "Deactivating will remove PRO features. Continue?"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:953
+msgid "Deactivate this license"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:966
+#: includes/framework/Services/AdminPageService.php:1399
+msgid "Need Help?"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:968
+msgid "If you lost your license key or need help activating, visit our portal."
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:969
+msgid "Optilarity Portal"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:975
+msgid "Pro Benefits"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:978
+msgid "500+ Cloud Templates"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:979
+msgid "Automatic Updates"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:980
+msgid "Priority Support"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:1011
+msgid "Account Overview"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:1023
+msgid "Connect to Optilarity"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:1025
+msgid ""
+"Link your website to the Optilarity network to sync your settings and access "
+"the global template library."
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:1029
+msgid "Authorize with OAuth2"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:1035
+msgid "Current Membership"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:1039
+msgid "Expiration Date"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:1040
+msgid "Lifetime Active"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:1046
+msgid "Your account is currently synced with Optilarity Cloud Services."
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:1055
+msgid "Disconnect Account"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:1068
+msgid "Cloud Resources"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:1078
+msgid "Premium Templates"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:1086
+msgid "Managed"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:1087
+msgid "Cloud Deployment"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:1094
+msgid "Upgrade Options"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:1095
+msgid "Need more sites or advanced features? Explore our professional plans."
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:1096
+msgid "Compare Plans"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:1252
+msgid "This page is under construction."
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:1303
+msgid "Media Optimization"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:1308
+msgid "Select All"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:1314
+msgid ""
+"Enable or disable specific image sizes. Unused image sizes consume disk "
+"space and slow down your site. Disabling them will prevent WordPress from "
+"generating these sizes for new uploads."
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:1330
+msgid "Crop: Yes"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:1330
+msgid "Crop: No"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:1347
+msgid "Save Media Settings"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:1359
+msgid "System Actions"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:1366
+msgid "Regenerate Thumbnails"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:1367
+msgid "Fix broken images and create new sizes."
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:1369
+msgid "Requires plugin"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:1375
+msgid "Clear Image Cache"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:1376
+msgid "Remove transient image metadata."
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:1384
+msgid "Export Settings"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:1385
+msgid "Download your configuration."
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:1400
+msgid "Check our documentation for advanced media optimization tips."
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:1401
+msgid "Read Docs"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:1613
+#: includes/framework/Services/AdminPageService.php:1860
+msgid "Required"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:1621
+#: includes/framework/Services/AdminPageService.php:1739
+msgid "Extension"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:1622
+#: includes/framework/Services/AdminPageService.php:1740
+#: includes/app/Providers/WordPress/VisualTermDescriptionEditorServiceProvider.php:125
+#: includes/app/Providers/WordPress/VisualTermDescriptionEditorServiceProvider.php:173
+msgid "Description"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:1629
+msgid "No extensions found."
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:1675
+msgid "This extension is required by the theme but not installed."
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:1703
+msgid "This extension is recommended by the theme but not installed."
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:1779
+msgid "An error occurred."
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:1790
+#: includes/framework/Services/AdminPageService.php:2549
+msgid "Installing..."
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:1806
+#: includes/framework/Services/AdminPageService.php:1811
+#: includes/framework/Services/AdminPageService.php:1869
+#: includes/framework/Services/AdminPageService.php:2569
+#: includes/framework/Services/AdminPageService.php:2582
+msgid "Install Now"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:1810
+msgid "An error occurred during installation."
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:1820
+msgid ""
+"Are you sure you want to delete this extension? This action cannot be undone."
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:1862
+msgid "Recommended"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:1875
+msgid "Deactivate"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:1881
+msgid "Activate"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:1888
+msgid "Delete"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:1893
+msgid "Show more details"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:1900
+#, php-format
+msgid "Version %s"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:1901
+#, php-format
+msgid "By %s"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:1903
+msgid "Child Theme"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:1939
+msgid "Extension Library"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:1940
+msgid ""
+"Explore and install functional extensions for your Jankx theme. All "
+"extensions are automatically compatible with the current PHP and Jankx "
+"versions."
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:1947
+msgid "Search extensions..."
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:1951
+msgid "Most Popular"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:1952
+#: includes/framework/Services/AdminPageService.php:2010
+#: includes/framework/Services/AdminPageService.php:2508
+#: includes/framework/Services/AdminPageService.php:2619
+msgid "Free"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:1953
+#: includes/framework/Services/AdminPageService.php:2008
+msgid "Premium"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:1954
+msgid "Newest"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:1962
+msgid "No extensions found"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:1963
+msgid ""
+"The extension library is currently being updated. Please come back in a few "
+"minutes or try refreshing the data."
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:1964
+msgid "Refresh Data"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:1974
+msgid "Just now"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:1976
+#: includes/framework/Gutenberg/Blocks/HumanReadablePostDateBlock.php:40
+#, php-format
+msgid "%s ago"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:2015
+msgid "No description available."
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:2023
+#, php-format
+msgid "%s reviews"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:2029
+#, php-format
+msgid "%s installs"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:2035
+#, php-format
+msgid "by %s"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:2041
+msgid "Details"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:2046
+msgid "Already Installed"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:2053
+msgid "Install"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:2089
+#, php-format
+msgid "Developed with %s by Jankx Team"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:2507
+msgid "Extension Name"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:2515
+#: includes/framework/Gutenberg/QueryOptions.php:41
+msgid "Author"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:2516
+msgid "Jankx Team"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:2519
+#: includes/framework/Services/FontIcons/Admin/DashboardRenderer.php:117
+msgid "Version"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:2523
+msgid "Installs"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:2527
+msgid "Rating"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:2533
+msgid "Close"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:2559
+msgid "Success:"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:2560
+msgid "Installed"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:2566
+msgid "Installation failed."
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:2568
+#: includes/framework/Services/AdminPageService.php:2581
+msgid "Error:"
+msgstr ""
+
+#: includes/framework/Services/AdminPageService.php:2573
+msgid "Connection error. Please try again."
+msgstr ""
+
+#: includes/framework/Services/GutenbergService.php:317
+msgid "Jankx"
+msgstr ""
+
+#: includes/framework/Services/ExtensionService.php:601
+msgid "Extension installed successfully."
+msgstr ""
+
+#: includes/framework/Services/FontIcons/Admin/AjaxHandler.php:34
+msgid "Missing required fields."
+msgstr ""
+
+#: includes/framework/Services/FontIcons/Admin/AjaxHandler.php:60
+#: includes/framework/Services/FontIcons/Admin/AjaxHandler.php:109
+msgid "Missing icon type."
+msgstr ""
+
+#: includes/framework/Services/FontIcons/Admin/AjaxHandler.php:68
+msgid "Icon set not found."
+msgstr ""
+
+#: includes/framework/Services/FontIcons/Admin/AjaxHandler.php:80
+msgid "CSS URL not configured for this set."
+msgstr ""
+
+#: includes/framework/Services/FontIcons/Admin/AjaxHandler.php:94
+msgid "Icon set updated successfully."
+msgstr ""
+
+#: includes/framework/Services/FontIcons/Admin/AjaxHandler.php:117
+msgid "Icon set removed successfully."
+msgstr ""
+
+#: includes/framework/Services/FontIcons/Admin/AjaxHandler.php:119
+msgid "Failed to remove icon set."
+msgstr ""
+
+#: includes/framework/Services/FontIcons/Admin/AjaxHandler.php:133
+msgid "Repository cache refreshed successfully."
+msgstr ""
+
+#: includes/framework/Services/FontIcons/Admin/DashboardRenderer.php:22
+msgid "Icon Pack"
+msgstr ""
+
+#: includes/framework/Services/FontIcons/Admin/DashboardRenderer.php:24
+msgid "Settings"
+msgstr ""
+
+#: includes/framework/Services/FontIcons/Admin/DashboardRenderer.php:61
+msgid "Storage System:"
+msgstr ""
+
+#: includes/framework/Services/FontIcons/Admin/DashboardRenderer.php:68
+#, php-format
+msgid "Database Path: %s"
+msgstr ""
+
+#: includes/framework/Services/FontIcons/Admin/DashboardRenderer.php:69
+#, php-format
+msgid "Total Stored Sets: %d"
+msgstr ""
+
+#: includes/framework/Services/FontIcons/Admin/DashboardRenderer.php:71
+#, php-format
+msgid "Storage Directory: %s"
+msgstr ""
+
+#: includes/framework/Services/FontIcons/Admin/DashboardRenderer.php:72
+#, php-format
+msgid "Total JSON Files: %d"
+msgstr ""
+
+#: includes/framework/Services/FontIcons/Admin/DashboardRenderer.php:78
+#: includes/framework/Services/FontIcons/Admin/DashboardRenderer.php:297
+msgid "Icon Pack Management"
+msgstr ""
+
+#: includes/framework/Services/FontIcons/Admin/DashboardRenderer.php:80
+msgid "Import New Icon Set"
+msgstr ""
+
+#: includes/framework/Services/FontIcons/Admin/DashboardRenderer.php:81
+msgid "Refresh Cache"
+msgstr ""
+
+#: includes/framework/Services/FontIcons/Admin/DashboardRenderer.php:87
+msgid "No icon sets registered in repository."
+msgstr ""
+
+#: includes/framework/Services/FontIcons/Admin/DashboardRenderer.php:95
+msgid "Enabled"
+msgstr ""
+
+#: includes/framework/Services/FontIcons/Admin/DashboardRenderer.php:95
+msgid "Disabled"
+msgstr ""
+
+#: includes/framework/Services/FontIcons/Admin/DashboardRenderer.php:98
+#: includes/framework/Services/FontIcons/Admin/DashboardRenderer.php:162
+msgid "Auto-load"
+msgstr ""
+
+#: includes/framework/Services/FontIcons/Admin/DashboardRenderer.php:105
+msgid "Type"
+msgstr ""
+
+#: includes/framework/Services/FontIcons/Admin/DashboardRenderer.php:109
+msgid "Font Family"
+msgstr ""
+
+#: includes/framework/Services/FontIcons/Admin/DashboardRenderer.php:113
+msgid "Total Icons"
+msgstr ""
+
+#: includes/framework/Services/FontIcons/Admin/DashboardRenderer.php:123
+msgid "View Icons"
+msgstr ""
+
+#: includes/framework/Services/FontIcons/Admin/DashboardRenderer.php:124
+#: includes/framework/Services/FontIcons/Admin/DashboardRenderer.php:235
+msgid "Update CSS"
+msgstr ""
+
+#: includes/framework/Services/FontIcons/Admin/DashboardRenderer.php:127
+msgid "Remove From Repository"
+msgstr ""
+
+#: includes/framework/Services/FontIcons/Admin/DashboardRenderer.php:138
+msgid "Import New Icon Set from CSS URL"
+msgstr ""
+
+#: includes/framework/Services/FontIcons/Admin/DashboardRenderer.php:142
+msgid "Icon Type Slug"
+msgstr ""
+
+#: includes/framework/Services/FontIcons/Admin/DashboardRenderer.php:145
+msgid "Unique identifier for this icon set."
+msgstr ""
+
+#: includes/framework/Services/FontIcons/Admin/DashboardRenderer.php:149
+msgid "Display Name"
+msgstr ""
+
+#: includes/framework/Services/FontIcons/Admin/DashboardRenderer.php:155
+msgid "CSS URL"
+msgstr ""
+
+#: includes/framework/Services/FontIcons/Admin/DashboardRenderer.php:158
+msgid "Absolute URL to the font icon CSS file."
+msgstr ""
+
+#: includes/framework/Services/FontIcons/Admin/DashboardRenderer.php:165
+msgid "Automatically enqueue this CSS on every page?"
+msgstr ""
+
+#: includes/framework/Services/FontIcons/Admin/DashboardRenderer.php:170
+#: includes/framework/Services/FontIcons/Admin/DashboardRenderer.php:211
+msgid "Start Import"
+msgstr ""
+
+#: includes/framework/Services/FontIcons/Admin/DashboardRenderer.php:171
+msgid "Cancel"
+msgstr ""
+
+#: includes/framework/Services/FontIcons/Admin/DashboardRenderer.php:196
+msgid "Importing..."
+msgstr ""
+
+#: includes/framework/Services/FontIcons/Admin/DashboardRenderer.php:207
+msgid "Import successful!"
+msgstr ""
+
+#: includes/framework/Services/FontIcons/Admin/DashboardRenderer.php:210
+msgid "Import failed."
+msgstr ""
+
+#: includes/framework/Services/FontIcons/Admin/DashboardRenderer.php:221
+msgid "Update icon data from CSS URL? This will refresh the icon cache."
+msgstr ""
+
+#: includes/framework/Services/FontIcons/Admin/DashboardRenderer.php:223
+msgid "Updating..."
+msgstr ""
+
+#: includes/framework/Services/FontIcons/Admin/DashboardRenderer.php:246
+msgid ""
+"Remove this icon set from repository? Permanent data will be kept but set "
+"will be disabled."
+msgstr ""
+
+#: includes/framework/Services/FontIcons/Admin/DashboardRenderer.php:264
+msgid "Refreshing..."
+msgstr ""
+
+#: includes/framework/Services/FontIcons/Admin/DashboardRenderer.php:285
+#, php-format
+msgid "Icon pack \"%s\" not found in repository."
+msgstr ""
+
+#: includes/framework/Services/FontIcons/Admin/DashboardRenderer.php:286
+msgid "Back to Management"
+msgstr ""
+
+#: includes/framework/Services/FontIcons/Admin/DashboardRenderer.php:302
+msgid "Search icons in this pack..."
+msgstr ""
+
+#: includes/framework/Services/FontIcons/Admin/DashboardRenderer.php:303
+msgid "Back"
+msgstr ""
+
+#: includes/framework/Services/FontIcons/Admin/DashboardRenderer.php:309
+msgid "Total Icons:"
+msgstr ""
+
+#: includes/framework/Services/FontIcons/Admin/DashboardRenderer.php:313
+msgid "Prefixes:"
+msgstr ""
+
+#: includes/framework/Services/FontIcons/Admin/DashboardRenderer.php:317
+msgid "Font Family:"
+msgstr ""
+
+#: includes/framework/Services/FontIcons/Admin/DashboardRenderer.php:321
+msgid "Render Type:"
+msgstr ""
+
+#: includes/framework/Services/FontIcons/Admin/DashboardRenderer.php:328
+msgid "No icons found in this pack. Try updating CSS."
+msgstr ""
+
+#: includes/framework/Services/FontIcons/Admin/DashboardRenderer.php:374
+msgid "Copied!"
+msgstr ""
+
+#: includes/framework/Services/FontIcons/Admin/DashboardRenderer.php:388
+msgid "Global Icon Settings"
+msgstr ""
+
+#: includes/framework/Services/FontIcons/Admin/DashboardRenderer.php:393
+msgid "Default Icon Set"
+msgstr ""
+
+#: includes/framework/Services/FontIcons/Admin/DashboardRenderer.php:408
+msgid "Load via CDN"
+msgstr ""
+
+#: includes/framework/Services/FontIcons/Admin/DashboardRenderer.php:411
+msgid "Use CDN for built-in icon sets"
+msgstr ""
+
+#: includes/framework/Extensions/EnvatoManager.php:61
+msgid "Purchase code cannot be empty."
+msgstr ""
+
+#: includes/framework/Extensions/EnvatoManager.php:103
+msgid "Invalid purchase code or activation failed."
+msgstr ""
+
+#: includes/framework/Extensions/EnvatoManager.php:129
+msgid "Server rejected deactivation."
+msgstr ""
+
+#: includes/framework/Extensions/ExtensionManager.php:587
+#, php-format
+msgid ""
+"The following extensions are <strong>required</strong> for %s theme: %s. "
+"Please install and activate them."
+msgstr ""
+
+#: includes/framework/Extensions/ExtensionManager.php:615
+#, php-format
+msgid ""
+"The following extensions are <strong>recommended</strong> for %s theme: %s. "
+"Installing them will provide more features."
+msgstr ""
+
+#: includes/framework/Extensions/ExtensionManager.php:664
+msgid "Could not resolve download URL from Jankx Hub."
+msgstr ""
+
+#: includes/framework/Extensions/ExtensionManager.php:719
+msgid "Failed to move extension to final directory."
+msgstr ""
+
+#: includes/framework/Patches/NavigationBlockPatch.php:59
+#: includes/framework/Patches/NavigationBlockPatch.php:132
+#: includes/framework/Patches/NavigationBlockPatch.php:193
+#: includes/app/Services/NavigationBlockService.php:90
+msgid "Submenu"
+msgstr ""
+
+#: includes/framework/Patches/NavigationBlockPatch.php:59
+#: includes/framework/Patches/NavigationBlockPatch.php:92
+#: includes/framework/Patches/NavigationBlockPatch.php:114
+#: includes/framework/Patches/NavigationBlockPatch.php:181
+#: includes/framework/Patches/PatchesLoader.php:139
+#: includes/framework/Patches/PatchesLoader.php:189
+#: includes/framework/Patches/WordPressCorePatch.php:170
+#: includes/framework/Gutenberg/SmartTabs/Triggers/OpenLinkTabTrigger.php:32
+#: includes/framework/Gutenberg/SmartTabs/Triggers/OpenLinkTabTrigger.php:86
+#: includes/app/Services/NavigationBlockService.php:72
+msgid "Link"
+msgstr ""
+
+#: includes/framework/Support/Providers/ExtensionServiceProvider.php:54
+#: includes/framework/Support/Providers/ExtensionServiceProvider.php:81
+msgid "Unauthorized."
+msgstr ""
+
+#: includes/framework/Support/Providers/ExtensionServiceProvider.php:59
+msgid "Extension slug is required."
+msgstr ""
+
+#: includes/framework/Support/Providers/ExtensionServiceProvider.php:70
+#, php-format
+msgid "Extension \"%s\" installed successfully."
+msgstr ""
+
+#: includes/framework/Support/Providers/FontIconsServiceProvider.php:84
+#: includes/framework/Support/Providers/FontIconsServiceProvider.php:85
+msgid "Icons Repository"
+msgstr ""
+
+#: includes/framework/Support/Providers/FontIconsServiceProvider.php:177
+msgid "Font Icons Repository"
+msgstr ""
+
+#: includes/framework/Support/Providers/FontIconsServiceProvider.php:178
+msgid "Manage your font icons collection."
+msgstr ""
+
+#: includes/framework/Support/Providers/FontIconsServiceProvider.php:181
+msgid "Registered Icon Types:"
+msgstr ""
+
+#: includes/framework/Support/Providers/FontIconsServiceProvider.php:188
+msgid " [Auto-load]"
+msgstr ""
+
+#: includes/framework/Support/Providers/FontIconsServiceProvider.php:188
+msgid " [Manual]"
+msgstr ""
+
+#: includes/framework/Support/Providers/FontIconsServiceProvider.php:193
+msgid "No icon types registered yet."
+msgstr ""
+
+#: includes/framework/Support/Providers/Admin/JankxAdminPagesServiceProvider.php:82
+msgid "Jankx Admin"
+msgstr ""
+
+#: includes/framework/Admin/Handlers/FormHandler.php:88
+#: includes/framework/Admin/Handlers/FormHandler.php:125
+#: includes/framework/Admin/Handlers/FormHandler.php:149
+#: includes/framework/Admin/Handlers/FormHandler.php:189
+#: includes/framework/Admin/Handlers/FormHandler.php:216
+msgid "Security check failed"
+msgstr ""
+
+#: includes/framework/Admin/Handlers/FormHandler.php:92
+#: includes/framework/Admin/Handlers/FormHandler.php:129
+#: includes/framework/Admin/Handlers/FormHandler.php:153
+#: includes/framework/Admin/Handlers/FormHandler.php:193
+#: includes/framework/Admin/Handlers/FormHandler.php:220
+msgid "You do not have permission to perform this action."
+msgstr ""
+
+#: includes/framework/Admin/Handlers/FormHandler.php:102
+msgid "Activation failed."
+msgstr ""
+
+#: includes/framework/Admin/Handlers/FormHandler.php:113
+msgid "Theme JANKX PRO activated successfully via Optilarity!"
+msgstr ""
+
+#: includes/framework/Admin/Handlers/FormHandler.php:138
+msgid "License deactivated."
+msgstr ""
+
+#: includes/framework/Admin/Handlers/FormHandler.php:162
+msgid "Membership disconnected."
+msgstr ""
+
+#: includes/framework/Admin/Handlers/FormHandler.php:202
+msgid "Image size settings saved."
+msgstr ""
+
+#: includes/framework/Admin/Handlers/FormHandler.php:231
+msgid "Debug log cleared."
+msgstr ""
+
+#: includes/framework/Gutenberg/Blocks/WordPressBlock.php:184
+msgid "&larr; Previous"
+msgstr ""
+
+#: includes/framework/Gutenberg/Blocks/WordPressBlock.php:185
+msgid "Next &rarr;"
+msgstr ""
+
+#: includes/framework/Gutenberg/Blocks/CommentCountBlock.php:42
+msgid "Comment"
+msgid_plural "Comments"
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/framework/Gutenberg/Blocks/StarRatingBlock.php:98
+#, php-format
+msgid "Rated %s out of 5"
+msgstr ""
+
+#: includes/framework/Gutenberg/Blocks/SmartBreadcrumbBlock.php:13
+#: includes/framework/Gutenberg/Blocks/SmartBreadcrumbBlock.php:191
+msgid "Home"
+msgstr ""
+
+#: includes/framework/Gutenberg/Blocks/SmartBreadcrumbBlock.php:35
 msgid "No breadcrumb available"
 msgstr ""
 
-#: ../includes/framework/Gutenberg/Blocks/SmartBreadcrumbBlock.php:69, ../includes/framework/Gutenberg/Blocks/SmartBreadcrumbBlock.php:175
+#: includes/framework/Gutenberg/Blocks/SmartBreadcrumbBlock.php:69
+#: includes/framework/Gutenberg/Blocks/SmartBreadcrumbBlock.php:175
 msgid "Breadcrumb"
 msgstr ""
 
-#: ../includes/framework/Gutenberg/Blocks/SmartBreadcrumbBlock.php:179
+#: includes/framework/Gutenberg/Blocks/SmartBreadcrumbBlock.php:179
 msgctxt "breadcrumb"
 msgid "Home"
 msgstr ""
 
-#: ../includes/framework/Gutenberg/Blocks/SmartBreadcrumbBlock.php:242, ../includes/framework/Gutenberg/Blocks/SmartBreadcrumbBlock.php:374
-msgid "Trang không tìm thấy"
-msgstr ""
-
-#: ../includes/framework/Gutenberg/Blocks/SmartBreadcrumbBlock.php:239, ../includes/framework/Gutenberg/Blocks/SmartBreadcrumbBlock.php:372
-msgid "Kết quả tìm kiếm cho: \"%s\""
-msgstr ""
-
-#: ../includes/framework/Gutenberg/Blocks/SmartBreadcrumbBlock.php:215
+#: includes/framework/Gutenberg/Blocks/SmartBreadcrumbBlock.php:215
 msgid "Sample Category"
 msgstr ""
 
-#: ../includes/framework/Gutenberg/Blocks/SmartBreadcrumbBlock.php:219
+#: includes/framework/Gutenberg/Blocks/SmartBreadcrumbBlock.php:219
 msgid "Sample Post Title"
 msgstr ""
 
-#: ../includes/framework/Gutenberg/Blocks/SmartBreadcrumbBlock.php:334
-msgid "Tác giả: %s"
+#: includes/framework/Gutenberg/Blocks/SmartBreadcrumbBlock.php:239
+#: includes/framework/Gutenberg/Blocks/SmartBreadcrumbBlock.php:372
+#, php-format
+msgid "Search Results for: \"%s\""
 msgstr ""
 
-#: ../includes/framework/Gutenberg/Blocks/SmartTabsBlock.php:130
+#: includes/framework/Gutenberg/Blocks/SmartBreadcrumbBlock.php:242
+#: includes/framework/Gutenberg/Blocks/SmartBreadcrumbBlock.php:374
+msgid "Page not found"
+msgstr ""
+
+#: includes/framework/Gutenberg/Blocks/SmartBreadcrumbBlock.php:334
+#, php-format
+msgid "Author: %s"
+msgstr ""
+
+#: includes/framework/Gutenberg/Blocks/SmartSearchBlock.php:63
+msgid "Post type to get taxonomies for"
+msgstr ""
+
+#: includes/framework/Gutenberg/Blocks/AdvancedFiltersBlock.php:55
+msgid "Reset Filters"
+msgstr ""
+
+#: includes/framework/Gutenberg/Blocks/IconPickerBlock.php:174
+msgid "Chọn icon từ Jankx Font Icons System để hiển thị ở đây."
+msgstr ""
+
+#: includes/framework/Gutenberg/Blocks/SlideshowBlock.php:82
+msgid "Fullscreen"
+msgstr ""
+
+#: includes/framework/Gutenberg/Blocks/PostTypeBadgeBlock.php:172
+msgid "Post"
+msgstr ""
+
+#: includes/framework/Gutenberg/Blocks/OffcanvasSidebarBlock.php:218
+msgid "Sidebar navigation"
+msgstr ""
+
+#: includes/framework/Gutenberg/Blocks/OffcanvasSidebarBlock.php:294
+msgid "Close sidebar"
+msgstr ""
+
+#: includes/framework/Gutenberg/Blocks/OffcanvasSidebarBlock.php:330
+msgid "Add your content here using any available blocks."
+msgstr ""
+
+#: includes/framework/Gutenberg/Blocks/SmartTabsBlock.php:247
+#: includes/framework/Gutenberg/SmartTabs/Triggers/ManualTabTrigger.php:62
+#, php-format
 msgid "Tab %d"
 msgstr ""
 
-#: ../includes/framework/Gutenberg/Blocks/TableOfContentBlock.php:455
+#: includes/framework/Gutenberg/Blocks/SafeIframeBlock.php:21
+msgid "Invalid iframe URL"
+msgstr ""
+
+#: includes/framework/Gutenberg/Blocks/OffcanvasTriggerBlock.php:79
+msgid "Toggle menu"
+msgstr ""
+
+#: includes/framework/Gutenberg/Blocks/AuthorBoxBlock.php:44
+msgid "No author found"
+msgstr ""
+
+#: includes/framework/Gutenberg/Blocks/AuthorBoxBlock.php:51
+msgid "Author not found"
+msgstr ""
+
+#: includes/framework/Gutenberg/Blocks/AuthorBoxBlock.php:93
+msgid "Recent Posts"
+msgstr ""
+
+#: includes/framework/Gutenberg/Blocks/AuthorBoxBlock.php:185
+msgid "No posts found"
+msgstr ""
+
+#: includes/framework/Gutenberg/Blocks/UserMenuBlock.php:48
+msgid "Hello,"
+msgstr ""
+
+#: includes/framework/Gutenberg/Blocks/UserMenuBlock.php:52
+msgid "Profile"
+msgstr ""
+
+#: includes/framework/Gutenberg/Blocks/UserMenuBlock.php:57
+msgid "Logout"
+msgstr ""
+
+#: includes/framework/Gutenberg/Blocks/UserMenuBlock.php:136
+msgid "Login"
+msgstr ""
+
+#: includes/framework/Gutenberg/Blocks/UserMenuBlock.php:144
+msgid "Register"
+msgstr ""
+
+#: includes/framework/Gutenberg/SmartTabs/Triggers/OpenLinkTabTrigger.php:16
+msgid "Open Link"
+msgstr ""
+
+#: includes/framework/Gutenberg/SmartTabs/Triggers/OpenLinkTabTrigger.php:21
+msgid "Clicking this tab opens a link. No tab content is displayed."
+msgstr ""
+
+#: includes/framework/Gutenberg/SmartTabs/Triggers/OpenLinkTabTrigger.php:38
+msgid "URL"
+msgstr ""
+
+#: includes/framework/Gutenberg/SmartTabs/Triggers/OpenLinkTabTrigger.php:43
+msgid "Target"
+msgstr ""
+
+#: includes/framework/Gutenberg/SmartTabs/Triggers/OpenLinkTabTrigger.php:50
+msgid "Rel"
+msgstr ""
+
+#: includes/framework/Gutenberg/SmartTabs/Triggers/ManualTabTrigger.php:25
+msgid "Custom Content"
+msgstr ""
+
+#: includes/framework/Gutenberg/SmartTabs/Triggers/ManualTabTrigger.php:33
+msgid "Use manual title and inner blocks as tab content."
+msgstr ""
+
+#: includes/framework/Gutenberg/SmartTabs/Triggers/ManualTabTrigger.php:65
+#: includes/framework/Gutenberg/SmartTabs/SmartTabTriggerRegistry.php:145
+msgid "Tab"
+msgstr ""
+
+#: includes/framework/Gutenberg/SmartTabs/Triggers/AdvancedFilterTabTrigger.php:27
+msgid "Advanced Filter"
+msgstr ""
+
+#: includes/framework/Gutenberg/SmartTabs/Triggers/AdvancedFilterTabTrigger.php:35
+msgid ""
+"Trigger advanced filter when tab is clicked. Configure filter using Advanced "
+"Filter block inside this tab. Updates dynamic-data-layout blocks with "
+"filtered results."
+msgstr ""
+
+#: includes/framework/Gutenberg/SmartTabs/Triggers/AdvancedFilterTabTrigger.php:66
+msgid "Target Block"
+msgstr ""
+
+#: includes/framework/Gutenberg/SmartTabs/Triggers/AdvancedFilterTabTrigger.php:67
+msgid "Select the Dynamic Data Layout block to filter"
+msgstr ""
+
+#: includes/framework/Gutenberg/SmartTabs/Triggers/AdvancedFilterTabTrigger.php:89
+#, php-format
+msgid "Filter: %s"
+msgstr ""
+
+#: includes/framework/Gutenberg/SmartTabs/Triggers/AdvancedFilterTabTrigger.php:92
+msgid "Advanced Filter Tab"
+msgstr ""
+
+#: includes/framework/Gutenberg/QueryOptions.php:25
+msgid "Date"
+msgstr ""
+
+#: includes/framework/Gutenberg/QueryOptions.php:29
+msgid "Modified Date"
+msgstr ""
+
+#: includes/framework/Gutenberg/QueryOptions.php:33
+msgid "Title"
+msgstr ""
+
+#: includes/framework/Gutenberg/QueryOptions.php:37
+msgid "Slug"
+msgstr ""
+
+#: includes/framework/Gutenberg/QueryOptions.php:45
+msgid "Type (Post Type)"
+msgstr ""
+
+#: includes/framework/Gutenberg/QueryOptions.php:49
+msgid "ID"
+msgstr ""
+
+#: includes/framework/Gutenberg/QueryOptions.php:53
+msgid "Menu Order"
+msgstr ""
+
+#: includes/framework/Gutenberg/QueryOptions.php:57
+msgid "Random"
+msgstr ""
+
+#: includes/framework/Gutenberg/QueryOptions.php:61
+msgid "Comment Count"
+msgstr ""
+
+#: includes/framework/Gutenberg/QueryOptions.php:65
+msgid "Relevance"
+msgstr ""
+
+#: includes/framework/Gutenberg/QueryOptions.php:69
+msgid "Meta Value"
+msgstr ""
+
+#: includes/framework/Gutenberg/QueryOptions.php:73
+msgid "Meta Value Numeric"
+msgstr ""
+
+#: includes/framework/Gutenberg/QueryOptions.php:77
+msgid "Post__in (Array Order)"
+msgstr ""
+
+#: includes/framework/Gutenberg/QueryOptions.php:81
+msgid "Post Name__in (Slug Order)"
+msgstr ""
+
+#: includes/framework/Gutenberg/QueryOptions.php:85
+msgid "Post Parent__in (Parent Order)"
+msgstr ""
+
+#: includes/framework/Gutenberg/QueryOptions.php:120
+msgid "Descending"
+msgstr ""
+
+#: includes/framework/Gutenberg/QueryOptions.php:124
+msgid "Ascending"
+msgstr ""
+
+#: includes/framework/Gutenberg/QueryOptions.php:150
+msgid "Equal (=)"
+msgstr ""
+
+#: includes/framework/Gutenberg/QueryOptions.php:154
+msgid "Not Equal (!=)"
+msgstr ""
+
+#: includes/framework/Gutenberg/QueryOptions.php:158
+msgid "Greater Than (>)"
+msgstr ""
+
+#: includes/framework/Gutenberg/QueryOptions.php:162
+msgid "Greater Than or Equal (>=)"
+msgstr ""
+
+#: includes/framework/Gutenberg/QueryOptions.php:166
+msgid "Less Than (<)"
+msgstr ""
+
+#: includes/framework/Gutenberg/QueryOptions.php:170
+msgid "Less Than or Equal (<=)"
+msgstr ""
+
+#: includes/framework/Gutenberg/QueryOptions.php:174
+msgid "Like (LIKE)"
+msgstr ""
+
+#: includes/framework/Gutenberg/QueryOptions.php:178
+msgid "Not Like (NOT LIKE)"
+msgstr ""
+
+#: includes/framework/Gutenberg/QueryOptions.php:182
+#: includes/framework/Gutenberg/QueryOptions.php:262
+msgid "In (IN)"
+msgstr ""
+
+#: includes/framework/Gutenberg/QueryOptions.php:186
+#: includes/framework/Gutenberg/QueryOptions.php:266
+msgid "Not In (NOT IN)"
+msgstr ""
+
+#: includes/framework/Gutenberg/QueryOptions.php:190
+#: includes/framework/Gutenberg/QueryOptions.php:274
+msgid "Exists (EXISTS)"
+msgstr ""
+
+#: includes/framework/Gutenberg/QueryOptions.php:194
+#: includes/framework/Gutenberg/QueryOptions.php:278
+msgid "Not Exists (NOT EXISTS)"
+msgstr ""
+
+#: includes/framework/Gutenberg/QueryOptions.php:218
+msgid "-- Auto --"
+msgstr ""
+
+#: includes/framework/Gutenberg/QueryOptions.php:270
+msgid "And (AND)"
+msgstr ""
+
+#: includes/framework/Gutenberg/QueryOptions.php:302
+msgid "Default (Main Query)"
+msgstr ""
+
+#: includes/framework/Gutenberg/QueryOptions.php:304
+msgid "Use WordPress main query. Query parameters will be hidden."
+msgstr ""
+
+#: includes/framework/Gutenberg/QueryOptions.php:308
+msgid "Related Posts (Same Taxonomy)"
+msgstr ""
+
+#: includes/framework/Gutenberg/QueryOptions.php:310
+msgid "Display related posts (same taxonomy as current post)."
+msgstr ""
+
+#: includes/framework/Gutenberg/QueryOptions.php:314
+msgid "Custom Query"
+msgstr ""
+
+#: includes/framework/Gutenberg/QueryOptions.php:316
+msgid "Customize query parameters as you wish."
+msgstr ""
+
+#: includes/framework/Helper/ServiceHelper.php:34
+msgid ""
+"ServiceHelper has not been initialized. Call ServiceHelper::init() first."
+msgstr ""
+
+#: includes/framework/Helper/ServiceHelper.php:192
+msgid "Lazy Services Debug"
+msgstr ""
+
+#: includes/framework/Helper/ServiceHelper.php:193
+msgid "Registered:"
+msgstr ""
+
+#: includes/framework/Helper/ServiceHelper.php:194
+msgid "Loaded:"
+msgstr ""
+
+#: includes/framework/Helper/ServiceHelper.php:195
+msgid "Total Providers:"
+msgstr ""
+
+#: includes/framework/Helper/ServiceHelper.php:196
+msgid "Total Loaded:"
+msgstr ""
+
+#: includes/framework/Helper/ServiceHelper.php:197
+msgid "Memory:"
+msgstr ""
+
+#: includes/framework/Helper/ServiceHelper.php:198
+msgid "Peak:"
+msgstr ""
+
+#: includes/app/Services/LicenseService.php:65
+msgid "No license found."
+msgstr ""
+
+#: includes/app/Services/TemplateService.php:72
+msgid "No active membership or license found."
+msgstr ""
+
+#: includes/app/Services/WooCommerce/BuyNowService.php:42
+msgid "MUA NGAY"
+msgstr ""
+
+#: includes/app/Services/WooCommerce/SaleBadgeService.php:128
+#: includes/app/Services/WooCommerce/SaleBadgeService.php:226
+msgid "Sale!"
+msgstr ""
+
+#: includes/app/Services/MembershipService.php:79
+msgid "Token exchange failed."
+msgstr ""
+
+#: includes/app/Services/MembershipService.php:89
+msgid "No access token found."
+msgstr ""
+
+#: includes/app/Services/ExampleService.php:35
+msgid "Service initialized successfully!"
+msgstr ""
+
+#: includes/app/Services/ExampleService.php:75
+msgid "ExampleService: "
+msgstr ""
+
+#: includes/app/Services/ThemeOptionsService.php:159
+#: includes/app/Services/ThemeOptionsService.php:164
+#: includes/app/Services/ThemeOptionsService.php:226
+#: includes/app/Services/ThemeOptionsService.php:231
+#: includes/app/Services/ThemeOptionsService.php:272
+#: includes/app/Services/ThemeOptionsService.php:300
+msgid "Jankx Theme Options"
+msgstr ""
+
+#: includes/app/Services/ThemeOptionsService.php:301
+msgid "Framework Mode: "
+msgstr ""
+
+#: includes/app/Services/ThemeOptionsService.php:302
+msgid "Adapter: "
+msgstr ""
+
+#: includes/app/Services/ThemeOptionsService.php:302
+msgid "Not loaded"
+msgstr ""
+
+#: includes/app/Services/ThemeOptionsService.php:303
+msgid "Options Data: "
+msgstr ""
+
+#: includes/app/Services/ThemeOptionsService.php:303
+msgid "Empty"
+msgstr ""
+
+#: includes/app/Services/ThemeOptionsService.php:303
+msgid "Loaded"
+msgstr ""
+
+#: includes/app/Providers/WordPress/VisualTermDescriptionEditorServiceProvider.php:131
+#: includes/app/Providers/WordPress/VisualTermDescriptionEditorServiceProvider.php:177
+msgid ""
+"The description is not prominent by default; however, some themes may show "
+"it."
+msgstr ""
+
+#: patterns/hero-section.php:11
+msgid "Transform Your Business with Jankx"
+msgstr ""
+
+#: patterns/hero-section.php:15
+msgid "Fast, modern, and AI-ready WordPress theme framework."
+msgstr ""
+
+#: patterns/hero-section.php:20
+msgid "Get Started"
+msgstr ""
+
+#: patterns/hero-section.php:22
+msgid "Learn More"
+msgstr ""
+
+#: extensions/hello-extension/HelloExtension.php:48
+msgid "Jankx Hello Extension"
+msgstr ""
+
+#: extensions/hello-extension/HelloExtension.php:48
+msgid "Greetings from your newly created extension! It is successfully loaded."
+msgstr ""
+
+#: extensions/dynamic-ssr/includes/Blocks/DynamicSsrLayoutBlock.php:645
+msgid "Attributes not found"
+msgstr ""
+
+#: extensions/dynamic-ssr/includes/Blocks/DynamicSsrLayoutBlock.php:875
+msgid "Invalid attributes"
+msgstr ""
+
+#: extensions/table-builder/includes/Blocks/TableOfContentBlock.php:899
 msgid "No headings found in the post content."
 msgstr ""
 
-#: ../includes/framework/Gutenberg/Blocks/TableOfContentBlock.php:499
+#: extensions/table-builder/includes/Blocks/TableOfContentBlock.php:943
 msgid "Table of Contents"
 msgstr ""
 
-#: ../includes/framework/Gutenberg/Blocks/WplyrMediaBlock.php:148
-msgid "Please configure media settings."
+#: extensions/plyr-player/includes/Blocks/PlyrPlayerBlock.php:38
+msgid "No media URL provided."
 msgstr ""
 
-#: ../includes/framework/Gutenberg/Blocks/WplyrMediaBlock.php:136
-msgid "Your browser does not support the audio tag."
-msgstr ""
-
-#: ../includes/framework/Gutenberg/Blocks/WplyrMediaBlock.php:127
-msgid "Your browser does not support the video tag."
-msgstr ""
-
-#: ../includes/framework/Layouts/PostLayout/PostLayout.php:178
-msgid "By %s"
-msgstr ""
-
-#: ../includes/framework/Layouts/PostLayout/Supports/CardLayout.php:76, ../includes/framework/Layouts/PostLayout/Supports/GridLayout.php:74, ../includes/framework/Layouts/PostLayout/Supports/ListLayout.php:70, ../includes/framework/Layouts/PostLayout/Supports/MasonryLayout.php:76
-msgid "Post Title %d"
-msgstr ""
-
-#: ../includes/framework/Layouts/PostLayout/Supports/CardLayout.php:77
-msgid "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor..."
-msgstr ""
-
-#: ../includes/framework/Layouts/PostLayout/Supports/GridLayout.php:75, ../includes/framework/Layouts/PostLayout/Supports/ListLayout.php:71
-msgid "Lorem ipsum dolor sit amet, consectetur adipiscing elit..."
-msgstr ""
-
-#: ../includes/framework/Layouts/PostLayout/Supports/MasonryLayout.php:77
-msgid "Lorem ipsum dolor sit amet..."
-msgstr ""
-
-#: ../resources/blocks/advanced-filter/init.php:33
-msgid "Jankx"
-msgstr ""
-
-#: ../vendor/jankx/dashboard-framework/src/OptionFramework.php:297, ../vendor/jankx/dashboard-framework/src/OptionFramework.php:298, ../vendor/jankx/dashboard-framework/src/OptionFramework.php:287, ../vendor/jankx/dashboard-framework/src/OptionFramework.php:288
-msgid "Theme Options"
+#: extensions/language-switcher/includes/Blocks/LanguageSwitcherBlock.php:365
+msgid "Polylang plugin is not active. Language switcher cannot be displayed."
 msgstr ""

@@ -6,6 +6,7 @@ use Jankx\Contracts\KernelInterface;
 use Jankx\Foundation\Application;
 use Jankx\Foundation\Bootstrap\BootChildTheme;
 use Jankx\Foundation\Bootstrap\BootProviders;
+use Jankx\Foundation\Bootstrap\BootTemplateEngine;
 use Jankx\Foundation\Bootstrap\LoadConfiguration;
 use Jankx\Foundation\Bootstrap\RegisterFacades;
 use Jankx\Foundation\Bootstrap\RegisterProviders;
@@ -30,6 +31,7 @@ abstract class Kernel implements KernelInterface
         RegisterFacades::class,
         ThemeDataLoader::class,
         BootChildTheme::class,
+        BootTemplateEngine::class,
         RegisterProviders::class,
         BootProviders::class,
     ];
@@ -50,6 +52,8 @@ abstract class Kernel implements KernelInterface
     public function __construct(Application $app)
     {
         $this->app = $app;
+
+        $this->app->instance('kernel', $this);
     }
 
     /**

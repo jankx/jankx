@@ -1,0 +1,326 @@
+/**
+ * Dynamic Data Layout Block Styles
+ * 
+ * Nhiệm vụ: Layout của toàn bộ data (wrapper, columns, grid structure)
+ * Layout của từng item được xử lý bởi dynamic-data-template block
+ */
+.wp-block-jankx-dynamic-data-layout {
+
+    // Reset list styles if rendered as ul
+    &[tagName="ul"],
+    &.is-style-list,
+    &:where(ul) {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    // Grid và Card layout - columns được áp dụng cho container bên trong
+    &.dynamic-data-layout--grid,
+    &.dynamic-data-layout--card {
+
+        // CSS variables được truyền từ wrapper xuống container bên trong
+        .post-type-layout-grid,
+        .post-type-layout-card {
+            display: grid;
+            gap: var(--wp--preset--spacing--medium, 1.5rem);
+
+            // Sử dụng CSS variables từ wrapper hoặc từ chính element
+            grid-template-columns: repeat(var(--columns-mobile, 1), 1fr);
+
+            @media (min-width: 768px) {
+                grid-template-columns: repeat(var(--columns-tablet, 2), 1fr);
+            }
+
+            @media (min-width: 1024px) {
+                grid-template-columns: repeat(var(--columns-desktop, 3), 1fr);
+            }
+        }
+    }
+
+    // List layout
+    &.dynamic-data-layout--list {
+        .post-type-layout-list {
+            display: flex;
+            flex-direction: column;
+            gap: var(--wp--preset--spacing--medium, 1.5rem);
+        }
+    }
+
+    // Carousel layout
+    &.dynamic-data-layout--carousel,
+    &.jankx-carousel {
+        position: relative;
+        overflow: hidden;
+        width: 100%;
+
+        .jankx-carousel-container {
+            // Override parent inline style for responsive behavior
+            --slides-per-view: var(--carousel-columns-mobile, var(--columns-mobile, 1));
+
+            @media (min-width: 768px) {
+                --slides-per-view: var(--carousel-columns-tablet, var(--columns-tablet, 2));
+            }
+
+            @media (min-width: 1024px) {
+                --slides-per-view: var(--carousel-columns, var(--columns-desktop, 4));
+            }
+
+            display: flex;
+            width: 100%;
+            margin: 0;
+            padding: 0 0 20px;
+            list-style: none;
+            flex-wrap: nowrap;
+
+            // Shared structure for slides
+            .carousel-slide,
+            .embla__slide,
+            .wc-block-product {
+                flex: 0 0 calc((100% - var(--peek-amount, 0%)) / var(--slides-per-view, 1));
+                width: calc((100% - var(--peek-amount, 0%)) / var(--slides-per-view, 1));
+                max-width: calc((100% - var(--peek-amount, 0%)) / var(--slides-per-view, 1));
+                padding: 0 calc(var(--space-between, 16px) / 2);
+                box-sizing: border-box;
+                min-width: 0;
+
+                // Embla specific reset
+                transform: translate3d(0, 0, 0);
+
+                /* Ensure direct children take full width */
+                &>* {
+                    width: 100%;
+                    height: 100%;
+                }
+            }
+        }
+
+        /* Navigation buttons */
+        .carousel-nav,
+        .embla__button {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.8);
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 10;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+
+            &:hover {
+                background: rgba(255, 255, 255, 1);
+                transform: translateY(-50%) scale(1.1);
+            }
+
+            &.carousel-prev,
+            &.embla__button--prev {
+                left: 10px;
+            }
+
+            &.carousel-next,
+            &.embla__button--next {
+                right: 10px;
+            }
+
+            svg {
+                width: 24px;
+                height: 24px;
+            }
+        }
+
+        /* Pagination dots */
+        .carousel-dots,
+        .embla__dots {
+            display: flex;
+            justify-content: center;
+            padding: 15px 0;
+            gap: 8px;
+
+            .carousel-dot,
+            .embla__dot {
+                width: 10px;
+                height: 10px;
+                border-radius: 50%;
+                background: #ccc;
+                border: none;
+                padding: 0;
+                cursor: pointer;
+                transition: all 0.3s ease;
+
+                &.is-active,
+                &.is-selected {
+                    background: #000;
+                    transform: scale(1.2);
+                }
+
+                &:focus {
+                    outline: none;
+                }
+            }
+        }
+
+        // Hide navigation when not needed
+        &:not(.has-arrows) .carousel-nav,
+        &:not(.has-arrows) .embla__button {
+            display: none;
+        }
+
+        &:not(.has-dots) .carousel-dots,
+        &:not(.has-dots) .embla__dots {
+            display: none;
+        }
+    }
+
+    // Support cho class-based column classes (fallback)
+    // Classes này được thêm vào wrapper và CSS variables được truyền xuống
+    &[class*="columns-"] {
+
+        // Truyền CSS variables xuống container bên trong
+        .post-type-layout-grid,
+        .post-type-layout-card {
+            // Variables được set từ wrapper inline styles hoặc từ classes
+            display: grid;
+            gap: var(--wp--preset--spacing--medium, 1.5rem);
+        }
+    }
+
+    // Direct column classes support (nếu wrapper có classes trực tiếp)
+    &.columns-1 {
+        --columns-desktop: 1;
+    }
+
+    &.columns-2 {
+        --columns-desktop: 2;
+    }
+
+    &.columns-3 {
+        --columns-desktop: 3;
+    }
+
+    &.columns-4 {
+        --columns-desktop: 4;
+    }
+
+    &.columns-5 {
+        --columns-desktop: 5;
+    }
+
+    &.columns-6 {
+        --columns-desktop: 6;
+    }
+
+    &.columns-tablet-1 {
+        --columns-tablet: 1;
+    }
+
+    &.columns-tablet-2 {
+        --columns-tablet: 2;
+    }
+
+    &.columns-tablet-3 {
+        --columns-tablet: 3;
+    }
+
+    &.columns-tablet-4 {
+        --columns-tablet: 4;
+    }
+
+    &.columns-mobile-1 {
+        --columns-mobile: 1;
+    }
+
+    &.columns-mobile-2 {
+        --columns-mobile: 2;
+    }
+}
+
+// Support cho post-type-layout-grid trực tiếp (không có wrapper)
+.post-type-layout-grid,
+.post-type-layout-card {
+    display: grid;
+    gap: var(--wp--preset--spacing--medium, 1.5rem);
+
+    // Sử dụng CSS variables từ chính element
+    grid-template-columns: repeat(var(--columns-mobile, 1), 1fr);
+
+    @media (min-width: 768px) {
+        grid-template-columns: repeat(var(--columns-tablet, 2), 1fr);
+    }
+
+    @media (min-width: 1024px) {
+        grid-template-columns: repeat(var(--columns-desktop, 3), 1fr);
+    }
+
+    // Support cho column classes trực tiếp trên element
+    &.columns-1 {
+        --columns-desktop: 1;
+    }
+
+    &.columns-2 {
+        --columns-desktop: 2;
+    }
+
+    &.columns-3 {
+        --columns-desktop: 3;
+    }
+
+    &.columns-4 {
+        --columns-desktop: 4;
+    }
+
+    &.columns-5 {
+        --columns-desktop: 5;
+    }
+
+    &.columns-6 {
+        --columns-desktop: 6;
+    }
+
+    &.columns-tablet-1 {
+        --columns-tablet: 1;
+    }
+
+    &.columns-tablet-2 {
+        --columns-tablet: 2;
+    }
+
+    &.columns-tablet-3 {
+        --columns-tablet: 3;
+    }
+
+    &.columns-tablet-4 {
+        --columns-tablet: 4;
+    }
+
+    &.columns-mobile-1 {
+        --columns-mobile: 1;
+    }
+
+    &.columns-mobile-2 {
+        --columns-mobile: 2;
+    }
+}
+
+// Ensure color/background set on wrapper inheritance to child elements
+.wp-block-jankx-dynamic-data-layout.has-text-color .post-type-layout-grid,
+.wp-block-jankx-dynamic-data-layout.has-text-color .post-type-layout-card,
+.wp-block-jankx-dynamic-data-layout.has-text-color .post-type-layout-list {
+    color: inherit;
+}
+
+.wp-block-jankx-dynamic-data-layout.has-background {
+
+    /* background will be applied via inline style or preset background class */
+    .post-type-layout-grid,
+    .post-type-layout-card,
+    .post-type-layout-list {
+        background: inherit;
+    }
+}

@@ -1,0 +1,15 @@
+/*!********************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!./blocks/carousel/editor.scss ***!
+  \********************************************************************************************************************************************************************************************/
+.wp-block-jankx-carousel .embla {
+  height: var(--carousel-height, 50px);
+}
+@media (max-width: 1024px) {
+  .wp-block-jankx-carousel .embla {
+    height: auto;
+    max-height: var(--carousel-height, 50px);
+    min-height: var(--carousel-min-height, 50px);
+  }
+}
+
+/*# sourceMappingURL=editor.css.map*/

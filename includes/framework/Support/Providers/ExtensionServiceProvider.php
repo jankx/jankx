@@ -2,10 +2,12 @@
 
 namespace Jankx\Support\Providers;
 
-use Jankx\Extensions\ExtensionService;
+use Jankx\Services\ExtensionService;
 use Jankx\Extensions\ExtensionManager;
+use Jankx\Extensions\ThemeExtensionManager;
+use Jankx\Extensions\MarketplaceManager;
 use Jankx\Extensions\ExtensionManifest;
-use Jankx\Extensions\Extension;
+use Jankx\Extensions\AbstractExtension;
 use Jankx\Facades\Log;
 
 class ExtensionServiceProvider extends ServiceProvider
@@ -30,8 +32,64 @@ class ExtensionServiceProvider extends ServiceProvider
      */
     public function boot(\Jankx\Foundation\Application $app)
     {
-        // Initialize extension system
-        $this->initializeExtensionSystem();
+        // Boot Theme Extension Manager (active theme's extensions/ dir)
+        $this->app->make('theme_extension.manager');
+
+        // Boot Extension Service so its AJAX handlers (jankx_toggle_extension, etc.) are registered
+        $this->app->make('extension.service');
+
+        // Register AJAX handlers for the marketplace (lazy - marketplace boots on demand)
+        add_action('wp_ajax_jankx_marketplace_install_extension', [$this, 'ajaxInstallExtension']);
+        add_action('wp_ajax_jankx_check_theme_update', [$this, 'ajaxCheckThemeUpdate']);
+    }
+
+    /**
+     * AJAX: Install an extension from Hub
+     */
+    public function ajaxInstallExtension()
+    {
+        check_ajax_referer('jankx_marketplace_nonce', 'nonce');
+
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(['message' => __('Unauthorized.', 'jankx')], 403);
+        }
+
+        $slug = sanitize_key($_POST['slug'] ?? '');
+        if (empty($slug)) {
+            wp_send_json_error(['message' => __('Extension slug is required.', 'jankx')]);
+        }
+
+        /** @var MarketplaceManager $marketplace */
+        $marketplace = $this->app->make('extension.marketplace');
+        $result = $marketplace->installExtension($slug);
+
+        if (is_wp_error($result)) {
+            wp_send_json_error(['message' => $result->get_error_message()]);
+        }
+
+        wp_send_json_success(['message' => sprintf(__('Extension "%s" installed successfully.', 'jankx'), $slug)]);
+    }
+
+    /**
+     * AJAX: Check for Jankx theme core update
+     */
+    public function ajaxCheckThemeUpdate()
+    {
+        check_ajax_referer('jankx_marketplace_nonce', 'nonce');
+
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(['message' => __('Unauthorized.', 'jankx')], 403);
+        }
+
+        /** @var MarketplaceManager $marketplace */
+        $marketplace = $this->app->make('extension.marketplace');
+        $update = $marketplace->checkThemeCoreUpdate();
+
+        if ($update) {
+            wp_send_json_success(['has_update' => true, 'data' => $update]);
+        } else {
+            wp_send_json_success(['has_update' => false]);
+        }
     }
 
 
@@ -43,14 +101,24 @@ class ExtensionServiceProvider extends ServiceProvider
     {
         // Register Extension Manager as singleton
         $this->app->singleton('extension.manager', function ($app) {
-            return ExtensionManager::getInstance();
+            return new ExtensionManager($app);
+        });
+
+        // Register Theme Extension Manager
+        $this->app->singleton('theme_extension.manager', function ($app) {
+            return new ThemeExtensionManager($app);
+        });
+
+        // Register Marketplace Manager
+        $this->app->singleton('extension.marketplace', function ($app) {
+            return new MarketplaceManager($app);
         });
 
 
 
         // Register Extension Service
         $this->app->singleton('extension.service', function ($app) {
-            return new ExtensionService();
+            return new ExtensionService($app->make('extension.manager'));
         });
 
 
@@ -61,145 +129,10 @@ class ExtensionServiceProvider extends ServiceProvider
     }
 
     /**
-     * Initialize extension system
+     * Get the active theme flag
      */
-    protected function initializeExtensionSystem()
+    protected function isChildThemeActive(): bool
     {
-        // Get extension manager instance
-        $extensionManager = $this->app->make('extension.manager');
-
-        // Load extensions from parent theme
-        $this->loadExtensionsFromDirectory(
-            $extensionManager,
-            $this->app->basePath('/extensions')
-        );
-
-        // Load extensions from child theme (if exists)
-        if (is_child_theme()) {
-            $this->loadExtensionsFromDirectory(
-                $extensionManager,
-                get_stylesheet_directory() . '/extensions'
-            );
-        }
-    }
-
-    /**
-     * Load extensions from specific directory
-     */
-    protected function loadExtensionsFromDirectory($extensionManager, $extensionsDir)
-    {
-        if (!is_dir($extensionsDir)) {
-            return;
-        }
-
-        $extensionDirs = glob($extensionsDir . '/*', GLOB_ONLYDIR);
-
-        foreach ($extensionDirs as $extensionDir) {
-            $extensionName = basename($extensionDir);
-            $manifestFile = $extensionDir . '/manifest.json';
-
-                    // Only load extensions that have manifest.json
-            if (file_exists($manifestFile)) {
-                $this->loadExtensionFromManifest($extensionManager, $extensionName, $manifestFile, $extensionsDir);
-            }
-        }
-    }
-
-    /**
-     * Load a specific extension from manifest
-     */
-    protected function loadExtensionFromManifest($extensionManager, $extensionName, $manifestFile, $extensionsDir)
-    {
-        // Load and parse manifest
-        $manifestData = json_decode(file_get_contents($manifestFile), true);
-
-        if (!$manifestData || !isset($manifestData['caller'])) {
-            return;
-        }
-
-        // Check for extension_id to prevent duplicates
-        $extensionId = $manifestData['extension_id'] ?? $extensionName;
-
-        // If extension with this ID already exists, skip loading
-        if ($extensionManager->has_extension_id($extensionId)) {
-            return;
-        }
-
-        $caller = $manifestData['caller'];
-        $extensionDir = dirname($manifestFile);
-
-        // Determine if this is a child theme extension
-        $isChildThemeExtension = strpos($extensionsDir, get_stylesheet_directory()) === 0;
-
-        // Load vendor/autoload.php if exists
-        $vendorAutoload = $extensionDir . '/vendor/autoload.php';
-        if (file_exists($vendorAutoload)) {
-            require_once $vendorAutoload;
-        }
-
-        // Load the caller file
-        $callerFile = $extensionDir . '/' . $caller['file'];
-
-        if (!file_exists($callerFile)) {
-            Log::debug("Extension caller file not found: {$callerFile}");
-            return;
-        }
-
-        require_once $callerFile;
-
-        // Get the class name from manifest
-        $className = $caller['class'];
-
-        // Adjust namespace for child theme extensions
-        if ($isChildThemeExtension) {
-            $className = str_replace('Jankx\\Extensions', 'Jankx\\Child\\Extensions', $className);
-        }
-
-        if (class_exists($className)) {
-            $extension = new $className();
-
-            if ($extension instanceof Extension) {
-                // Set extension path and URL
-                $extension->set_extension_path($extensionDir);
-                $extension->set_extension_url($this->getExtensionUrl($extensionDir, $isChildThemeExtension));
-
-                // Set manifest data
-                $extension->set_manifest_data($manifestData);
-
-                // Call initialization method if specified
-                if (isset($caller['method']) && method_exists($extension, $caller['method'])) {
-                    $args = $caller['args'] ?? [];
-                    if (is_array($args)) {
-                        call_user_func_array([$extension, $caller['method']], $args);
-                    } else {
-                        $extension->{$caller['method']}($args);
-                    }
-                } else {
-                    Log::debug("Method not found or not specified: " . ($caller['method'] ?? 'none') . " for extension: {$extensionName}");
-                }
-
-                // Track extension ID to prevent duplicates
-                $extensionManager->get_extension_ids()[$extensionId] = $extensionsDir . '/' . $extensionName;
-
-                // Child theme extensions override parent theme extensions
-                $extensionManager->get_extensions()[$extensionName] = $extension;
-
-                if ($extension->is_active() && $extension->check_dependencies()) {
-                    $extensionManager->get_active_extensions()[$extensionName] = $extension;
-                }
-            }
-        }
-    }
-
-    /**
-     * Get extension URL
-     */
-    protected function getExtensionUrl($extensionDir, $isChildThemeExtension)
-    {
-        if ($isChildThemeExtension) {
-            return get_stylesheet_directory_uri() . '/includes/extensions/' . basename($extensionDir);
-        }
-
-        return get_template_directory_uri() . '/includes/extensions/' . basename($extensionDir);
+        return is_child_theme();
     }
 }

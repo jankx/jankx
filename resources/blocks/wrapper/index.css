@@ -1,0 +1,72 @@
+.has-jankx-responsive-wrapper {
+    padding: var(--jankx-padding-desktop, initial);
+    margin: var(--jankx-margin-desktop, initial);
+    max-width: var(--jankx-max-width, none);
+    /* Auto-center when max-width is set */
+    box-sizing: border-box;
+    width: 100%;
+}
+
+.has-jankx-responsive-wrapper {
+    /* Propagate max-width constraint to direct children via context */
+    --jankx-child-max-width: var(--jankx-max-width, none);
+    margin-block-start: 0;
+}
+
+.has-jankx-responsive-wrapper.hide-on-desktop {
+    display: none;
+}
+
+.jankx-header-overlay .is-layout-flow>.has-jankx-responsive-wrapper {
+    margin-block-start: 0px;
+}
+
+@media (min-width: 1600px) {
+    .has-jankx-responsive-wrapper {
+        padding: var(--jankx-padding-ultrawide, var(--jankx-padding-desktop, initial));
+        margin: var(--jankx-margin-ultrawide, var(--jankx-margin-desktop, initial));
+    }
+
+    .has-jankx-responsive-wrapper.hide-on-ultrawide {
+        display: none;
+    }
+}
+
+@media (max-width: 1024px) {
+    .has-jankx-responsive-wrapper {
+        padding: var(--jankx-padding-tablet, var(--jankx-padding-desktop, initial));
+        margin: var(--jankx-margin-tablet, var(--jankx-margin-desktop, initial));
+    }
+
+    .has-jankx-responsive-wrapper.hide-on-tablet {
+        display: none;
+    }
+}
+
+@media (max-width: 768px) {
+    .has-jankx-responsive-wrapper {
+        padding: var(--jankx-padding-mobile, var(--jankx-padding-tablet, var(--jankx-padding-desktop, initial)));
+        margin: var(--jankx-margin-mobile, var(--jankx-margin-tablet, var(--jankx-margin-desktop, initial)));
+    }
+
+    .has-jankx-responsive-wrapper.hide-on-mobile {
+        display: none;
+    }
+}
+
+/* Child Order Support */
+.jankx-order-applied {
+    order: var(--jankx-order-desktop);
+}
+
+@media (max-width: 1024px) {
+    .jankx-order-applied {
+        order: var(--jankx-order-tablet, var(--jankx-order-desktop));
+    }
+}
+
+@media (max-width: 768px) {
+    .jankx-order-applied {
+        order: var(--jankx-order-mobile, var(--jankx-order-tablet, var(--jankx-order-desktop)));
+    }
+}

@@ -43,8 +43,6 @@ class Logger implements LoggerInterface
      */
     protected function writeLog($level, $message, array $context = [])
     {
-        debug_print_backtrace();
-        die;
         $logMessage = sprintf(
             '[%s] %s: %s %s',
             date('Y-m-d H:i:s'),
