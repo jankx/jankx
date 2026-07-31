@@ -112,7 +112,7 @@ abstract class AbstractExtension implements ExtensionInterface
     /**
      * Set child theme extension flag
      */
-    protected function set_child_theme_extension($is_child = true)
+    public function set_child_theme_extension($is_child = true)
     {
         $this->is_child_theme_extension = $is_child;
     }

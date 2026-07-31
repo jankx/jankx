@@ -27,6 +27,7 @@ class CacheCommand extends WP_CLI_Command
         $this->clearConfigCache();
         $this->clearBlockCache();
         $this->clearUserCache();
+        $this->clearExtensionCache();
 
         WP_CLI::success('All Jankx caches cleared successfully!');
     }
@@ -92,7 +93,8 @@ class CacheCommand extends WP_CLI_Command
             'config' => $this->getCacheStatus('jankx_config'),
             'blocks' => $this->getCacheStatus('jankx_blocks'),
             'widgets' => $this->getCacheStatus('jankx_widgets'),
-            'users' => $this->getCacheStatus('jankx_users')
+            'users' => $this->getCacheStatus('jankx_users'),
+            'extensions' => $this->getTransientStatus('jankx_extensions_dirs_' . get_stylesheet())
         ];
 
         WP_CLI::log('Jankx Cache Status:');
@@ -137,6 +139,15 @@ class CacheCommand extends WP_CLI_Command
     }
 
     /**
+     * Clear extension cache
+     */
+    protected function clearExtensionCache()
+    {
+        $themeSlug = get_stylesheet();
+        delete_transient('jankx_extensions_dirs_' . $themeSlug);
+    }
+
+    /**
      * Get cache status for a group
      *
      * @param string $group Cache group
@@ -161,6 +172,21 @@ class CacheCommand extends WP_CLI_Command
         return [
             'count' => $count,
             'size' => $size
+        ];
+    }
+
+    /**
+     * Get transient status
+     *
+     * @param string $key Transient key
+     * @return array
+     */
+    protected function getTransientStatus($key)
+    {
+        $value = get_transient($key);
+        return [
+            'count' => $value === false ? 0 : count((array) $value),
+            'size' => $value === false ? 0 : strlen(serialize($value))
         ];
     }
 }

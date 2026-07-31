@@ -225,6 +225,11 @@ class ThemeExtensionManager
                     $extension->set_extension_url(trailingslashit($baseUrl) . 'extensions/' . $name);
                     $extension->set_manifest_data($manifest);
 
+                    // Mark as child theme extension if loaded from child theme
+                    if (is_child_theme() && strpos($dir, get_stylesheet_directory()) === 0) {
+                        $extension->set_child_theme_extension(true);
+                    }
+
                     $this->extensions[$name] = $extension;
 
                     // SYNC with global ExtensionManager so it shows up in UI

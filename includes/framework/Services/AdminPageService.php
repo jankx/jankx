@@ -1727,6 +1727,8 @@ class AdminPageService
         $themeExtManager   = $this->app->make('theme_extension.manager');
 
         $extensions        = $extensionManager->get_extensions();           // active/loaded
+        $themeExtensions   = $themeExtManager->getExtensions();             // from ThemeExtensionManager
+        $extensions        = array_merge($themeExtensions, $extensions);    // merge, global takes priority
         $disabledManifests = $themeExtManager->getDisabledManifests();      // disabled (not instantiated)
 
         $totalActive   = count($extensions);
