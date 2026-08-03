@@ -1916,6 +1916,7 @@ class AdminPageService
 
                             foreach ($disabledManifests as $name => $data):
                                 $m = $data['manifest'];
+                                $disabledReason = $data['reason'] ?? '';
                                 $info = [
                                     'name'                    => $m['name']        ?? $name,
                                     'version'                 => $m['version']     ?? '1.0.0',
@@ -1923,11 +1924,14 @@ class AdminPageService
                                     'author'                  => $m['author']      ?? 'Jankx Team',
                                     'is_child_theme_extension'=> false,
                                 ];
+                                if ($disabledReason === 'php_version' && isset($data['message'])) {
+                                    $info['php_requirement'] = $data['message'];
+                                }
                                 $type = '';
                                 if (in_array($name, $required_ids)) $type = 'required';
                                 elseif (in_array($name, $recommended_ids)) $type = 'recommended';
 
-                                $this->renderExtensionRow($name, $info, false, $nonce, $type);
+                                $this->renderExtensionRow($name, $info, false, $nonce, $type, false, $disabledReason);
                             endforeach;
                         endif;
                         ?>
@@ -2061,11 +2065,14 @@ class AdminPageService
     /**
      * Render a single extension item row
      */
-    protected function renderExtensionRow(string $name, array $info, bool $isActive, string $nonce, string $type = '', bool $isMissing = false): void
+    protected function renderExtensionRow(string $name, array $info, bool $isActive, string $nonce, string $type = '', bool $isMissing = false, string $disabledReason = ''): void
     {
         $statusClass = $isActive ? 'active' : 'inactive';
         if ($isMissing) {
             $statusClass .= ' missing';
+        }
+        if ($disabledReason === 'php_version') {
+            $statusClass .= ' php-incompatible';
         }
 
         $settings_url = null;
@@ -2091,7 +2098,9 @@ class AdminPageService
             <td class="plugin-title column-primary">
                 <div style="display: flex; align-items: center; gap: 8px;">
                     <strong><?php echo esc_html($info['name'] ?? $name); ?></strong>
-                    <?php if ($type === 'required'): ?>
+                    <?php if ($disabledReason === 'php_version'): ?>
+                        <span class="jankx-badge-php" style="background: #dc2626; color: #fff; font-size: 9px; padding: 2px 6px; border-radius: 4px; font-weight: 700; text-transform: uppercase;"><?php _e('PHP Version', 'jankx'); ?></span>
+                    <?php elseif ($type === 'required'): ?>
                         <span class="jankx-badge-required" style="background: #ef4444; color: #fff; font-size: 9px; padding: 2px 6px; border-radius: 4px; font-weight: 700; text-transform: uppercase;"><?php _e('Required', 'jankx'); ?></span>
                     <?php elseif ($type === 'recommended'): ?>
                         <span class="jankx-badge-recommended" style="background: #3b82f6; color: #fff; font-size: 9px; padding: 2px 6px; border-radius: 4px; font-weight: 700; text-transform: uppercase;"><?php _e('Recommended', 'jankx'); ?></span>
@@ -2106,6 +2115,10 @@ class AdminPageService
                             <a href="javascript:void(0);" class="install-extension-ajax" data-extension="<?php echo esc_attr($name); ?>" data-nonce="<?php echo esc_attr($nonce); ?>">
                                 <?php _e('Install Now', 'jankx'); ?>
                             </a>
+                        </span>
+                    <?php elseif ($disabledReason === 'php_version'): ?>
+                        <span class="php-incompatible" style="color: #dc2626; font-weight: 600;">
+                            <?php _e('PHP Version Incompatible', 'jankx'); ?>
                         </span>
                     <?php elseif ($isActive): ?>
                         <span class="deactivate">
@@ -2128,7 +2141,7 @@ class AdminPageService
                             </a> |
                         </span>
                     <?php endif; ?>
-                    <?php if (!$isMissing): ?>
+                    <?php if (!$isMissing && $disabledReason !== 'php_version'): ?>
                         <span class="delete">
                             <a href="javascript:void(0);" class="delete-extension" data-extension="<?php echo esc_attr($name); ?>" data-nonce="<?php echo esc_attr($nonce); ?>" style="color: #d63638;">
                                 <?php _e('Delete', 'jankx'); ?>
@@ -2141,6 +2154,13 @@ class AdminPageService
             <td class="column-description desc">
                 <div class="plugin-description">
                     <p><?php echo esc_html($info['description'] ?? ''); ?></p>
+                    <?php if ($disabledReason === 'php_version'): ?>
+                        <div class="extension-php-requirement" style="margin-top: 8px; font-size: 12px; color: #991b1b; background: #fef2f2; padding: 8px 12px; border-radius: 4px; border: 1px solid #fecaca;">
+                            <strong><?php _e('PHP Version Requirement:', 'jankx'); ?></strong>
+                            <span style="margin-left: 5px;"><?php echo esc_html($info['php_requirement'] ?? ''); ?></span>
+                            <span style="margin-left: 8px; color: #64748b;">(<?php printf(__('Current: %s', 'jankx'), PHP_VERSION); ?>)</span>
+                        </div>
+                    <?php endif; ?>
                     <?php if (!empty($dependencies)): ?>
                         <div class="extension-dependencies" style="margin-top: 8px; font-size: 12px; color: #64748b;">
                             <strong><?php _e('Requires:', 'jankx'); ?></strong>

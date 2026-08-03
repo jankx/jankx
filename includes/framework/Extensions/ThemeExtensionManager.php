@@ -158,6 +158,23 @@ class ThemeExtensionManager
             return false;
         }
 
+        // Check PHP version requirement
+        $phpRequirement = $manifestData['requirements']['php'] ?? null;
+        if ($phpRequirement && !$this->checkPhpVersion($phpRequirement)) {
+            $this->disabledManifests[$extensionName] = [
+                'dir'      => $extensionDir,
+                'manifest' => $manifestData,
+                'path'     => $manifestFile,
+                'reason'   => 'php_version',
+                'message'  => sprintf(
+                    'Yêu cầu PHP %s (hiện tại: %s)',
+                    $phpRequirement,
+                    PHP_VERSION
+                ),
+            ];
+            return false;
+        }
+
         // SMART LOADING: Check if we should load this extension in current context
         $loadDecision = $this->shouldLoadInCurrentContext($extensionName, $manifestData);
         
@@ -314,6 +331,35 @@ class ThemeExtensionManager
             }
         }
         return true;
+    }
+
+    /**
+     * Check if PHP version meets requirement
+     * 
+     * @param string $requirement Version constraint (e.g., ">=7.4", ">=8.0")
+     * @return bool
+     */
+    protected function checkPhpVersion(string $requirement): bool
+    {
+        // Handle simple version strings like "8.0" or ">=8.0"
+        $requirement = trim($requirement);
+        
+        if (strpos($requirement, '>=') === 0) {
+            $version = substr($requirement, 2);
+            return version_compare(PHP_VERSION, $version, '>=');
+        }
+        
+        if (strpos($requirement, '>') === 0) {
+            $version = substr($requirement, 1);
+            return version_compare(PHP_VERSION, $version, '>');
+        }
+        
+        if (strpos($requirement, '>=') === false && strpos($requirement, '>') === false) {
+            // Simple version like "8.0" - treat as >=
+            return version_compare(PHP_VERSION, $requirement, '>=');
+        }
+        
+        return version_compare(PHP_VERSION, $requirement, '>=');
     }
 
     /**
