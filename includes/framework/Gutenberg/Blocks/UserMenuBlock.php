@@ -65,6 +65,7 @@ class UserMenuBlock extends Block
 
         $wrapper_attributes = get_block_wrapper_attributes([
             'class' => 'jankx-user-menu logged-in',
+            'style' => 'position:relative;',
         ]);
 
         $output = sprintf('<div %s>', $wrapper_attributes);
@@ -102,8 +103,23 @@ class UserMenuBlock extends Block
 
         // Simple inline JS for dropdown toggle (temporary until handled by block JS)
         $output .= '<script>
-            document.querySelector(".user-menu-trigger").addEventListener("click", function(e) { e.stopPropagation(); const d = this.nextElementSibling; d.style.display = d.style.display === "none" ? "block" : "none"; });
-            document.addEventListener("click", function() { const d = document.querySelector(".user-menu-dropdown"); if(d) d.style.display = "none"; });
+            (function() {
+                var triggers = document.querySelectorAll(".user-menu-trigger");
+                triggers.forEach(function(trigger) {
+                    trigger.addEventListener("click", function(e) {
+                        e.stopPropagation();
+                        var dropdown = this.nextElementSibling;
+                        if (dropdown && dropdown.classList.contains("user-menu-dropdown")) {
+                            dropdown.style.display = dropdown.style.display === "none" ? "block" : "none";
+                        }
+                    });
+                });
+                document.addEventListener("click", function() {
+                    document.querySelectorAll(".user-menu-dropdown").forEach(function(d) {
+                        d.style.display = "none";
+                    });
+                });
+            })();
         </script>';
 
         $output .= '</div>';
