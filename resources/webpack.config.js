@@ -179,6 +179,7 @@ module.exports = {
     'blocks/user-menu/build/index': './blocks/user-menu/src/index.tsx',
     'blocks/user-menu/build/style': './blocks/user-menu/src/style.scss',
     'blocks/user-menu/build/editor': './blocks/user-menu/src/editor.scss',
+
     'blocks/wrapper/build/index': './blocks/wrapper/index.tsx',
     'blocks/wrapper/build/style': './blocks/wrapper/index.css',
     'assets/js/child-order': './js/filters/child-order.tsx',

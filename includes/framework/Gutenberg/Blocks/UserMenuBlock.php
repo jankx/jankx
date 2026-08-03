@@ -50,7 +50,7 @@ class UserMenuBlock extends Block
         $menu_items = [
             'profile' => [
                 'label' => __('Profile', 'jankx'),
-                'url' => admin_url('profile.php'),
+                'url' => $this->getMyAccountUrl('profile') ?: admin_url('profile.php'),
                 'icon' => 'dashicons-admin-users',
             ],
             'logout' => [
@@ -156,5 +156,27 @@ class UserMenuBlock extends Block
     protected function resolvePostId($block)
     {
         return get_the_ID();
+    }
+
+    /**
+     * Get My Account page URL for a sub-page
+     */
+    protected function getMyAccountUrl(string $subPage = ''): string
+    {
+        $pageId = get_option('jankx_my_account_page_id', 0);
+        if (!$pageId) {
+            return '';
+        }
+
+        $url = get_permalink($pageId);
+        if (!$url) {
+            return '';
+        }
+
+        if ($subPage) {
+            $url = rtrim($url, '/') . '/' . $subPage . '/';
+        }
+
+        return $url;
     }
 }

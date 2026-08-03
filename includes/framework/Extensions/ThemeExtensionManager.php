@@ -151,9 +151,9 @@ class ThemeExtensionManager
         if (isset($manifestData['enabled']) && $manifestData['enabled'] === false) {
             // Track it so toggle AJAX can re-enable it later
             $this->disabledManifests[$extensionName] = [
-                'dir'      => $extensionDir,
+                'dir' => $extensionDir,
                 'manifest' => $manifestData,
-                'path'     => $manifestFile,
+                'path' => $manifestFile,
             ];
             return false;
         }
@@ -162,11 +162,11 @@ class ThemeExtensionManager
         $phpRequirement = $manifestData['requirements']['php'] ?? null;
         if ($phpRequirement && !$this->checkPhpVersion($phpRequirement)) {
             $this->disabledManifests[$extensionName] = [
-                'dir'      => $extensionDir,
+                'dir' => $extensionDir,
                 'manifest' => $manifestData,
-                'path'     => $manifestFile,
-                'reason'   => 'php_version',
-                'message'  => sprintf(
+                'path' => $manifestFile,
+                'reason' => 'php_version',
+                'message' => sprintf(
                     'Yêu cầu PHP %s (hiện tại: %s)',
                     $phpRequirement,
                     PHP_VERSION
@@ -177,10 +177,10 @@ class ThemeExtensionManager
 
         // SMART LOADING: Check if we should load this extension in current context
         $loadDecision = $this->shouldLoadInCurrentContext($extensionName, $manifestData);
-        
+
         if ($loadDecision === 'late') {
             $this->lateLoadQueue[$extensionName] = [
-                'dir'      => $extensionDir,
+                'dir' => $extensionDir,
                 'manifest' => $manifestData
             ];
             return false;
@@ -233,7 +233,7 @@ class ThemeExtensionManager
                 $extension = new $className();
                 if ($extension instanceof AbstractExtension) {
                     $extension->set_extension_path($dir);
-                    
+
                     // Determine correct URL based on directory
                     $baseUrl = get_stylesheet_directory_uri();
                     if (strpos($dir, get_template_directory()) === 0) {
@@ -264,8 +264,8 @@ class ThemeExtensionManager
                     // Check if we should actually activate (run hooks)
                     // 'enabled' = user's toggle state; 'auto_activate' = default boot intent
                     $isEnabled = isset($manifest['enabled'])
-                        ? (bool)$manifest['enabled']
-                        : (isset($manifest['auto_activate']) ? (bool)$manifest['auto_activate'] : false);
+                        ? (bool) $manifest['enabled']
+                        : (isset($manifest['auto_activate']) ? (bool) $manifest['auto_activate'] : false);
                     if ($isEnabled) {
                         // NOTE: Do NOT call $caller['method'] directly here.
                         // activate() already calls register_hooks() internally and
@@ -273,6 +273,16 @@ class ThemeExtensionManager
                         // Calling the method here AND activate() would register all
                         // hooks twice (e.g. duplicate admin menus).
                         $extension->activate();
+
+                        // SYNC active state with global ExtensionManager
+                        try {
+                            $globalManager = \Jankx\Facades\App::make('extension.manager');
+                            if ($globalManager && method_exists($globalManager, 'add_active_extension')) {
+                                $globalManager->add_active_extension($name, $extension);
+                            }
+                        } catch (\Exception $e) {
+                            Log::debug($e->getMessage());
+                        }
                     } else {
                         $extension->deactivate();
                     }
@@ -285,7 +295,7 @@ class ThemeExtensionManager
                     // ----------------------------------------------------------
                     $installFlag = 'jankx_ext_installed_' . $name;
                     $installedVersion = get_option($installFlag, false);
-                    $currentVersion   = $manifest['version'] ?? '1.0.0';
+                    $currentVersion = $manifest['version'] ?? '1.0.0';
                     if ($installedVersion === false || $installedVersion !== $currentVersion) {
                         // First install OR version upgrade → run install()
                         $extension->install();
@@ -322,12 +332,14 @@ class ThemeExtensionManager
     {
         foreach ($dependencies as $type => $value) {
             if ($type === 'extensions') {
-                foreach ((array)$value as $reqExt) {
-                    if (!isset($this->extensions[$reqExt])) return false;
+                foreach ((array) $value as $reqExt) {
+                    if (!isset($this->extensions[$reqExt]))
+                        return false;
                 }
             }
             if ($type === 'php') {
-                if (version_compare(PHP_VERSION, $value, '<')) return false;
+                if (version_compare(PHP_VERSION, $value, '<'))
+                    return false;
             }
         }
         return true;
@@ -343,22 +355,22 @@ class ThemeExtensionManager
     {
         // Handle simple version strings like "8.0" or ">=8.0"
         $requirement = trim($requirement);
-        
+
         if (strpos($requirement, '>=') === 0) {
             $version = substr($requirement, 2);
             return version_compare(PHP_VERSION, $version, '>=');
         }
-        
+
         if (strpos($requirement, '>') === 0) {
             $version = substr($requirement, 1);
             return version_compare(PHP_VERSION, $version, '>');
         }
-        
+
         if (strpos($requirement, '>=') === false && strpos($requirement, '>') === false) {
             // Simple version like "8.0" - treat as >=
             return version_compare(PHP_VERSION, $requirement, '>=');
         }
-        
+
         return version_compare(PHP_VERSION, $requirement, '>=');
     }
 
@@ -379,13 +391,19 @@ class ThemeExtensionManager
             $context = (array) $manifest['context'];
             $is_match = false;
 
-            if (in_array('admin', $context) && is_admin() && !wp_doing_ajax()) $is_match = true;
-            if (in_array('frontend', $context) && !is_admin()) $is_match = true;
-            if (in_array('ajax', $context) && wp_doing_ajax()) $is_match = true;
-            if (in_array('rest', $context) && defined('REST_REQUEST')) $is_match = true;
-            if (in_array('always', $context)) $is_match = true;
+            if (in_array('admin', $context) && is_admin() && !wp_doing_ajax())
+                $is_match = true;
+            if (in_array('frontend', $context) && !is_admin())
+                $is_match = true;
+            if (in_array('ajax', $context) && wp_doing_ajax())
+                $is_match = true;
+            if (in_array('rest', $context) && defined('REST_REQUEST'))
+                $is_match = true;
+            if (in_array('always', $context))
+                $is_match = true;
 
-            if (!$is_match) return false;
+            if (!$is_match)
+                return false;
         }
 
         return apply_filters('jankx/theme_extension/should_load', true, $name, $manifest);
@@ -399,10 +417,12 @@ class ThemeExtensionManager
         foreach ($conditions as $type => $value) {
             switch ($type) {
                 case 'post_type':
-                    if (is_admin()) break; // Skip on admin
+                    if (is_admin())
+                        break; // Skip on admin
                     return is_singular($value);
                 case 'is_page':
-                    if (is_admin()) break;
+                    if (is_admin())
+                        break;
                     return is_page($value);
                 case 'capability':
                     return current_user_can($value);
@@ -426,7 +446,7 @@ class ThemeExtensionManager
 
         // Ensure extensions dir exists when actually installing
         $targetDir = $this->getExtensionsDir(true) . '/' . $extensionId;
-        
+
         if (is_dir($targetDir)) {
             return true;
         }
