@@ -48,11 +48,6 @@ class UserMenuBlock extends Block
         $greeting = $attributes['greetingText'] ?? __('Hello,', 'jankx');
 
         $menu_items = [
-            'profile' => [
-                'label' => __('Profile', 'jankx'),
-                'url' => $this->getMyAccountUrl('profile') ?: admin_url('profile.php'),
-                'icon' => 'dashicons-admin-users',
-            ],
             'logout' => [
                 'label' => __('Logout', 'jankx'),
                 'url' => wp_logout_url(home_url()),

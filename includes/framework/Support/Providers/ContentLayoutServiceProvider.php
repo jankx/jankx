@@ -106,22 +106,25 @@ class ContentLayoutServiceProvider extends ServiceProvider
         $this->registerCoreLayouts($app->make(LayoutRegistry::class));
 
         // 3. Register Core Layout Styles (Anti-CLS & Layout Base)
-        $assetResolver = $app->make(\Jankx\Services\AssetResolver::class);
-        $coreLayoutCss = "
-            .is-flex-container { display: flex; flex-wrap: wrap; list-style: none; padding: 0; margin: 0; gap: var(--jankx-grid-gap, 1.5rem); }
-            .columns-1 > * { flex: 0 0 100%; max-width: 100%; }
-            .columns-2 > * { flex: 0 0 calc(50% - var(--jankx-grid-gap, 1.5rem) / 2); max-width: calc(50% - var(--jankx-grid-gap, 1.5rem) / 2); }
-            .columns-3 > * { flex: 0 0 calc(33.333% - var(--jankx-grid-gap, 1.5rem) * 2 / 3); max-width: calc(33.333% - var(--jankx-grid-gap, 1.5rem) * 2 / 3); }
+        // Only inject on the frontend — these grid rules must not bleed into wp-admin.
+        if (!is_admin()) {
+            $assetResolver = $app->make(\Jankx\Services\AssetResolver::class);
+            $coreLayoutCss = "
+                .is-flex-container { display: flex; flex-wrap: wrap; list-style: none; padding: 0; margin: 0; gap: var(--jankx-grid-gap, 1.5rem); }
+                .columns-1 > * { flex: 0 0 100%; max-width: 100%; }
+                .columns-2 > * { flex: 0 0 calc(50% - var(--jankx-grid-gap, 1.5rem) / 2); max-width: calc(50% - var(--jankx-grid-gap, 1.5rem) / 2); }
+                .columns-3 > * { flex: 0 0 calc(33.333% - var(--jankx-grid-gap, 1.5rem) * 2 / 3); max-width: calc(33.333% - var(--jankx-grid-gap, 1.5rem) * 2 / 3); }
 
-            /* Mobile override — chỉ override khi < 768px */
-            @media (max-width: 767px) {
-                .columns-mobile-1 > * { flex: 0 0 100%; max-width: 100%; }
-                .columns-mobile-2 > * { flex: 0 0 calc(50% - var(--jankx-grid-gap, 1.5rem) / 2); max-width: calc(50% - var(--jankx-grid-gap, 1.5rem) / 2); }
-                .columns-mobile-3 > * { flex: 0 0 calc(33.333% - var(--jankx-grid-gap, 1.5rem) * 2 / 3); max-width: calc(33.333% - var(--jankx-grid-gap, 1.5rem) * 2 / 3); }
-                .columns-mobile-4 > * { flex: 0 0 calc(25% - var(--jankx-grid-gap, 1.5rem) * 3 / 4); max-width: calc(25% - var(--jankx-grid-gap, 1.5rem) * 3 / 4); }
-            }        
-        ";
-        $assetResolver->addInlineCss($coreLayoutCss, \Jankx\Services\AssetResolver::CORE_LAYOUT);
+                /* Mobile override — chỉ override khi < 768px */
+                @media (max-width: 767px) {
+                    .columns-mobile-1 > * { flex: 0 0 100%; max-width: 100%; }
+                    .columns-mobile-2 > * { flex: 0 0 calc(50% - var(--jankx-grid-gap, 1.5rem) / 2); max-width: calc(50% - var(--jankx-grid-gap, 1.5rem) / 2); }
+                    .columns-mobile-3 > * { flex: 0 0 calc(33.333% - var(--jankx-grid-gap, 1.5rem) * 2 / 3); max-width: calc(33.333% - var(--jankx-grid-gap, 1.5rem) * 2 / 3); }
+                    .columns-mobile-4 > * { flex: 0 0 calc(25% - var(--jankx-grid-gap, 1.5rem) * 3 / 4); max-width: calc(25% - var(--jankx-grid-gap, 1.5rem) * 3 / 4); }
+                }        
+            ";
+            $assetResolver->addInlineCss($coreLayoutCss, \Jankx\Services\AssetResolver::CORE_LAYOUT);
+        }
 
         // Legacy: Register default layouts in ContentLayoutManager
         $manager = $app->make(ContentLayoutManager::class);
@@ -129,7 +132,7 @@ class ContentLayoutServiceProvider extends ServiceProvider
         foreach ($defaultLayouts as $layoutData) {
             $manager->register($layoutData);
         }
-        
+
         do_action('jankx/layout/content-layout/register', $manager);
     }
 
