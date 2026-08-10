@@ -2,8 +2,8 @@
 
 return [
     'corporate' => [
-        'name' => __('Corporate', 'jankx'),
-        'description' => __('Professional corporate website with classic header, services showcase, and team section.', 'jankx'),
+        'name' => 'Corporate',
+        'description' => 'Professional corporate website with classic header, services showcase, and team section.',
         'preview' => 'https://jankx.com/previews/corporate.jpg',
         'thumbnail' => null,
         'tags' => ['business', 'corporate', 'professional'],
@@ -70,8 +70,8 @@ return [
     ],
 
     'magazine' => [
-        'name' => __('Magazine', 'jankx'),
-        'description' => __('Modern news & magazine layout with featured posts, categories grid, and newsletter signup.', 'jankx'),
+        'name' => 'Magazine',
+        'description' => 'Modern news & magazine layout with featured posts, categories grid, and newsletter signup.',
         'preview' => 'https://jankx.com/previews/magazine.jpg',
         'thumbnail' => null,
         'tags' => ['magazine', 'news', 'blog', 'content'],
@@ -141,8 +141,8 @@ return [
     ],
 
     'creative' => [
-        'name' => __('Creative Portfolio', 'jankx'),
-        'description' => __('Bold portfolio for designers, photographers, and creative agencies with full-screen visuals.', 'jankx'),
+        'name' => 'Creative Portfolio',
+        'description' => 'Bold portfolio for designers, photographers, and creative agencies with full-screen visuals.',
         'preview' => 'https://jankx.com/previews/creative.jpg',
         'thumbnail' => null,
         'tags' => ['portfolio', 'creative', 'agency', 'minimal'],
@@ -208,8 +208,8 @@ return [
     ],
 
     'landing' => [
-        'name' => __('Landing Page', 'jankx'),
-        'description' => __('High-conversion landing page with hero section, features, testimonials, and CTA.', 'jankx'),
+        'name' => 'Landing Page',
+        'description' => 'High-conversion landing page with hero section, features, testimonials, and CTA.',
         'preview' => 'https://jankx.com/previews/landing.jpg',
         'thumbnail' => null,
         'tags' => ['landing', 'marketing', 'saas', 'startup'],
