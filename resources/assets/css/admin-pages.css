@@ -1566,6 +1566,8 @@ input:checked + .slider:before { transform: translateX(20px); }
 .wp-list-table .plugin-title strong { display: block; margin-bottom: 0.2em; font-weight: 400;}
 .toggle-extension.loading { opacity:0.6; cursor:not-allowed; }
 .jankx-extensions-page .wp-list-table.plugins td { vertical-align: top; }
+.jankx-extensions-page .row-actions { white-space: nowrap; }
+.jankx-extensions-page .wp-list-table.plugins .column-name { width: 280px; min-width: 280px; }
 
 /* ========================================
    Marketplace Page

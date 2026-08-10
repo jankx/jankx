@@ -2127,23 +2127,22 @@ class AdminPageService
                             </a>
                         </span>
                         <?php if ($settings_url): ?>
-                            | <span class="settings">
-                                <a href="<?php echo esc_url($settings_url); ?>">
+                            <span class="settings">
+                                | <a href="<?php echo esc_url($settings_url); ?>">
                                     <?php _e('Settings', 'jankx'); ?>
                                 </a>
                             </span>
                         <?php endif; ?>
-                        |
                     <?php else: ?>
                         <span class="activate">
                             <a href="javascript:void(0);" class="toggle-extension" data-extension="<?php echo esc_attr($name); ?>" data-nonce="<?php echo esc_attr($nonce); ?>">
                                 <?php _e('Activate', 'jankx'); ?>
-                            </a> |
+                            </a>
                         </span>
                     <?php endif; ?>
                     <?php if (!$isMissing && $disabledReason !== 'php_version'): ?>
                         <span class="delete">
-                            <a href="javascript:void(0);" class="delete-extension" data-extension="<?php echo esc_attr($name); ?>" data-nonce="<?php echo esc_attr($nonce); ?>" style="color: #d63638;">
+                            | <a href="javascript:void(0);" class="delete-extension" data-extension="<?php echo esc_attr($name); ?>" data-nonce="<?php echo esc_attr($nonce); ?>" style="color: #d63638;">
                                 <?php _e('Delete', 'jankx'); ?>
                             </a>
                         </span>
