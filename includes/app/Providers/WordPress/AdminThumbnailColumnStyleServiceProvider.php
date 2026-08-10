@@ -20,7 +20,7 @@ class AdminThumbnailColumnStyleServiceProvider extends ServiceProvider
             .wp-list-table th.column-featured_image,
             .wp-list-table td.column-featured_image,
             .wp-list-table th.column-featured-image,
-            .wp-list-table td.column-featured-image { width: 110px !important; }
+            .wp-list-table td.column-featured-image { width: 70px !important; }
 
             .wp-list-table .column-thumbnail img,
             .wp-list-table .column-featured_image img,
@@ -28,8 +28,8 @@ class AdminThumbnailColumnStyleServiceProvider extends ServiceProvider
             .wp-list-table td.column-thumbnail img,
             .wp-list-table td.column-featured_image img,
             .wp-list-table td.column-featured-image img {
-                width: 100px !important;
-                height: 100px !important;
+                width: 60px !important;
+                height: 60px !important;
                 object-fit: cover;
                 aspect-ratio: 1 / 1;
                 display: block;
