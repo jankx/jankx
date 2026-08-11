@@ -2,6 +2,7 @@
 
 namespace Jankx\Gutenberg\Blocks;
 
+use Jankx\Facades\Log;
 use Jankx\Gutenberg\Block;
 use Jankx\Gutenberg\Helpers\HeadingBlockHandler;
 use Jankx\Layouts\DynamicDataLayout\BlockTemplateLayoutManager;
@@ -214,7 +215,7 @@ class DynamicDataLayoutBlock extends Block
     public function render($attributes, $content = '', $block = null)
     {
         $blockName = $block instanceof \WP_Block ? $block->name : 'Unknown';
-        error_log("[Jankx DDL Debug] Render called for block: {$blockName}. ID: " . ($attributes['queryId'] ?? 'N/A'));
+        Log::debug("Render called for block: {$blockName}. ID: " . ($attributes['queryId'] ?? 'N/A'));
 
         // Enqueue frontend assets only when block is rendered
         $this->enqueueFrontendAssets();
@@ -235,11 +236,11 @@ class DynamicDataLayoutBlock extends Block
             // Extract template block attributes (thumbnailPosition) and merge into parent attributes
             if ($block instanceof \WP_Block) {
                 $innerCount = count($block->parsed_block['innerBlocks'] ?? []);
-                error_log("[Jankx DDL Debug] Block has {$innerCount} innerBlocks.");
-                
+                Log::debug("Block has {$innerCount} innerBlocks.");
+
                 $templateBlock = $this->extractTemplateBlockFromParsedBlock($block->parsed_block ?? []);
-                error_log('[Jankx DDL Debug] Template extraction result: ' . ($templateBlock ? 'FOUND' : 'NOT FOUND'));
-                
+                Log::debug('Template extraction result: ' . ($templateBlock ? 'FOUND' : 'NOT FOUND'));
+
                 if ($templateBlock) {
                     // Store the template inside attributes so it's included in data-block-settings
                     // This makes AJAX updates completely stateless and robust against cache misses
@@ -247,7 +248,7 @@ class DynamicDataLayoutBlock extends Block
 
                     // Cache it as well for secondary fallback
                     if (!empty($attributes['queryId'])) {
-                        error_log('[Jankx DDL Debug] Caching template for ID: ' . (string) $attributes['queryId']);
+                        Log::debug('Caching template for ID: ' . (string) $attributes['queryId']);
                         $this->cacheTemplateByBlockId((string) $attributes['queryId'], $templateBlock);
                     }
 
@@ -515,7 +516,7 @@ class DynamicDataLayoutBlock extends Block
         if (wp_script_is($script_handle, 'registered')) {
             wp_localize_script($script_handle, 'jankxDynamicDataLayouts', [
                 'layoutsByPostType' => $layouts_by_post_type,
-                'commonLayouts'     => $commonLayouts,
+                'commonLayouts' => $commonLayouts,
             ]);
             wp_localize_script($script_handle, 'jankxPublicPostTypes', $public_post_types);
             wp_localize_script($script_handle, 'jankxQueryOptions', $query_options);
@@ -577,12 +578,12 @@ class DynamicDataLayoutBlock extends Block
      */
     public function handleFilterUpdate(array $attributes, array $filters): array
     {
-        error_log('[Jankx DDL Debug] Incoming Filters: ' . json_encode($filters));
-        error_log('[Jankx DDL Debug] Incoming Attributes: ' . json_encode($attributes));
+        Log::debug('Incoming Filters: ' . json_encode($filters));
+        Log::debug('Incoming Attributes: ' . json_encode($attributes));
 
         // Check if this is for our block type - must have queryId and postType
         if (empty($attributes['queryId']) || empty($attributes['postType'])) {
-            error_log('[Jankx DDL Debug] Aborted: Missing queryId or postType');
+            Log::debug('Aborted: Missing queryId or postType');
             return [];
         }
 
@@ -593,8 +594,8 @@ class DynamicDataLayoutBlock extends Block
 
         // Apply filters to attributes
         $attributes = DynamicDataLayoutQueryHelper::applyFiltersToAttributes($attributes, $filters);
-        
-        error_log('[Jankx DDL Debug] Attributes after filter merge: ' . json_encode($attributes));
+
+        Log::debug('Attributes after filter merge: ' . json_encode($attributes));
         $layoutName = $attributes['layout'] ?? $layoutName;
 
         // Sanitize attributes
@@ -614,9 +615,9 @@ class DynamicDataLayoutBlock extends Block
         $templateBlock = null;
         if (!empty($attributes['postTemplate'])) {
             $templateBlock = $attributes['postTemplate'];
-            error_log('[Jankx DDL Debug] postTemplate found in attributes.');
+            Log::debug('postTemplate found in attributes.');
         } else {
-            error_log('[Jankx DDL Debug] postTemplate is MISSING in attributes.');
+            Log::debug('postTemplate is MISSING in attributes.');
         }
 
         // Set content generator if template block exists
@@ -918,17 +919,17 @@ class DynamicDataLayoutBlock extends Block
         if (empty($attributes['postTemplate']) && !empty($attributes['queryId'])) {
             $cachedTemplate = $this->getCachedTemplateByBlockId((string) $attributes['queryId']);
             if (is_array($cachedTemplate)) {
-                error_log('[Jankx DDL Debug] Template FOUND in cache for ID: ' . (string) $attributes['queryId']);
+                Log::debug('Template FOUND in cache for ID: ' . (string) $attributes['queryId']);
                 $attributes['postTemplate'] = $cachedTemplate;
             } else {
-                error_log('[Jankx DDL Debug] Template NOT FOUND in cache for ID: ' . (string) $attributes['queryId']);
+                Log::debug('Template NOT FOUND in cache for ID: ' . (string) $attributes['queryId']);
                 // FALLBACK: If not found in cache, try to parse the page content to find this block and its template
                 if ($post_id > 0) {
-                    error_log('[Jankx DDL Debug] Fallback: Searching post content for template. ID: ' . (string) $attributes['queryId']);
+                    Log::debug('Fallback: Searching post content for template. ID: ' . (string) $attributes['queryId']);
                     $realAttrs = $this->getBlockAttributes($post_id, (string) $attributes['queryId']);
                     if (!empty($realAttrs['postTemplate'])) {
                         $attributes['postTemplate'] = $realAttrs['postTemplate'];
-                        error_log('[Jankx DDL Debug] Fallback SUCCESS: Template found in post content.');
+                        Log::debug('Fallback SUCCESS: Template found in post content.');
                         // Cache it now for next time
                         $this->cacheTemplateByBlockId((string) $attributes['queryId'], $attributes['postTemplate']);
                     }

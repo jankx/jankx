@@ -7,6 +7,7 @@ use Jankx\Extensions\ExtensionManager;
 use Jankx\Extensions\ThemeExtensionManager;
 use Jankx\Extensions\MarketplaceManager;
 use Jankx\Extensions\ExtensionManifest;
+use Jankx\Extensions\ExtensionUpdaterChecker;
 use Jankx\Extensions\AbstractExtension;
 use Jankx\Facades\Log;
 
@@ -37,6 +38,12 @@ class ExtensionServiceProvider extends ServiceProvider
 
         // Boot Extension Service so its AJAX handlers (jankx_toggle_extension, etc.) are registered
         $this->app->make('extension.service');
+
+        // Register extension update checker
+        if (is_admin()) {
+            $updater = new ExtensionUpdaterChecker();
+            $updater->register();
+        }
 
         // Register AJAX handlers for the marketplace (lazy - marketplace boots on demand)
         add_action('wp_ajax_jankx_marketplace_install_extension', [$this, 'ajaxInstallExtension']);

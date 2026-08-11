@@ -2080,6 +2080,7 @@ class AdminPageService
         $extensionManager = $this->app->make('extension.manager');
         $extension = $extensionManager->get_extension($name);
         $dependencies = [];
+        $updateInfo = null;
         if ($extension) {
             $settings_url = $extension->get_settings_url();
             $is_application = $extension->is_application();
@@ -2087,6 +2088,15 @@ class AdminPageService
             $manifest = $extension->get_manifest_data();
             if (isset($manifest['requirements']['extensions'])) {
                 $dependencies = $manifest['requirements']['extensions'];
+            }
+
+            // Check for updates
+            $extensionId = $manifest['extension_id'] ?? $name;
+            try {
+                $updater = new \Jankx\Extensions\ExtensionUpdaterChecker();
+                $updateInfo = $updater->getUpdateInfo($extensionId);
+            } catch (\Exception $e) {
+                // Updater not available
             }
         }
         ?>
@@ -2107,6 +2117,11 @@ class AdminPageService
                     <?php endif; ?>
                     <?php if ($is_application): ?>
                         <span class="jankx-badge-app" style="background: #8b5cf6; color: #fff; font-size: 9px; padding: 2px 6px; border-radius: 4px; font-weight: 700; text-transform: uppercase;"><?php _e('App', 'jankx'); ?></span>
+                    <?php endif; ?>
+                    <?php if ($updateInfo): ?>
+                        <span class="jankx-badge-update" style="background: #f59e0b; color: #fff; font-size: 9px; padding: 2px 6px; border-radius: 4px; font-weight: 700; text-transform: uppercase;" title="<?php echo esc_attr(sprintf(__('Có bản cập nhật mới: %s', 'jankx'), $updateInfo['version'])); ?>">
+                            <?php _e('Update', 'jankx'); ?>
+                        </span>
                     <?php endif; ?>
                 </div>
                 <div class="row-actions visible">
@@ -2130,6 +2145,13 @@ class AdminPageService
                             <span class="settings">
                                 | <a href="<?php echo esc_url($settings_url); ?>">
                                     <?php _e('Settings', 'jankx'); ?>
+                                </a>
+                            </span>
+                        <?php endif; ?>
+                        <?php if ($updateInfo && $updateInfo['download_url'] ?? false): ?>
+                            <span class="update">
+                                | <a href="<?php echo esc_url($updateInfo['download_url']); ?>" style="color: #f59e0b; font-weight: 600;">
+                                    <?php _e('Update now', 'jankx'); ?>
                                 </a>
                             </span>
                         <?php endif; ?>
@@ -2178,7 +2200,12 @@ class AdminPageService
                     <?php endif; ?>
                 </div>
                 <div class="<?php echo $statusClass; ?> second plugin-version-author-uri">
-                    <?php printf(__('Version %s', 'jankx'), esc_html($info['version'] ?? '1.0.0')); ?> |
+                    <?php printf(__('Version %s', 'jankx'), esc_html($info['version'] ?? '1.0.0')); ?>
+                    <?php if ($updateInfo): ?>
+                        <span style="color: #f59e0b; font-weight: 600;">
+                            <?php printf(__('→ %s', 'jankx'), esc_html($updateInfo['version'])); ?>
+                        </span>
+                    <?php endif; ?> |
                     <?php printf(__('By %s', 'jankx'), esc_html($info['author'] ?? 'Jankx Team')); ?>
                     <?php if (!empty($info['is_child_theme_extension'])): ?>
                         | <span class="jankx-child-badge" style="background:#e5f5fa; color:#005e7e; padding:1px 6px; border-radius:3px; font-size: 11px;"><?php _e('Child Theme', 'jankx'); ?></span>
