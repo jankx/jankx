@@ -6,28 +6,20 @@ use WP_CLI;
 use WP_CLI_Command;
 
 /**
- * Setup GitHub Actions release workflow for extensions
+ * Manage extension release builds
  *
- * Generates a GitHub Actions workflow that builds per-PHP-version ZIP assets
- * for each extension that has a composer.json. The workflow runs on release
- * creation, installs production Composer dependencies (--prefer-dist --no-dev),
- * and uploads the zips as release assets.
+ * Generates GitHub Actions workflows and lists extensions for release builds.
  *
  * ## EXAMPLES
  *
- *     # Setup from theme directory
- *     wp jankx release setup
- *
- *     # Setup with custom theme path
- *     wp jankx release setup --theme-path=wp-content/themes/my-theme
- *
- *     # Dry run (show what would be generated)
- *     wp jankx release setup --dry-run
+ *     wp jankx extension release setup
+ *     wp jankx extension release setup --dry-run
+ *     wp jankx extension release list
  *
  * @package Jankx\Foundation\Cli\Commands
  * @since 2.0.0
  */
-class ReleaseCommand extends WP_CLI_Command
+class ExtensionReleaseCommand extends WP_CLI_Command
 {
     /**
      * Setup GitHub Actions release workflow for extensions
@@ -50,9 +42,9 @@ class ReleaseCommand extends WP_CLI_Command
      *
      * ## EXAMPLES
      *
-     *     wp jankx release setup
-     *     wp jankx release setup --theme-path=wp-content/themes/nibitour
-     *     wp jankx release setup --dry-run
+     *     wp jankx extension release setup
+     *     wp jankx extension release setup --theme-path=wp-content/themes/nibitour
+     *     wp jankx extension release setup --dry-run
      *
      * @when after_wp_load
      */

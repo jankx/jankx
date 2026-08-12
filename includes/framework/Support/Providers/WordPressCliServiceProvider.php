@@ -9,7 +9,8 @@ use Jankx\Foundation\Cli\Commands\ConfigCommand;
 use Jankx\Foundation\Cli\Commands\SystemCommand;
 use Jankx\Foundation\Cli\Commands\SeedCommand;
 use Jankx\Foundation\Cli\Commands\DemoCommand;
-use Jankx\Foundation\Cli\Commands\ReleaseCommand;
+use Jankx\Foundation\Cli\Commands\ExtensionCommand;
+use Jankx\Foundation\Cli\Commands\ExtensionReleaseCommand;
 use Jankx\Foundation\Cli\Seeders\SeederRegistry;
 use Jankx\Demo\Seeders\GamingPortalSeeder;
 use Jankx\Demo\Seeders\BlogDemoSeeder;
@@ -80,8 +81,12 @@ class WordPressCliServiceProvider extends ServiceProvider
             return new DemoCommand();
         });
 
-        $this->app->singleton('jankx.release.command', function () {
-            return new ReleaseCommand();
+        $this->app->singleton('jankx.extension.command', function () {
+            return new ExtensionCommand();
+        });
+
+        $this->app->singleton('jankx.extension.release.command', function () {
+            return new ExtensionReleaseCommand();
         });
 
         // ── Extra commands from config/cli.php ───────────────────────────────
@@ -140,7 +145,8 @@ class WordPressCliServiceProvider extends ServiceProvider
         \WP_CLI::add_command('jankx system', $this->app->make('jankx.system.command'));
         \WP_CLI::add_command('jankx seed',   $this->app->make('jankx.seed.command'));
         \WP_CLI::add_command('jankx demo',   $this->app->make('jankx.demo.command'));
-        \WP_CLI::add_command('jankx release', $this->app->make('jankx.release.command'));
+        \WP_CLI::add_command('jankx extension', $this->app->make('jankx.extension.command'));
+        \WP_CLI::add_command('jankx extension release', $this->app->make('jankx.extension.release.command'));
 
         // Commands defined in config/cli.php → cli.commands
         $commands = $this->app->get('config')->get('cli.commands', []);
@@ -196,9 +202,9 @@ class WordPressCliServiceProvider extends ServiceProvider
                 'import' => 'Import a demo package',
                 'reset'  => 'Remove imported demo content',
             ],
-            'jankx release' => [
-                'setup' => 'Setup GitHub Actions release workflow for extensions',
-                'list'  => 'List extensions that will be included in release builds',
+            'jankx extension' => [
+                'release setup' => 'Setup GitHub Actions release workflow for extensions',
+                'release list'  => 'List extensions for release builds',
             ],
         ];
     }
