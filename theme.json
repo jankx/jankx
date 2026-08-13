@@ -249,6 +249,16 @@
 			"area": "footer",
 			"name": "footer",
 			"title": "Footer"
+		},
+		{
+			"area": "blank-header",
+			"name": "blank-header",
+			"title": "Blank Header"
+		},
+		{
+			"area": "blank-footer",
+			"name": "blank-footer",
+			"title": "Blank Footer"
 		}
 	]
 }

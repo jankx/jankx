@@ -315,7 +315,7 @@ jobs:
         id: php
         run: |
           CONSTRAINT="${phpConstraint}"
-          ALL="7.4 8.0 8.1 8.2 8.3 8.4"
+          ALL="7.4 8.0 8.1 8.2 8.3 8.4 8.5"
 
           if [ -z "\$CONSTRAINT" ]; then
             echo "versions=\$ALL" >> \$GITHUB_OUTPUT
@@ -323,7 +323,7 @@ jobs:
             VERSIONS=\$(python3 -c "
           import re
           constraint = '\$CONSTRAINT'.strip()
-          supported = ['7.4', '8.0', '8.1', '8.2', '8.3', '8.4']
+          supported = ['7.4', '8.0', '8.1', '8.2', '8.3', '8.4', '8.5']
           m = re.match(r'[>=~^]+\\s*(\\d+\\.\\d+)', constraint)
           if m:
               min_ver = m.group(1)
