@@ -239,6 +239,15 @@
 			}
 		}
 	},
+	"customTemplates": [
+		{
+			"name": "page-blank",
+			"postTypes": [
+				"page"
+			],
+			"title": "Blank Page"
+		}
+	],
 	"templateParts": [
 		{
 			"area": "header",
@@ -249,16 +258,6 @@
 			"area": "footer",
 			"name": "footer",
 			"title": "Footer"
-		},
-		{
-			"area": "header",
-			"name": "blank-header",
-			"title": "Blank Header"
-		},
-		{
-			"area": "footer",
-			"name": "blank-footer",
-			"title": "Blank Footer"
 		}
 	]
 }

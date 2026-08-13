@@ -67,9 +67,15 @@ if (!function_exists('jankx_render')) {
  * @return mixed
  */
 if (!function_exists('jankx_get_option')) {
-    function jankx_get_option($option_name, $default = null)
+    function jankx_get_option($option_name = null, $default = null)
     {
-        return \Jankx\Facades\Option::get($option_name, $default);
+        if (is_null($option_name)) {
+            return $default;
+        }
+        if (class_exists(\Jankx\Adapter\Options\Helper::class)) {
+            return \Jankx\Adapter\Options\Helper::getOption($option_name, $default);
+        }
+        return $default;
     }
 }
 
