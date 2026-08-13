@@ -1,22 +1,7 @@
 /*!*************************************************************************************************************************************************************************************************!*\
   !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!./blocks/user-menu/src/editor.scss ***!
   \*************************************************************************************************************************************************************************************************/
-.wp-block-jankx-user-menu.is-editor-preview {
-  border: 1px dashed rgba(0, 0, 0, 0.1);
-  padding: 10px;
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.5);
-}
-.wp-block-jankx-user-menu.is-editor-preview::before {
-  content: "User Menu Preview";
-  display: block;
-  font-size: 10px;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  margin-bottom: 8px;
-  opacity: 0.4;
-  font-weight: bold;
-}
+
 /*!************************************************************************************************************************************************************************************************!*\
   !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!./blocks/user-menu/src/style.scss ***!
   \************************************************************************************************************************************************************************************************/
@@ -81,6 +66,91 @@
 .wp-block-jankx-user-menu .user-menu-logged-in .user-greeting .user-name {
   font-size: 0.9em;
   font-weight: 600;
+}
+.wp-block-jankx-user-menu .user-menu-trigger {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  gap: 10px;
+}
+.wp-block-jankx-user-menu .user-menu-trigger .user-greeting {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+.wp-block-jankx-user-menu .user-menu-trigger .user-greeting .greeting-text {
+  font-size: 13px;
+  opacity: 0.8;
+}
+.wp-block-jankx-user-menu .user-menu-trigger .user-greeting .user-name {
+  font-size: 13px;
+  font-weight: 600;
+}
+.wp-block-jankx-user-menu .user-menu-trigger .user-avatar {
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+}
+.wp-block-jankx-user-menu .user-menu-trigger .user-avatar img {
+  border-radius: 50%;
+  object-fit: cover;
+}
+.wp-block-jankx-user-menu .user-menu-dropdown {
+  display: none;
+  position: absolute;
+  right: 0;
+  top: 100%;
+  background: #fff;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  padding: 10px;
+  min-width: 180px;
+  z-index: 100;
+  margin-top: 10px;
+}
+.wp-block-jankx-user-menu .user-menu-dropdown ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.wp-block-jankx-user-menu .user-menu-dropdown li {
+  margin-bottom: 5px;
+}
+.wp-block-jankx-user-menu .user-menu-dropdown li:last-child {
+  margin-bottom: 0;
+}
+.wp-block-jankx-user-menu .user-menu-dropdown a {
+  display: block;
+  padding: 8px 12px;
+  color: #333;
+  text-decoration: none;
+  font-size: 14px;
+  border-radius: 4px;
+  transition: background 0.2s;
+}
+.wp-block-jankx-user-menu .user-menu-dropdown a:hover {
+  background: #f5f5f5;
+}
+.wp-block-jankx-user-menu.logged-out {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+.wp-block-jankx-user-menu.logged-out .login-link {
+  font-size: 13px;
+  font-weight: 700;
+  color: inherit;
+  text-decoration: none;
+}
+.wp-block-jankx-user-menu.logged-out .register-button {
+  background: var(--wp--preset--color--primary, #000);
+  color: #fff;
+  padding: 8px 20px;
+  border-radius: 30px;
+  font-size: 12px;
+  font-weight: 800;
+  text-decoration: none;
+  text-transform: uppercase;
 }
 
 /*# sourceMappingURL=index.css.map*/
