@@ -42,6 +42,6 @@ class App extends Facade
 
 
     public static function getInstance() {
-        return Facade::getFacadeRoot();
+        return static::getFacadeRoot();
     }
 }
