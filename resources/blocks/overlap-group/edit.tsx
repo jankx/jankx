@@ -6,7 +6,6 @@ import {
 	SelectControl,
 	TextControl,
 	ToggleControl,
-	Divider,
 } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 
@@ -114,7 +113,7 @@ export default function Edit({ attributes, setAttributes }: EditProps) {
 
 					{positionType !== 'static' && (
 						<>
-							<Divider />
+							<hr className="components-divider" style={{ border: 0, borderTop: '1px solid #ccc', margin: '8px 0' }} />
 							<p className="components-base-control__help">
 								{__('Offsets', 'jankx')}
 							</p>
@@ -136,10 +135,10 @@ export default function Edit({ attributes, setAttributes }: EditProps) {
 						</>
 					)}
 
-					<Divider />
+				<hr className="components-divider" style={{ border: 0, borderTop: '1px solid #ccc', margin: '8px 0' }} />
 
-					<RangeControl
-						label={__('Pull up to overlap section above', 'jankx')}
+				<RangeControl
+					label={__('Pull up to overlap section above', 'jankx')}
 						value={attributes.pullUp ?? 0}
 						onChange={(pullUp) => setAttributes({ pullUp })}
 						min={0}
