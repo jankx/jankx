@@ -1,0 +1,1 @@
+{"version":3,"file":"blocks/overlap-group/build/editor.css","mappings":";;;AAAA;;EAEC;EACA;AACD,C","sources":["webpack://jankx/./blocks/overlap-group/editor.scss"],"sourcesContent":[".wp-block-jankx-overlap-group.is-selected,\n.wp-block-jankx-overlap-group.is-hovered {\n\toutline: 1px dashed currentColor;\n\toutline-offset: 2px;\n}\n"],"names":[],"sourceRoot":""}

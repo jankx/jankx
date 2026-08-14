@@ -1,0 +1,7 @@
+.wp-block-jankx-overlap-group {
+	box-sizing: border-box;
+
+	&.jankx-overlap-group--absolute {
+		z-index: 1;
+	}
+}

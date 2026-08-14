@@ -50,6 +50,7 @@ use Jankx\Gutenberg\Blocks\TableOfContentBlock;
 use Jankx\Gutenberg\Blocks\SafeIframeBlock;
 use Jankx\Gutenberg\Extra\LineClamp as ExtraLineClamp;
 use Jankx\Gutenberg\Blocks\WrapperBlock;
+use Jankx\Gutenberg\Blocks\OverlapGroupBlock;
 use Jankx\Gutenberg\Blocks\TypographyBlock;
 use Jankx\Gutenberg\Blocks\TextInputBlock;
 use Jankx\Gutenberg\Extra\ChildOrder as ExtraChildOrder;
@@ -184,6 +185,7 @@ class GutenbergService
         $this->repository->registerBlock(LayoutSwitcherBlock::class);
         $this->repository->registerBlock(SafeIframeBlock::class);
         $this->repository->registerBlock(WrapperBlock::class);
+        $this->repository->registerBlock(OverlapGroupBlock::class);
         $this->repository->registerBlock(TypographyBlock::class);
         $this->repository->registerBlock(HumanReadablePostDateBlock::class);
         $this->repository->registerBlock(PostTermsBlock::class);

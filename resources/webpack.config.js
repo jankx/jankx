@@ -182,6 +182,9 @@ module.exports = {
 
     'blocks/wrapper/build/index': './blocks/wrapper/index.tsx',
     'blocks/wrapper/build/style': './blocks/wrapper/index.css',
+    'blocks/overlap-group/build/index': './blocks/overlap-group/index.tsx',
+    'blocks/overlap-group/build/style': './blocks/overlap-group/style.scss',
+    'blocks/overlap-group/build/editor': './blocks/overlap-group/editor.scss',
     'assets/js/child-order': './js/filters/child-order.tsx',
     'assets/js/responsive-visibility': './js/filters/responsive-visibility.tsx',
     'blocks/typography/build/index': './blocks/typography/index.tsx',
