@@ -9,6 +9,7 @@ use Jankx\Foundation\Bootstrap\BootProviders;
 use Jankx\Foundation\Bootstrap\BootTemplateEngine;
 use Jankx\Foundation\Bootstrap\LoadConfiguration;
 use Jankx\Foundation\Bootstrap\RegisterFacades;
+use Jankx\Foundation\Bootstrap\RegisterLogger;
 use Jankx\Foundation\Bootstrap\RegisterProviders;
 use Jankx\Foundation\Bootstrap\ThemeDataLoader;
 
@@ -34,6 +35,7 @@ abstract class Kernel implements KernelInterface
         BootTemplateEngine::class,
         RegisterProviders::class,
         BootProviders::class,
+        RegisterLogger::class
     ];
 
     /**
