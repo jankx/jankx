@@ -36,6 +36,17 @@
   flex: 0 0 calc((100% - var(--space-between, 30px) * (var(--slides-per-view-desktop, 1) - 1)) / var(--slides-per-view-desktop, 1));
   max-width: calc((100% - var(--space-between, 30px) * (var(--slides-per-view-desktop, 1) - 1)) / var(--slides-per-view-desktop, 1));
 }
+.wp-block-jankx-carousel .block-editor-block-list__layout .wp-block-jankx-carousel-inner-blocks-overlay {
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 10;
+  flex: none !important;
+  width: 100% !important;
+  height: 100% !important;
+  width: auto;
+  height: auto;
+  pointer-events: none;
+}
 @media (max-width: 1024px) {
   .wp-block-jankx-carousel .embla__slide,
   .wp-block-jankx-carousel .carousel-slide {
@@ -62,7 +73,7 @@
 }
 .wp-block-jankx-carousel.has-gradient-overlay .embla__slide::after {
   content: "";
-  position: absolute;
+  position: absolute !important;
   bottom: 0;
   left: 0;
   right: 0;
@@ -175,7 +186,7 @@
 }
 .wp-block-jankx-carousel.is-style-carousel .embla__dots {
   bottom: 10px;
-  position: absolute;
+  position: absolute !important;
 }
 .wp-block-jankx-carousel.is-style-carousel .embla__dots .embla__dot {
   width: 10px;

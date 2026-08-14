@@ -1,17 +1,26 @@
 import { useBlockProps, InnerBlocks, InspectorControls } from '@wordpress/block-editor';
 import {
-	UnitControl,
+	__experimentalUnitControl as UnitControl,
+	BaseControl,
+	Button,
 	PanelBody,
 	RangeControl,
 	SelectControl,
 	TextControl,
 	ToggleControl,
 } from '@wordpress/components';
+import { useDispatch } from '@wordpress/data';
+import { useRef, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
+import { arrowDown, arrowLeft, arrowRight, arrowUp, dragHandle, Icon } from '@wordpress/icons';
+import type { PointerEvent as ReactPointerEvent } from 'react';
 
 import {
+	applyMove,
 	buildClassName,
 	buildInlineStyle,
+	MAX_PULL_UP,
+	NUDGE_STEPS,
 	OFFSET_SIDES,
 	OFFSET_UNITS,
 	OverlapGroupAttributes,
@@ -27,6 +36,7 @@ const SIDE_LABELS: Record<OffsetSide, string> = {
 };
 
 type EditProps = {
+	clientId: string;
 	attributes: OverlapGroupAttributes;
 	setAttributes: (attrs: Partial<OverlapGroupAttributes>) => void;
 };
@@ -77,22 +87,133 @@ function OffsetControl({
 	);
 }
 
-export default function Edit({ attributes, setAttributes }: EditProps) {
+function NudgePad({
+	attributes,
+	setAttributes,
+}: {
+	attributes: OverlapGroupAttributes;
+	setAttributes: EditProps['setAttributes'];
+}) {
+	const step = attributes.dragStep ?? 10;
+
+	const handleMove = (dx: number, dy: number) => {
+		setAttributes(applyMove(attributes, dx, dy));
+	};
+
+	return (
+		<BaseControl label={__('Move', 'jankx')}>
+			<div className="jankx-overlap-group__nudge-grid">
+				<span />
+				<Button
+					icon={arrowUp}
+					label={__('Move up', 'jankx')}
+					onClick={() => handleMove(0, -step)}
+				/>
+				<span />
+				<Button
+					icon={arrowLeft}
+					label={__('Move left', 'jankx')}
+					onClick={() => handleMove(-step, 0)}
+				/>
+				<span />
+				<Button
+					icon={arrowRight}
+					label={__('Move right', 'jankx')}
+					onClick={() => handleMove(step, 0)}
+				/>
+				<span />
+				<Button
+					icon={arrowDown}
+					label={__('Move down', 'jankx')}
+					onClick={() => handleMove(0, step)}
+				/>
+				<span />
+			</div>
+			<SelectControl
+				label={__('Nudge step', 'jankx')}
+				value={String(step)}
+				options={NUDGE_STEPS.map((n) => ({ value: String(n), label: `${n}px` }))}
+				onChange={(next) => setAttributes({ dragStep: parseInt(next, 10) })}
+				__nextHasNoMarginBottom
+			/>
+		</BaseControl>
+	);
+}
+
+export default function Edit({ attributes, setAttributes, clientId }: EditProps) {
 	const { positionType = 'relative', tagName = 'div' } = attributes;
+
+	const { selectBlock } = useDispatch('core/block-editor');
+
+	const dragStart = useRef<{ x: number; y: number; attrs: OverlapGroupAttributes } | null>(null);
+	const [isDragging, setIsDragging] = useState(false);
 
 	const blockProps = useBlockProps({
 		className: buildClassName(attributes),
 		style: buildInlineStyle(attributes) as never,
 	});
 
+	const onDragStart = (event: ReactPointerEvent<HTMLDivElement>) => {
+		if (event.button !== 0) {
+			return;
+		}
+		event.preventDefault();
+		selectBlock(clientId);
+		dragStart.current = { x: event.clientX, y: event.clientY, attrs: { ...attributes } };
+		event.currentTarget.setPointerCapture(event.pointerId);
+		setIsDragging(true);
+	};
+
+	const onDragMove = (event: ReactPointerEvent<HTMLDivElement>) => {
+		if (!dragStart.current) {
+			return;
+		}
+		const dx = event.clientX - dragStart.current.x;
+		const dy = event.clientY - dragStart.current.y;
+		setAttributes(applyMove(dragStart.current.attrs, dx, dy));
+	};
+
+	const onDragEnd = (event: ReactPointerEvent<HTMLDivElement>) => {
+		if (!dragStart.current) {
+			return;
+		}
+		dragStart.current = null;
+		setIsDragging(false);
+		if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+			event.currentTarget.releasePointerCapture(event.pointerId);
+		}
+	};
+
 	return (
 		<>
 			<div {...blockProps}>
+				{positionType !== 'static' && (
+					<div
+						className={
+							'jankx-overlap-group__drag-handle' + (isDragging ? ' is-dragging' : '')
+						}
+						role="button"
+						tabIndex={-1}
+						aria-label={__('Drag to position the overlap group', 'jankx')}
+						onPointerDown={onDragStart}
+						onPointerMove={onDragMove}
+						onPointerUp={onDragEnd}
+						onPointerCancel={onDragEnd}
+					>
+						<Icon icon={dragHandle} size={18} />
+					</div>
+				)}
 				<InnerBlocks />
 			</div>
 
 			<InspectorControls>
-				<PanelBody title={__('Position & Overlap', 'jankx')} initialOpen={true}>
+				<PanelBody title={__('Overlap Settings', 'jankx')} initialOpen={true}>
+					<p className="components-base-control__help">
+						{__(
+							'Kéo thanh di chuyển trên block hoặc dùng các nút bên dưới để đẩy block đè lên các section khác.',
+							'jankx'
+						)}
+					</p>
 					<SelectControl
 						label={__('Position type', 'jankx')}
 						value={positionType}
@@ -113,6 +234,8 @@ export default function Edit({ attributes, setAttributes }: EditProps) {
 
 					{positionType !== 'static' && (
 						<>
+							<NudgePad attributes={attributes} setAttributes={setAttributes} />
+
 							<hr className="components-divider" style={{ border: 0, borderTop: '1px solid #ccc', margin: '8px 0' }} />
 							<p className="components-base-control__help">
 								{__('Offsets', 'jankx')}
@@ -135,14 +258,14 @@ export default function Edit({ attributes, setAttributes }: EditProps) {
 						</>
 					)}
 
-				<hr className="components-divider" style={{ border: 0, borderTop: '1px solid #ccc', margin: '8px 0' }} />
+					<hr className="components-divider" style={{ border: 0, borderTop: '1px solid #ccc', margin: '8px 0' }} />
 
-				<RangeControl
-					label={__('Pull up to overlap section above', 'jankx')}
+					<RangeControl
+						label={__('Pull up to overlap section above', 'jankx')}
 						value={attributes.pullUp ?? 0}
 						onChange={(pullUp) => setAttributes({ pullUp })}
 						min={0}
-						max={400}
+						max={MAX_PULL_UP}
 						help={__('Applies a negative top margin (px) so this group climbs over the section above it.', 'jankx')}
 					/>
 				</PanelBody>

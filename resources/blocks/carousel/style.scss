@@ -47,10 +47,10 @@
     // Overlay block should NOT be a flex item alongside slides
     // Pull it out of the flex flow so it overlays the embla viewport
     .wp-block-jankx-carousel-inner-blocks-overlay {
-      position: absolute;
-      inset: 0;
+      position: absolute !important;
+      inset: 0 !important;
       z-index: 10;
-      flex: none;
+      flex: none !important; width: 100% !important; height: 100% !important;
       width: auto;
       height: auto;
       pointer-events: none;
@@ -99,7 +99,7 @@
     .embla__slide {
       &::after {
         content: '';
-        position: absolute;
+        position: absolute !important;
         bottom: 0;
         left: 0;
         right: 0;
@@ -263,7 +263,7 @@
 
     .embla__dots {
       bottom: 10px;
-      position: absolute;
+      position: absolute !important;
 
       .embla__dot {
         width: 10px;

@@ -1,6 +1,6 @@
 .wp-block-jankx-carousel-inner-blocks-overlay {
-  position: absolute;
-  inset: 0;
+  position: absolute !important;
+  inset: 0 !important;
   z-index: 10;
   outline: 1px dashed rgba(0,0,0,0.3);
   pointer-events: none;

@@ -48,6 +48,10 @@
 		"pullUp": {
 			"type": "number",
 			"default": 0
+		},
+		"dragStep": {
+			"type": "number",
+			"default": 10
 		}
 	},
 	"supports": {
