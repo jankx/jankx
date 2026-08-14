@@ -43,6 +43,18 @@
       flex: 0 0 calc((100% - (var(--space-between, 30px) * (var(--slides-per-view-desktop, 1) - 1))) / var(--slides-per-view-desktop, 1));
       max-width: calc((100% - (var(--space-between, 30px) * (var(--slides-per-view-desktop, 1) - 1))) / var(--slides-per-view-desktop, 1));
     }
+
+    // Overlay block should NOT be a flex item alongside slides
+    // Pull it out of the flex flow so it overlays the embla viewport
+    .wp-block-jankx-carousel-inner-blocks-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 10;
+      flex: none;
+      width: auto;
+      height: auto;
+      pointer-events: none;
+    }
   }
 
   @media (max-width: 1024px) {

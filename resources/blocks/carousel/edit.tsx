@@ -178,16 +178,18 @@ export default function Edit({ attributes, setAttributes, clientId }: CarouselPr
     }
   );
 
-  const { hasInnerBlocks, slideCount } = useSelect(
+  const { hasInnerBlocks, slideCount, hasOverlay } = useSelect(
     (select) => {
       const { getBlock } = select('core/block-editor');
       const block = getBlock(clientId);
-      if (!block) return { hasInnerBlocks: false, slideCount: 0 };
+      if (!block) return { hasInnerBlocks: false, slideCount: 0, hasOverlay: false };
 
       const count = block.innerBlocks.filter((b: any) => b.name !== 'jankx/carousel-inner-blocks-overlay').length;
+      const overlay = block.innerBlocks.some((b: any) => b.name === 'jankx/carousel-inner-blocks-overlay');
       return {
         hasInnerBlocks: !!block.innerBlocks.length,
-        slideCount: count
+        slideCount: count,
+        hasOverlay: overlay
       };
     },
     [clientId]
