@@ -170,17 +170,15 @@ class CarouselBlock extends Block
 
         if ($block && !empty($block->inner_blocks)) {
             foreach ($block->inner_blocks as $inner_block) {
-                // Ensure $inner_block is an array if it's not an object (compatibility with different WP versions/contexts)
                 if (is_object($inner_block)) {
                     $block_name = $inner_block->name;
-                    $parsed_block_data = $inner_block->parsed_block;
+                    // Use WP_Block::render() to properly resolve inner blocks
+                    $block_html = $inner_block->render();
                 } else {
                     $block_name = $inner_block['blockName'];
-                    $parsed_block_data = $inner_block;
+                    $block_html = render_block($inner_block);
                 }
 
-                $block_html = render_block($parsed_block_data);
-                
                 if ($block_name === 'jankx/carousel-inner-blocks-overlay') {
                     $overlay_content .= $block_html;
                 } else {

@@ -2,7 +2,18 @@
 
 .editor-styles-wrapper {
   .wp-block-jankx-carousel {
-    // No visual difference from frontend
+    // Static preview: match the frontend look (first N slides visible),
+    // but never run the live slider in the editor.
+    .embla {
+      position: relative;
+    }
+
+    // Navigation and pagination are purely visual affordances in the editor.
+    // Keep them from stealing pointer events so slides stay editable.
+    .embla__button,
+    .embla__dots {
+      pointer-events: none;
+    }
   }
 }
 
@@ -10,11 +21,26 @@
 .wp-block-jankx-carousel {
   .embla {
     height: var(--carousel-height, 50px);
-    
+
     @media (max-width: 1024px) {
       height: auto;
       max-height: var(--carousel-height, 50px);
       min-height: var(--carousel-min-height, 50px);
     }
+  }
+
+  .carousel-empty-hint {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 3;
+    padding: 6px 16px;
+    border-radius: 999px;
+    background: rgba(0, 0, 0, 0.55);
+    color: #fff;
+    font-size: 12px;
+    white-space: nowrap;
+    pointer-events: none;
   }
 }

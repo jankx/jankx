@@ -57,6 +57,30 @@ class CarouselBannerBlock extends Block
             }
         }
 
+        // ── If $content already contains the full banner structure ──────────
+        // (from save() output), just resolve dynamic image URL and return it.
+        if (!empty($content) && strpos($content, 'embla-banner__overlay-content') !== false) {
+            // Resolve placeholder image URL in saved HTML
+            if (!empty($image_url)) {
+                // Replace empty or placeholder background-image URLs
+                $content = preg_replace(
+                    '/background-image:url\([^)]*\)/',
+                    'background-image:url(\'' . esc_url($image_url) . '\')',
+                    $content
+                );
+                // Update alt text
+                if (!empty($image_alt)) {
+                    $content = preg_replace(
+                        '/aria-label="[^"]*"/',
+                        'aria-label="' . esc_attr($image_alt) . '"',
+                        $content
+                    );
+                }
+            }
+            return $content;
+        }
+
+        // ── Fallback: build full HTML from scratch (no saved content) ──────
         // ── Build outer wrapper classes ─────────────────────────────────────
         $wrapper_classes = array_filter([
             'embla__slide',
@@ -135,7 +159,7 @@ class CarouselBannerBlock extends Block
 
             <?php /* Layer 3: Inner blocks (headings, paragraphs, search, buttons…) */ ?>
             <div class="embla-banner__overlay-content">
-                <?php echo $content; // Already sanitized by WordPress block rendering ?>
+                <?php echo $content; ?>
             </div>
 
             <?php if (!empty($link_url)) : ?>

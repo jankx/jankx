@@ -2,10 +2,8 @@ import { __ } from '@wordpress/i18n';
 import { useBlockProps, InspectorControls, useInnerBlocksProps, MediaUpload, MediaUploadCheck, BlockControls, InnerBlocks } from '@wordpress/block-editor';
 import { PanelBody, RangeControl, ToggleControl, SelectControl, Button, TabPanel, ColorPicker, ToolbarGroup, ToolbarButton, TextControl, TextareaControl, BaseControl } from '@wordpress/components';
 import { gallery, cover, layout, quote } from '@wordpress/icons';
-import { useEffect, useRef } from '@wordpress/element';
 import { createBlock } from '@wordpress/blocks';
 import { useSelect } from '@wordpress/data';
-import EmblaCarousel from 'embla-carousel';
 import type { CarouselProps } from './types';
 
 // Utility function to convert hex to RGB
@@ -143,15 +141,9 @@ export default function Edit({ attributes, setAttributes, clientId }: CarouselPr
     setAttributes({ className: newClassName });
   };
 
-  const carouselRef = useRef<any>(null);
-  const emblaRef = useRef<any>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  // Convert gradient color to RGB for CSS variables
   const gradientRgb = hexToRgb(gradientColor || '#000000');
 
   const blockProps = useBlockProps({
-    ref: containerRef,
     className: `carousel-block banner-style-${bannerStyle} ${gradientOverlay ? 'has-gradient-overlay' : ''} ${className || ''} ${fitViewportMinusHeader ? 'fit-vh-minus-header' : ''} ${fullHeight ? 'is-full-height' : ''}`.trim(),
     style: {
       '--carousel-height': fullHeight ? '100vh' : `${height}px`,
@@ -180,11 +172,6 @@ export default function Edit({ attributes, setAttributes, clientId }: CarouselPr
       allowedBlocks: contentMode === 'slides'
         ? ['jankx/carousel-slide', 'jankx/carousel-inner-blocks-overlay']
         : ['jankx/carousel-banner', 'jankx/carousel-inner-blocks-overlay'],
-      template: contentMode === 'slides' ? [
-        ['jankx/carousel-slide'],
-        ['jankx/carousel-slide'],
-        ['jankx/carousel-slide']
-      ] : [],
       templateLock: false,
       orientation: 'horizontal',
       renderAppender: InnerBlocks.ButtonBlockAppender
@@ -230,81 +217,6 @@ export default function Edit({ attributes, setAttributes, clientId }: CarouselPr
     // Replace inner blocks with banner blocks
     wp.data.dispatch('core/block-editor').replaceInnerBlocks(clientId, bannerBlocks);
   };
-
-  // Initialize Embla in editor
-  useEffect(() => {
-    if (!containerRef.current) return;
-
-    const loadCarousel = async () => {
-      await new Promise(resolve => setTimeout(resolve, 200));
-
-      if (containerRef.current) {
-        const carouselEl = containerRef.current.querySelector('.embla');
-        if (!carouselEl) return;
-
-        const nextEl = carouselEl.querySelector('.embla__button--next');
-        const prevEl = carouselEl.querySelector('.embla__button--prev');
-        const paginationEl = carouselEl.querySelector('.embla__dots');
-
-        carouselEl.classList.add('embla__viewport');
-        const track = carouselEl.querySelector('.embla__container') || carouselEl.querySelector('.carousel-wrapper');
-        if (track && !track.classList.contains('embla__container')) track.classList.add('embla__container');
-
-        const options: any = {
-          loop: loop,
-          duration: speed,
-          align: 'start'
-        };
-
-        if (emblaRef.current) {
-          emblaRef.current.reInit(options);
-        } else {
-          emblaRef.current = EmblaCarousel(carouselEl, options);
-          if (navigation && nextEl && prevEl) {
-            nextEl.addEventListener('click', () => emblaRef.current.scrollNext(), { passive: true });
-            prevEl.addEventListener('click', () => emblaRef.current.scrollPrev(), { passive: true });
-          }
-          if (pagination && paginationEl) {
-            const slides = emblaRef.current.slideNodes();
-            paginationEl.innerHTML = '';
-            slides.forEach((_, index) => {
-              const b = document.createElement('span');
-              b.className = 'embla__dot';
-              b.addEventListener('click', () => emblaRef.current.scrollTo(index), { passive: true });
-              paginationEl.appendChild(b);
-            });
-            const updateActive = () => {
-              const i = emblaRef.current.selectedScrollSnap();
-              const bullets = paginationEl.querySelectorAll('.embla__dot');
-              bullets.forEach((el, idx) => {
-                if (idx === i) el.classList.add('is-active');
-                else el.classList.remove('is-active');
-              });
-            };
-            emblaRef.current.on('select', updateActive);
-            emblaRef.current.on('reInit', updateActive);
-            updateActive();
-          }
-        }
-      }
-    };
-
-    const timeoutId = setTimeout(loadCarousel, 100);
-
-    return () => {
-      clearTimeout(timeoutId);
-    };
-  }, [slidesPerView, slidesPerViewTablet, slidesPerViewMobile, spaceBetween, loop, autoplay, autoplayDelay, speed, navigation, pagination, height, minHeight]);
-
-  // Cleanup only on unmount
-  useEffect(() => {
-    return () => {
-      if (emblaRef.current) {
-        emblaRef.current.destroy();
-        emblaRef.current = null;
-      }
-    };
-  }, []);
 
   return (
     <>
@@ -824,6 +736,12 @@ export default function Edit({ attributes, setAttributes, clientId }: CarouselPr
         </InspectorControls>
 
         <div className="embla">
+          {!hasInnerBlocks && (
+            <div className="carousel-empty-hint">
+              {__('Carousel trống — nhấn nút + để thêm slide hoặc banner.', 'jankx')}
+            </div>
+          )}
+
           <div {...innerBlocksProps} className={`${innerBlocksProps.className} embla__container`} />
 
           {navigation && slideCount > 1 && (
