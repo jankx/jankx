@@ -38,7 +38,7 @@ abstract class BlockTemplateLayout implements BlockTemplateLayoutInterface
     protected $options = [];
 
     /**
-     * @var WP_Query|null
+     * @var \WP_Query|array|null
      */
     protected $query = null;
 
@@ -128,7 +128,7 @@ abstract class BlockTemplateLayout implements BlockTemplateLayoutInterface
         return array_key_exists($key, $this->options) ? $this->options[$key] : $default;
     }
 
-    public function setQuery(WP_Query $query): BlockTemplateLayoutInterface
+    public function setQuery($query): BlockTemplateLayoutInterface
     {
         $this->query = $query;
         return $this;
@@ -485,7 +485,7 @@ abstract class BlockTemplateLayout implements BlockTemplateLayoutInterface
         return $classes;
     }
 
-    public function withQuery(WP_Query $query): self
+    public function withQuery($query): self
     {
         return $this->setQuery($query);
     }

@@ -16,6 +16,8 @@ use Jankx\Gutenberg\Blocks\PostTypeBadgeBlock;
 use Jankx\Gutenberg\Blocks\PostTermsBlock;
 use Jankx\Gutenberg\Blocks\DynamicDataLayoutBlock;
 use Jankx\Gutenberg\Blocks\DynamicDataTemplateBlock;
+use Jankx\Gutenberg\Blocks\DynamicTermLayoutBlock;
+use Jankx\Gutenberg\Blocks\DynamicTermTemplateBlock;
 use Jankx\Gutenberg\Blocks\ModalBlock;
 use Jankx\Gutenberg\Blocks\OffcanvasSidebarBlock;
 use Jankx\Gutenberg\Blocks\OffcanvasTriggerBlock;
@@ -159,6 +161,8 @@ class GutenbergService
         $this->repository->registerBlock(PostTypeBadgeBlock::class);
         $this->repository->registerBlock(DynamicDataLayoutBlock::class);
         $this->repository->registerBlock(DynamicDataTemplateBlock::class);
+        $this->repository->registerBlock(DynamicTermLayoutBlock::class);
+        $this->repository->registerBlock(DynamicTermTemplateBlock::class);
         $this->repository->registerBlock(ModalBlock::class);
         $this->repository->registerBlock(OffcanvasSidebarBlock::class);
         $this->repository->registerBlock(OffcanvasTriggerBlock::class);

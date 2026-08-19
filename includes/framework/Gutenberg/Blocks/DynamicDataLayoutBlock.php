@@ -732,9 +732,9 @@ class DynamicDataLayoutBlock extends Block
      * Build a quick query to check if we have results (for heading visibility)
      *
      * @param array $attributes Block attributes
-     * @return \WP_Query
+     * @return \WP_Query|\WP_Term_Query
      */
-    protected function buildQuickQuery(array $attributes): \WP_Query
+    protected function buildQuickQuery(array $attributes)
     {
         $sanitizedAttributes = $this->attributeSanitizer->sanitize($attributes);
         $layoutName = $sanitizedAttributes['layout'] ?? 'grid';

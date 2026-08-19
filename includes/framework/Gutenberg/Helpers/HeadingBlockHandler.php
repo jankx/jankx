@@ -101,7 +101,8 @@ trait HeadingBlockHandler
                 in_array($blockName, [
                     'jankx/dynamic-data-template',
                     'jankx/dynamic-ssr-template',
-                    'jankx/term-layout-template'
+                    'jankx/term-layout-template',
+                    'jankx/dynamic-term-template'
                 ], true)
             ) {
                 $result['template'] = $innerBlock;

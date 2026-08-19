@@ -35,7 +35,7 @@ class BlockTemplateLayoutDecorator
         return $this;
     }
 
-    public function withQuery(WP_Query $query): self
+    public function withQuery($query): self
     {
         $this->layout->setQuery($query);
         return $this;
