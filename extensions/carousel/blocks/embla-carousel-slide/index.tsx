@@ -10,4 +10,80 @@ registerBlockType(metadata.name, {
   title: __('Carousel Banner Slide', 'jankx'),
   edit: Edit,
   save: Save,
+  transforms: {
+    to: [
+      {
+        type: 'block',
+        blocks: ['jankx/embla-carousel-card'],
+        transform: (attributes: any) => {
+          return {
+            category: 'KHỐI',
+            title: attributes.title || '',
+            description: attributes.subtitle || '',
+            badgeText: attributes.badge || '',
+            metricValue: '',
+            metricLabel: '',
+            actionText: attributes.ctaText || 'Chi tiết',
+            cardColor: 'slate',
+          };
+        },
+      },
+      {
+        type: 'block',
+        blocks: ['jankx/embla-carousel-presentation-slide'],
+        transform: (attributes: any) => {
+          return {
+            layout: 'title',
+            title: attributes.title || '',
+            subtitle: attributes.subtitle || '',
+            bodyText: '',
+            bullets: [],
+            statsNumber: '',
+            statsLabel: '',
+            quoteText: '',
+            quoteAuthor: '',
+            quoteRole: '',
+            theme: 'dark',
+            presenterNotes: '',
+          };
+        },
+      },
+    ],
+    from: [
+      {
+        type: 'block',
+        blocks: ['jankx/embla-carousel-card'],
+        transform: (attributes: any) => {
+          return {
+            imageUrl: '',
+            imageAlt: '',
+            badge: attributes.badgeText || '',
+            title: attributes.title || '',
+            subtitle: attributes.description || '',
+            ctaText: attributes.actionText || '',
+            ctaLink: '#',
+            overlayOpacity: 50,
+            textAlignment: 'left',
+          };
+        },
+      },
+      {
+        type: 'block',
+        blocks: ['jankx/embla-carousel-presentation-slide'],
+        transform: (attributes: any) => {
+          return {
+            imageUrl: '',
+            imageAlt: '',
+            badge: '',
+            title: attributes.title || '',
+            subtitle: attributes.subtitle || '',
+            ctaText: '',
+            ctaLink: '#',
+            overlayOpacity: 50,
+            textAlignment: 'left',
+          };
+        },
+      },
+    ],
+  },
 } as any);

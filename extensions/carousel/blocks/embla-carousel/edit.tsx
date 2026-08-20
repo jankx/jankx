@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { __ } from '@wordpress/i18n';
 import {
   useBlockProps,
   InspectorControls,
   InnerBlocks,
 } from '@wordpress/block-editor';
+import { useDispatch, select as wpSelect } from '@wordpress/data';
+import { store as blockEditorStore } from '@wordpress/block-editor';
 import {
   PanelBody,
   ToggleControl,
@@ -13,7 +15,10 @@ import {
   Button,
   ButtonGroup,
 } from '@wordpress/components';
+import { createBlock } from '@wordpress/blocks';
 import type { EmblaCarouselAttributes, EmblaCarouselEditProps } from './types';
+
+type CarouselVariant = 'banner' | 'inner-blocks' | 'presentation';
 
 const VARIANT_OPTIONS = [
   { label: __('Banner', 'jankx'), value: 'banner' },
@@ -36,6 +41,12 @@ const ALIGN_OPTIONS = [
 const ARROW_STYLE_OPTIONS = ['round', 'square', 'pill', 'minimal'] as const;
 const DOT_TYPE_OPTIONS = ['bullets', 'bars', 'numbers', 'counter'] as const;
 const ASPECT_RATIO_OPTIONS = ['16:9', '21:9', '4:3', 'auto'] as const;
+
+const VARIANT_CHILD_BLOCK: Record<CarouselVariant, string> = {
+  banner: 'jankx/embla-carousel-slide',
+  'inner-blocks': 'jankx/embla-carousel-card',
+  presentation: 'jankx/embla-carousel-presentation-slide',
+};
 
 const defaultAttributes: EmblaCarouselAttributes = {
   variant: 'banner',
@@ -83,6 +94,102 @@ const INNERBLOCKS_PRESENTATION_TEMPLATE = [
 
 const INNERBLOCKS_PRESENTATION_ALLOWED = ['jankx/embla-carousel-presentation-slide'];
 
+function mapAttributes(
+  fromType: string,
+  toType: string,
+  attrs: Record<string, any>
+): Record<string, any> {
+  // Banner → Card
+  if (fromType === 'jankx/embla-carousel-slide' && toType === 'jankx/embla-carousel-card') {
+    return {
+      category: 'KHỐI',
+      title: attrs.title || '',
+      description: attrs.subtitle || '',
+      badgeText: attrs.badge || '',
+      metricValue: '',
+      metricLabel: '',
+      actionText: attrs.ctaText || 'Chi tiết',
+      cardColor: 'slate',
+    };
+  }
+  // Banner → Presentation
+  if (fromType === 'jankx/embla-carousel-slide' && toType === 'jankx/embla-carousel-presentation-slide') {
+    return {
+      layout: 'title',
+      title: attrs.title || '',
+      subtitle: attrs.subtitle || '',
+      bodyText: '',
+      bullets: [],
+      statsNumber: '',
+      statsLabel: '',
+      quoteText: '',
+      quoteAuthor: '',
+      quoteRole: '',
+      theme: 'dark',
+      presenterNotes: '',
+    };
+  }
+  // Card → Banner
+  if (fromType === 'jankx/embla-carousel-card' && toType === 'jankx/embla-carousel-slide') {
+    return {
+      imageUrl: '',
+      imageAlt: '',
+      badge: attrs.badgeText || '',
+      title: attrs.title || '',
+      subtitle: attrs.description || '',
+      ctaText: attrs.actionText || '',
+      ctaLink: '#',
+      overlayOpacity: 50,
+      textAlignment: 'left',
+    };
+  }
+  // Card → Presentation
+  if (fromType === 'jankx/embla-carousel-card' && toType === 'jankx/embla-carousel-presentation-slide') {
+    return {
+      layout: 'title',
+      title: attrs.title || '',
+      subtitle: '',
+      bodyText: attrs.description || '',
+      bullets: [],
+      statsNumber: attrs.metricValue || '',
+      statsLabel: attrs.metricLabel || '',
+      quoteText: '',
+      quoteAuthor: '',
+      quoteRole: '',
+      theme: 'dark',
+      presenterNotes: '',
+    };
+  }
+  // Presentation → Banner
+  if (fromType === 'jankx/embla-carousel-presentation-slide' && toType === 'jankx/embla-carousel-slide') {
+    return {
+      imageUrl: '',
+      imageAlt: '',
+      badge: '',
+      title: attrs.title || '',
+      subtitle: attrs.subtitle || '',
+      ctaText: '',
+      ctaLink: '#',
+      overlayOpacity: 50,
+      textAlignment: 'left',
+    };
+  }
+  // Presentation → Card
+  if (fromType === 'jankx/embla-carousel-presentation-slide' && toType === 'jankx/embla-carousel-card') {
+    return {
+      category: 'KHỐI',
+      title: attrs.title || '',
+      description: attrs.bodyText || attrs.subtitle || '',
+      badgeText: '',
+      metricValue: attrs.statsNumber || '',
+      metricLabel: attrs.statsLabel || '',
+      actionText: 'Chi tiết',
+      cardColor: 'slate',
+    };
+  }
+  return attrs;
+}
+
 export default function Edit({
   attributes,
   setAttributes,
@@ -92,9 +199,39 @@ export default function Edit({
     className: 'wp-block-jankx-embla-carousel-editor',
   });
 
+  const { replaceBlock } = useDispatch(blockEditorStore);
+
   const update = (updated: Partial<EmblaCarouselAttributes>) => {
     setAttributes(updated);
   };
+
+  const handleVariantChange = useCallback(
+    (newVariant: CarouselVariant) => {
+      const oldVariant = attributes.variant;
+      if (oldVariant === newVariant) return;
+
+      const newChildType = VARIANT_CHILD_BLOCK[newVariant];
+
+      // Get inner blocks directly from store (avoids useSelect re-render issues)
+      const store = wpSelect(blockEditorStore);
+      const block = store.getBlock(clientId);
+      const innerBlocks = block?.innerBlocks || [];
+
+      // Transform each inner block
+      innerBlocks.forEach((childBlock: any) => {
+        if (!childBlock || !childBlock.name || !childBlock.clientId) return;
+        const oldType = childBlock.name;
+        if (oldType === newChildType) return;
+
+        const mappedAttrs = mapAttributes(oldType, newChildType, childBlock.attributes || {});
+        const newBlock = createBlock(newChildType, mappedAttrs);
+        replaceBlock(childBlock.clientId, newBlock);
+      });
+
+      update({ variant: newVariant });
+    },
+    [attributes.variant, clientId, replaceBlock]
+  );
 
   const resetDefaults = () => {
     setAttributes(defaultAttributes);
@@ -134,7 +271,7 @@ export default function Edit({
                 variant={
                   attributes.variant === opt.value ? 'primary' : 'secondary'
                 }
-                onClick={() => update({ variant: opt.value as any })}
+                onClick={() => handleVariantChange(opt.value as CarouselVariant)}
               >
                 {opt.label}
               </Button>
