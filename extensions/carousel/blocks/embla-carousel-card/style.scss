@@ -1,0 +1,172 @@
+.embla-carousel__slide--card {
+  flex: 0 0 100%;
+  min-width: 0;
+
+  @media (min-width: 640px) {
+    flex: 0 0 50%;
+  }
+
+  @media (min-width: 1024px) {
+    flex: 0 0 33.333%;
+  }
+
+  .embla-carousel__card-inner {
+    height: 100%;
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: var(--embla-border-radius, 16px);
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    transition: all 0.2s ease;
+
+    &:hover {
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    }
+  }
+
+  .embla-carousel__card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+
+  .embla-carousel__card-category {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #64748b;
+  }
+
+  .embla-carousel__card-badge {
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 10px;
+    font-weight: 600;
+    border: 1px solid;
+  }
+
+  .embla-carousel__card-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0 0 8px;
+    line-height: 1.3;
+  }
+
+  .embla-carousel__card-description {
+    font-size: 14px;
+    color: #475569;
+    line-height: 1.6;
+    margin: 0 0 auto;
+  }
+
+  .embla-carousel__card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px solid #f1f5f9;
+  }
+
+  .embla-carousel__card-metric {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .embla-carousel__card-metric-value {
+    font-size: 20px;
+    font-weight: 900;
+    letter-spacing: -0.02em;
+  }
+
+  .embla-carousel__card-metric-label {
+    font-size: 11px;
+    color: #64748b;
+    font-weight: 500;
+  }
+
+  .embla-carousel__card-ready {
+    font-size: 12px;
+    color: #16a34a;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+
+    &::before {
+      content: '';
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #16a34a;
+      display: inline-block;
+    }
+  }
+
+  .embla-carousel__card-action {
+    font-size: 12px;
+    font-weight: 600;
+    color: #0f172a;
+  }
+
+  /* Color Variants */
+  &.embla-carousel__card--slate {
+    .embla-carousel__card-badge {
+      background: #f1f5f9;
+      color: #475569;
+      border-color: #e2e8f0;
+    }
+    .embla-carousel__card-metric-value { color: #0f172a; }
+    .embla-carousel__card-inner:hover { border-color: #94a3b8; }
+  }
+
+  &.embla-carousel__card--indigo {
+    .embla-carousel__card-badge {
+      background: #eef2ff;
+      color: #4338ca;
+      border-color: #c7d2fe;
+    }
+    .embla-carousel__card-metric-value { color: #4f46e5; }
+    .embla-carousel__card-inner:hover { border-color: #818cf8; }
+  }
+
+  &.embla-carousel__card--emerald {
+    .embla-carousel__card-badge {
+      background: #ecfdf5;
+      color: #047857;
+      border-color: #a7f3d0;
+    }
+    .embla-carousel__card-metric-value { color: #059669; }
+    .embla-carousel__card-inner:hover { border-color: #34d399; }
+  }
+
+  &.embla-carousel__card--amber {
+    .embla-carousel__card-badge {
+      background: #fffbeb;
+      color: #b45309;
+      border-color: #fde68a;
+    }
+    .embla-carousel__card-metric-value { color: #d97706; }
+    .embla-carousel__card-inner:hover { border-color: #fbbf24; }
+  }
+
+  &.embla-carousel__card--rose {
+    .embla-carousel__card-badge {
+      background: #fff1f2;
+      color: #be123c;
+      border-color: #fecdd3;
+    }
+    .embla-carousel__card-metric-value { color: #e11d48; }
+    .embla-carousel__card-inner:hover { border-color: #fb7185; }
+  }
+}
+
+/* Editor */
+.embla-carousel__card-editor {
+  padding: 24px;
+  min-height: 280px;
+}

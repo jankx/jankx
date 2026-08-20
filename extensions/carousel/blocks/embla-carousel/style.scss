@@ -1,0 +1,212 @@
+.wp-block-jankx-embla-carousel {
+  --embla-gap: 20px;
+  --embla-border-radius: 16px;
+  position: relative;
+  overflow: hidden;
+}
+
+.embla-carousel__viewport {
+  overflow: hidden;
+  width: 100%;
+}
+
+.embla-carousel__container {
+  display: flex;
+  gap: var(--embla-gap);
+  touch-action: pan-y;
+}
+
+/* Navigation Arrows */
+.embla-carousel__arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(0, 0, 0, 0.4);
+  color: #fff;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.7);
+    transform: translateY(-50%) scale(1.08);
+  }
+
+  &:active {
+    transform: translateY(-50%) scale(0.94);
+  }
+
+  &:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+
+  svg {
+    width: 20px;
+    height: 20px;
+    transition: transform 0.2s ease;
+  }
+
+  &:hover:not(:disabled) svg {
+    transform: scale(1.1);
+  }
+
+  &--prev {
+    left: 12px;
+  }
+
+  &--next {
+    right: 12px;
+  }
+}
+
+/* Dots Pagination */
+.embla-carousel__dots {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 0;
+
+  &[data-dot-type="bullets"] {
+    .embla-carousel__dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: rgba(0, 0, 0, 0.2);
+      border: none;
+      padding: 0;
+      cursor: pointer;
+      transition: all 0.3s ease;
+
+      &.is-active {
+        width: 24px;
+        background: #1e293b;
+      }
+
+      &:hover:not(.is-active) {
+        background: rgba(0, 0, 0, 0.4);
+      }
+    }
+  }
+
+  &[data-dot-type="bars"] {
+    .embla-carousel__dot {
+      height: 6px;
+      width: 6px;
+      border-radius: 3px;
+      background: rgba(0, 0, 0, 0.2);
+      border: none;
+      padding: 0;
+      cursor: pointer;
+      transition: all 0.3s ease;
+
+      &.is-active {
+        width: 32px;
+        background: #1e293b;
+      }
+
+      &:hover:not(.is-active) {
+        background: rgba(0, 0, 0, 0.4);
+      }
+    }
+  }
+
+  &[data-dot-type="numbers"] {
+    .embla-carousel__dot {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: transparent;
+      border: 1px solid rgba(0, 0, 0, 0.15);
+      color: #475569;
+      font-size: 11px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+
+      &.is-active {
+        background: #1e293b;
+        color: #fff;
+        border-color: #1e293b;
+        font-weight: 700;
+      }
+
+      &:hover:not(.is-active) {
+        background: rgba(0, 0, 0, 0.05);
+      }
+    }
+  }
+
+  &[data-dot-type="counter"] {
+    .embla-carousel__counter {
+      padding: 4px 12px;
+      border-radius: 20px;
+      background: rgba(0, 0, 0, 0.06);
+      font-size: 12px;
+      font-family: monospace;
+      color: #475569;
+
+      .is-active {
+        color: #16a34a;
+        font-weight: 700;
+      }
+    }
+  }
+}
+
+/* Progress Bar */
+.embla-carousel__progress {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.2);
+  z-index: 15;
+  overflow: hidden;
+}
+
+.embla-carousel__progress-bar {
+  height: 100%;
+  background: #16a34a;
+  width: 0%;
+  transition: width 0.15s ease-out;
+}
+
+/* Shadow Intensity Variants */
+.shadow-intensity-1 {
+  box-shadow: 0 4px 6px -1px rgba(15, 23, 42, 0.1);
+}
+
+.shadow-intensity-2 {
+  box-shadow: 0 10px 15px -3px rgba(15, 23, 42, 0.15);
+}
+
+.shadow-intensity-3 {
+  box-shadow: 0 20px 25px -5px rgba(15, 23, 42, 0.2),
+    0 0 0 1px rgba(15, 23, 42, 0.05);
+}
+
+.shadow-intensity-4 {
+  box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.3),
+    0 0 0 1px rgba(15, 23, 42, 0.1);
+}
+
+.shadow-intensity-5 {
+  box-shadow: 0 30px 60px -15px rgba(15, 23, 42, 0.35),
+    0 0 0 1px rgba(15, 23, 42, 0.15);
+}
+
+.shadow-none {
+  box-shadow: none;
+}

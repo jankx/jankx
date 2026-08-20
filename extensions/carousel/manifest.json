@@ -1,0 +1,16 @@
+{
+  "name": "Embla Carousel",
+  "description": "Hệ thống Embla Carousel đa năng tương thích Gutenberg Block (Banner, InnerBlocks, Presentation Slides) với cấu trúc module chuẩn.",
+  "version": "1.0.0",
+  "extension_id": "embla-carousel",
+  "context": ["admin", "editor", "frontend"],
+  "caller": {
+    "file": "CarouselExtension.php",
+    "class": "Jankx\\Extensions\\Carousel\\CarouselExtension",
+    "method": "init"
+  },
+  "requirements": {
+    "php": ">=7.4"
+  },
+  "auto_activate": true
+}

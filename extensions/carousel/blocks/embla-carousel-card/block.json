@@ -1,0 +1,52 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "jankx/embla-carousel-card",
+  "version": "1.0.0",
+  "title": "Carousel Card",
+  "category": "jankx",
+  "icon": "id",
+  "description": "Một card nội dung trong InnerBlocks Carousel.",
+  "parent": ["jankx/embla-carousel"],
+  "usesContext": ["jankx/embla-carousel-variant"],
+  "supports": {
+    "html": false
+  },
+  "attributes": {
+    "category": {
+      "type": "string",
+      "default": "MỚI"
+    },
+    "title": {
+      "type": "string",
+      "default": "Tiêu đề card"
+    },
+    "description": {
+      "type": "string",
+      "default": "Mô tả nội dung card."
+    },
+    "badgeText": {
+      "type": "string",
+      "default": ""
+    },
+    "metricValue": {
+      "type": "string",
+      "default": ""
+    },
+    "metricLabel": {
+      "type": "string",
+      "default": ""
+    },
+    "actionText": {
+      "type": "string",
+      "default": "Chi tiết"
+    },
+    "cardColor": {
+      "type": "string",
+      "default": "slate",
+      "enum": ["slate", "indigo", "emerald", "amber", "rose"]
+    }
+  },
+  "editorScript": "file:./build/index.js",
+  "style": "file:./build/style.css"
+}

@@ -1,0 +1,62 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "jankx/embla-carousel-slide",
+  "version": "1.0.0",
+  "title": "Carousel Banner Slide",
+  "category": "jankx",
+  "icon": "format-image",
+  "description": "Một slide banner trong Embla Carousel với hình ảnh, tiêu đề và nút CTA.",
+  "parent": ["jankx/embla-carousel"],
+  "usesContext": ["jankx/embla-carousel-variant"],
+  "supports": {
+    "html": false,
+    "spacing": {
+      "margin": true
+    }
+  },
+  "attributes": {
+    "imageUrl": {
+      "type": "string",
+      "default": ""
+    },
+    "imageAlt": {
+      "type": "string",
+      "default": ""
+    },
+    "imageId": {
+      "type": "number"
+    },
+    "badge": {
+      "type": "string",
+      "default": ""
+    },
+    "title": {
+      "type": "string",
+      "default": "Tiêu đề slide"
+    },
+    "subtitle": {
+      "type": "string",
+      "default": "Mô tả ngắn gọn cho slide này."
+    },
+    "ctaText": {
+      "type": "string",
+      "default": "Xem thêm"
+    },
+    "ctaLink": {
+      "type": "string",
+      "default": "#"
+    },
+    "overlayOpacity": {
+      "type": "number",
+      "default": 50
+    },
+    "textAlignment": {
+      "type": "string",
+      "default": "left",
+      "enum": ["left", "center", "right"]
+    }
+  },
+  "editorScript": "file:./build/index.js",
+  "style": "file:./build/style.css"
+}

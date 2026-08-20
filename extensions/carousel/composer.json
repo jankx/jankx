@@ -1,0 +1,14 @@
+{
+    "name": "jankx/carousel-extension",
+    "description": "Embla Carousel Gutenberg Block Extension for Jankx Theme",
+    "type": "wordpress-theme-extension",
+    "license": "proprietary",
+    "autoload": {
+        "psr-4": {
+            "Jankx\\Extensions\\Carousel\\": "src/"
+        }
+    },
+    "require": {
+        "php": ">=7.4"
+    }
+}
