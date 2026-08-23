@@ -43,8 +43,6 @@
   flex: none !important;
   width: 100% !important;
   height: 100% !important;
-  width: auto;
-  height: auto;
   pointer-events: none;
 }
 @media (max-width: 1024px) {
