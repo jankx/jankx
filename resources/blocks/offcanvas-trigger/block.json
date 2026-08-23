@@ -62,7 +62,7 @@
         }
     },
     "textdomain": "jankx",
-    "editorScript": "file:./build/index.js",
-    "style": "file:./build/style.css",
-    "editorStyle": "file:./build/editor.css"
+    "editorScript": "file:../../dist/blocks/offcanvas-trigger/index.js",
+    "style": "file:../../dist/blocks/offcanvas-trigger/style.css",
+    "editorStyle": "file:../../dist/blocks/offcanvas-trigger/editor.css"
 }

@@ -24,13 +24,13 @@ class OffcanvasTriggerBlock extends Block
         // to ensure it's available even if the sidebar block is not on the page
         add_action('wp_enqueue_scripts', function () {
             $handle = 'jankx-offcanvas-sidebar-frontend';
-            $asset_file = $this->blockPath . '/../offcanvas-sidebar/build/frontend.asset.php';
+            $asset_file = dirname($this->blockPath) . '/dist/blocks/offcanvas-sidebar/frontend.asset.php';
             
             if (file_exists($asset_file)) {
                 $asset = include $asset_file;
                 wp_enqueue_script(
                     $handle,
-                    get_template_directory_uri() . '/resources/blocks/offcanvas-sidebar/build/frontend.js',
+                    get_template_directory_uri() . '/resources/dist/blocks/offcanvas-sidebar/frontend.js',
                     $asset['dependencies'] ?? [],
                     $asset['version'] ?? false,
                     true

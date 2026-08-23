@@ -8,9 +8,9 @@
     "icon": "embed-generic",
     "description": "Safely embed external content via iframe with customizable settings and live preview",
     "textdomain": "jankx",
-    "editorScript": "file:./build/index.js",
-    "editorStyle": "file:./build/editor.css",
-    "style": "file:./build/style.css",
+    "editorScript": "file:../../dist/blocks/safe-iframe/index.js",
+    "editorStyle": "file:../../dist/blocks/safe-iframe/editor.css",
+    "style": "file:../../dist/blocks/safe-iframe/style.css",
     "supports": {
         "html": false,
         "align": [

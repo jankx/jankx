@@ -36,7 +36,7 @@
             "default": "left"
         }
     },
-    "editorScript": "file:./build/index.js",
-    "viewScript": "file:./build/view.js",
-    "style": "file:./build/style.css"
+    "editorScript": "file:../../dist/blocks/layout-switcher/index.js",
+    "viewScript": "file:../../dist/blocks/layout-switcher/view.js",
+    "style": "file:../../dist/blocks/layout-switcher/style.css"
 }

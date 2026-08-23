@@ -65,7 +65,7 @@
   "supports": {
     "innerBlocks": true
   },
-  "editorScript": "file:./build/index.js",
-  "editorStyle": "file:./build/editor.css",
-  "style": "file:./build/style.css"
+  "editorScript": "file:../../dist/blocks/text-input/index.js",
+  "editorStyle": "file:../../dist/blocks/text-input/editor.css",
+  "style": "file:../../dist/blocks/text-input/style.css"
 }

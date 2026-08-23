@@ -39,6 +39,6 @@
             "lineHeight": false
         }
     },
-    "editorScript": "file:./build/index.js",
-    "editorStyle": "file:./build/index.css"
+    "editorScript": "file:../../dist/blocks/typography/index.js",
+    "editorStyle": "file:../../dist/blocks/typography/index.css"
 }

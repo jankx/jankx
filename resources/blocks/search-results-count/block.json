@@ -36,7 +36,7 @@
             "padding": true
         }
     },
-    "editorScript": "file:./build/index.js",
-    "style": "file:./build/style.css",
-    "editorStyle": "file:./build/editor.css"
+    "editorScript": "file:../../dist/blocks/search-results-count/index.js",
+    "style": "file:../../dist/blocks/search-results-count/style.css",
+    "editorStyle": "file:../../dist/blocks/search-results-count/editor.css"
 }

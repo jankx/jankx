@@ -67,8 +67,8 @@ function jankx_blocks_integration_missing_notice(): void
  */
 function jankx_enqueue_blocks_bridge(): void
 {
-    $bridgeScript = get_template_directory() . '/resources/blocks/integration/build/jankx-blocks-bridge.js';
-    $bridgeAsset = get_template_directory() . '/resources/blocks/integration/build/jankx-blocks-bridge.asset.php';
+    $bridgeScript = get_template_directory() . '/resources/dist/blocks/integration/jankx-blocks-bridge.js';
+    $bridgeAsset = get_template_directory() . '/resources/dist/blocks/integration/jankx-blocks-bridge.asset.php';
 
     if (!file_exists($bridgeScript)) {
         return;
@@ -88,7 +88,7 @@ function jankx_enqueue_blocks_bridge(): void
 
     wp_enqueue_script(
         'jankx-blocks-bridge',
-        get_template_directory_uri() . '/resources/blocks/integration/build/jankx-blocks-bridge.js',
+        get_template_directory_uri() . '/resources/dist/blocks/integration/jankx-blocks-bridge.js',
         $deps,
         $asset['version'],
         true

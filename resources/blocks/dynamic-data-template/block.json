@@ -9,9 +9,9 @@
   ],
   "description": "Markup template để render từng item trong Dynamic Data Layout block",
   "textdomain": "jankx",
-  "editorScript": "file:./build/index.js",
-  "editorStyle": "file:./build/editor.css",
-  "viewScript": "file:./build/frontend.js",
+  "editorScript": "file:../../dist/blocks/dynamic-data-template/index.js",
+  "editorStyle": "file:../../dist/blocks/dynamic-data-template/editor.css",
+  "viewScript": "file:../../dist/blocks/dynamic-data-template/frontend.js",
   "usesContext": [
     "queryId",
     "postType",

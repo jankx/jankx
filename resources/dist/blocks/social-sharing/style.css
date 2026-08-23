@@ -1,0 +1,151 @@
+/*!*************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!./blocks/social-sharing/style.scss ***!
+  \*************************************************************************************************************************************************************************************************/
+.wp-block-jankx-social-sharing {
+  margin: 2rem 0;
+}
+.wp-block-jankx-social-sharing .sharing-title {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: #333;
+}
+.wp-block-jankx-social-sharing .sharing-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.wp-block-jankx-social-sharing .sharing-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border: none;
+  background: var(--wp--preset--color--primary, #f0f0f0);
+  color: var(--wp--preset--color--base, #fff);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.9rem;
+  text-decoration: none;
+}
+.wp-block-jankx-social-sharing .sharing-button:hover {
+  background: var(--wp--preset--color--secondary, #e0e0e0);
+  transform: translateY(-2px);
+}
+.wp-block-jankx-social-sharing .sharing-button .sharing-icon {
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.wp-block-jankx-social-sharing.alignment-left .sharing-buttons {
+  justify-content: flex-start;
+}
+.wp-block-jankx-social-sharing.alignment-center .sharing-buttons {
+  justify-content: center;
+}
+.wp-block-jankx-social-sharing.alignment-right .sharing-buttons {
+  justify-content: flex-end;
+}
+.wp-block-jankx-social-sharing.size-small .sharing-button {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.8rem;
+}
+.wp-block-jankx-social-sharing.size-small .sharing-button .sharing-icon {
+  width: 16px;
+  height: 16px;
+}
+.wp-block-jankx-social-sharing.size-large .sharing-button {
+  padding: 0.75rem 1.5rem;
+  font-size: 1.1rem;
+}
+.wp-block-jankx-social-sharing.size-large .sharing-button .sharing-icon {
+  width: 24px;
+  height: 24px;
+}
+.wp-block-jankx-social-sharing.style-outlined .sharing-button {
+  background: transparent;
+  border: 2px solid #ddd;
+}
+.wp-block-jankx-social-sharing.style-outlined .sharing-button:hover {
+  border-color: #333;
+  background: transparent;
+}
+.wp-block-jankx-social-sharing.style-filled .sharing-button {
+  color: white;
+}
+.wp-block-jankx-social-sharing.style-filled .sharing-button.facebook {
+  background: #1877f2;
+}
+.wp-block-jankx-social-sharing.style-filled .sharing-button.facebook:hover {
+  background: rgb(11.4549180328, 95.1639344262, 203.5450819672);
+}
+.wp-block-jankx-social-sharing.style-filled .sharing-button.twitter {
+  background: #1da1f2;
+}
+.wp-block-jankx-social-sharing.style-filled .sharing-button.twitter:hover {
+  background: rgb(11.9665271967, 133.4728033473, 208.0334728033);
+}
+.wp-block-jankx-social-sharing.style-filled .sharing-button.linkedin {
+  background: #0077b5;
+}
+.wp-block-jankx-social-sharing.style-filled .sharing-button.linkedin:hover {
+  background: rgb(0, 85.4696132597, 130);
+}
+.wp-block-jankx-social-sharing.style-filled .sharing-button.whatsapp {
+  background: #25d366;
+}
+.wp-block-jankx-social-sharing.style-filled .sharing-button.whatsapp:hover {
+  background: rgb(29.3911290323, 167.6088709677, 81.0241935484);
+}
+.wp-block-jankx-social-sharing.style-filled .sharing-button.telegram {
+  background: #0088cc;
+}
+.wp-block-jankx-social-sharing.style-filled .sharing-button.telegram:hover {
+  background: #006699;
+}
+.wp-block-jankx-social-sharing.style-filled .sharing-button.pinterest {
+  background: #bd081c;
+}
+.wp-block-jankx-social-sharing.style-filled .sharing-button.pinterest:hover {
+  background: rgb(140.0710659898, 5.9289340102, 20.7512690355);
+}
+.wp-block-jankx-social-sharing.style-filled .sharing-button.reddit {
+  background: #ff4500;
+}
+.wp-block-jankx-social-sharing.style-filled .sharing-button.reddit:hover {
+  background: rgb(204, 55.2, 0);
+}
+.wp-block-jankx-social-sharing.style-filled .sharing-button.email {
+  background: #666;
+}
+.wp-block-jankx-social-sharing.style-filled .sharing-button.email:hover {
+  background: rgb(76.5, 76.5, 76.5);
+}
+.wp-block-jankx-social-sharing.style-filled .sharing-button.copy {
+  background: #999;
+}
+.wp-block-jankx-social-sharing.style-filled .sharing-button.copy:hover {
+  background: rgb(127.5, 127.5, 127.5);
+}
+.wp-block-jankx-social-sharing.style-rounded .sharing-button {
+  border-radius: 50%;
+  padding: 0.75rem;
+  width: 45px;
+  height: 45px;
+  justify-content: center;
+}
+.wp-block-jankx-social-sharing.style-rounded .sharing-button .sharing-label {
+  display: none;
+}
+.wp-block-jankx-social-sharing .no-networks {
+  color: #999;
+  font-style: italic;
+  padding: 1rem;
+  text-align: center;
+  border: 2px dashed #ddd;
+  border-radius: 8px;
+}
+
+/*# sourceMappingURL=style.css.map*/

@@ -185,7 +185,7 @@
 			"label": "Modern"
 		}
 	],
-	"editorScript": "file:./build/index.js",
-	"editorStyle": "file:./build/editor.css",
-	"style": "file:./build/style.css"
+	"editorScript": "file:../../dist/blocks/advanced-image-box/index.js",
+	"editorStyle": "file:../../dist/blocks/advanced-image-box/editor.css",
+	"style": "file:../../dist/blocks/advanced-image-box/style.css"
 }

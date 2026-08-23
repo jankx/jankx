@@ -138,8 +138,8 @@
 		}
 	},
 	"textdomain": "jankx",
-	"editorScript": "file:./build/index.js",
-	"editorStyle": "file:./build/editor.css",
-	"style": "file:./build/style.css",
-	"viewScript": "file:./build/frontend.js"
+	"editorScript": "file:../../dist/blocks/smart-search/index.js",
+	"editorStyle": "file:../../dist/blocks/smart-search/editor.css",
+	"style": "file:../../dist/blocks/smart-search/style.css",
+	"viewScript": "file:../../dist/blocks/smart-search/frontend.js"
 }

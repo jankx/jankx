@@ -1,0 +1,31 @@
+/*!**************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!./blocks/carousel-slide/editor.scss ***!
+  \**************************************************************************************************************************************************************************************************/
+.editor-styles-wrapper .wp-block-jankx-carousel-slide {
+  position: relative;
+  overflow: hidden;
+}
+.editor-styles-wrapper .wp-block-jankx-carousel-slide .carousel-slide__content {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+}
+.editor-styles-wrapper .wp-block-jankx-carousel-slide .carousel-slide__overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+.editor-styles-wrapper .wp-block-jankx-carousel-slide.image-size-contain {
+  background-size: contain;
+}
+.editor-styles-wrapper .wp-block-jankx-carousel-slide.image-size-cover {
+  background-size: cover;
+}
+.editor-styles-wrapper .wp-block-jankx-carousel-slide.image-size-fullwidth {
+  background-size: 100% 100%;
+  background-position: center;
+}
+
+/*# sourceMappingURL=editor.css.map*/

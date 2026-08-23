@@ -8,9 +8,9 @@
   "icon": "layout",
   "description": "Hiển thị danh sách posts theo layout tùy chỉnh với WordPress query builder",
   "textdomain": "jankx",
-  "editorScript": "file:./build/index.js",
-  "editorStyle": "file:./build/editor.css",
-  "style": "file:./build/style.css",
+  "editorScript": "file:../../dist/blocks/dynamic-data-layout/index.js",
+  "editorStyle": "file:../../dist/blocks/dynamic-data-layout/editor.css",
+  "style": "file:../../dist/blocks/dynamic-data-layout/style.css",
   "providesContext": {
     "queryId": "queryId",
     "postType": "postType",

@@ -1,1 +1,0 @@
-{"version":3,"file":"blocks/search-results-count/build/style.css","mappings":"AAAA,4BACI,qBACA,kC","sources":["webpack://jankx/./blocks/search-results-count/style.scss"],"sourcesContent":[".jankx-search-results-count {\n    display: inline-block;\n    font-variant-numeric: tabular-nums;\n}"],"names":[],"sourceRoot":""}

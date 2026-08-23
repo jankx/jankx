@@ -102,9 +102,9 @@
             "styleType": "modern"
         }
     },
-    "editorScript": "file:./build/index.js",
-    "editorStyle": "file:./build/editor.css",
-    "viewScript": "file:./build/view.js",
-    "style": "file:./build/style.css"
+    "editorScript": "file:../../dist/blocks/smart-tabs/index.js",
+    "editorStyle": "file:../../dist/blocks/smart-tabs/editor.css",
+    "viewScript": "file:../../dist/blocks/smart-tabs/view.js",
+    "style": "file:../../dist/blocks/smart-tabs/style.css"
 }
 

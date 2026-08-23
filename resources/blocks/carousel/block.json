@@ -237,10 +237,10 @@
   "providesContext": {
     "jankx/carouselId": "anchor"
   },
-  "editorScript": "file:./build/index.js",
-  "editorStyle": "file:./build/editor.css",
-  "viewScript": "file:./build/view.js",
-  "style": "file:./build/style.css",
+  "editorScript": "file:../../dist/blocks/carousel/index.js",
+  "editorStyle": "file:../../dist/blocks/carousel/editor.css",
+  "viewScript": "file:../../dist/blocks/carousel/view.js",
+  "style": "file:../../dist/blocks/carousel/style.css",
   "styles": [
     {
       "name": "default",

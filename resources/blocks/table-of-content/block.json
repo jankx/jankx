@@ -152,10 +152,10 @@
     "allowedBlocks": [
         "core/navigation"
     ],
-    "editorScript": "file:./build/index.js",
-    "editorStyle": "file:./build/editor.css",
-    "viewScript": "file:./build/view.js",
-    "style": "file:./build/style.css",
+    "editorScript": "file:../../dist/blocks/table-of-content/index.js",
+    "editorStyle": "file:../../dist/blocks/table-of-content/editor.css",
+    "viewScript": "file:../../dist/blocks/table-of-content/view.js",
+    "style": "file:../../dist/blocks/table-of-content/style.css",
     "styles": [
         {
             "name": "default",

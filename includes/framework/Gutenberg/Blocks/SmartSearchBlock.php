@@ -79,24 +79,24 @@ class SmartSearchBlock extends Block
         }
 
         // Enqueue style
-        $style_path = $block_path . '/build/style.css';
+        $style_path = dirname($block_path) . '/dist/blocks/smart-search/style.css';
         if (file_exists($style_path)) {
             wp_enqueue_style(
                 'jankx-smart-search-style',
-                get_template_directory_uri() . str_replace(get_template_directory(), '', $block_path) . '/build/style.css',
+                get_template_directory_uri() . str_replace(get_template_directory(), '', dirname($block_path)) . '/dist/blocks/smart-search/style.css',
                 [],
                 filemtime($style_path)
             );
         }
 
-        $asset_file = include $block_path . '/build/frontend.asset.php';
+        $asset_file = include dirname($block_path) . '/dist/blocks/smart-search/frontend.asset.php';
         if (!$asset_file) {
             return;
         }
 
         wp_enqueue_script(
             'jankx-smart-search-frontend',
-            get_template_directory_uri() . str_replace(get_template_directory(), '', $block_path) . '/build/frontend.js',
+            get_template_directory_uri() . str_replace(get_template_directory(), '', dirname($block_path)) . '/dist/blocks/smart-search/frontend.js',
             $asset_file['dependencies'],
             $asset_file['version'],
             true

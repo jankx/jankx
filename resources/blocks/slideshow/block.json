@@ -128,8 +128,8 @@
     "jankx/prevText": "prevText",
     "jankx/nextText": "nextText"
   },
-  "editorScript": "file:./build/index.js",
-  "editorStyle": "file:./build/editor.css",
-  "viewScript": "file:./build/view.js",
-  "style": "file:./build/style.css"
+  "editorScript": "file:../../dist/blocks/slideshow/index.js",
+  "editorStyle": "file:../../dist/blocks/slideshow/editor.css",
+  "viewScript": "file:../../dist/blocks/slideshow/view.js",
+  "style": "file:../../dist/blocks/slideshow/style.css"
 }

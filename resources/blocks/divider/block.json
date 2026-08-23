@@ -45,7 +45,7 @@
     { "name": "dotted", "label": "Dotted" },
     { "name": "line", "label": "Line" }
   ],
-  "editorScript": "file:./build/index.js",
-  "editorStyle": "file:./build/editor.css",
-  "style": "file:./build/style.css"
+  "editorScript": "file:../../dist/blocks/divider/index.js",
+  "editorStyle": "file:../../dist/blocks/divider/editor.css",
+  "style": "file:../../dist/blocks/divider/style.css"
 }

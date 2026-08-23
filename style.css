@@ -1,3 +1,6 @@
+/*!********************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!./scss/style.scss ***!
+  \********************************************************************************************************************************************************************************/
 /*!
 Theme Name: Jankx Framework
 Theme URI: https://wordpress.puleeno.com/jankx
@@ -8,7 +11,241 @@ Tags: SEO, landing-page, muli-layouts
 Author: Puleeno Nguyen
 Author URI: https://puleeno.com
 Text Domain: jankx
-*/iframe{border:0;margin:0;padding:0;vertical-align:middle;width:100%;min-height:400px;background:rgba(0,0,0,0)}body.jankx-header-overlay .wp-site-blocks{position:relative}body.jankx-header-overlay header.wp-block-template-part,body.jankx-header-overlay header.wp-block-group,body.jankx-header-overlay header.has-contrast-background-color,body.jankx-header-overlay header.has-background{position:absolute;top:0;left:0;right:0;width:100%;z-index:1000;background-color:rgba(0,0,0,0);background-image:none}body.jankx-header-overlay header.wp-block-template-part.is-sticky,body.jankx-header-overlay header.wp-block-group.is-sticky,body.jankx-header-overlay header.has-contrast-background-color.is-sticky,body.jankx-header-overlay header.has-background.is-sticky{position:fixed;background-color:var(--jankx-sticky-header-bg-color, #184962)}body.jankx-header-overlay.admin-bar header.is-sticky header.wp-block-template-part,body.jankx-header-overlay.admin-bar header.is-sticky header.wp-block-group,body.jankx-header-overlay.admin-bar header.is-sticky header.has-contrast-background-color,body.jankx-header-overlay.admin-bar header.is-sticky header.has-background{top:32px}header{transition:all .4s cubic-bezier(0.165, 0.84, 0.44, 1);will-change:transform,background-color,backdrop-filter}header.is-sticky{position:fixed;top:0;left:0;right:0;z-index:10000;box-shadow:0 10px 30px rgba(0,0,0,.2);animation:jankxHeaderSlideDown .5s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;background-color:rgba(24,73,98,.85);backdrop-filter:blur(15px);-webkit-backdrop-filter:blur(15px)}@supports(background-color: var(--jankx-sticky-header-bg-color)){header.is-sticky{background-color:var(--jankx-sticky-header-bg-color)}}header.is-sticky{padding-top:10px;padding-bottom:10px;transition:transform .4s cubic-bezier(0.165, 0.84, 0.44, 1),background-color .4s ease,opacity .4s ease}body.jankx-header-overlay header.is-sticky header.has-contrast-background-color{background-color:var(--jankx-sticky-header-bg-color, #1a1a1a)}@keyframes jankxHeaderSlideDown{from{transform:translateY(-100%);opacity:0}to{transform:translateY(0);opacity:1}}.admin-bar header.is-sticky{top:32px}@media(max-width: 782px){.admin-bar header.is-sticky{top:46px}}@media(max-width: 600px){.admin-bar header.is-sticky{top:0}}[class*=text-line]{display:-webkit-box;-webkit-box-orient:vertical;overflow:hidden}.text-line-1{-webkit-line-clamp:1}.text-line-2{-webkit-line-clamp:2}.text-line-3{-webkit-line-clamp:3}.text-line-4{-webkit-line-clamp:4}.text-line-5{-webkit-line-clamp:5}.text-line-6{-webkit-line-clamp:6}@media(max-width: 767.98px){.hide-mobile{display:none}}@media(min-width: 768px)and (max-width: 1023.98px){.hide-tablet{display:none}}@media(min-width: 1024px)and (max-width: 1439.98px){.hide-desktop{display:none}}@media(min-width: 1440px){.hide-fluid{display:none}}@media(min-width: 768px){.only-mobile{display:none}}@media(max-width: 767.98px){.only-tablet{display:none}}@media(min-width: 1024px){.only-tablet{display:none}}@media(max-width: 1023.98px){.only-desktop{display:none}}@media(min-width: 1440px){.only-desktop{display:none}}@media(max-width: 1439.98px){.only-fluid{display:none}}@media(max-width: 767.98px){.no-dimensions-mobile{margin:0;padding:0}}@media(min-width: 768px)and (max-width: 1023.98px){.no-dimensions-tablet{margin:0;padding:0}}@media(min-width: 1024px)and (max-width: 1439.98px){.no-dimensions-desktop{margin:0;padding:0}}@media(min-width: 1440px){.no-dimensions-fluid{margin:0;padding:0}}@media(max-width: 767.98px){.small-dimensions-mobile{margin:10px;padding:10px}}@media(min-width: 768px)and (max-width: 1023.98px){.small-dimensions-tablet{margin:10px;padding:10px}}@media(min-width: 1024px)and (max-width: 1439.98px){.small-dimensions-desktop{margin:10px;padding:10px}}@media(min-width: 1440px){.small-dimensions-fluid{margin:10px;padding:10px}}/*!************ =*= ****************
+*/
+iframe {
+  border: 0;
+  margin: 0;
+  padding: 0;
+  vertical-align: middle;
+  width: 100%;
+  min-height: 400px;
+  background: transparent;
+}
+
+body.jankx-header-overlay .wp-site-blocks {
+  position: relative;
+}
+body.jankx-header-overlay header.wp-block-template-part,
+body.jankx-header-overlay header.wp-block-group,
+body.jankx-header-overlay header.has-contrast-background-color,
+body.jankx-header-overlay header.has-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  z-index: 1000;
+  background-color: transparent;
+  background-image: none;
+}
+body.jankx-header-overlay header.wp-block-template-part.is-sticky,
+body.jankx-header-overlay header.wp-block-group.is-sticky,
+body.jankx-header-overlay header.has-contrast-background-color.is-sticky,
+body.jankx-header-overlay header.has-background.is-sticky {
+  position: fixed;
+  background-color: var(--jankx-sticky-header-bg-color, #184962);
+}
+body.jankx-header-overlay.admin-bar header.is-sticky header.wp-block-template-part,
+body.jankx-header-overlay.admin-bar header.is-sticky header.wp-block-group,
+body.jankx-header-overlay.admin-bar header.is-sticky header.has-contrast-background-color,
+body.jankx-header-overlay.admin-bar header.is-sticky header.has-background {
+  top: 32px;
+}
+
+header {
+  transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+  will-change: transform, background-color, backdrop-filter;
+}
+header.is-sticky {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 10000;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  animation: jankxHeaderSlideDown 0.5s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+  background-color: rgba(24, 73, 98, 0.85);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+}
+@supports (background-color: var(--jankx-sticky-header-bg-color)) {
+  header.is-sticky {
+    background-color: var(--jankx-sticky-header-bg-color);
+  }
+}
+header.is-sticky {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1), background-color 0.4s ease, opacity 0.4s ease;
+}
+
+body.jankx-header-overlay header.is-sticky header.has-contrast-background-color {
+  background-color: var(--jankx-sticky-header-bg-color, #1a1a1a);
+}
+
+@keyframes jankxHeaderSlideDown {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+.admin-bar header.is-sticky {
+  top: 32px;
+}
+@media (max-width: 782px) {
+  .admin-bar header.is-sticky {
+    top: 46px;
+  }
+}
+@media (max-width: 600px) {
+  .admin-bar header.is-sticky {
+    top: 0;
+  }
+}
+
+[class*=text-line] {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.text-line-1 {
+  -webkit-line-clamp: 1;
+}
+
+.text-line-2 {
+  -webkit-line-clamp: 2;
+}
+
+.text-line-3 {
+  -webkit-line-clamp: 3;
+}
+
+.text-line-4 {
+  -webkit-line-clamp: 4;
+}
+
+.text-line-5 {
+  -webkit-line-clamp: 5;
+}
+
+.text-line-6 {
+  -webkit-line-clamp: 6;
+}
+
+@media (max-width: 767.98px) {
+  .hide-mobile {
+    display: none;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1023.98px) {
+  .hide-tablet {
+    display: none;
+  }
+}
+
+@media (min-width: 1024px) and (max-width: 1439.98px) {
+  .hide-desktop {
+    display: none;
+  }
+}
+
+@media (min-width: 1440px) {
+  .hide-fluid {
+    display: none;
+  }
+}
+
+@media (min-width: 768px) {
+  .only-mobile {
+    display: none;
+  }
+}
+
+@media (max-width: 767.98px) {
+  .only-tablet {
+    display: none;
+  }
+}
+@media (min-width: 1024px) {
+  .only-tablet {
+    display: none;
+  }
+}
+
+@media (max-width: 1023.98px) {
+  .only-desktop {
+    display: none;
+  }
+}
+@media (min-width: 1440px) {
+  .only-desktop {
+    display: none;
+  }
+}
+
+@media (max-width: 1439.98px) {
+  .only-fluid {
+    display: none;
+  }
+}
+
+@media (max-width: 767.98px) {
+  .no-dimensions-mobile {
+    margin: 0;
+    padding: 0;
+  }
+}
+@media (min-width: 768px) and (max-width: 1023.98px) {
+  .no-dimensions-tablet {
+    margin: 0;
+    padding: 0;
+  }
+}
+@media (min-width: 1024px) and (max-width: 1439.98px) {
+  .no-dimensions-desktop {
+    margin: 0;
+    padding: 0;
+  }
+}
+@media (min-width: 1440px) {
+  .no-dimensions-fluid {
+    margin: 0;
+    padding: 0;
+  }
+}
+
+@media (max-width: 767.98px) {
+  .small-dimensions-mobile {
+    margin: 10px;
+    padding: 10px;
+  }
+}
+@media (min-width: 768px) and (max-width: 1023.98px) {
+  .small-dimensions-tablet {
+    margin: 10px;
+    padding: 10px;
+  }
+}
+@media (min-width: 1024px) and (max-width: 1439.98px) {
+  .small-dimensions-desktop {
+    margin: 10px;
+    padding: 10px;
+  }
+}
+@media (min-width: 1440px) {
+  .small-dimensions-fluid {
+    margin: 10px;
+    padding: 10px;
+  }
+}
+
+/*!************ =*= ****************
  * Please add your styles at bellow
  ************** =*= ****************/
 

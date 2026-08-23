@@ -116,8 +116,8 @@ class DynamicTermLayoutBlock extends DynamicDataLayoutBlock
             return;
         }
 
-        $view_js_path = $this->blockPath . '/build/view.js';
-        $view_asset_path = $this->blockPath . '/build/view.asset.php';
+        $view_js_path = dirname($this->blockPath) . '/dist/blocks/dynamic-term-layout/view.js';
+        $view_asset_path = dirname($this->blockPath) . '/dist/blocks/dynamic-term-layout/view.asset.php';
 
         if (file_exists($view_js_path)) {
             $asset = file_exists($view_asset_path) ? require $view_asset_path : [
@@ -129,7 +129,7 @@ class DynamicTermLayoutBlock extends DynamicDataLayoutBlock
             $handle = 'jankx-' . str_replace('/', '-', $block_name) . '-view';
 
             // Use UrlManager to get correct URL
-            $script_url = (new \Jankx\Managers\UrlManager())->blockAsset('dynamic-term-layout/build/view.js');
+            $script_url = (new \Jankx\Managers\UrlManager())->blockAsset('dist/blocks/dynamic-term-layout/view.js');
 
             wp_enqueue_script(
                 $handle,
@@ -141,8 +141,8 @@ class DynamicTermLayoutBlock extends DynamicDataLayoutBlock
         }
 
         // Enqueue dynamic-term-template styles since it's rendered via this block
-        $template_style_path = dirname($this->blockPath) . '/dynamic-term-template/build/style.css';
-        $template_asset_path = dirname($this->blockPath) . '/dynamic-term-template/build/style.asset.php';
+        $template_style_path = dirname($this->blockPath) . '/dist/blocks/dynamic-term-template/style.css';
+        $template_asset_path = dirname($this->blockPath) . '/dist/blocks/dynamic-term-template/style.asset.php';
 
         if (file_exists($template_style_path)) {
             $template_asset = file_exists($template_asset_path) ? require $template_asset_path : [
@@ -150,7 +150,7 @@ class DynamicTermLayoutBlock extends DynamicDataLayoutBlock
                 'version' => filemtime($template_style_path)
             ];
 
-            $template_style_url = get_template_directory_uri() . str_replace(get_template_directory(), '', dirname($this->blockPath)) . '/dynamic-term-template/build/style.css';
+            $template_style_url = get_template_directory_uri() . str_replace(get_template_directory(), '', dirname($this->blockPath)) . '/dist/blocks/dynamic-term-template/style.css';
 
             wp_enqueue_style(
                 'jankx-dynamic-term-template-style',
@@ -168,7 +168,7 @@ class DynamicTermLayoutBlock extends DynamicDataLayoutBlock
      */
     public function enqueueEditorAssets()
     {
-        $asset_file = $this->blockPath . '/build/index.asset.php';
+        $asset_file = dirname($this->blockPath) . '/dist/blocks/dynamic-term-layout/index.asset.php';
 
         if (!file_exists($asset_file)) {
             return;

@@ -104,7 +104,7 @@
 		}
 	},
 	"textdomain": "jankx",
-	"editorScript": "file:./build/index.js",
-	"editorStyle": "file:./build/editor.css",
-	"style": "file:./build/style.css"
+	"editorScript": "file:../../dist/blocks/author-box/index.js",
+	"editorStyle": "file:../../dist/blocks/author-box/editor.css",
+	"style": "file:../../dist/blocks/author-box/style.css"
 }

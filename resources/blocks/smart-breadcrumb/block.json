@@ -110,7 +110,7 @@
 		}
 	},
 	"textdomain": "jankx",
-	"editorScript": "file:./build/index.js",
-	"editorStyle": "file:./build/editor.css",
-	"style": "file:./build/style.css"
+	"editorScript": "file:../../dist/blocks/smart-breadcrumb/index.js",
+	"editorStyle": "file:../../dist/blocks/smart-breadcrumb/editor.css",
+	"style": "file:../../dist/blocks/smart-breadcrumb/style.css"
 }

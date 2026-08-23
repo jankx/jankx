@@ -12,194 +12,194 @@ module.exports = {
   context: path.resolve(__dirname),
   entry: {
 
-    'blocks/icon-picker/build/index': './blocks/icon-picker/index.tsx',
-    'blocks/icon-picker/build/save': './blocks/icon-picker/save.js',
-    'blocks/icon-picker/build/style': './blocks/icon-picker/style.scss',
-    'blocks/icon-picker/build/editor': './blocks/icon-picker/editor.scss',
+    'dist/blocks/icon-picker/index': './blocks/icon-picker/index.tsx',
+    'dist/blocks/icon-picker/save': './blocks/icon-picker/save.js',
+    'dist/blocks/icon-picker/style': './blocks/icon-picker/style.scss',
+    'dist/blocks/icon-picker/editor': './blocks/icon-picker/editor.scss',
 
-    'blocks/offcanvas-sidebar/build/index': './blocks/offcanvas-sidebar/index.tsx',
-    'blocks/offcanvas-sidebar/build/frontend': './blocks/offcanvas-sidebar/frontend.ts',
-    'blocks/offcanvas-sidebar/build/style': './blocks/offcanvas-sidebar/style.scss',
-    'blocks/offcanvas-sidebar/build/editor': './blocks/offcanvas-sidebar/editor.scss',
+    'dist/blocks/offcanvas-sidebar/index': './blocks/offcanvas-sidebar/index.tsx',
+    'dist/blocks/offcanvas-sidebar/frontend': './blocks/offcanvas-sidebar/frontend.ts',
+    'dist/blocks/offcanvas-sidebar/style': './blocks/offcanvas-sidebar/style.scss',
+    'dist/blocks/offcanvas-sidebar/editor': './blocks/offcanvas-sidebar/editor.scss',
 
-    'blocks/offcanvas-trigger/build/index': './blocks/offcanvas-trigger/index.tsx',
-    'blocks/offcanvas-trigger/build/style': './blocks/offcanvas-trigger/style.scss',
-    'blocks/offcanvas-trigger/build/editor': './blocks/offcanvas-trigger/editor.scss',
+    'dist/blocks/offcanvas-trigger/index': './blocks/offcanvas-trigger/index.tsx',
+    'dist/blocks/offcanvas-trigger/style': './blocks/offcanvas-trigger/style.scss',
+    'dist/blocks/offcanvas-trigger/editor': './blocks/offcanvas-trigger/editor.scss',
 
-    'blocks/svg-icon/build/index': './blocks/svg-icon/index.tsx',
-    'blocks/svg-icon/build/style': './blocks/svg-icon/style.scss',
-    'blocks/svg-icon/build/editor': './blocks/svg-icon/editor.scss',
+    'dist/blocks/svg-icon/index': './blocks/svg-icon/index.tsx',
+    'dist/blocks/svg-icon/style': './blocks/svg-icon/style.scss',
+    'dist/blocks/svg-icon/editor': './blocks/svg-icon/editor.scss',
 
-    'blocks/advanced-image-box/build/index': './blocks/advanced-image-box/index.tsx',
-    'blocks/advanced-image-box/build/style': './blocks/advanced-image-box/style.scss',
-    'blocks/advanced-image-box/build/editor': './blocks/advanced-image-box/editor.scss',
+    'dist/blocks/advanced-image-box/index': './blocks/advanced-image-box/index.tsx',
+    'dist/blocks/advanced-image-box/style': './blocks/advanced-image-box/style.scss',
+    'dist/blocks/advanced-image-box/editor': './blocks/advanced-image-box/editor.scss',
 
-    'blocks/table-of-content/build/index': './blocks/table-of-content/index.tsx',
-    'blocks/table-of-content/build/style': './blocks/table-of-content/style.scss',
-    'blocks/table-of-content/build/editor': './blocks/table-of-content/editor.scss',
-    'blocks/table-of-content/build/view': './blocks/table-of-content/view.ts',
-
-
-    'blocks/comment-count/build/index': './blocks/comment-count/index.tsx',
-    'blocks/comment-count/build/style': './blocks/comment-count/style.scss',
-    'blocks/comment-count/build/editor': './blocks/comment-count/editor.scss',
-
-    'blocks/search-results-count/build/index': './blocks/search-results-count/index.tsx',
-    'blocks/search-results-count/build/style': './blocks/search-results-count/style.scss',
-    'blocks/search-results-count/build/editor': './blocks/search-results-count/editor.scss',
-
-    'blocks/modal/build/index': './blocks/modal/index.js',
-    'blocks/modal/build/style': './blocks/modal/style.scss',
-    'blocks/modal/build/editor': './blocks/modal/editor.scss',
-    'blocks/modal/build/view': './blocks/modal/view.js',
+    'dist/blocks/table-of-content/index': './blocks/table-of-content/index.tsx',
+    'dist/blocks/table-of-content/style': './blocks/table-of-content/style.scss',
+    'dist/blocks/table-of-content/editor': './blocks/table-of-content/editor.scss',
+    'dist/blocks/table-of-content/view': './blocks/table-of-content/view.ts',
 
 
-    'blocks/smart-tabs/build/index': './blocks/smart-tabs/index.tsx',
-    'blocks/smart-tabs/build/style': './blocks/smart-tabs/style.scss',
-    'blocks/smart-tabs/build/editor': './blocks/smart-tabs/editor.scss',
-    'blocks/smart-tabs/build/view': './blocks/smart-tabs/view.js',
+    'dist/blocks/comment-count/index': './blocks/comment-count/index.tsx',
+    'dist/blocks/comment-count/style': './blocks/comment-count/style.scss',
+    'dist/blocks/comment-count/editor': './blocks/comment-count/editor.scss',
 
-    'blocks/smart-tab/build/index': './blocks/smart-tab/index.tsx',
-    'blocks/smart-tab/build/view': './blocks/smart-tab/view.js',
-    'blocks/smart-tab/build/style': './blocks/smart-tab/style.scss',
-    'blocks/smart-tab/build/editor': './blocks/smart-tab/editor.scss',
+    'dist/blocks/search-results-count/index': './blocks/search-results-count/index.tsx',
+    'dist/blocks/search-results-count/style': './blocks/search-results-count/style.scss',
+    'dist/blocks/search-results-count/editor': './blocks/search-results-count/editor.scss',
 
-    'blocks/social-sharing/build/index': './blocks/social-sharing/index.tsx',
-    'blocks/social-sharing/build/frontend': './blocks/social-sharing/frontend.ts',
-    'blocks/social-sharing/build/style': './blocks/social-sharing/style.scss',
-    'blocks/social-sharing/build/editor': './blocks/social-sharing/editor.scss',
-
-    'blocks/social-sharing-icon/build/index': './blocks/social-sharing-icon/index.tsx',
-    'blocks/social-sharing-icon/build/frontend': './blocks/social-sharing-icon/frontend.ts',
-    'blocks/social-sharing-icon/build/style': './blocks/social-sharing-icon/style.scss',
-    'blocks/social-sharing-icon/build/editor': './blocks/social-sharing-icon/editor.scss',
-
-    'blocks/author-box/build/index': './blocks/author-box/src/index.tsx',
-    'blocks/author-box/build/style': './blocks/author-box/src/style.scss',
-    'blocks/author-box/build/editor': './blocks/author-box/src/editor.scss',
-
-    'blocks/carousel/build/index': './blocks/carousel/index.tsx',
-    'blocks/carousel/build/view': './blocks/carousel/view.js',
-    'blocks/carousel/build/style': './blocks/carousel/style.scss',
-    'blocks/carousel/build/editor': './blocks/carousel/editor.scss',
-
-    'blocks/carousel-slide/build/index': './blocks/carousel-slide/index.tsx',
-    'blocks/carousel-slide/build/style': './blocks/carousel-slide/style.scss',
-    'blocks/carousel-slide/build/editor': './blocks/carousel-slide/editor.scss',
-
-    'blocks/testimonial/build/index': './blocks/testimonial/index.tsx',
-    'blocks/testimonial/build/style': './blocks/testimonial/style.scss',
-
-    'blocks/testimonials/build/index': './blocks/testimonials/index.tsx',
-    'blocks/testimonials/build/style': './blocks/testimonials/style.scss',
-    'blocks/testimonials/build/editor': './blocks/testimonials/editor.scss',
-
-    'blocks/carousel-banner/build/index': './blocks/carousel-banner/index.tsx',
-    'blocks/carousel-banner/build/style': './blocks/carousel-banner/style.scss',
-    'blocks/carousel-banner/build/editor': './blocks/carousel-banner/editor.scss',
-
-    'blocks/carousel-inner-blocks-overlay/build/index': './blocks/carousel-inner-blocks-overlay/index.tsx',
-    'blocks/carousel-inner-blocks-overlay/build/style': './blocks/carousel-inner-blocks-overlay/style.scss',
-    'blocks/carousel-inner-blocks-overlay/build/editor': './blocks/carousel-inner-blocks-overlay/editor.scss',
-
-    'blocks/slideshow/build/index': './blocks/slideshow/index.tsx',
-    'blocks/slideshow/build/save': './blocks/slideshow/save.tsx',
-    'blocks/slideshow/build/style': './blocks/slideshow/style.scss',
-    'blocks/slideshow/build/editor': './blocks/slideshow/editor.scss',
-    'blocks/slideshow/build/view': './blocks/slideshow/view.js',
-
-    'blocks/slideshow-container/build/index': './blocks/slideshow-container/index.tsx',
-    'blocks/slideshow-container/build/save': './blocks/slideshow-container/save.tsx',
-    'blocks/slideshow-container/build/style': './blocks/slideshow-container/style.scss',
-    'blocks/slideshow-container/build/editor': './blocks/slideshow-container/editor.scss',
-
-    'blocks/slideshow-item/build/index': './blocks/slideshow-item/index.tsx',
-    'blocks/slideshow-item/build/save': './blocks/slideshow-item/save.tsx',
-    'blocks/slideshow-item/build/style': './blocks/slideshow-item/style.scss',
-    'blocks/slideshow-item/build/editor': './blocks/slideshow-item/editor.scss',
-
-    'blocks/smart-breadcrumb/build/index': './blocks/smart-breadcrumb/src/index.js',
-    'blocks/smart-breadcrumb/build/style': './blocks/smart-breadcrumb/src/style.scss',
-    'blocks/smart-breadcrumb/build/editor': './blocks/smart-breadcrumb/src/editor.scss',
-
-    'blocks/advanced-button/build/index': './blocks/advanced-button/index.tsx',
-    'blocks/advanced-button/build/frontend': './blocks/advanced-button/frontend.ts',
-    'blocks/advanced-button/build/style': './blocks/advanced-button/style.scss',
-    'blocks/advanced-button/build/editor': './blocks/advanced-button/editor.scss',
-
-    'blocks/advanced-filter/build/index': './blocks/advanced-filter/index.tsx',
-
-    'blocks/advanced-filters/build/index': './blocks/advanced-filters/index.tsx',
-    'blocks/advanced-filters/build/frontend': './blocks/advanced-filters/frontend.ts',
-    'blocks/advanced-filters/build/style': './blocks/advanced-filters/style.scss',
-    'blocks/advanced-filters/build/editor': './blocks/advanced-filters/editor.scss',
-
-    'blocks/smart-search/build/index': './blocks/smart-search/index.tsx',
-    'blocks/smart-search/build/frontend': './blocks/smart-search/frontend.ts',
-    'blocks/smart-search/build/style': './blocks/smart-search/style.scss',
-    'blocks/smart-search/build/editor': './blocks/smart-search/editor.scss',
-
-    'blocks/dynamic-data-layout/build/index': './blocks/dynamic-data-layout/index.tsx',
-    'blocks/dynamic-data-layout/build/view': './blocks/dynamic-data-layout/view.js',
-    'blocks/dynamic-data-layout/build/style': './blocks/dynamic-data-layout/style.scss',
-    'blocks/dynamic-data-layout/build/editor': './blocks/dynamic-data-layout/editor.scss',
-
-    'blocks/dynamic-data-template/build/index': './blocks/dynamic-data-template/index.tsx',
-    'blocks/dynamic-data-template/build/frontend': './blocks/dynamic-data-template/frontend.ts',
-    'blocks/dynamic-data-template/build/style': './blocks/dynamic-data-template/style.scss',
-    'blocks/dynamic-data-template/build/editor': './blocks/dynamic-data-template/editor.scss',
-
-    'blocks/dynamic-term-layout/build/index': './blocks/dynamic-term-layout/index.tsx',
-    'blocks/dynamic-term-layout/build/view': './blocks/dynamic-term-layout/view.js',
-    'blocks/dynamic-term-layout/build/style': './blocks/dynamic-term-layout/style.scss',
-    'blocks/dynamic-term-layout/build/editor': './blocks/dynamic-term-layout/editor.scss',
-
-    'blocks/dynamic-term-template/build/index': './blocks/dynamic-term-template/index.tsx',
-    'blocks/dynamic-term-template/build/frontend': './blocks/dynamic-term-template/frontend.ts',
-    'blocks/dynamic-term-template/build/style': './blocks/dynamic-term-template/style.scss',
-    'blocks/dynamic-term-template/build/editor': './blocks/dynamic-term-template/editor.scss',
-
-    'blocks/human-readable-post-date/build/index': './blocks/human-readable-post-date/index.tsx',
-    'blocks/human-readable-post-date/build/style': './blocks/human-readable-post-date/style.scss',
-
-    'blocks/sticky-box/build/index': './blocks/sticky-box/index.tsx',
-    'blocks/sticky-box/build/style': './blocks/sticky-box/style.scss',
-    'blocks/sticky-box/build/editor': './blocks/sticky-box/editor.scss',
+    'dist/blocks/modal/index': './blocks/modal/index.js',
+    'dist/blocks/modal/style': './blocks/modal/style.scss',
+    'dist/blocks/modal/editor': './blocks/modal/editor.scss',
+    'dist/blocks/modal/view': './blocks/modal/view.js',
 
 
-    'blocks/star-rating/build/index': './blocks/star-rating/index.tsx',
-    'blocks/star-rating/build/style': './blocks/star-rating/style.scss',
-    'blocks/star-rating/build/editor': './blocks/star-rating/editor.scss',
+    'dist/blocks/smart-tabs/index': './blocks/smart-tabs/index.tsx',
+    'dist/blocks/smart-tabs/style': './blocks/smart-tabs/style.scss',
+    'dist/blocks/smart-tabs/editor': './blocks/smart-tabs/editor.scss',
+    'dist/blocks/smart-tabs/view': './blocks/smart-tabs/view.js',
 
-    'blocks/post-type-badge/build/index': './blocks/post-type-badge/index.tsx',
-    'blocks/post-type-badge/build/style': './blocks/post-type-badge/style.scss',
+    'dist/blocks/smart-tab/index': './blocks/smart-tab/index.tsx',
+    'dist/blocks/smart-tab/view': './blocks/smart-tab/view.js',
+    'dist/blocks/smart-tab/style': './blocks/smart-tab/style.scss',
+    'dist/blocks/smart-tab/editor': './blocks/smart-tab/editor.scss',
 
-    'blocks/divider/build/index': './blocks/divider/index.tsx',
-    'blocks/divider/build/style': './blocks/divider/style.scss',
-    'blocks/divider/build/editor': './blocks/divider/editor.scss',
+    'dist/blocks/social-sharing/index': './blocks/social-sharing/index.tsx',
+    'dist/blocks/social-sharing/frontend': './blocks/social-sharing/frontend.ts',
+    'dist/blocks/social-sharing/style': './blocks/social-sharing/style.scss',
+    'dist/blocks/social-sharing/editor': './blocks/social-sharing/editor.scss',
 
-    'blocks/text-input/build/index': './blocks/text-input/index.tsx',
-    'blocks/text-input/build/style': './blocks/text-input/style.scss',
-    'blocks/text-input/build/editor': './blocks/text-input/editor.scss',
+    'dist/blocks/social-sharing-icon/index': './blocks/social-sharing-icon/index.tsx',
+    'dist/blocks/social-sharing-icon/frontend': './blocks/social-sharing-icon/frontend.ts',
+    'dist/blocks/social-sharing-icon/style': './blocks/social-sharing-icon/style.scss',
+    'dist/blocks/social-sharing-icon/editor': './blocks/social-sharing-icon/editor.scss',
 
-    'blocks/post-terms/build/index': './blocks/post-terms/index.ts',
-    'blocks/post-terms/build/style': './blocks/post-terms/style.scss',
+    'dist/blocks/author-box/index': './blocks/author-box/src/index.tsx',
+    'dist/blocks/author-box/style': './blocks/author-box/src/style.scss',
+    'dist/blocks/author-box/editor': './blocks/author-box/src/editor.scss',
+
+    'dist/blocks/carousel/index': './blocks/carousel/index.tsx',
+    'dist/blocks/carousel/view': './blocks/carousel/view.js',
+    'dist/blocks/carousel/style': './blocks/carousel/style.scss',
+    'dist/blocks/carousel/editor': './blocks/carousel/editor.scss',
+
+    'dist/blocks/carousel-slide/index': './blocks/carousel-slide/index.tsx',
+    'dist/blocks/carousel-slide/style': './blocks/carousel-slide/style.scss',
+    'dist/blocks/carousel-slide/editor': './blocks/carousel-slide/editor.scss',
+
+    'dist/blocks/testimonial/index': './blocks/testimonial/index.tsx',
+    'dist/blocks/testimonial/style': './blocks/testimonial/style.scss',
+
+    'dist/blocks/testimonials/index': './blocks/testimonials/index.tsx',
+    'dist/blocks/testimonials/style': './blocks/testimonials/style.scss',
+    'dist/blocks/testimonials/editor': './blocks/testimonials/editor.scss',
+
+    'dist/blocks/carousel-banner/index': './blocks/carousel-banner/index.tsx',
+    'dist/blocks/carousel-banner/style': './blocks/carousel-banner/style.scss',
+    'dist/blocks/carousel-banner/editor': './blocks/carousel-banner/editor.scss',
+
+    'dist/blocks/carousel-inner-blocks-overlay/index': './blocks/carousel-inner-blocks-overlay/index.tsx',
+    'dist/blocks/carousel-inner-blocks-overlay/style': './blocks/carousel-inner-blocks-overlay/style.scss',
+    'dist/blocks/carousel-inner-blocks-overlay/editor': './blocks/carousel-inner-blocks-overlay/editor.scss',
+
+    'dist/blocks/slideshow/index': './blocks/slideshow/index.tsx',
+    'dist/blocks/slideshow/save': './blocks/slideshow/save.tsx',
+    'dist/blocks/slideshow/style': './blocks/slideshow/style.scss',
+    'dist/blocks/slideshow/editor': './blocks/slideshow/editor.scss',
+    'dist/blocks/slideshow/view': './blocks/slideshow/view.js',
+
+    'dist/blocks/slideshow-container/index': './blocks/slideshow-container/index.tsx',
+    'dist/blocks/slideshow-container/save': './blocks/slideshow-container/save.tsx',
+    'dist/blocks/slideshow-container/style': './blocks/slideshow-container/style.scss',
+    'dist/blocks/slideshow-container/editor': './blocks/slideshow-container/editor.scss',
+
+    'dist/blocks/slideshow-item/index': './blocks/slideshow-item/index.tsx',
+    'dist/blocks/slideshow-item/save': './blocks/slideshow-item/save.tsx',
+    'dist/blocks/slideshow-item/style': './blocks/slideshow-item/style.scss',
+    'dist/blocks/slideshow-item/editor': './blocks/slideshow-item/editor.scss',
+
+    'dist/blocks/smart-breadcrumb/index': './blocks/smart-breadcrumb/src/index.js',
+    'dist/blocks/smart-breadcrumb/style': './blocks/smart-breadcrumb/src/style.scss',
+    'dist/blocks/smart-breadcrumb/editor': './blocks/smart-breadcrumb/src/editor.scss',
+
+    'dist/blocks/advanced-button/index': './blocks/advanced-button/index.tsx',
+    'dist/blocks/advanced-button/frontend': './blocks/advanced-button/frontend.ts',
+    'dist/blocks/advanced-button/style': './blocks/advanced-button/style.scss',
+    'dist/blocks/advanced-button/editor': './blocks/advanced-button/editor.scss',
+
+    'dist/blocks/advanced-filter/index': './blocks/advanced-filter/index.tsx',
+
+    'dist/blocks/advanced-filters/index': './blocks/advanced-filters/index.tsx',
+    'dist/blocks/advanced-filters/frontend': './blocks/advanced-filters/frontend.ts',
+    'dist/blocks/advanced-filters/style': './blocks/advanced-filters/style.scss',
+    'dist/blocks/advanced-filters/editor': './blocks/advanced-filters/editor.scss',
+
+    'dist/blocks/smart-search/index': './blocks/smart-search/index.tsx',
+    'dist/blocks/smart-search/frontend': './blocks/smart-search/frontend.ts',
+    'dist/blocks/smart-search/style': './blocks/smart-search/style.scss',
+    'dist/blocks/smart-search/editor': './blocks/smart-search/editor.scss',
+
+    'dist/blocks/dynamic-data-layout/index': './blocks/dynamic-data-layout/index.tsx',
+    'dist/blocks/dynamic-data-layout/view': './blocks/dynamic-data-layout/view.js',
+    'dist/blocks/dynamic-data-layout/style': './blocks/dynamic-data-layout/style.scss',
+    'dist/blocks/dynamic-data-layout/editor': './blocks/dynamic-data-layout/editor.scss',
+
+    'dist/blocks/dynamic-data-template/index': './blocks/dynamic-data-template/index.tsx',
+    'dist/blocks/dynamic-data-template/frontend': './blocks/dynamic-data-template/frontend.ts',
+    'dist/blocks/dynamic-data-template/style': './blocks/dynamic-data-template/style.scss',
+    'dist/blocks/dynamic-data-template/editor': './blocks/dynamic-data-template/editor.scss',
+
+    'dist/blocks/dynamic-term-layout/index': './blocks/dynamic-term-layout/index.tsx',
+    'dist/blocks/dynamic-term-layout/view': './blocks/dynamic-term-layout/view.js',
+    'dist/blocks/dynamic-term-layout/style': './blocks/dynamic-term-layout/style.scss',
+    'dist/blocks/dynamic-term-layout/editor': './blocks/dynamic-term-layout/editor.scss',
+
+    'dist/blocks/dynamic-term-template/index': './blocks/dynamic-term-template/index.tsx',
+    'dist/blocks/dynamic-term-template/frontend': './blocks/dynamic-term-template/frontend.ts',
+    'dist/blocks/dynamic-term-template/style': './blocks/dynamic-term-template/style.scss',
+    'dist/blocks/dynamic-term-template/editor': './blocks/dynamic-term-template/editor.scss',
+
+    'dist/blocks/human-readable-post-date/index': './blocks/human-readable-post-date/index.tsx',
+    'dist/blocks/human-readable-post-date/style': './blocks/human-readable-post-date/style.scss',
+
+    'dist/blocks/sticky-box/index': './blocks/sticky-box/index.tsx',
+    'dist/blocks/sticky-box/style': './blocks/sticky-box/style.scss',
+    'dist/blocks/sticky-box/editor': './blocks/sticky-box/editor.scss',
+
+
+    'dist/blocks/star-rating/index': './blocks/star-rating/index.tsx',
+    'dist/blocks/star-rating/style': './blocks/star-rating/style.scss',
+    'dist/blocks/star-rating/editor': './blocks/star-rating/editor.scss',
+
+    'dist/blocks/post-type-badge/index': './blocks/post-type-badge/index.tsx',
+    'dist/blocks/post-type-badge/style': './blocks/post-type-badge/style.scss',
+
+    'dist/blocks/divider/index': './blocks/divider/index.tsx',
+    'dist/blocks/divider/style': './blocks/divider/style.scss',
+    'dist/blocks/divider/editor': './blocks/divider/editor.scss',
+
+    'dist/blocks/text-input/index': './blocks/text-input/index.tsx',
+    'dist/blocks/text-input/style': './blocks/text-input/style.scss',
+    'dist/blocks/text-input/editor': './blocks/text-input/editor.scss',
+
+    'dist/blocks/post-terms/index': './blocks/post-terms/index.ts',
+    'dist/blocks/post-terms/style': './blocks/post-terms/style.scss',
 
 
     // Menu Builder block
-    'blocks/user-menu/build/index': './blocks/user-menu/src/index.tsx',
-    'blocks/user-menu/build/style': './blocks/user-menu/src/style.scss',
-    'blocks/user-menu/build/editor': './blocks/user-menu/src/editor.scss',
+    'dist/blocks/user-menu/index': './blocks/user-menu/src/index.tsx',
+    'dist/blocks/user-menu/style': './blocks/user-menu/src/style.scss',
+    'dist/blocks/user-menu/editor': './blocks/user-menu/src/editor.scss',
 
-    'blocks/wrapper/build/index': './blocks/wrapper/index.tsx',
-    'blocks/wrapper/build/style': './blocks/wrapper/index.css',
-    'blocks/overlap-group/build/index': './blocks/overlap-group/index.tsx',
-    'blocks/overlap-group/build/style': './blocks/overlap-group/style.scss',
-    'blocks/overlap-group/build/editor': './blocks/overlap-group/editor.scss',
+    'dist/blocks/wrapper/index': './blocks/wrapper/index.tsx',
+    'dist/blocks/wrapper/style': './blocks/wrapper/index.css',
+    'dist/blocks/overlap-group/index': './blocks/overlap-group/index.tsx',
+    'dist/blocks/overlap-group/style': './blocks/overlap-group/style.scss',
+    'dist/blocks/overlap-group/editor': './blocks/overlap-group/editor.scss',
     'assets/js/child-order': './js/filters/child-order.tsx',
     'assets/js/responsive-visibility': './js/filters/responsive-visibility.tsx',
-    'blocks/typography/build/index': './blocks/typography/index.tsx',
-    'blocks/integration/build/jankx-blocks-bridge': './blocks/integration/jankx-blocks-bridge.js',
+    'dist/blocks/typography/index': './blocks/typography/index.tsx',
+    'dist/blocks/integration/jankx-blocks-bridge': './blocks/integration/jankx-blocks-bridge.js',
     'assets/js/sticky-header': './js/sticky-header.ts',
     '../style': './scss/style.scss',
     '../style.min': './scss/style.scss',
@@ -208,7 +208,7 @@ module.exports = {
     path: path.resolve(__dirname),
     filename: '[name].js',
     clean: false,
-    assetModuleFilename: 'blocks/[name]/build/[name][ext]',
+    assetModuleFilename: 'dist/blocks/[name]/[name][ext]',
   },
   optimization: {
     splitChunks: false,

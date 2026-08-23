@@ -8,9 +8,9 @@
   "icon": "layout",
   "description": "Hiển thị danh sách taxonomy terms theo layout tùy chỉnh với term query builder",
   "textdomain": "jankx",
-  "editorScript": "file:./build/index.js",
-  "editorStyle": "file:./build/editor.css",
-  "style": "file:./build/style.css",
+  "editorScript": "file:../../dist/blocks/dynamic-term-layout/index.js",
+  "editorStyle": "file:../../dist/blocks/dynamic-term-layout/editor.css",
+  "style": "file:../../dist/blocks/dynamic-term-layout/style.css",
   "supports": {
     "align": false
   },

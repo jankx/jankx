@@ -34,8 +34,8 @@
     "jankx/slideshowContainerId": "containerId"
   },
   "usesContext": ["jankx/slideShowId", "jankx/showThumbnails", "jankx/showNavigation", "jankx/transitionEffect", "jankx/captionPosition"],
-  "editorScript": "file:./build/index.js",
-  "editorStyle": "file:./build/editor.css",
-  "style": "file:./build/style.css"
+  "editorScript": "file:../../dist/blocks/slideshow-container/index.js",
+  "editorStyle": "file:../../dist/blocks/slideshow-container/editor.css",
+  "style": "file:../../dist/blocks/slideshow-container/style.css"
 }
 

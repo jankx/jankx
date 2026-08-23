@@ -9,9 +9,9 @@
   ],
   "description": "Markup template để render từng term trong Dynamic Term Layout block",
   "textdomain": "jankx",
-  "editorScript": "file:./build/index.js",
-  "editorStyle": "file:./build/editor.css",
-  "viewScript": "file:./build/frontend.js",
+  "editorScript": "file:../../dist/blocks/dynamic-term-template/index.js",
+  "editorStyle": "file:../../dist/blocks/dynamic-term-template/editor.css",
+  "viewScript": "file:../../dist/blocks/dynamic-term-template/frontend.js",
   "usesContext": [
     "queryId",
     "postType",

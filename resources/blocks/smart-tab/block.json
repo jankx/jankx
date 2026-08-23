@@ -112,9 +112,9 @@
         }
     },
     "usesContext": ["jankx/smartTabsId", "jankx/activeTab"],
-    "editorScript": "file:./build/index.js",
-    "editorStyle": "file:./build/editor.css",
-    "viewScript": "file:./build/view.js",
-    "style": "file:./build/style.css"
+    "editorScript": "file:../../dist/blocks/smart-tab/index.js",
+    "editorStyle": "file:../../dist/blocks/smart-tab/editor.css",
+    "viewScript": "file:../../dist/blocks/smart-tab/view.js",
+    "style": "file:../../dist/blocks/smart-tab/style.css"
 }
 

@@ -35,7 +35,7 @@ class DynamicTermTemplateBlock extends DynamicDataTemplateBlock
             'before'
         );
 
-        $asset_file = $this->blockPath . '/build/index.asset.php';
+        $asset_file = dirname($this->blockPath) . '/dist/blocks/dynamic-term-template/index.asset.php';
 
         if (!file_exists($asset_file)) {
             return;

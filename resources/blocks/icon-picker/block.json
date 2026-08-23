@@ -83,7 +83,7 @@
         }
     },
     "textdomain": "jankx",
-    "editorScript": "file:./build/index.js",
-    "style": "file:./build/index.css",
-    "editorStyle": "file:./build/index.css"
+    "editorScript": "file:../../dist/blocks/icon-picker/index.js",
+    "style": "file:../../dist/blocks/icon-picker/index.css",
+    "editorStyle": "file:../../dist/blocks/icon-picker/index.css"
 }

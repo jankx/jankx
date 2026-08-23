@@ -63,7 +63,7 @@
   "usesContext": [
     "jankx/carouselId"
   ],
-  "editorScript": "file:./build/index.js",
-  "editorStyle": "file:./build/editor.css",
-  "style": "file:./build/style.css"
+  "editorScript": "file:../../dist/blocks/carousel-slide/index.js",
+  "editorStyle": "file:../../dist/blocks/carousel-slide/editor.css",
+  "style": "file:../../dist/blocks/carousel-slide/style.css"
 }

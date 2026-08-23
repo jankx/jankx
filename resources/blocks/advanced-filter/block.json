@@ -188,6 +188,6 @@
       "enum": ["full", "fit"]
     }
   },
-  "editorScript": "file:./build/index.js"
+  "editorScript": "file:../../dist/blocks/advanced-filter/index.js"
 }
 

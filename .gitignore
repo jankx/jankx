@@ -9,3 +9,4 @@ node_modules
 pnpm-lock.yaml
 .phpunit.cache
 .DS_Store
+/dist/blocks

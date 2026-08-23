@@ -1,1 +1,0 @@
-{"version":3,"file":"blocks/testimonials/build/style.css","mappings":"AACE,oFACE,0C","sources":["webpack://jankx/./blocks/testimonials/style.scss"],"sourcesContent":[".jankx-testimonials-editor {\n  .swiper, .testimonials-wrapper {\n    min-height: var(--swiper-min-height, 50px);\n  }\n}\n\n"],"names":[],"sourceRoot":""}

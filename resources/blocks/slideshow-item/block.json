@@ -49,7 +49,7 @@
     }
   },
   "usesContext": ["jankx/slideShowId", "jankx/slideshowContainerId"],
-  "editorScript": "file:./build/index.js",
-  "editorStyle": "file:./build/editor.css",
-  "style": "file:./build/style.css"
+  "editorScript": "file:../../dist/blocks/slideshow-item/index.js",
+  "editorStyle": "file:../../dist/blocks/slideshow-item/editor.css",
+  "style": "file:../../dist/blocks/slideshow-item/style.css"
 }

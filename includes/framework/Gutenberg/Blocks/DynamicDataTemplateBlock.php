@@ -88,7 +88,7 @@ class DynamicDataTemplateBlock extends Block
             'before'
         );
 
-        $asset_file = $this->blockPath . '/build/index.asset.php';
+        $asset_file = dirname($this->blockPath) . '/dist/blocks/dynamic-data-template/index.asset.php';
 
         if (!file_exists($asset_file)) {
             return;

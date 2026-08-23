@@ -188,8 +188,8 @@
             "type": "string"
         }
     },
-    "editorScript": "file:./build/index.js",
-    "viewScript": "file:./build/frontend.js",
-    "style": "file:./build/style.css",
-    "editorStyle": "file:./build/editor.css"
+    "editorScript": "file:../../dist/blocks/offcanvas-sidebar/index.js",
+    "viewScript": "file:../../dist/blocks/offcanvas-sidebar/frontend.js",
+    "style": "file:../../dist/blocks/offcanvas-sidebar/style.css",
+    "editorStyle": "file:../../dist/blocks/offcanvas-sidebar/editor.css"
 }

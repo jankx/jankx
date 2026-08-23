@@ -263,8 +263,8 @@
             "label": "Text Link"
         }
     ],
-    "editorScript": "file:./build/index.js",
-    "editorStyle": "file:./build/editor.css",
-    "style": "file:./build/style.css",
-    "viewScript": "file:./build/frontend.js"
+    "editorScript": "file:../../dist/blocks/advanced-button/index.js",
+    "editorStyle": "file:../../dist/blocks/advanced-button/editor.css",
+    "style": "file:../../dist/blocks/advanced-button/style.css",
+    "viewScript": "file:../../dist/blocks/advanced-button/frontend.js"
 }

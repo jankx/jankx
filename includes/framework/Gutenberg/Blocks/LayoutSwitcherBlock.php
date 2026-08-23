@@ -142,13 +142,13 @@ class LayoutSwitcherBlock extends Block
         }
 
         $handle = 'jankx-layout-switcher-view';
-        $script_url = $this->urlManager->blockAsset('layout-switcher/build/view.js');
-        $asset_file = $this->blockPath . '/build/view.asset.php';
+        $script_url = $this->urlManager->blockAsset('dist/blocks/layout-switcher/view.js');
+        $asset_file = dirname($this->blockPath) . '/dist/blocks/layout-switcher/view.asset.php';
         
         $dependencies = ['jquery'];
         $version = '1.0.0';
 
-        if (file_exists($this->blockPath . '/build/view.js')) {
+        if (file_exists(dirname($this->blockPath) . '/dist/blocks/layout-switcher/view.js')) {
             if (file_exists($asset_file)) {
                 $asset = require $asset_file;
                 $dependencies = $asset['dependencies'] ?? $dependencies;

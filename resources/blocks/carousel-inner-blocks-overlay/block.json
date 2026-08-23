@@ -31,7 +31,7 @@
       "type": "string"
     }
   },
-  "editorScript": "file:./build/index.js",
-  "editorStyle": "file:./build/editor.css",
-  "style": "file:./build/style.css"
+  "editorScript": "file:../../dist/blocks/carousel-inner-blocks-overlay/index.js",
+  "editorStyle": "file:../../dist/blocks/carousel-inner-blocks-overlay/editor.css",
+  "style": "file:../../dist/blocks/carousel-inner-blocks-overlay/style.css"
 }

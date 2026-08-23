@@ -1,1 +1,0 @@
-{"version":3,"file":"blocks/overlap-group/build/style.css","mappings":"AAAA,8BACC,sBAEA,4DACC,U","sources":["webpack://jankx/./blocks/overlap-group/style.scss"],"sourcesContent":[".wp-block-jankx-overlap-group {\n\tbox-sizing: border-box;\n\n\t&.jankx-overlap-group--absolute {\n\t\tz-index: 1;\n\t}\n}\n"],"names":[],"sourceRoot":""}
