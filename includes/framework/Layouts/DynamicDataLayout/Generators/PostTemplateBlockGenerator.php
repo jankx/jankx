@@ -244,6 +244,16 @@ class PostTemplateBlockGenerator extends AbstractContentGenerator
             $wrapperStyle   = $this->buildTemplateItemStyle($attrs);
             $wrapperClasses = $this->buildTemplateItemClasses($attrs);
 
+            // Add item background styles
+            $bgStyles = $this->buildItemBackgroundStyle($attrs, $post);
+            if (!empty($bgStyles)) {
+                if (!empty($wrapperStyle)) {
+                    $wrapperStyle .= '; ' . $bgStyles;
+                } else {
+                    $wrapperStyle = $bgStyles;
+                }
+            }
+
             if (!empty($wrapperStyle) || !empty($wrapperClasses)) {
                 $styleAttr = !empty($wrapperStyle) ? sprintf(' style="%s"', esc_attr($wrapperStyle)) : '';
                 $classAttr = !empty($wrapperClasses) ? sprintf(' class="%s"', esc_attr($wrapperClasses)) : '';
@@ -346,6 +356,61 @@ class PostTemplateBlockGenerator extends AbstractContentGenerator
         }
 
         return implode(' ', array_unique(array_filter($classes)));
+    }
+
+    /**
+     * Build inline styles for item background from block attributes
+     *
+     * @param array $attrs Block attributes
+     * @param WP_Post $post Current post object
+     * @return string Inline CSS styles
+     */
+    protected function buildItemBackgroundStyle(array $attrs, WP_Post $post): string
+    {
+        $styles = [];
+        $bgType = $attrs['itemBgType'] ?? 'none';
+
+        if ($bgType === 'none') {
+            return '';
+        }
+
+        if ($bgType === 'color') {
+            $bgColor = $attrs['itemBgColor'] ?? '';
+            if (!empty($bgColor)) {
+                $styles[] = 'background-color: ' . esc_attr($bgColor);
+            }
+        }
+
+        if ($bgType === 'image') {
+            $bgImageSource = $attrs['itemBgImageSource'] ?? 'custom';
+            $bgImageUrl = $attrs['itemBgImageUrl'] ?? '';
+
+            // Get the image URL based on source
+            if ($bgImageSource === 'featured' && has_post_thumbnail($post->ID)) {
+                $bgImageUrl = get_the_post_thumbnail_url($post->ID, 'full');
+            }
+
+            if (!empty($bgImageUrl)) {
+                $styles[] = 'background-image: url(' . esc_url($bgImageUrl) . ')';
+            }
+
+            $bgSize = $attrs['itemBgSize'] ?? 'cover';
+            $styles[] = 'background-size: ' . esc_attr($bgSize);
+
+            $bgRepeat = $attrs['itemBgRepeat'] ?? 'no-repeat';
+            $styles[] = 'background-repeat: ' . esc_attr($bgRepeat);
+
+            $bgPosition = $attrs['itemBgPosition'] ?? 'center center';
+            $styles[] = 'background-position: ' . esc_attr($bgPosition);
+
+            // Add overlay if specified
+            $bgOverlay = $attrs['itemBgOverlay'] ?? '';
+            if (!empty($bgOverlay)) {
+                $styles[] = 'position: relative';
+            }
+        }
+
+        return implode('; ', array_filter($styles));
     }
 
     protected function wrapWithOverlay(

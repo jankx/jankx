@@ -19,6 +19,7 @@ import {
     Button,
     ButtonGroup,
     Tooltip,
+    FocalPointPicker,
 } from '@wordpress/components';
 import { useMemo, useEffect, useState, useRef, useCallback } from '@wordpress/element';
 import { useSelect, useDispatch } from '@wordpress/data';
@@ -72,6 +73,16 @@ interface DynamicDataTemplateAttributes {
     overlapBorderRadius?: string;
     overlapBackgroundColor?: string;
     carouselPeek?: number;
+    // Item Background settings
+    itemBgType?: 'none' | 'color' | 'image';
+    itemBgColor?: string;
+    itemBgImageId?: number;
+    itemBgImageUrl?: string;
+    itemBgImageSource?: 'custom' | 'featured';
+    itemBgPosition?: string;
+    itemBgSize?: 'cover' | 'contain' | 'auto';
+    itemBgRepeat?: 'no-repeat' | 'repeat' | 'repeat-x' | 'repeat-y';
+    itemBgOverlay?: string;
 }
 
 
@@ -387,6 +398,66 @@ const buildTemplateItemClasses = (attributes: any): string => {
     return classes.filter(Boolean).join(' ');
 };
 
+/**
+ * Build inline styles for item background from block attributes
+ */
+const buildItemBackgroundStyle = (attributes: any): CSSProperties => {
+    const styles: CSSProperties = {};
+    const bgType = attributes?.itemBgType;
+
+    if (!bgType || bgType === 'none') {
+        return styles;
+    }
+
+    if (bgType === 'color') {
+        if (attributes?.itemBgColor) {
+            styles.backgroundColor = attributes.itemBgColor;
+        }
+    }
+
+    if (bgType === 'image') {
+        if (attributes?.itemBgImageUrl) {
+            styles.backgroundImage = `url(${attributes.itemBgImageUrl})`;
+        } else if (attributes?.itemBgImageSource === 'featured') {
+            // Featured image will be handled via CSS class or data attribute
+            styles.backgroundImage = 'var(--item-bg-image, none)';
+        }
+        if (attributes?.itemBgSize) {
+            styles.backgroundSize = attributes.itemBgSize;
+        }
+        if (attributes?.itemBgRepeat) {
+            styles.backgroundRepeat = attributes.itemBgRepeat;
+        }
+        if (attributes?.itemBgPosition) {
+            styles.backgroundPosition = attributes.itemBgPosition;
+        }
+        if (attributes?.itemBgOverlay) {
+            styles.position = 'relative';
+        }
+    }
+
+    return styles;
+};
+
+/**
+ * Build overlay style for item background image
+ */
+const buildItemBackgroundOverlayStyle = (attributes: any): CSSProperties => {
+    const styles: CSSProperties = {};
+
+    if (attributes?.itemBgType !== 'image' || !attributes?.itemBgOverlay) {
+        return styles;
+    }
+
+    styles.position = 'absolute';
+    styles.inset = '0';
+    styles.backgroundColor = attributes.itemBgOverlay;
+    styles.pointerEvents = 'none';
+    styles.zIndex = '1';
+
+    return styles;
+};
+
 const PreviewItem = ({
     blocks,
     className,
@@ -463,6 +534,15 @@ export default function Edit({
         overlapPadding = '20px',
         overlapBorderRadius = '8px',
         overlapBackgroundColor = '#ffffff',
+        itemBgType = 'none',
+        itemBgColor = '',
+        itemBgImageId = 0,
+        itemBgImageUrl = '',
+        itemBgImageSource = 'custom',
+        itemBgPosition = 'center center',
+        itemBgSize = 'cover',
+        itemBgRepeat = 'no-repeat',
+        itemBgOverlay = '',
     } = attributes;
 
 
@@ -788,6 +868,139 @@ export default function Edit({
                         help={__('Choose where the featured image appears relative to the content.', 'jankx')}
                     />
 
+                </PanelBody>
+
+                <PanelBody title={__('Item Background', 'jankx')} initialOpen={false}>
+                    <SelectControl
+                        label={__('Background Type', 'jankx')}
+                        value={itemBgType}
+                        options={[
+                            { label: __('None', 'jankx'), value: 'none' },
+                            { label: __('Color', 'jankx'), value: 'color' },
+                            { label: __('Image', 'jankx'), value: 'image' },
+                        ]}
+                        onChange={(value) => setAttributes({ itemBgType: value as any })}
+                    />
+
+                    {itemBgType === 'color' && (
+                        <div className="components-base-control">
+                            <label className="components-base-control__label">
+                                {__('Background Color', 'jankx')}
+                            </label>
+                            <div className="components-color-palette-control__color-indicator-wrapper">
+                                <input
+                                    type="color"
+                                    value={itemBgColor || '#ffffff'}
+                                    onChange={(e) => setAttributes({ itemBgColor: e.target.value })}
+                                    style={{ width: '100%', height: '40px' }}
+                                />
+                            </div>
+                        </div>
+                    )}
+
+                    {itemBgType === 'image' && (
+                        <>
+                            <SelectControl
+                                label={__('Image Source', 'jankx')}
+                                value={itemBgImageSource}
+                                options={[
+                                    { label: __('Custom Image', 'jankx'), value: 'custom' },
+                                    { label: __('Featured Image', 'jankx'), value: 'featured' },
+                                ]}
+                                onChange={(value) => setAttributes({ itemBgImageSource: value as any })}
+                            />
+
+                            {itemBgImageSource === 'custom' && (
+                                <MediaUpload
+                                    onSelect={(media: any) => {
+                                        setAttributes({
+                                            itemBgImageId: media?.id || 0,
+                                            itemBgImageUrl: media?.url || '',
+                                        });
+                                    }}
+                                    allowedTypes={['image']}
+                                    value={itemBgImageId || 0}
+                                    render={({ open }) => (
+                                        <Button variant="secondary" onClick={open} style={{ marginBottom: 8 }}>
+                                            {itemBgImageUrl ? __('Change Background Image', 'jankx') : __('Select Background Image', 'jankx')}
+                                        </Button>
+                                    )}
+                                />
+                            )}
+
+                            {itemBgImageSource === 'custom' && itemBgImageUrl && (
+                                <div style={{ marginBottom: 8 }}>
+                                    <img src={itemBgImageUrl} alt="" style={{ maxWidth: '100%', height: 'auto', borderRadius: 4 }} />
+                                    <Button
+                                        variant="secondary"
+                                        onClick={() => setAttributes({ itemBgImageUrl: '', itemBgImageId: 0 })}
+                                        style={{ marginTop: 8 }}
+                                    >
+                                        {__('Remove Image', 'jankx')}
+                                    </Button>
+                                </div>
+                            )}
+
+                            {itemBgImageSource === 'featured' && (
+                                <p className="components-base-control__help">
+                                    {__('Will use each item\'s featured image as background.', 'jankx')}
+                                </p>
+                            )}
+
+                            <SelectControl
+                                label={__('Background Size', 'jankx')}
+                                value={itemBgSize}
+                                options={[
+                                    { label: __('Cover', 'jankx'), value: 'cover' },
+                                    { label: __('Contain', 'jankx'), value: 'contain' },
+                                    { label: __('Auto', 'jankx'), value: 'auto' },
+                                ]}
+                                onChange={(value) => setAttributes({ itemBgSize: value as any })}
+                            />
+
+                            <SelectControl
+                                label={__('Background Repeat', 'jankx')}
+                                value={itemBgRepeat}
+                                options={[
+                                    { label: __('No Repeat', 'jankx'), value: 'no-repeat' },
+                                    { label: __('Repeat', 'jankx'), value: 'repeat' },
+                                    { label: __('Repeat X', 'jankx'), value: 'repeat-x' },
+                                    { label: __('Repeat Y', 'jankx'), value: 'repeat-y' },
+                                ]}
+                                onChange={(value) => setAttributes({ itemBgRepeat: value as any })}
+                            />
+
+                            <div className="components-base-control">
+                                <label className="components-base-control__label">
+                                    {__('Background Position', 'jankx')}
+                                </label>
+                                <FocalPointPicker
+                                    value={itemBgPosition}
+                                    onChange={(value) => setAttributes({ itemBgPosition: value })}
+                                    dimensions={{ width: 100, height: 100 }}
+                                    url={itemBgImageUrl || undefined}
+                                    style={{ width: '100%', height: 120 }}
+                                />
+                            </div>
+
+                            <div className="components-base-control">
+                                <label className="components-base-control__label">
+                                    {__('Overlay Color', 'jankx')}
+                                </label>
+                                <div className="components-color-palette-control__color-indicator-wrapper">
+                                    <input
+                                        type="color"
+                                        value={itemBgOverlay || '#000000'}
+                                        onChange={(e) => setAttributes({ itemBgOverlay: e.target.value })}
+                                        style={{ width: '100%', height: '40px' }}
+                                    />
+                                </div>
+                                <p className="components-base-control__help">
+                                    {__('Optional color overlay on top of background image.', 'jankx')}
+                                </p>
+                            </div>
+                        </>
+                    )}
                 </PanelBody>
             </InspectorControls>
 
@@ -1137,6 +1350,10 @@ export default function Edit({
                                         if (m.left) itemStyle.marginLeft = m.left as any;
                                     }
 
+                                    // Apply item background styles
+                                    const bgStyle = buildItemBackgroundStyle(attributes);
+                                    Object.assign(itemStyle, bgStyle);
+
                                     const postData = posts && posts[index] ? posts[index] : null;
                                     const contextValue = postData ? { postId: postData.id, postType: postData.type } : {};
 
@@ -1148,6 +1365,9 @@ export default function Edit({
                                                 data-item-index={index}
                                                 style={itemStyle}
                                             >
+                                                {itemBgType === 'image' && itemBgOverlay && (
+                                                    <div style={buildItemBackgroundOverlayStyle(attributes)} />
+                                                )}
                                                 {postData ? (
                                                     <BlockContextProvider value={contextValue}>
                                                         <div {...innerBlocksProps} />
@@ -1165,6 +1385,9 @@ export default function Edit({
                                             data-item-index={index}
                                             style={itemStyle}
                                         >
+                                            {itemBgType === 'image' && itemBgOverlay && (
+                                                <div style={buildItemBackgroundOverlayStyle(attributes)} />
+                                            )}
                                             {postData ? (
                                                 <BlockContextProvider value={contextValue}>
                                                     <PreviewItem
@@ -1231,6 +1454,11 @@ export default function Edit({
                                     if (m2.bottom) itemStyle2.marginBottom = m2.bottom as any;
                                     if (m2.left) itemStyle2.marginLeft = m2.left as any;
                                 }
+
+                                // Apply item background styles
+                                const bgStyle2 = buildItemBackgroundStyle(attributes);
+                                Object.assign(itemStyle2, bgStyle2);
+
                                 return (
                                     <div
                                         key={`item-${index}`}
@@ -1240,6 +1468,9 @@ export default function Edit({
                                         data-unhover-ani={unhoverAnimation !== 'none' ? unhoverAnimation : undefined}
                                         style={itemStyle2}
                                     >
+                                        {itemBgType === 'image' && itemBgOverlay && (
+                                            <div style={buildItemBackgroundOverlayStyle(attributes)} />
+                                        )}
                                         {postData ? (
                                             <BlockContextProvider value={contextValue}>
                                                 <div {...innerBlocksProps} />
@@ -1266,6 +1497,11 @@ export default function Edit({
                                 if (m3.bottom) itemStyle3.marginBottom = m3.bottom as any;
                                 if (m3.left) itemStyle3.marginLeft = m3.left as any;
                             }
+
+                            // Apply item background styles
+                            const bgStyle3 = buildItemBackgroundStyle(attributes);
+                            Object.assign(itemStyle3, bgStyle3);
+
                             return (
                                 <div
                                     key={`item-${index}`}
@@ -1275,6 +1511,9 @@ export default function Edit({
                                     data-unhover-ani={unhoverAnimation !== 'none' ? unhoverAnimation : undefined}
                                     style={itemStyle3}
                                 >
+                                    {itemBgType === 'image' && itemBgOverlay && (
+                                        <div style={buildItemBackgroundOverlayStyle(attributes)} />
+                                    )}
                                     {postData ? (
                                         <BlockContextProvider value={contextValue}>
                                             <PreviewItem

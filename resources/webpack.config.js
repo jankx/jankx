@@ -149,6 +149,16 @@ module.exports = {
     'blocks/dynamic-data-template/build/style': './blocks/dynamic-data-template/style.scss',
     'blocks/dynamic-data-template/build/editor': './blocks/dynamic-data-template/editor.scss',
 
+    'blocks/dynamic-term-layout/build/index': './blocks/dynamic-term-layout/index.tsx',
+    'blocks/dynamic-term-layout/build/view': './blocks/dynamic-term-layout/view.js',
+    'blocks/dynamic-term-layout/build/style': './blocks/dynamic-term-layout/style.scss',
+    'blocks/dynamic-term-layout/build/editor': './blocks/dynamic-term-layout/editor.scss',
+
+    'blocks/dynamic-term-template/build/index': './blocks/dynamic-term-template/index.tsx',
+    'blocks/dynamic-term-template/build/frontend': './blocks/dynamic-term-template/frontend.ts',
+    'blocks/dynamic-term-template/build/style': './blocks/dynamic-term-template/style.scss',
+    'blocks/dynamic-term-template/build/editor': './blocks/dynamic-term-template/editor.scss',
+
     'blocks/human-readable-post-date/build/index': './blocks/human-readable-post-date/index.tsx',
     'blocks/human-readable-post-date/build/style': './blocks/human-readable-post-date/style.scss',
 

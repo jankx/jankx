@@ -175,12 +175,12 @@ class TermTemplateBlockGenerator extends AbstractContentGenerator
                 $normalizedBlock['originalContent'] = $innerBlock['originalContent'];
             }
 
-            if ($blockName === 'core/post-title') {
+            if ($blockName === 'core/post-title' || ($blockName === 'core/heading' && $this->hasClass($attrs, 'jankx-term-name')) || ($blockName === 'core/paragraph' && $this->hasClass($attrs, 'jankx-term-name'))) {
                 $output .= $this->renderTermTitle($term, $attrs);
                 continue;
             }
 
-            if ($blockName === 'core/post-excerpt') {
+            if ($blockName === 'core/post-excerpt' || ($blockName === 'core/paragraph' && $this->hasClass($attrs, 'jankx-term-description'))) {
                 $output .= $this->renderTermDescription($term, $attrs);
                 continue;
             }
@@ -251,7 +251,7 @@ class TermTemplateBlockGenerator extends AbstractContentGenerator
         $level = isset($attrs['level']) ? (int) $attrs['level'] : 2;
         $tag = in_array($level, range(1, 6), true) ? 'h' . $level : 'h2';
 
-        $classes = ['wp-block-post-title'];
+        $classes = ['wp-block-post-title', 'wp-block-heading'];
         if (!empty($attrs['className'])) {
             $classes[] = $attrs['className'];
         }

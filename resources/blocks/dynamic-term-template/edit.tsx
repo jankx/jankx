@@ -209,35 +209,35 @@ const GET_LAYOUT_TEMPLATE = (layout: string) => {
                         ['core/paragraph', { className: 'jankx-term-count', fontSize: 'small' }]
                     ]],
                     ['core/column', { width: '66.66%' }, [
-                        ['core/post-title', { isLink: true }],
-                        ['core/post-excerpt', {}]
+                        ['core/heading', { level: 3, className: 'jankx-term-name' }],
+                        ['core/paragraph', { className: 'jankx-term-description' }]
                     ]]
                 ]]
             ];
         case 'overlap-card':
             return [
                 ['core/group', { className: 'overlap-card-content' }, [
-                    ['core/post-title', { isLink: true }],
+                    ['core/heading', { level: 3, className: 'jankx-term-name' }],
                     ['core/paragraph', { className: 'jankx-term-count' }]
                 ]]
             ];
         case 'boxed':
             return [
                 ['core/group', { style: { spacing: { padding: { top: '15px', right: '15px', bottom: '15px', left: '15px' } } } }, [
-                    ['core/post-title', { isLink: true }],
+                    ['core/heading', { level: 3, className: 'jankx-term-name' }],
                     ['core/paragraph', { className: 'jankx-term-count' }],
-                    ['core/post-excerpt', {}]
+                    ['core/paragraph', { className: 'jankx-term-description' }]
                 ]]
             ];
         case 'hero-overlay':
             return [
-                ['core/post-title', { isLink: true }],
-                ['core/post-excerpt', {}]
+                ['core/heading', { level: 3, className: 'jankx-term-name' }],
+                ['core/paragraph', { className: 'jankx-term-description' }]
             ];
         default:
             return [
-                ['core/post-title', { isLink: true }],
-                ['core/post-excerpt', {}],
+                ['core/heading', { level: 3, className: 'jankx-term-name' }],
+                ['core/paragraph', { className: 'jankx-term-description' }],
                 ['core/paragraph', { className: 'jankx-term-count' }]
             ];
     }
@@ -560,8 +560,8 @@ export default function Edit({
 
         // Fallback: default term template (Name + Description + Count)
         return [
-            { blockName: 'core/post-title', attrs: { isLink: true } },
-            { blockName: 'core/post-excerpt', attrs: {} },
+            { blockName: 'core/heading', attrs: { level: 3, className: 'jankx-term-name' } },
+            { blockName: 'core/paragraph', attrs: { className: 'jankx-term-description' } },
             { blockName: 'core/paragraph', attrs: { className: 'jankx-term-count' } },
         ];
     }, []);
