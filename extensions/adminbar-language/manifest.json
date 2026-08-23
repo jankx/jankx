@@ -1,0 +1,16 @@
+{
+  "name": "Admin Bar Language",
+  "description": "Thêm language switcher vào admin bar, hiển thị ngôn ngữ theo profile user.",
+  "version": "1.0.0",
+  "extension_id": "adminbar-language",
+  "context": ["admin", "frontend"],
+  "caller": {
+    "file": "AdminBarLanguageExtension.php",
+    "class": "Jankx\\Extensions\\AdminBarLanguage\\AdminBarLanguageExtension",
+    "method": "init"
+  },
+  "requirements": {
+    "php": ">=7.4"
+  },
+  "auto_activate": true
+}
