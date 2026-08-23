@@ -4,11 +4,13 @@ import {
   useBlockProps,
   InspectorControls,
   InnerBlocks,
+  ColorPalette,
 } from '@wordpress/block-editor';
 import { useDispatch, select as wpSelect } from '@wordpress/data';
 import { store as blockEditorStore } from '@wordpress/block-editor';
 import {
   PanelBody,
+  PanelRow,
   ToggleControl,
   RangeControl,
   SelectControl,
@@ -64,15 +66,31 @@ const defaultAttributes: EmblaCarouselAttributes = {
   stopOnMouseEnter: true,
   showArrows: true,
   arrowStyle: 'round',
+  arrowSize: 44,
+  arrowBgColor: '#000000',
+  arrowBgOpacity: 40,
+  arrowColor: '#ffffff',
+  arrowBorderColor: '#ffffff',
+  arrowBorderOpacity: 20,
   showDots: true,
   dotType: 'bullets',
+  dotSize: 8,
+  dotColor: '#000000',
+  dotColorOpacity: 20,
+  dotActiveColor: '#1e293b',
+  dotActiveWidth: 24,
   showProgress: true,
+  progressHeight: 4,
+  progressTrackColor: '#ffffff',
+  progressTrackOpacity: 20,
+  progressBarColor: '#16a34a',
   slidesPerView: 3,
   gap: 20,
   aspectRatio: '16:9',
   kenBurns: true,
   showShadow: true,
   shadowIntensity: 3,
+  shadowColor: '#0f172a',
   borderRadius: 16,
 };
 
@@ -365,61 +383,196 @@ export default function Edit({
           )}
         </PanelBody>
 
-        {/* Navigation */}
-        <PanelBody title={__('Điều hướng', 'jankx')} initialOpen={false}>
+        {/* Arrow Styles */}
+        <PanelBody title={__('Mũi tên', 'jankx')} initialOpen={false}>
           <ToggleControl
             label={__('Hiển thị mũi tên', 'jankx')}
             checked={attributes.showArrows}
             onChange={(val) => update({ showArrows: val })}
           />
           {attributes.showArrows && (
-            <div className="jankx-carousel-btn-group">
-              <span className="jankx-carousel-label">{__('Kiểu mũi tên:', 'jankx')}</span>
-              <ButtonGroup>
-                {ARROW_STYLE_OPTIONS.map((style) => (
-                  <Button
-                    key={style}
-                    variant={
-                      attributes.arrowStyle === style ? 'primary' : 'secondary'
-                    }
-                    isSmall
-                    onClick={() => update({ arrowStyle: style })}
-                  >
-                    {style}
-                  </Button>
-                ))}
-              </ButtonGroup>
-            </div>
+            <>
+              <div className="jankx-carousel-btn-group">
+                <span className="jankx-carousel-label">{__('Kiểu mũi tên:', 'jankx')}</span>
+                <ButtonGroup>
+                  {ARROW_STYLE_OPTIONS.map((style) => (
+                    <Button
+                      key={style}
+                      variant={
+                        attributes.arrowStyle === style ? 'primary' : 'secondary'
+                      }
+                      isSmall
+                      onClick={() => update({ arrowStyle: style })}
+                    >
+                      {style}
+                    </Button>
+                  ))}
+                </ButtonGroup>
+              </div>
+              <RangeControl
+                label={__('Kích thước (px)', 'jankx')}
+                value={attributes.arrowSize}
+                onChange={(val) => update({ arrowSize: val ?? 44 })}
+                min={28}
+                max={72}
+                step={2}
+              />
+              <PanelRow>
+                <span className="jankx-carousel-label">{__('Màu nền:', 'jankx')}</span>
+                <ColorPalette
+                  value={attributes.arrowBgColor}
+                  onChange={(val) => update({ arrowBgColor: val ?? '#000000' })}
+                  disableCustomColors={false}
+                />
+              </PanelRow>
+              <RangeControl
+                label={__('Độ trong suốt nền (%)', 'jankx')}
+                value={attributes.arrowBgOpacity}
+                onChange={(val) => update({ arrowBgOpacity: val ?? 40 })}
+                min={0}
+                max={100}
+              />
+              <PanelRow>
+                <span className="jankx-carousel-label">{__('Màu biểu tượng:', 'jankx')}</span>
+                <ColorPalette
+                  value={attributes.arrowColor}
+                  onChange={(val) => update({ arrowColor: val ?? '#ffffff' })}
+                  disableCustomColors={false}
+                />
+              </PanelRow>
+              <PanelRow>
+                <span className="jankx-carousel-label">{__('Màu viền:', 'jankx')}</span>
+                <ColorPalette
+                  value={attributes.arrowBorderColor}
+                  onChange={(val) => update({ arrowBorderColor: val ?? '#ffffff' })}
+                  disableCustomColors={false}
+                />
+              </PanelRow>
+              <RangeControl
+                label={__('Độ trong suốt viền (%)', 'jankx')}
+                value={attributes.arrowBorderOpacity}
+                onChange={(val) => update({ arrowBorderOpacity: val ?? 20 })}
+                min={0}
+                max={100}
+              />
+            </>
           )}
+        </PanelBody>
+
+        {/* Dot Styles */}
+        <PanelBody title={__('Chấm phân trang', 'jankx')} initialOpen={false}>
           <ToggleControl
             label={__('Chấm phân trang', 'jankx')}
             checked={attributes.showDots}
             onChange={(val) => update({ showDots: val })}
           />
           {attributes.showDots && (
-            <div className="jankx-carousel-btn-group">
-              <span className="jankx-carousel-label">{__('Kiểu chấm:', 'jankx')}</span>
-              <ButtonGroup>
-                {DOT_TYPE_OPTIONS.map((type) => (
-                  <Button
-                    key={type}
-                    variant={
-                      attributes.dotType === type ? 'primary' : 'secondary'
-                    }
-                    isSmall
-                    onClick={() => update({ dotType: type })}
-                  >
-                    {type}
-                  </Button>
-                ))}
-              </ButtonGroup>
-            </div>
+            <>
+              <div className="jankx-carousel-btn-group">
+                <span className="jankx-carousel-label">{__('Kiểu chấm:', 'jankx')}</span>
+                <ButtonGroup>
+                  {DOT_TYPE_OPTIONS.map((type) => (
+                    <Button
+                      key={type}
+                      variant={
+                        attributes.dotType === type ? 'primary' : 'secondary'
+                      }
+                      isSmall
+                      onClick={() => update({ dotType: type })}
+                    >
+                      {type}
+                    </Button>
+                  ))}
+                </ButtonGroup>
+              </div>
+              {attributes.dotType !== 'counter' && (
+                <>
+                  <RangeControl
+                    label={__('Kích thước (px)', 'jankx')}
+                    value={attributes.dotSize}
+                    onChange={(val) => update({ dotSize: val ?? 8 })}
+                    min={4}
+                    max={16}
+                  />
+                  <PanelRow>
+                    <span className="jankx-carousel-label">{__('Màuinactive:', 'jankx')}</span>
+                    <ColorPalette
+                      value={attributes.dotColor}
+                      onChange={(val) => update({ dotColor: val ?? '#000000' })}
+                      disableCustomColors={false}
+                    />
+                  </PanelRow>
+                  <RangeControl
+                    label={__('Độ trong suốt inactive (%)', 'jankx')}
+                    value={attributes.dotColorOpacity}
+                    onChange={(val) => update({ dotColorOpacity: val ?? 20 })}
+                    min={0}
+                    max={100}
+                  />
+                  <PanelRow>
+                    <span className="jankx-carousel-label">{__('Màu active:', 'jankx')}</span>
+                    <ColorPalette
+                      value={attributes.dotActiveColor}
+                      onChange={(val) => update({ dotActiveColor: val ?? '#1e293b' })}
+                      disableCustomColors={false}
+                    />
+                  </PanelRow>
+                  {(attributes.dotType === 'bullets' || attributes.dotType === 'bars') && (
+                    <RangeControl
+                      label={__('Độ rộng active (px)', 'jankx')}
+                      value={attributes.dotActiveWidth}
+                      onChange={(val) => update({ dotActiveWidth: val ?? 24 })}
+                      min={12}
+                      max={48}
+                    />
+                  )}
+                </>
+              )}
+            </>
           )}
+        </PanelBody>
+
+        {/* Progress Bar */}
+        <PanelBody title={__('Thanh tiến trình', 'jankx')} initialOpen={false}>
           <ToggleControl
             label={__('Thanh tiến trình', 'jankx')}
             checked={attributes.showProgress}
             onChange={(val) => update({ showProgress: val })}
           />
+          {attributes.showProgress && (
+            <>
+              <RangeControl
+                label={__('Chiều cao (px)', 'jankx')}
+                value={attributes.progressHeight}
+                onChange={(val) => update({ progressHeight: val ?? 4 })}
+                min={2}
+                max={12}
+              />
+              <PanelRow>
+                <span className="jankx-carousel-label">{__('Màu track:', 'jankx')}</span>
+                <ColorPalette
+                  value={attributes.progressTrackColor}
+                  onChange={(val) => update({ progressTrackColor: val ?? '#ffffff' })}
+                  disableCustomColors={false}
+                />
+              </PanelRow>
+              <RangeControl
+                label={__('Độ trong suốt track (%)', 'jankx')}
+                value={attributes.progressTrackOpacity}
+                onChange={(val) => update({ progressTrackOpacity: val ?? 20 })}
+                min={0}
+                max={100}
+              />
+              <PanelRow>
+                <span className="jankx-carousel-label">{__('Màu progress:', 'jankx')}</span>
+                <ColorPalette
+                  value={attributes.progressBarColor}
+                  onChange={(val) => update({ progressBarColor: val ?? '#16a34a' })}
+                  disableCustomColors={false}
+                />
+              </PanelRow>
+            </>
+          )}
         </PanelBody>
 
         {/* Shadow & Radius */}
@@ -430,13 +583,23 @@ export default function Edit({
             onChange={(val) => update({ showShadow: val })}
           />
           {attributes.showShadow && (
-            <RangeControl
-              label={__('Độ đậm bóng (1-5)', 'jankx')}
-              value={attributes.shadowIntensity}
-              onChange={(val) => update({ shadowIntensity: val ?? 3 })}
-              min={1}
-              max={5}
-            />
+            <>
+              <RangeControl
+                label={__('Độ đậm bóng (1-5)', 'jankx')}
+                value={attributes.shadowIntensity}
+                onChange={(val) => update({ shadowIntensity: val ?? 3 })}
+                min={1}
+                max={5}
+              />
+              <PanelRow>
+                <span className="jankx-carousel-label">{__('Màu bóng:', 'jankx')}</span>
+                <ColorPalette
+                  value={attributes.shadowColor}
+                  onChange={(val) => update({ shadowColor: val ?? '#0f172a' })}
+                  disableCustomColors={false}
+                />
+              </PanelRow>
+            </>
           )}
           <RangeControl
             label={__('Bo góc (px)', 'jankx')}

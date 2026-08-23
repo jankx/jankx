@@ -88,6 +88,30 @@
       "default": "round",
       "enum": ["round", "square", "pill", "minimal"]
     },
+    "arrowSize": {
+      "type": "number",
+      "default": 44
+    },
+    "arrowBgColor": {
+      "type": "string",
+      "default": "#000000"
+    },
+    "arrowBgOpacity": {
+      "type": "number",
+      "default": 40
+    },
+    "arrowColor": {
+      "type": "string",
+      "default": "#ffffff"
+    },
+    "arrowBorderColor": {
+      "type": "string",
+      "default": "#ffffff"
+    },
+    "arrowBorderOpacity": {
+      "type": "number",
+      "default": 20
+    },
     "showDots": {
       "type": "boolean",
       "default": true
@@ -97,9 +121,45 @@
       "default": "bullets",
       "enum": ["bullets", "bars", "numbers", "counter"]
     },
+    "dotSize": {
+      "type": "number",
+      "default": 8
+    },
+    "dotColor": {
+      "type": "string",
+      "default": "#000000"
+    },
+    "dotColorOpacity": {
+      "type": "number",
+      "default": 20
+    },
+    "dotActiveColor": {
+      "type": "string",
+      "default": "#1e293b"
+    },
+    "dotActiveWidth": {
+      "type": "number",
+      "default": 24
+    },
     "showProgress": {
       "type": "boolean",
       "default": true
+    },
+    "progressHeight": {
+      "type": "number",
+      "default": 4
+    },
+    "progressTrackColor": {
+      "type": "string",
+      "default": "#ffffff"
+    },
+    "progressTrackOpacity": {
+      "type": "number",
+      "default": 20
+    },
+    "progressBarColor": {
+      "type": "string",
+      "default": "#16a34a"
     },
     "slidesPerView": {
       "type": "number",
@@ -125,6 +185,10 @@
     "shadowIntensity": {
       "type": "number",
       "default": 3
+    },
+    "shadowColor": {
+      "type": "string",
+      "default": "#0f172a"
     },
     "borderRadius": {
       "type": "number",

@@ -1,8 +1,9 @@
 import React from 'react';
 import { __ } from '@wordpress/i18n';
-import { useBlockProps, InspectorControls, RichText } from '@wordpress/block-editor';
+import { useBlockProps, InspectorControls, RichText, ColorPalette } from '@wordpress/block-editor';
 import {
   PanelBody,
+  PanelRow,
   TextControl,
   TextareaControl,
   SelectControl,
@@ -77,6 +78,57 @@ export default function Edit({
             value={attributes.presenterNotes}
             onChange={(val) => update({ presenterNotes: val })}
           />
+        </PanelBody>
+
+        <PanelBody title={__('Màu sắc', 'jankx')} initialOpen={false}>
+          <PanelRow>
+            <span className="jankx-carousel-label">{__('Nền slide:', 'jankx')}</span>
+            <ColorPalette
+              value={attributes.bgColor}
+              onChange={(val) => update({ bgColor: val ?? '#0f172a' })}
+              disableCustomColors={false}
+            />
+          </PanelRow>
+          <PanelRow>
+            <span className="jankx-carousel-label">{__('Màu text:', 'jankx')}</span>
+            <ColorPalette
+              value={attributes.textColor}
+              onChange={(val) => update({ textColor: val ?? '#ffffff' })}
+              disableCustomColors={false}
+            />
+          </PanelRow>
+          <PanelRow>
+            <span className="jankx-carousel-label">{__('Màu accent:', 'jankx')}</span>
+            <ColorPalette
+              value={attributes.accentColor}
+              onChange={(val) => update({ accentColor: val ?? '#34d399' })}
+              disableCustomColors={false}
+            />
+          </PanelRow>
+          <PanelRow>
+            <span className="jankx-carousel-label">{__('Màu tiêu đề:', 'jankx')}</span>
+            <ColorPalette
+              value={attributes.titleColor}
+              onChange={(val) => update({ titleColor: val ?? '#ffffff' })}
+              disableCustomColors={false}
+            />
+          </PanelRow>
+          <PanelRow>
+            <span className="jankx-carousel-label">{__('Màu subtitle:', 'jankx')}</span>
+            <ColorPalette
+              value={attributes.subtitleColor}
+              onChange={(val) => update({ subtitleColor: val ?? '#ffffff' })}
+              disableCustomColors={false}
+            />
+          </PanelRow>
+          <PanelRow>
+            <span className="jankx-carousel-label">{__('Màu viền:', 'jankx')}</span>
+            <ColorPalette
+              value={attributes.borderColor}
+              onChange={(val) => update({ borderColor: val ?? 'currentColor' })}
+              disableCustomColors={false}
+            />
+          </PanelRow>
         </PanelBody>
       </InspectorControls>
 

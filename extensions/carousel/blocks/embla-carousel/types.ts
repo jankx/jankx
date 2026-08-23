@@ -17,15 +17,31 @@ export interface EmblaCarouselAttributes {
   stopOnMouseEnter: boolean;
   showArrows: boolean;
   arrowStyle: 'round' | 'square' | 'pill' | 'minimal';
+  arrowSize: number;
+  arrowBgColor: string;
+  arrowBgOpacity: number;
+  arrowColor: string;
+  arrowBorderColor: string;
+  arrowBorderOpacity: number;
   showDots: boolean;
   dotType: 'bullets' | 'bars' | 'numbers' | 'counter';
+  dotSize: number;
+  dotColor: string;
+  dotColorOpacity: number;
+  dotActiveColor: string;
+  dotActiveWidth: number;
   showProgress: boolean;
+  progressHeight: number;
+  progressTrackColor: string;
+  progressTrackOpacity: number;
+  progressBarColor: string;
   slidesPerView: number;
   gap: number;
   aspectRatio: '16:9' | '21:9' | '4:3' | 'auto';
   kenBurns: boolean;
   showShadow: boolean;
   shadowIntensity: number;
+  shadowColor: string;
   borderRadius: number;
 }
 

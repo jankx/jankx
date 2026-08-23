@@ -10,10 +10,30 @@ export default function Save({ attributes }: any) {
     metricLabel,
     actionText,
     cardColor,
+    cardBgColor,
+    cardBorderColor,
+    cardTitleColor,
+    cardDescriptionColor,
+    cardBadgeBgColor,
+    cardBadgeColor,
+    cardMetricColor,
+    cardFooterBorderColor,
+    cardHoverBorderColor,
   } = attributes;
 
   const blockProps = useBlockProps.save({
     className: `embla-carousel__slide embla-carousel__slide--card embla-carousel__card--${cardColor}`,
+    style: {
+      '--card-bg': cardBgColor || '#ffffff',
+      '--card-border': cardBorderColor || '#e2e8f0',
+      '--card-title-color': cardTitleColor || '#0f172a',
+      '--card-desc-color': cardDescriptionColor || '#475569',
+      '--card-badge-bg': cardBadgeBgColor || '#f1f5f9',
+      '--card-badge-color': cardBadgeColor || '#475569',
+      '--card-metric-color': cardMetricColor || '#0f172a',
+      '--card-footer-border': cardFooterBorderColor || '#f1f5f9',
+      '--card-hover-border': cardHoverBorderColor || '#94a3b8',
+    } as any,
   });
 
   return (

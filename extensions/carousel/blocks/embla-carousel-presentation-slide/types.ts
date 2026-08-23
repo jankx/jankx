@@ -14,6 +14,12 @@ export interface PresentationSlideAttributes {
   quoteRole: string;
   theme: PresentationTheme;
   presenterNotes: string;
+  bgColor: string;
+  textColor: string;
+  accentColor: string;
+  titleColor: string;
+  subtitleColor: string;
+  borderColor: string;
 }
 
 export interface PresentationSlideEditProps {

@@ -63,6 +63,30 @@
     "presenterNotes": {
       "type": "string",
       "default": ""
+    },
+    "bgColor": {
+      "type": "string",
+      "default": "#0f172a"
+    },
+    "textColor": {
+      "type": "string",
+      "default": "#ffffff"
+    },
+    "accentColor": {
+      "type": "string",
+      "default": "#34d399"
+    },
+    "titleColor": {
+      "type": "string",
+      "default": "#ffffff"
+    },
+    "subtitleColor": {
+      "type": "string",
+      "default": "#ffffff"
+    },
+    "borderColor": {
+      "type": "string",
+      "default": "currentColor"
     }
   },
   "editorScript": "file:./build/index.js",

@@ -45,6 +45,42 @@
       "type": "string",
       "default": "slate",
       "enum": ["slate", "indigo", "emerald", "amber", "rose"]
+    },
+    "cardBgColor": {
+      "type": "string",
+      "default": "#ffffff"
+    },
+    "cardBorderColor": {
+      "type": "string",
+      "default": "#e2e8f0"
+    },
+    "cardTitleColor": {
+      "type": "string",
+      "default": "#0f172a"
+    },
+    "cardDescriptionColor": {
+      "type": "string",
+      "default": "#475569"
+    },
+    "cardBadgeBgColor": {
+      "type": "string",
+      "default": "#f1f5f9"
+    },
+    "cardBadgeColor": {
+      "type": "string",
+      "default": "#475569"
+    },
+    "cardMetricColor": {
+      "type": "string",
+      "default": "#0f172a"
+    },
+    "cardFooterBorderColor": {
+      "type": "string",
+      "default": "#f1f5f9"
+    },
+    "cardHoverBorderColor": {
+      "type": "string",
+      "default": "#94a3b8"
     }
   },
   "editorScript": "file:./build/index.js",

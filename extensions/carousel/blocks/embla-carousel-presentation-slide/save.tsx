@@ -13,10 +13,24 @@ export default function Save({ attributes }: any) {
     quoteAuthor,
     quoteRole,
     theme,
+    bgColor,
+    textColor,
+    accentColor,
+    titleColor,
+    subtitleColor,
+    borderColor,
   } = attributes;
 
   const blockProps = useBlockProps.save({
     className: `embla-carousel__slide embla-carousel__slide--presentation embla-carousel__slide--layout-${layout} embla-carousel__slide--theme-${theme}`,
+    style: {
+      '--pres-bg': bgColor || '#0f172a',
+      '--pres-text': textColor || '#ffffff',
+      '--pres-accent': accentColor || '#34d399',
+      '--pres-title-color': titleColor || '#ffffff',
+      '--pres-subtitle-color': subtitleColor || '#ffffff',
+      '--pres-border': borderColor || 'currentColor',
+    } as any,
   });
 
   return (

@@ -1,4 +1,11 @@
 .embla-carousel__slide--presentation {
+  --pres-bg: #0f172a;
+  --pres-text: #ffffff;
+  --pres-accent: #34d399;
+  --pres-title-color: #ffffff;
+  --pres-subtitle-color: #ffffff;
+  --pres-border: currentColor;
+
   flex: 0 0 100%;
   min-width: 0;
   height: 100%;
@@ -6,6 +13,8 @@
   flex-direction: column;
   border-radius: var(--embla-border-radius, 16px);
   overflow: hidden;
+  background: var(--pres-bg);
+  color: var(--pres-text);
 
   .embla-carousel__presentation-header {
     display: flex;
@@ -41,6 +50,7 @@
     line-height: 1.2;
     margin: 0 0 12px;
     letter-spacing: -0.02em;
+    color: var(--pres-title-color);
 
     @media (min-width: 768px) {
       font-size: 48px;
@@ -52,10 +62,15 @@
     opacity: 0.85;
     line-height: 1.5;
     margin: 0;
+    color: var(--pres-subtitle-color);
 
     @media (min-width: 768px) {
       font-size: 20px;
     }
+  }
+
+  .embla-carousel__presentation-subtitle-accent {
+    color: var(--pres-accent);
   }
 
   .embla-carousel__presentation-body-text {
@@ -76,7 +91,7 @@
     padding: 12px 24px;
     font-size: 11px;
     opacity: 0.5;
-    border-top: 1px solid currentColor;
+    border-top: 1px solid var(--pres-border);
   }
 
   /* Stats Layout */
@@ -96,6 +111,7 @@
     font-weight: 900;
     letter-spacing: -0.03em;
     line-height: 1;
+    color: var(--pres-accent);
 
     @media (min-width: 768px) {
       font-size: 72px;
@@ -127,6 +143,8 @@
     border-radius: 12px;
     font-size: 14px;
     line-height: 1.5;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
 
     @media (min-width: 768px) {
       font-size: 16px;
@@ -138,7 +156,7 @@
     height: 24px;
     border-radius: 50%;
     background: rgba(52, 211, 153, 0.2);
-    color: #34d399;
+    color: var(--pres-accent);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -161,6 +179,7 @@
     line-height: 1;
     opacity: 0.3;
     font-family: Georgia, serif;
+    color: var(--pres-accent);
   }
 
   .embla-carousel__presentation-quote {
@@ -209,51 +228,12 @@
     border-radius: 10px;
     font-size: 13px;
     font-family: monospace;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
 
     @media (min-width: 768px) {
       font-size: 14px;
     }
-  }
-
-  /* Theme Variants */
-  &.embla-carousel__slide--theme-dark {
-    background: #0f172a;
-    color: #fff;
-    .embla-carousel__presentation-subtitle-accent { color: #22d3ee; }
-    .embla-carousel__presentation-bullet { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); }
-    .embla-carousel__presentation-split-item { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); }
-  }
-
-  &.embla-carousel__slide--theme-light {
-    background: linear-gradient(135deg, #f8fafc, #fff, #f1f5f9);
-    color: #0f172a;
-    .embla-carousel__presentation-subtitle-accent { color: #4f46e5; }
-    .embla-carousel__presentation-bullet { background: #fff; border: 1px solid #e2e8f0; }
-    .embla-carousel__presentation-split-item { background: #fff; border: 1px solid #e2e8f0; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
-  }
-
-  &.embla-carousel__slide--theme-indigo {
-    background: linear-gradient(135deg, #312e81, #1e1b4b, #312e81);
-    color: #fff;
-    .embla-carousel__presentation-subtitle-accent { color: #818cf8; }
-    .embla-carousel__presentation-bullet { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); }
-    .embla-carousel__presentation-split-item { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); }
-  }
-
-  &.embla-carousel__slide--theme-slate {
-    background: linear-gradient(135deg, #1e293b, #0f172a, #1e293b);
-    color: #fff;
-    .embla-carousel__presentation-subtitle-accent { color: #34d399; }
-    .embla-carousel__presentation-bullet { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); }
-    .embla-carousel__presentation-split-item { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); }
-  }
-
-  &.embla-carousel__slide--theme-forest {
-    background: linear-gradient(135deg, #064e3b, #0f172a, #065f46);
-    color: #fff;
-    .embla-carousel__presentation-subtitle-accent { color: #6ee7b7; }
-    .embla-carousel__presentation-bullet { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); }
-    .embla-carousel__presentation-split-item { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); }
   }
 }
 

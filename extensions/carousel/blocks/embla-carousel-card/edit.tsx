@@ -1,7 +1,7 @@
 import React from 'react';
 import { __ } from '@wordpress/i18n';
-import { useBlockProps, InspectorControls, RichText } from '@wordpress/block-editor';
-import { PanelBody, TextControl, SelectControl } from '@wordpress/components';
+import { useBlockProps, InspectorControls, RichText, ColorPalette } from '@wordpress/block-editor';
+import { PanelBody, PanelRow, TextControl, SelectControl } from '@wordpress/components';
 import type { CarouselCardAttributes, CarouselCardEditProps } from './types';
 
 const COLOR_OPTIONS = [
@@ -59,6 +59,81 @@ export default function Edit({
             options={COLOR_OPTIONS}
             onChange={(val) => update({ cardColor: val as any })}
           />
+        </PanelBody>
+
+        <PanelBody title={__('Màu sắc tùy chỉnh', 'jankx')} initialOpen={false}>
+          <PanelRow>
+            <span className="jankx-carousel-label">{__('Nền card:', 'jankx')}</span>
+            <ColorPalette
+              value={attributes.cardBgColor}
+              onChange={(val) => update({ cardBgColor: val ?? '#ffffff' })}
+              disableCustomColors={false}
+            />
+          </PanelRow>
+          <PanelRow>
+            <span className="jankx-carousel-label">{__('Viền card:', 'jankx')}</span>
+            <ColorPalette
+              value={attributes.cardBorderColor}
+              onChange={(val) => update({ cardBorderColor: val ?? '#e2e8f0' })}
+              disableCustomColors={false}
+            />
+          </PanelRow>
+          <PanelRow>
+            <span className="jankx-carousel-label">{__('Màu tiêu đề:', 'jankx')}</span>
+            <ColorPalette
+              value={attributes.cardTitleColor}
+              onChange={(val) => update({ cardTitleColor: val ?? '#0f172a' })}
+              disableCustomColors={false}
+            />
+          </PanelRow>
+          <PanelRow>
+            <span className="jankx-carousel-label">{__('Màu mô tả:', 'jankx')}</span>
+            <ColorPalette
+              value={attributes.cardDescriptionColor}
+              onChange={(val) => update({ cardDescriptionColor: val ?? '#475569' })}
+              disableCustomColors={false}
+            />
+          </PanelRow>
+          <PanelRow>
+            <span className="jankx-carousel-label">{__('Nền badge:', 'jankx')}</span>
+            <ColorPalette
+              value={attributes.cardBadgeBgColor}
+              onChange={(val) => update({ cardBadgeBgColor: val ?? '#f1f5f9' })}
+              disableCustomColors={false}
+            />
+          </PanelRow>
+          <PanelRow>
+            <span className="jankx-carousel-label">{__('Màu badge:', 'jankx')}</span>
+            <ColorPalette
+              value={attributes.cardBadgeColor}
+              onChange={(val) => update({ cardBadgeColor: val ?? '#475569' })}
+              disableCustomColors={false}
+            />
+          </PanelRow>
+          <PanelRow>
+            <span className="jankx-carousel-label">{__('Màu metric:', 'jankx')}</span>
+            <ColorPalette
+              value={attributes.cardMetricColor}
+              onChange={(val) => update({ cardMetricColor: val ?? '#0f172a' })}
+              disableCustomColors={false}
+            />
+          </PanelRow>
+          <PanelRow>
+            <span className="jankx-carousel-label">{__('Viền footer:', 'jankx')}</span>
+            <ColorPalette
+              value={attributes.cardFooterBorderColor}
+              onChange={(val) => update({ cardFooterBorderColor: val ?? '#f1f5f9' })}
+              disableCustomColors={false}
+            />
+          </PanelRow>
+          <PanelRow>
+            <span className="jankx-carousel-label">{__('Viền hover:', 'jankx')}</span>
+            <ColorPalette
+              value={attributes.cardHoverBorderColor}
+              onChange={(val) => update({ cardHoverBorderColor: val ?? '#94a3b8' })}
+              disableCustomColors={false}
+            />
+          </PanelRow>
         </PanelBody>
       </InspectorControls>
 

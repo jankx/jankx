@@ -55,6 +55,34 @@
       "type": "string",
       "default": "left",
       "enum": ["left", "center", "right"]
+    },
+    "badgeColor": {
+      "type": "string",
+      "default": "#34d399"
+    },
+    "badgeBgColor": {
+      "type": "string",
+      "default": "#ffffff"
+    },
+    "titleColor": {
+      "type": "string",
+      "default": "#ffffff"
+    },
+    "subtitleColor": {
+      "type": "string",
+      "default": "#ffffff"
+    },
+    "ctaBgColor": {
+      "type": "string",
+      "default": "#16a34a"
+    },
+    "ctaTextColor": {
+      "type": "string",
+      "default": "#ffffff"
+    },
+    "contentMinHeight": {
+      "type": "number",
+      "default": 420
     }
   },
   "editorScript": "file:./build/index.js",

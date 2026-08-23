@@ -6,8 +6,9 @@ import {
   MediaUploadCheck,
   InspectorControls,
   RichText,
+  ColorPalette,
 } from '@wordpress/block-editor';
-import { PanelBody, TextControl, RangeControl, SelectControl, Button } from '@wordpress/components';
+import { PanelBody, PanelRow, TextControl, RangeControl, SelectControl, Button } from '@wordpress/components';
 import type { CarouselSlideAttributes, CarouselSlideEditProps } from './types';
 
 const ALIGN_OPTIONS = [
@@ -105,6 +106,65 @@ export default function Edit({
             options={ALIGN_OPTIONS}
             onChange={(val) => update({ textAlignment: val as any })}
           />
+          <RangeControl
+            label={__('Chiều cao nội dung (px)', 'jankx')}
+            value={attributes.contentMinHeight}
+            onChange={(val) => update({ contentMinHeight: val ?? 420 })}
+            min={200}
+            max={800}
+            step={10}
+          />
+        </PanelBody>
+
+        <PanelBody title={__('Màu sắc', 'jankx')} initialOpen={false}>
+          <PanelRow>
+            <span className="jankx-carousel-label">{__('Màu badge:', 'jankx')}</span>
+            <ColorPalette
+              value={attributes.badgeColor}
+              onChange={(val) => update({ badgeColor: val ?? '#34d399' })}
+              disableCustomColors={false}
+            />
+          </PanelRow>
+          <PanelRow>
+            <span className="jankx-carousel-label">{__('Nền badge:', 'jankx')}</span>
+            <ColorPalette
+              value={attributes.badgeBgColor}
+              onChange={(val) => update({ badgeBgColor: val ?? '#ffffff' })}
+              disableCustomColors={false}
+            />
+          </PanelRow>
+          <PanelRow>
+            <span className="jankx-carousel-label">{__('Màu tiêu đề:', 'jankx')}</span>
+            <ColorPalette
+              value={attributes.titleColor}
+              onChange={(val) => update({ titleColor: val ?? '#ffffff' })}
+              disableCustomColors={false}
+            />
+          </PanelRow>
+          <PanelRow>
+            <span className="jankx-carousel-label">{__('Màu mô tả:', 'jankx')}</span>
+            <ColorPalette
+              value={attributes.subtitleColor}
+              onChange={(val) => update({ subtitleColor: val ?? '#ffffff' })}
+              disableCustomColors={false}
+            />
+          </PanelRow>
+          <PanelRow>
+            <span className="jankx-carousel-label">{__('Màu nút CTA:', 'jankx')}</span>
+            <ColorPalette
+              value={attributes.ctaBgColor}
+              onChange={(val) => update({ ctaBgColor: val ?? '#16a34a' })}
+              disableCustomColors={false}
+            />
+          </PanelRow>
+          <PanelRow>
+            <span className="jankx-carousel-label">{__('Màu text nút:', 'jankx')}</span>
+            <ColorPalette
+              value={attributes.ctaTextColor}
+              onChange={(val) => update({ ctaTextColor: val ?? '#ffffff' })}
+              disableCustomColors={false}
+            />
+          </PanelRow>
         </PanelBody>
       </InspectorControls>
 

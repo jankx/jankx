@@ -1,4 +1,13 @@
 .embla-carousel__slide--banner {
+  --slide-badge-color: #34d399;
+  --slide-badge-bg: rgba(255, 255, 255, 0.15);
+  --slide-title-color: #fff;
+  --slide-subtitle-color: rgba(255, 255, 255, 0.85);
+  --slide-cta-bg: #16a34a;
+  --slide-cta-color: #fff;
+  --slide-cta-shadow: rgba(22, 163, 74, 0.3);
+  --slide-content-min-height: 420px;
+
   position: relative;
   flex: 0 0 100%;
   min-width: 0;
@@ -36,11 +45,11 @@
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
-    min-height: 420px;
+    min-height: var(--slide-content-min-height);
     padding: 40px 32px;
 
     @media (min-width: 768px) {
-      min-height: 500px;
+      min-height: calc(var(--slide-content-min-height) + 80px);
       padding: 48px 64px;
     }
   }
@@ -65,9 +74,9 @@
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    background: rgba(255, 255, 255, 0.15);
-    color: #34d399;
-    border: 1px solid rgba(52, 211, 153, 0.3);
+    background: var(--slide-badge-bg);
+    color: var(--slide-badge-color);
+    border: 1px solid var(--slide-badge-color);
     backdrop-filter: blur(8px);
     margin-bottom: 16px;
   }
@@ -75,7 +84,7 @@
   .embla-carousel__slide-title {
     font-size: 28px;
     font-weight: 800;
-    color: #fff;
+    color: var(--slide-title-color);
     line-height: 1.2;
     margin: 0 0 12px;
     letter-spacing: -0.02em;
@@ -87,7 +96,7 @@
 
   .embla-carousel__slide-subtitle {
     font-size: 14px;
-    color: rgba(255, 255, 255, 0.85);
+    color: var(--slide-subtitle-color);
     line-height: 1.6;
     margin: 0 0 24px;
     max-width: 560px;
@@ -105,14 +114,14 @@
     border-radius: 9999px;
     font-size: 14px;
     font-weight: 600;
-    background: #16a34a;
-    color: #fff;
+    background: var(--slide-cta-bg);
+    color: var(--slide-cta-color);
     text-decoration: none;
     transition: all 0.2s ease;
-    box-shadow: 0 4px 12px rgba(22, 163, 74, 0.3);
+    box-shadow: 0 4px 12px var(--slide-cta-shadow);
 
     &:hover {
-      background: #22c55e;
+      filter: brightness(1.1);
       transform: scale(1.05);
     }
   }

@@ -19,6 +19,7 @@ class EmblaCarouselBlock
 
         $wrapper_attrs = [
             'class' => $this->get_wrapper_classes(),
+            'style' => $this->get_wrapper_style(),
             'data-variant' => esc_attr($atts['variant'] ?? 'banner'),
             'data-loop' => esc_attr(($atts['loop'] ?? true) ? 'true' : 'false'),
             'data-align' => esc_attr($atts['align'] ?? 'center'),
@@ -64,10 +65,7 @@ class EmblaCarouselBlock
         $classes = ['wp-block-jankx-embla-carousel'];
 
         $show_shadow = $this->attributes['showShadow'] ?? true;
-        if ($show_shadow) {
-            $intensity = $this->attributes['shadowIntensity'] ?? 3;
-            $classes[] = 'shadow-intensity-' . intval($intensity);
-        } else {
+        if (!$show_shadow) {
             $classes[] = 'shadow-none';
         }
 
@@ -76,14 +74,81 @@ class EmblaCarouselBlock
 
     protected function get_wrapper_style(): string
     {
-        $border_radius = $this->attributes['borderRadius'] ?? 16;
-        $gap = $this->attributes['gap'] ?? 20;
-
+        $atts = $this->attributes;
         $styles = [];
-        $styles[] = "--embla-gap: {$gap}px";
-        $styles[] = "--embla-border-radius: {$border_radius}px";
+
+        // Container
+        $styles[] = "--embla-gap: " . ($atts['gap'] ?? 20) . "px";
+        $styles[] = "--embla-border-radius: " . ($atts['borderRadius'] ?? 16) . "px";
+
+        // Arrow
+        $arrow_size = $atts['arrowSize'] ?? 44;
+        $arrow_bg = $atts['arrowBgColor'] ?? '#000000';
+        $arrow_bg_opacity = ($atts['arrowBgOpacity'] ?? 40) / 100;
+        $arrow_color = $atts['arrowColor'] ?? '#ffffff';
+        $arrow_border = $atts['arrowBorderColor'] ?? '#ffffff';
+        $arrow_border_opacity = ($atts['arrowBorderOpacity'] ?? 20) / 100;
+        $styles[] = "--embla-arrow-size: {$arrow_size}px";
+        $styles[] = "--embla-arrow-bg: " . $this->hex_to_rgba($arrow_bg, $arrow_bg_opacity);
+        $styles[] = "--embla-arrow-color: {$arrow_color}";
+        $styles[] = "--embla-arrow-border: " . $this->hex_to_rgba($arrow_border, $arrow_border_opacity);
+
+        // Dots
+        $dot_size = $atts['dotSize'] ?? 8;
+        $dot_color = $atts['dotColor'] ?? '#000000';
+        $dot_opacity = ($atts['dotColorOpacity'] ?? 20) / 100;
+        $dot_active = $atts['dotActiveColor'] ?? '#1e293b';
+        $dot_active_width = $atts['dotActiveWidth'] ?? 24;
+        $styles[] = "--embla-dot-size: {$dot_size}px";
+        $styles[] = "--embla-dot-color: " . $this->hex_to_rgba($dot_color, $dot_opacity);
+        $styles[] = "--embla-dot-active-color: {$dot_active}";
+        $styles[] = "--embla-dot-active-width: {$dot_active_width}px";
+
+        // Progress bar
+        $progress_height = $atts['progressHeight'] ?? 4;
+        $track_color = $atts['progressTrackColor'] ?? '#ffffff';
+        $track_opacity = ($atts['progressTrackOpacity'] ?? 20) / 100;
+        $bar_color = $atts['progressBarColor'] ?? '#16a34a';
+        $styles[] = "--embla-progress-height: {$progress_height}px";
+        $styles[] = "--embla-progress-track: " . $this->hex_to_rgba($track_color, $track_opacity);
+        $styles[] = "--embla-progress-bar: {$bar_color}";
+
+        // Shadow
+        $shadow_color = $atts['shadowColor'] ?? '#0f172a';
+        $show_shadow = $atts['showShadow'] ?? true;
+        if ($show_shadow) {
+            $intensity = $atts['shadowIntensity'] ?? 3;
+            $shadow_rgb = $this->hex_to_rgb($shadow_color);
+            $opacities = [0.10, 0.15, 0.20, 0.30, 0.35];
+            $alpha = $opacities[$intensity - 1] ?? 0.20;
+            $styles[] = "--embla-shadow: 0 4px 6px -1px rgba({$shadow_rgb}, {$alpha})";
+        }
 
         return implode('; ', $styles);
+    }
+
+    protected function hex_to_rgba(string $hex, float $alpha = 1.0): string
+    {
+        $hex = ltrim($hex, '#');
+        if (strlen($hex) === 3) {
+            $hex = $hex[0] . $hex[0] . $hex[1] . $hex[1] . $hex[2] . $hex[2];
+        }
+        $r = hexdec(substr($hex, 0, 2));
+        $g = hexdec(substr($hex, 2, 2));
+        $b = hexdec(substr($hex, 4, 2));
+        return "rgba({$r}, {$g}, {$b}, {$alpha})";
+    }
+
+    protected function hex_to_rgb(string $hex): string
+    {
+        $hex = ltrim($hex, '#');
+        if (strlen($hex) === 3) {
+            $hex = $hex[0] . $hex[0] . $hex[1] . $hex[1] . $hex[2] . $hex[2];
+        }
+        $r = hexdec(substr($hex, 0, 2));
+        $g = hexdec(substr($hex, 2, 2));
+        $b = hexdec(substr($hex, 4, 2));
+        return "{$r}, {$g}, {$b}";
     }
 
     protected function render_navigation(): string
