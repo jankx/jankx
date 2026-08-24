@@ -5,6 +5,10 @@
   position: relative;
   min-height: 300px;
 }
+.embla-banner * {
+  transition: none !important;
+  animation: none !important;
+}
 .embla-banner__image {
   position: absolute;
   inset: 0;

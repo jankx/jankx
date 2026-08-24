@@ -1,0 +1,42 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "jankx/search-results-count",
+    "title": "Search Results Count",
+    "category": "jankx",
+    "description": "Display the number of found items in search results.",
+    "keywords": [
+        "search",
+        "results",
+        "count"
+    ],
+    "textdomain": "jankx",
+    "supports": {
+        "html": false,
+        "align": [
+            "left",
+            "center",
+            "right"
+        ],
+        "typography": {
+            "fontSize": true,
+            "lineHeight": true,
+            "fontFamily": true,
+            "fontStyle": true,
+            "fontWeight": true,
+            "letterSpacing": true,
+            "textTransform": true,
+            "textDecoration": true
+        },
+        "color": {
+            "text": true
+        },
+        "spacing": {
+            "margin": true,
+            "padding": true
+        }
+    },
+    "editorScript": "file:../../dist/blocks/search-results-count/index.js",
+    "style": "file:../../dist/blocks/search-results-count/style.css",
+    "editorStyle": "file:../../dist/blocks/search-results-count/editor.css"
+}

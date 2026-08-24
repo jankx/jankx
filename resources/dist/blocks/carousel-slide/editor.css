@@ -5,6 +5,10 @@
   position: relative;
   overflow: hidden;
 }
+.editor-styles-wrapper .wp-block-jankx-carousel-slide * {
+  transition: none !important;
+  animation: none !important;
+}
 .editor-styles-wrapper .wp-block-jankx-carousel-slide .carousel-slide__content {
   position: relative;
   z-index: 2;

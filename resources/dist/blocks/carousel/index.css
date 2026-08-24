@@ -266,6 +266,19 @@
 .editor-styles-wrapper .wp-block-jankx-carousel .embla__dots {
   pointer-events: none;
 }
+.editor-styles-wrapper .wp-block-jankx-carousel .embla__slide,
+.editor-styles-wrapper .wp-block-jankx-carousel .carousel-slide {
+  transition: none !important;
+  transform: none !important;
+  opacity: 1 !important;
+}
+.editor-styles-wrapper .wp-block-jankx-carousel .embla__container {
+  will-change: auto !important;
+}
+.editor-styles-wrapper .wp-block-jankx-carousel .embla__slide:hover {
+  opacity: 1 !important;
+  transform: none !important;
+}
 
 .wp-block-jankx-carousel .embla {
   height: var(--carousel-height, 50px);

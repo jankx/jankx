@@ -5,7 +5,25 @@ import Edit from './edit';
 import Save from './save';
 import metadata from './block.json';
 
-const deprecated = [
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const deprecated: any[] = [
+    // Previous save: imageRatio + thumbnailPosition only, no background data attrs
+    {
+        attributes: metadata.attributes,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        save({ attributes }: { attributes: any }): JSX.Element {
+            const blockProps = useBlockProps.save({
+                ...(attributes.imageRatio && { 'data-image-ratio': attributes.imageRatio }),
+                ...(attributes.thumbnailPosition && { 'data-thumbnail-position': attributes.thumbnailPosition }),
+            });
+            return (
+                <div {...blockProps}>
+                    <InnerBlocks.Content />
+                </div>
+            );
+        },
+    },
+    // Original save: plain div, no data attrs
     {
         attributes: metadata.attributes,
         save(): JSX.Element {
@@ -24,4 +42,3 @@ registerBlockType(metadata.name, {
     save: Save,
     deprecated,
 });
-

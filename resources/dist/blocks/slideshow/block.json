@@ -1,0 +1,135 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "jankx/slideshow",
+    "title": "Slideshow",
+    "category": "jankx",
+    "description": "Advanced slideshow with thumbnails, captions and PhotoSwipe integration",
+    "keywords": ["slideshow", "gallery", "photoswipe", "carousel", "images"],
+    "textdomain": "jankx",
+    "attributes": {
+        "autoplay": {
+            "type": "boolean",
+            "default": false
+        },
+        "autoplayDelay": {
+            "type": "number",
+            "default": 3000
+        },
+        "fullscreen": {
+            "type": "boolean",
+            "default": true
+        },
+        "showThumbnails": {
+            "type": "boolean",
+            "default": true
+        },
+        "showNavigation": {
+            "type": "boolean",
+            "default": true
+        },
+        "showPagination": {
+            "type": "boolean",
+            "default": true
+        },
+        "transitionEffect": {
+            "type": "string",
+            "enum": ["slide", "fade"],
+            "default": "slide"
+        },
+        "transitionSpeed": {
+            "type": "number",
+            "default": 300
+        },
+        "thumbnailSize": {
+            "type": "string",
+            "enum": ["small", "medium", "large"],
+            "default": "medium"
+        },
+        "mainImageHeight": {
+            "type": "number",
+            "default": 400
+        },
+        "captionPosition": {
+            "type": "string",
+            "enum": ["top", "bottom", "overlay", "hidden"],
+            "default": "hidden"
+        },
+        "enableLightbox": {
+            "type": "boolean",
+            "default": false
+        },
+        "showFooterText": {
+            "type": "boolean",
+            "default": false
+        },
+        "fullscreenText": {
+            "type": "string",
+            "default": "Fullscreen"
+        },
+        "prevText": {
+            "type": "string",
+            "default": "&lt;"
+        },
+        "nextText": {
+            "type": "string",
+            "default": "&gt;"
+        },
+        "className": {
+            "type": "string"
+        },
+        "anchor": {
+            "type": "string"
+        }
+    },
+    "supports": {
+        "html": false,
+        "anchor": true,
+        "align": ["wide", "full"],
+        "spacing": {
+            "margin": true,
+            "padding": true
+        },
+        "color": {
+            "background": true,
+            "text": true,
+            "gradients": true,
+            "link": true
+        },
+        "border": {
+            "color": true,
+            "radius": true,
+            "style": true,
+            "width": true,
+            "__experimentalDefaultControls": {
+                "radius": true
+            }
+        },
+        "typography": {
+            "fontSize": true,
+            "lineHeight": true,
+            "__experimentalFontFamily": true,
+            "__experimentalFontWeight": true,
+            "__experimentalFontStyle": true,
+            "__experimentalTextTransform": true,
+            "__experimentalTextDecoration": true,
+            "__experimentalLetterSpacing": true
+        },
+        "dimensions": {
+            "minHeight": true
+        }
+    },
+    "providesContext": {
+        "jankx/slideShowId": "anchor",
+        "jankx/showThumbnails": "showThumbnails",
+        "jankx/showNavigation": "showNavigation",
+        "jankx/transitionEffect": "transitionEffect",
+        "jankx/captionPosition": "captionPosition",
+        "jankx/prevText": "prevText",
+        "jankx/nextText": "nextText"
+    },
+    "editorScript": "file:../../dist/blocks/slideshow/index.js",
+    "editorStyle": "file:../../dist/blocks/slideshow/editor.css",
+    "viewScript": "file:../../dist/blocks/slideshow/view.js",
+    "style": "file:../../dist/blocks/slideshow/style.css"
+}

@@ -13,6 +13,8 @@
 }
 .wp-block-jankx-carousel-inner-blocks-overlay * {
   pointer-events: auto;
+  transition: none !important;
+  animation: none !important;
 }
 
 /*# sourceMappingURL=editor.css.map*/

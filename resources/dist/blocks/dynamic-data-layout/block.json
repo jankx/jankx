@@ -1,0 +1,432 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "jankx/dynamic-data-layout",
+    "version": "1.0.0",
+    "title": "Dynamic Data Layout",
+    "category": "jankx",
+    "icon": "layout",
+    "description": "Hiển thị danh sách posts theo layout tùy chỉnh với WordPress query builder",
+    "textdomain": "jankx",
+    "editorScript": "file:../../dist/blocks/dynamic-data-layout/index.js",
+    "editorStyle": "file:../../dist/blocks/dynamic-data-layout/editor.css",
+    "style": "file:../../dist/blocks/dynamic-data-layout/style.css",
+    "providesContext": {
+        "queryId": "queryId",
+        "postType": "postType",
+        "displayLayout": "layout",
+        "postsPerPage": "postsPerPage",
+        "columns": "columns",
+        "columnsTablet": "columnsTablet",
+        "columnsMobile": "columnsMobile",
+        "slidesToScroll": "slidesToScroll",
+        "loop": "loop",
+        "autoplay": "autoplay",
+        "autoplayDelay": "autoplayDelay",
+        "showArrows": "showArrows",
+        "showDots": "showDots",
+        "carouselAlign": "carouselAlign",
+        "carouselAxis": "carouselAxis",
+        "carouselDirection": "carouselDirection",
+        "carouselStartIndex": "carouselStartIndex",
+        "carouselDuration": "carouselDuration",
+        "carouselDragFree": "carouselDragFree",
+        "carouselDragThreshold": "carouselDragThreshold",
+        "carouselSkipSnaps": "carouselSkipSnaps",
+        "carouselContainScroll": "carouselContainScroll",
+        "carouselInViewThreshold": "carouselInViewThreshold",
+        "carouselPeek": "carouselPeek",
+        "queryPreset": "queryPreset",
+        "includeStickyPosts": "includeStickyPosts",
+        "orderBy": "orderBy",
+        "order": "order",
+        "offset": "offset",
+        "taxQuery": "taxQuery",
+        "metaQuery": "metaQuery",
+        "keyword": "keyword",
+        "authorIn": "authorIn",
+        "authorNotIn": "authorNotIn",
+        "postIn": "postIn",
+        "postNotIn": "postNotIn",
+        "metaKey": "metaKey",
+        "metaType": "metaType",
+        "postStatus": "postStatus",
+        "postParent": "postParent",
+        "postParentIn": "postParentIn",
+        "postParentNotIn": "postParentNotIn",
+        "customQueryId": "customQueryId"
+    },
+    "usesContext": [
+        "queryId",
+        "postType"
+    ],
+    "allowedBlocks": [
+        "core/heading",
+        "jankx/dynamic-data-template",
+        "jankx/layout-switcher"
+    ],
+    "supports": {
+        "html": false,
+        "align": [
+            "wide",
+            "full"
+        ],
+        "anchor": true,
+        "innerBlocks": true,
+        "spacing": {
+            "margin": true,
+            "padding": true,
+            "blockGap": true
+        },
+        "color": {
+            "background": true,
+            "text": true,
+            "link": true,
+            "gradients": true
+        },
+        "background": {
+            "backgroundImage": true,
+            "backgroundSize": true
+        },
+        "typography": {
+            "fontSize": true,
+            "lineHeight": true
+        },
+        "__experimentalBorder": {
+            "color": true,
+            "radius": true,
+            "style": true,
+            "width": true
+        },
+        "__experimentalLayout": {
+            "allowSwitching": true,
+            "allowInheriting": true,
+            "default": {
+                "type": "constrained"
+            }
+        }
+    },
+    "attributes": {
+        "queryPreset": {
+            "type": "string",
+            "default": "custom",
+            "enum": [
+                "default",
+                "related",
+                "custom",
+                "on-sale",
+                "featured",
+                "related-products",
+                "best-sellers",
+                "top-rated",
+                "upsells",
+                "new-arrivals",
+                "recently-viewed"
+            ]
+        },
+        "postType": {
+            "type": "string",
+            "default": "post"
+        },
+        "useMultiPostType": {
+            "type": "boolean",
+            "default": false
+        },
+        "postTypes": {
+            "type": "array",
+            "default": []
+        },
+        "postsPerPage": {
+            "type": "number",
+            "default": 10
+        },
+        "includeStickyPosts": {
+            "type": "boolean",
+            "default": false
+        },
+        "layout": {
+            "type": "string",
+            "default": "grid"
+        },
+        "columns": {
+            "type": "number",
+            "default": 3
+        },
+        "columnsTablet": {
+            "type": "number",
+            "default": 2
+        },
+        "columnsMobile": {
+            "type": "number",
+            "default": 1
+        },
+        "responsiveColumns": {
+            "type": "object",
+            "default": {
+                "desktop": 3,
+                "tablet": 2,
+                "mobile": 1
+            }
+        },
+        "orderBy": {
+            "type": "string",
+            "default": "date"
+        },
+        "order": {
+            "type": "string",
+            "default": "DESC"
+        },
+        "queryId": {
+            "type": "string",
+            "default": ""
+        },
+        "offset": {
+            "type": "number",
+            "default": 0
+        },
+        "renderOffset": {
+            "type": "number",
+            "default": 0
+        },
+        "renderLimit": {
+            "type": "number",
+            "default": 0
+        },
+        "taxQuery": {
+            "type": "array",
+            "default": []
+        },
+        "metaQuery": {
+            "type": "array",
+            "default": []
+        },
+        "keyword": {
+            "type": "string",
+            "default": ""
+        },
+        "authorIn": {
+            "type": "array",
+            "default": []
+        },
+        "authorNotIn": {
+            "type": "array",
+            "default": []
+        },
+        "postIn": {
+            "type": "array",
+            "default": []
+        },
+        "postNotIn": {
+            "type": "array",
+            "default": []
+        },
+        "metaKey": {
+            "type": "string",
+            "default": ""
+        },
+        "metaType": {
+            "type": "string",
+            "default": ""
+        },
+        "postStatus": {
+            "type": "array",
+            "default": [
+                "publish"
+            ]
+        },
+        "postParent": {
+            "type": "number",
+            "default": 0
+        },
+        "postParentIn": {
+            "type": "array",
+            "default": []
+        },
+        "postParentNotIn": {
+            "type": "array",
+            "default": []
+        },
+        "customQueryId": {
+            "type": "string",
+            "default": ""
+        },
+        "enablePagination": {
+            "type": "boolean",
+            "default": false
+        },
+        "paginationStyle": {
+            "type": "string",
+            "default": "numbers",
+            "enum": [
+                "numbers",
+                "simple",
+                "arrows",
+                "load-more"
+            ]
+        },
+        "paginationAlignment": {
+            "type": "string",
+            "default": "center",
+            "enum": [
+                "left",
+                "center",
+                "right"
+            ]
+        },
+        "showPaginationNumbers": {
+            "type": "boolean",
+            "default": true
+        },
+        "paginationPrevText": {
+            "type": "string",
+            "default": ""
+        },
+        "paginationNextText": {
+            "type": "string",
+            "default": ""
+        },
+        "slidesToScroll": {
+            "type": "number",
+            "default": 1
+        },
+        "loop": {
+            "type": "boolean",
+            "default": false
+        },
+        "autoplay": {
+            "type": "boolean",
+            "default": false
+        },
+        "autoplayDelay": {
+            "type": "number",
+            "default": 3000
+        },
+        "showArrows": {
+            "type": "boolean",
+            "default": true
+        },
+        "showDots": {
+            "type": "boolean",
+            "default": true
+        },
+        "carouselAlign": {
+            "type": "string",
+            "default": "start",
+            "enum": [
+                "start",
+                "center",
+                "end"
+            ]
+        },
+        "carouselAxis": {
+            "type": "string",
+            "default": "x",
+            "enum": [
+                "x",
+                "y"
+            ]
+        },
+        "carouselDirection": {
+            "type": "string",
+            "default": "ltr",
+            "enum": [
+                "ltr",
+                "rtl"
+            ]
+        },
+        "carouselStartIndex": {
+            "type": "number",
+            "default": 0
+        },
+        "carouselDuration": {
+            "type": "number",
+            "default": 25
+        },
+        "carouselDragFree": {
+            "type": "boolean",
+            "default": false
+        },
+        "carouselDragThreshold": {
+            "type": "number",
+            "default": 10
+        },
+        "carouselSkipSnaps": {
+            "type": "boolean",
+            "default": false
+        },
+        "carouselContainScroll": {
+            "type": "string",
+            "default": "trimSnaps",
+            "enum": [
+                "false",
+                "trimSnaps",
+                "keepSnaps"
+            ]
+        },
+        "carouselInViewThreshold": {
+            "type": "number",
+            "default": 0
+        },
+        "showTitle": {
+            "type": "boolean",
+            "default": true
+        },
+        "showExcerpt": {
+            "type": "boolean",
+            "default": true
+        },
+        "showFeaturedImage": {
+            "type": "boolean",
+            "default": true
+        },
+        "thumbnailPosition": {
+            "type": "string",
+            "default": "top",
+            "enum": [
+                "top",
+                "bottom",
+                "left",
+                "right"
+            ]
+        },
+        "imageRatio": {
+            "type": "string",
+            "default": ""
+        },
+        "showDate": {
+            "type": "boolean",
+            "default": true
+        },
+        "showAuthor": {
+            "type": "boolean",
+            "default": false
+        },
+        "showPrice": {
+            "type": "boolean",
+            "default": true
+        },
+        "showAddToCart": {
+            "type": "boolean",
+            "default": true
+        },
+        "showRating": {
+            "type": "boolean",
+            "default": false
+        },
+        "excerptLength": {
+            "type": "number",
+            "default": 55
+        },
+        "postTemplate": {
+            "type": "object"
+        },
+        "spaceBetween": {
+            "type": "number",
+            "default": 16
+        },
+        "carouselPeek": {
+            "type": "number",
+            "default": 0
+        }
+    }
+}

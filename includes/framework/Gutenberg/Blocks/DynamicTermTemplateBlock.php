@@ -143,6 +143,14 @@ class DynamicTermTemplateBlock extends DynamicDataTemplateBlock
             'data-overlay-icon-bg' => $attributes['overlayIconBackground'] ?? 'rgba(0, 0, 0, 0.5)',
             'data-overlay-icon-mode' => $attributes['overlayIconShowMode'] ?? 'always-show',
             'data-overlay-icon-target' => $attributes['overlayIconTarget'] ?? 'featured-image',
+            'data-item-bg-type' => $attributes['itemBgType'] ?? 'none',
+            'data-item-bg-color' => $attributes['itemBgColor'] ?? '',
+            'data-item-bg-image-url' => $attributes['itemBgImageUrl'] ?? '',
+            'data-item-bg-image-source' => $attributes['itemBgImageSource'] ?? 'custom',
+            'data-item-bg-position' => $attributes['itemBgPosition'] ?? 'center center',
+            'data-item-bg-size' => $attributes['itemBgSize'] ?? 'cover',
+            'data-item-bg-repeat' => $attributes['itemBgRepeat'] ?? 'no-repeat',
+            'data-item-bg-overlay' => $attributes['itemBgOverlay'] ?? '',
         ]);
 
         return sprintf(

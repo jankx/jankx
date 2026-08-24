@@ -1,0 +1,195 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "jankx/offcanvas-sidebar",
+    "title": "Offcanvas Sidebar",
+    "category": "jankx",
+    "icon": "menu",
+    "description": "Create animated offcanvas sidebar with multiple transition effects",
+    "keywords": [
+        "sidebar",
+        "offcanvas",
+        "menu",
+        "navigation",
+        "animation",
+        "transition"
+    ],
+    "textdomain": "jankx",
+    "supports": {
+        "html": true,
+        "anchor": true,
+        "align": [
+            "wide",
+            "full"
+        ],
+        "color": {
+            "background": true,
+            "gradients": true,
+            "text": true,
+            "link": false
+        },
+        "background": {
+            "backgroundImage": true,
+            "backgroundSize": true
+        },
+        "spacing": {
+            "margin": true,
+            "padding": true
+        }
+    },
+    "innerBlocks": {
+        "allowedBlocks": [
+            "core/paragraph",
+            "core/heading",
+            "core/image",
+            "core/gallery",
+            "core/list",
+            "core/quote",
+            "core/buttons",
+            "core/separator",
+            "core/spacer",
+            "core/social-links",
+            "core/navigation",
+            "core/search",
+            "core/calendar",
+            "core/latest-posts",
+            "core/latest-comments",
+            "core/rss",
+            "core/audio",
+            "core/video",
+            "core/file",
+            "core/code",
+            "core/html",
+            "core/preformatted",
+            "core/pullquote",
+            "core/table",
+            "core/verse",
+            "core/media-text",
+            "core/columns",
+            "core/group",
+            "core/cover",
+            "core/embed",
+            "jankx/language-switcher",
+            "jankx/icon-button",
+            "jankx/offcanvas-sidebar"
+        ],
+        "template": [
+            [
+                "core/heading",
+                {
+                    "level": 3,
+                    "content": "Sidebar Content"
+                }
+            ],
+            [
+                "core/paragraph",
+                {
+                    "content": "Add your content here using any available blocks."
+                }
+            ]
+        ],
+        "templateLock": false
+    },
+    "attributes": {
+        "sidebarPosition": {
+            "type": "string",
+            "default": "left"
+        },
+        "animationEffect": {
+            "type": "string",
+            "default": "slide-in"
+        },
+        "sidebarWidth": {
+            "type": "string",
+            "default": "300px"
+        },
+        "overlayColor": {
+            "type": "string",
+            "default": "rgba(0,0,0,0.2)"
+        },
+        "showCloseButton": {
+            "type": "boolean",
+            "default": true
+        },
+        "closeButtonPosition": {
+            "type": "string",
+            "default": "top-right"
+        },
+        "closeButtonSize": {
+            "type": "string",
+            "default": "medium"
+        },
+        "closeButtonStyle": {
+            "type": "string",
+            "default": "circle"
+        },
+        "closeButtonColor": {
+            "type": "string",
+            "default": "inherit"
+        },
+        "triggerText": {
+            "type": "string",
+            "default": "Menu"
+        },
+        "triggerIcon": {
+            "type": "string",
+            "default": "menu"
+        },
+        "showOverlay": {
+            "type": "boolean",
+            "default": true
+        },
+        "closeOnOverlayClick": {
+            "type": "boolean",
+            "default": true
+        },
+        "closeOnEscape": {
+            "type": "boolean",
+            "default": true
+        },
+        "autoClose": {
+            "type": "boolean",
+            "default": false
+        },
+        "autoCloseDelay": {
+            "type": "number",
+            "default": 5000
+        },
+        "menuItems": {
+            "type": "array",
+            "default": [
+                {
+                    "id": "home",
+                    "text": "Home",
+                    "url": "#",
+                    "icon": "home"
+                },
+                {
+                    "id": "about",
+                    "text": "About",
+                    "url": "#",
+                    "icon": "info"
+                },
+                {
+                    "id": "services",
+                    "text": "Services",
+                    "url": "#",
+                    "icon": "cog"
+                },
+                {
+                    "id": "contact",
+                    "text": "Contact",
+                    "url": "#",
+                    "icon": "email"
+                }
+            ]
+        },
+        "className": {
+            "type": "string"
+        }
+    },
+    "editorScript": "file:../../dist/blocks/offcanvas-sidebar/index.js",
+    "viewScript": "file:../../dist/blocks/offcanvas-sidebar/frontend.js",
+    "style": "file:../../dist/blocks/offcanvas-sidebar/style.css",
+    "editorStyle": "file:../../dist/blocks/offcanvas-sidebar/editor.css"
+}

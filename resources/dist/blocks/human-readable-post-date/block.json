@@ -1,0 +1,33 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "jankx/human-readable-post-date",
+    "title": "Human Readable Post Date",
+    "category": "jankx",
+    "icon": "clock",
+    "description": "Hiển thị thời gian đăng bài dưới dạng thân thiện (ví dụ: 3 giờ trước)",
+    "textdomain": "jankx",
+    "usesContext": ["postId", "postType"],
+    "attributes": {
+        "showIcon": {
+            "type": "boolean",
+            "default": true
+        }
+    },
+    "supports": {
+        "html": false,
+        "color": {
+            "text": true
+        },
+        "typography": {
+            "fontSize": true,
+            "lineHeight": true
+        },
+        "spacing": {
+            "margin": true,
+            "padding": true
+        }
+    },
+    "editorScript": "file:../../dist/blocks/human-readable-post-date/index.js",
+    "style": "file:../../dist/blocks/human-readable-post-date/style.css"
+}

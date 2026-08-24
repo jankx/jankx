@@ -1,0 +1,51 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "jankx/post-type-badge",
+    "title": "Post Type Badge",
+    "category": "jankx",
+    "icon": "post",
+    "description": "Hiển thị nhãn loại bài viết (post type) trên item trong Post Layout",
+    "textdomain": "jankx",
+    "attributes": {
+        "displayType": {
+            "type": "string",
+            "default": "absolute",
+            "enum": ["absolute", "normal"]
+        },
+        "position": {
+            "type": "string",
+            "default": "top-right"
+        },
+        "offsetX": {
+            "type": "string",
+            "default": "12px"
+        },
+        "offsetY": {
+            "type": "string",
+            "default": "12px"
+        },
+        "backgroundColor": {
+            "type": "string",
+            "default": "#2e7d32"
+        },
+        "textColor": {
+            "type": "string",
+            "default": "#ffffff"
+        },
+        "borderRadius": {
+            "type": "number",
+            "default": 8
+        },
+        "showLabel": {
+            "type": "boolean",
+            "default": true
+        }
+    },
+    "editorScript": "file:../../dist/blocks/post-type-badge/index.js",
+    "editorStyle": "file:../../dist/blocks/post-type-badge/editor.css",
+    "style": "file:../../dist/blocks/post-type-badge/style.css",
+    "supports": {
+        "html": false
+    }
+}

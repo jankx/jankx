@@ -1,0 +1,192 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "jankx/advanced-filter",
+    "version": "1.0.0",
+    "title": "Advanced Filter",
+    "category": "jankx",
+    "parent": [
+        "jankx/advanced-filters",
+        "jankx/smart-tab"
+    ],
+    "icon": "filter",
+    "description": "Một filter đơn lẻ dùng bên trong Advanced Filters.",
+    "textdomain": "jankx",
+    "supports": {
+        "html": false,
+        "reusable": false,
+        "innerBlocks": true
+    },
+    "attributes": {
+        "containerLayout": {
+            "type": "string",
+            "default": "row",
+            "enum": ["row", "stack"]
+        },
+        "justifyContent": {
+            "type": "string",
+            "default": "flex-start"
+        },
+        "alignItems": {
+            "type": "string",
+            "default": "center"
+        },
+        "gap": {
+            "type": "string",
+            "default": "1rem"
+        },
+        "flexWrap": {
+            "type": "string",
+            "default": "nowrap",
+            "enum": ["nowrap", "wrap"]
+        },
+        "filterType": {
+            "type": "string",
+            "default": "taxonomy",
+            "enum": ["taxonomy", "meta", "price", "date", "author", "keyword"]
+        },
+        "label": {
+            "type": "string",
+            "default": ""
+        },
+        "enabled": {
+            "type": "boolean",
+            "default": true
+        },
+        "taxonomy": {
+            "type": "string",
+            "default": ""
+        },
+        "displayStyle": {
+            "type": "string",
+            "default": "buttons",
+            "enum": ["buttons", "checkboxes", "dropdown", "select"]
+        },
+        "listingType": {
+            "type": "string",
+            "default": "ul",
+            "enum": ["ul", "ol", "none"]
+        },
+        "showCount": {
+            "type": "boolean",
+            "default": false
+        },
+        "showEmptyTerms": {
+            "type": "boolean",
+            "default": true
+        },
+        "showOnlyTopLevel": {
+            "type": "boolean",
+            "default": false
+        },
+        "showHierarchy": {
+            "type": "boolean",
+            "default": false
+        },
+        "multipleSelection": {
+            "type": "boolean",
+            "default": true
+        },
+        "showLabels": {
+            "type": "boolean",
+            "default": true
+        },
+        "collapsible": {
+            "type": "boolean",
+            "default": false
+        },
+        "defaultExpanded": {
+            "type": "boolean",
+            "default": true
+        },
+        "metaKey": {
+            "type": "string",
+            "default": ""
+        },
+        "inputType": {
+            "type": "string",
+            "default": "text",
+            "enum": ["text", "number", "range", "date", "date-range"]
+        },
+        "minValue": {
+            "type": "string",
+            "default": ""
+        },
+        "maxValue": {
+            "type": "string",
+            "default": ""
+        },
+        "placeholder": {
+            "type": "string",
+            "default": ""
+        },
+        "minPrice": {
+            "type": "string",
+            "default": ""
+        },
+        "maxPrice": {
+            "type": "string",
+            "default": ""
+        },
+        "currency": {
+            "type": "string",
+            "default": "VND"
+        },
+        "dateField": {
+            "type": "string",
+            "default": "post_date"
+        },
+        "dateRange": {
+            "type": "boolean",
+            "default": true
+        },
+        "showSearchButton": {
+            "type": "boolean",
+            "default": false
+        },
+        "searchButtonText": {
+            "type": "string",
+            "default": "Search"
+        },
+        "searchButtonDisplay": {
+            "type": "string",
+            "default": "text",
+            "enum": ["text", "icon", "icon-text"]
+        },
+        "searchButtonIcon": {
+            "type": "string",
+            "default": ""
+        },
+        "keywordAction": {
+            "type": "string",
+            "default": "typing",
+            "enum": ["typing", "button"]
+        },
+        "filterValue": {
+            "type": "string",
+            "default": ""
+        },
+        "filterValueMin": {
+            "type": "string",
+            "default": ""
+        },
+        "filterValueMax": {
+            "type": "string",
+            "default": ""
+        },
+        "filterValueStart": {
+            "type": "string",
+            "default": ""
+        },
+        "filterValueEnd": {
+            "type": "string",
+            "default": ""
+        },
+        "width": {
+            "type": "string",
+            "default": "full",
+            "enum": ["full", "fit"]
+        }
+    },
+    "editorScript": "file:../../dist/blocks/advanced-filter/index.js"
+}

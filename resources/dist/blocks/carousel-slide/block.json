@@ -1,0 +1,69 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "jankx/carousel-slide",
+    "title": "Carousel Slide",
+    "category": "jankx",
+    "description": "Single slide for Carousel slider",
+    "keywords": [
+        "slide",
+        "carousel"
+    ],
+    "textdomain": "jankx",
+    "parent": [
+        "jankx/carousel"
+    ],
+    "attributes": {
+        "slideId": {
+            "type": "string"
+        },
+        "imageSize": {
+            "type": "string",
+            "enum": [
+                "contain",
+                "cover",
+                "fullwidth"
+            ],
+            "default": "cover"
+        },
+        "overlayColor": {
+            "type": "string",
+            "default": "rgba(0,0,0,0.4)"
+        },
+        "overlayOpacity": {
+            "type": "number",
+            "default": 40
+        }
+    },
+    "supports": {
+        "html": false,
+        "reusable": false,
+        "spacing": {
+            "margin": false,
+            "padding": true
+        },
+        "color": {
+            "background": true,
+            "text": true,
+            "gradients": true
+        },
+        "background": {
+            "backgroundImage": true,
+            "backgroundSize": true,
+            "backgroundPosition": true,
+            "backgroundRepeat": true,
+            "__experimentalDefaultControls": {
+                "backgroundImage": true
+            }
+        },
+        "dimensions": {
+            "minHeight": true
+        }
+    },
+    "usesContext": [
+        "jankx/carouselId"
+    ],
+    "editorScript": "file:../../dist/blocks/carousel-slide/index.js",
+    "editorStyle": "file:../../dist/blocks/carousel-slide/editor.css",
+    "style": "file:../../dist/blocks/carousel-slide/style.css"
+}

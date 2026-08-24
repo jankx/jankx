@@ -1,0 +1,37 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "jankx/carousel-inner-blocks-overlay",
+    "title": "Carousel Overlay Inner Blocks",
+    "category": "jankx",
+    "description": "Overlay container for persistent content fixed over Carousel slides",
+    "textdomain": "jankx",
+    "parent": ["jankx/carousel"],
+    "supports": {
+        "html": false,
+        "anchor": true,
+        "align": ["wide", "full"],
+        "spacing": {
+            "margin": true,
+            "padding": true
+        },
+        "color": {
+            "background": true,
+            "text": true
+        },
+        "border": {
+            "color": true,
+            "radius": true,
+            "style": true,
+            "width": true
+        }
+    },
+    "attributes": {
+        "className": {
+            "type": "string"
+        }
+    },
+    "editorScript": "file:../../dist/blocks/carousel-inner-blocks-overlay/index.js",
+    "editorStyle": "file:../../dist/blocks/carousel-inner-blocks-overlay/editor.css",
+    "style": "file:../../dist/blocks/carousel-inner-blocks-overlay/style.css"
+}

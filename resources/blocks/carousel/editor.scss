@@ -15,6 +15,25 @@
     .embla__dots {
       pointer-events: none;
     }
+
+    // Remove performance-heavy transitions in editor for smoother editing
+    .embla__slide,
+    .carousel-slide {
+      transition: none !important;
+      transform: none !important;
+      opacity: 1 !important;
+    }
+
+    // Remove will-change in editor to prevent performance issues
+    .embla__container {
+      will-change: auto !important;
+    }
+
+    // Remove hover effects in editor
+    .embla__slide:hover {
+      opacity: 1 !important;
+      transform: none !important;
+    }
   }
 }
 
