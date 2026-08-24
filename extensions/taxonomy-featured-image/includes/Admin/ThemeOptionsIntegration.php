@@ -3,12 +3,17 @@
 namespace Jankx\Extensions\TaxonomyFeaturedImage\Admin;
 
 use Jankx\Extensions\TaxonomyFeaturedImage\Services\TaxonomyImageService;
+use Jankx\Dashboard\Factories\FieldFactory;
+use Jankx\Dashboard\Elements\Page;
+use Jankx\Dashboard\Elements\Section;
+use Jankx\Adapter\Options\Framework as OptionFramework;
 
 /**
  * Theme Options Integration
  *
  * Injects the extension settings page into the Jankx theme options
- * (option-adapter / dashboard-framework) via core config filters.
+ * (OptionFramework / dashboard-framework) by adding the page directly
+ * to the framework's pages array after createSections() has run.
  */
 class ThemeOptionsIntegration
 {
@@ -19,6 +24,8 @@ class ThemeOptionsIntegration
      */
     protected $service;
 
+    protected $injected = false;
+
     public function __construct(TaxonomyImageService $service)
     {
         $this->service = $service;
@@ -26,83 +33,92 @@ class ThemeOptionsIntegration
 
     public function register(): void
     {
-        add_filter('jankx/option/core_pages_config', [$this, 'registerPage']);
-        add_filter('jankx/option/core_sections_for_page', [$this, 'registerSections'], 10, 2);
+        add_action('admin_menu', [$this, 'injectPage'], 1);
     }
 
     /**
-     * Register the settings page
-     *
-     * @param array $pages Existing pages
-     * @return array
+     * Inject the page into the OptionFramework's pages array.
      */
-    public function registerPage(array $pages): array
+    public function injectPage(): void
     {
-        $pages[self::PAGE_ID] = [
-            'id' => self::PAGE_ID,
-            'name' => __('Taxonomy Featured Image', 'jankx'),
-            'args' => [
-                'description' => __('Enable featured image support per taxonomy', 'jankx'),
-                'priority' => 45,
-                'icon' => 'dashicons-format-image',
-            ],
-        ];
+        if ($this->injected) {
+            return;
+        }
+        $this->injected = true;
 
-        return $pages;
-    }
-
-    /**
-     * Register sections/fields for the settings page
-     *
-     * @param array $sections Existing sections
-     * @param string $pageId Current page ID
-     * @return array
-     */
-    public function registerSections(array $sections, string $pageId): array
-    {
-        if ($pageId !== self::PAGE_ID) {
-            return $sections;
+        $framework = $this->getFramework();
+        if (!$framework) {
+            return;
         }
 
-        $sections[self::PAGE_ID . '_general'] = [
-            'id' => self::PAGE_ID . '_general',
-            'name' => __('General', 'jankx'),
-            'fields' => [
-                [
-                    'id' => TaxonomyImageService::OPTION_ENABLED,
-                    'name' => __('Enable Featured Images', 'jankx'),
-                    'type' => 'switch',
-                    'value' => 1,
-                    'on' => __('On', 'jankx'),
-                    'off' => __('Off', 'jankx'),
-                    'description' => __('Master switch for taxonomy featured images', 'jankx'),
-                ],
-                [
-                    'id' => TaxonomyImageService::OPTION_TAXONOMIES,
-                    'name' => __('Supported Taxonomies', 'jankx'),
-                    'type' => 'checkbox',
-                    'options' => $this->service->getPublicTaxonomies(),
-                    'value' => $this->getDefaultTaxonomies(),
-                    'layout' => 'vertical',
-                    'description' => __('Select taxonomies that support featured images. Can also be overridden via the `jankx/taxonomy-featured-image/taxonomies` filter.', 'jankx'),
-                ],
-            ],
-        ];
+        foreach ($framework->pages as $existing) {
+            if (($existing->getId() ?? '') === self::PAGE_ID) {
+                return;
+            }
+        }
 
-        return $sections;
+        $saved = get_option('jankx_options', []);
+
+        $page = new Page(__('Taxonomy Featured Image', 'jankx'), [], 'dashicons-format-image');
+        $page->setId(self::PAGE_ID);
+        $page->setDescription(__('Enable featured image support per taxonomy', 'jankx'));
+        $page->setPriority(45);
+
+        $section = new Section(__('General', 'jankx'), []);
+        $section->setId(self::PAGE_ID . '_general');
+
+        $section->addField(FieldFactory::create(
+            TaxonomyImageService::OPTION_ENABLED,
+            __('Enable Featured Images', 'jankx'),
+            'switch',
+            [
+                'on' => __('On', 'jankx'),
+                'off' => __('Off', 'jankx'),
+                'value' => $saved[TaxonomyImageService::OPTION_ENABLED] ?? 1,
+                'default' => 1,
+                'description' => __('Master switch for taxonomy featured images', 'jankx'),
+            ]
+        ));
+
+        $section->addField(FieldFactory::create(
+            TaxonomyImageService::OPTION_TAXONOMIES,
+            __('Supported Taxonomies', 'jankx'),
+            'checkbox',
+            [
+                'options' => $this->service->getPublicTaxonomies(),
+                'value' => $saved[TaxonomyImageService::OPTION_TAXONOMIES] ?? $this->getDefaultTaxonomies(),
+                'default' => $this->getDefaultTaxonomies(),
+                'layout' => 'vertical',
+                'description' => __('Select taxonomies that support featured images. Can also be overridden via the jankx/taxonomy-featured-image/taxonomies filter.', 'jankx'),
+            ]
+        ));
+
+        $page->addSection($section);
+        $framework->addPage($page);
     }
 
-    /**
-     * Default selected taxonomies (hierarchical public taxonomies)
-     *
-     * @return array
-     */
+    protected function getFramework()
+    {
+        try {
+            $adapter = OptionFramework::getActiveFramework();
+            if ($adapter && method_exists($adapter, 'getFramework')) {
+                return $adapter->getFramework();
+            }
+        } catch (\Exception $e) {
+        }
+        return null;
+    }
+
     protected function getDefaultTaxonomies(): array
     {
         $taxonomies = get_taxonomies([
             'public' => true,
             'hierarchical' => true,
         ], 'names');
+
+        if (!in_array('destination', $taxonomies, true)) {
+            $taxonomies[] = 'destination';
+        }
 
         return array_values($taxonomies);
     }

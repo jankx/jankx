@@ -23,32 +23,6 @@ class TaxonomyFeaturedImageExtension extends AbstractExtension
     protected $admin;
     protected $optionsIntegration;
 
-    public function __construct()
-    {
-        $this->registerAutoloader();
-        parent::__construct();
-    }
-
-    protected function registerAutoloader()
-    {
-        spl_autoload_register(function ($class) {
-            $prefix = 'Jankx\\Extensions\\TaxonomyFeaturedImage\\';
-            $baseDir = __DIR__ . '/includes/';
-
-            $len = strlen($prefix);
-            if (strncmp($prefix, $class, $len) !== 0) {
-                return;
-            }
-
-            $relativeClass = substr($class, $len);
-            $file = $baseDir . str_replace('\\', '/', $relativeClass) . '.php';
-
-            if (file_exists($file)) {
-                require $file;
-            }
-        });
-    }
-
     public function init(): void
     {
         self::$instance = $this;
@@ -58,6 +32,8 @@ class TaxonomyFeaturedImageExtension extends AbstractExtension
         $this->admin = new TaxonomyImageAdmin($this->service);
 
         TaxonomyImageHelper::boot($this->service);
+
+        $this->register_hooks();
     }
 
     public static function get_instance(): ?self
@@ -72,6 +48,7 @@ class TaxonomyFeaturedImageExtension extends AbstractExtension
 
     public function register_hooks(): void
     {
+        // hooks register early so filters are applied BEFORE OptionFramework reads config
         $this->optionsIntegration->register();
         $this->admin->register();
     }
