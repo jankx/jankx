@@ -1,0 +1,65 @@
+/*!**************************************************************************************************************************************************************************************************!*\
+  !*** css ../node_modules/css-loader/dist/cjs.js!../node_modules/postcss-loader/dist/cjs.js!../node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!./blocks/safe-iframe/editor.scss ***!
+  \**************************************************************************************************************************************************************************************************/
+.safe-iframe-block {
+  position: relative;
+}
+.safe-iframe-block iframe {
+  display: block;
+  max-width: 100%;
+}
+
+.safe-iframe-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+  background: #f8f9fa;
+  border: 2px dashed #cbd5e0;
+  border-radius: 8px;
+  padding: 2rem;
+  text-align: center;
+}
+.safe-iframe-placeholder__icon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+  opacity: 0.5;
+}
+.safe-iframe-placeholder__text {
+  margin: 0;
+  color: #718096;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.safe-iframe-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  background: #fff5f5;
+  border: 2px solid #fc8181;
+  border-radius: 8px;
+  padding: 2rem;
+  text-align: center;
+}
+.safe-iframe-error__icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+.safe-iframe-error__text {
+  margin: 0;
+  color: #c53030;
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+.components-panel__body .components-base-control__help {
+  font-size: 12px;
+  font-style: italic;
+  margin-top: 4px;
+}
+
+/*# sourceMappingURL=editor.css.map*/

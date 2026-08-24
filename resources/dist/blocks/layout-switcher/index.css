@@ -1,0 +1,123 @@
+/*!*****************************************************************************************************************************************************************************************************!*\
+  !*** css ../node_modules/css-loader/dist/cjs.js!../node_modules/postcss-loader/dist/cjs.js!../node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!./blocks/layout-switcher/style.scss ***!
+  \*****************************************************************************************************************************************************************************************************/
+.jankx-layout-switcher {
+  margin-bottom: 20px;
+}
+.jankx-layout-switcher.layout-switcher--align-center .layout-options {
+  justify-content: center;
+}
+.jankx-layout-switcher.layout-switcher--align-right .layout-options {
+  justify-content: flex-end;
+}
+.jankx-layout-switcher .layout-options {
+  display: flex;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  gap: 8px;
+}
+.jankx-layout-switcher .layout-options li.layout-option button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 8px 12px;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  color: #64748b;
+  font-size: 14px;
+  font-weight: 500;
+}
+.jankx-layout-switcher .layout-options li.layout-option button:hover {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+  color: #1e293b;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+.jankx-layout-switcher .layout-options li.layout-option button .layout-icon {
+  display: flex;
+  align-items: center;
+  font-size: 20px;
+}
+.jankx-layout-switcher .layout-options li.layout-option.is-active button {
+  background: #2563eb;
+  border-color: #2563eb;
+  color: #fff;
+  box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2);
+}
+.jankx-layout-switcher.layout-switcher--type-icons .layout-option button {
+  width: 40px;
+  padding: 0;
+}
+.jankx-layout-switcher.is-loading {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.wp-block-jankx-dynamic-data-layout.is-loading,
+.wp-block-jankx-dynamic-ssr-layout.is-loading {
+  position: relative;
+  pointer-events: none;
+}
+.wp-block-jankx-dynamic-data-layout.is-loading::before,
+.wp-block-jankx-dynamic-ssr-layout.is-loading::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.5);
+  z-index: 10;
+  backdrop-filter: blur(2px);
+  border-radius: inherit;
+}
+.wp-block-jankx-dynamic-data-layout.is-loading::after,
+.wp-block-jankx-dynamic-ssr-layout.is-loading::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 40px;
+  height: 40px;
+  margin: -20px 0 0 -20px;
+  border: 3px solid #e2e8f0;
+  border-top-color: #2563eb;
+  border-radius: 50%;
+  z-index: 11;
+  animation: jankx-spinner 0.8s linear infinite;
+}
+
+@keyframes jankx-spinner {
+  to {
+    transform: rotate(360deg);
+  }
+}
+/*!******************************************************************************************************************************************************************************************************!*\
+  !*** css ../node_modules/css-loader/dist/cjs.js!../node_modules/postcss-loader/dist/cjs.js!../node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!./blocks/layout-switcher/editor.scss ***!
+  \******************************************************************************************************************************************************************************************************/
+.jankx-layout-switcher-edit {
+  padding: 15px;
+  background: #fff;
+  border: 1px dashed #cbd5e1;
+  border-radius: 8px;
+}
+.jankx-layout-switcher-edit .components-placeholder {
+  min-height: auto;
+  padding: 20px;
+  background: transparent;
+  border: none;
+}
+.jankx-layout-switcher-edit.layout-switcher--align-center {
+  display: flex;
+  justify-content: center;
+}
+.jankx-layout-switcher-edit.layout-switcher--align-right {
+  display: flex;
+  justify-content: flex-end;
+}
+
+/*# sourceMappingURL=index.css.map*/

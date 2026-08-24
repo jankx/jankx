@@ -1,0 +1,63 @@
+/*!*************************************************************************************************************************************************************************************************!*\
+  !*** css ../node_modules/css-loader/dist/cjs.js!../node_modules/postcss-loader/dist/cjs.js!../node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!./blocks/safe-iframe/style.scss ***!
+  \*************************************************************************************************************************************************************************************************/
+.safe-iframe-block {
+  position: relative;
+  margin: 1.5rem 0;
+}
+.safe-iframe-block iframe {
+  display: block;
+  max-width: 100%;
+}
+.safe-iframe-block__container {
+  position: relative;
+  width: 100%;
+}
+.safe-iframe-block__container--aspect-ratio {
+  height: 0;
+}
+.safe-iframe-block__container--aspect-ratio iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+.safe-iframe-block__loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  background: #f8f9fa;
+  border-radius: 4px;
+}
+.safe-iframe-block__loading::after {
+  content: "";
+  width: 40px;
+  height: 40px;
+  border: 4px solid #e2e8f0;
+  border-top-color: #4299e1;
+  border-radius: 50%;
+  animation: safe-iframe-spin 0.8s linear infinite;
+}
+
+@keyframes safe-iframe-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.safe-iframe-block iframe:focus {
+  outline: 2px solid #4299e1;
+  outline-offset: 2px;
+}
+
+@media print {
+  .safe-iframe-block {
+    page-break-inside: avoid;
+  }
+  .safe-iframe-block iframe {
+    border: 1px solid #ddd;
+  }
+}
+
+/*# sourceMappingURL=style.css.map*/

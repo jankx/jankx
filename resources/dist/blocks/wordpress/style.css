@@ -1,0 +1,17 @@
+/*!**************************************************************************************************************************!*\
+  !*** css ../node_modules/css-loader/dist/cjs.js!../node_modules/postcss-loader/dist/cjs.js!./blocks/wordpress/index.css ***!
+  \**************************************************************************************************************************/
+
+.jankx-wordpress-legacy-editor {
+    border: 1px dashed #ccc;
+    padding: 20px;
+    background: #f9f9f9;
+    border-radius: 4px;
+}
+
+.legacy-preview {
+    text-align: center;
+}
+
+
+/*# sourceMappingURL=style.css.map*/
