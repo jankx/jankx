@@ -1,6 +1,6 @@
-/*!*************************************************************************************************************************************************************************************************!*\
-  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!./blocks/carousel-slide/style.scss ***!
-  \*************************************************************************************************************************************************************************************************/
+/*!****************************************************************************************************************************************************************************************************!*\
+  !*** css ../node_modules/css-loader/dist/cjs.js!../node_modules/postcss-loader/dist/cjs.js!../node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!./blocks/carousel-slide/style.scss ***!
+  \****************************************************************************************************************************************************************************************************/
 .wp-block-jankx-carousel-slide {
   position: relative;
   min-height: 200px;
@@ -36,12 +36,16 @@
   background-size: 100% 100%;
   background-position: center;
 }
-/*!**************************************************************************************************************************************************************************************************!*\
-  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!./blocks/carousel-slide/editor.scss ***!
-  \**************************************************************************************************************************************************************************************************/
+/*!*****************************************************************************************************************************************************************************************************!*\
+  !*** css ../node_modules/css-loader/dist/cjs.js!../node_modules/postcss-loader/dist/cjs.js!../node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!./blocks/carousel-slide/editor.scss ***!
+  \*****************************************************************************************************************************************************************************************************/
 .editor-styles-wrapper .wp-block-jankx-carousel-slide {
   position: relative;
   overflow: hidden;
+}
+.editor-styles-wrapper .wp-block-jankx-carousel-slide * {
+  transition: none !important;
+  animation: none !important;
 }
 .editor-styles-wrapper .wp-block-jankx-carousel-slide .carousel-slide__content {
   position: relative;

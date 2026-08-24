@@ -59,7 +59,7 @@ class ThemeOptionsIntegration
 
         $saved = get_option('jankx_options', []);
 
-        $page = new Page(__('Taxonomy Featured Image', 'jankx'), [], 'dashicons-format-image');
+        $page = new Page(__('Taxonomy Featured Image', 'jankx'), [], 'dashicons-before dashicons-format-image');
         $page->setId(self::PAGE_ID);
         $page->setDescription(__('Enable featured image support per taxonomy', 'jankx'));
         $page->setPriority(45);

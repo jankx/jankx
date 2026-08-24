@@ -6,6 +6,12 @@
     position: relative;
     overflow: hidden;
 
+    // Disable transitions in editor for smoother editing
+    * {
+      transition: none !important;
+      animation: none !important;
+    }
+
     .carousel-slide__content {
       position: relative;
       z-index: 2;

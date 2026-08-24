@@ -10,5 +10,8 @@
 
   * {
     pointer-events: auto;
+    // Disable transitions in editor for smoother editing
+    transition: none !important;
+    animation: none !important;
   }
 }

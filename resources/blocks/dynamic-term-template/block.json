@@ -328,6 +328,46 @@
     "carouselPeek": {
       "type": "number",
       "default": 0
+    },
+    "itemBgType": {
+      "type": "string",
+      "default": "none",
+      "enum": ["none", "color", "image"]
+    },
+    "itemBgColor": {
+      "type": "string",
+      "default": ""
+    },
+    "itemBgImageId": {
+      "type": "number",
+      "default": 0
+    },
+    "itemBgImageUrl": {
+      "type": "string",
+      "default": ""
+    },
+    "itemBgImageSource": {
+      "type": "string",
+      "default": "custom",
+      "enum": ["custom", "featured"]
+    },
+    "itemBgPosition": {
+      "type": "string",
+      "default": "center center"
+    },
+    "itemBgSize": {
+      "type": "string",
+      "default": "cover",
+      "enum": ["cover", "contain", "auto"]
+    },
+    "itemBgRepeat": {
+      "type": "string",
+      "default": "no-repeat",
+      "enum": ["no-repeat", "repeat", "repeat-x", "repeat-y"]
+    },
+    "itemBgOverlay": {
+      "type": "string",
+      "default": ""
     }
   }
 }

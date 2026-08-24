@@ -1,6 +1,6 @@
-/*!*******************************************************************************************************************************************************************************************!*\
-  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!./blocks/carousel/style.scss ***!
-  \*******************************************************************************************************************************************************************************************/
+/*!**********************************************************************************************************************************************************************************************!*\
+  !*** css ../node_modules/css-loader/dist/cjs.js!../node_modules/postcss-loader/dist/cjs.js!../node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!./blocks/carousel/style.scss ***!
+  \**********************************************************************************************************************************************************************************************/
 .wp-block-jankx-carousel {
   position: relative;
 }
@@ -256,15 +256,28 @@
   width: 30px;
   border-radius: 6px;
 }
-/*!********************************************************************************************************************************************************************************************!*\
-  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!./blocks/carousel/editor.scss ***!
-  \********************************************************************************************************************************************************************************************/
+/*!***********************************************************************************************************************************************************************************************!*\
+  !*** css ../node_modules/css-loader/dist/cjs.js!../node_modules/postcss-loader/dist/cjs.js!../node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!./blocks/carousel/editor.scss ***!
+  \***********************************************************************************************************************************************************************************************/
 .editor-styles-wrapper .wp-block-jankx-carousel .embla {
   position: relative;
 }
 .editor-styles-wrapper .wp-block-jankx-carousel .embla__button,
 .editor-styles-wrapper .wp-block-jankx-carousel .embla__dots {
   pointer-events: none;
+}
+.editor-styles-wrapper .wp-block-jankx-carousel .embla__slide,
+.editor-styles-wrapper .wp-block-jankx-carousel .carousel-slide {
+  transition: none !important;
+  transform: none !important;
+  opacity: 1 !important;
+}
+.editor-styles-wrapper .wp-block-jankx-carousel .embla__container {
+  will-change: auto !important;
+}
+.editor-styles-wrapper .wp-block-jankx-carousel .embla__slide:hover {
+  opacity: 1 !important;
+  transform: none !important;
 }
 
 .wp-block-jankx-carousel .embla {

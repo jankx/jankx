@@ -1,0 +1,297 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "jankx/dynamic-term-layout",
+    "version": "1.0.0",
+    "title": "Dynamic Term Layout",
+    "category": "jankx",
+    "icon": "layout",
+    "description": "Hiển thị danh sách taxonomy terms theo layout tùy chỉnh với term query builder",
+    "textdomain": "jankx",
+    "editorScript": "file:../../dist/blocks/dynamic-term-layout/index.js",
+    "editorStyle": "file:../../dist/blocks/dynamic-term-layout/editor.css",
+    "style": "file:../../dist/blocks/dynamic-term-layout/style.css",
+    "supports": {
+        "align": false
+    },
+    "providesContext": {
+        "queryId": "queryId",
+        "taxonomy": "taxonomy",
+        "termIn": "termIn",
+        "termNotIn": "termNotIn",
+        "termParent": "termParent",
+        "hideEmpty": "hideEmpty",
+        "showTermCount": "showTermCount",
+        "displayLayout": "layout",
+        "postsPerPage": "postsPerPage",
+        "columns": "columns",
+        "columnsTablet": "columnsTablet",
+        "columnsMobile": "columnsMobile",
+        "slidesToScroll": "slidesToScroll",
+        "loop": "loop",
+        "autoplay": "autoplay",
+        "autoplayDelay": "autoplayDelay",
+        "showArrows": "showArrows",
+        "showDots": "showDots",
+        "carouselAlign": "carouselAlign",
+        "carouselAxis": "carouselAxis",
+        "carouselDirection": "carouselDirection",
+        "carouselStartIndex": "carouselStartIndex",
+        "carouselDuration": "carouselDuration",
+        "carouselDragFree": "carouselDragFree",
+        "carouselDragThreshold": "carouselDragThreshold",
+        "carouselSkipSnaps": "carouselSkipSnaps",
+        "carouselContainScroll": "carouselContainScroll",
+        "carouselInViewThreshold": "carouselInViewThreshold",
+        "carouselPeek": "carouselPeek",
+        "orderBy": "orderBy",
+        "order": "order",
+        "keyword": "keyword",
+        "offset": "offset",
+        "renderOffset": "renderOffset",
+        "renderLimit": "renderLimit",
+        "thumbnailPosition": "thumbnailPosition",
+        "imageRatio": "imageRatio",
+        "showEmptyMessage": "showEmptyMessage",
+        "emptyMessage": "emptyMessage"
+    },
+    "attributes": {
+        "queryId": {
+            "type": "string",
+            "default": ""
+        },
+        "taxonomy": {
+            "type": "string",
+            "default": "category"
+        },
+        "termIn": {
+            "type": "array",
+            "default": []
+        },
+        "termNotIn": {
+            "type": "array",
+            "default": []
+        },
+        "termParent": {
+            "type": "number",
+            "default": 0
+        },
+        "hideEmpty": {
+            "type": "boolean",
+            "default": true
+        },
+        "showTermCount": {
+            "type": "boolean",
+            "default": true
+        },
+        "postsPerPage": {
+            "type": "number",
+            "default": 10
+        },
+        "layout": {
+            "type": "string",
+            "default": "grid"
+        },
+        "columns": {
+            "type": "number",
+            "default": 3
+        },
+        "columnsTablet": {
+            "type": "number",
+            "default": 2
+        },
+        "columnsMobile": {
+            "type": "number",
+            "default": 1
+        },
+        "responsiveColumns": {
+            "type": "object",
+            "default": {
+                "desktop": 3,
+                "tablet": 2,
+                "mobile": 1
+            }
+        },
+        "orderBy": {
+            "type": "string",
+            "default": "name",
+            "enum": [
+                "name",
+                "slug",
+                "count",
+                "term_order",
+                "description"
+            ]
+        },
+        "order": {
+            "type": "string",
+            "default": "ASC",
+            "enum": [
+                "ASC",
+                "DESC"
+            ]
+        },
+        "offset": {
+            "type": "number",
+            "default": 0
+        },
+        "renderOffset": {
+            "type": "number",
+            "default": 0
+        },
+        "renderLimit": {
+            "type": "number",
+            "default": 0
+        },
+        "keyword": {
+            "type": "string",
+            "default": ""
+        },
+        "slidesToScroll": {
+            "type": "number",
+            "default": 1
+        },
+        "loop": {
+            "type": "boolean",
+            "default": false
+        },
+        "autoplay": {
+            "type": "boolean",
+            "default": false
+        },
+        "autoplayDelay": {
+            "type": "number",
+            "default": 3000
+        },
+        "showArrows": {
+            "type": "boolean",
+            "default": true
+        },
+        "showDots": {
+            "type": "boolean",
+            "default": true
+        },
+        "carouselAlign": {
+            "type": "string",
+            "default": "start",
+            "enum": [
+                "start",
+                "center",
+                "end"
+            ]
+        },
+        "carouselAxis": {
+            "type": "string",
+            "default": "x",
+            "enum": [
+                "x",
+                "y"
+            ]
+        },
+        "carouselDirection": {
+            "type": "string",
+            "default": "ltr",
+            "enum": [
+                "ltr",
+                "rtl"
+            ]
+        },
+        "carouselStartIndex": {
+            "type": "number",
+            "default": 0
+        },
+        "carouselDuration": {
+            "type": "number",
+            "default": 25
+        },
+        "carouselDragFree": {
+            "type": "boolean",
+            "default": false
+        },
+        "carouselDragThreshold": {
+            "type": "number",
+            "default": 10
+        },
+        "carouselSkipSnaps": {
+            "type": "boolean",
+            "default": false
+        },
+        "carouselContainScroll": {
+            "type": "string",
+            "default": "trimSnaps",
+            "enum": [
+                "false",
+                "trimSnaps",
+                "keepSnaps"
+            ]
+        },
+        "carouselInViewThreshold": {
+            "type": "number",
+            "default": 0
+        },
+        "carouselPeek": {
+            "type": "number",
+            "default": 0
+        },
+        "spaceBetween": {
+            "type": "number",
+            "default": 16
+        },
+        "thumbnailPosition": {
+            "type": "string",
+            "default": "top",
+            "enum": [
+                "top",
+                "bottom",
+                "left",
+                "right"
+            ]
+        },
+        "imageRatio": {
+            "type": "string",
+            "default": ""
+        },
+        "showEmptyMessage": {
+            "type": "boolean",
+            "default": true
+        },
+        "emptyMessage": {
+            "type": "string",
+            "default": "No terms found."
+        },
+        "align": {
+            "type": "string"
+        },
+        "className": {
+            "type": "string"
+        },
+        "itemsWrapperClass": {
+            "type": "string",
+            "default": ""
+        },
+        "itemClass": {
+            "type": "string",
+            "default": ""
+        }
+    },
+    "allowedBlocks": [
+        "core/heading",
+        "jankx/dynamic-term-template",
+        "jankx/layout-switcher"
+    ],
+    "example": {
+        "attributes": {
+            "taxonomy": "category",
+            "layout": "grid",
+            "columns": 3,
+            "columnsTablet": 2,
+            "columnsMobile": 1
+        },
+        "innerBlocks": [
+            {
+                "name": "jankx/dynamic-term-template",
+                "attributes": {}
+            }
+        ]
+    }
+}

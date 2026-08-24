@@ -1,0 +1,71 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "jankx/text-input",
+    "title": "Text Input",
+    "category": "jankx",
+    "description": "A text input field for forms and search",
+    "textdomain": "jankx",
+    "supports": {
+        "html": false,
+        "anchor": true,
+        "spacing": {
+            "margin": true,
+            "padding": true
+        },
+        "color": {
+            "text": true,
+            "background": true
+        }
+    },
+    "attributes": {
+        "label": {
+            "type": "string",
+            "default": ""
+        },
+        "placeholder": {
+            "type": "string",
+            "default": ""
+        },
+        "inputType": {
+            "type": "string",
+            "default": "text",
+            "enum": ["text", "email", "tel", "url", "search", "password", "number"]
+        },
+        "required": {
+            "type": "boolean",
+            "default": false
+        },
+        "disabled": {
+            "type": "boolean",
+            "default": false
+        },
+        "inputName": {
+            "type": "string",
+            "default": ""
+        },
+        "inputValue": {
+            "type": "string",
+            "default": ""
+        },
+        "width": {
+            "type": "string",
+            "default": "100%"
+        },
+        "borderRadius": {
+            "type": "number",
+            "default": 4
+        },
+        "iconPosition": {
+            "type": "string",
+            "default": "left",
+            "enum": ["left", "right"]
+        }
+    },
+    "supports": {
+        "innerBlocks": true
+    },
+    "editorScript": "file:../../dist/blocks/text-input/index.js",
+    "editorStyle": "file:../../dist/blocks/text-input/editor.css",
+    "style": "file:../../dist/blocks/text-input/style.css"
+}

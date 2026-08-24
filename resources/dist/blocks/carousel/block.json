@@ -1,0 +1,263 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "jankx/carousel",
+    "title": "Carousel",
+    "category": "jankx",
+    "description": "Modern touch slider with hardware accelerated transitions",
+    "keywords": [
+        "slider",
+        "carousel",
+        "carousel",
+        "gallery",
+        "slideshow"
+    ],
+    "textdomain": "jankx",
+    "attributes": {
+        "slidesPerView": {
+            "type": "number",
+            "default": 1
+        },
+        "slidesPerViewTablet": {
+            "type": "number",
+            "default": 1
+        },
+        "slidesPerViewMobile": {
+            "type": "number",
+            "default": 1
+        },
+        "spaceBetween": {
+            "type": "number",
+            "default": 30
+        },
+        "loop": {
+            "type": "boolean",
+            "default": true
+        },
+        "autoplay": {
+            "type": "boolean",
+            "default": false
+        },
+        "autoplayDelay": {
+            "type": "number",
+            "default": 3000
+        },
+        "speed": {
+            "type": "number",
+            "default": 300
+        },
+        "navigation": {
+            "type": "boolean",
+            "default": true
+        },
+        "pagination": {
+            "type": "boolean",
+            "default": true
+        },
+        "effect": {
+            "type": "string",
+            "enum": [
+                "slide",
+                "fade",
+                "cube",
+                "coverflow",
+                "flip",
+                "cards"
+            ],
+            "default": "slide"
+        },
+        "height": {
+            "type": "number",
+            "default": 50
+        },
+        "minHeight": {
+            "type": "number",
+            "default": 50
+        },
+        "fitViewportMinusHeader": {
+            "type": "boolean",
+            "default": false
+        },
+        "fullHeight": {
+            "type": "boolean",
+            "default": false
+        },
+        "contentMode": {
+            "type": "string",
+            "enum": [
+                "slides",
+                "gallery"
+            ],
+            "default": "slides"
+        },
+        "galleryImages": {
+            "type": "array",
+            "default": []
+        },
+        "bannerStyle": {
+            "type": "string",
+            "enum": [
+                "default",
+                "circles",
+                "square",
+                "banner"
+            ],
+            "default": "default"
+        },
+        "bannerTextColor": {
+            "type": "string",
+            "default": "#ffffff"
+        },
+        "bannerBackgroundColor": {
+            "type": "string",
+            "default": "rgba(0,0,0,0.5)"
+        },
+        "bannerPadding": {
+            "type": "number",
+            "default": 20
+        },
+        "bannerBorderRadius": {
+            "type": "number",
+            "default": 0
+        },
+        "gradientOverlay": {
+            "type": "boolean",
+            "default": false
+        },
+        "gradientColor": {
+            "type": "string",
+            "default": "#000000"
+        },
+        "gradientOpacity": {
+            "type": "number",
+            "default": 0.7
+        },
+        "gradientHeight": {
+            "type": "number",
+            "default": 60
+        },
+        "className": {
+            "type": "string"
+        },
+        "anchor": {
+            "type": "string"
+        },
+        "navIconType": {
+            "type": "string",
+            "enum": [
+                "arrow",
+                "image",
+                "svg",
+                "fonticon"
+            ],
+            "default": "arrow"
+        },
+        "prevIconImageId": {
+            "type": "number",
+            "default": 0
+        },
+        "prevIconImageUrl": {
+            "type": "string",
+            "default": ""
+        },
+        "nextIconImageId": {
+            "type": "number",
+            "default": 0
+        },
+        "nextIconImageUrl": {
+            "type": "string",
+            "default": ""
+        },
+        "prevIconSvg": {
+            "type": "string",
+            "default": ""
+        },
+        "nextIconSvg": {
+            "type": "string",
+            "default": ""
+        },
+        "prevIconClass": {
+            "type": "string",
+            "default": ""
+        },
+        "nextIconClass": {
+            "type": "string",
+            "default": ""
+        },
+        "navIconSize": {
+            "type": "number",
+            "default": 24
+        },
+        "navIconColor": {
+            "type": "string",
+            "default": ""
+        },
+        "navBtnWidth": {
+            "type": "number",
+            "default": 44
+        },
+        "navBtnHeight": {
+            "type": "number",
+            "default": 44
+        },
+        "navBtnBorderRadius": {
+            "type": "number",
+            "default": 50
+        },
+        "navBtnBgColor": {
+            "type": "string",
+            "default": "rgba(0,0,0,0.7)"
+        }
+    },
+    "supports": {
+        "html": false,
+        "anchor": true,
+        "align": [
+            "wide",
+            "full"
+        ],
+        "spacing": {
+            "margin": true,
+            "padding": true
+        },
+        "color": {
+            "background": true,
+            "text": true
+        },
+        "border": {
+            "color": true,
+            "radius": true,
+            "style": true,
+            "width": true,
+            "__experimentalDefaultControls": {
+                "radius": true
+            }
+        }
+    },
+    "providesContext": {
+        "jankx/carouselId": "anchor"
+    },
+    "editorScript": "file:../../dist/blocks/carousel/index.js",
+    "editorStyle": "file:../../dist/blocks/carousel/editor.css",
+    "viewScript": "file:../../dist/blocks/carousel/view.js",
+    "style": "file:../../dist/blocks/carousel/style.css",
+    "styles": [
+        {
+            "name": "default",
+            "label": "Default",
+            "isDefault": true
+        },
+        {
+            "name": "banner",
+            "label": "Banner"
+        },
+        {
+            "name": "carousel",
+            "label": "Carousel"
+        },
+        {
+            "name": "testimonial",
+            "label": "Testimonial"
+        }
+    ]
+}

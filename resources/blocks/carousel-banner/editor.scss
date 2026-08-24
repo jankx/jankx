@@ -3,6 +3,12 @@
   position: relative;
   min-height: 300px;
 
+  // Disable transitions in editor for smoother editing
+  * {
+    transition: none !important;
+    animation: none !important;
+  }
+
   // ─── Layer 1: Background image ─────────────────────────────────────────
   &__image {
     position: absolute;

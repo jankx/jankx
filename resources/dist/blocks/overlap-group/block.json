@@ -1,0 +1,134 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "jankx/overlap-group",
+    "title": "Overlap Group",
+    "category": "jankx",
+    "icon": "align-pull-left",
+    "description": "Gather blocks in a layout container and position it freely to overlap other sections.",
+    "keywords": ["container", "wrapper", "row", "section", "overlap", "position", "layer"],
+    "textdomain": "jankx",
+    "attributes": {
+        "tagName": {
+            "type": "string",
+            "default": "div"
+        },
+        "templateLock": {
+            "type": ["string", "boolean"]
+        },
+        "positionType": {
+            "type": "string",
+            "default": "relative"
+        },
+        "top": {
+            "type": "number"
+        },
+        "right": {
+            "type": "number"
+        },
+        "bottom": {
+            "type": "number"
+        },
+        "left": {
+            "type": "number"
+        },
+        "offsetUnit": {
+            "type": "string",
+            "default": "px"
+        },
+        "zIndex": {
+            "type": "number"
+        },
+        "width": {
+            "type": "string"
+        },
+        "maxWidth": {
+            "type": "string"
+        },
+        "pullUp": {
+            "type": "number",
+            "default": 0
+        },
+        "dragStep": {
+            "type": "number",
+            "default": 10
+        }
+    },
+    "supports": {
+        "align": ["wide", "full"],
+        "anchor": true,
+        "ariaLabel": true,
+        "html": false,
+        "background": {
+            "backgroundImage": true,
+            "backgroundSize": true,
+            "gradient": true,
+            "__experimentalDefaultControls": {
+                "backgroundImage": true,
+                "gradient": true
+            }
+        },
+        "color": {
+            "gradients": true,
+            "heading": true,
+            "button": true,
+            "link": true,
+            "__experimentalDefaultControls": {
+                "background": true,
+                "text": true
+            }
+        },
+        "shadow": true,
+        "spacing": {
+            "margin": ["top", "bottom"],
+            "padding": true,
+            "blockGap": true,
+            "__experimentalDefaultControls": {
+                "padding": true,
+                "blockGap": true
+            }
+        },
+        "dimensions": {
+            "minHeight": true,
+            "minWidth": true
+        },
+        "__experimentalBorder": {
+            "color": true,
+            "radius": true,
+            "style": true,
+            "width": true,
+            "__experimentalDefaultControls": {
+                "color": true,
+                "radius": true,
+                "style": true,
+                "width": true
+            }
+        },
+        "position": {
+            "sticky": true
+        },
+        "typography": {
+            "fontSize": true,
+            "lineHeight": true,
+            "__experimentalFontFamily": true,
+            "__experimentalFontWeight": true,
+            "__experimentalFontStyle": true,
+            "__experimentalTextTransform": true,
+            "__experimentalTextDecoration": true,
+            "__experimentalLetterSpacing": true,
+            "__experimentalDefaultControls": {
+                "fontSize": true
+            }
+        },
+        "layout": {
+            "allowSizingOnChildren": true
+        },
+        "interactivity": {
+            "clientNavigation": true
+        },
+        "allowedBlocks": true
+    },
+    "editorScript": "file:../../dist/blocks/overlap-group/index.js",
+    "style": "file:../../dist/blocks/overlap-group/style.css",
+    "editorStyle": "file:../../dist/blocks/overlap-group/editor.css"
+}
