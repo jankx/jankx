@@ -1,0 +1,17 @@
+{
+    "name": "Taxonomy Featured Image",
+    "version": "1.0.0",
+    "description": "Add featured image (thumbnail) for taxonomy terms, integrated with Theme Options to toggle each taxonomy.",
+    "author": "Jankx",
+    "extension_id": "taxonomy-featured-image",
+    "context": ["admin", "frontend"],
+    "caller": {
+        "file": "TaxonomyFeaturedImageExtension.php",
+        "class": "Jankx\\Extensions\\TaxonomyFeaturedImage\\TaxonomyFeaturedImageExtension",
+        "method": "init"
+    },
+    "requirements": {
+        "php": ">=7.4"
+    },
+    "auto_activate": true
+}

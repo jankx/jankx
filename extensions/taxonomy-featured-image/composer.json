@@ -1,0 +1,18 @@
+{
+    "name": "jankx/taxonomy-featured-image",
+    "description": "Add featured image (thumbnail) for taxonomy terms, integrated with Theme Options to toggle each taxonomy.",
+    "type": "project",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Jankx\\Extensions\\TaxonomyFeaturedImage\\": "includes/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Puleeno Nguyen",
+            "email": "puleeno@gmail.com"
+        }
+    ],
+    "require": {}
+}
