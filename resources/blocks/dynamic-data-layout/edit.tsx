@@ -127,6 +127,17 @@ interface WordPressWindow {
     jankxDynamicDataLayouts?: LayoutsData;
 }
 
+interface WordPressWindow {
+    wp?: {
+        apiFetch: WordPressApiFetch;
+    };
+    jankxQueryOptions?: QueryOptions;
+    jankxDynamicDataLayouts?: LayoutsData;
+}
+
+// Stable empty object reference to avoid new object every render
+const EMPTY_OBJECT = {};
+
 interface WordPressSelect {
     (store: 'core'): {
         getPostTypes: (options: { per_page: number }) => PostType[];
@@ -385,6 +396,39 @@ interface EditProps {
 }
 
 function Edit({ attributes, setAttributes, clientId }: EditProps) {
+
+    // Fetch posts based on query attributes
+    const [isFetchingPosts, setIsFetchingPosts] = useState(false);
+    const fetchedPosts = useSelect(
+        (select) => select('core').getEntityRecords(
+            'post',
+            postType,
+            {
+                per_page: postsPerPage,
+                offset: offset,
+                s: keyword,
+                orderby: orderBy,
+                order: order,
+                include: postIn,
+                exclude: postNotIn,
+                author: authorIn.length > 0 ? authorIn[0] : undefined,
+                author_not_in: authorNotIn,
+                meta_query: metaQuery,
+                tax_query: taxQuery,
+                post_status: postStatus,
+                ignore_sticky_posts: includeStickyPosts ? undefined : true,
+            }
+        ),
+        [postType, postsPerPage, offset, keyword, orderBy, order, postIn, postNotIn, authorIn, authorNotIn, metaQuery, taxQuery, postStatus, includeStickyPosts]
+    );
+
+    // Trigger fetch when query changes (debounced)
+    useEffect(() => {
+        if (!isFetchingPosts) {
+            setIsFetchingPosts(true);
+            // Fetch is triggered by the useSelect above
+        }
+    }, [isFetchingPosts]);
 
     const {
         queryPreset = 'custom',
@@ -1867,3 +1911,70 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
 }
 
 export default Edit;
+
+// ---- Register jankxControls attribute ----
+addFilter(
+    'blocks.registerBlockType',
+    'jankx/gutenberg-controls/add-attributes',
+    (settings, name) => {
+        const newAttrs = {
+            ...settings.attributes,
+            jankxControls: {
+                type: 'object',
+                default: {},
+            },
+        };
+
+        return {
+            ...settings,
+            attributes: newAttrs,
+        };
+    }
+);
+
+// ---- Add Jankx controls inspector panel ----
+const withJankxControls = createHigherOrderComponent((BlockEdit) => {
+    return (props) => {
+        const { name, attributes, setAttributes, isSelected } = props;
+
+        const blockType = wp.blocks?.getBlockType?.(name);
+        const isJankxBlock = name.startsWith('jankx/');
+
+        // For non-Jankx blocks, skip adding responsive font-size
+        if (!isJankxBlock) {
+            return <BlockEdit {...props} />;
+        }
+
+        // Get current jankx controls values - stable reference
+        const jankxControls = useMemo(
+            () => attributes.jankxControls || EMPTY_OBJECT,
+            [attributes.jankxControls]
+        );
+
+        // Debug: track render count (remove in production)
+        // const renderCount = React.useRef(0);
+        // renderCount.current++;
+        // if (window.jankxDebug === undefined) window.jankxDebug = {};
+        // if (window.jankxDebug[name] === undefined) window.jankxDebug[name] = 0;
+        // window.jankxDebug[name]++;
+        // // eslint-disable-next-line no-console
+        // console.log(`[JankxControls] ${name} render #${window.jankxDebug[name]}`);
+
+        const blockConfig = window.jankxBlocks?.controls?.[name] || EMPTY_OBJECT;
+        const presets = window.jankxBlocks?.presets || [];
+        const categories = window.jankxBlocks?.categories || [];
+
+        // Get block configuration from window
+        // const supportsFontSize = blockType?.supports?.typography?.fontSize;
+
+        return (
+            <BlockEdit {...props} />
+        );
+    };
+}, 'withJankxControls');
+
+addFilter(
+    'editor.BlockEdit',
+    'jankx/gutenberg-controls/with-controls',
+    withJankxControls
+);

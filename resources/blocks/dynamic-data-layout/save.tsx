@@ -65,25 +65,45 @@ export default function Save({ attributes }: SaveProps): JSX.Element {
         }
     }
 
-    // Add data attributes for carousel
-    const dataAttributes: Record<string, any> = {
+    // Add data attributes for query filtering (PHP can read these for WP_Query)
+    const queryDataAttributes: Record<string, any> = {
+        'data-query-preset': attrs.queryPreset || 'custom',
+        'data-post-type': attrs.postType || 'post',
+        'data-posts-per-page': attrs.postsPerPage || 10,
         'data-layout': layout,
-        'data-slides-per-view': columns,
-        'data-space-between': '16',
+        'data-columns': columns,
+        'data-columns-tablet': columnsTablet,
+        'data-columns-mobile': columnsMobile,
+        'data-order-by': attrs.orderBy || 'date',
+        'data-order': attrs.order || 'DESC',
+        'data-offset': attrs.offset || 0,
+        'data-keyword': attrs.keyword || '',
+        'data-enable-pagination': attrs.enablePagination || false,
+        'data-pagination-style': attrs.paginationStyle || 'numbers',
+        'data-pagination-alignment': attrs.paginationAlignment || 'center',
+        'data-show-pagination-numbers': attrs.showPaginationNumbers || true,
+        'data-show-title': attrs.showTitle !== false,
+        'data-show-excerpt': attrs.showExcerpt !== false,
+        'data-show-featured-image': attrs.showFeaturedImage !== false,
+        'data-show-date': attrs.showDate !== false,
+        'data-show-author': attrs.showAuthor !== false,
+        'data-show-price': attrs.showPrice !== false,
+        'data-show-add-to-cart': attrs.showAddToCart !== false,
+        'data-show-rating': attrs.showRating !== false,
     };
 
     if (layout === 'carousel') {
-        dataAttributes['data-autoplay'] = attributes.autoplay || false;
-        dataAttributes['data-autoplay-delay'] = attributes.autoplayDelay || 3000;
-        dataAttributes['data-slides-per-view'] = columns;
-        dataAttributes['data-space-between'] = '16';
-        dataAttributes['data-loop'] = attributes.loop || false;
+        queryDataAttributes['data-autoplay'] = attrs.autoplay || false;
+        queryDataAttributes['data-autoplay-delay'] = attrs.autoplayDelay || 3000;
+        queryDataAttributes['data-loop'] = attrs.loop || false;
+        queryDataAttributes['data-slides-per-view'] = columns;
+        queryDataAttributes['data-space-between'] = '16';
     }
 
     const blockProps = useBlockProps.save({ 
         className, 
         style: inlineStyle,
-        ...dataAttributes
+        ...queryDataAttributes
     });
 
     return (
