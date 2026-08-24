@@ -5,9 +5,11 @@
  * Allows blocks in resources/blocks to use enhanced controls.
  */
 
-import { useEffect } from '@wordpress/element';
+import { useMemo, useEffect } from '@wordpress/element';
 import { addFilter } from '@wordpress/hooks';
 import { createHigherOrderComponent } from '@wordpress/compose';
+
+const EMPTY_OBJECT = {};
 
 /**
  * Check if block supports enhanced controls
@@ -63,63 +65,59 @@ const withLivePreview = createHigherOrderComponent((BlockEdit) => {
             return <BlockEdit {...props} />;
         }
 
-        // Apply CSS variables for live preview
-        const jankxControls = attributes.jankxControls || {};
+        const jankxControls = useMemo(
+            () => attributes.jankxControls || EMPTY_OBJECT,
+            [attributes.jankxControls]
+        );
 
-        // Generate CSS variables
-        const cssVariables = {};
-        Object.entries(jankxControls).forEach(([controlName, value]) => {
-            if (!value || typeof value !== 'object') return;
+        const cssVariables = useMemo(() => {
+            const vars = {};
+            Object.entries(jankxControls).forEach(([controlName, value]) => {
+                if (!value || typeof value !== 'object') return;
 
-            // Color variables
-            if (value.colorType === 'solid' && value.solidColor) {
-                cssVariables[`--jankx-${clientId}-${controlName}-color`] = value.solidColor;
-            }
-            if (value.colorType === 'gradient') {
-                const stops = (value.gradientColors || [])
-                    .map((s) => `${s.color} ${s.position}%`)
-                    .join(', ');
-                if (stops) {
-                    cssVariables[`--jankx-${clientId}-${controlName}-gradient`] =
-                        value.gradientType === 'linear'
-                            ? `linear-gradient(${value.gradientAngle || 90}deg, ${stops})`
-                            : `radial-gradient(circle, ${stops})`;
+                if (value.colorType === 'solid' && value.solidColor) {
+                    vars[`--jankx-${clientId}-${controlName}-color`] = value.solidColor;
                 }
-            }
-
-            // Typography variables
-            if (value.fontSize) {
-                cssVariables[`--jankx-${clientId}-${controlName}-font-size`] = value.fontSize;
-            }
-            if (value.fontWeight) {
-                cssVariables[`--jankx-${clientId}-${controlName}-font-weight`] = value.fontWeight;
-            }
-
-            // Spacing variables
-            if (value.padding) {
-                cssVariables[`--jankx-${clientId}-${controlName}-padding`] = value.padding;
-            }
-            if (value.margin) {
-                cssVariables[`--jankx-${clientId}-${controlName}-margin`] = value.margin;
-            }
-
-            // Shadow variables
-            if (value.shadowType && value.shadowType !== 'none') {
-                const shadows = {
-                    xs: '0 1px 2px 0 rgba(0,0,0,0.05)',
-                    sm: '0 1px 3px 0 rgba(0,0,0,0.1)',
-                    md: '0 4px 6px -1px rgba(0,0,0,0.1)',
-                    lg: '0 10px 15px -3px rgba(0,0,0,0.1)',
-                    xl: '0 20px 25px -5px rgba(0,0,0,0.1)',
-                };
-                if (shadows[value.shadowType]) {
-                    cssVariables[`--jankx-${clientId}-${controlName}-shadow`] =
-                        shadows[value.shadowType];
+                if (value.colorType === 'gradient') {
+                    const stops = (value.gradientColors || [])
+                        .map((s) => `${s.color} ${s.position}%`)
+                        .join(', ');
+                    if (stops) {
+                        vars[`--jankx-${clientId}-${controlName}-gradient`] =
+                            value.gradientType === 'linear'
+                                ? `linear-gradient(${value.gradientAngle || 90}deg, ${stops})`
+                                : `radial-gradient(circle, ${stops})`;
+                    }
                 }
-            }
-        });
+                if (value.fontSize) {
+                    vars[`--jankx-${clientId}-${controlName}-font-size`] = value.fontSize;
+                }
+                if (value.fontWeight) {
+                    vars[`--jankx-${clientId}-${controlName}-font-weight`] = value.fontWeight;
+                }
+                if (value.padding) {
+                    vars[`--jankx-${clientId}-${controlName}-padding`] = value.padding;
+                }
+                if (value.margin) {
+                    vars[`--jankx-${clientId}-${controlName}-margin`] = value.margin;
+                }
+                if (value.shadowType && value.shadowType !== 'none') {
+                    const shadows = {
+                        xs: '0 1px 2px 0 rgba(0,0,0,0.05)',
+                        sm: '0 1px 3px 0 rgba(0,0,0,0.1)',
+                        md: '0 4px 6px -1px rgba(0,0,0,0.1)',
+                        lg: '0 10px 15px -3px rgba(0,0,0,0.1)',
+                        xl: '0 20px 25px -5px rgba(0,0,0,0.1)',
+                    };
+                    if (shadows[value.shadowType]) {
+                        vars[`--jankx-${clientId}-${controlName}-shadow`] =
+                            shadows[value.shadowType];
+                    }
+                }
+            });
+            return vars;
+        }, [jankxControls, clientId]);
 
-        // Apply to block element
         useEffect(() => {
             const blockElement = document.querySelector(`[data-block="${clientId}"]`);
             if (blockElement) {
@@ -128,7 +126,6 @@ const withLivePreview = createHigherOrderComponent((BlockEdit) => {
                 });
             }
 
-            // Cleanup
             return () => {
                 if (blockElement) {
                     Object.keys(cssVariables).forEach((prop) => {
