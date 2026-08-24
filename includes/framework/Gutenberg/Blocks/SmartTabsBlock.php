@@ -349,7 +349,15 @@ class SmartTabsBlock extends Block
                 if (!empty($target_block_id)) {
                     $additional_data_attrs .= sprintf(' data-target-block-id="%s"', esc_attr($target_block_id));
                 }
-                
+
+                $target_block_ids = $trigger_settings['targetBlockIds'] ?? [];
+                if (is_array($target_block_ids) && !empty($target_block_ids)) {
+                    $additional_data_attrs .= sprintf(
+                        ' data-target-block-ids="%s"',
+                        esc_attr(wp_json_encode(array_values(array_map('strval', $target_block_ids))))
+                    );
+                }
+
                 // Try to get filter data from advanced-filter block in inner blocks
                 // Pass tab index to extractFilterDataFromTab for matching with terms
                 $block_with_index = $block;

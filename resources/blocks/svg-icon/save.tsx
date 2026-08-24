@@ -10,6 +10,8 @@ import { isEmpty } from 'lodash';
 import { __experimentalParseQuantityAndUnitFromRawValue as parseQuantityAndUnitFromRawValue } from '@wordpress/components'; // eslint-disable-line
 import {
 	useBlockProps,
+	// @ts-ignore
+	__experimentalGetBorderClassesAndStyles as getBorderClassesAndStyles, // eslint-disable-line
 } from '@wordpress/block-editor';
 
 /**
@@ -23,7 +25,7 @@ import { flattenIconsArray, parseIcon } from './utils';
  *
  * @param {Object} props All props passed to this function.
  */
-export default function Save( props: any ) {
+export default function Save(props: any) {
 	const {
 		customGradient,
 		flipHorizontal,
@@ -48,39 +50,39 @@ export default function Save( props: any ) {
 	} = props.attributes;
 
 	// If there is no icon and no iconName, don't save anything.
-	if ( ! icon && ! iconName ) {
+	if (!icon && !iconName) {
 		return null;
 	}
 
-	const iconsAll = flattenIconsArray( getIcons() );
-	const namedIcon = iconsAll.filter( ( i ) => i.name === iconName );
+	const iconsAll = flattenIconsArray(getIcons());
+	const namedIcon = iconsAll.filter((i: { name: string; }) => i.name === iconName);
 	let printedIcon: any = '';
 
-	if ( icon && isEmpty( namedIcon ) ) {
+	if (icon && isEmpty(namedIcon)) {
 		// Custom icons are strings and need to be parsed.
-		printedIcon = parseIcon( icon );
+		printedIcon = parseIcon(icon);
 
-		if ( isEmpty( printedIcon?.props ) ) {
+		if (isEmpty(printedIcon?.props)) {
 			printedIcon = '';
 		}
 	} else {
 		// Icon choosen from library.
-		printedIcon = namedIcon[ 0 ]?.icon;
+		printedIcon = namedIcon[0]?.icon;
 
 		// Icons provided by third-parties are generally strings.
-		if ( typeof printedIcon === 'string' ) {
-			printedIcon = parseIcon( printedIcon );
+		if (typeof printedIcon === 'string') {
+			printedIcon = parseIcon(printedIcon);
 		}
 	}
 
 	// If there is no valid SVG icon, don't save anything.
-	if ( ! printedIcon ) {
+	if (!printedIcon) {
 		return null;
 	}
 
 	// If a label is set, add as aria-label. Will overwite any aria-label in
 	// custom icons.
-	if ( label ) {
+	if (label) {
 		printedIcon = {
 			...printedIcon,
 			props: { ...printedIcon.props, 'aria-label': label },
@@ -88,9 +90,9 @@ export default function Save( props: any ) {
 	}
 
 	const blockProps = useBlockProps.save();
-	const borderProps = { className: '', style: {} };
+	const borderProps = getBorderClassesAndStyles(props.attributes);
 
-	const iconClasses = classnames( 'icon-container', borderProps?.className, {
+	const iconClasses = classnames('icon-container', borderProps?.className, {
 		'has-icon-color': iconColorValue,
 		'has-no-icon-fill-color': hasNoIconFill,
 		'has-icon-background-color':
@@ -98,37 +100,37 @@ export default function Save( props: any ) {
 			iconBackgroundColor ||
 			gradient ||
 			customGradient,
-		[ `has-${ iconBackgroundColor }-background-color` ]:
+		[`has-${iconBackgroundColor}-background-color`]:
 			iconBackgroundColor,
-		[ `has-${ iconColor }-color` ]: iconColor,
-		[ `has-${ gradient }-gradient-background` ]: gradient,
-	} );
+		[`has-${iconColor}-color`]: iconColor,
+		[`has-${gradient}-gradient-background`]: gradient,
+	});
 
-	const [ widthQuantity, widthUnit ] =
-		parseQuantityAndUnitFromRawValue( width );
+	const [widthQuantity, widthUnit] =
+		parseQuantityAndUnitFromRawValue(width);
 
 	// Default icon width when there is no height set.
-	let iconWidth = ! height ? '48px' : undefined;
+	let iconWidth = !height ? '48px' : undefined;
 
-	if ( widthQuantity ) {
+	if (widthQuantity) {
 		iconWidth = widthUnit
-			? `${ widthQuantity }${ widthUnit }`
-			: `${ widthQuantity }px`;
+			? `${widthQuantity}${widthUnit}`
+			: `${widthQuantity}px`;
 	}
 
-	const rotateValue = rotate ? `${ rotate }deg` : '0deg';
+	const rotateValue = rotate ? `${rotate}deg` : '0deg';
 	const scaleXValue = flipHorizontal ? '-1' : '1';
 	const scaleYValue = flipVertical ? '-1' : '1';
 
 	const iconStyles = {
-		background: ! gradient ? customGradient : undefined,
+		background: !gradient ? customGradient : undefined,
 		backgroundColor: iconBackgroundColorValue,
 		color: iconColorValue,
 		width: iconWidth,
 		height: height || undefined,
 		...(blockProps.style as any),
 		...(borderProps.style as any),
-		transform: `rotate(${ rotateValue }) scaleX(${ scaleXValue }) scaleY(${ scaleYValue })`,
+		transform: `rotate(${rotateValue}) scaleX(${scaleXValue}) scaleY(${scaleYValue})`,
 
 		// Margin is applied to the wrapper container, so unset.
 		marginBottom: undefined,
@@ -148,43 +150,43 @@ export default function Save( props: any ) {
 		marginTop: blockStyles?.marginTop,
 	};
 
-	const rel = isEmpty( linkRel ) ? undefined : linkRel;
-	const target = isEmpty( linkTarget ) ? undefined : linkTarget;
+	const rel = isEmpty(linkRel) ? undefined : linkRel;
+	const target = isEmpty(linkTarget) ? undefined : linkTarget;
 
 	const iconMarkup = (
 		<>
-			{ linkUrl ? (
+			{linkUrl ? (
 				<a
-					className={ iconClasses }
-					href={ linkUrl }
-					target={ target }
-					rel={ rel }
-					style={ iconStyles }
-					aria-label={ label ? label : null }
+					className={iconClasses}
+					href={linkUrl}
+					target={target}
+					rel={rel}
+					style={iconStyles}
+					aria-label={label ? label : null}
 				>
-					{ printedIcon }
+					{printedIcon}
 				</a>
 			) : (
-				<div className={ iconClasses } style={ iconStyles }>
-					{ printedIcon }
+				<div className={iconClasses} style={iconStyles}>
+					{printedIcon}
 				</div>
-			) }
+			)}
 		</>
 	);
 
 	return (
 		<div
-			{ ...useBlockProps.save( {
+			{...useBlockProps.save({
 				className:
 					itemsJustification &&
-					`items-justified-${ itemsJustification }`,
-			} ) }
+					`items-justified-${itemsJustification}`,
+			})}
 			// This is a bit of a hack. we only want the margin styles
 			// applied to the main block div.
-			style={ blockMargin }
-			title={ title }
+			style={blockMargin}
+			title={title}
 		>
-			{ iconMarkup }
+			{iconMarkup}
 		</div>
 	);
 }

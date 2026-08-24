@@ -674,7 +674,24 @@ function handleAdvancedFilterTrigger(tabBlock, navButton) {
         }
     }
 
-    console.log('[SmartTab AdvancedFilter] Target block ID:', targetBlockId);
+    // Collect ALL target block IDs (multi-target support)
+    let targetBlockIds = [];
+    const idsAttr = navButton?.getAttribute('data-target-block-ids');
+    if (idsAttr) {
+        try {
+            const parsed = JSON.parse(idsAttr);
+            if (Array.isArray(parsed)) {
+                targetBlockIds = parsed.map(String).filter(Boolean);
+            }
+        } catch (e) {
+            console.warn('[SmartTab AdvancedFilter] Failed to parse data-target-block-ids', idsAttr);
+        }
+    }
+    if (targetBlockIds.length === 0 && targetBlockId) {
+        targetBlockIds = [targetBlockId];
+    }
+
+    console.log('[SmartTab AdvancedFilter] Target block IDs:', targetBlockIds);
     
     // Find advanced-filter inner block in the tab panel
     // Try multiple selectors to find the block
@@ -944,11 +961,13 @@ function handleAdvancedFilterTrigger(tabBlock, navButton) {
     
     if (filterData) {
         console.log('[SmartTab AdvancedFilter] Triggering filter', {
-            targetBlockId,
+            targetBlockIds,
             filterType,
             filterData,
         });
-        triggerAdvancedFilterFromBlock(targetBlockId, filterType, filterData);
+        targetBlockIds.forEach((targetId, index) => {
+            triggerAdvancedFilterFromBlock(targetId, filterType, filterData, index === 0);
+        });
     } else {
         console.warn('[SmartTab AdvancedFilter] Could not extract filter data', {
             filterType,
@@ -1126,8 +1145,9 @@ function extractFilterDataFromBlock(filterBlock, filterType) {
  * @param {string} targetBlockId The target dynamic-data-layout block ID
  * @param {string} filterType The filter type
  * @param {Object} filterData Filter data object
+ * @param {boolean} updateUrl Whether to update browser URL (first target only)
  */
-function triggerAdvancedFilterFromBlock(targetBlockId, filterType, filterData) {
+function triggerAdvancedFilterFromBlock(targetBlockId, filterType, filterData, updateUrl = true) {
     console.log('[SmartTab AdvancedFilter] triggerAdvancedFilterFromBlock called', {
         targetBlockId,
         filterType,
@@ -1210,14 +1230,14 @@ function triggerAdvancedFilterFromBlock(targetBlockId, filterType, filterData) {
     });
     
     // Call direct AJAX to update dynamic-data-layout
-    fetchDynamicDataLayout(targetBlockId, filtersPayload);
+    fetchDynamicDataLayout(targetBlockId, filtersPayload, updateUrl);
 }
 
 /**
  * Directly fetch and update dynamic-data-layout block via AJAX
  * Uses the same logic as advanced-filters block
  */
-function fetchDynamicDataLayout(targetBlockId, filtersPayload) {
+function fetchDynamicDataLayout(targetBlockId, filtersPayload, updateUrl = true) {
     console.log('[SmartTab AdvancedFilter] fetchDynamicDataLayout called', {
         targetBlockId,
         filtersPayload,
@@ -1229,7 +1249,9 @@ function fetchDynamicDataLayout(targetBlockId, filtersPayload) {
         `.wp-block-jankx-dynamic-data-layout[data-block-id="${targetBlockId}"], ` +
         `.wp-block-jankx-dynamic-data-layout[data-query-id="${targetBlockId}"], ` +
         `.wp-block-jankx-dynamic-ssr-layout[data-block-id="${targetBlockId}"], ` +
-        `.wp-block-jankx-dynamic-ssr-layout[data-query-id="${targetBlockId}"]`
+        `.wp-block-jankx-dynamic-ssr-layout[data-query-id="${targetBlockId}"], ` +
+        `.wp-block-jankx-dynamic-term-layout[data-block-id="${targetBlockId}"], ` +
+        `.wp-block-jankx-dynamic-term-layout[data-query-id="${targetBlockId}"]`
     );
     
     // 2. By data attributes only (fallback if class is missing)
@@ -1251,12 +1273,14 @@ function fetchDynamicDataLayout(targetBlockId, filtersPayload) {
                 `.wp-block-jankx-dynamic-data-layout[data-block-id="${targetBlockId}"], ` +
                 `.wp-block-jankx-dynamic-data-layout[data-query-id="${targetBlockId}"], ` +
                 `.wp-block-jankx-dynamic-ssr-layout[data-block-id="${targetBlockId}"], ` +
-                `.wp-block-jankx-dynamic-ssr-layout[data-query-id="${targetBlockId}"]`
+                `.wp-block-jankx-dynamic-ssr-layout[data-query-id="${targetBlockId}"], ` +
+                `.wp-block-jankx-dynamic-term-layout[data-block-id="${targetBlockId}"], ` +
+                `.wp-block-jankx-dynamic-term-layout[data-query-id="${targetBlockId}"]`
             ),
             byDataOnly: !!document.querySelector(`[data-block-id="${targetBlockId}"], [data-query-id="${targetBlockId}"]`),
             byId: !!document.getElementById(targetBlockId),
         },
-        allDynamicDataLayouts: Array.from(document.querySelectorAll('.wp-block-jankx-dynamic-data-layout, .wp-block-jankx-dynamic-ssr-layout')).map(block => ({
+        allDynamicDataLayouts: Array.from(document.querySelectorAll('.wp-block-jankx-dynamic-data-layout, .wp-block-jankx-dynamic-ssr-layout, .wp-block-jankx-dynamic-term-layout')).map(block => ({
             blockId: block.getAttribute('data-block-id'),
             queryId: block.getAttribute('data-query-id'),
             id: block.id,
@@ -1418,7 +1442,9 @@ function fetchDynamicDataLayout(targetBlockId, filtersPayload) {
     }
 
     const params = new URLSearchParams();
-    params.append('action', 'jankx_dynamic_data_layout_filter');
+    // Term layout blocks use their own AJAX endpoint
+    const isTermLayout = targetBlock.classList.contains('wp-block-jankx-dynamic-term-layout');
+    params.append('action', isTermLayout ? 'jankx_dynamic_term_layout_filter' : 'jankx_dynamic_data_layout_filter');
     params.append('nonce', nonce);
     params.append('block_id', targetBlockId);
     params.append('attributes', attributesJson || '');
@@ -1484,7 +1510,7 @@ function fetchDynamicDataLayout(targetBlockId, filtersPayload) {
             // Update URL params if allowed
             const updateUrlAttr = afConfigEl ? afConfigEl.getAttribute('data-update-url') : null;
             const allowUpdateUrl = updateUrlAttr === null ? (window.jankxAdvancedFilters ? window.jankxAdvancedFilters.updateUrl !== false : true) : updateUrlAttr !== '0' && updateUrlAttr !== 'false';
-            updateUrlWithFilters(filtersPayload, allowUpdateUrl);
+            updateUrlWithFilters(filtersPayload, allowUpdateUrl && updateUrl);
 
             console.log('[SmartTab AdvancedFilter] Replacing target block with new HTML', {
                 targetBlock,

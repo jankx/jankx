@@ -16,6 +16,7 @@ import { BlockControls } from '@wordpress/block-editor';
 import {
     PanelBody,
     SelectControl,
+    CheckboxControl,
     TextControl,
     Button,
     Dropdown,
@@ -403,8 +404,11 @@ export default function Edit({ attributes, setAttributes, clientId, context }: S
                     const found: Array<{ id: string; clientId: string; postType: string; name: string }> = [];
                     
                     blocks.forEach((block: Block) => {
-                        if (block.name === 'jankx/dynamic-data-layout' || block.name === 'jankx/dynamic-ssr-layout') {
-                            const attrs = (block.attributes || {}) as Record<string, unknown>;
+                        const attrs = (block.attributes || {}) as Record<string, unknown>;
+                        if (
+                            block.name === 'jankx/dynamic-data-layout' ||
+                            block.name === 'jankx/dynamic-ssr-layout'
+                        ) {
                             const queryId = attrs.queryId || block.clientId;
                             const postType = (attrs.postType as string) || 'post';
                             found.push({
@@ -412,6 +416,15 @@ export default function Edit({ attributes, setAttributes, clientId, context }: S
                                 clientId: block.clientId,
                                 postType: postType,
                                 name: `${postType} Layout`,
+                            });
+                        } else if (block.name === 'jankx/dynamic-term-layout') {
+                            const queryId = attrs.queryId || block.clientId;
+                            const taxonomy = (attrs.taxonomy as string) || 'category';
+                            found.push({
+                                id: String(queryId || block.clientId),
+                                clientId: block.clientId,
+                                postType: taxonomy,
+                                name: `${taxonomy} Terms`,
                             });
                         }
                         
@@ -529,37 +542,52 @@ export default function Edit({ attributes, setAttributes, clientId, context }: S
                         <PanelBody title={__('Filter Settings', 'jankx')} initialOpen={true}>
                             {dynamicDataLayoutBlocks.length === 0 ? (
                                 <p style={{ color: '#d63638' }}>
-                                    {__('No Dynamic Data Layout blocks found on this page. Add a Dynamic Data Layout block first.', 'jankx')}
+                                    {__('No Dynamic Data Layout or Dynamic Term Layout blocks found on this page. Add one first.', 'jankx')}
                                 </p>
                             ) : (
                                 <>
-                                    <SelectControl
-                                        label={__('Target Block', 'jankx')}
-                                        value={(triggerSettings as Record<string, unknown>)?.targetBlockId as string || ''}
-                                        options={[
-                                            { label: __('-- Select Block --', 'jankx'), value: '' },
-                                            ...dynamicDataLayoutBlocks.map((block) => ({
-                                                label: `${block.name} (${block.postType})`,
-                                                value: block.id,
-                                            })),
-                                        ]}
-                                        onChange={(value: string) => {
-                                            const block = dynamicDataLayoutBlocks.find((b) => b.id === value);
-                                            setSelectedTargetBlock(block ? { id: block.id, postType: block.postType } : null);
-                                            setAttributes({
-                                                triggerSettings: {
-                                                    ...triggerSettings,
-                                                    targetBlockId: value,
-                                                },
-                                            });
-                                        }}
-                                        help={__('Select the Dynamic Data Layout block to filter', 'jankx')}
-                                    />
+                                    <div style={{ marginBottom: '8px' }}>
+                                        <strong>{__('Target Blocks', 'jankx')}</strong>
+                                        <p style={{ margin: '4px 0 0', fontSize: '11px', color: '#666' }}>
+                                            {__('Select one or more layout blocks to filter. All selected blocks are filtered when this tab is clicked.', 'jankx')}
+                                        </p>
+                                    </div>
+                                    {dynamicDataLayoutBlocks.map((block) => {
+                                        const savedIds = ((triggerSettings as Record<string, unknown>)?.targetBlockIds as string[]) ||
+                                            ((triggerSettings as Record<string, unknown>)?.targetBlockId ? [(triggerSettings as Record<string, unknown>)?.targetBlockId as string] : []);
+                                        const checked = savedIds.includes(block.id);
+                                        return (
+                                            <CheckboxControl
+                                                key={block.id}
+                                                label={`${block.name} (${block.postType})`}
+                                                checked={checked}
+                                                onChange={(isChecked: boolean) => {
+                                                    const baseIds = ((triggerSettings as Record<string, unknown>)?.targetBlockIds as string[]) ||
+                                                        ((triggerSettings as Record<string, unknown>)?.targetBlockId ? [(triggerSettings as Record<string, unknown>)?.targetBlockId as string] : []);
+                                                    const newIds = isChecked
+                                                        ? [...baseIds, block.id]
+                                                        : baseIds.filter((id) => id !== block.id);
+                                                    setSelectedTargetBlock(
+                                                        newIds.length > 0
+                                                            ? { id: newIds[0], postType: dynamicDataLayoutBlocks.find((b) => b.id === newIds[0])?.postType || '' }
+                                                            : null
+                                                    );
+                                                    setAttributes({
+                                                        triggerSettings: {
+                                                            ...triggerSettings,
+                                                            targetBlockIds: newIds,
+                                                            targetBlockId: newIds[0] || '',
+                                                        },
+                                                    });
+                                                }}
+                                            />
+                                        );
+                                    })}
 
                                     {selectedTargetBlock && (
                                         <div style={{ marginTop: '10px', padding: '10px', backgroundColor: '#f0f0f1', borderRadius: '4px' }}>
                                             <p style={{ margin: 0, fontSize: '12px' }}>
-                                                <strong>{__('Post Type:', 'jankx')}</strong> {selectedTargetBlock.postType}
+                                                <strong>{selectedTargetBlock.postType}</strong>
                                             </p>
                                             <p style={{ margin: '5px 0 0 0', fontSize: '12px', color: '#666' }}>
                                                 {__('Configure the filter using the Advanced Filter block below.', 'jankx')}

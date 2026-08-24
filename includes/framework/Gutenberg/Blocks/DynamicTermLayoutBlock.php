@@ -2,10 +2,12 @@
 
 namespace Jankx\Gutenberg\Blocks;
 
+use Jankx\Facades\Log;
 use Jankx\Gutenberg\Blocks\DynamicDataLayoutBlock;
 use Jankx\Layouts\DynamicDataLayout\TermBlockTemplateAttributeSanitizer;
 use Jankx\Layouts\DynamicDataLayout\TermBlockTemplateRenderer;
 use Jankx\Layouts\DynamicDataLayout\BlockTemplateLayoutDecorator;
+use Jankx\Layouts\DynamicDataLayout\Generators\TermTemplateBlockGenerator;
 
 /**
  * Dynamic Term Layout Block
@@ -36,7 +38,275 @@ class DynamicTermLayoutBlock extends DynamicDataLayoutBlock
         // Filter block attributes to ensure queryId is always valid
         add_filter('render_block_data', [$this, 'normalizeBlockAttributes'], 10, 1);
 
+        // AJAX filtering endpoint for smart-tab advanced-filter triggers
+        add_action('wp_ajax_jankx_dynamic_term_layout_filter', [$this, 'ajaxTermFilterUpdate']);
+        add_action('wp_ajax_nopriv_jankx_dynamic_term_layout_filter', [$this, 'ajaxTermFilterUpdate']);
+        add_filter('jankx_dynamic_term_layout_get_block_attributes', [$this, 'handleGetTermBlockAttributes'], 10, 3);
+        add_filter('jankx_dynamic_term_layout_filter_update', [$this, 'handleTermFilterUpdate'], 10, 2);
+
         $this->ensureServices();
+    }
+
+    /**
+     * AJAX handler for Dynamic Term Layout filter update
+     *
+     * @return void
+     */
+    public function ajaxTermFilterUpdate(): void
+    {
+        check_ajax_referer('jankx_load_more', 'nonce');
+
+        $block_id = isset($_POST['block_id']) ? sanitize_text_field(wp_unslash($_POST['block_id'])) : '';
+        $attributes_json = isset($_POST['attributes']) ? wp_unslash($_POST['attributes']) : '';
+        $filters_json = isset($_POST['filters']) ? wp_unslash($_POST['filters']) : '[]';
+        $post_id = isset($_POST['post_id']) ? intval($_POST['post_id']) : 0;
+
+        if (empty($block_id)) {
+            wp_send_json_error(['message' => __('Block ID is required', 'jankx')]);
+        }
+
+        $attributes = [];
+        $filters = [];
+
+        if (!empty($attributes_json)) {
+            $decoded = json_decode($attributes_json, true);
+            if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+                $attributes = $decoded;
+            }
+        }
+
+        if (!empty($filters_json)) {
+            $decoded = json_decode($filters_json, true);
+            if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+                $filters = $decoded;
+            }
+        }
+
+        if (empty($post_id)) {
+            $post_id = get_the_ID() ?: 0;
+        }
+
+        if (empty($attributes) && $post_id > 0) {
+            $block_data_result = apply_filters('jankx_dynamic_term_layout_get_block_attributes', null, $post_id, $block_id);
+            if ($block_data_result !== null) {
+                $attributes = $block_data_result;
+            }
+        }
+
+        if (empty($attributes)) {
+            wp_send_json_error(['message' => __('Block attributes not found', 'jankx')]);
+        }
+
+        if (empty($attributes['queryId'])) {
+            $attributes['queryId'] = $block_id;
+        }
+
+        if (empty($attributes['termTemplate'])) {
+            $cachedTemplate = get_transient('jankx_dtl_template_' . $block_id);
+            if (is_array($cachedTemplate)) {
+                $attributes['termTemplate'] = $cachedTemplate;
+            } elseif ($post_id > 0) {
+                $realAttrs = apply_filters('jankx_dynamic_term_layout_get_block_attributes', null, $post_id, $block_id);
+                if (!empty($realAttrs['termTemplate'])) {
+                    $attributes['termTemplate'] = $realAttrs['termTemplate'];
+                    set_transient('jankx_dtl_template_' . $block_id, $attributes['termTemplate'], DAY_IN_SECONDS);
+                }
+            }
+        }
+
+        try {
+            $result = apply_filters('jankx_dynamic_term_layout_filter_update', $attributes, $filters);
+            if (!is_array($result)) {
+                $result = ['html' => '', 'attributes' => $attributes];
+            }
+            wp_send_json_success($result);
+        } catch (\Throwable $e) {
+            $message = $e->getMessage();
+            if (defined('WP_DEBUG') && WP_DEBUG) {
+                $message .= ' at ' . $e->getFile() . ':' . $e->getLine();
+            }
+            wp_send_json_error(['message' => $message]);
+        }
+    }
+
+    /**
+     * Resolve term layout block attributes from post content
+     *
+     * @param mixed $default Default return value
+     * @param int $post_id Post ID
+     * @param string $block_id Block queryId
+     * @return array|null
+     */
+    public function handleGetTermBlockAttributes($default, int $post_id, string $block_id)
+    {
+        if (!$post_id) {
+            return $default;
+        }
+
+        $post_obj = get_post($post_id);
+        if (!$post_obj) {
+            return $default;
+        }
+
+        $blocks = parse_blocks($post_obj->post_content);
+
+        return $this->findTermBlockAttributesById($blocks, $block_id) ?? $default;
+    }
+
+    /**
+     * Recursively find term layout block attributes by queryId
+     *
+     * @param array $blocks Parsed blocks
+     * @param string $target_block_id
+     * @return array|null
+     */
+    private function findTermBlockAttributesById(array $blocks, string $target_block_id): ?array
+    {
+        foreach ($blocks as $block) {
+            if (($block['blockName'] ?? '') === 'jankx/dynamic-term-layout') {
+                $query_id = $block['attrs']['queryId'] ?? null;
+                if ($query_id && strval($query_id) === $target_block_id) {
+                    $attrs = $block['attrs'] ?? [];
+                    $template = $this->extractTemplateBlockFromParsedBlock($block);
+                    if ($template !== null) {
+                        $attrs['termTemplate'] = $template;
+                    }
+                    return $attrs;
+                }
+            }
+
+            if (!empty($block['innerBlocks'])) {
+                $result = $this->findTermBlockAttributesById($block['innerBlocks'], $target_block_id);
+                if ($result !== null) {
+                    return $result;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Apply filters to attributes and render the filtered term layout
+     *
+     * Supported filter mappings:
+     *  - keyword  -> term search
+     *  - {taxonomy} => [termId] -> show child terms of the selected term
+     *
+     * @param array $attributes Block attributes
+     * @param array $filters Filter values
+     * @return array
+     */
+    public function handleTermFilterUpdate(array $attributes, array $filters): array
+    {
+        Log::debug('[TermLayout] Incoming Filters: ' . json_encode($filters));
+
+        if (empty($attributes['queryId'])) {
+            return [];
+        }
+
+        $this->ensureServices();
+
+        $layoutName = $attributes['layout'] ?? 'grid';
+
+        foreach ($filters as $key => $value) {
+            if ($key === 'keyword' && !empty($value)) {
+                $attributes['keyword'] = is_string($value) ? $value : '';
+                continue;
+            }
+
+            if (is_array($value) && !empty($value) && taxonomy_exists($key)) {
+                $attributes['termParent'] = (int) $value[0];
+            }
+        }
+
+        $attributes = $this->attributeSanitizer->sanitize($attributes, $layoutName, true);
+
+        $layout = $this->layoutManager->createLayout($layoutName);
+        $decorator = new BlockTemplateLayoutDecorator($layout);
+        $decorator->withAttributes($attributes);
+
+        $terms = $this->buildFilteredTermQuery($attributes);
+
+        if (is_wp_error($terms) || empty($terms)) {
+            $html = sprintf(
+                '<div %s></div>',
+                $this->buildWrapperAttributes($attributes)
+            );
+            return ['html' => $html, 'attributes' => $attributes];
+        }
+
+        $renderOffset = (int) ($attributes['renderOffset'] ?? 0);
+        $renderLimit = (int) ($attributes['renderLimit'] ?? 0);
+        if ($renderOffset > 0 || $renderLimit > 0) {
+            $terms = array_slice($terms, $renderOffset, $renderLimit > 0 ? $renderLimit : null);
+        }
+
+        $layout->setQuery($terms);
+        $layout->setOptions($attributes);
+
+        $templateBlock = null;
+        if (!empty($attributes['termTemplate'])) {
+            $templateBlock = $this->sanitizeTemplateBlock($attributes['termTemplate']);
+        }
+
+        if ($templateBlock) {
+            $layout->setOptions(array_merge($attributes, [
+                'postTemplate' => $templateBlock,
+            ]));
+        }
+
+        $layout->setContentGenerator(new TermTemplateBlockGenerator([], $attributes));
+
+        $html = $layout->render();
+
+        if ($layoutName === 'carousel') {
+            $this->enqueueCarouselAssets();
+        }
+
+        $html = sprintf('<div %s>%s</div>', $this->buildWrapperAttributes($attributes), $html);
+
+        return [
+            'html' => $html,
+            'attributes' => $attributes,
+        ];
+    }
+
+    /**
+     * Build a WP_Term_Query from merged attributes and return terms
+     *
+     * @param array $attributes Sanitized attributes
+     * @return array|\WP_Error
+     */
+    private function buildFilteredTermQuery(array $attributes)
+    {
+        $args = [
+            'taxonomy'   => $attributes['taxonomy'] ?? 'category',
+            'hide_empty' => !empty($attributes['hideEmpty']),
+            'number'     => (int) ($attributes['number'] ?? 10),
+            'orderby'    => $attributes['orderBy'] ?? 'name',
+            'order'      => $attributes['order'] ?? 'ASC',
+        ];
+
+        if (!empty($attributes['termIn'])) {
+            $args['include'] = (array) $attributes['termIn'];
+        }
+
+        if (!empty($attributes['termNotIn'])) {
+            $args['exclude'] = (array) $attributes['termNotIn'];
+        }
+
+        if (!empty($attributes['termParent'])) {
+            $args['parent'] = (int) $attributes['termParent'];
+        }
+
+        if (!empty($attributes['keyword'])) {
+            $args['search'] = $attributes['keyword'];
+        }
+
+        $args = apply_filters('jankx/dynamic-term-layout/query_args', $args, $attributes);
+
+        return (new \WP_Term_Query($args))->get_terms();
     }
 
     /**
