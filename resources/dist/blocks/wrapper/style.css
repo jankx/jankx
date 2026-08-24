@@ -5,9 +5,9 @@
     padding: var(--jankx-padding-desktop, initial);
     margin: var(--jankx-margin-desktop, initial);
     max-width: var(--jankx-max-width, none);
-    /* Auto-center when max-width is set */
     box-sizing: border-box;
     width: 100%;
+    transition: background-color 0.2s ease;
 }
 
 .has-jankx-responsive-wrapper {

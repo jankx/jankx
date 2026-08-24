@@ -5,7 +5,7 @@
     "version": "1.0.0",
     "title": "Wrapper",
     "category": "design",
-    "description": "A layout wrapper block with advanced responsive controls.",
+    "description": "A layout wrapper block with advanced responsive controls, colors, typography, and border settings.",
     "providesContext": {
         "jankx/wrapperId": "anchor"
     },
@@ -60,6 +60,91 @@
         "renderMode": {
             "type": "string",
             "default": "dynamic"
+        },
+        "backgroundColor": {
+            "type": "string"
+        },
+        "customBackgroundColor": {
+            "type": "string"
+        },
+        "textColor": {
+            "type": "string"
+        },
+        "customTextColor": {
+            "type": "string"
+        },
+        "gradient": {
+            "type": "string"
+        },
+        "customGradient": {
+            "type": "string"
+        },
+        "fontSize": {
+            "type": "string"
+        },
+        "customFontSize": {
+            "type": "number"
+        },
+        "fontFamily": {
+            "type": "string"
+        },
+        "customFontFamily": {
+            "type": "string"
+        },
+        "fontWeight": {
+            "type": "string"
+        },
+        "lineHeight": {
+            "type": "string"
+        },
+        "letterSpacing": {
+            "type": "string"
+        },
+        "textTransform": {
+            "type": "string"
+        },
+        "textDecoration": {
+            "type": "string"
+        },
+        "borderColor": {
+            "type": "string"
+        },
+        "customBorderColor": {
+            "type": "string"
+        },
+        "borderWidth": {
+            "type": "string"
+        },
+        "borderStyle": {
+            "type": "string",
+            "default": "solid"
+        },
+        "borderRadius": {
+            "type": "string"
+        },
+        "borderRadiusTopLeft": {
+            "type": "string"
+        },
+        "borderRadiusTopRight": {
+            "type": "string"
+        },
+        "borderRadiusBottomLeft": {
+            "type": "string"
+        },
+        "borderRadiusBottomRight": {
+            "type": "string"
+        },
+        "minHeight": {
+            "type": "string"
+        },
+        "overflow": {
+            "type": "string"
+        },
+        "position": {
+            "type": "string"
+        },
+        "zIndex": {
+            "type": "number"
         }
     },
     "supports": {
@@ -74,11 +159,54 @@
         "spacing": {
             "margin": true,
             "padding": true,
-            "blockGap": true
+            "blockGap": true,
+            "__experimentalDefaultControls": {
+                "margin": true,
+                "padding": true,
+                "blockGap": true
+            }
         },
         "dimensions": {
             "minHeight": true
-        }
+        },
+        "color": {
+            "gradients": true,
+            "link": true,
+            "__experimentalSkipSerialization": true,
+            "__experimentalDefaultControls": {
+                "background": true,
+                "text": true,
+                "link": true
+            }
+        },
+        "typography": {
+            "fontSize": true,
+            "lineHeight": true,
+            "__experimentalFontFamily": true,
+            "__experimentalFontWeight": true,
+            "__experimentalFontStyle": true,
+            "__experimentalTextTransform": true,
+            "__experimentalTextDecoration": true,
+            "__experimentalLetterSpacing": true,
+            "__experimentalSkipSerialization": true,
+            "__experimentalDefaultControls": {
+                "fontSize": true
+            }
+        },
+        "__experimentalBorder": {
+            "color": true,
+            "radius": true,
+            "style": true,
+            "width": true,
+            "__experimentalSkipSerialization": true,
+            "__experimentalDefaultControls": {
+                "color": true,
+                "radius": true,
+                "style": true,
+                "width": true
+            }
+        },
+        "html": false
     },
     "editorScript": "file:../../dist/blocks/wrapper/index.js",
     "style": "file:../../dist/blocks/wrapper/style.css",
