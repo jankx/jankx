@@ -183,8 +183,8 @@ export default function Edit({ attributes, setAttributes }: any) {
 
 	return (
 		<div {...blockProps}>
+			{/* Default Settings Sidebar */}
 			<InspectorControls>
-				{/* Layout */}
 				<PanelBody title={__('Layout', 'jankx')} initialOpen={true}>
 					<SelectControl
 						label={__('HTML Tag', 'jankx')}
@@ -200,7 +200,74 @@ export default function Edit({ attributes, setAttributes }: any) {
 					/>
 				</PanelBody>
 
-				{/* Color */}
+				<PanelBody title={__('Padding', 'jankx')} initialOpen={false}>
+					<DeviceSwitcher value={paddingDevice} onChange={setPaddingDevice} />
+					<RangeControl
+						value={attributes[DEVICE_KEYS[paddingDevice]] || 0}
+						onChange={(val) => setAttributes({ [DEVICE_KEYS[paddingDevice]]: val })}
+						min={0}
+						max={200}
+					/>
+				</PanelBody>
+
+				<PanelBody title={__('Margin', 'jankx')} initialOpen={false}>
+					<DeviceSwitcher value={marginDevice} onChange={setMarginDevice} />
+					<RangeControl
+						value={attributes[MARGIN_DEVICE_KEYS[marginDevice]] || 0}
+						onChange={(val) => setAttributes({ [MARGIN_DEVICE_KEYS[marginDevice]]: val })}
+						min={0}
+						max={200}
+					/>
+				</PanelBody>
+
+				<PanelBody title={__('Visibility', 'jankx')} initialOpen={false}>
+					<ToggleControl label={__('Hide on Ultrawide', 'jankx')} checked={attributes.hideOnUltrawide} onChange={(val) => setAttributes({ hideOnUltrawide: val })} />
+					<ToggleControl label={__('Hide on Desktop', 'jankx')} checked={attributes.hideOnDesktop} onChange={(val) => setAttributes({ hideOnDesktop: val })} />
+					<ToggleControl label={__('Hide on Tablet', 'jankx')} checked={attributes.hideOnTablet} onChange={(val) => setAttributes({ hideOnTablet: val })} />
+					<ToggleControl label={__('Hide on Mobile', 'jankx')} checked={attributes.hideOnMobile} onChange={(val) => setAttributes({ hideOnMobile: val })} />
+				</PanelBody>
+
+				<PanelBody title={__('Position', 'jankx')} initialOpen={false}>
+					<SelectControl
+						label={__('Position', 'jankx')}
+						value={attributes.position || ''}
+						options={POSITION_OPTIONS}
+						onChange={(val) => setAttributes({ position: val || undefined })}
+					/>
+					{attributes.position && attributes.position !== '' && (
+						<TextControl
+							label={__('Z-Index', 'jankx')}
+							value={attributes.zIndex ?? ''}
+							onChange={(val) => setAttributes({ zIndex: val !== '' ? Number(val) : undefined })}
+						/>
+					)}
+				</PanelBody>
+
+				<PanelBody title={__('Overflow', 'jankx')} initialOpen={false}>
+					<SelectControl
+						label={__('Overflow', 'jankx')}
+						value={attributes.overflow || ''}
+						options={OVERFLOW_OPTIONS}
+						onChange={(val) => setAttributes({ overflow: val || undefined })}
+					/>
+				</PanelBody>
+
+				<PanelBody title={__('Utilities', 'jankx')} initialOpen={false}>
+					<SelectControl
+						label={__('Render Mode', 'jankx')}
+						value={attributes.renderMode}
+						options={[
+							{ label: 'Dynamic (SSR)', value: 'dynamic' },
+							{ label: 'Static (CSR)', value: 'static' },
+						]}
+						onChange={(val) => setAttributes({ renderMode: val })}
+						help={__('Choose how this block should be rendered.', 'jankx')}
+					/>
+				</PanelBody>
+			</InspectorControls>
+
+			{/* Styles Sidebar — same as core/group */}
+			<InspectorControls group="styles">
 				<PanelBody title={__('Color', 'jankx')} initialOpen={false}>
 					<div style={{ marginBottom: 12 }}>
 						<label className="components-base-control__label" style={{ display: 'block', marginBottom: 6 }}>
@@ -232,7 +299,6 @@ export default function Edit({ attributes, setAttributes }: any) {
 					</div>
 				</PanelBody>
 
-				{/* Typography */}
 				<PanelBody title={__('Typography', 'jankx')} initialOpen={false}>
 					<SelectControl
 						label={__('Font Size', 'jankx')}
@@ -297,7 +363,6 @@ export default function Edit({ attributes, setAttributes }: any) {
 					/>
 				</PanelBody>
 
-				{/* Border */}
 				<PanelBody title={__('Border', 'jankx')} initialOpen={false}>
 					<div style={{ marginBottom: 12 }}>
 						<label className="components-base-control__label" style={{ display: 'block', marginBottom: 6 }}>
@@ -339,73 +404,6 @@ export default function Edit({ attributes, setAttributes }: any) {
 							)}
 						</>
 					)}
-				</PanelBody>
-
-				{/* Responsive Padding */}
-				<PanelBody title={__('Padding', 'jankx')} initialOpen={false}>
-					<DeviceSwitcher value={paddingDevice} onChange={setPaddingDevice} />
-					<RangeControl
-						value={attributes[DEVICE_KEYS[paddingDevice]] || 0}
-						onChange={(val) => setAttributes({ [DEVICE_KEYS[paddingDevice]]: val })}
-						min={0}
-						max={200}
-					/>
-				</PanelBody>
-
-				{/* Responsive Margin */}
-				<PanelBody title={__('Margin', 'jankx')} initialOpen={false}>
-					<DeviceSwitcher value={marginDevice} onChange={setMarginDevice} />
-					<RangeControl
-						value={attributes[MARGIN_DEVICE_KEYS[marginDevice]] || 0}
-						onChange={(val) => setAttributes({ [MARGIN_DEVICE_KEYS[marginDevice]]: val })}
-						min={0}
-						max={200}
-					/>
-				</PanelBody>
-
-				{/* Visibility */}
-				<PanelBody title={__('Visibility', 'jankx')} initialOpen={false}>
-					<ToggleControl label={__('Hide on Ultrawide', 'jankx')} checked={attributes.hideOnUltrawide} onChange={(val) => setAttributes({ hideOnUltrawide: val })} />
-					<ToggleControl label={__('Hide on Desktop', 'jankx')} checked={attributes.hideOnDesktop} onChange={(val) => setAttributes({ hideOnDesktop: val })} />
-					<ToggleControl label={__('Hide on Tablet', 'jankx')} checked={attributes.hideOnTablet} onChange={(val) => setAttributes({ hideOnTablet: val })} />
-					<ToggleControl label={__('Hide on Mobile', 'jankx')} checked={attributes.hideOnMobile} onChange={(val) => setAttributes({ hideOnMobile: val })} />
-				</PanelBody>
-
-				{/* Advanced */}
-				<PanelBody title={__('Position', 'jankx')} initialOpen={false}>
-					<SelectControl
-						label={__('Position', 'jankx')}
-						value={attributes.position || ''}
-						options={POSITION_OPTIONS}
-						onChange={(val) => setAttributes({ position: val || undefined })}
-					/>
-					{attributes.position && attributes.position !== '' && (
-						<TextControl
-							label={__('Z-Index', 'jankx')}
-							value={attributes.zIndex ?? ''}
-							onChange={(val) => setAttributes({ zIndex: val !== '' ? Number(val) : undefined })}
-						/>
-					)}
-				</PanelBody>
-				<PanelBody title={__('Overflow', 'jankx')} initialOpen={false}>
-					<SelectControl
-						label={__('Overflow', 'jankx')}
-						value={attributes.overflow || ''}
-						options={OVERFLOW_OPTIONS}
-						onChange={(val) => setAttributes({ overflow: val || undefined })}
-					/>
-				</PanelBody>
-				<PanelBody title={__('Utilities', 'jankx')} initialOpen={false}>
-					<SelectControl
-						label={__('Render Mode', 'jankx')}
-						value={attributes.renderMode}
-						options={[
-							{ label: 'Dynamic (SSR)', value: 'dynamic' },
-							{ label: 'Static (CSR)', value: 'static' },
-						]}
-						onChange={(val) => setAttributes({ renderMode: val })}
-						help={__('Choose how this block should be rendered.', 'jankx')}
-					/>
 				</PanelBody>
 			</InspectorControls>
 			<InnerBlocks />
