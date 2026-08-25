@@ -1,13 +1,12 @@
-/*!**********************************************************************************************************************!*\
-  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/dist/cjs.js!./blocks/wrapper/index.css ***!
-  \**********************************************************************************************************************/
+/*!************************************************************************************************************************!*\
+  !*** css ../node_modules/css-loader/dist/cjs.js!../node_modules/postcss-loader/dist/cjs.js!./blocks/wrapper/index.css ***!
+  \************************************************************************************************************************/
 .has-jankx-responsive-wrapper {
     padding: var(--jankx-padding-desktop, initial);
     margin: var(--jankx-margin-desktop, initial);
     max-width: var(--jankx-max-width, none);
     box-sizing: border-box;
     width: 100%;
-    transition: background-color 0.2s ease;
 }
 
 .has-jankx-responsive-wrapper {
@@ -54,23 +53,6 @@
 
     .has-jankx-responsive-wrapper.hide-on-mobile {
         display: none;
-    }
-}
-
-/* Child Order Support */
-.jankx-order-applied {
-    order: var(--jankx-order-desktop);
-}
-
-@media (max-width: 1024px) {
-    .jankx-order-applied {
-        order: var(--jankx-order-tablet, var(--jankx-order-desktop));
-    }
-}
-
-@media (max-width: 768px) {
-    .jankx-order-applied {
-        order: var(--jankx-order-mobile, var(--jankx-order-tablet, var(--jankx-order-desktop)));
     }
 }
 
