@@ -6,6 +6,7 @@ use Jankx\Extensions\AbstractExtension;
 use Jankx\Extensions\TaxonomyFeaturedImage\Services\TaxonomyImageService;
 use Jankx\Extensions\TaxonomyFeaturedImage\Admin\ThemeOptionsIntegration;
 use Jankx\Extensions\TaxonomyFeaturedImage\Admin\TaxonomyImageAdmin;
+use Jankx\Extensions\TaxonomyFeaturedImage\Block\TermFeaturedImageBlock;
 use Jankx\Extensions\TaxonomyFeaturedImage\Helpers\TaxonomyImageHelper;
 
 /**
@@ -77,5 +78,8 @@ class TaxonomyFeaturedImageExtension extends AbstractExtension
         // hooks register early so filters are applied BEFORE OptionFramework reads config
         $this->optionsIntegration->register();
         $this->admin->register();
+
+        // Register Gutenberg blocks (term featured image).
+        add_action('init', [TermFeaturedImageBlock::instance(), 'register']);
     }
 }

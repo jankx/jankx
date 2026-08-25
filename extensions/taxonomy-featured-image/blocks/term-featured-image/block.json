@@ -1,0 +1,81 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "jankx/term-featured-image",
+    "version": "1.0.0",
+    "title": "Term Featured Image",
+    "category": "jankx",
+    "icon": "format-image",
+    "description": "Hiển thị ảnh đại diện (featured image) của taxonomy term. Hoạt động trong trang archive, template taxonomy và bên trong Dynamic Term Template.",
+    "keywords": [
+        "term",
+        "taxonomy",
+        "featured image",
+        "thumbnail",
+        "category image"
+    ],
+    "textdomain": "jankx",
+    "usesContext": [
+        "termId",
+        "taxonomy"
+    ],
+    "attributes": {
+        "termId": {
+            "type": "number",
+            "default": 0
+        },
+        "taxonomy": {
+            "type": "string",
+            "default": ""
+        },
+        "imageSize": {
+            "type": "string",
+            "default": "large"
+        },
+        "aspectRatio": {
+            "type": "string",
+            "default": ""
+        },
+        "objectFit": {
+            "type": "string",
+            "default": "cover"
+        },
+        "isLink": {
+            "type": "boolean",
+            "default": true
+        },
+        "linkTarget": {
+            "type": "string",
+            "default": "_self"
+        },
+        "rel": {
+            "type": "string",
+            "default": ""
+        },
+        "showPlaceholder": {
+            "type": "boolean",
+            "default": false
+        }
+    },
+    "supports": {
+        "anchor": true,
+        "align": [ "wide", "full" ],
+        "spacing": {
+            "margin": true,
+            "padding": true,
+            "__experimentalDefaultControls": {
+                "margin": true,
+                "padding": true
+            }
+        },
+        "__experimentalBorder": {
+            "radius": true,
+            "__experimentalDefaultControls": {
+                "radius": true
+            }
+        },
+        "html": false
+    },
+    "editorScript": "file:../../dist/term-featured-image/index.js",
+    "style": "file:../../dist/style-term-featured-image.css"
+}
