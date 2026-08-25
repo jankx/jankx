@@ -9,6 +9,9 @@ import {
     FormTokenField,
     BaseControl,
     Spinner,
+    UnitControl,
+    Button,
+    ButtonGroup,
 } from '@wordpress/components';
 import { useSelect } from '@wordpress/data';
 import { store as coreStore } from '@wordpress/core-data';
@@ -397,6 +400,46 @@ export default function Edit({ attributes, setAttributes }: EditProps) {
                         min={0}
                         max={100}
                     />
+                    {/* Responsive Min Height */}
+                    {(() => {
+                        const minHeightDevice = useState<'desktop' | 'tablet' | 'mobile'>('desktop');
+                        const minHeightValues = attributes.minHeight || { desktop: '', tablet: '', mobile: '' };
+                        const units = [
+                            { value: 'px', label: 'px' },
+                            { value: 'vh', label: 'vh' },
+                            { value: '%', label: '%' },
+                        ];
+                        return (
+                            <div style={{ marginBottom: '16px' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
+                                    <label style={{ fontSize: '13px', fontWeight: '500' }}>{__('Min Height', 'jankx')}</label>
+                                    <ButtonGroup>
+                                        {(['desktop', 'tablet', 'mobile'] as const).map((device) => (
+                                            <Button
+                                                key={device}
+                                                isPressed={minHeightDevice[0] === device}
+                                                onClick={() => minHeightDevice[1](device)}
+                                                variant={minHeightDevice[0] === device ? 'primary' : 'secondary'}
+                                                size="small"
+                                                title={device.charAt(0).toUpperCase() + device.slice(1)}
+                                            >
+                                                {device === 'desktop' ? '🖥️' : '📱'}
+                                            </Button>
+                                        ))}
+                                    </ButtonGroup>
+                                </div>
+                                <UnitControl
+                                    value={minHeightValues[minHeightDevice[0]] || ''}
+                                    onChange={(value) => setAttr('minHeight', {
+                                        ...minHeightValues,
+                                        [minHeightDevice[0]]: value
+                                    })}
+                                    units={units}
+                                    help={__('Set minimum height for the wrapper', 'jankx')}
+                                />
+                            </div>
+                        );
+                    })()}
 
                     {isCarousel && (
                         <>

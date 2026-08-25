@@ -316,6 +316,20 @@
 .wp-block-jankx-dynamic-data-layout.has-background .post-type-layout-list {
   background: inherit;
 }
+
+.wp-block-jankx-dynamic-term-layout {
+  min-height: var(--min-height-desktop, auto);
+}
+@media (max-width: 1024px) {
+  .wp-block-jankx-dynamic-term-layout {
+    min-height: var(--min-height-tablet, var(--min-height-desktop, auto));
+  }
+}
+@media (max-width: 768px) {
+  .wp-block-jankx-dynamic-term-layout {
+    min-height: var(--min-height-mobile, var(--min-height-tablet, var(--min-height-desktop, auto)));
+  }
+}
 /*!*******************************************************************************************************************************************************************************************************!*\
   !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!./blocks/dynamic-term-layout/editor.scss ***!
   \*******************************************************************************************************************************************************************************************************/

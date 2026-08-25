@@ -90,7 +90,7 @@ class AdvancedButtonBlock extends Block
             $renderedButton = $this->renderFromScratch($attributes, $block, $triggerType);
         } else {
             // Content exists from JS save function, just apply PHP-specific processing
-            $renderedButton = $this->processExistingContent($buttonContent, $attributes, $block, $triggerType);
+            $renderedButton = $this->processExistingContent($buttonContent, $attributes, $block, $triggerType, $existingClasses);
         }
 
         // Render wrapper
@@ -164,9 +164,10 @@ class AdvancedButtonBlock extends Block
      * @param array $attributes Block attributes
      * @param \WP_Block|null $block Block instance
      * @param string $triggerType Trigger type
+     * @param array $existingClasses Existing wrapper classes
      * @return string Processed button HTML
      */
-    protected function processExistingContent(string $buttonContent, array $attributes, ?\WP_Block $block, string $triggerType): string
+    protected function processExistingContent(string $buttonContent, array $attributes, ?\WP_Block $block, string $triggerType, array $existingClasses = []): string
     {
         // Inject inner blocks if missing
         if ($block && !ContentExtractor::hasInnerBlocks($buttonContent)) {
@@ -216,7 +217,9 @@ class AdvancedButtonBlock extends Block
         }
 
         // For link and button, just apply styling to existing content
-        $existingClasses = ContentExtractor::extractWrapperClasses($buttonContent);
+        if (empty($existingClasses)) {
+            $existingClasses = ContentExtractor::extractWrapperClasses($buttonContent);
+        }
         return $this->applyStyling($buttonContent, $attributes, $existingClasses);
     }
 

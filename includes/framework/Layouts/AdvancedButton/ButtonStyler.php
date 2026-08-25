@@ -22,14 +22,26 @@ class ButtonStyler
         );
     }
 
-    public static function isOutlineMode(array $classes): bool
+    public static function isOutlineMode(array $classes, array $attributes = []): bool
     {
-        return in_array('is-style-outline', $classes);
+        if (in_array('is-style-outline', $classes)) {
+            return true;
+        }
+        if (!empty($attributes['className']) && strpos($attributes['className'], 'is-style-outline') !== false) {
+            return true;
+        }
+        return false;
     }
 
-    public static function isTextLinkMode(array $classes): bool
+    public static function isTextLinkMode(array $classes, array $attributes = []): bool
     {
-        return in_array('is-style-text-link', $classes);
+        if (in_array('is-style-text-link', $classes)) {
+            return true;
+        }
+        if (!empty($attributes['className']) && strpos($attributes['className'], 'is-style-text-link') !== false) {
+            return true;
+        }
+        return false;
     }
 
     public static function applyDefaultColors(
@@ -39,7 +51,13 @@ class ButtonStyler
         bool $hasBackgroundColor,
         bool $isTextLinkMode = false
     ): string {
-        if ($hasBackgroundColor || $isTextLinkMode) {
+        if ($isOutlineMode) {
+            // Strip any background color and contrast classes in outline mode
+            $content = preg_replace('/\bhas-[a-z0-9\-]+-background-color\s*/', '', $content);
+            $content = preg_replace('/\bhas-contrast-color\s*/', '', $content);
+        }
+
+        if (($hasBackgroundColor && !$isOutlineMode) || $isTextLinkMode) {
             return $content;
         }
 
@@ -51,6 +69,11 @@ class ButtonStyler
         $additionalClasses = $isOutlineMode
             ? 'has-primary-color is-default-colors'
             : 'has-primary-background-color has-contrast-color is-default-colors';
+
+        // Prevent duplicate class injection if already present
+        if ($isOutlineMode && strpos($buttonElement['class_attr'], 'has-primary-color') !== false) {
+            return $content;
+        }
 
         $newButtonClass = str_replace(
             'class="jankx-advanced-button__link',
@@ -129,7 +152,9 @@ class ButtonStyler
         $gradient = $attributes['gradient'] ?? null;
         $iconPosition = $attributes['iconPosition'] ?? 'left';
 
-        if ($backgroundColor && isset($backgroundColor['slug'])) {
+        $isOutline = self::isOutlineMode([], $attributes);
+
+        if ($backgroundColor && isset($backgroundColor['slug']) && !$isOutline) {
             $classes[] = "has-{$backgroundColor['slug']}-background-color";
         }
 
@@ -137,7 +162,7 @@ class ButtonStyler
             $classes[] = "has-{$textColor['slug']}-color";
         }
 
-        if ($gradient && isset($gradient['slug'])) {
+        if ($gradient && isset($gradient['slug']) && !$isOutline) {
             $classes[] = "has-{$gradient['slug']}-gradient-background";
         }
 

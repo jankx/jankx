@@ -301,11 +301,14 @@ export function Edit(props: EditProps) {
 		!attributes.style?.color?.text &&
 		!attributes.style?.color?.gradient;
 
+	// Check style variants
+	const isOutline = attributes.className?.includes('is-style-outline');
+	const isTextLink = attributes.className?.includes('is-style-text-link');
 
 	const buttonClasses = classnames('jankx-advanced-button__link', borderProps?.className, {
-		[`has-${backgroundColor?.slug}-background-color`]: backgroundColor?.slug,
+		[`has-${backgroundColor?.slug}-background-color`]: backgroundColor?.slug && !isOutline,
 		[`has-${textColor?.slug}-color`]: textColor?.slug,
-		'has-background': backgroundColor?.color,
+		'has-background': backgroundColor?.color && !isOutline,
 		'has-text-color': textColor?.color,
 		[`icon-position-${iconPosition}`]: hasInnerBlocks && iconPosition,
 		'is-default-colors': hasNoColorSettings,
@@ -319,15 +322,7 @@ export function Edit(props: EditProps) {
 		...borderProps?.style,
 	};
 
-	// Apply preset colors if set
-	if (backgroundColor?.color) {
-		buttonStyles.backgroundColor = backgroundColor.color;
-	}
-	if (textColor?.color) {
-		buttonStyles.color = textColor.color;
-	}
-
-	// Apply custom colors from style.color if set (overrides preset colors)
+	// Apply custom colors from style.color if set (these have highest priority)
 	if (attributes.style?.color?.text) {
 		buttonStyles.color = attributes.style.color.text;
 	}
@@ -342,8 +337,25 @@ export function Edit(props: EditProps) {
 		buttonStyles.backgroundColor = attributes.style.color.background;
 	}
 
-	// For Text Link style, we want to force transparency and remove padding in the editor preview
-	const isTextLink = attributes.className?.includes('is-style-text-link');
+	// Apply preset colors only if custom colors are not set
+	if (!attributes.style?.color?.text && textColor?.color) {
+		buttonStyles.color = textColor.color;
+	}
+	if (!attributes.style?.color?.background && !attributes.style?.color?.gradient && backgroundColor?.color) {
+		buttonStyles.backgroundColor = backgroundColor.color;
+	}
+
+	// For Outline style, force transparent background and apply border color
+	if (isOutline) {
+		delete buttonStyles.backgroundColor;
+		delete buttonStyles.background;
+		// Use text color for border color
+		if (buttonStyles.color) {
+			buttonStyles.borderColor = buttonStyles.color;
+		}
+	}
+
+	// For Text Link style, force transparency and remove padding
 	if (isTextLink) {
 		delete buttonStyles.backgroundColor;
 		delete buttonStyles.background;

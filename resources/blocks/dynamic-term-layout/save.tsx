@@ -42,6 +42,19 @@ export default function Save({ attributes }: SaveProps): JSX.Element {
         '--space-between': '16px',
     };
 
+    // Apply responsive minHeight as CSS variables
+    const minHeight = attrs.minHeight;
+    if (minHeight && typeof minHeight === 'object') {
+        if (minHeight.desktop) {
+            inlineStyle['--min-height-desktop'] = minHeight.desktop;
+            inlineStyle.minHeight = minHeight.desktop;
+        }
+        if (minHeight.tablet) inlineStyle['--min-height-tablet'] = minHeight.tablet;
+        if (minHeight.mobile) inlineStyle['--min-height-mobile'] = minHeight.mobile;
+    } else if (typeof minHeight === 'string' && minHeight) {
+        inlineStyle.minHeight = minHeight;
+    }
+
     // Add carousel specific styles if layout is carousel
     if (layout === 'carousel') {
         inlineStyle['--slides-per-view'] = columns;

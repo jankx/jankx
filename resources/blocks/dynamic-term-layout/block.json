@@ -292,6 +292,14 @@
         "name": "jankx/dynamic-term-template",
         "attributes": {}
       }
-    ]
+    ],
+    "minHeight": {
+      "type": "object",
+      "default": {
+        "desktop": "",
+        "tablet": "",
+        "mobile": ""
+      }
+    }
   }
 }

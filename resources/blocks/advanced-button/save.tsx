@@ -110,8 +110,12 @@ export default function Save(props: SaveProps) {
 		!props.attributes.style?.color?.text &&
 		!props.attributes.style?.color?.gradient;
 
+	// Check style variants
+	const isOutline = props.attributes.className?.includes('is-style-outline');
+	const isTextLink = props.attributes.className?.includes('is-style-text-link');
+
 	const buttonClasses = classnames('jankx-advanced-button__link', borderProps?.className, {
-		[`has-${backgroundColor}-background-color`]: backgroundColor,
+		[`has-${backgroundColor}-background-color`]: backgroundColor && !isOutline,
 		[`has-${textColor}-color`]: textColor,
 		[`has-${gradient}-gradient-background`]: gradient,
 		[`icon-position-${iconPosition}`]: iconPosition,
@@ -121,6 +125,8 @@ export default function Save(props: SaveProps) {
 		// Add classes for custom colors (WordPress may add these automatically)
 		'has-background': props.attributes.style?.color?.background || props.attributes.style?.color?.gradient,
 		'has-text-color': props.attributes.style?.color?.text,
+		// Modal trigger class
+		'jankx-button-modal-trigger': triggerType === 'modal',
 	});
 
 	// Build button styles - include custom background/text colors from style.color
@@ -132,12 +138,7 @@ export default function Save(props: SaveProps) {
 	// Copy spacing (padding, margin) from blockProps if needed
 	// Border radius is already included from borderProps.style above
 
-	// Apply custom background color from style.color.background if set
-	if (props.attributes.style?.color?.background) {
-		buttonStyles.backgroundColor = props.attributes.style.color.background;
-	}
-
-	// Apply custom text color from style.color.text if set
+	// Apply custom text color from style.color.text if set (highest priority)
 	if (props.attributes.style?.color?.text) {
 		buttonStyles.color = props.attributes.style.color.text;
 	}
@@ -147,10 +148,22 @@ export default function Save(props: SaveProps) {
 		buttonStyles.background = props.attributes.style.color.gradient;
 		// Remove backgroundColor when gradient is set
 		delete buttonStyles.backgroundColor;
+	} else if (props.attributes.style?.color?.background) {
+		// Only apply background color if no gradient is set
+		buttonStyles.backgroundColor = props.attributes.style.color.background;
+	}
+
+	// For Outline style, force transparent background and apply border color
+	if (isOutline) {
+		delete buttonStyles.backgroundColor;
+		delete buttonStyles.background;
+		// Use text color for border color
+		if (buttonStyles.color) {
+			buttonStyles.borderColor = buttonStyles.color;
+		}
 	}
 
 	// For Text Link style, force transparency and remove padding
-	const isTextLink = props.attributes.className?.includes('is-style-text-link');
 	if (isTextLink) {
 		delete buttonStyles.backgroundColor;
 		delete buttonStyles.background;
@@ -265,84 +278,60 @@ export default function Save(props: SaveProps) {
 			if (showForPostType) {
 				modalDataAttrs['data-show-for-post-type'] = showForPostType;
 			}
+			if (hoverAnimation !== 'none') {
+				modalDataAttrs['data-hover-ani'] = hoverAnimation;
+			}
+			if (unhoverAnimation !== 'none') {
+				modalDataAttrs['data-unhover-ani'] = unhoverAnimation;
+			}
 
 			// Add share data attributes if enabled
-			// These will be read by the modal's view.js when triggered
 			if (modalShareObjectId) {
 				modalDataAttrs['data-share-object-id'] = 'true';
-				modalDataAttrs['data-current-object-id'] = '{{CURRENT_POST_ID}}';
 			}
 			if (modalSharePostTitle) {
 				modalDataAttrs['data-share-post-title'] = 'true';
-				modalDataAttrs['data-current-post-title'] = '{{CURRENT_POST_TITLE}}';
 			}
 			if (modalShareCurrentUrl) {
 				modalDataAttrs['data-share-current-url'] = 'true';
-				modalDataAttrs['data-current-url'] = '{{CURRENT_POST_URL}}';
 			}
 			if (modalShareFeaturedImageId) {
 				modalDataAttrs['data-share-featured-image-id'] = 'true';
-				modalDataAttrs['data-current-featured-image-id'] = '{{CURRENT_FEATURED_IMAGE_ID}}';
 			}
 			if (modalShareFeaturedImageUrl) {
 				modalDataAttrs['data-share-featured-image-url'] = 'true';
-				modalDataAttrs['data-current-featured-image-url'] = '{{CURRENT_FEATURED_IMAGE_URL}}';
+				modalDataAttrs['data-featured-image-size'] = props.attributes.modalFeaturedImageSize || 'full';
 			}
 
-			// Add custom form data
-			if (formData && formData.length > 0) {
-				formData.forEach((item) => {
-					if (item.key && item.value) {
-						modalDataAttrs[`data-form-${item.key}`] = item.value;
-					}
-				});
-			}
-
-			// Add form data mappings (as JSON payload)
-			if (Array.isArray(formMappings) && formMappings.length > 0) {
-				try {
-					modalDataAttrs['data-form-mappings'] = JSON.stringify(formMappings);
-				} catch (e) {
-					// ignore JSON errors silently
-				}
+			// Add form mapping data if exists
+			if (formMappings && formMappings.length > 0) {
+				modalDataAttrs['data-form-mappings'] = JSON.stringify(formMappings);
 			}
 
 			buttonElement = (
 				<button
-					className={buttonClasses + (modalId ? ' jankx-button-modal-trigger' : '')}
+					className={buttonClasses}
 					type="button"
-					{...modalDataAttrs}
 					style={buttonStyles}
 					title={title}
-					data-hover-ani={hoverAnimation !== 'none' ? hoverAnimation : undefined}
-					data-unhover-ani={unhoverAnimation !== 'none' ? unhoverAnimation : undefined}
+					{...modalDataAttrs}
 				>
 					{textMarkup}
 				</button>
 			);
 			break;
+	}
 
-		default:
-			buttonElement = (
-				<a
-					className={buttonClasses}
-					href="#"
-					style={buttonStyles}
-					title={title}
-					data-trigger-type="link"
-					data-hover-ani={hoverAnimation !== 'none' ? hoverAnimation : undefined}
-					data-unhover-ani={unhoverAnimation !== 'none' ? unhoverAnimation : undefined}
-				>
-					{textMarkup}
-				</a>
-			);
+	// Render wrapper with icon outside if enabled
+	if (!renderIconOutside) {
+		return <div {...blockProps}>{buttonElement}</div>;
 	}
 
 	return (
 		<div {...blockProps}>
-			{renderIconOutside && (iconPosition === 'left' || iconPosition === 'top') && iconMarkup}
+			{iconPosition === 'left' || iconPosition === 'top' ? iconMarkup : null}
 			{buttonElement}
-			{renderIconOutside && (iconPosition === 'right' || iconPosition === 'bottom') && iconMarkup}
+			{iconPosition === 'right' || iconPosition === 'bottom' ? iconMarkup : null}
 		</div>
 	);
 }

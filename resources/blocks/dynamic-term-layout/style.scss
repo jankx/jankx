@@ -324,3 +324,16 @@
         background: inherit;
     }
 }
+
+// Responsive Min Height
+.wp-block-jankx-dynamic-term-layout {
+    min-height: var(--min-height-desktop, auto);
+
+    @media (max-width: 1024px) {
+        min-height: var(--min-height-tablet, var(--min-height-desktop, auto));
+    }
+
+    @media (max-width: 768px) {
+        min-height: var(--min-height-mobile, var(--min-height-tablet, var(--min-height-desktop, auto)));
+    }
+}

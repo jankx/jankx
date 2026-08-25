@@ -427,6 +427,14 @@
     "carouselPeek": {
       "type": "number",
       "default": 0
+    },
+    "minHeight": {
+      "type": "object",
+      "default": {
+        "desktop": "",
+        "tablet": "",
+        "mobile": ""
+      }
     }
   }
 }

@@ -8,6 +8,51 @@
 	z-index: 99999;
 }
 
+// Outline style variant in editor
+.wp-block-jankx-advanced-button.is-style-outline {
+	.jankx-advanced-button__link {
+		// Force transparent background for outline style
+		background-color: transparent !important;
+		background: transparent !important;
+
+		// Set border styling
+		border-width: 2px;
+		border-style: solid;
+
+		// Fallback text/border color if none set - only apply when no inline styles are present
+		&.is-default-colors:not([style*="color"]) {
+			color: var(--wp--preset--color--primary, #503AA8);
+			border-color: var(--wp--preset--color--primary, #503AA8);
+		}
+
+		// If inline color is set, use it for border
+		&[style*="color"] {
+			border-color: currentColor;
+		}
+	}
+
+	// Hover state for Outline in editor
+	&:hover .jankx-advanced-button__link {
+		background-color: var(--wp--preset--color--primary, #503AA8);
+		color: var(--wp--preset--color--base, #fff);
+		border-color: transparent;
+	}
+}
+
+// Text Link style variant in editor
+.wp-block-jankx-advanced-button.is-style-text-link {
+	.jankx-advanced-button__link {
+		background-color: transparent !important;
+		background: transparent !important;
+		border: none !important;
+		padding: 0 !important;
+
+		&.is-default-colors:not([style*="color"]) {
+			color: var(--wp--preset--color--primary, #503AA8);
+		}
+	}
+}
+
 // Text alignment support in editor - just center content
 .wp-block-jankx-advanced-button {
 	&.has-text-align-left .jankx-advanced-button__link {

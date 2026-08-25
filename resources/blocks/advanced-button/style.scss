@@ -34,8 +34,8 @@
 	&:not(.is-style-outline):not(.is-style-text-link) {
 		.jankx-advanced-button__link {
 
-			// Fallback colors if none set
-			&.is-default-colors {
+			// Fallback colors if none set - only apply when no inline styles are present
+			&.is-default-colors:not([style*="background"]):not([style*="color"]) {
 				background-color: var(--wp--preset--color--primary, #503AA8);
 				color: var(--wp--preset--color--base, #fff);
 			}
@@ -45,15 +45,23 @@
 	// Outline style variant
 	&.is-style-outline {
 		.jankx-advanced-button__link {
-			background-color: transparent;
-			border-color: currentColor;
+			// Force transparent background for outline style
+			background-color: transparent !important;
+			background: transparent !important;
+
+			// Set border styling
 			border-width: 2px;
 			border-style: solid;
 
-			// Fallback text/border color if none set
-			&.is-default-colors {
+			// Fallback text/border color if none set - only apply when no inline styles are present
+			&.is-default-colors:not([style*="color"]) {
 				color: var(--wp--preset--color--primary, #503AA8);
 				border-color: var(--wp--preset--color--primary, #503AA8);
+			}
+
+			// If inline color is set, use it for border
+			&[style*="color"] {
+				border-color: currentColor;
 			}
 		}
 

@@ -23,19 +23,22 @@
   border-style: solid;
   border-color: transparent;
 }
-.wp-block-jankx-advanced-button:not(.is-style-outline):not(.is-style-text-link) .jankx-advanced-button__link.is-default-colors {
+.wp-block-jankx-advanced-button:not(.is-style-outline):not(.is-style-text-link) .jankx-advanced-button__link.is-default-colors:not([style*=background]):not([style*=color]) {
   background-color: var(--wp--preset--color--primary, #503AA8);
   color: var(--wp--preset--color--base, #fff);
 }
 .wp-block-jankx-advanced-button.is-style-outline .jankx-advanced-button__link {
-  background-color: transparent;
-  border-color: currentColor;
+  background-color: transparent !important;
+  background: transparent !important;
   border-width: 2px;
   border-style: solid;
 }
-.wp-block-jankx-advanced-button.is-style-outline .jankx-advanced-button__link.is-default-colors {
+.wp-block-jankx-advanced-button.is-style-outline .jankx-advanced-button__link.is-default-colors:not([style*=color]) {
   color: var(--wp--preset--color--primary, #503AA8);
   border-color: var(--wp--preset--color--primary, #503AA8);
+}
+.wp-block-jankx-advanced-button.is-style-outline .jankx-advanced-button__link[style*=color] {
+  border-color: currentColor;
 }
 .wp-block-jankx-advanced-button.is-style-outline:hover .jankx-advanced-button__link {
   background-color: var(--wp--preset--color--primary, #503AA8);
