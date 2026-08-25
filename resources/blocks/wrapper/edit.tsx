@@ -7,7 +7,6 @@ import {
 	ToggleControl,
 	TextControl,
 	Button,
-	ButtonGroup,
 	Tooltip,
 } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
@@ -70,7 +69,7 @@ function DeviceSwitcher({ value, onChange }: { value: string; onChange: (d: stri
 		{ name: 'mobile', label: 'Mobile' },
 	];
 	return (
-		<ButtonGroup style={{ display: 'flex', gap: 2, marginBottom: 12 }}>
+		<div style={{ display: 'flex', gap: 2, marginBottom: 12 }}>
 			{devices.map((d) => (
 				<Tooltip key={d.name} text={d.label}>
 					<Button
@@ -82,7 +81,7 @@ function DeviceSwitcher({ value, onChange }: { value: string; onChange: (d: stri
 					</Button>
 				</Tooltip>
 			))}
-		</ButtonGroup>
+		</div>
 	);
 }
 

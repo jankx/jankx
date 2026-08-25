@@ -52,7 +52,6 @@ export default function Save({ attributes }: SaveProps): JSX.Element {
     if (minHeight && typeof minHeight === 'object') {
         if (minHeight.desktop) {
             inlineStyle['--min-height-desktop'] = minHeight.desktop;
-            inlineStyle.minHeight = minHeight.desktop;
         }
         if (minHeight.tablet) inlineStyle['--min-height-tablet'] = minHeight.tablet;
         if (minHeight.mobile) inlineStyle['--min-height-mobile'] = minHeight.mobile;

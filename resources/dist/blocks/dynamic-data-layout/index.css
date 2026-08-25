@@ -8,6 +8,19 @@
  * Nhiệm vụ: Layout của toàn bộ data (wrapper, columns, grid structure)
  * Layout của từng item được xử lý bởi dynamic-data-template block
  */
+.wp-block-jankx-dynamic-data-layout {
+  min-height: var(--min-height-mobile, var(--min-height-desktop, auto));
+}
+@media (min-width: 768px) {
+  .wp-block-jankx-dynamic-data-layout {
+    min-height: var(--min-height-tablet, var(--min-height-desktop, auto));
+  }
+}
+@media (min-width: 1024px) {
+  .wp-block-jankx-dynamic-data-layout {
+    min-height: var(--min-height-desktop, auto);
+  }
+}
 .wp-block-jankx-dynamic-data-layout[tagName=ul], .wp-block-jankx-dynamic-data-layout.is-style-list, .wp-block-jankx-dynamic-data-layout:where(ul) {
   list-style: none;
   margin: 0;

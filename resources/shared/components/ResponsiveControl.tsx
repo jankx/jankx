@@ -1,5 +1,5 @@
 import { __ } from '@wordpress/i18n';
-import { ButtonGroup, Button, RangeControl } from '@wordpress/components';
+import { Button, RangeControl } from '@wordpress/components';
 import { useState } from '@wordpress/element';
 
 export interface ResponsiveValue {
@@ -63,7 +63,7 @@ export default function ResponsiveControl({
                 }}>
                     {label}
                 </label>
-                <ButtonGroup>
+                <div style={{ display: 'flex', gap: '2px' }}>
                     <Button
                         isPressed={selectedDevice === 'ultrawide'}
                         onClick={() => setSelectedDevice('ultrawide')}
@@ -100,7 +100,7 @@ export default function ResponsiveControl({
                     >
                         📱
                     </Button>
-                </ButtonGroup>
+                </div>
             </div>
 
             <RangeControl

@@ -18,7 +18,6 @@ import {
     RangeControl,
     ColorPicker,
     Button,
-    ButtonGroup,
     __experimentalBoxControl as BoxControl
 } from '@wordpress/components';
 import {

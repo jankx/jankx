@@ -10,7 +10,6 @@ import {
     FormTokenField,
     Button,
     BaseControl,
-    UnitControl,
 } from '@wordpress/components';
 import { useSelect } from '@wordpress/data';
 import { useCallback, useEffect, useState, useMemo, useRef } from '@wordpress/element';
@@ -685,6 +684,13 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
         '--slides-per-view': (columns || 1) + ((attributes.carouselPeek || 0) / 100),
     } as CSSProperties;
 
+    const editorMinHeight = (attributes as any).minHeight;
+    if (editorMinHeight && typeof editorMinHeight === 'object') {
+        if (editorMinHeight.desktop) editorStyle.minHeight = editorMinHeight.desktop;
+        if (editorMinHeight.tablet) (editorStyle as any)['--min-height-tablet'] = editorMinHeight.tablet;
+        if (editorMinHeight.mobile) (editorStyle as any)['--min-height-mobile'] = editorMinHeight.mobile;
+    }
+
     if (styleColor) {
         const bg = typeof styleColor.background === 'object' ? styleColor.background?.color : styleColor.background;
         const text = typeof styleColor.text === 'object' ? styleColor.text?.color : styleColor.text;
@@ -1196,14 +1202,37 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                                         ))}
                                     </div>
                                 </div>
-                                <UnitControl
-                                    value={minHeightValues[minHeightDevice] || ''}
-                                    onChange={(value: string | undefined) => setAttributes({
-                                        minHeight: { ...minHeightValues, [minHeightDevice]: value }
-                                    } as any)}
-                                    units={units}
-                                    help={__('Set minimum height for the wrapper', 'jankx')}
-                                />
+                                {(() => {
+                                    const value = minHeightValues[minHeightDevice] || '';
+                                    const match = String(value).match(/^([\d.]+)(px|vh|%)?$/);
+                                    const amount = match?.[1] || '';
+                                    const unit = match?.[2] || 'px';
+                                    const updateMinHeight = (nextAmount: string, nextUnit = unit) => {
+                                        const nextValue = nextAmount ? `${nextAmount}${nextUnit}` : '';
+                                        setAttributes({
+                                            minHeight: { ...minHeightValues, [minHeightDevice]: nextValue }
+                                        } as any);
+                                    };
+
+                                    return (
+                                        <div style={{ display: 'flex', gap: '8px' }}>
+                                            <TextControl
+                                                label={__('Value', 'jankx')}
+                                                type="number"
+                                                value={amount}
+                                                onChange={(nextAmount) => updateMinHeight(nextAmount)}
+                                                min={0}
+                                                help={__('Set minimum height for the wrapper', 'jankx')}
+                                            />
+                                            <SelectControl
+                                                label={__('Unit', 'jankx')}
+                                                value={unit}
+                                                options={units}
+                                                onChange={(nextUnit) => updateMinHeight(amount, nextUnit)}
+                                            />
+                                        </div>
+                                    );
+                                })()}
                             </div>
                         );
                     })()}

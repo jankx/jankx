@@ -5,6 +5,15 @@
  * Layout của từng item được xử lý bởi dynamic-data-template block
  */
 .wp-block-jankx-dynamic-data-layout {
+    min-height: var(--min-height-mobile, var(--min-height-desktop, auto));
+
+    @media (min-width: 768px) {
+        min-height: var(--min-height-tablet, var(--min-height-desktop, auto));
+    }
+
+    @media (min-width: 1024px) {
+        min-height: var(--min-height-desktop, auto);
+    }
 
     // Reset list styles if rendered as ul
     &[tagName="ul"],

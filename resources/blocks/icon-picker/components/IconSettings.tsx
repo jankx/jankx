@@ -6,7 +6,6 @@ import {
     ColorPicker,
     RangeControl,
     ToggleControl,
-    ButtonGroup,
     Button,
     Flex,
     FlexItem

@@ -17,7 +17,6 @@ import {
     RangeControl,
     TextControl,
     Button,
-    ButtonGroup,
     Tooltip,
 } from '@wordpress/components';
 import { useMemo, useEffect, useState, useRef, useCallback } from '@wordpress/element';
@@ -698,7 +697,7 @@ export default function Edit({
                 <PanelBody title={__('Template Settings', 'jankx')} initialOpen={true}>
                     <div className="jankx-layout-chooser">
                         <label className="jankx-layout-chooser__label">{__('Content Loop Layout', 'jankx')}</label>
-                        <ButtonGroup className="jankx-layout-chooser__group">
+                        <div className="jankx-layout-chooser__group" style={{display:'flex',gap:'2px'}}>
                             {[
                                 { label: __('Default', 'jankx'), value: 'default' },
                                 { label: __('Boxed', 'jankx'), value: 'boxed' },
@@ -717,7 +716,7 @@ export default function Edit({
                                     </Button>
                                 </Tooltip>
                             ))}
-                        </ButtonGroup>
+                        </div>
                         <p className="jankx-layout-chooser__help">{__('Choose the overall item layout style. Changing this will reset item content.', 'jankx')}</p>
                     </div>
 
