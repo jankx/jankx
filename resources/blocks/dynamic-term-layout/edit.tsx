@@ -11,16 +11,15 @@ import {
     Spinner,
     UnitControl,
     Button,
-    ButtonGroup,
 } from '@wordpress/components';
 import { useSelect } from '@wordpress/data';
 import { store as coreStore } from '@wordpress/core-data';
-import { useState, useMemo, useEffect } from '@wordpress/element';
+import { useState, useMemo, useEffect, useCallback } from '@wordpress/element';
 import type { CSSProperties } from 'react';
 import './style.scss';
 import './editor.scss';
 
-type TokenLike = string | { value: string; [key: string]: unknown };
+type TokenLike = string | { value: string;[key: string]: unknown };
 
 interface TaxonomyItem {
     slug: string;
@@ -166,6 +165,9 @@ export default function Edit({ attributes, setAttributes }: EditProps) {
     } = attributes as TermLayoutAttributes;
 
     const setAttr = (key: string, value: unknown) => setAttributes({ [key]: value } as Record<string, unknown>);
+
+    // Responsive Min Height state - must be at top level (Rules of Hooks)
+    const [minHeightDevice, setMinHeightDevice] = useState<'desktop' | 'tablet' | 'mobile'>('desktop');
 
     const publicTaxonomies: TaxonomyItem[] = Array.isArray((window as any).jankxPublicTaxonomies)
         ? (window as any).jankxPublicTaxonomies
@@ -402,8 +404,7 @@ export default function Edit({ attributes, setAttributes }: EditProps) {
                     />
                     {/* Responsive Min Height */}
                     {(() => {
-                        const minHeightDevice = useState<'desktop' | 'tablet' | 'mobile'>('desktop');
-                        const minHeightValues = attributes.minHeight || { desktop: '', tablet: '', mobile: '' };
+                        const minHeightValues = (attributes as any).minHeight || { desktop: '', tablet: '', mobile: '' };
                         const units = [
                             { value: 'px', label: 'px' },
                             { value: 'vh', label: 'vh' },
@@ -413,26 +414,26 @@ export default function Edit({ attributes, setAttributes }: EditProps) {
                             <div style={{ marginBottom: '16px' }}>
                                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
                                     <label style={{ fontSize: '13px', fontWeight: '500' }}>{__('Min Height', 'jankx')}</label>
-                                    <ButtonGroup>
+                                    <div style={{ display: 'flex', gap: '2px', background: '#f0f0f0', borderRadius: '4px', padding: '2px' }}>
                                         {(['desktop', 'tablet', 'mobile'] as const).map((device) => (
                                             <Button
                                                 key={device}
-                                                isPressed={minHeightDevice[0] === device}
-                                                onClick={() => minHeightDevice[1](device)}
-                                                variant={minHeightDevice[0] === device ? 'primary' : 'secondary'}
+                                                isPressed={minHeightDevice === device}
+                                                onClick={() => setMinHeightDevice(device)}
+                                                variant={minHeightDevice === device ? 'primary' : 'secondary'}
                                                 size="small"
                                                 title={device.charAt(0).toUpperCase() + device.slice(1)}
                                             >
                                                 {device === 'desktop' ? '🖥️' : '📱'}
                                             </Button>
                                         ))}
-                                    </ButtonGroup>
+                                    </div>
                                 </div>
                                 <UnitControl
-                                    value={minHeightValues[minHeightDevice[0]] || ''}
-                                    onChange={(value) => setAttr('minHeight', {
+                                    value={minHeightValues[minHeightDevice] || ''}
+                                    onChange={(value: string | undefined) => setAttr('minHeight', {
                                         ...minHeightValues,
-                                        [minHeightDevice[0]]: value
+                                        [minHeightDevice]: value
                                     })}
                                     units={units}
                                     help={__('Set minimum height for the wrapper', 'jankx')}

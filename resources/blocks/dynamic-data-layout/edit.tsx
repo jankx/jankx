@@ -1,6 +1,4 @@
 import { __ } from '@wordpress/i18n';
-import { addFilter } from '@wordpress/hooks';
-import { createHigherOrderComponent } from '@wordpress/compose';
 import { useBlockProps, InspectorControls, InnerBlocks, store as blockEditorStore } from '@wordpress/block-editor';
 import {
     PanelBody,
@@ -13,7 +11,6 @@ import {
     Button,
     BaseControl,
     UnitControl,
-    ButtonGroup,
 } from '@wordpress/components';
 import { useSelect } from '@wordpress/data';
 import { useCallback, useEffect, useState, useMemo, useRef } from '@wordpress/element';
@@ -140,7 +137,6 @@ interface WordPressWindow {
 }
 
 // Stable empty object reference to avoid new object every render
-const EMPTY_OBJECT = {};
 
 interface WordPressSelect {
     (store: 'core'): {
@@ -400,7 +396,6 @@ interface EditProps {
 }
 
 function Edit({ attributes, setAttributes, clientId }: EditProps) {
-
     const {
         queryPreset = 'custom',
         postType = 'post',
@@ -707,27 +702,26 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
         'data-layout': layout,
     } as any);
 
+    // Responsive Min Height state - must be at top level (Rules of Hooks)
+    const [minHeightDevice, setMinHeightDevice] = useState<'desktop' | 'tablet' | 'mobile'>('desktop');
+
     const resolvedResponsiveColumns = responsiveColumns && typeof responsiveColumns === 'object'
         ? responsiveColumns
         : { desktop: columns, tablet: columnsTablet, mobile: columnsMobile };
 
     useEffect(() => {
-        const expected = {
-            desktop: columns,
-            tablet: columnsTablet,
-            mobile: columnsMobile,
-        };
-
-        const needsUpdate =
-            !responsiveColumns ||
-            responsiveColumns.desktop !== expected.desktop ||
-            responsiveColumns.tablet !== expected.tablet ||
-            responsiveColumns.mobile !== expected.mobile;
-
-        if (needsUpdate) {
-            setAttributes({ responsiveColumns: expected });
-        }
-    }, [columns, columnsTablet, columnsMobile, responsiveColumns, setAttributes]);
+        // Sync responsiveColumns from individual column values.
+        // Intentionally omitting `responsiveColumns` from deps to avoid
+        // an infinite loop (writing responsiveColumns would retrigger this effect).
+        setAttributes({
+            responsiveColumns: {
+                desktop: columns,
+                tablet: columnsTablet,
+                mobile: columnsMobile,
+            },
+        } as any);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [columns, columnsTablet, columnsMobile]);
 
     // Get available post types
     const wpPostTypes = useSelect((select: WordPressSelect) => {
@@ -998,6 +992,12 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
         return helpText;
     }, [queryPreset, normalizedPresets]);
 
+    const blocks = useSelect(
+        (select) => select(blockEditorStore).getBlocks(clientId),
+        [clientId]
+    );
+    const hasTemplateBlock = blocks && blocks.length > 0;
+
     return (
         <>
             <InspectorControls group="settings">
@@ -1171,8 +1171,7 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                     />
                     {/* Responsive Min Height */}
                     {(() => {
-                        const minHeightDevice = useState<'desktop' | 'tablet' | 'mobile'>('desktop');
-                        const minHeightValues = attributes.minHeight || { desktop: '', tablet: '', mobile: '' };
+                        const minHeightValues = (attributes as any).minHeight || { desktop: '', tablet: '', mobile: '' };
                         const units = [
                             { value: 'px', label: 'px' },
                             { value: 'vh', label: 'vh' },
@@ -1182,26 +1181,26 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                             <div style={{ marginBottom: '16px' }}>
                                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
                                     <label style={{ fontSize: '13px', fontWeight: '500' }}>{__('Min Height', 'jankx')}</label>
-                                    <ButtonGroup>
+                                    <div style={{ display: 'flex', gap: '2px', background: '#f0f0f0', borderRadius: '4px', padding: '2px' }}>
                                         {(['desktop', 'tablet', 'mobile'] as const).map((device) => (
                                             <Button
                                                 key={device}
-                                                isPressed={minHeightDevice[0] === device}
-                                                onClick={() => minHeightDevice[1](device)}
-                                                variant={minHeightDevice[0] === device ? 'primary' : 'secondary'}
+                                                isPressed={minHeightDevice === device}
+                                                onClick={() => setMinHeightDevice(device)}
+                                                variant={minHeightDevice === device ? 'primary' : 'secondary'}
                                                 size="small"
                                                 title={device.charAt(0).toUpperCase() + device.slice(1)}
                                             >
                                                 {device === 'desktop' ? '🖥️' : '📱'}
                                             </Button>
                                         ))}
-                                    </ButtonGroup>
+                                    </div>
                                 </div>
                                 <UnitControl
-                                    value={minHeightValues[minHeightDevice[0]] || ''}
-                                    onChange={(value) => setAttributes({
-                                        minHeight: { ...minHeightValues, [minHeightDevice[0]]: value }
-                                    })}
+                                    value={minHeightValues[minHeightDevice] || ''}
+                                    onChange={(value: string | undefined) => setAttributes({
+                                        minHeight: { ...minHeightValues, [minHeightDevice]: value }
+                                    } as any)}
                                     units={units}
                                     help={__('Set minimum height for the wrapper', 'jankx')}
                                 />
@@ -1897,118 +1896,37 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
             </InspectorControls>
 
             <div {...blockProps}>
-                {/* Chỉ render wrapper, template block sẽ tự render items */}
-                {(() => {
-                    const blocks = useSelect(
-                        (select) => select(blockEditorStore).getBlocks(clientId),
-                        [clientId]
-                    );
-
-                    const hasTemplateBlock = blocks && blocks.length > 0;
-
-                    if (!hasTemplateBlock) {
-                        return (
-                            <div style={{
-                                padding: '1rem',
-                                border: '2px dashed #0073aa',
-                                borderRadius: '4px',
-                                backgroundColor: '#f0f6fc',
-                            }}>
-                                <div style={{
-                                    fontSize: '0.85rem',
-                                    color: '#0073aa',
-                                    marginBottom: '0.75rem',
-                                    fontWeight: '600',
-                                }}>
-                                    {__('Add Dynamic Data Template to define item layout', 'jankx')}
-                                </div>
-                                <InnerBlocks
-                                    allowedBlocks={['jankx/dynamic-data-template', 'core/heading']}
-                                    templateLock={false}
-                                    renderAppender={InnerBlocks.ButtonBlockAppender}
-                                />
-                            </div>
-                        );
-                    }
-
-                    return (
+                {!hasTemplateBlock ? (
+                    <div style={{
+                        padding: '1rem',
+                        border: '2px dashed #0073aa',
+                        borderRadius: '4px',
+                        backgroundColor: '#f0f6fc',
+                    }}>
+                        <div style={{
+                            fontSize: '0.85rem',
+                            color: '#0073aa',
+                            marginBottom: '0.75rem',
+                            fontWeight: '600',
+                        }}>
+                            {__('Add Dynamic Data Template to define item layout', 'jankx')}
+                        </div>
                         <InnerBlocks
                             allowedBlocks={['jankx/dynamic-data-template', 'core/heading']}
                             templateLock={false}
-                            renderAppender={InnerBlocks.DefaultBlockAppender}
+                            renderAppender={InnerBlocks.ButtonBlockAppender}
                         />
-                    );
-                })()}
+                    </div>
+                ) : (
+                    <InnerBlocks
+                        allowedBlocks={['jankx/dynamic-data-template', 'core/heading']}
+                        templateLock={false}
+                        renderAppender={InnerBlocks.DefaultBlockAppender}
+                    />
+                )}
             </div>
         </>
     );
 }
 
 export default Edit;
-
-// ---- Register jankxControls attribute ----
-addFilter(
-    'blocks.registerBlockType',
-    'jankx/gutenberg-controls/add-attributes',
-    (settings, name) => {
-        const newAttrs = {
-            ...settings.attributes,
-            jankxControls: {
-                type: 'object',
-                default: {},
-            },
-        };
-
-        return {
-            ...settings,
-            attributes: newAttrs,
-        };
-    }
-);
-
-// ---- Add Jankx controls inspector panel ----
-const withJankxControls = createHigherOrderComponent((BlockEdit) => {
-    return (props) => {
-        const { name, attributes, setAttributes, isSelected } = props;
-
-        const blockType = wp.blocks?.getBlockType?.(name);
-        const isJankxBlock = name.startsWith('jankx/');
-
-        // For non-Jankx blocks, skip adding responsive font-size
-        if (!isJankxBlock) {
-            return <BlockEdit {...props} />;
-        }
-
-        // Get current jankx controls values - stable reference
-        const jankxControls = useMemo(
-            () => attributes.jankxControls || EMPTY_OBJECT,
-            [attributes.jankxControls]
-        );
-
-        // Debug: track render count (remove in production)
-        // const renderCount = React.useRef(0);
-        // renderCount.current++;
-        // if (window.jankxDebug === undefined) window.jankxDebug = {};
-        // if (window.jankxDebug[name] === undefined) window.jankxDebug[name] = 0;
-        // window.jankxDebug[name]++;
-        // // eslint-disable-next-line no-console
-        // console.log(`[JankxControls] ${name} render #${window.jankxDebug[name]}`);
-
-        const blockConfig = window.jankxBlocks?.controls?.[name] || EMPTY_OBJECT;
-        const presets = window.jankxBlocks?.presets || [];
-        const categories = window.jankxBlocks?.categories || [];
-
-        // Get block configuration from window
-        // const supportsFontSize = blockType?.supports?.typography?.fontSize;
-
-        return (
-            <BlockEdit {...props} />
-        );
-    };
-}, 'withJankxControls');
-
-addFilter(
-    'editor.BlockEdit',
-    'jankx/gutenberg-controls/with-controls',
-    withJankxControls
-);
