@@ -1,4 +1,6 @@
 import { __ } from '@wordpress/i18n';
+import { addFilter } from '@wordpress/hooks';
+import { createHigherOrderComponent } from '@wordpress/compose';
 import { useBlockProps, InspectorControls, InnerBlocks, store as blockEditorStore } from '@wordpress/block-editor';
 import {
     PanelBody,
@@ -397,39 +399,6 @@ interface EditProps {
 
 function Edit({ attributes, setAttributes, clientId }: EditProps) {
 
-    // Fetch posts based on query attributes
-    const [isFetchingPosts, setIsFetchingPosts] = useState(false);
-    const fetchedPosts = useSelect(
-        (select) => select('core').getEntityRecords(
-            'post',
-            postType,
-            {
-                per_page: postsPerPage,
-                offset: offset,
-                s: keyword,
-                orderby: orderBy,
-                order: order,
-                include: postIn,
-                exclude: postNotIn,
-                author: authorIn.length > 0 ? authorIn[0] : undefined,
-                author_not_in: authorNotIn,
-                meta_query: metaQuery,
-                tax_query: taxQuery,
-                post_status: postStatus,
-                ignore_sticky_posts: includeStickyPosts ? undefined : true,
-            }
-        ),
-        [postType, postsPerPage, offset, keyword, orderBy, order, postIn, postNotIn, authorIn, authorNotIn, metaQuery, taxQuery, postStatus, includeStickyPosts]
-    );
-
-    // Trigger fetch when query changes (debounced)
-    useEffect(() => {
-        if (!isFetchingPosts) {
-            setIsFetchingPosts(true);
-            // Fetch is triggered by the useSelect above
-        }
-    }, [isFetchingPosts]);
-
     const {
         queryPreset = 'custom',
         postType = 'post',
@@ -497,6 +466,30 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
         excerptLength = 55,
         spaceBetween = 16,
     } = attributes;
+
+    // Fetch posts based on query attributes
+    const fetchedPosts = useSelect(
+        (select) => select('core').getEntityRecords(
+            'post',
+            postType,
+            {
+                per_page: postsPerPage,
+                offset: offset,
+                s: keyword,
+                orderby: orderBy,
+                order: order,
+                include: postIn,
+                exclude: postNotIn,
+                author: authorIn.length > 0 ? authorIn[0] : undefined,
+                author_not_in: authorNotIn,
+                meta_query: metaQuery,
+                tax_query: taxQuery,
+                post_status: postStatus,
+                ignore_sticky_posts: includeStickyPosts ? undefined : true,
+            }
+        ),
+        [postType, postsPerPage, offset, keyword, orderBy, order, postIn, postNotIn, authorIn, authorNotIn, metaQuery, taxQuery, postStatus, includeStickyPosts]
+    );
 
     // States for taxonomies and authors
     const [taxonomies, setTaxonomies] = useState<TaxonomyItem[]>([]);
