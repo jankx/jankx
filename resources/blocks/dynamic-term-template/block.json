@@ -351,6 +351,10 @@
       "default": "custom",
       "enum": ["custom", "featured"]
     },
+    "itemFeaturedImage": {
+      "type": "boolean",
+      "default": false
+    },
     "itemBgPosition": {
       "type": "string",
       "default": "center center"

@@ -16,7 +16,7 @@ export default class JankxCarousel {
         if (!carousel || carousel._carouselInitialized) return;
         this.carousel = carousel;
         this.options = options;
-        const container = carousel.querySelector('.carousel-container') || carousel.querySelector('.embla__viewport');
+        const container = carousel.querySelector('.carousel-container') || carousel.querySelector('.jankx-carousel-container') || carousel.querySelector('.embla__viewport');
 
         if (!container) return;
         this.container = container;

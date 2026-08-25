@@ -398,7 +398,7 @@ const buildTemplateItemClasses = (attributes: any): string => {
 
 const buildItemBackgroundStyle = (attributes: any): CSSProperties => {
     const styles: CSSProperties = {};
-    const { itemBgType, itemBgColor, itemBgImageUrl, itemBgImageSource, itemBgPosition, itemBgSize, itemBgRepeat } = attributes;
+    const { itemBgType, itemBgColor, itemBgImageUrl, itemBgImageSource, itemBgPosition, itemBgSize, itemBgRepeat, itemFeaturedImage } = attributes;
 
     if (!itemBgType || itemBgType === 'none') {
         return styles;

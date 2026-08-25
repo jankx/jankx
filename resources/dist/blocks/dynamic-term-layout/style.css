@@ -44,20 +44,28 @@
   overflow: hidden;
   width: 100%;
 }
-.wp-block-jankx-dynamic-term-layout.dynamic-term-layout--carousel .jankx-carousel-container, .wp-block-jankx-dynamic-term-layout.jankx-carousel .jankx-carousel-container {
+.wp-block-jankx-dynamic-term-layout.dynamic-term-layout--carousel .carousel-container,
+.wp-block-jankx-dynamic-term-layout.dynamic-term-layout--carousel .jankx-carousel-container, .wp-block-jankx-dynamic-term-layout.jankx-carousel .carousel-container,
+.wp-block-jankx-dynamic-term-layout.jankx-carousel .jankx-carousel-container {
   --slides-per-view: var(--carousel-columns-mobile, var(--columns-mobile, 1));
 }
 @media (min-width: 768px) {
-  .wp-block-jankx-dynamic-term-layout.dynamic-term-layout--carousel .jankx-carousel-container, .wp-block-jankx-dynamic-term-layout.jankx-carousel .jankx-carousel-container {
+  .wp-block-jankx-dynamic-term-layout.dynamic-term-layout--carousel .carousel-container,
+  .wp-block-jankx-dynamic-term-layout.dynamic-term-layout--carousel .jankx-carousel-container, .wp-block-jankx-dynamic-term-layout.jankx-carousel .carousel-container,
+  .wp-block-jankx-dynamic-term-layout.jankx-carousel .jankx-carousel-container {
     --slides-per-view: var(--carousel-columns-tablet, var(--columns-tablet, 2));
   }
 }
 @media (min-width: 1024px) {
-  .wp-block-jankx-dynamic-term-layout.dynamic-term-layout--carousel .jankx-carousel-container, .wp-block-jankx-dynamic-term-layout.jankx-carousel .jankx-carousel-container {
+  .wp-block-jankx-dynamic-term-layout.dynamic-term-layout--carousel .carousel-container,
+  .wp-block-jankx-dynamic-term-layout.dynamic-term-layout--carousel .jankx-carousel-container, .wp-block-jankx-dynamic-term-layout.jankx-carousel .carousel-container,
+  .wp-block-jankx-dynamic-term-layout.jankx-carousel .jankx-carousel-container {
     --slides-per-view: var(--carousel-columns, var(--columns-desktop, 4));
   }
 }
-.wp-block-jankx-dynamic-term-layout.dynamic-term-layout--carousel .jankx-carousel-container, .wp-block-jankx-dynamic-term-layout.jankx-carousel .jankx-carousel-container {
+.wp-block-jankx-dynamic-term-layout.dynamic-term-layout--carousel .carousel-container,
+.wp-block-jankx-dynamic-term-layout.dynamic-term-layout--carousel .jankx-carousel-container, .wp-block-jankx-dynamic-term-layout.jankx-carousel .carousel-container,
+.wp-block-jankx-dynamic-term-layout.jankx-carousel .jankx-carousel-container {
   display: flex;
   width: 100%;
   margin: 0;
@@ -66,11 +74,15 @@
   flex-wrap: nowrap;
   overflow: hidden;
 }
-.wp-block-jankx-dynamic-term-layout.dynamic-term-layout--carousel .jankx-carousel-container.embla__viewport, .wp-block-jankx-dynamic-term-layout.jankx-carousel .jankx-carousel-container.embla__viewport {
+.wp-block-jankx-dynamic-term-layout.dynamic-term-layout--carousel .carousel-container.embla__viewport,
+.wp-block-jankx-dynamic-term-layout.dynamic-term-layout--carousel .jankx-carousel-container.embla__viewport, .wp-block-jankx-dynamic-term-layout.jankx-carousel .carousel-container.embla__viewport,
+.wp-block-jankx-dynamic-term-layout.jankx-carousel .jankx-carousel-container.embla__viewport {
   overflow: hidden;
   width: 100%;
 }
-.wp-block-jankx-dynamic-term-layout.dynamic-term-layout--carousel .jankx-carousel-container .embla__container, .wp-block-jankx-dynamic-term-layout.jankx-carousel .jankx-carousel-container .embla__container {
+.wp-block-jankx-dynamic-term-layout.dynamic-term-layout--carousel .carousel-container .embla__container,
+.wp-block-jankx-dynamic-term-layout.dynamic-term-layout--carousel .jankx-carousel-container .embla__container, .wp-block-jankx-dynamic-term-layout.jankx-carousel .carousel-container .embla__container,
+.wp-block-jankx-dynamic-term-layout.jankx-carousel .jankx-carousel-container .embla__container {
   display: flex;
   width: 100%;
   margin: 0;
@@ -78,9 +90,15 @@
   list-style: none;
   flex-wrap: nowrap;
 }
+.wp-block-jankx-dynamic-term-layout.dynamic-term-layout--carousel .carousel-container .carousel-slide,
+.wp-block-jankx-dynamic-term-layout.dynamic-term-layout--carousel .carousel-container .embla__slide,
+.wp-block-jankx-dynamic-term-layout.dynamic-term-layout--carousel .carousel-container .wc-block-product,
 .wp-block-jankx-dynamic-term-layout.dynamic-term-layout--carousel .jankx-carousel-container .carousel-slide,
 .wp-block-jankx-dynamic-term-layout.dynamic-term-layout--carousel .jankx-carousel-container .embla__slide,
-.wp-block-jankx-dynamic-term-layout.dynamic-term-layout--carousel .jankx-carousel-container .wc-block-product, .wp-block-jankx-dynamic-term-layout.jankx-carousel .jankx-carousel-container .carousel-slide,
+.wp-block-jankx-dynamic-term-layout.dynamic-term-layout--carousel .jankx-carousel-container .wc-block-product, .wp-block-jankx-dynamic-term-layout.jankx-carousel .carousel-container .carousel-slide,
+.wp-block-jankx-dynamic-term-layout.jankx-carousel .carousel-container .embla__slide,
+.wp-block-jankx-dynamic-term-layout.jankx-carousel .carousel-container .wc-block-product,
+.wp-block-jankx-dynamic-term-layout.jankx-carousel .jankx-carousel-container .carousel-slide,
 .wp-block-jankx-dynamic-term-layout.jankx-carousel .jankx-carousel-container .embla__slide,
 .wp-block-jankx-dynamic-term-layout.jankx-carousel .jankx-carousel-container .wc-block-product {
   flex: 0 0 calc((100% - var(--peek-amount, 0%)) / var(--slides-per-view, 1));
@@ -92,9 +110,15 @@
   transform: translate3d(0, 0, 0);
   /* Ensure direct children take full width */
 }
+.wp-block-jankx-dynamic-term-layout.dynamic-term-layout--carousel .carousel-container .carousel-slide > *,
+.wp-block-jankx-dynamic-term-layout.dynamic-term-layout--carousel .carousel-container .embla__slide > *,
+.wp-block-jankx-dynamic-term-layout.dynamic-term-layout--carousel .carousel-container .wc-block-product > *,
 .wp-block-jankx-dynamic-term-layout.dynamic-term-layout--carousel .jankx-carousel-container .carousel-slide > *,
 .wp-block-jankx-dynamic-term-layout.dynamic-term-layout--carousel .jankx-carousel-container .embla__slide > *,
-.wp-block-jankx-dynamic-term-layout.dynamic-term-layout--carousel .jankx-carousel-container .wc-block-product > *, .wp-block-jankx-dynamic-term-layout.jankx-carousel .jankx-carousel-container .carousel-slide > *,
+.wp-block-jankx-dynamic-term-layout.dynamic-term-layout--carousel .jankx-carousel-container .wc-block-product > *, .wp-block-jankx-dynamic-term-layout.jankx-carousel .carousel-container .carousel-slide > *,
+.wp-block-jankx-dynamic-term-layout.jankx-carousel .carousel-container .embla__slide > *,
+.wp-block-jankx-dynamic-term-layout.jankx-carousel .carousel-container .wc-block-product > *,
+.wp-block-jankx-dynamic-term-layout.jankx-carousel .jankx-carousel-container .carousel-slide > *,
 .wp-block-jankx-dynamic-term-layout.jankx-carousel .jankx-carousel-container .embla__slide > *,
 .wp-block-jankx-dynamic-term-layout.jankx-carousel .jankx-carousel-container .wc-block-product > * {
   width: 100%;

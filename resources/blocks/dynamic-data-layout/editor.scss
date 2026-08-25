@@ -1,0 +1,118 @@
+/**
+ * Dynamic Data Layout Block - Editor Styles
+ * Specific styles for Gutenberg editor
+ */
+
+// Carousel navigation buttons in editor
+.wp-block-jankx-dynamic-data-layout.dynamic-data-layout--carousel .carousel-nav,
+.wp-block-jankx-dynamic-data-layout.dynamic-data-layout--carousel .embla__button,
+.wp-block-jankx-dynamic-data-layout.jankx-carousel .carousel-nav,
+.wp-block-jankx-dynamic-data-layout.jankx-carousel .embla__button {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid #e0e0e0;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 10;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    transition: all 0.2s ease;
+    color: #333;
+
+    &:hover {
+        background: rgba(255, 255, 255, 1);
+        transform: translateY(-50%) scale(1.05);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        border-color: #ccc;
+    }
+
+    &:active {
+        transform: translateY(-50%) scale(0.95);
+    }
+
+    &:disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+        pointer-events: none;
+    }
+
+    &.carousel-prev,
+    &.embla__button--prev {
+        left: 10px;
+    }
+
+    &.carousel-next,
+    &.embla__button--next {
+        right: 10px;
+    }
+
+    svg {
+        width: 20px;
+        height: 20px;
+        stroke-width: 2;
+    }
+}
+
+// Pagination dots in editor
+.wp-block-jankx-dynamic-data-layout.dynamic-data-layout--carousel .carousel-dots,
+.wp-block-jankx-dynamic-data-layout.dynamic-data-layout--carousel .embla__dots,
+.wp-block-jankx-dynamic-data-layout.jankx-carousel .carousel-dots,
+.wp-block-jankx-dynamic-data-layout.jankx-carousel .embla__dots {
+    display: flex;
+    justify-content: center;
+    padding: 15px 0;
+    gap: 8px;
+
+    .carousel-dot,
+    .embla__dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: #ccc;
+        border: none;
+        padding: 0;
+        cursor: pointer;
+        transition: all 0.2s ease;
+
+        &.is-active,
+        &.is-selected {
+            background: #333;
+            transform: scale(1.2);
+        }
+
+        &:hover {
+            background: #666;
+        }
+
+        &:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.2);
+        }
+    }
+}
+
+// Hide navigation when not needed
+.wp-block-jankx-dynamic-data-layout.dynamic-data-layout--carousel:not(.has-arrows) .carousel-nav,
+.wp-block-jankx-dynamic-data-layout.dynamic-data-layout--carousel:not(.has-arrows) .embla__button,
+.wp-block-jankx-dynamic-data-layout.jankx-carousel:not(.has-arrows) .carousel-nav,
+.wp-block-jankx-dynamic-data-layout.jankx-carousel:not(.has-arrows) .embla__button {
+    display: none;
+}
+
+.wp-block-jankx-dynamic-data-layout.dynamic-data-layout--carousel:not(.has-dots) .carousel-dots,
+.wp-block-jankx-dynamic-data-layout.dynamic-data-layout--carousel:not(.has-dots) .embla__dots,
+.wp-block-jankx-dynamic-data-layout.jankx-carousel:not(.has-dots) .carousel-dots,
+.wp-block-jankx-dynamic-data-layout.jankx-carousel:not(.has-dots) .embla__dots {
+    display: none;
+}
+
+// Ensure carousel container looks good in editor
+.wp-block-jankx-dynamic-data-layout .carousel-container {
+    min-height: 100px;
+}

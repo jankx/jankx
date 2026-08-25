@@ -26,6 +26,7 @@ export default function Save({ attributes }: SaveProps): JSX.Element {
             attr(attributes.itemBgType === 'image' && !!attributes.itemBgSize, 'data-item-bg-size', attributes.itemBgSize),
             attr(attributes.itemBgType === 'image' && !!attributes.itemBgRepeat, 'data-item-bg-repeat', attributes.itemBgRepeat),
             attr(!!attributes.itemBgOverlay, 'data-item-bg-overlay', attributes.itemBgOverlay),
+            attr(attributes.itemFeaturedImage, 'data-item-featured-image', attributes.itemFeaturedImage)
         )
     );
     return (

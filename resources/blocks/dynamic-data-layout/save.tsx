@@ -130,7 +130,7 @@ export default function Save({ attributes }: SaveProps): JSX.Element {
 
     return (
         <div {...blockProps}>
-            <div className={`jankx-carousel-container ${layout === 'carousel' ? 'is-carousel' : ''}`}>
+            <div className={`carousel-container ${layout === 'carousel' ? 'is-carousel' : ''}`}>
                 <InnerBlocks.Content />
             </div>
         </div>

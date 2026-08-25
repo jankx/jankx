@@ -54,6 +54,7 @@
         overflow: hidden;
         width: 100%;
 
+        .carousel-container,
         .jankx-carousel-container {
             // Override parent inline style for responsive behavior
             --slides-per-view: var(--carousel-columns-mobile, var(--columns-mobile, 1));
