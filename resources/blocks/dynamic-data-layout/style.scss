@@ -72,6 +72,22 @@
             padding: 0 0 20px;
             list-style: none;
             flex-wrap: nowrap;
+            overflow: hidden;
+
+            // Embla carousel structure
+            &.embla__viewport {
+                overflow: hidden;
+                width: 100%;
+            }
+
+            .embla__container {
+                display: flex;
+                width: 100%;
+                margin: 0;
+                padding: 0;
+                list-style: none;
+                flex-wrap: nowrap;
+            }
 
             // Shared structure for slides
             .carousel-slide,

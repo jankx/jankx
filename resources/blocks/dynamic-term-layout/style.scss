@@ -1,10 +1,10 @@
 /**
- * Dynamic Data Layout Block Styles
- * 
+ * Dynamic Term Layout Block Styles
+ *
  * Nhiệm vụ: Layout của toàn bộ data (wrapper, columns, grid structure)
- * Layout của từng item được xử lý bởi dynamic-data-template block
+ * Layout của từng item được xử lý bởi dynamic-term-template block
  */
-.wp-block-jankx-dynamic-data-layout {
+.wp-block-jankx-dynamic-term-layout {
 
     // Reset list styles if rendered as ul
     &[tagName="ul"],
@@ -16,8 +16,8 @@
     }
 
     // Grid và Card layout - columns được áp dụng cho container bên trong
-    &.dynamic-data-layout--grid,
-    &.dynamic-data-layout--card {
+    &.dynamic-term-layout--grid,
+    &.dynamic-term-layout--card {
 
         // CSS variables được truyền từ wrapper xuống container bên trong
         .post-type-layout-grid,
@@ -39,7 +39,7 @@
     }
 
     // List layout
-    &.dynamic-data-layout--list {
+    &.dynamic-term-layout--list {
         .post-type-layout-list {
             display: flex;
             flex-direction: column;
@@ -48,7 +48,7 @@
     }
 
     // Carousel layout
-    &.dynamic-data-layout--carousel,
+    &.dynamic-term-layout--carousel,
     &.jankx-carousel {
         position: relative;
         overflow: hidden;
@@ -72,6 +72,22 @@
             padding: 0 0 20px;
             list-style: none;
             flex-wrap: nowrap;
+            overflow: hidden;
+
+            // Embla carousel structure
+            &.embla__viewport {
+                overflow: hidden;
+                width: 100%;
+            }
+
+            .embla__container {
+                display: flex;
+                width: 100%;
+                margin: 0;
+                padding: 0;
+                list-style: none;
+                flex-wrap: nowrap;
+            }
 
             // Shared structure for slides
             .carousel-slide,
@@ -242,8 +258,8 @@
 }
 
 // Support cho post-type-layout-grid trực tiếp (không có wrapper)
-.post-type-layout-grid,
-.post-type-layout-card {
+.wp-block-jankx-dynamic-term-layout .post-type-layout-grid,
+.wp-block-jankx-dynamic-term-layout .post-type-layout-card {
     display: grid;
     gap: var(--wp--preset--spacing--medium, 1.5rem);
 
@@ -309,13 +325,13 @@
 }
 
 // Ensure color/background set on wrapper inheritance to child elements
-.wp-block-jankx-dynamic-data-layout.has-text-color .post-type-layout-grid,
-.wp-block-jankx-dynamic-data-layout.has-text-color .post-type-layout-card,
-.wp-block-jankx-dynamic-data-layout.has-text-color .post-type-layout-list {
+.wp-block-jankx-dynamic-term-layout.has-text-color .post-type-layout-grid,
+.wp-block-jankx-dynamic-term-layout.has-text-color .post-type-layout-card,
+.wp-block-jankx-dynamic-term-layout.has-text-color .post-type-layout-list {
     color: inherit;
 }
 
-.wp-block-jankx-dynamic-data-layout.has-background {
+.wp-block-jankx-dynamic-term-layout.has-background {
 
     /* background will be applied via inline style or preset background class */
     .post-type-layout-grid,

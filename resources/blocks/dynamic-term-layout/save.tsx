@@ -31,6 +31,11 @@ export default function Save({ attributes }: SaveProps): JSX.Element {
         textColorSlug ? `has-${textColorSlug}-color` : undefined,
         hasBackground ? 'has-background' : undefined,
         hasTextColor ? 'has-text-color' : undefined,
+        // Carousel specific classes
+        layout === 'carousel' ? 'jankx-carousel' : undefined,
+        layout === 'carousel' && attrs.showArrows !== false ? 'has-arrows' : undefined,
+        layout === 'carousel' && attrs.showDots !== false ? 'has-dots' : undefined,
+        layout === 'carousel' && attrs.autoplay ? 'has-autoplay' : undefined,
     ].filter(Boolean).join(' ');
 
     // Collect styles (CSS variables for columns + color styles from style.color)
@@ -59,6 +64,7 @@ export default function Save({ attributes }: SaveProps): JSX.Element {
     if (layout === 'carousel') {
         inlineStyle['--slides-per-view'] = columns;
         inlineStyle['--space-between'] = '16px';
+        inlineStyle['--peek-amount'] = `${attrs.carouselPeek || 0}%`;
     }
 
     if (styleColor) {
@@ -91,6 +97,9 @@ export default function Save({ attributes }: SaveProps): JSX.Element {
         dataAttributes['data-slides-per-view'] = columns;
         dataAttributes['data-space-between'] = '16';
         dataAttributes['data-loop'] = attributes.loop || false;
+        dataAttributes['data-peek-amount'] = attrs.carouselPeek || 0;
+        dataAttributes['data-show-arrows'] = attrs.showArrows !== false;
+        dataAttributes['data-show-dots'] = attrs.showDots !== false;
     }
 
     const blockProps = useBlockProps.save({ 
@@ -101,7 +110,7 @@ export default function Save({ attributes }: SaveProps): JSX.Element {
 
     return (
         <div {...blockProps}>
-            <div className={`carousel-container ${layout === 'carousel' ? 'is-carousel' : ''}`}>
+            <div className={`jankx-carousel-container ${layout === 'carousel' ? 'is-carousel' : ''}`}>
                 <InnerBlocks.Content />
             </div>
         </div>
