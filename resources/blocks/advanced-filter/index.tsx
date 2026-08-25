@@ -23,7 +23,7 @@ type FilterAttributes = {
     label?: string;
     enabled?: boolean;
     taxonomy?: string;
-    displayStyle?: 'buttons' | 'checkboxes' | 'dropdown' | 'select' | undefined;
+    displayStyle?: 'buttons' | 'checkboxes' | 'dropdown' | 'select' | 'tabs' | undefined;
     listingType?: 'ul' | 'ol' | 'none' | undefined;
     showCount?: boolean;
     showEmptyTerms?: boolean;
@@ -496,6 +496,7 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                                         options={[
                                             { label: __('Buttons', 'jankx'), value: 'buttons' },
                                             { label: __('Checkboxes', 'jankx'), value: 'checkboxes' },
+                                            { label: __('Tabs', 'jankx'), value: 'tabs' },
                                         ]}
                                         onChange={(value) => setAttributes({ displayStyle: value as FilterAttributes['displayStyle'] })}
                                     />
@@ -748,6 +749,7 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                                         options={[
                                             { label: __('Buttons', 'jankx'), value: 'buttons' },
                                             { label: __('Checkboxes', 'jankx'), value: 'checkboxes' },
+                                            { label: __('Tabs', 'jankx'), value: 'tabs' },
                                         ]}
                                         onChange={(value) => setAttributes({ displayStyle: value as FilterAttributes['displayStyle'] })}
                                     />

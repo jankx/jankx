@@ -37,6 +37,48 @@ class SmartTabBlock extends Block
     }
 
     /**
+     * Initialise block specific logic.
+     *
+     * @return void
+     */
+    public function init()
+    {
+        add_action('init', function () {
+            SmartTabTriggerRegistry::instance()->boot();
+        }, 50);
+
+        add_action('enqueue_block_editor_assets', [$this, 'enqueueEditorAssets']);
+    }
+
+    /**
+     * Localise trigger configuration for the block editor.
+     *
+     * @return void
+     */
+    public function enqueueEditorAssets(): void
+    {
+        SmartTabTriggerRegistry::instance()->boot();
+
+        $handle = 'jankx-smart-tab-editor-script';
+
+        if (!wp_script_is($handle, 'registered')) {
+            return;
+        }
+
+        wp_enqueue_script($handle);
+
+        $config = SmartTabTriggerRegistry::instance()->toEditorConfig([
+            'is_admin' => is_admin(),
+        ]);
+
+        wp_add_inline_script(
+            $handle,
+            'window.JankxSmartTabTriggers = ' . wp_json_encode(['items' => $config]) . ';',
+            'before'
+        );
+    }
+
+    /**
      * Render tab content after applying trigger logic.
      *
      * @param array $attributes

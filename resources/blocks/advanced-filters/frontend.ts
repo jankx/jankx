@@ -101,9 +101,12 @@ class AdvancedFilters {
     private setupEventListeners(): void {
         if (!this.container || !this.config) return;
 
-        // Taxonomy filters
+        // Taxonomy filters (buttons, checkboxes)
         this.container.querySelectorAll('.filter-taxonomy input, .filter-taxonomy .filter-option').forEach((element) => {
             if (element instanceof HTMLInputElement || element instanceof HTMLElement) {
+                // Skip tabs - they have their own handler
+                if (element.classList.contains('filter-tab')) return;
+
                 element.addEventListener('change', () => this.handleFilterChange());
                 if (element instanceof HTMLElement && element.classList.contains('filter-option')) {
                     element.addEventListener('click', (e) => {
@@ -154,6 +157,22 @@ class AdvancedFilters {
                     });
                 }
             }
+        });
+
+        // Tabs display style: click on tab activates it, single selection only
+        this.container.querySelectorAll('.display-tabs .filter-tab').forEach((tab) => {
+            tab.addEventListener('click', (e) => {
+                e.preventDefault();
+                const tabsContainer = tab.closest('.display-tabs');
+                if (!tabsContainer) return;
+
+                // Remove active from all tabs in this group
+                tabsContainer.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+                // Add active to clicked tab
+                tab.classList.add('active');
+
+                this.handleFilterChange();
+            });
         });
 
         // Meta filters

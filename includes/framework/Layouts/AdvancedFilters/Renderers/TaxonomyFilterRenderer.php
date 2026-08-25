@@ -174,6 +174,26 @@ class TaxonomyFilterRenderer extends BaseFilterRenderer
      */
     protected function renderOptions(array $terms, string $display_style, string $listing_type, bool $show_count, string $input_type, string $name_attr, bool $show_hierarchy, bool $show_only_top_level): void
     {
+        // Tabs display: render as tab navigation with "All" tab
+        if ($display_style === 'tabs') {
+            echo '<div class="filter-options display-tabs">';
+
+            // "All" tab - default active, value=0 means no filter
+            echo '<span class="filter-tab filter-option filter-term-item active" data-value="0">';
+            echo esc_html__('All', 'jankx');
+            echo '</span>';
+
+            foreach ($terms as $term) {
+                $count_text = $show_count ? ' (' . intval($term->count) . ')' : '';
+                echo '<span class="filter-tab filter-option filter-term-item" data-value="' . esc_attr($term->term_id) . '">';
+                echo esc_html($term->name) . esc_html($count_text);
+                echo '</span>';
+            }
+
+            echo '</div>';
+            return;
+        }
+
         // Determine list tag
         $list_tag = 'div';
         $item_tag = 'div';

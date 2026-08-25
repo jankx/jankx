@@ -31,40 +31,57 @@ export default function Edit({ attributes, setAttributes, clientId, context }) {
     const [dynamicDataLayoutBlocks, setDynamicDataLayoutBlocks] = useState([]);
     const [selectedTargetBlock, setSelectedTargetBlock] = useState(null);
     const rawTriggerConfig = (window?.JankxSmartTabTriggers?.items ?? {});
-    const fallbackTrigger = useMemo(() => ({
-        key: 'manual',
-        label: __('Custom Content', 'jankx'),
-        description: __('Use manual tab title and content.', 'jankx'),
-        previewTitle: __('Tab', 'jankx'),
-        supports: {
-            customTitle: true,
-            customContent: true,
-            icon: true,
+    const fallbackTriggers = useMemo(() => ({
+        manual: {
+            key: 'manual',
+            label: __('Custom Content', 'jankx'),
+            description: __('Use manual tab title and content.', 'jankx'),
+            previewTitle: __('Tab', 'jankx'),
+            supports: {
+                customTitle: true,
+                customContent: true,
+                icon: true,
+            },
+            settingsSchema: [],
         },
-        settingsSchema: [],
+        'advanced-filter': {
+            key: 'advanced-filter',
+            label: __('Advanced Filter', 'jankx'),
+            description: __('Trigger advanced filter when tab is clicked. Configure filter using Advanced Filter block inside this tab. Updates dynamic-data-layout blocks with filtered results.', 'jankx'),
+            previewTitle: __('Advanced Filter Tab', 'jankx'),
+            supports: {
+                customTitle: true,
+                customContent: true,
+                icon: true,
+            },
+            settingsSchema: [],
+        },
+        'open-link': {
+            key: 'open-link',
+            label: __('Open Link', 'jankx'),
+            description: __('Open external or internal link when tab is clicked.', 'jankx'),
+            previewTitle: __('Link Tab', 'jankx'),
+            supports: {
+                customTitle: true,
+                customContent: false,
+                icon: true,
+            },
+            settingsSchema: [],
+        },
     }), []);
     const triggersMap = useMemo(() => {
-        if (Object.keys(rawTriggerConfig).length === 0) {
-            return { manual: fallbackTrigger };
-        }
         return {
-            manual: fallbackTrigger,
+            ...fallbackTriggers,
             ...rawTriggerConfig,
         };
-    }, [rawTriggerConfig, fallbackTrigger]);
+    }, [rawTriggerConfig, fallbackTriggers]);
     const triggerOptions = useMemo(() => {
-        const options = Object.values(triggersMap).map((config) => ({
+        return Object.values(triggersMap).map((config) => ({
             label: config.label,
             value: config.key,
         }));
-        // Hide advanced-filter trigger if no dynamic-data-layout blocks are available
-        if (trigger === 'advanced-filter' || dynamicDataLayoutBlocks.length > 0) {
-            return options;
-        }
-        // Filter out advanced-filter trigger if no blocks available
-        return options.filter((opt) => opt.value !== 'advanced-filter');
-    }, [triggersMap, dynamicDataLayoutBlocks.length, trigger]);
-    const triggerConfig = (triggersMap[trigger] ?? triggersMap.manual ?? fallbackTrigger);
+    }, [triggersMap]);
+    const triggerConfig = (triggersMap[trigger] ?? triggersMap.manual ?? fallbackTriggers.manual);
     // Override supports for advanced-filter trigger to allow custom content
     const resolvedSupports = trigger === 'advanced-filter'
         ? { ...triggerConfig.supports, customContent: true }
@@ -119,10 +136,10 @@ export default function Edit({ attributes, setAttributes, clientId, context }) {
         className: 'smart-tab__content',
         style: contentStyles,
     }, {
-        templateLock: false,
+        templateLock: trigger === 'advanced-filter' ? 'all' : false,
         allowedBlocks: allowedBlocks,
-        // Chỉ tab active mới có block appender
-        renderAppender: isActive ? undefined : false,
+        // Chỉ tab active và không phải trigger advanced-filter mới có block appender
+        renderAppender: (isActive && trigger !== 'advanced-filter') ? undefined : false,
     });
     // Handle icon selection from picker
     const handleIconSelect = (selectedIcon) => {
@@ -282,8 +299,9 @@ export default function Edit({ attributes, setAttributes, clientId, context }) {
                     blocks.forEach((block) => {
                         const attrs = (block.attributes || {});
                         if (block.name === 'jankx/dynamic-data-layout' ||
-                            block.name === 'jankx/dynamic-ssr-layout') {
-                            const queryId = attrs.queryId || block.clientId;
+                            block.name === 'jankx/dynamic-ssr-layout' ||
+                            block.name === 'jankx/advanced-filters') {
+                            const queryId = attrs.customQueryId || attrs.queryId || block.clientId;
                             const postType = attrs.postType || 'post';
                             found.push({
                                 id: String(queryId || block.clientId),
@@ -293,7 +311,7 @@ export default function Edit({ attributes, setAttributes, clientId, context }) {
                             });
                         }
                         else if (block.name === 'jankx/dynamic-term-layout') {
-                            const queryId = attrs.queryId || block.clientId;
+                            const queryId = attrs.customQueryId || attrs.queryId || block.clientId;
                             const taxonomy = attrs.taxonomy || 'category';
                             found.push({
                                 id: String(queryId || block.clientId),
@@ -312,9 +330,11 @@ export default function Edit({ attributes, setAttributes, clientId, context }) {
                 setDynamicDataLayoutBlocks(layoutBlocks);
                 // Restore selected block from triggerSettings (only if trigger is advanced-filter)
                 if (trigger === 'advanced-filter') {
+                    const savedBlockIds = triggerSettings?.targetBlockIds;
                     const savedBlockId = triggerSettings?.targetBlockId;
-                    if (savedBlockId) {
-                        const block = layoutBlocks.find((b) => b.id === savedBlockId);
+                    const targetId = (savedBlockIds && savedBlockIds.length > 0) ? savedBlockIds[0] : savedBlockId;
+                    if (targetId) {
+                        const block = layoutBlocks.find((b) => b.id === targetId || b.clientId === targetId);
                         if (block) {
                             setSelectedTargetBlock({ id: block.id, postType: block.postType });
                         }

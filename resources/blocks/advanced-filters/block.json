@@ -139,7 +139,7 @@
     "displayStyle": {
       "type": "string",
       "default": "buttons",
-      "enum": ["buttons", "checkboxes", "dropdown", "select"]
+      "enum": ["buttons", "checkboxes", "dropdown", "select", "tabs"]
     },
     "showCount": {
       "type": "boolean",

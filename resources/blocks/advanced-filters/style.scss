@@ -178,6 +178,36 @@
             }
         }
 
+        &.display-tabs {
+            display: flex;
+            gap: 0;
+            border-bottom: 2px solid var(--wp--preset--color--neutral, #ddd);
+            flex-wrap: wrap;
+
+            .filter-tab {
+                padding: 0.6rem 1.2rem;
+                cursor: pointer;
+                border-bottom: 2px solid transparent;
+                margin-bottom: -2px;
+                transition: all 0.2s ease;
+                font-size: 0.9rem;
+                text-decoration: none;
+                color: var(--wp--preset--color--foreground, #333);
+                white-space: nowrap;
+
+                &:hover {
+                    color: var(--wp--preset--color--primary, #503AA8);
+                    background: var(--wp--preset--color--base, rgba(80, 58, 168, 0.05));
+                }
+
+                &.active {
+                    border-bottom-color: var(--wp--preset--color--primary, #503AA8);
+                    color: var(--wp--preset--color--primary, #503AA8);
+                    font-weight: 600;
+                }
+            }
+        }
+
         &.display-checkboxes {
             // Default flex layout for div-based lists
             display: flex;
