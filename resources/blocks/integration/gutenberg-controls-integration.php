@@ -68,7 +68,6 @@ class GutenbergControlsIntegration
         // Register integration hooks
         add_action('init', [$this, 'registerBlockIntegration'], 20);
         add_action('enqueue_block_editor_assets', [$this, 'enqueueEditorAssets']);
-        add_action('wp_enqueue_scripts', [$this, 'enqueueFrontendAssets']);
 
         // Filter block attributes to add jankxControls
         add_filter('register_block_type_args', [$this, 'filterBlockArgs'], 10, 2);
@@ -376,38 +375,8 @@ class GutenbergControlsIntegration
      */
     public function enqueueEditorAssets(): void
     {
-        $vendorDir = get_template_directory() . '/vendor/jankx/gutenberg-controls';
-
-        // Enqueue gutenberg-controls editor script
-        $editorScript = $vendorDir . '/assets/build/editor.js';
-        if (file_exists($editorScript)) {
-            wp_enqueue_script(
-                'jankx-gutenberg-controls',
-                $this->getAssetUrl('assets/build/editor.js'),
-                [
-                    'wp-blocks',
-                    'wp-element',
-                    'wp-components',
-                    'wp-block-editor',
-                    'wp-data',
-                    'wp-hooks',
-                    'wp-i18n',
-                ],
-                filemtime($editorScript),
-                true
-            );
-        }
-
-        // Enqueue editor styles
-        $editorStyle = $vendorDir . '/assets/build/editor.css';
-        if (file_exists($editorStyle)) {
-            wp_enqueue_style(
-                'jankx-gutenberg-controls-editor',
-                $this->getAssetUrl('assets/build/editor.css'),
-                [],
-                filemtime($editorStyle)
-            );
-        }
+        // Gutenberg-controls script is enqueued by the extension's register_hooks() method.
+        // This integration file no longer enqueues it to avoid duplicates.
 
         // Localize script with block controls config
         $controlsConfig = apply_filters('jankx_blocks_controls_config', []);
@@ -453,31 +422,6 @@ class GutenbergControlsIntegration
         ];
     }
 
-    /**
-     * Enqueue frontend assets
-     */
-    public function enqueueFrontendAssets(): void
-    {
-        // Only enqueue if blocks with jankxControls are present
-        if (!has_block('jankx/advanced-button') &&
-            !has_block('jankx/advanced-image-box') &&
-            !has_block('jankx/wrapper')) {
-            return;
-        }
-
-        // Enqueue animation CSS
-        $vendorDir = get_template_directory() . '/vendor/jankx/gutenberg-controls';
-        $cssFile = $vendorDir . '/assets/build/frontend.css';
-
-        if (file_exists($cssFile)) {
-            wp_enqueue_style(
-                'jankx-gutenberg-controls-frontend',
-                $this->getAssetUrl('assets/build/frontend.css'),
-                [],
-                filemtime($cssFile)
-            );
-        }
-    }
 
     /**
      * Render block with controls CSS
