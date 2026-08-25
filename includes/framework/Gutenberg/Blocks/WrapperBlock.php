@@ -31,25 +31,14 @@ class WrapperBlock extends Block
             $classes[] = 'hide-on-mobile';
         }
 
-        // Theme color classes
-        if (!empty($attributes['backgroundColor'])) {
-            $classes[] = 'has-' . \esc_attr($attributes['backgroundColor']) . '-background-color';
-        }
-        if (!empty($attributes['textColor'])) {
-            $classes[] = 'has-' . \esc_attr($attributes['textColor']) . '-color';
-        }
-        if (!empty($attributes['gradient'])) {
-            $classes[] = 'has-' . \esc_attr($attributes['gradient']) . '-gradient-background';
-        }
-
-        // Font size class
-        if (!empty($attributes['fontSize'])) {
-            $classes[] = 'has-' . \esc_attr($attributes['fontSize']) . '-font-size';
-        }
-
         // Custom className
         if (!empty($attributes['className'])) {
             $classes[] = $attributes['className'];
+        }
+
+        // Add alignment classes
+        if (!empty($attributes['align'])) {
+            $classes[] = 'align' . $attributes['align'];
         }
 
         // Build inline styles
@@ -57,9 +46,11 @@ class WrapperBlock extends Block
 
         // CSS custom properties for responsive padding/margin
         $responsive_vars = [
+            'paddingUltrawide' => '--jankx-padding-ultrawide',
             'paddingDesktop' => '--jankx-padding-desktop',
             'paddingTablet' => '--jankx-padding-tablet',
             'paddingMobile' => '--jankx-padding-mobile',
+            'marginUltrawide' => '--jankx-margin-ultrawide',
             'marginDesktop' => '--jankx-margin-desktop',
             'marginTablet' => '--jankx-margin-tablet',
             'marginMobile' => '--jankx-margin-mobile',
@@ -76,103 +67,10 @@ class WrapperBlock extends Block
             $styles[] = 'max-width: ' . \esc_attr($attributes['maxWidth']);
         }
 
-        // Background color
-        if (!empty($attributes['customBackgroundColor'])) {
-            $styles[] = 'background-color: ' . \esc_attr($attributes['customBackgroundColor']);
-        }
-
-        // Text color
-        if (!empty($attributes['customTextColor'])) {
-            $styles[] = 'color: ' . \esc_attr($attributes['customTextColor']);
-        }
-
-        // Gradient
-        if (!empty($attributes['customGradient'])) {
-            $styles[] = 'background: ' . \esc_attr($attributes['customGradient']);
-        }
-
-        // Font size
-        if (!empty($attributes['customFontSize'])) {
-            $styles[] = 'font-size: ' . (int) $attributes['customFontSize'] . 'px';
-        }
-
-        // Font family
-        if (!empty($attributes['customFontFamily'])) {
-            $styles[] = 'font-family: ' . \esc_attr($attributes['customFontFamily']);
-        }
-
-        // Font weight
-        if (!empty($attributes['fontWeight'])) {
-            $styles[] = 'font-weight: ' . \esc_attr($attributes['fontWeight']);
-        }
-
-        // Line height
-        if (!empty($attributes['lineHeight'])) {
-            $styles[] = 'line-height: ' . \esc_attr($attributes['lineHeight']);
-        }
-
-        // Letter spacing
-        if (!empty($attributes['letterSpacing'])) {
-            $styles[] = 'letter-spacing: ' . \esc_attr($attributes['letterSpacing']);
-        }
-
-        // Text transform
-        if (!empty($attributes['textTransform'])) {
-            $styles[] = 'text-transform: ' . \esc_attr($attributes['textTransform']);
-        }
-
-        // Text decoration
-        if (!empty($attributes['textDecoration'])) {
-            $styles[] = 'text-decoration: ' . \esc_attr($attributes['textDecoration']);
-        }
-
-        // Border color
-        if (!empty($attributes['customBorderColor'])) {
-            $styles[] = 'border-color: ' . \esc_attr($attributes['customBorderColor']);
-        }
-
-        // Border width
-        if (!empty($attributes['borderWidth'])) {
-            $styles[] = 'border-width: ' . \esc_attr($attributes['borderWidth']);
-        }
-
-        // Border style
-        if (!empty($attributes['borderStyle']) && $attributes['borderStyle'] !== 'none') {
-            $styles[] = 'border-style: ' . \esc_attr($attributes['borderStyle']);
-        }
-
-        // Border radius
-        if (!empty($attributes['borderRadius'])) {
-            $styles[] = 'border-radius: ' . \esc_attr($attributes['borderRadius']);
-        } else {
-            $tl = $attributes['borderRadiusTopLeft'] ?? '0';
-            $tr = $attributes['borderRadiusTopRight'] ?? '0';
-            $bl = $attributes['borderRadiusBottomLeft'] ?? '0';
-            $br = $attributes['borderRadiusBottomRight'] ?? '0';
-            if (!empty($attributes['borderRadiusTopLeft']) || !empty($attributes['borderRadiusTopRight'])
-                || !empty($attributes['borderRadiusBottomLeft']) || !empty($attributes['borderRadiusBottomRight'])) {
-                $styles[] = sprintf('border-radius: %s %s %s %s', \esc_attr($tl), \esc_attr($tr), \esc_attr($br), \esc_attr($bl));
-            }
-        }
-
-        // Min height
-        if (!empty($attributes['minHeight'])) {
-            $styles[] = 'min-height: ' . \esc_attr($attributes['minHeight']);
-        }
-
-        // Overflow
-        if (!empty($attributes['overflow'])) {
-            $styles[] = 'overflow: ' . \esc_attr($attributes['overflow']);
-        }
-
-        // Position
-        if (!empty($attributes['position'])) {
-            $styles[] = 'position: ' . \esc_attr($attributes['position']);
-        }
-
-        // Z-index
-        if (isset($attributes['zIndex']) && $attributes['zIndex'] !== '') {
-            $styles[] = 'z-index: ' . (int) $attributes['zIndex'];
+        // Apply WordPress style supports
+        $style_attr = $this->apply_wordpress_styles($attributes);
+        if (!empty($style_attr)) {
+            $styles[] = $style_attr;
         }
 
         $class_string = \esc_attr(implode(' ', $classes));
@@ -201,6 +99,144 @@ class WrapperBlock extends Block
             $inline_style,
             $content
         );
+    }
+
+    /**
+     * Apply WordPress native style supports to inline styles.
+     */
+    private function apply_wordpress_styles(array $attributes): string
+    {
+        $style = $attributes['style'] ?? [];
+        $css_parts = [];
+
+        // Color styles
+        if (!empty($style['color']['background'])) {
+            $css_parts[] = 'background-color: ' . \esc_attr($style['color']['background']);
+        }
+        if (!empty($style['color']['text'])) {
+            $css_parts[] = 'color: ' . \esc_attr($style['color']['text']);
+        }
+        if (!empty($style['color']['gradient'])) {
+            $css_parts[] = 'background: ' . \esc_attr($style['color']['gradient']);
+        }
+
+        // Typography styles
+        if (!empty($style['typography']['fontSize'])) {
+            $css_parts[] = 'font-size: ' . \esc_attr($style['typography']['fontSize']);
+        }
+        if (!empty($style['typography']['fontFamily'])) {
+            $css_parts[] = 'font-family: ' . \esc_attr($style['typography']['fontFamily']);
+        }
+        if (!empty($style['typography']['fontWeight'])) {
+            $css_parts[] = 'font-weight: ' . \esc_attr($style['typography']['fontWeight']);
+        }
+        if (!empty($style['typography']['fontStyle'])) {
+            $css_parts[] = 'font-style: ' . \esc_attr($style['typography']['fontStyle']);
+        }
+        if (!empty($style['typography']['lineHeight'])) {
+            $css_parts[] = 'line-height: ' . \esc_attr($style['typography']['lineHeight']);
+        }
+        if (!empty($style['typography']['letterSpacing'])) {
+            $css_parts[] = 'letter-spacing: ' . \esc_attr($style['typography']['letterSpacing']);
+        }
+        if (!empty($style['typography']['textTransform'])) {
+            $css_parts[] = 'text-transform: ' . \esc_attr($style['typography']['textTransform']);
+        }
+        if (!empty($style['typography']['textDecoration'])) {
+            $css_parts[] = 'text-decoration: ' . \esc_attr($style['typography']['textDecoration']);
+        }
+
+        // Border styles
+        if (!empty($style['border']['color'])) {
+            $css_parts[] = 'border-color: ' . \esc_attr($style['border']['color']);
+        }
+        if (!empty($style['border']['width'])) {
+            $css_parts[] = 'border-width: ' . \esc_attr($style['border']['width']);
+        }
+        if (!empty($style['border']['style'])) {
+            $css_parts[] = 'border-style: ' . \esc_attr($style['border']['style']);
+        }
+        if (!empty($style['border']['radius'])) {
+            if (is_string($style['border']['radius'])) {
+                $css_parts[] = 'border-radius: ' . \esc_attr($style['border']['radius']);
+            } elseif (is_array($style['border']['radius'])) {
+                if (!empty($style['border']['radius']['topLeft'])) {
+                    $css_parts[] = 'border-top-left-radius: ' . \esc_attr($style['border']['radius']['topLeft']);
+                }
+                if (!empty($style['border']['radius']['topRight'])) {
+                    $css_parts[] = 'border-top-right-radius: ' . \esc_attr($style['border']['radius']['topRight']);
+                }
+                if (!empty($style['border']['radius']['bottomLeft'])) {
+                    $css_parts[] = 'border-bottom-left-radius: ' . \esc_attr($style['border']['radius']['bottomLeft']);
+                }
+                if (!empty($style['border']['radius']['bottomRight'])) {
+                    $css_parts[] = 'border-bottom-right-radius: ' . \esc_attr($style['border']['radius']['bottomRight']);
+                }
+            }
+        }
+
+        // Dimensions
+        if (!empty($style['dimensions']['minHeight'])) {
+            $css_parts[] = 'min-height: ' . \esc_attr($style['dimensions']['minHeight']);
+        }
+        if (!empty($style['dimensions']['minWidth'])) {
+            $css_parts[] = 'min-width: ' . \esc_attr($style['dimensions']['minWidth']);
+        }
+
+        // Spacing
+        if (!empty($style['spacing']['padding'])) {
+            $padding = $style['spacing']['padding'];
+            if (is_string($padding)) {
+                $css_parts[] = 'padding: ' . \esc_attr($padding);
+            } elseif (is_array($padding)) {
+                if (!empty($padding['top'])) {
+                    $css_parts[] = 'padding-top: ' . \esc_attr($padding['top']);
+                }
+                if (!empty($padding['right'])) {
+                    $css_parts[] = 'padding-right: ' . \esc_attr($padding['right']);
+                }
+                if (!empty($padding['bottom'])) {
+                    $css_parts[] = 'padding-bottom: ' . \esc_attr($padding['bottom']);
+                }
+                if (!empty($padding['left'])) {
+                    $css_parts[] = 'padding-left: ' . \esc_attr($padding['left']);
+                }
+            }
+        }
+        if (!empty($style['spacing']['margin'])) {
+            $margin = $style['spacing']['margin'];
+            if (is_string($margin)) {
+                $css_parts[] = 'margin: ' . \esc_attr($margin);
+            } elseif (is_array($margin)) {
+                if (!empty($margin['top'])) {
+                    $css_parts[] = 'margin-top: ' . \esc_attr($margin['top']);
+                }
+                if (!empty($margin['right'])) {
+                    $css_parts[] = 'margin-right: ' . \esc_attr($margin['right']);
+                }
+                if (!empty($margin['bottom'])) {
+                    $css_parts[] = 'margin-bottom: ' . \esc_attr($margin['bottom']);
+                }
+                if (!empty($margin['left'])) {
+                    $css_parts[] = 'margin-left: ' . \esc_attr($margin['left']);
+                }
+            }
+        }
+
+        // Shadow
+        if (!empty($style['shadow'])) {
+            $css_parts[] = 'box-shadow: ' . \esc_attr($style['shadow']);
+        }
+
+        // Background image
+        if (!empty($style['background']['backgroundImage']['url'])) {
+            $css_parts[] = 'background-image: url(' . \esc_url($style['background']['backgroundImage']['url']) . ')';
+        }
+        if (!empty($style['background']['backgroundSize'])) {
+            $css_parts[] = 'background-size: ' . \esc_attr($style['background']['backgroundSize']);
+        }
+
+        return implode('; ', $css_parts);
     }
 
     /**
