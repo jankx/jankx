@@ -114,4 +114,23 @@
   fill: var(--wp--preset--color--dark-text);
 }
 
+.jankx-advanced-button__link .wp-block-jankx-svg-icon,
+.wp-block-button__link .wp-block-jankx-svg-icon,
+a[class*=wp-block-button] .wp-block-jankx-svg-icon {
+  background: transparent;
+  background-color: transparent;
+}
+.jankx-advanced-button__link .wp-block-jankx-svg-icon .icon-container,
+.wp-block-button__link .wp-block-jankx-svg-icon .icon-container,
+a[class*=wp-block-button] .wp-block-jankx-svg-icon .icon-container {
+  background: transparent;
+  background-color: transparent;
+  color: inherit;
+}
+.jankx-advanced-button__link .wp-block-jankx-svg-icon svg,
+.wp-block-button__link .wp-block-jankx-svg-icon svg,
+a[class*=wp-block-button] .wp-block-jankx-svg-icon svg {
+  color: inherit;
+}
+
 /*# sourceMappingURL=style.css.map*/

@@ -63,6 +63,18 @@
 			&[style*="color"] {
 				border-color: currentColor;
 			}
+
+			// SVG icon inside outline button: no background, inherit text color
+			.button-icon-wrapper .wp-block-jankx-svg-icon,
+			.button-icon-wrapper .icon-container {
+				background: transparent !important;
+				background-color: transparent !important;
+				color: inherit;
+			}
+
+			.button-icon-wrapper svg {
+				color: inherit;
+			}
 		}
 
 		// Hover state for Outline
@@ -90,6 +102,18 @@
 			// Add underline on hover for text link
 			&:hover {
 				text-decoration: underline;
+			}
+
+			// SVG icon inside text-link button: no background, inherit text color
+			.button-icon-wrapper .wp-block-jankx-svg-icon,
+			.button-icon-wrapper .icon-container {
+				background: transparent !important;
+				background-color: transparent !important;
+				color: inherit;
+			}
+
+			.button-icon-wrapper svg {
+				color: inherit;
 			}
 		}
 	}
@@ -344,26 +368,7 @@ button.jankx-advanced-button__link {
 	// SVG icons inherit text color from button by default
 	.button-icon-wrapper {
 		svg {
-			// SVG elements inherit color from parent button
 			color: inherit;
-
-			// Apply currentColor to fill and stroke
-			// This makes SVG icons match the button text color
-			fill: currentColor;
-			stroke: currentColor;
-
-			// Ensure all SVG shapes inherit the color
-			// This applies to path, circle, rect, etc.
-			path,
-			circle,
-			rect,
-			polygon,
-			line,
-			polyline,
-			ellipse {
-				fill: currentColor;
-				stroke: currentColor;
-			}
 		}
 	}
 }

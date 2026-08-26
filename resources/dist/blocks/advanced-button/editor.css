@@ -23,6 +23,15 @@
 .wp-block-jankx-advanced-button.is-style-outline .jankx-advanced-button__link[style*=color] {
   border-color: currentColor;
 }
+.wp-block-jankx-advanced-button.is-style-outline .jankx-advanced-button__link .button-icon-wrapper .wp-block-jankx-svg-icon,
+.wp-block-jankx-advanced-button.is-style-outline .jankx-advanced-button__link .button-icon-wrapper .icon-container {
+  background: transparent !important;
+  background-color: transparent !important;
+  color: inherit;
+}
+.wp-block-jankx-advanced-button.is-style-outline .jankx-advanced-button__link .button-icon-wrapper svg {
+  color: inherit;
+}
 .wp-block-jankx-advanced-button.is-style-outline:hover .jankx-advanced-button__link {
   background-color: var(--wp--preset--color--primary, #503AA8);
   color: var(--wp--preset--color--base, #fff);
@@ -37,6 +46,15 @@
 }
 .wp-block-jankx-advanced-button.is-style-text-link .jankx-advanced-button__link.is-default-colors:not([style*=color]) {
   color: var(--wp--preset--color--primary, #503AA8);
+}
+.wp-block-jankx-advanced-button.is-style-text-link .jankx-advanced-button__link .button-icon-wrapper .wp-block-jankx-svg-icon,
+.wp-block-jankx-advanced-button.is-style-text-link .jankx-advanced-button__link .button-icon-wrapper .icon-container {
+  background: transparent !important;
+  background-color: transparent !important;
+  color: inherit;
+}
+.wp-block-jankx-advanced-button.is-style-text-link .jankx-advanced-button__link .button-icon-wrapper svg {
+  color: inherit;
 }
 
 .wp-block-jankx-advanced-button.has-text-align-left .jankx-advanced-button__link {

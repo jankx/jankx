@@ -134,3 +134,24 @@
 		}
 	}
 }
+
+// When SVG icon is inside a button (advanced-button, core/button, etc.)
+// Inherit text color and remove own background
+.jankx-advanced-button__link,
+.wp-block-button__link,
+a[class*="wp-block-button"] {
+	.wp-block-jankx-svg-icon {
+		background: transparent;
+		background-color: transparent;
+
+		.icon-container {
+			background: transparent;
+			background-color: transparent;
+			color: inherit;
+		}
+
+		svg {
+			color: inherit;
+		}
+	}
+}

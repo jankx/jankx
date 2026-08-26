@@ -1,0 +1,37 @@
+/**
+ * Typography Block - Frontend & Editor Styles
+ *
+ * Responsive line-clamp and font-size via CSS custom properties.
+ */
+
+.has-jankx-typography {
+	--jankx-line-clamp: var(--jankx-line-clamp-desktop);
+
+	font-size: var(--jankx-font-size-desktop, initial);
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	-webkit-line-clamp: var(--jankx-line-clamp-desktop, initial);
+	line-clamp: var(--jankx-line-clamp-desktop, initial);
+}
+
+@media (max-width: 1024px) {
+	.has-jankx-typography {
+		--jankx-line-clamp: var(--jankx-line-clamp-tablet, var(--jankx-line-clamp-desktop));
+
+		font-size: var(--jankx-font-size-tablet, var(--jankx-font-size-desktop, initial));
+		-webkit-line-clamp: var(--jankx-line-clamp-tablet, var(--jankx-line-clamp-desktop, initial));
+		line-clamp: var(--jankx-line-clamp-tablet, var(--jankx-line-clamp-desktop, initial));
+	}
+}
+
+@media (max-width: 768px) {
+	.has-jankx-typography {
+		--jankx-line-clamp: var(--jankx-line-clamp-mobile, var(--jankx-line-clamp-tablet, var(--jankx-line-clamp-desktop)));
+
+		font-size: var(--jankx-font-size-mobile, var(--jankx-font-size-tablet, var(--jankx-font-size-desktop, initial)));
+		-webkit-line-clamp: var(--jankx-line-clamp-mobile, var(--jankx-line-clamp-tablet, var(--jankx-line-clamp-desktop, initial)));
+		line-clamp: var(--jankx-line-clamp-mobile, var(--jankx-line-clamp-tablet, var(--jankx-line-clamp-desktop, initial)));
+	}
+}

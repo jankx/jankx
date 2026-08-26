@@ -40,6 +40,15 @@
 .wp-block-jankx-advanced-button.is-style-outline .jankx-advanced-button__link[style*=color] {
   border-color: currentColor;
 }
+.wp-block-jankx-advanced-button.is-style-outline .jankx-advanced-button__link .button-icon-wrapper .wp-block-jankx-svg-icon,
+.wp-block-jankx-advanced-button.is-style-outline .jankx-advanced-button__link .button-icon-wrapper .icon-container {
+  background: transparent !important;
+  background-color: transparent !important;
+  color: inherit;
+}
+.wp-block-jankx-advanced-button.is-style-outline .jankx-advanced-button__link .button-icon-wrapper svg {
+  color: inherit;
+}
 .wp-block-jankx-advanced-button.is-style-outline:hover .jankx-advanced-button__link {
   background-color: var(--wp--preset--color--primary, #503AA8);
   color: var(--wp--preset--color--base, #fff);
@@ -57,6 +66,15 @@
 }
 .wp-block-jankx-advanced-button.is-style-text-link .jankx-advanced-button__link:hover {
   text-decoration: underline;
+}
+.wp-block-jankx-advanced-button.is-style-text-link .jankx-advanced-button__link .button-icon-wrapper .wp-block-jankx-svg-icon,
+.wp-block-jankx-advanced-button.is-style-text-link .jankx-advanced-button__link .button-icon-wrapper .icon-container {
+  background: transparent !important;
+  background-color: transparent !important;
+  color: inherit;
+}
+.wp-block-jankx-advanced-button.is-style-text-link .jankx-advanced-button__link .button-icon-wrapper svg {
+  color: inherit;
 }
 .wp-block-jankx-advanced-button .jankx-advanced-button__link.is-animating {
   animation-duration: 1s;
@@ -247,18 +265,6 @@ button.jankx-advanced-button__link {
 }
 .jankx-advanced-button__link .button-icon-wrapper svg {
   color: inherit;
-  fill: currentColor;
-  stroke: currentColor;
-}
-.jankx-advanced-button__link .button-icon-wrapper svg path,
-.jankx-advanced-button__link .button-icon-wrapper svg circle,
-.jankx-advanced-button__link .button-icon-wrapper svg rect,
-.jankx-advanced-button__link .button-icon-wrapper svg polygon,
-.jankx-advanced-button__link .button-icon-wrapper svg line,
-.jankx-advanced-button__link .button-icon-wrapper svg polyline,
-.jankx-advanced-button__link .button-icon-wrapper svg ellipse {
-  fill: currentColor;
-  stroke: currentColor;
 }
 
 /*# sourceMappingURL=style.css.map*/

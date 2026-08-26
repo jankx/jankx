@@ -6,6 +6,7 @@ namespace Jankx\Gutenberg\Extra;
  * Class PostTitle
  *
  * Implements Flatsome-inspired styling for the core Post Title block.
+ * All styles are applied inline — no external CSS files.
  *
  * @package Jankx\Gutenberg\Extra
  */
@@ -28,48 +29,62 @@ class PostTitle extends AbstractBlockExtra
      */
     public function handle(string $block_content, array $block): string
     {
-        // Enqueue the CSS file with Child Theme priority
-        $relativePath = 'resources/block-styles/post-title/post-title.css';
-        $styleUrl = $this->getAssetUrl($relativePath);
-
-        if ($styleUrl) {
-            wp_enqueue_style(
-                'jankx-block-post-title',
-                $styleUrl,
-                [],
-                $this->getAssetVersion($relativePath)
-            );
-        }
-
-        // Define design tokens for Post Title
         $design_tokens = apply_filters('jankx/block/post_title/design_tokens', [
-            '--jankx-post-title-color' => '#1a2b8f',       // Deep Blue from the screenshot
-            '--jankx-post-title-hover-color' => '#446084', // Flatsome accents
-            '--jankx-post-title-font' => '"Outfit", "Inter", sans-serif',
+            'color' => '#1a2b8f',
+            'font-family' => '"Outfit", "Inter", sans-serif',
+            'transition' => 'color 0.2s ease',
         ]);
 
-        $style_attr = '';
-        foreach ($design_tokens as $name => $value) {
-            $style_attr .= "{$name}: {$value}; ";
+        $inline_style = '';
+        foreach ($design_tokens as $prop => $value) {
+            // Escape quotes for safe HTML attribute output
+            $escaped_value = str_replace('"', '&quot;', $value);
+            $inline_style .= "{$prop}: {$escaped_value}; ";
         }
 
-        /**
-         * Inject the style attribute into the opening tag of the block content.
-         */
+        if (empty($inline_style)) {
+            return $block_content;
+        }
+
         if (preg_match('/^<([a-z0-9]+)([^>]*class="[^"]*wp-block-post-title[^"]*"[^>]*)>/i', $block_content, $matches)) {
             $tag_name = $matches[1];
+            $full_match = $matches[0];
             $attributes = $matches[2];
 
-            if (preg_match('/style="([^"]*)"/i', $attributes, $style_matches)) {
-                $existing_style = $style_matches[1];
-                $new_style = rtrim($existing_style, '; ') . '; ' . $style_attr;
-                $new_attributes = str_replace($style_matches[0], 'style="' . $new_style . '"', $attributes);
+            if (preg_match('/style="/i', $attributes, $style_pos_match, PREG_OFFSET_CAPTURE)) {
+                $style_start = $style_pos_match[0][1];
+                $value_start = $style_start + strlen('style="');
+
+                $search_from = $value_start;
+                $closing_quote_pos = false;
+                $attr_len = strlen($attributes);
+
+                while ($search_from < $attr_len) {
+                    $q_pos = strpos($attributes, '"', $search_from);
+                    if ($q_pos === false) {
+                        break;
+                    }
+                    $next_char = isset($attributes[$q_pos + 1]) ? $attributes[$q_pos + 1] : '';
+                    if ($next_char === '' || $next_char === ' ' || $next_char === '/') {
+                        $closing_quote_pos = $q_pos;
+                        break;
+                    }
+                    $search_from = $q_pos + 1;
+                }
+
+                if ($closing_quote_pos !== false) {
+                    $existing_style = substr($attributes, $value_start, $closing_quote_pos - $value_start);
+                    $new_style = rtrim($existing_style, '; ') . '; ' . $inline_style;
+                    $new_attributes = substr($attributes, 0, $value_start) . $new_style . substr($attributes, $closing_quote_pos);
+                } else {
+                    $new_attributes = $attributes . ' style="' . rtrim($inline_style) . '"';
+                }
             } else {
-                $new_attributes = $attributes . ' style="' . trim($style_attr) . '"';
+                $new_attributes = $attributes . ' style="' . rtrim($inline_style) . '"';
             }
 
             $new_opening_tag = "<{$tag_name}{$new_attributes}>";
-            $block_content = str_replace($matches[0], $new_opening_tag, $block_content);
+            $block_content = str_replace($full_match, $new_opening_tag, $block_content);
         }
 
         return $block_content;

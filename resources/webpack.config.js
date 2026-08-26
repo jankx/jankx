@@ -208,6 +208,8 @@ module.exports = {
     'assets/js/child-order': './js/filters/child-order.tsx',
     'assets/js/responsive-visibility': './js/filters/responsive-visibility.tsx',
     'dist/blocks/typography/index': './blocks/typography/index.tsx',
+    'dist/blocks/typography/save': './blocks/typography/save.tsx',
+    'dist/blocks/typography/editor': './blocks/typography/index.css',
     'dist/blocks/integration/jankx-blocks-bridge': './blocks/integration/jankx-blocks-bridge.js',
     'assets/js/sticky-header': './js/sticky-header.ts',
     '../style': './scss/style.scss',

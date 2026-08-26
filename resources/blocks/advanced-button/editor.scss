@@ -29,6 +29,18 @@
 		&[style*="color"] {
 			border-color: currentColor;
 		}
+
+		// SVG icon inside outline button: no background, inherit text color
+		.button-icon-wrapper .wp-block-jankx-svg-icon,
+		.button-icon-wrapper .icon-container {
+			background: transparent !important;
+			background-color: transparent !important;
+			color: inherit;
+		}
+
+		.button-icon-wrapper svg {
+			color: inherit;
+		}
 	}
 
 	// Hover state for Outline in editor
@@ -49,6 +61,18 @@
 
 		&.is-default-colors:not([style*="color"]) {
 			color: var(--wp--preset--color--primary, #503AA8);
+		}
+
+		// SVG icon inside text-link button: no background, inherit text color
+		.button-icon-wrapper .wp-block-jankx-svg-icon,
+		.button-icon-wrapper .icon-container {
+			background: transparent !important;
+			background-color: transparent !important;
+			color: inherit;
+		}
+
+		.button-icon-wrapper svg {
+			color: inherit;
 		}
 	}
 }

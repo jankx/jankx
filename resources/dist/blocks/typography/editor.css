@@ -1,0 +1,16 @@
+/*!***************************************************************************************************************************!*\
+  !*** css ../node_modules/css-loader/dist/cjs.js!../node_modules/postcss-loader/dist/cjs.js!./blocks/typography/index.css ***!
+  \***************************************************************************************************************************/
+/**
+ * Typography Block - Editor Only Styles
+ */
+
+.jankx-typography-block {
+	&.is-selected {
+		outline: 1px dashed rgba(0, 120, 215, 0.5);
+		outline-offset: 2px;
+	}
+}
+
+
+/*# sourceMappingURL=editor.css.map*/
