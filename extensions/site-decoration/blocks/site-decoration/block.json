@@ -12,58 +12,7 @@
     "style": "file:../../dist/style-site-decoration.css",
     "editorStyle": "file:../../dist/style-site-decoration.css",
     "attributes": {
-        "section": {
-            "type": "string",
-            "enum": ["footer", "header", "cover"],
-            "default": "footer"
-        },
-        "headingUnderline": {
-            "type": "string",
-            "enum": ["none", "solid", "double", "dotted", "ornament"],
-            "default": "ornament"
-        },
-        "underlineColor": {
-            "type": "string",
-            "default": ""
-        },
-        "underlineWidth": {
-            "type": "number",
-            "default": 48
-        },
-        "afterBackgroundColor": {
-            "type": "string",
-            "default": ""
-        },
-        "afterBackgroundImage": {
-            "type": "string",
-            "default": ""
-        },
-        "afterBackgroundSize": {
-            "type": "string",
-            "enum": ["auto", "cover", "contain"],
-            "default": "auto"
-        },
-        "afterOpacity": {
-            "type": "number",
-            "default": 1
-        },
-        "afterHeight": {
-            "type": "number",
-            "default": 72
-        },
-        "afterPosition": {
-            "type": "string",
-            "enum": ["top", "bottom"],
-            "default": "bottom"
-        },
-        "afterLayer": {
-            "type": "string",
-            "enum": ["behind", "front"],
-            "default": "behind"
-        },
-        "className": {
-            "type": "string"
-        }
+        "className": { "type": "string" }
     },
     "supports": {
         "anchor": true,
