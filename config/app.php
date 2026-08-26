@@ -25,7 +25,6 @@ return [
         App\Providers\DemoImportServiceProvider::class,
         App\Providers\TemplateBundleServiceProvider::class,
         App\Providers\SetupWizardServiceProvider::class,
-        App\MenuBuilder\ServiceProvider::class,
         Jankx\Support\Providers\ContentLayoutServiceProvider::class,
 
         // App\Providers\WooCommerce\EmptyPriceServiceProvider::class,
