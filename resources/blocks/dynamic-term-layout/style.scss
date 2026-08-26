@@ -23,7 +23,7 @@
         .post-type-layout-grid,
         .post-type-layout-card {
             display: grid;
-            gap: var(--wp--preset--spacing--medium, 1.5rem);
+            gap: var(--jankx-block-gap, var(--wp--style--block-gap, 1.5rem));
 
             // Sử dụng CSS variables từ wrapper hoặc từ chính element
             grid-template-columns: repeat(var(--columns-mobile, 1), 1fr);
@@ -43,7 +43,7 @@
         .post-type-layout-list {
             display: flex;
             flex-direction: column;
-            gap: var(--wp--preset--spacing--medium, 1.5rem);
+            gap: var(--jankx-block-gap, var(--wp--style--block-gap, 1.5rem));
         }
     }
 
@@ -204,7 +204,7 @@
         .post-type-layout-card {
             // Variables được set từ wrapper inline styles hoặc từ classes
             display: grid;
-            gap: var(--wp--preset--spacing--medium, 1.5rem);
+            gap: var(--jankx-block-gap, var(--wp--style--block-gap, 1.5rem));
         }
     }
 
@@ -262,7 +262,7 @@
 .wp-block-jankx-dynamic-term-layout .post-type-layout-grid,
 .wp-block-jankx-dynamic-term-layout .post-type-layout-card {
     display: grid;
-    gap: var(--wp--preset--spacing--medium, 1.5rem);
+    gap: var(--jankx-block-gap, var(--wp--style--block-gap, 1.5rem));
 
     // Sử dụng CSS variables từ chính element
     grid-template-columns: repeat(var(--columns-mobile, 1), 1fr);

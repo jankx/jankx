@@ -1,6 +1,6 @@
-/*!*********************************************************************************************************************************************************************************************************!*\
-  !*** css ../node_modules/css-loader/dist/cjs.js!../node_modules/postcss-loader/dist/cjs.js!../node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!./blocks/dynamic-data-layout/style.scss ***!
-  \*********************************************************************************************************************************************************************************************************/
+/*!******************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!./blocks/dynamic-data-layout/style.scss ***!
+  \******************************************************************************************************************************************************************************************************/
 @charset "UTF-8";
 /**
  * Dynamic Data Layout Block Styles
@@ -30,7 +30,7 @@
 .wp-block-jankx-dynamic-data-layout.dynamic-data-layout--grid .post-type-layout-card, .wp-block-jankx-dynamic-data-layout.dynamic-data-layout--card .post-type-layout-grid,
 .wp-block-jankx-dynamic-data-layout.dynamic-data-layout--card .post-type-layout-card {
   display: grid;
-  gap: var(--wp--preset--spacing--medium, 1.5rem);
+  gap: var(--jankx-block-gap, var(--wp--style--block-gap, 1.5rem));
   grid-template-columns: repeat(var(--columns-mobile, 1), 1fr);
 }
 @media (min-width: 768px) {
@@ -50,7 +50,7 @@
 .wp-block-jankx-dynamic-data-layout.dynamic-data-layout--list .post-type-layout-list {
   display: flex;
   flex-direction: column;
-  gap: var(--wp--preset--spacing--medium, 1.5rem);
+  gap: var(--jankx-block-gap, var(--wp--style--block-gap, 1.5rem));
 }
 .wp-block-jankx-dynamic-data-layout.dynamic-data-layout--carousel, .wp-block-jankx-dynamic-data-layout.jankx-carousel {
   position: relative;
@@ -246,7 +246,7 @@
 .wp-block-jankx-dynamic-data-layout[class*=columns-] .post-type-layout-grid,
 .wp-block-jankx-dynamic-data-layout[class*=columns-] .post-type-layout-card {
   display: grid;
-  gap: var(--wp--preset--spacing--medium, 1.5rem);
+  gap: var(--jankx-block-gap, var(--wp--style--block-gap, 1.5rem));
 }
 .wp-block-jankx-dynamic-data-layout.columns-1 {
   --columns-desktop: 1;
@@ -288,7 +288,7 @@
 .post-type-layout-grid,
 .post-type-layout-card {
   display: grid;
-  gap: var(--wp--preset--spacing--medium, 1.5rem);
+  gap: var(--jankx-block-gap, var(--wp--style--block-gap, 1.5rem));
   grid-template-columns: repeat(var(--columns-mobile, 1), 1fr);
 }
 @media (min-width: 768px) {
@@ -380,9 +380,9 @@
     min-height: var(--min-height-mobile, var(--min-height-tablet, var(--min-height-desktop, auto)));
   }
 }
-/*!**********************************************************************************************************************************************************************************************************!*\
-  !*** css ../node_modules/css-loader/dist/cjs.js!../node_modules/postcss-loader/dist/cjs.js!../node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!./blocks/dynamic-data-layout/editor.scss ***!
-  \**********************************************************************************************************************************************************************************************************/
+/*!*******************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!./blocks/dynamic-data-layout/editor.scss ***!
+  \*******************************************************************************************************************************************************************************************************/
 /**
  * Dynamic Data Layout Block - Editor Styles
  * Specific styles for Gutenberg editor

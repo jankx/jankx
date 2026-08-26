@@ -1,6 +1,6 @@
-/*!*********************************************************************************************************************************************************************************************************!*\
-  !*** css ../node_modules/css-loader/dist/cjs.js!../node_modules/postcss-loader/dist/cjs.js!../node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!./blocks/dynamic-term-layout/style.scss ***!
-  \*********************************************************************************************************************************************************************************************************/
+/*!******************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!./blocks/dynamic-term-layout/style.scss ***!
+  \******************************************************************************************************************************************************************************************************/
 @charset "UTF-8";
 /**
  * Dynamic Term Layout Block Styles
@@ -17,7 +17,7 @@
 .wp-block-jankx-dynamic-term-layout.dynamic-term-layout--grid .post-type-layout-card, .wp-block-jankx-dynamic-term-layout.dynamic-term-layout--card .post-type-layout-grid,
 .wp-block-jankx-dynamic-term-layout.dynamic-term-layout--card .post-type-layout-card {
   display: grid;
-  gap: var(--wp--preset--spacing--medium, 1.5rem);
+  gap: var(--jankx-block-gap, var(--wp--style--block-gap, 1.5rem));
   grid-template-columns: repeat(var(--columns-mobile, 1), 1fr);
 }
 @media (min-width: 768px) {
@@ -37,7 +37,7 @@
 .wp-block-jankx-dynamic-term-layout.dynamic-term-layout--list .post-type-layout-list {
   display: flex;
   flex-direction: column;
-  gap: var(--wp--preset--spacing--medium, 1.5rem);
+  gap: var(--jankx-block-gap, var(--wp--style--block-gap, 1.5rem));
 }
 .wp-block-jankx-dynamic-term-layout.dynamic-term-layout--carousel, .wp-block-jankx-dynamic-term-layout.jankx-carousel {
   position: relative;
@@ -233,7 +233,7 @@
 .wp-block-jankx-dynamic-term-layout[class*=columns-] .post-type-layout-grid,
 .wp-block-jankx-dynamic-term-layout[class*=columns-] .post-type-layout-card {
   display: grid;
-  gap: var(--wp--preset--spacing--medium, 1.5rem);
+  gap: var(--jankx-block-gap, var(--wp--style--block-gap, 1.5rem));
 }
 .wp-block-jankx-dynamic-term-layout.columns-1 {
   --columns-desktop: 1;
@@ -275,7 +275,7 @@
 .wp-block-jankx-dynamic-term-layout .post-type-layout-grid,
 .wp-block-jankx-dynamic-term-layout .post-type-layout-card {
   display: grid;
-  gap: var(--wp--preset--spacing--medium, 1.5rem);
+  gap: var(--jankx-block-gap, var(--wp--style--block-gap, 1.5rem));
   grid-template-columns: repeat(var(--columns-mobile, 1), 1fr);
 }
 @media (min-width: 768px) {

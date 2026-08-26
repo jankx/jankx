@@ -824,6 +824,22 @@ class DynamicDataLayoutBlock extends Block
             $styleRules[] = '--columns-mobile: ' . (int) $attributes['columnsMobile'];
         }
 
+        // Inject blockGap as CSS variable so the grid gap respects the block spacing setting
+        $blockGap = $attributes['style']['spacing']['blockGap'] ?? null;
+        if (!empty($blockGap)) {
+            if (is_array($blockGap)) {
+                // Responsive object { top, right, bottom, left } - use top or left as unified gap
+                $blockGap = $blockGap['top'] ?? $blockGap['left'] ?? null;
+            }
+            if (!empty($blockGap)) {
+                // Convert WP preset reference "var:preset|spacing|50" → "var(--wp--preset--spacing--50)"
+                if (strpos($blockGap, 'var:') === 0) {
+                    $blockGap = 'var(--wp--' . str_replace(['var:', '|'], ['', '--'], $blockGap) . ')';
+                }
+                $styleRules[] = '--jankx-block-gap: ' . esc_attr($blockGap);
+            }
+        }
+
         if (!empty($attributes['orderBy'])) {
             $attrs['data-order-by'] = esc_attr($attributes['orderBy']);
         }

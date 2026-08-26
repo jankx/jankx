@@ -39,12 +39,19 @@ export default function Save({ attributes }: SaveProps): JSX.Element {
     ].filter(Boolean).join(' ');
 
     // Collect styles (CSS variables for columns + color styles from style.color)
+    // Read blockGap from WordPress spacing support
+    const blockGap = attrs.style?.spacing?.blockGap;
+    const blockGapValue = typeof blockGap === 'object'
+        ? (blockGap?.top ?? blockGap?.left ?? '1.5rem')
+        : (blockGap || undefined);
+
     const inlineStyle: Record<string, any> = {
         '--columns-desktop': columns,
         '--columns-tablet': columnsTablet,
         '--columns-mobile': columnsMobile,
         '--slides-per-view': columns,
         '--space-between': '16px',
+        ...(blockGapValue ? { '--jankx-block-gap': blockGapValue } : {}),
     };
 
     // Apply responsive minHeight as CSS variables
