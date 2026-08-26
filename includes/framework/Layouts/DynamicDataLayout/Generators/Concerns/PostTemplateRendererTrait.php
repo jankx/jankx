@@ -23,7 +23,7 @@ trait PostTemplateRendererTrait
                 $itemInlineStyle = trim($styles['css']);
             }
         }
-        $styleAttr = $itemInlineStyle !== '' ? sprintf(' style="%s"', esc_attr($itemInlineStyle)) : '';
+
         $animationType = $templateAttrs['animationType'] ?? 'none';
         $animationDuration = $templateAttrs['animationDuration'] ?? 1000;
         $animationDelay = $templateAttrs['animationDelay'] ?? 0;
@@ -56,7 +56,15 @@ trait PostTemplateRendererTrait
             }
 
             $classes = $this->buildItemClasses($post);
-            $currentStyleAttr = $styleAttr;
+            $templateClasses = $this->buildTemplateItemClassesForItem($templateAttrs);
+            if ($templateClasses !== '') {
+                $classes .= ' ' . $templateClasses;
+            }
+            $currentStyle = $itemInlineStyle;
+            $itemBackgroundStyle = $this->buildTemplateItemBackgroundStyle($templateAttrs, $post);
+            if ($itemBackgroundStyle !== '') {
+                $currentStyle .= ($currentStyle !== '' ? '; ' : '') . $itemBackgroundStyle;
+            }
 
             if ($animationType !== 'none') {
                 $classes .= sprintf(' jankx-reveal jankx-reveal--%s jankx-reveal--target-%s', $animationType, $animationTarget);
@@ -67,12 +75,10 @@ trait PostTemplateRendererTrait
                 $delay = $itemIndex * $animationDelay;
                 $animationStyles = sprintf('--jankx-animation-duration: %dms; --jankx-animation-delay: %dms;', $animationDuration, $delay);
 
-                if (empty($itemInlineStyle)) {
-                    $currentStyleAttr = sprintf(' style="%s"', esc_attr($animationStyles));
-                } else {
-                    $currentStyleAttr = sprintf(' style="%s"', esc_attr(rtrim($itemInlineStyle, ';') . '; ' . $animationStyles));
-                }
+                $currentStyle .= ($currentStyle !== '' ? '; ' : '') . $animationStyles;
             }
+
+            $currentStyleAttr = $currentStyle !== '' ? sprintf(' style="%s"', esc_attr($currentStyle)) : '';
 
             if ($mode === 'carousel') {
                 $output[] = sprintf(
@@ -95,6 +101,59 @@ trait PostTemplateRendererTrait
         }
 
         return implode('', $output);
+    }
+
+    protected function buildTemplateItemClassesForItem(array $attrs): string
+    {
+        $classes = [];
+
+        if (!empty($attrs['className'])) {
+            $customClasses = preg_split('/\s+/', $attrs['className']);
+            $classes = array_merge($classes, array_filter(array_map('sanitize_html_class', (array) $customClasses)));
+        }
+
+        if (!empty($attrs['backgroundColor'])) {
+            $classes[] = 'has-' . sanitize_html_class($attrs['backgroundColor']) . '-background-color';
+            $classes[] = 'has-background';
+        }
+        if (!empty($attrs['textColor'])) {
+            $classes[] = 'has-' . sanitize_html_class($attrs['textColor']) . '-color';
+            $classes[] = 'has-text-color';
+        }
+        if (!empty($attrs['gradient'])) {
+            $classes[] = 'has-' . sanitize_html_class($attrs['gradient']) . '-gradient-background';
+            $classes[] = 'has-background';
+        }
+
+        return implode(' ', array_unique(array_filter($classes)));
+    }
+
+    protected function buildTemplateItemBackgroundStyle(array $attrs, ?WP_Post $post = null): string
+    {
+        $styles = [];
+        $backgroundType = $attrs['itemBgType'] ?? 'none';
+
+        if ($backgroundType === 'color' && !empty($attrs['itemBgColor'])) {
+            $styles[] = 'background-color: ' . esc_attr($attrs['itemBgColor']);
+        }
+
+        if ($backgroundType === 'image') {
+            $imageUrl = $attrs['itemBgImageUrl'] ?? '';
+            if (($attrs['itemBgImageSource'] ?? 'custom') === 'featured' && $post instanceof WP_Post && has_post_thumbnail($post->ID)) {
+                $imageUrl = get_the_post_thumbnail_url($post->ID, 'full');
+            }
+            if ($imageUrl !== '') {
+                $styles[] = 'background-image: url(' . esc_url($imageUrl) . ')';
+            }
+            $styles[] = 'background-size: ' . esc_attr($attrs['itemBgSize'] ?? 'cover');
+            $styles[] = 'background-repeat: ' . esc_attr($attrs['itemBgRepeat'] ?? 'no-repeat');
+            $styles[] = 'background-position: ' . esc_attr($attrs['itemBgPosition'] ?? 'center center');
+            if (!empty($attrs['itemBgOverlay'])) {
+                $styles[] = 'position: relative';
+            }
+        }
+
+        return implode('; ', $styles);
     }
 
     protected function renderCarousel(WP_Query $query, array $options): string

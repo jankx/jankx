@@ -238,29 +238,6 @@ class PostTemplateBlockGenerator extends AbstractContentGenerator
                 return $itemLayout->renderOverlapCard($output, $contentOutput, $attrs);
             }
 
-            // -------------------------------------------------------
-            // Default / other layouts: optional wrapper from block supports
-            // -------------------------------------------------------
-            $wrapperStyle   = $this->buildTemplateItemStyle($attrs);
-            $wrapperClasses = $this->buildTemplateItemClasses($attrs);
-
-            // Add item background styles
-            $bgStyles = $this->buildItemBackgroundStyle($attrs, $post);
-            if (!empty($bgStyles)) {
-                if (!empty($wrapperStyle)) {
-                    $wrapperStyle .= '; ' . $bgStyles;
-                } else {
-                    $wrapperStyle = $bgStyles;
-                }
-            }
-
-            if (!empty($wrapperStyle) || !empty($wrapperClasses)) {
-                $styleAttr = !empty($wrapperStyle) ? sprintf(' style="%s"', esc_attr($wrapperStyle)) : '';
-                $classAttr = !empty($wrapperClasses) ? sprintf(' class="%s"', esc_attr($wrapperClasses)) : '';
-                $output = sprintf('<div%s%s>%s</div>', $classAttr, $styleAttr, $output);
-            }
-
-
             return $output;
         } catch (\Throwable $exception) {
             Log::error(sprintf(

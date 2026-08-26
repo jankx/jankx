@@ -1352,6 +1352,7 @@ export default function Edit({
                                     // Apply item background styles
                                     const bgStyle = buildItemBackgroundStyle(attributes);
                                     Object.assign(itemStyle, bgStyle);
+                                    Object.assign(itemStyle, buildTemplateItemStyle(attributes));
 
                                     const postData = posts && posts[index] ? posts[index] : null;
                                     const contextValue = postData ? { postId: postData.id, postType: postData.type } : {};
@@ -1392,7 +1393,6 @@ export default function Edit({
                                                     <PreviewItem
                                                         index={index}
                                                         blocks={sharedInnerBlocks}
-                                                        templateItemStyle={buildTemplateItemStyle(attributes)}
                                                         templateItemClassName={buildTemplateItemClasses(attributes)}
                                                     />
                                                 </BlockContextProvider>
@@ -1400,7 +1400,6 @@ export default function Edit({
                                                 <PreviewItem
                                                     index={index}
                                                     blocks={sharedInnerBlocks}
-                                                    templateItemStyle={buildTemplateItemStyle(attributes)}
                                                     templateItemClassName={buildTemplateItemClasses(attributes)}
                                                 />
                                             )}
@@ -1457,6 +1456,7 @@ export default function Edit({
                                 // Apply item background styles
                                 const bgStyle2 = buildItemBackgroundStyle(attributes);
                                 Object.assign(itemStyle2, bgStyle2);
+                                Object.assign(itemStyle2, buildTemplateItemStyle(attributes));
 
                                 return (
                                     <div
@@ -1500,6 +1500,7 @@ export default function Edit({
                             // Apply item background styles
                             const bgStyle3 = buildItemBackgroundStyle(attributes);
                             Object.assign(itemStyle3, bgStyle3);
+                            Object.assign(itemStyle3, buildTemplateItemStyle(attributes));
 
                             return (
                                 <div
@@ -1518,7 +1519,6 @@ export default function Edit({
                                             <PreviewItem
                                                 index={index}
                                                 blocks={sharedInnerBlocks}
-                                                templateItemStyle={buildTemplateItemStyle(attributes)}
                                                 templateItemClassName={buildTemplateItemClasses(attributes)}
                                             />
                                         </BlockContextProvider>
@@ -1526,7 +1526,6 @@ export default function Edit({
                                         <PreviewItem
                                             index={index}
                                             blocks={sharedInnerBlocks}
-                                            templateItemStyle={buildTemplateItemStyle(attributes)}
                                             templateItemClassName={buildTemplateItemClasses(attributes)}
                                         />
                                     )}
