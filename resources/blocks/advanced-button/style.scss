@@ -342,18 +342,16 @@ button.jankx-advanced-button__link {
 	}
 
 	// SVG icons inherit text color from button by default
+	// But only for generic SVGs, NOT for svg-icon blocks that have their own color settings
 	.button-icon-wrapper {
-		svg {
-			// SVG elements inherit color from parent button
+		// Only apply color inheritance to SVGs that are NOT inside a configured svg-icon block
+		> :not(.wp-block-jankx-svg-icon) svg,
+		> .wp-block-jankx-svg-icon:not(.has-icon-color):not(.has-icon-background-color) svg,
+		> .wp-block-jankx-svg-icon:not(.has-icon-color):not(.has-icon-background-color) svg {
 			color: inherit;
-
-			// Apply currentColor to fill and stroke
-			// This makes SVG icons match the button text color
 			fill: currentColor;
 			stroke: currentColor;
 
-			// Ensure all SVG shapes inherit the color
-			// This applies to path, circle, rect, etc.
 			path,
 			circle,
 			rect,
