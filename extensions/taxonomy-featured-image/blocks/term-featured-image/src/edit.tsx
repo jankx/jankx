@@ -1,10 +1,11 @@
 import { __ } from '@wordpress/i18n';
-import { useBlockProps, InspectorControls } from '@wordpress/block-editor';
+import { useBlockProps, InspectorControls, MediaUpload, MediaUploadCheck } from '@wordpress/block-editor';
 import {
 	PanelBody,
 	SelectControl,
 	ToggleControl,
 	TextControl,
+	Button,
 } from '@wordpress/components';
 import { useSelect } from '@wordpress/data';
 
@@ -51,6 +52,7 @@ export default function Edit({ attributes, setAttributes, context }: any) {
 		isLink,
 		linkTarget,
 		showPlaceholder,
+		defaultImageId,
 	} = attributes;
 
 	const contextTermId = context?.termId || 0;
@@ -77,6 +79,12 @@ export default function Edit({ attributes, setAttributes, context }: any) {
 			return { media: m, hasResolved: true };
 		},
 		[previewTermId, previewTaxonomy]
+	);
+	const defaultImage = useSelect(
+		(select: any) => defaultImageId
+			? select('core').getMedia(defaultImageId, { context: 'view' })
+			: null,
+		[defaultImageId]
 	);
 
 	const taxonomies = useSelect((select: any) => {
@@ -108,6 +116,7 @@ export default function Edit({ attributes, setAttributes, context }: any) {
 	}
 
 	const showImage = !!(media && media.source_url);
+	const showDefaultImage = !showImage && !!(defaultImage && defaultImage.source_url);
 
 	return (
 		<div {...blockProps}>
@@ -163,6 +172,26 @@ export default function Edit({ attributes, setAttributes, context }: any) {
 				</PanelBody>
 
 				<PanelBody title={__('Fallback', 'jankx')} initialOpen={false}>
+					<MediaUploadCheck>
+						<MediaUpload
+							allowedTypes={['image']}
+							value={defaultImageId || 0}
+							onSelect={(image: any) => setAttributes({ defaultImageId: image.id })}
+							render={({ open }: { open: () => void }) => (
+								<div>
+									<Button variant="secondary" onClick={open}>
+										{defaultImageId ? __('Replace Default Thumbnail', 'jankx') : __('Select Default Thumbnail', 'jankx')}
+									</Button>
+									{defaultImage && <img src={defaultImage.source_url} alt="" style={{ display: 'block', maxWidth: '150px', height: 'auto', marginTop: '8px' }} />}
+								</div>
+							)}
+						/>
+					</MediaUploadCheck>
+					{defaultImageId ? (
+						<Button isDestructive onClick={() => setAttributes({ defaultImageId: 0 })}>
+							{__('Remove Default Thumbnail', 'jankx')}
+						</Button>
+					) : null}
 					<ToggleControl
 						label={__('Show Placeholder When Empty', 'jankx')}
 						help={__(
@@ -208,6 +237,8 @@ export default function Edit({ attributes, setAttributes, context }: any) {
 						alt={media.alt_text || ''}
 						style={imgStyle as any}
 					/>
+				) : showDefaultImage ? (
+					<img src={defaultImage.source_url} alt={defaultImage.alt_text || ''} style={imgStyle as any} />
 				) : showPlaceholder || !hasResolved ? (
 					<div className="term-featured-image__placeholder">
 						<span className="dashicons dashicons-format-image"></span>

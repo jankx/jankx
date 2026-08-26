@@ -55,6 +55,10 @@
         "showPlaceholder": {
             "type": "boolean",
             "default": false
+        },
+        "defaultImageId": {
+            "type": "number",
+            "default": 0
         }
     },
     "supports": {

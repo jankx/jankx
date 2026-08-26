@@ -3,8 +3,6 @@ import { __ } from '@wordpress/i18n';
 import {
     InspectorControls,
     useBlockProps,
-    InnerBlocks,
-    useInnerBlocksProps,
 } from '@wordpress/block-editor';
 import {
     PanelBody,
@@ -14,7 +12,7 @@ import {
     Spinner,
     Placeholder,
 } from '@wordpress/components';
-import { useEffect, useMemo, useState, useRef } from '@wordpress/element';
+import { useEffect, useMemo, useState } from '@wordpress/element';
 import { useSelect, dispatch, select } from '@wordpress/data';
 import metadata from './block.json';
 
@@ -54,11 +52,6 @@ type FilterAttributes = {
     filterValueMax?: string;
     filterValueStart?: string;
     filterValueEnd?: string;
-    containerLayout?: 'row' | 'stack';
-    justifyContent?: 'flex-start' | 'center' | 'flex-end' | 'space-between' | 'space-around';
-    alignItems?: 'flex-start' | 'center' | 'flex-end' | 'stretch';
-    gap?: string;
-    flexWrap?: 'nowrap' | 'wrap';
     width?: 'full' | 'fit';
 };
 
@@ -68,106 +61,6 @@ interface EditProps {
     clientId: string;
 }
 
-// Define templates for each filter type
-const getFilterTemplate = (filterType: FilterAttributes['filterType']) => {
-    switch (filterType) {
-        case 'keyword':
-            return [
-                [
-                    'jankx/text-input',
-                    {
-                        placeholder: __('Search...', 'jankx'),
-                        inputType: 'text',
-                        className: 'jankx-filter-keyword-input',
-                        width: 'auto',
-                    },
-                ],
-                [
-                    'jankx/advanced-button',
-                    {
-                        text: __('Search', 'jankx'),
-                        buttonType: 'submit',
-                        triggerType: 'button',
-                        className: 'jankx-filter-keyword-button filter-search-button',
-                    },
-                ],
-            ];
-        case 'taxonomy':
-            return [
-                [
-                    'core/group',
-                    {
-                        className: 'jankx-filter-taxonomy-group',
-                    },
-                    [],
-                ],
-            ];
-        case 'meta':
-            return [
-                [
-                    'jankx/text-input',
-                    {
-                        placeholder: __('Enter value...', 'jankx'),
-                        inputType: 'text',
-                        className: 'jankx-filter-meta-input',
-                        width: 'auto',
-                    },
-                ],
-            ];
-        case 'price':
-            return [
-                [
-                    'jankx/text-input',
-                    {
-                        placeholder: __('Min price', 'jankx'),
-                        inputType: 'number',
-                        className: 'jankx-filter-price-min',
-                        width: 'auto',
-                    },
-                ],
-                [
-                    'jankx/text-input',
-                    {
-                        placeholder: __('Max price', 'jankx'),
-                        inputType: 'number',
-                        className: 'jankx-filter-price-max',
-                        width: 'auto',
-                    },
-                ],
-            ];
-        case 'date':
-            return [
-                [
-                    'jankx/text-input',
-                    {
-                        inputType: 'date',
-                        className: 'jankx-filter-date-start',
-                        width: 'auto',
-                    },
-                ],
-                [
-                    'jankx/text-input',
-                    {
-                        inputType: 'date',
-                        className: 'jankx-filter-date-end',
-                        width: 'auto',
-                    },
-                ],
-            ];
-        case 'author':
-            return [
-                [
-                    'core/group',
-                    {
-                        className: 'jankx-filter-author-group',
-                    },
-                    [],
-                ],
-            ];
-        default:
-            return [];
-    }
-};
 
 function Edit({ attributes, setAttributes, clientId }: EditProps) {
     const {
@@ -206,11 +99,6 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
         filterValueMax,
         filterValueStart,
         filterValueEnd,
-        containerLayout,
-        justifyContent,
-        alignItems,
-        gap,
-        flexWrap,
         width,
     } = attributes;
 
@@ -220,7 +108,6 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
     const [loadingTaxonomies, setLoadingTaxonomies] = useState(false);
     const [loadingTerms, setLoadingTerms] = useState(false);
     const [loadingAuthors, setLoadingAuthors] = useState(false);
-    const hasInitializedInnerBlocks = useRef(false);
 
     // Kiểm tra parent block và lấy attributes
     const { isSmartTabChild, parentDefaults } = useSelect(
@@ -291,7 +178,7 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
     const resolvedTargetPostType = parentDefaults.targetPostType || 'post';
     const resolvedDisplayStyle = displayStyle || parentDefaults.displayStyle || 'buttons';
     const normalizedDisplayStyle = ['buttons', 'checkboxes'].includes(resolvedDisplayStyle || '') ? resolvedDisplayStyle : 'buttons';
-    const resolvedLayout = containerLayout || layout || parentDefaults.layout || 'row';
+    const resolvedLayout = layout || parentDefaults.layout || 'row';
     const resolvedShowLabels = showLabels ?? parentDefaults.showLabels ?? true;
     const resolvedShowCount = showCount ?? parentDefaults.showCount ?? false;
     const resolvedShowEmptyTerms = showEmptyTerms ?? parentDefaults.showEmptyTerms ?? true;
@@ -308,24 +195,6 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
     const blockProps = useBlockProps({
         className: `jankx-advanced-filter jankx-advanced-filter--layout-${resolvedLayout} jankx-advanced-filter--width-${width || 'full'}`,
     });
-
-    const innerBlocksProps = useInnerBlocksProps(
-        {
-            className: 'jankx-advanced-filter__content',
-            style: {
-                display: 'flex',
-                flexDirection: resolvedLayout === 'stack' ? 'column' : 'row',
-                justifyContent: justifyContent || 'flex-start',
-                alignItems: alignItems || 'center',
-                gap: gap || '1rem',
-                flexWrap: flexWrap || 'nowrap',
-            } as React.CSSProperties,
-        },
-        {
-            templateLock: false,
-            allowedBlocks: ['jankx/text-input', 'core/group', 'jankx/advanced-button', 'core/heading', 'core/paragraph', 'core/columns', 'core/column', 'jankx/svg-icon'],
-        }
-    );
 
     const filterTitle = useMemo(() => {
         const typeLabel = filterType ? filterType.charAt(0).toUpperCase() + filterType.slice(1) : 'Filter';
@@ -397,37 +266,6 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
         })();
     }, [filterType]);
 
-    // Auto-insert inner blocks when filterType changes
-    useEffect(() => {
-        if (!filterType) return;
-
-        // Get current inner blocks
-        const { getBlock } = select('core/block-editor');
-        const block = getBlock(clientId);
-        if (!block) return;
-
-        const currentInnerBlocks = block.innerBlocks || [];
-
-        // Only insert blocks if:
-        // 1. This is the first initialization (no inner blocks yet)
-        // 2. Or the filter type has changed and we want to update the template
-        // For now, we'll only insert on first initialization to avoid overwriting user changes
-        if (currentInnerBlocks.length === 0 && !hasInitializedInnerBlocks.current) {
-            const template = getFilterTemplate(filterType);
-            if (template.length > 0) {
-                const { replaceInnerBlocks } = dispatch('core/block-editor') as any;
-                // Create blocks from template
-                const { createBlock } = (window as any).wp.blocks;
-                const newBlocks = template.map((templateBlock) => {
-                    const [blockName, blockAttributes, innerBlocks] = templateBlock;
-                    return createBlock(blockName, blockAttributes, innerBlocks);
-                });
-
-                replaceInnerBlocks(clientId, newBlocks, false);
-                hasInitializedInnerBlocks.current = true;
-            }
-        }
-    }, [filterType, clientId]);
 
     return (
         <>
@@ -865,83 +703,19 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                         onChange={(value) => setAttributes({ width: value as 'full' | 'fit' })}
                         help={__('Choose how the filter should display: full width or fit to content.', 'jankx')}
                     />
-                    <SelectControl
-                        label={__('Layout Type', 'jankx')}
-                        value={containerLayout || 'row'}
-                        options={[
-                            { label: __('Row (Horizontal)', 'jankx'), value: 'row' },
-                            { label: __('Stack (Vertical)', 'jankx'), value: 'stack' },
-                        ]}
-                        onChange={(value) => setAttributes({ containerLayout: value as 'row' | 'stack' })}
-                    />
-                    <SelectControl
-                        label={__('Justify Content', 'jankx')}
-                        value={justifyContent || 'flex-start'}
-                        options={[
-                            { label: __('Flex Start', 'jankx'), value: 'flex-start' },
-                            { label: __('Center', 'jankx'), value: 'center' },
-                            { label: __('Flex End', 'jankx'), value: 'flex-end' },
-                            { label: __('Space Between', 'jankx'), value: 'space-between' },
-                            { label: __('Space Around', 'jankx'), value: 'space-around' },
-                        ]}
-                        onChange={(value) => setAttributes({ justifyContent: value })}
-                    />
-                    <SelectControl
-                        label={__('Align Items', 'jankx')}
-                        value={alignItems || 'center'}
-                        options={[
-                            { label: __('Flex Start', 'jankx'), value: 'flex-start' },
-                            { label: __('Center', 'jankx'), value: 'center' },
-                            { label: __('Flex End', 'jankx'), value: 'flex-end' },
-                            { label: __('Stretch', 'jankx'), value: 'stretch' },
-                        ]}
-                        onChange={(value) => setAttributes({ alignItems: value })}
-                    />
-                    <TextControl
-                        label={__('Gap', 'jankx')}
-                        value={gap || '1rem'}
-                        onChange={(value) => setAttributes({ gap: value })}
-                    />
-                    <ToggleControl
-                        label={__('Flex Wrap', 'jankx')}
-                        checked={flexWrap === 'wrap'}
-                        onChange={(value) => setAttributes({ flexWrap: value ? 'wrap' : 'nowrap' })}
-                        help={__('Allow items to wrap to the next line if there is not enough space.', 'jankx')}
-                    />
                 </PanelBody>
 
             </InspectorControls>
 
             <div {...blockProps}>
-                <style>
-                    {`.jankx-advanced-filter--layout-row .jankx-advanced-filter__content > * {
-                        flex: 0 0 auto !important;
-                        width: auto !important;
-                        max-width: 100% !important;
-                    }
-                    .jankx-advanced-filter--layout-stack .jankx-advanced-filter__content > * {
-                        width: 100% !important;
-                        flex: 0 0 100% !important;
-                    }
-                    .jankx-advanced-filter--width-full {
-                        width: 100% !important;
-                    }
-                    .jankx-advanced-filter--width-fit {
-                        width: fit-content !important;
-                    }`}
-                </style>
                 {resolvedShowLabels && (
                     <strong className="jankx-advanced-filter__label">{filterTitle}</strong>
                 )}
-                <div {...innerBlocksProps} />
-                {/* Debug info - can be removed in production */}
-                {process.env.NODE_ENV === 'development' && (
-                    <div style={{ fontSize: '12px', color: '#555', marginTop: '8px', opacity: 0.7 }}>
-                        <div>{__('Type', 'jankx')}: {filterType}</div>
-                        {taxonomy && <div>{__('Taxonomy', 'jankx')}: {taxonomy}</div>}
-                        {label && <div>{__('Label', 'jankx')}: {label}</div>}
-                    </div>
-                )}
+                <div className="jankx-advanced-filter__preview">
+                    <span style={{ fontSize: '12px', color: '#777', fontStyle: 'italic' }}>
+                        [{filterType}{taxonomy ? `: ${taxonomy}` : ''}{label ? ` — ${label}` : ''}]
+                    </span>
+                </div>
             </div>
         </>
     );
@@ -950,7 +724,7 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
 registerBlockType(metadata.name, {
     ...metadata,
     edit: Edit,
-    save: () => <InnerBlocks.Content />,
+    save: () => null,
 } as any);
 
 

@@ -14,36 +14,20 @@
   "textdomain": "jankx",
   "supports": {
     "html": false,
-    "reusable": false,
-    "innerBlocks": true
+    "reusable": false
   },
   "attributes": {
-    "containerLayout": {
-      "type": "string",
-      "default": "row",
-      "enum": ["row", "stack"]
-    },
-    "justifyContent": {
-      "type": "string",
-      "default": "flex-start"
-    },
-    "alignItems": {
-      "type": "string",
-      "default": "center"
-    },
-    "gap": {
-      "type": "string",
-      "default": "1rem"
-    },
-    "flexWrap": {
-      "type": "string",
-      "default": "nowrap",
-      "enum": ["nowrap", "wrap"]
-    },
     "filterType": {
       "type": "string",
       "default": "taxonomy",
-      "enum": ["taxonomy", "meta", "price", "date", "author", "keyword"]
+      "enum": [
+        "taxonomy",
+        "meta",
+        "price",
+        "date",
+        "author",
+        "keyword"
+      ]
     },
     "label": {
       "type": "string",
@@ -60,12 +44,22 @@
     "displayStyle": {
       "type": "string",
       "default": "buttons",
-      "enum": ["buttons", "checkboxes", "dropdown", "select", "tabs"]
+      "enum": [
+        "buttons",
+        "checkboxes",
+        "dropdown",
+        "select",
+        "tabs"
+      ]
     },
     "listingType": {
       "type": "string",
       "default": "ul",
-      "enum": ["ul", "ol", "none"]
+      "enum": [
+        "ul",
+        "ol",
+        "none"
+      ]
     },
     "showCount": {
       "type": "boolean",
@@ -106,7 +100,13 @@
     "inputType": {
       "type": "string",
       "default": "text",
-      "enum": ["text", "number", "range", "date", "date-range"]
+      "enum": [
+        "text",
+        "number",
+        "range",
+        "date",
+        "date-range"
+      ]
     },
     "minValue": {
       "type": "string",
@@ -151,7 +151,11 @@
     "searchButtonDisplay": {
       "type": "string",
       "default": "text",
-      "enum": ["text", "icon", "icon-text"]
+      "enum": [
+        "text",
+        "icon",
+        "icon-text"
+      ]
     },
     "searchButtonIcon": {
       "type": "string",
@@ -160,7 +164,10 @@
     "keywordAction": {
       "type": "string",
       "default": "typing",
-      "enum": ["typing", "button"]
+      "enum": [
+        "typing",
+        "button"
+      ]
     },
     "filterValue": {
       "type": "string",
@@ -185,9 +192,11 @@
     "width": {
       "type": "string",
       "default": "full",
-      "enum": ["full", "fit"]
+      "enum": [
+        "full",
+        "fit"
+      ]
     }
   },
   "editorScript": "file:../../dist/blocks/advanced-filter/index.js"
 }
-

@@ -124,6 +124,9 @@ class TermFeaturedImageBlock
 
         $term = $this->resolveTerm($attributes, $block);
         $imageId = $term instanceof WP_Term ? $service->getTermImageId($term) : 0;
+        if ($imageId <= 0) {
+            $imageId = absint($attributes['defaultImageId'] ?? 0);
+        }
 
         $classes = ['term-featured-image'];
         $inlineStyles = [];
