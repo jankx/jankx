@@ -83,7 +83,10 @@ class TaxonomyImageService
             return $this->allowedTaxonomies;
         }
 
-        $saved = $this->getOption(self::OPTION_TAXONOMIES, []);
+        $saved = $this->getOption(self::OPTION_TAXONOMIES, null);
+        if ($saved === null) {
+            $saved = array_keys($this->getPublicTaxonomies());
+        }
         if (is_string($saved)) {
             $saved = $saved !== '' ? [$saved] : [];
         }

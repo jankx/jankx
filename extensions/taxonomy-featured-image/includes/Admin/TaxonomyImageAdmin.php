@@ -26,8 +26,7 @@ class TaxonomyImageAdmin
     {
         add_action('admin_init', [$this, 'registerTermMeta']);
         add_action('admin_enqueue_scripts', [$this, 'enqueueAssets']);
-        add_action('load-edit-tags.php', [$this, 'registerTaxonomyHooks']);
-        add_action('load-term.php', [$this, 'registerTaxonomyHooks']);
+        add_action('admin_init', [$this, 'registerTaxonomyHooks'], 20);
     }
 
     /**
@@ -41,24 +40,21 @@ class TaxonomyImageAdmin
     }
 
     /**
-     * Hook into current taxonomy screens (resolved at runtime)
+        * Register fields and columns for every supported taxonomy.
      *
      * @return void
      */
     public function registerTaxonomyHooks(): void
     {
-        $taxonomy = isset($_GET['taxonomy']) ? sanitize_key(wp_unslash($_GET['taxonomy'])) : '';
-
-        if (!$taxonomy || !$this->service->isTaxonomySupported($taxonomy)) {
-            return;
+        foreach ($this->service->getAllowedTaxonomies() as $taxonomy) {
+            $taxonomy = sanitize_key($taxonomy);
+            add_action("{$taxonomy}_add_form_fields", [$this, 'renderAddField']);
+            add_action("{$taxonomy}_edit_form_fields", [$this, 'renderEditField']);
+            add_action("created_{$taxonomy}", [$this, 'saveTerm']);
+            add_action("edited_{$taxonomy}", [$this, 'saveTerm']);
+            add_filter("manage_edit-{$taxonomy}_columns", [$this, 'addColumn']);
+            add_filter("manage_{$taxonomy}_custom_column", [$this, 'renderColumn'], 10, 3);
         }
-
-        add_action("{$taxonomy}_add_form_fields", [$this, 'renderAddField']);
-        add_action("{$taxonomy}_edit_form_fields", [$this, 'renderEditField']);
-        add_action("created_{$taxonomy}", [$this, 'saveTerm']);
-        add_action("edited_{$taxonomy}", [$this, 'saveTerm']);
-        add_filter("manage_edit-{$taxonomy}_columns", [$this, 'addColumn']);
-        add_filter("manage_{$taxonomy}_custom_column", [$this, 'renderColumn'], 10, 3);
     }
 
     /**
@@ -172,6 +168,7 @@ JS;
 
         return sprintf(
             '<div class="jankx-term-image-field">
+                %7$s
                 <input type="hidden" name="jankx_term_image_id" data-term-image-id value="%1$d" />
                 <div class="jankx-term-image-preview">%2$s</div>
                 <a href="#" class="button jankx-term-image-add" style="%3$s">%4$s</a>
@@ -182,7 +179,8 @@ JS;
             $addStyle,
             esc_html__('Upload / Select Image', 'jankx'),
             $removeStyle,
-            esc_html__('Remove Image', 'jankx')
+            esc_html__('Remove Image', 'jankx'),
+            wp_nonce_field('jankx_save_term_image', 'jankx_term_image_nonce', true, false)
         );
     }
 
@@ -232,7 +230,10 @@ JS;
             return;
         }
 
-        if (!isset($_POST['jankx_term_image_id'])) {
+        if (
+            !isset($_POST['jankx_term_image_id'], $_POST['jankx_term_image_nonce'])
+            || !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['jankx_term_image_nonce'])), 'jankx_save_term_image')
+        ) {
             return;
         }
 
