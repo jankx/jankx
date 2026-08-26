@@ -1,0 +1,17 @@
+{
+    "name": "Site Decoration",
+    "version": "1.0.0",
+    "description": "Decorative wrapper for footer and header sections.",
+    "author": "Jankx",
+    "extension_id": "site-decoration",
+    "context": ["admin", "frontend"],
+    "caller": {
+        "file": "SiteDecorationExtension.php",
+        "class": "Jankx\\Extensions\\SiteDecoration\\SiteDecorationExtension",
+        "method": "init"
+    },
+    "requirements": {
+        "php": ">=7.4"
+    },
+    "auto_activate": true
+}

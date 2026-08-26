@@ -1,0 +1,86 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "jankx/site-decoration",
+    "version": "1.0.0",
+    "title": "Site Decoration",
+    "category": "design",
+    "icon": "art",
+    "description": "Decorate a footer, header, or cover section and its child blocks.",
+    "textdomain": "jankx",
+    "editorScript": "file:../../dist/site-decoration/index.js",
+    "style": "file:../../dist/style-site-decoration.css",
+    "editorStyle": "file:../../dist/style-site-decoration.css",
+    "attributes": {
+        "section": {
+            "type": "string",
+            "enum": ["footer", "header", "cover"],
+            "default": "footer"
+        },
+        "headingUnderline": {
+            "type": "string",
+            "enum": ["none", "solid", "double", "dotted", "ornament"],
+            "default": "ornament"
+        },
+        "underlineColor": {
+            "type": "string",
+            "default": ""
+        },
+        "underlineWidth": {
+            "type": "number",
+            "default": 48
+        },
+        "afterBackgroundColor": {
+            "type": "string",
+            "default": ""
+        },
+        "afterBackgroundImage": {
+            "type": "string",
+            "default": ""
+        },
+        "afterBackgroundSize": {
+            "type": "string",
+            "enum": ["auto", "cover", "contain"],
+            "default": "auto"
+        },
+        "afterOpacity": {
+            "type": "number",
+            "default": 1
+        },
+        "afterHeight": {
+            "type": "number",
+            "default": 72
+        },
+        "afterPosition": {
+            "type": "string",
+            "enum": ["top", "bottom"],
+            "default": "bottom"
+        },
+        "afterLayer": {
+            "type": "string",
+            "enum": ["behind", "front"],
+            "default": "behind"
+        },
+        "className": {
+            "type": "string"
+        }
+    },
+    "supports": {
+        "anchor": true,
+        "html": false,
+        "spacing": {
+            "margin": true,
+            "padding": true,
+            "blockGap": true
+        },
+        "color": {
+            "background": true,
+            "text": true,
+            "gradients": true
+        },
+        "layout": {
+            "allowSwitching": true,
+            "allowInheriting": false
+        }
+    }
+}

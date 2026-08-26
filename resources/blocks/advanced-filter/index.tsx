@@ -267,6 +267,17 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
     }, [filterType]);
 
 
+    // Khi nằm trong smart-tab, không render inspector controls — smart-tab xử lý tất cả
+    if (isSmartTabChild) {
+        return (
+            <div {...blockProps}>
+                <span style={{ fontSize: '12px', color: '#999', fontStyle: 'italic' }}>
+                    [{filterType}{taxonomy ? `: ${taxonomy}` : ''}]
+                </span>
+            </div>
+        );
+    }
+
     return (
         <>
             <InspectorControls>
@@ -325,102 +336,78 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                                 help={__('Taxonomy lấy theo post type của block cha', 'jankx')}
                             />
 
-                            {/* Ẩn display settings khi parent là smart-tab */}
-                            {!isSmartTabChild && (
-                                <>
-                                    <SelectControl
-                                        label={__('Display Style', 'jankx')}
-                                        value={normalizedDisplayStyle}
-                                        options={[
-                                            { label: __('Buttons', 'jankx'), value: 'buttons' },
-                                            { label: __('Checkboxes', 'jankx'), value: 'checkboxes' },
-                                            { label: __('Tabs', 'jankx'), value: 'tabs' },
-                                        ]}
-                                        onChange={(value) => setAttributes({ displayStyle: value as FilterAttributes['displayStyle'] })}
-                                    />
+                            <SelectControl
+                                label={__('Display Style', 'jankx')}
+                                value={normalizedDisplayStyle}
+                                options={[
+                                    { label: __('Buttons', 'jankx'), value: 'buttons' },
+                                    { label: __('Checkboxes', 'jankx'), value: 'checkboxes' },
+                                    { label: __('Tabs', 'jankx'), value: 'tabs' },
+                                ]}
+                                onChange={(value) => setAttributes({ displayStyle: value as FilterAttributes['displayStyle'] })}
+                            />
 
-                                    {normalizedDisplayStyle === 'checkboxes' && (
-                                        <SelectControl
-                                            label={__('Listing Type', 'jankx')}
-                                            value={listingType || 'ul'}
-                                            options={[
-                                                { label: __('Unordered List (•)', 'jankx'), value: 'ul' },
-                                                { label: __('Ordered List (1, 2, 3)', 'jankx'), value: 'ol' },
-                                                { label: __('No List', 'jankx'), value: 'none' },
-                                            ]}
-                                            onChange={(value) => setAttributes({ listingType: value as FilterAttributes['listingType'] })}
-                                        />
-                                    )}
-
-                                    <ToggleControl
-                                        label={__('Show Post Counts', 'jankx')}
-                                        checked={resolvedShowCount}
-                                        onChange={(value) => setAttributes({ showCount: value })}
-                                    />
-
-                                    <ToggleControl
-                                        label={__('Show Empty Terms', 'jankx')}
-                                        checked={resolvedShowEmptyTerms}
-                                        onChange={(value) => setAttributes({ showEmptyTerms: value })}
-                                    />
-
-                                    <ToggleControl
-                                        label={__('Show Only Top Level Terms', 'jankx')}
-                                        checked={resolvedShowOnlyTopLevel}
-                                        onChange={(value) => setAttributes({ showOnlyTopLevel: value })}
-                                    />
-
-                                    <ToggleControl
-                                        label={__('Show Hierarchy', 'jankx')}
-                                        checked={resolvedShowHierarchy}
-                                        onChange={(value) => setAttributes({ showHierarchy: value })}
-                                    />
-
-                                    <ToggleControl
-                                        label={__('Multiple Selection', 'jankx')}
-                                        checked={resolvedMultiple}
-                                        onChange={(value) => setAttributes({ multipleSelection: value })}
-                                    />
-                                </>
-                            )}
-
-                            {/* Hiển thị UI chọn term khi parent là smart-tab */}
-                            {isSmartTabChild && taxonomy && (
+                            {normalizedDisplayStyle === 'checkboxes' && (
                                 <SelectControl
-                                    label={__('Select Term', 'jankx')}
-                                    value={filterValue || 'all'}
+                                    label={__('Listing Type', 'jankx')}
+                                    value={listingType || 'ul'}
                                     options={[
-                                        { label: __('Tất cả', 'jankx'), value: 'all' },
-                                        ...(loadingTerms ? [] : terms.map((term: any) => ({
-                                            label: `${term.name}${term.count !== undefined ? ` (${term.count})` : ''}`,
-                                            value: String(term.id),
-                                        }))),
+                                        { label: __('Unordered List (•)', 'jankx'), value: 'ul' },
+                                        { label: __('Ordered List (1, 2, 3)', 'jankx'), value: 'ol' },
+                                        { label: __('No List', 'jankx'), value: 'none' },
                                     ]}
-                                    onChange={(value) => setAttributes({ filterValue: value === 'all' ? '' : value })}
-                                    help={__('Chọn "Tất cả" để hiển thị tất cả data, hoặc chọn term cụ thể để filter', 'jankx')}
+                                    onChange={(value) => setAttributes({ listingType: value as FilterAttributes['listingType'] })}
                                 />
                             )}
 
-                            {!isSmartTabChild && (
-                                <div style={{ marginTop: '10px' }}>
-                                    <strong style={{ display: 'block', marginBottom: '6px' }}>
-                                        {__('Preview terms', 'jankx')}
-                                    </strong>
-                                    {loadingTerms ? (
-                                        <Spinner />
-                                    ) : terms.length === 0 ? (
-                                        <Placeholder>{__('No terms found', 'jankx')}</Placeholder>
-                                    ) : (
-                                        <ul style={{ maxHeight: '120px', overflow: 'auto', paddingLeft: '16px' }}>
-                                            {terms.map((term: any) => (
-                                                <li key={term.id}>
-                                                    {term.name} {term.count !== undefined ? `(${term.count})` : ''}
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    )}
-                                </div>
-                            )}
+                            <ToggleControl
+                                label={__('Show Post Counts', 'jankx')}
+                                checked={resolvedShowCount}
+                                onChange={(value) => setAttributes({ showCount: value })}
+                            />
+
+                            <ToggleControl
+                                label={__('Show Empty Terms', 'jankx')}
+                                checked={resolvedShowEmptyTerms}
+                                onChange={(value) => setAttributes({ showEmptyTerms: value })}
+                            />
+
+                            <ToggleControl
+                                label={__('Show Only Top Level Terms', 'jankx')}
+                                checked={resolvedShowOnlyTopLevel}
+                                onChange={(value) => setAttributes({ showOnlyTopLevel: value })}
+                            />
+
+                            <ToggleControl
+                                label={__('Show Hierarchy', 'jankx')}
+                                checked={resolvedShowHierarchy}
+                                onChange={(value) => setAttributes({ showHierarchy: value })}
+                            />
+
+                            <ToggleControl
+                                label={__('Multiple Selection', 'jankx')}
+                                checked={resolvedMultiple}
+                                onChange={(value) => setAttributes({ multipleSelection: value })}
+                            />
+
+                            <div style={{ marginTop: '10px' }}>
+                                <strong style={{ display: 'block', marginBottom: '6px' }}>
+                                    {__('Preview terms', 'jankx')}
+                                </strong>
+                                {loadingTerms ? (
+                                    <Spinner />
+                                ) : terms.length === 0 ? (
+                                    <Placeholder>{__('No terms found', 'jankx')}</Placeholder>
+                                ) : (
+                                    <ul style={{ maxHeight: '120px', overflow: 'auto', paddingLeft: '16px' }}>
+                                        {terms.map((term: any) => (
+                                            <li key={term.id}>
+                                                {term.name} {term.count !== undefined ? `(${term.count})` : ''}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                )}
+                            </div>
                         </>
                     )}
 
@@ -433,261 +420,162 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                                 placeholder={__('e.g., _price, custom_field', 'jankx')}
                             />
 
-                            {!isSmartTabChild && (
+                            <SelectControl
+                                label={__('Input Type', 'jankx')}
+                                value={inputType || 'text'}
+                                options={[
+                                    { label: __('Text', 'jankx'), value: 'text' },
+                                    { label: __('Number', 'jankx'), value: 'number' },
+                                    { label: __('Number Range', 'jankx'), value: 'range' },
+                                    { label: __('Date', 'jankx'), value: 'date' },
+                                    { label: __('Date Range', 'jankx'), value: 'date-range' },
+                                ]}
+                                onChange={(value) => setAttributes({ inputType: value as FilterAttributes['inputType'] })}
+                            />
+
+                            {inputType === 'range' && (
                                 <>
-                                    <SelectControl
-                                        label={__('Input Type', 'jankx')}
-                                        value={inputType || 'text'}
-                                        options={[
-                                            { label: __('Text', 'jankx'), value: 'text' },
-                                            { label: __('Number', 'jankx'), value: 'number' },
-                                            { label: __('Number Range', 'jankx'), value: 'range' },
-                                            { label: __('Date', 'jankx'), value: 'date' },
-                                            { label: __('Date Range', 'jankx'), value: 'date-range' },
-                                        ]}
-                                        onChange={(value) => setAttributes({ inputType: value as FilterAttributes['inputType'] })}
-                                    />
-
-                                    {inputType === 'range' && (
-                                        <>
-                                            <TextControl
-                                                label={__('Min Value', 'jankx')}
-                                                value={minValue || ''}
-                                                onChange={(value) => setAttributes({ minValue: value })}
-                                                type="number"
-                                            />
-                                            <TextControl
-                                                label={__('Max Value', 'jankx')}
-                                                value={maxValue || ''}
-                                                onChange={(value) => setAttributes({ maxValue: value })}
-                                                type="number"
-                                            />
-                                        </>
-                                    )}
-
                                     <TextControl
-                                        label={__('Placeholder', 'jankx')}
-                                        value={placeholder || ''}
-                                        onChange={(value) => setAttributes({ placeholder: value })}
+                                        label={__('Min Value', 'jankx')}
+                                        value={minValue || ''}
+                                        onChange={(value) => setAttributes({ minValue: value })}
+                                        type="number"
+                                    />
+                                    <TextControl
+                                        label={__('Max Value', 'jankx')}
+                                        value={maxValue || ''}
+                                        onChange={(value) => setAttributes({ maxValue: value })}
+                                        type="number"
                                     />
                                 </>
                             )}
 
-                            {/* Hiển thị UI nhập meta value khi parent là smart-tab */}
-                            {isSmartTabChild && metaKey && (
-                                <TextControl
-                                    label={__('Meta Value', 'jankx')}
-                                    value={filterValue || ''}
-                                    onChange={(value) => setAttributes({ filterValue: value })}
-                                    placeholder={__('Nhập giá trị meta để filter', 'jankx')}
-                                    help={__('Giá trị meta để filter khi tab được click', 'jankx')}
-                                />
-                            )}
+                            <TextControl
+                                label={__('Placeholder', 'jankx')}
+                                value={placeholder || ''}
+                                onChange={(value) => setAttributes({ placeholder: value })}
+                            />
                         </>
                     )}
 
                     {filterType === 'price' && (
                         <>
-                            {!isSmartTabChild && (
-                                <TextControl
-                                    label={__('Currency Symbol', 'jankx')}
-                                    value={currency || 'VND'}
-                                    onChange={(value) => setAttributes({ currency: value })}
-                                />
-                            )}
+                            <TextControl
+                                label={__('Currency Symbol', 'jankx')}
+                                value={currency || 'VND'}
+                                onChange={(value) => setAttributes({ currency: value })}
+                            />
 
-                            {/* Hiển thị UI nhập price range khi parent là smart-tab */}
-                            {isSmartTabChild ? (
-                                <>
-                                    <TextControl
-                                        label={__('Min Price', 'jankx')}
-                                        value={filterValueMin || ''}
-                                        onChange={(value) => setAttributes({ filterValueMin: value })}
-                                        type="number"
-                                        placeholder={__('Giá tối thiểu', 'jankx')}
-                                    />
-                                    <TextControl
-                                        label={__('Max Price', 'jankx')}
-                                        value={filterValueMax || ''}
-                                        onChange={(value) => setAttributes({ filterValueMax: value })}
-                                        type="number"
-                                        placeholder={__('Giá tối đa', 'jankx')}
-                                    />
-                                </>
-                            ) : (
-                                <>
-                                    <TextControl
-                                        label={__('Min Price', 'jankx')}
-                                        value={minPrice || ''}
-                                        onChange={(value) => setAttributes({ minPrice: value })}
-                                        type="number"
-                                    />
-                                    <TextControl
-                                        label={__('Max Price', 'jankx')}
-                                        value={maxPrice || ''}
-                                        onChange={(value) => setAttributes({ maxPrice: value })}
-                                        type="number"
-                                    />
-                                </>
-                            )}
+                            <TextControl
+                                label={__('Min Price', 'jankx')}
+                                value={minPrice || ''}
+                                onChange={(value) => setAttributes({ minPrice: value })}
+                                type="number"
+                            />
+                            <TextControl
+                                label={__('Max Price', 'jankx')}
+                                value={maxPrice || ''}
+                                onChange={(value) => setAttributes({ maxPrice: value })}
+                                type="number"
+                            />
                         </>
                     )}
 
                     {filterType === 'date' && (
                         <>
-                            {!isSmartTabChild && (
-                                <>
-                                    <SelectControl
-                                        label={__('Date Field', 'jankx')}
-                                        value={dateField || 'post_date'}
-                                        options={[
-                                            { label: __('Post Date', 'jankx'), value: 'post_date' },
-                                            { label: __('Modified Date', 'jankx'), value: 'post_modified' },
-                                        ]}
-                                        onChange={(value) => setAttributes({ dateField: value })}
-                                    />
-                                    <ToggleControl
-                                        label={__('Date Range', 'jankx')}
-                                        checked={dateRange !== undefined ? dateRange : true}
-                                        onChange={(value) => setAttributes({ dateRange: value })}
-                                        help={__('Allow users to select a date range', 'jankx')}
-                                    />
-                                </>
-                            )}
-
-                            {/* Hiển thị UI chọn date range khi parent là smart-tab */}
-                            {isSmartTabChild && (
-                                <>
-                                    <TextControl
-                                        label={__('Start Date', 'jankx')}
-                                        type="date"
-                                        value={filterValueStart || ''}
-                                        onChange={(value) => setAttributes({ filterValueStart: value })}
-                                        help={__('Ngày bắt đầu để filter', 'jankx')}
-                                    />
-                                    <TextControl
-                                        label={__('End Date', 'jankx')}
-                                        type="date"
-                                        value={filterValueEnd || ''}
-                                        onChange={(value) => setAttributes({ filterValueEnd: value })}
-                                        help={__('Ngày kết thúc để filter', 'jankx')}
-                                    />
-                                </>
-                            )}
+                            <SelectControl
+                                label={__('Date Field', 'jankx')}
+                                value={dateField || 'post_date'}
+                                options={[
+                                    { label: __('Post Date', 'jankx'), value: 'post_date' },
+                                    { label: __('Modified Date', 'jankx'), value: 'post_modified' },
+                                ]}
+                                onChange={(value) => setAttributes({ dateField: value })}
+                            />
+                            <ToggleControl
+                                label={__('Date Range', 'jankx')}
+                                checked={dateRange !== undefined ? dateRange : true}
+                                onChange={(value) => setAttributes({ dateRange: value })}
+                                help={__('Allow users to select a date range', 'jankx')}
+                            />
                         </>
                     )}
 
                     {filterType === 'author' && (
                         <>
-                            {!isSmartTabChild && (
-                                <>
-                                    <SelectControl
-                                        label={__('Display Style', 'jankx')}
-                                        value={normalizedDisplayStyle}
-                                        options={[
-                                            { label: __('Buttons', 'jankx'), value: 'buttons' },
-                                            { label: __('Checkboxes', 'jankx'), value: 'checkboxes' },
-                                            { label: __('Tabs', 'jankx'), value: 'tabs' },
-                                        ]}
-                                        onChange={(value) => setAttributes({ displayStyle: value as FilterAttributes['displayStyle'] })}
-                                    />
-                                    <ToggleControl
-                                        label={__('Multiple Selection', 'jankx')}
-                                        checked={resolvedMultiple}
-                                        onChange={(value) => setAttributes({ multipleSelection: value })}
-                                        help={__('Allow users to select multiple authors', 'jankx')}
-                                    />
-                                </>
-                            )}
-
-                            {/* Hiển thị UI chọn author khi parent là smart-tab */}
-                            {isSmartTabChild && (
-                                <SelectControl
-                                    label={__('Select Author', 'jankx')}
-                                    value={filterValue || ''}
-                                    options={[
-                                        { label: loadingAuthors ? __('Loading...', 'jankx') : __('-- Select Author --', 'jankx'), value: '' },
-                                        ...authors.map((author: any) => ({
-                                            label: author.name,
-                                            value: String(author.id),
-                                        })),
-                                    ]}
-                                    onChange={(value) => setAttributes({ filterValue: value })}
-                                    help={__('Chọn author để filter khi tab được click', 'jankx')}
-                                />
-                            )}
+                            <SelectControl
+                                label={__('Display Style', 'jankx')}
+                                value={normalizedDisplayStyle}
+                                options={[
+                                    { label: __('Buttons', 'jankx'), value: 'buttons' },
+                                    { label: __('Checkboxes', 'jankx'), value: 'checkboxes' },
+                                    { label: __('Tabs', 'jankx'), value: 'tabs' },
+                                ]}
+                                onChange={(value) => setAttributes({ displayStyle: value as FilterAttributes['displayStyle'] })}
+                            />
+                            <ToggleControl
+                                label={__('Multiple Selection', 'jankx')}
+                                checked={resolvedMultiple}
+                                onChange={(value) => setAttributes({ multipleSelection: value })}
+                                help={__('Allow users to select multiple authors', 'jankx')}
+                            />
                         </>
                     )}
 
                     {filterType === 'keyword' && (
                         <>
-                            {!isSmartTabChild && (
-                                <>
-                                    <TextControl
-                                        label={__('Placeholder', 'jankx')}
-                                        value={placeholder || __('Search...', 'jankx')}
-                                        onChange={(value) => setAttributes({ placeholder: value })}
-                                    />
-                                    <ToggleControl
-                                        label={__('Show Search Button', 'jankx')}
-                                        checked={showSearchButton !== undefined ? showSearchButton : false}
-                                        onChange={(value) => setAttributes({ showSearchButton: value })}
-                                    />
-                                    {showSearchButton ? (
-                                        <SelectControl
-                                            label={__('Search Action', 'jankx')}
-                                            value={resolvedKeywordAction}
-                                            options={[
-                                                { label: __('Filter while typing', 'jankx'), value: 'typing' },
-                                                { label: __('Only when clicking Search', 'jankx'), value: 'button' },
-                                            ]}
-                                            onChange={(value) => setAttributes({ keywordAction: value as 'typing' | 'button' })}
-                                            help={__('Chọn cách kích hoạt filter cho ô tìm kiếm', 'jankx')}
-                                        />
-                                    ) : null}
-                                    {showSearchButton ? (
-                                        <TextControl
-                                            label={__('Search Button Text', 'jankx')}
-                                            value={resolvedSearchButtonText}
-                                            onChange={(value) => setAttributes({ searchButtonText: value })}
-                                            placeholder={__('Search', 'jankx')}
-                                        />
-                                    ) : null}
-                                    {showSearchButton ? (
-                                        <SelectControl
-                                            label={__('Search Button Display', 'jankx')}
-                                            value={resolvedSearchButtonDisplay}
-                                            options={[
-                                                { label: __('Text only', 'jankx'), value: 'text' },
-                                                { label: __('SVG/Icon only', 'jankx'), value: 'icon' },
-                                                { label: __('Icon + Text', 'jankx'), value: 'icon-text' },
-                                            ]}
-                                            onChange={(value) => setAttributes({ searchButtonDisplay: value as 'text' | 'icon' | 'icon-text' })}
-                                            help={__('Chọn hiển thị nút: chỉ text, chỉ icon, hoặc icon + text', 'jankx')}
-                                        />
-                                    ) : null}
-                                    {showSearchButton && resolvedSearchButtonDisplay !== 'text' ? (
-                                        <TextControl
-                                            label={__('Search Button Icon (SVG/HTML)', 'jankx')}
-                                            value={resolvedSearchButtonIcon}
-                                            onChange={(value) => setAttributes({ searchButtonIcon: value })}
-                                            placeholder={'<svg>...</svg>'}
-                                            help={__('Dán SVG hoặc HTML icon. Sử dụng cẩn thận.', 'jankx')}
-                                        />
-                                    ) : null}
-                                </>
-                            )}
-
-                            {/* Hiển thị UI nhập keyword khi parent là smart-tab */}
-                            {isSmartTabChild && (
-                                <TextControl
-                                    label={__('Search Keyword', 'jankx')}
-                                    value={filterValue || ''}
-                                    onChange={(value) => setAttributes({ filterValue: value })}
-                                    placeholder={__('Nhập từ khóa để filter', 'jankx')}
-                                    help={__('Từ khóa để filter khi tab được click', 'jankx')}
+                            <TextControl
+                                label={__('Placeholder', 'jankx')}
+                                value={placeholder || __('Search...', 'jankx')}
+                                onChange={(value) => setAttributes({ placeholder: value })}
+                            />
+                            <ToggleControl
+                                label={__('Show Search Button', 'jankx')}
+                                checked={showSearchButton !== undefined ? showSearchButton : false}
+                                onChange={(value) => setAttributes({ showSearchButton: value })}
+                            />
+                            {showSearchButton ? (
+                                <SelectControl
+                                    label={__('Search Action', 'jankx')}
+                                    value={resolvedKeywordAction}
+                                    options={[
+                                        { label: __('Filter while typing', 'jankx'), value: 'typing' },
+                                        { label: __('Only when clicking Search', 'jankx'), value: 'button' },
+                                    ]}
+                                    onChange={(value) => setAttributes({ keywordAction: value as 'typing' | 'button' })}
+                                    help={__('Chọn cách kích hoạt filter cho ô tìm kiếm', 'jankx')}
                                 />
-                            )}
+                            ) : null}
+                            {showSearchButton ? (
+                                <TextControl
+                                    label={__('Search Button Text', 'jankx')}
+                                    value={resolvedSearchButtonText}
+                                    onChange={(value) => setAttributes({ searchButtonText: value })}
+                                    placeholder={__('Search', 'jankx')}
+                                />
+                            ) : null}
+                            {showSearchButton ? (
+                                <SelectControl
+                                    label={__('Search Button Display', 'jankx')}
+                                    value={resolvedSearchButtonDisplay}
+                                    options={[
+                                        { label: __('Text only', 'jankx'), value: 'text' },
+                                        { label: __('SVG/Icon only', 'jankx'), value: 'icon' },
+                                        { label: __('Icon + Text', 'jankx'), value: 'icon-text' },
+                                    ]}
+                                    onChange={(value) => setAttributes({ searchButtonDisplay: value as 'text' | 'icon' | 'icon-text' })}
+                                    help={__('Chọn hiển thị nút: chỉ text, chỉ icon, hoặc icon + text', 'jankx')}
+                                />
+                            ) : null}
+                            {showSearchButton && resolvedSearchButtonDisplay !== 'text' ? (
+                                <TextControl
+                                    label={__('Search Button Icon (SVG/HTML)', 'jankx')}
+                                    value={resolvedSearchButtonIcon}
+                                    onChange={(value) => setAttributes({ searchButtonIcon: value })}
+                                    placeholder={'<svg>...</svg>'}
+                                    help={__('Dán SVG hoặc HTML icon. Sử dụng cẩn thận.', 'jankx')}
+                                />
+                            ) : null}
                         </>
                     )}
                 </PanelBody>
