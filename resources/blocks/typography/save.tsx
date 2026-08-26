@@ -10,16 +10,13 @@ export default function save({ attributes }: any) {
 			'--jankx-line-clamp-desktop': attributes.lineClampDesktop || undefined,
 			'--jankx-line-clamp-tablet': attributes.lineClampTablet || undefined,
 			'--jankx-line-clamp-mobile': attributes.lineClampMobile || undefined,
-			'color': attributes.textColor,
+			color: attributes.textColor,
 		} as any,
 	});
 
 	return (
-		<>
-			<style>{`.jankx-typography-block{font-size:var(--jankx-font-size-desktop,initial);display:-webkit-box;-webkit-box-orient:vertical;overflow:hidden;text-overflow:ellipsis;-webkit-line-clamp:var(--jankx-line-clamp-desktop,initial);line-clamp:var(--jankx-line-clamp-desktop,initial)}@media(max-width:1024px){.jankx-typography-block{font-size:var(--jankx-font-size-tablet,var(--jankx-font-size-desktop,initial));-webkit-line-clamp:var(--jankx-line-clamp-tablet,var(--jankx-line-clamp-desktop,initial));line-clamp:var(--jankx-line-clamp-tablet,var(--jankx-line-clamp-desktop,initial))}}@media(max-width:768px){.jankx-typography-block{font-size:var(--jankx-font-size-mobile,var(--jankx-font-size-tablet,var(--jankx-font-size-desktop,initial)));-webkit-line-clamp:var(--jankx-line-clamp-mobile,var(--jankx-line-clamp-tablet,var(--jankx-line-clamp-desktop,initial)));line-clamp:var(--jankx-line-clamp-mobile,var(--jankx-line-clamp-tablet,var(--jankx-line-clamp-desktop,initial)))}}`}</style>
-			<div {...blockProps}>
-				<InnerBlocks.Content />
-			</div>
-		</>
+		<div {...blockProps}>
+			<InnerBlocks.Content />
+		</div>
 	);
 }

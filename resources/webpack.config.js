@@ -207,9 +207,12 @@ module.exports = {
     'dist/blocks/overlap-group/editor': './blocks/overlap-group/editor.scss',
     'assets/js/child-order': './js/filters/child-order.tsx',
     'assets/js/responsive-visibility': './js/filters/responsive-visibility.tsx',
+    
     'dist/blocks/typography/index': './blocks/typography/index.tsx',
     'dist/blocks/typography/save': './blocks/typography/save.tsx',
-    'dist/blocks/typography/editor': './blocks/typography/index.css',
+    'dist/blocks/typography/editor': './blocks/typography/editor.css',
+    'dist/blocks/typography/style': './blocks/typography/style.scss',
+    
     'dist/blocks/integration/jankx-blocks-bridge': './blocks/integration/jankx-blocks-bridge.js',
     'assets/js/sticky-header': './js/sticky-header.ts',
     '../style': './scss/style.scss',

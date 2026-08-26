@@ -6,7 +6,7 @@
  *
  * Responsive line-clamp and font-size via CSS custom properties.
  */
-.jankx-typography-block {
+.wp-block-jankx-typography > * {
   --jankx-line-clamp: var(--jankx-line-clamp-desktop);
   font-size: var(--jankx-font-size-desktop, initial);
   display: -webkit-box;
@@ -18,7 +18,7 @@
 }
 
 @media (max-width: 1024px) {
-  .jankx-typography-block {
+  .wp-block-jankx-typography > * {
     --jankx-line-clamp: var(--jankx-line-clamp-tablet, var(--jankx-line-clamp-desktop));
     font-size: var(--jankx-font-size-tablet, var(--jankx-font-size-desktop, initial));
     -webkit-line-clamp: var(--jankx-line-clamp-tablet, var(--jankx-line-clamp-desktop, initial));
@@ -26,7 +26,7 @@
   }
 }
 @media (max-width: 768px) {
-  .jankx-typography-block {
+  .wp-block-jankx-typography > * {
     --jankx-line-clamp: var(--jankx-line-clamp-mobile, var(--jankx-line-clamp-tablet, var(--jankx-line-clamp-desktop)));
     font-size: var(--jankx-font-size-mobile, var(--jankx-font-size-tablet, var(--jankx-font-size-desktop, initial)));
     -webkit-line-clamp: var(--jankx-line-clamp-mobile, var(--jankx-line-clamp-tablet, var(--jankx-line-clamp-desktop, initial)));

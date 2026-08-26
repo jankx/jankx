@@ -172,6 +172,7 @@ export function Edit(props: EditProps) {
 	const publicPostTypes: Array<{ slug: string; name: string }> = Array.isArray((window as any).jankxPublicPostTypes)
 		? (window as any).jankxPublicPostTypes
 		: [];
+	const publicPostTypesKey = publicPostTypes.map((postType) => `${postType.slug}:${postType.name}`).join('|');
 	const postTypeOptions = useMemo(
 		() => {
 			const map = new Map<string, string>();
@@ -191,7 +192,7 @@ export function Edit(props: EditProps) {
 				});
 			return Array.from(map.entries()).map(([value, label]) => ({ label, value }));
 		},
-		[wpPostTypes, publicPostTypes]
+		[wpPostTypes, publicPostTypesKey]
 	);
 	useEffect(() => {
 		if (
@@ -208,7 +209,7 @@ export function Edit(props: EditProps) {
 			const isInvalid =
 				showForPostType === 'attachment' ||
 				(!!showForPostType && !postTypeOptions.some((opt) => opt.value === showForPostType));
-			if (isInvalid && detectedPostType) {
+			if (isInvalid && detectedPostType && showForPostType !== detectedPostType) {
 				setAttributes({ showForPostType: detectedPostType });
 			}
 		}

@@ -1,14 +1,41 @@
-/*!***************************************************************************************************************************!*\
-  !*** css ../node_modules/css-loader/dist/cjs.js!../node_modules/postcss-loader/dist/cjs.js!./blocks/typography/index.css ***!
-  \***************************************************************************************************************************/
+/*!****************************************************************************************************************************!*\
+  !*** css ../node_modules/css-loader/dist/cjs.js!../node_modules/postcss-loader/dist/cjs.js!./blocks/typography/editor.css ***!
+  \****************************************************************************************************************************/
 /**
  * Typography Block - Editor Only Styles
+ *
+ * Line-clamp and font-size via CSS custom properties.
+ * Matches the internal CSS output by TypographyBlock.php on the frontend.
  */
 
 .jankx-typography-block {
+	font-size: var(--jankx-font-size-desktop, initial);
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	-webkit-line-clamp: var(--jankx-line-clamp-desktop, initial);
+	line-clamp: var(--jankx-line-clamp-desktop, initial);
+
 	&.is-selected {
 		outline: 1px dashed rgba(0, 120, 215, 0.5);
 		outline-offset: 2px;
+	}
+}
+
+@media (max-width: 1024px) {
+	.jankx-typography-block {
+		font-size: var(--jankx-font-size-tablet, var(--jankx-font-size-desktop, initial));
+		-webkit-line-clamp: var(--jankx-line-clamp-tablet, var(--jankx-line-clamp-desktop, initial));
+		line-clamp: var(--jankx-line-clamp-tablet, var(--jankx-line-clamp-desktop, initial));
+	}
+}
+
+@media (max-width: 768px) {
+	.jankx-typography-block {
+		font-size: var(--jankx-font-size-mobile, var(--jankx-font-size-tablet, var(--jankx-font-size-desktop, initial)));
+		-webkit-line-clamp: var(--jankx-line-clamp-mobile, var(--jankx-line-clamp-tablet, var(--jankx-line-clamp-desktop, initial)));
+		line-clamp: var(--jankx-line-clamp-mobile, var(--jankx-line-clamp-tablet, var(--jankx-line-clamp-desktop, initial)));
 	}
 }
 

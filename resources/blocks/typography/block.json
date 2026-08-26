@@ -40,6 +40,6 @@
         }
     },
     "editorScript": "file:../../dist/blocks/typography/index.js",
-    "editorStyle": "file:../../dist/blocks/typography/index.css",
+    "editorStyle": "file:../../dist/blocks/typography/editor.css",
     "style": "file:../../dist/blocks/typography/style.css"
 }
