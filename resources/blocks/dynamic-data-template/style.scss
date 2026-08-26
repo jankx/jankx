@@ -5,12 +5,18 @@
  * qua block attributes (transitions, animations, pseudo-elements, hover states).
  * Visual styles (color, padding, border-radius, size...) được PHP generate
  * thành inline styles từ block attributes để fully custom qua Block Editor.
+ *
+ * SCOPE: Tất cả styles apply cho TỪNG ITEM riêng lẻ (.dynamic-data-template__item).
+ * Wrapper cho toàn bộ items thuộc dynamic-data-layout block.
  */
 
 // Import Animate.css for hover/unhover animation support
 @import url('https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css');
 
-.content-loop-layout--overlap-card {
+// =====================================================
+// Overlap Card Layout — per-item
+// =====================================================
+.dynamic-data-template__item {
     .overlap-card-content {
         position: relative;
         z-index: 10;
@@ -25,7 +31,7 @@
 }
 
 // =====================================================
-// Hero Overlay Layout
+// Hero Overlay Layout — per-item
 // =====================================================
 .jankx-hero-overlay-box {
     position: relative;
@@ -76,8 +82,7 @@
 }
 
 // =====================================================
-// Overlay icon wrapper (standard overlay mode)
-// Positioning logic requires CSS classes
+// Overlay icon wrapper (standard overlay mode) — per-item
 // =====================================================
 .jankx-thumbnail-overlay-wrapper {
     position: relative;
@@ -148,7 +153,7 @@
 }
 
 // =====================================================
-// Scroll Reveal Animations (behavioral — cannot inline)
+// Scroll Reveal Animations (behavioral — cannot inline) — per-item
 // =====================================================
 .jankx-reveal {
     --jankx-animation-duration: 1000ms;

@@ -34,12 +34,10 @@ class GoogleFontsProvider
 
             // Enqueue Google Fonts CSS
             $sanitizedId = \Jankx\Helper\HtmlHelper::sanitizeFontClassName($fontName);
-            add_action('wp_head', function () use ($url, $sanitizedId) {
-                echo "<link rel=\"stylesheet\" id=\"google-font-{$sanitizedId}-css\" href=\"{$url}\" media=\"all\" />\n";
-            });
-            add_action('admin_head', function () use ($url, $sanitizedId) {
-                echo "<link rel=\"stylesheet\" id=\"google-font-{$sanitizedId}-css\" href=\"{$url}\" media=\"all\" />\n";
-            });
+            $handle = 'google-font-' . $sanitizedId;
+
+            wp_register_style($handle, $url, [], null);
+            wp_enqueue_style($handle);
         } else {
         }
     }
@@ -58,12 +56,6 @@ class GoogleFontsProvider
 
         // Thêm preconnect links vào head
         add_action('wp_head', function () {
-            echo '<link rel="preconnect" href="https://fonts.googleapis.com">' . "\n";
-            echo '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>' . "\n";
-        }, 1);
-
-        // Thêm preconnect links vào admin head
-        add_action('admin_head', function () {
             echo '<link rel="preconnect" href="https://fonts.googleapis.com">' . "\n";
             echo '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>' . "\n";
         }, 1);
@@ -87,11 +79,21 @@ class GoogleFontsProvider
         $italicWeights = [];
 
         foreach ($variants as $variant) {
-            if (strpos($variant, 'italic') !== false) {
+            $isItalic = false;
+            $weight = $variant;
+
+            if (str_ends_with($variant, 'i')) {
+                $isItalic = true;
+                $weight = substr($variant, 0, -1);
+            } elseif (strpos($variant, 'italic') !== false) {
+                $isItalic = true;
                 $weight = str_replace('italic', '', $variant);
+            }
+
+            if ($isItalic) {
                 $italicWeights[] = $weight;
             } else {
-                $regularWeights[] = $variant;
+                $regularWeights[] = $weight;
             }
         }
 

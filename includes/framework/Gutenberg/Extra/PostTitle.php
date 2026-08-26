@@ -31,7 +31,7 @@ class PostTitle extends AbstractBlockExtra
     {
         $design_tokens = apply_filters('jankx/block/post_title/design_tokens', [
             'color' => '#1a2b8f',
-            'font-family' => '"Outfit", "Inter", sans-serif',
+            'font-family' => '"Be Vietnam Pro", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
             'transition' => 'color 0.2s ease',
         ]);
 

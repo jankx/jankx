@@ -1,10 +1,10 @@
-/*!********************************************************************************************************************************************************************************************************!*\
-  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!./blocks/dynamic-data-template/style.scss ***!
-  \********************************************************************************************************************************************************************************************************/
+/*!***********************************************************************************************************************************************************************************************************!*\
+  !*** css ../node_modules/css-loader/dist/cjs.js!../node_modules/postcss-loader/dist/cjs.js!../node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!./blocks/dynamic-data-template/style.scss ***!
+  \***********************************************************************************************************************************************************************************************************/
 @import url(https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css);
-/*!************************************************************************************************************************************************************************************************************!*\
-  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!./blocks/dynamic-data-template/style.scss (1) ***!
-  \************************************************************************************************************************************************************************************************************/
+/*!***************************************************************************************************************************************************************************************************************!*\
+  !*** css ../node_modules/css-loader/dist/cjs.js!../node_modules/postcss-loader/dist/cjs.js!../node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!./blocks/dynamic-data-template/style.scss (1) ***!
+  \***************************************************************************************************************************************************************************************************************/
 @charset "UTF-8";
 /**
  * Dynamic Data Template Block Styles
@@ -13,8 +13,11 @@
  * qua block attributes (transitions, animations, pseudo-elements, hover states).
  * Visual styles (color, padding, border-radius, size...) được PHP generate
  * thành inline styles từ block attributes để fully custom qua Block Editor.
+ *
+ * SCOPE: Tất cả styles apply cho TỪNG ITEM riêng lẻ (.dynamic-data-template__item).
+ * Wrapper cho toàn bộ items thuộc dynamic-data-layout block.
  */
-.content-loop-layout--overlap-card .overlap-card-content {
+.dynamic-data-template__item .overlap-card-content {
   position: relative;
   z-index: 10;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);

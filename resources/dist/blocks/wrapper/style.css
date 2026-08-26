@@ -1,6 +1,6 @@
-/*!**********************************************************************************************************************!*\
-  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/dist/cjs.js!./blocks/wrapper/index.css ***!
-  \**********************************************************************************************************************/
+/*!************************************************************************************************************************!*\
+  !*** css ../node_modules/css-loader/dist/cjs.js!../node_modules/postcss-loader/dist/cjs.js!./blocks/wrapper/index.css ***!
+  \************************************************************************************************************************/
 .has-jankx-responsive-wrapper {
     padding: var(--jankx-padding-desktop, initial);
     margin: var(--jankx-margin-desktop, initial);
