@@ -16,7 +16,7 @@ export default class JankxCarousel {
         if (!carousel || carousel._carouselInitialized) return;
         this.carousel = carousel;
         this.options = options;
-        const container = carousel.querySelector('.carousel-container') || carousel.querySelector('.jankx-carousel-container') || carousel.querySelector('.embla__viewport');
+        const container = carousel.querySelector('.embla__viewport') || carousel.querySelector('.carousel-container') || carousel.querySelector('.jankx-carousel-container');
 
         if (!container) return;
         this.container = container;
@@ -68,7 +68,8 @@ export default class JankxCarousel {
             this.config.showDots = this.carousel.classList.contains('wp-block-jankx-dynamic-data-layout');
         }
 
-        this.container.style.setProperty('--slides-per-view', this.config.slidesPerView);
+        // Let CSS handle --slides-per-view responsively via @media queries and variables.
+        // this.container.style.setProperty('--slides-per-view', this.config.slidesPerView);
         this.container.style.setProperty('--space-between', `${this.config.spaceBetween}px`);
         this.container.style.setProperty('--peek-amount', `${this.config.peekAmount}%`);
     }

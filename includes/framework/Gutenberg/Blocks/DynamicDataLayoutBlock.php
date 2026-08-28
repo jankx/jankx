@@ -769,10 +769,11 @@ class DynamicDataLayoutBlock extends Block
         // Add block class for easier selection
         $baseClass = 'wp-block-jankx-dynamic-data-layout';
         // Include layout-constrained classes to match editor wrapper behavior
-        $attrs['class'] = implode(' ', [
+        $attrs['class'] = implode(' ', array_filter([
             $baseClass,
+            !empty($attributes['align']) ? 'align' . $attributes['align'] : '',
             !empty($attributes['className']) ? $attributes['className'] : '',
-        ]);
+        ]));
 
         // Add carousel-specific attributes
         if (($attributes['layout'] ?? '') === 'carousel') {
@@ -781,7 +782,14 @@ class DynamicDataLayoutBlock extends Block
 
             // Add carousel data attributes
             $attrs['data-layout'] = 'carousel';
-            $attrs['data-slides-per-view'] = esc_attr($attributes['columns'] ?? 3);
+            // Output explicit responsive attributes instead of overriding inline
+            $attrs['data-columns'] = esc_attr($attributes['columns'] ?? 3);
+            if (isset($attributes['columnsTablet'])) {
+                $attrs['data-columns-tablet'] = esc_attr($attributes['columnsTablet']);
+            }
+            if (isset($attributes['columnsMobile'])) {
+                $attrs['data-columns-mobile'] = esc_attr($attributes['columnsMobile']);
+            }
             $attrs['data-space-between'] = esc_attr($attributes['spaceBetween'] ?? 16);
             $attrs['data-autoplay'] = !empty($attributes['autoplay']) ? 'true' : 'false';
             $attrs['data-autoplay-delay'] = esc_attr($attributes['autoplayDelay'] ?? 3000);
@@ -807,8 +815,8 @@ class DynamicDataLayoutBlock extends Block
         $styleRules = [];
         $columns = isset($attributes['columns']) ? (int) $attributes['columns'] : 3;
         $attrs['data-columns'] = $columns;
+        // Do not force --slides-per-view here, let CSS handle it responsively via --columns-*
         $styleRules[] = '--columns-desktop: ' . $columns;
-        $styleRules[] = '--slides-per-view: ' . $columns;
         $styleRules[] = '--peek-amount: ' . ($attributes['carouselPeek'] ?? 0) . '%';
 
         if (isset($attributes['postsPerPage'])) {
