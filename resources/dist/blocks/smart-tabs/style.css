@@ -98,9 +98,6 @@
 .smart-tabs__add-tab:hover {
   opacity: 1;
 }
-.smart-tabs__content {
-  padding: 20px 0;
-}
 .smart-tabs--hide-border-bottom .smart-tabs__nav-list {
   border-bottom: none;
 }
@@ -173,7 +170,6 @@
 .smart-tabs--style-boxed .smart-tabs__content {
   border: 1px solid var(--smart-tabs-border-color);
   border-radius: 0 4px 4px 4px;
-  padding: 20px;
   margin-top: -2px;
 }
 .smart-tabs--style-bordered .smart-tabs__nav-list {

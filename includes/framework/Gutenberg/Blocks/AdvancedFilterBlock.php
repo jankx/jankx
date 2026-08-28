@@ -45,14 +45,22 @@ class AdvancedFilterBlock extends Block
      */
     public function render($attributes, $content = '', $block = null)
     {
-        // Kiểm tra xem parent block có phải là smart-tab không
-        $parent_block = $block->parent ?? null;
+        // Kiểm tra xem có nằm trong smart-tab không bằng block context
+        // (context được truyền từ jankx/smart-tab qua providesContext)
         $is_smart_tab_child = false;
+        if ($block && !empty($block->context)) {
+            $trigger = $block->context['jankx/smartTabTrigger'] ?? '';
+            $is_smart_tab_child = $trigger !== '';
+        }
 
-        if ($parent_block && isset($parent_block->parsed_block)) {
-            $parent_name = $parent_block->parsed_block['blockName'] ?? '';
-            if ($parent_name === 'jankx/smart-tab') {
-                $is_smart_tab_child = true;
+        // Fallback: kiểm tra parent block
+        if (!$is_smart_tab_child && $block) {
+            $parent_block = $block->parent ?? null;
+            if ($parent_block && isset($parent_block->parsed_block)) {
+                $parent_name = $parent_block->parsed_block['blockName'] ?? '';
+                if ($parent_name === 'jankx/smart-tab') {
+                    $is_smart_tab_child = true;
+                }
             }
         }
 

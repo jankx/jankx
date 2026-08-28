@@ -9,6 +9,7 @@
     "jankx/advanced-filters",
     "jankx/smart-tab"
   ],
+  "usesContext": ["jankx/smartTabTrigger"],
   "icon": "filter",
   "description": "Một filter đơn lẻ dùng bên trong Advanced Filters.",
   "textdomain": "jankx",

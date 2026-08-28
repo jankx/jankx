@@ -112,6 +112,9 @@
         }
     },
     "usesContext": ["jankx/smartTabsId", "jankx/activeTab"],
+    "providesContext": {
+        "jankx/smartTabTrigger": "trigger"
+    },
     "editorScript": "file:../../dist/blocks/smart-tab/index.js",
     "editorStyle": "file:../../dist/blocks/smart-tab/editor.css",
     "viewScript": "file:../../dist/blocks/smart-tab/view.js",

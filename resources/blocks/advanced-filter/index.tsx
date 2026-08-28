@@ -157,6 +157,15 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                 };
             }
 
+            // Kiểm tra nếu nằm trực tiếp trong smart-tabs (không qua smart-tab)
+            parentId = parents.find((id) => getBlock(id)?.name === 'jankx/smart-tabs');
+            if (parentId) {
+                return {
+                    isSmartTabChild: true,
+                    parentDefaults: {},
+                };
+            }
+
             // Fallback: tìm parent là advanced-filters
             parentId = parents.find((id) => getBlock(id)?.name === 'jankx/advanced-filters');
             if (parentId) {
