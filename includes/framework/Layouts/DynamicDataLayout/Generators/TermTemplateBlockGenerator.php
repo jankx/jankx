@@ -24,6 +24,14 @@ class TermTemplateBlockGenerator extends AbstractContentGenerator
 {
     use PostTemplateRendererTrait;
 
+    /** @var WP_Term|null Currently rendering term (for nested block context fallback) */
+    protected static ?WP_Term $currentRenderingTerm = null;
+
+    public static function getCurrentRenderingTerm(): ?WP_Term
+    {
+        return self::$currentRenderingTerm;
+    }
+
     /** @var array */
     protected $templateBlock = [];
 
@@ -127,7 +135,6 @@ class TermTemplateBlockGenerator extends AbstractContentGenerator
         $output = [];
         $templateAttrs = $this->getTemplateAttrs();
         $itemInlineStyle = $this->buildTemplateItemInlineStyle($templateAttrs);
-        $styleAttr = $itemInlineStyle !== '' ? sprintf(' style="%s"', esc_attr($itemInlineStyle)) : '';
 
         foreach ($terms as $term) {
             $itemContent = $this->renderTermItem($term, $terms, $options);
@@ -136,10 +143,57 @@ class TermTemplateBlockGenerator extends AbstractContentGenerator
             }
 
             $classes = $this->buildItemClasses($term);
-            $output[] = sprintf('<div class="%s"%s>%s</div>', esc_attr($classes), $styleAttr, $itemContent);
+            $currentStyle = $itemInlineStyle;
+            $bgStyle = $this->buildTermItemBackgroundStyle($templateAttrs, $term);
+            if ($bgStyle !== '') {
+                $currentStyle .= ($currentStyle !== '' ? '; ' : '') . $bgStyle;
+            }
+            $currentStyleAttr = $currentStyle !== '' ? sprintf(' style="%s"', esc_attr($currentStyle)) : '';
+            $output[] = sprintf('<div class="%s"%s>%s</div>', esc_attr($classes), $currentStyleAttr, $itemContent);
         }
 
         return implode('', $output);
+    }
+
+    protected function buildTermItemBackgroundStyle(array $attrs, \WP_Term $term): string
+    {
+        $styles = [];
+        $bgType = $attrs['itemBgType'] ?? 'none';
+
+        if ($bgType === 'color' && !empty($attrs['itemBgColor'])) {
+            $styles[] = 'background-color: ' . esc_attr($attrs['itemBgColor']);
+        }
+
+        if ($bgType === 'image') {
+            $imageUrl = $attrs['itemBgImageUrl'] ?? '';
+            if (($attrs['itemBgImageSource'] ?? 'custom') === 'featured') {
+                $service = null;
+                if (class_exists('\Jankx\Extensions\TaxonomyFeaturedImage\TaxonomyFeaturedImageExtension')) {
+                    $ext = \Jankx\Extensions\TaxonomyFeaturedImage\TaxonomyFeaturedImageExtension::get_instance();
+                    $service = $ext ? $ext->getService() : null;
+                }
+                if (!$service && class_exists('\Jankx\Extensions\TaxonomyFeaturedImage\Services\TaxonomyImageService')) {
+                    $service = new \Jankx\Extensions\TaxonomyFeaturedImage\Services\TaxonomyImageService();
+                }
+                if ($service) {
+                    $url = $service->getTermImageUrl($term, 'full');
+                    if (!empty($url)) {
+                        $imageUrl = $url;
+                    }
+                }
+            }
+            if ($imageUrl !== '') {
+                $styles[] = 'background-image: url(' . esc_url($imageUrl) . ')';
+            }
+            $styles[] = 'background-size: ' . esc_attr($attrs['itemBgSize'] ?? 'cover');
+            $styles[] = 'background-repeat: ' . esc_attr($attrs['itemBgRepeat'] ?? 'no-repeat');
+            $styles[] = 'background-position: ' . esc_attr($attrs['itemBgPosition'] ?? 'center center');
+            if (!empty($attrs['itemBgOverlay'])) {
+                $styles[] = 'position: relative';
+            }
+        }
+
+        return implode('; ', $styles);
     }
 
     /**
@@ -156,6 +210,14 @@ class TermTemplateBlockGenerator extends AbstractContentGenerator
         if (empty($innerBlocks)) {
             return $this->renderDefaultTermItem($term, $options);
         }
+
+        // Set current term for nested block context fallback (e.g. jankx/term-featured-image inside columns/group)
+        $prevTerm = self::$currentRenderingTerm;
+        self::$currentRenderingTerm = $term;
+        $filter = static function ($current) use ($term) {
+            return $current instanceof WP_Term ? $current : $term;
+        };
+        add_filter('jankx/term-featured-image/current-term', $filter, 10, 1);
 
         $output = '';
         $context = $this->buildBlockContext($term, $terms, $options);
@@ -199,7 +261,11 @@ class TermTemplateBlockGenerator extends AbstractContentGenerator
             }
         }
 
-        return $this->wrapTermItem($output, $this->getTemplateAttrs());
+        $result = $this->wrapTermItem($output, $this->getTemplateAttrs());
+        remove_filter('jankx/term-featured-image/current-term', $filter, 10);
+        self::$currentRenderingTerm = $prevTerm;
+
+        return $result;
     }
 
     /**
@@ -436,15 +502,24 @@ class TermTemplateBlockGenerator extends AbstractContentGenerator
     protected function renderTermsCarousel(array $terms, array $options): string
     {
         $slides = [];
+        $templateAttrs = $this->getTemplateAttrs();
+        $itemInlineStyle = $this->buildTemplateItemInlineStyle($templateAttrs);
         foreach ($terms as $term) {
             $itemContent = $this->renderTermItem($term, $terms, $options);
             if ($itemContent === '') {
                 continue;
             }
             $classes = $this->buildItemClasses($term);
+            $currentStyle = $itemInlineStyle;
+            $bgStyle = $this->buildTermItemBackgroundStyle($templateAttrs, $term);
+            if ($bgStyle !== '') {
+                $currentStyle .= ($currentStyle !== '' ? '; ' : '') . $bgStyle;
+            }
+            $styleAttr = $currentStyle !== '' ? sprintf(' style="%s"', esc_attr($currentStyle)) : '';
             $slides[] = sprintf(
-                '<div class="embla__slide"><div class="%s">%s</div></div>',
+                '<div class="embla__slide"><div class="%s"%s>%s</div></div>',
                 esc_attr($classes),
+                $styleAttr,
                 $itemContent
             );
         }
