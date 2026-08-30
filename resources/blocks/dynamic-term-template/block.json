@@ -12,10 +12,6 @@
   "editorScript": "file:../../dist/blocks/dynamic-term-template/index.js",
   "editorStyle": "file:../../dist/blocks/dynamic-term-template/editor.css",
   "viewScript": "file:../../dist/blocks/dynamic-term-template/frontend.js",
-  "providesContext": {
-    "termId": "termId",
-    "taxonomy": "taxonomy"
-  },
   "usesContext": [
     "queryId",
     "postType",

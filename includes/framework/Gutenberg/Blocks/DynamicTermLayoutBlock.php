@@ -438,6 +438,18 @@ class DynamicTermLayoutBlock extends DynamicDataLayoutBlock
      */
     public function enqueueEditorAssets()
     {
+        // Patch for WP 7.1 where UnitControl was moved to experimental
+        $compat_handle = 'jankx-unitcontrol-compat';
+        if (!wp_script_is($compat_handle, 'registered')) {
+            wp_register_script($compat_handle, false, ['wp-components'], null, false);
+        }
+        wp_enqueue_script($compat_handle);
+        wp_add_inline_script(
+            $compat_handle,
+            'window.wp=window.wp||{};window.wp.components=window.wp.components||{};if(!window.wp.components.UnitControl&&window.wp.components.__experimentalUnitControl){window.wp.components.UnitControl=window.wp.components.__experimentalUnitControl;}',
+            'before'
+        );
+
         $asset_file = dirname($this->blockPath) . '/dist/blocks/dynamic-term-layout/index.asset.php';
 
         if (!file_exists($asset_file)) {
@@ -531,6 +543,11 @@ class DynamicTermLayoutBlock extends DynamicDataLayoutBlock
         }
 
         if (wp_script_is($script_handle, 'registered')) {
+            wp_add_inline_script(
+                $script_handle,
+                'window.wp=window.wp||{};window.wp.components=window.wp.components||{};if(!window.wp.components.UnitControl&&window.wp.components.__experimentalUnitControl){window.wp.components.UnitControl=window.wp.components.__experimentalUnitControl;}',
+                'before'
+            );
             wp_localize_script($script_handle, 'jankxDynamicTermLayouts', [
                 'layoutsByTaxonomy' => $layouts_by_taxonomy,
                 'commonLayouts' => $commonLayouts,

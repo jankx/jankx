@@ -9,9 +9,12 @@ import {
     FormTokenField,
     BaseControl,
     Spinner,
-    UnitControl,
     Button,
 } from '@wordpress/components';
+import * as WPComponents from '@wordpress/components';
+// Fallback for WP 7.1 where UnitControl moved to experimental
+const UnitControl: any =
+    (WPComponents as any).UnitControl || (WPComponents as any).__experimentalUnitControl || TextControl;
 import { useSelect } from '@wordpress/data';
 import { store as coreStore } from '@wordpress/core-data';
 import { useState, useMemo, useEffect, useCallback } from '@wordpress/element';
