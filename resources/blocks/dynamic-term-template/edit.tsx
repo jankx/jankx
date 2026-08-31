@@ -519,6 +519,8 @@ export default function Edit({
         itemBgSize = 'cover',
         itemBgRepeat = 'no-repeat',
         itemBgOverlay = '',
+        itemDefaultImageId = 0,
+        itemDefaultImageUrl = '',
     } = attributes;
 
 
@@ -1034,7 +1036,7 @@ export default function Edit({
                                     { label: __('Custom Upload', 'jankx'), value: 'custom' },
                                     { label: __('Taxonomy Featured Image', 'jankx'), value: 'featured' },
                                 ]}
-                                onChange={(value) => setAttributes({ itemBgImageSource: value })}
+                                onChange={(value) => setAttributes({ itemBgImageSource: value, itemFeaturedImage: value === 'featured' })}
                             />
                             {itemBgImageSource === 'custom' && (
                                 <MediaUpload
@@ -1078,6 +1080,57 @@ export default function Edit({
                                                         variant="link"
                                                         isDestructive
                                                         onClick={() => setAttributes({ itemBgImageId: 0, itemBgImageUrl: '' })}
+                                                    >
+                                                        {__('Remove', 'jankx')}
+                                                    </Button>
+                                                )}
+                                            </div>
+                                        </div>
+                                    )}
+                                />
+                            )}
+                            {itemBgImageSource === 'featured' && (
+                                <MediaUpload
+                                    onSelect={(media) => {
+                                        setAttributes({
+                                            itemDefaultImageId: media.id,
+                                            itemDefaultImageUrl: media.url,
+                                        });
+                                    }}
+                                    allowedTypes={['image']}
+                                    value={itemDefaultImageId}
+                                    render={({ open }) => (
+                                        <div style={{ display: 'flex', gap: '8px', alignItems: 'center', marginTop: 8 }}>
+                                            {itemDefaultImageUrl ? (
+                                                <img
+                                                    src={itemDefaultImageUrl}
+                                                    alt={__('Default Image', 'jankx')}
+                                                    style={{ width: '80px', height: '80px', objectFit: 'cover', borderRadius: '4px' }}
+                                                />
+                                            ) : (
+                                                <div
+                                                    style={{
+                                                        width: '80px',
+                                                        height: '80px',
+                                                        display: 'flex',
+                                                        alignItems: 'center',
+                                                        justifyContent: 'center',
+                                                        background: '#f0f0f0',
+                                                        borderRadius: '4px',
+                                                    }}
+                                                >
+                                                    <span className="dashicons dashicons-format-image" style={{ fontSize: '30px', width: '30px', height: '30px' }} />
+                                                </div>
+                                            )}
+                                            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                                                <Button variant="secondary" onClick={open}>
+                                                    {itemDefaultImageUrl ? __('Change Default Image', 'jankx') : __('Select Default Image', 'jankx')}
+                                                </Button>
+                                                {itemDefaultImageUrl && (
+                                                    <Button
+                                                        variant="link"
+                                                        isDestructive
+                                                        onClick={() => setAttributes({ itemDefaultImageId: 0, itemDefaultImageUrl: '' })}
                                                     >
                                                         {__('Remove', 'jankx')}
                                                     </Button>

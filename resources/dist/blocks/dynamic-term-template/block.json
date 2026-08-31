@@ -1,333 +1,385 @@
 {
-    "$schema": "https://schemas.wp.org/trunk/block.json",
-    "apiVersion": 3,
-    "name": "jankx/dynamic-term-template",
-    "title": "Dynamic Term Template",
-    "category": "jankx",
-    "parent": [
-        "jankx/dynamic-term-layout"
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "jankx/dynamic-term-template",
+  "title": "Dynamic Term Template",
+  "category": "jankx",
+  "parent": [
+    "jankx/dynamic-term-layout"
+  ],
+  "description": "Markup template để render từng term trong Dynamic Term Layout block",
+  "textdomain": "jankx",
+  "editorScript": "file:../../dist/blocks/dynamic-term-template/index.js",
+  "editorStyle": "file:../../dist/blocks/dynamic-term-template/editor.css",
+  "viewScript": "file:../../dist/blocks/dynamic-term-template/frontend.js",
+  "usesContext": [
+    "queryId",
+    "postType",
+    "displayLayout",
+    "postsPerPage",
+    "columns",
+    "columnsTablet",
+    "columnsMobile",
+    "slidesToScroll",
+    "loop",
+    "autoplay",
+    "autoplayDelay",
+    "showArrows",
+    "showDots",
+    "carouselAlign",
+    "carouselAxis",
+    "carouselDirection",
+    "carouselStartIndex",
+    "carouselDuration",
+    "carouselDragFree",
+    "carouselDragThreshold",
+    "carouselSkipSnaps",
+    "carouselContainScroll",
+    "carouselInViewThreshold",
+    "carouselPeek",
+    "queryPreset",
+    "includeStickyPosts",
+    "orderBy",
+    "order",
+    "offset",
+    "taxQuery",
+    "metaQuery",
+    "keyword",
+    "authorIn",
+    "authorNotIn",
+    "postIn",
+    "postNotIn",
+    "metaKey",
+    "metaType",
+    "postStatus",
+    "postParent",
+    "postParentIn",
+    "postParentNotIn",
+    "customQueryId",
+    "hideEmpty",
+    "termParent",
+    "showTermCount"
+  ],
+  "supports": {
+    "reusable": false,
+    "html": false,
+    "align": [
+      "wide",
+      "full"
     ],
-    "description": "Markup template để render từng term trong Dynamic Term Layout block",
-    "textdomain": "jankx",
-    "editorScript": "file:../../dist/blocks/dynamic-term-template/index.js",
-    "editorStyle": "file:../../dist/blocks/dynamic-term-template/editor.css",
-    "viewScript": "file:../../dist/blocks/dynamic-term-template/frontend.js",
-    "usesContext": [
-        "queryId",
-        "postType",
-        "displayLayout",
-        "postsPerPage",
-        "columns",
-        "columnsTablet",
-        "columnsMobile",
-        "slidesToScroll",
-        "loop",
-        "autoplay",
-        "autoplayDelay",
-        "showArrows",
-        "showDots",
-        "carouselAlign",
-        "carouselAxis",
-        "carouselDirection",
-        "carouselStartIndex",
-        "carouselDuration",
-        "carouselDragFree",
-        "carouselDragThreshold",
-        "carouselSkipSnaps",
-        "carouselContainScroll",
-        "carouselInViewThreshold",
-        "carouselPeek",
-        "queryPreset",
-        "includeStickyPosts",
-        "orderBy",
-        "order",
-        "offset",
-        "taxQuery",
-        "metaQuery",
-        "keyword",
-        "authorIn",
-        "authorNotIn",
-        "postIn",
-        "postNotIn",
-        "metaKey",
-        "metaType",
-        "postStatus",
-        "postParent",
-        "postParentIn",
-        "postParentNotIn",
-        "customQueryId",
-        "hideEmpty",
-        "termParent",
-        "showTermCount"
-    ],
-    "supports": {
-        "reusable": false,
-        "html": false,
-        "align": [
-            "wide",
-            "full"
-        ],
-        "layout": true,
-        "color": {
-            "gradients": true,
-            "link": true,
-            "__experimentalDefaultControls": {
-                "background": true,
-                "text": true
-            }
-        },
-        "typography": {
-            "fontSize": true,
-            "lineHeight": true,
-            "__experimentalFontFamily": true,
-            "__experimentalFontWeight": true,
-            "__experimentalFontStyle": true,
-            "__experimentalTextTransform": true,
-            "__experimentalTextDecoration": true,
-            "__experimentalLetterSpacing": true,
-            "__experimentalDefaultControls": {
-                "fontSize": true
-            }
-        },
-        "spacing": {
-            "margin": true,
-            "padding": true,
-            "blockGap": {
-                "__experimentalDefault": "1.25em"
-            },
-            "__experimentalDefaultControls": {
-                "blockGap": true,
-                "padding": true,
-                "margin": true
-            }
-        },
-        "interactivity": {
-            "clientNavigation": true
-        },
-        "__experimentalBorder": {
-            "radius": true,
-            "color": true,
-            "width": true,
-            "style": true
-        }
+    "layout": true,
+    "color": {
+      "gradients": true,
+      "link": true,
+      "__experimentalDefaultControls": {
+        "background": true,
+        "text": true
+      }
     },
-    "attributes": {
-        "templateLayout": {
-            "type": "string",
-            "default": "default",
-            "enum": [
-                "default",
-                "boxed",
-                "horizontal",
-                "overlap-card",
-                "hero-overlay"
-            ]
-        },
-        "className": {
-            "type": "string",
-            "default": ""
-        },
-        "heroMinHeight": {
-            "type": "string",
-            "default": "320px"
-        },
-        "heroAspectRatio": {
-            "type": "string",
-            "default": ""
-        },
-        "heroOverlayGradient": {
-            "type": "string",
-            "default": "linear-gradient(to top, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.45) 45%, transparent 100%)"
-        },
-        "heroFallbackBackground": {
-            "type": "string",
-            "default": "linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)"
-        },
-        "heroBorderRadius": {
-            "type": "string",
-            "default": "12px"
-        },
-        "heroContentPadding": {
-            "type": "string",
-            "default": "5px 10px"
-        },
-        "overlapMarginTop": {
-            "type": "string",
-            "default": "-60px"
-        },
-        "overlapPadding": {
-            "type": "string",
-            "default": "20px"
-        },
-        "overlapBorderRadius": {
-            "type": "string",
-            "default": "8px"
-        },
-        "overlapBackgroundColor": {
-            "type": "string",
-            "default": "#ffffff"
-        },
-        "itemSpacing": {
-            "type": "string",
-            "default": "normal",
-            "enum": [
-                "none",
-                "compact",
-                "normal",
-                "loose"
-            ]
-        },
-        "backgroundColor": {
-            "type": "string"
-        },
-        "textColor": {
-            "type": "string"
-        },
-        "gradient": {
-            "type": "string"
-        },
-        "fontSize": {
-            "type": "string"
-        },
-        "overlayIconMode": {
-            "type": "string",
-            "default": "always-show"
-        },
-        "overlayIcon": {
-            "type": "string",
-            "default": ""
-        },
-        "overlayIconPosition": {
-            "type": "string",
-            "default": "center"
-        },
-        "overlayIconSize": {
-            "type": "number",
-            "default": 24
-        },
-        "overlayIconColor": {
-            "type": "string",
-            "default": "#ffffff"
-        },
-        "overlayIconBackground": {
-            "type": "string",
-            "default": "rgba(0, 0, 0, 0.5)"
-        },
-        "overlayIconShowMode": {
-            "type": "string",
-            "default": "always-show",
-            "enum": [
-                "always-show",
-                "hover-hide",
-                "hover-show"
-            ]
-        },
-        "overlayIconTarget": {
-            "type": "string",
-            "default": "featured-image",
-            "enum": [
-                "featured-image",
-                "entry-image",
-                "entire-item"
-            ]
-        },
-        "overlayIconType": {
-            "type": "string",
-            "default": "class",
-            "enum": [
-                "class",
-                "image",
-                "text"
-            ]
-        },
-        "overlayIconText": {
-            "type": "string",
-            "default": ""
-        },
-        "overlayIconRotate": {
-            "type": "number",
-            "default": 0
-        },
-        "overlayIconImageId": {
-            "type": "number",
-            "default": 0
-        },
-        "overlayIconImageUrl": {
-            "type": "string",
-            "default": ""
-        },
-        "showItemBorder": {
-            "type": "boolean",
-            "default": false
-        },
-        "itemBorderRadius": {
-            "type": "number",
-            "default": 0
-        },
-        "itemPadding": {
-            "type": "object",
-            "default": {
-                "top": "0",
-                "right": "0",
-                "bottom": "0",
-                "left": "0"
-            }
-        },
-        "thumbnailPosition": {
-            "type": "string",
-            "default": "top",
-            "enum": [
-                "top",
-                "bottom",
-                "left",
-                "right"
-            ]
-        },
-        "animationType": {
-            "type": "string",
-            "default": "none",
-            "enum": [
-                "none",
-                "fade-in",
-                "fade-in-up",
-                "fade-in-down",
-                "fade-in-left",
-                "fade-in-right",
-                "zoom-in",
-                "slide-in-up"
-            ]
-        },
-        "animationDuration": {
-            "type": "number",
-            "default": 1000
-        },
-        "animationDelay": {
-            "type": "number",
-            "default": 0
-        },
-        "animationTarget": {
-            "type": "string",
-            "default": "entry",
-            "enum": [
-                "entry",
-                "thumbnail"
-            ]
-        },
-        "animationReverse": {
-            "type": "boolean",
-            "default": false
-        },
-        "hoverAnimation": {
-            "type": "string",
-            "default": "none"
-        },
-        "unhoverAnimation": {
-            "type": "string",
-            "default": "none"
-        },
-        "carouselPeek": {
-            "type": "number",
-            "default": 0
-        }
+    "typography": {
+      "fontSize": true,
+      "lineHeight": true,
+      "__experimentalFontFamily": true,
+      "__experimentalFontWeight": true,
+      "__experimentalFontStyle": true,
+      "__experimentalTextTransform": true,
+      "__experimentalTextDecoration": true,
+      "__experimentalLetterSpacing": true,
+      "__experimentalDefaultControls": {
+        "fontSize": true
+      }
+    },
+    "spacing": {
+      "margin": true,
+      "padding": true,
+      "blockGap": {
+        "__experimentalDefault": "1.25em"
+      },
+      "__experimentalDefaultControls": {
+        "blockGap": true,
+        "padding": true,
+        "margin": true
+      }
+    },
+    "interactivity": {
+      "clientNavigation": true
+    },
+    "__experimentalBorder": {
+      "radius": true,
+      "color": true,
+      "width": true,
+      "style": true
     }
+  },
+  "attributes": {
+    "templateLayout": {
+      "type": "string",
+      "default": "default",
+      "enum": [
+        "default",
+        "boxed",
+        "horizontal",
+        "overlap-card",
+        "hero-overlay"
+      ]
+    },
+    "className": {
+      "type": "string",
+      "default": ""
+    },
+    "heroMinHeight": {
+      "type": "string",
+      "default": "320px"
+    },
+    "heroAspectRatio": {
+      "type": "string",
+      "default": ""
+    },
+    "heroOverlayGradient": {
+      "type": "string",
+      "default": "linear-gradient(to top, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.45) 45%, transparent 100%)"
+    },
+    "heroFallbackBackground": {
+      "type": "string",
+      "default": "linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)"
+    },
+    "heroBorderRadius": {
+      "type": "string",
+      "default": "12px"
+    },
+    "heroContentPadding": {
+      "type": "string",
+      "default": "5px 10px"
+    },
+    "overlapMarginTop": {
+      "type": "string",
+      "default": "-60px"
+    },
+    "overlapPadding": {
+      "type": "string",
+      "default": "20px"
+    },
+    "overlapBorderRadius": {
+      "type": "string",
+      "default": "8px"
+    },
+    "overlapBackgroundColor": {
+      "type": "string",
+      "default": "#ffffff"
+    },
+    "itemSpacing": {
+      "type": "string",
+      "default": "normal",
+      "enum": [
+        "none",
+        "compact",
+        "normal",
+        "loose"
+      ]
+    },
+    "backgroundColor": {
+      "type": "string"
+    },
+    "textColor": {
+      "type": "string"
+    },
+    "gradient": {
+      "type": "string"
+    },
+    "fontSize": {
+      "type": "string"
+    },
+    "overlayIconMode": {
+      "type": "string",
+      "default": "always-show"
+    },
+    "overlayIcon": {
+      "type": "string",
+      "default": ""
+    },
+    "overlayIconPosition": {
+      "type": "string",
+      "default": "center"
+    },
+    "overlayIconSize": {
+      "type": "number",
+      "default": 24
+    },
+    "overlayIconColor": {
+      "type": "string",
+      "default": "#ffffff"
+    },
+    "overlayIconBackground": {
+      "type": "string",
+      "default": "rgba(0, 0, 0, 0.5)"
+    },
+    "overlayIconShowMode": {
+      "type": "string",
+      "default": "always-show",
+      "enum": [
+        "always-show",
+        "hover-hide",
+        "hover-show"
+      ]
+    },
+    "overlayIconTarget": {
+      "type": "string",
+      "default": "featured-image",
+      "enum": [
+        "featured-image",
+        "entry-image",
+        "entire-item"
+      ]
+    },
+    "overlayIconType": {
+      "type": "string",
+      "default": "class",
+      "enum": [
+        "class",
+        "image",
+        "text"
+      ]
+    },
+    "overlayIconText": {
+      "type": "string",
+      "default": ""
+    },
+    "overlayIconRotate": {
+      "type": "number",
+      "default": 0
+    },
+    "overlayIconImageId": {
+      "type": "number",
+      "default": 0
+    },
+    "overlayIconImageUrl": {
+      "type": "string",
+      "default": ""
+    },
+    "showItemBorder": {
+      "type": "boolean",
+      "default": false
+    },
+    "itemBorderRadius": {
+      "type": "number",
+      "default": 0
+    },
+    "itemPadding": {
+      "type": "object",
+      "default": {
+        "top": "0",
+        "right": "0",
+        "bottom": "0",
+        "left": "0"
+      }
+    },
+    "thumbnailPosition": {
+      "type": "string",
+      "default": "top",
+      "enum": [
+        "top",
+        "bottom",
+        "left",
+        "right"
+      ]
+    },
+    "animationType": {
+      "type": "string",
+      "default": "none",
+      "enum": [
+        "none",
+        "fade-in",
+        "fade-in-up",
+        "fade-in-down",
+        "fade-in-left",
+        "fade-in-right",
+        "zoom-in",
+        "slide-in-up"
+      ]
+    },
+    "animationDuration": {
+      "type": "number",
+      "default": 1000
+    },
+    "animationDelay": {
+      "type": "number",
+      "default": 0
+    },
+    "animationTarget": {
+      "type": "string",
+      "default": "entry",
+      "enum": [
+        "entry",
+        "thumbnail"
+      ]
+    },
+    "animationReverse": {
+      "type": "boolean",
+      "default": false
+    },
+    "hoverAnimation": {
+      "type": "string",
+      "default": "none"
+    },
+    "unhoverAnimation": {
+      "type": "string",
+      "default": "none"
+    },
+    "carouselPeek": {
+      "type": "number",
+      "default": 0
+    },
+    "itemBgType": {
+      "type": "string",
+      "default": "none",
+      "enum": ["none", "color", "image"]
+    },
+    "itemBgColor": {
+      "type": "string",
+      "default": ""
+    },
+    "itemBgImageId": {
+      "type": "number",
+      "default": 0
+    },
+    "itemBgImageUrl": {
+      "type": "string",
+      "default": ""
+    },
+    "itemBgImageSource": {
+        "type": "string",
+        "default": "custom",
+        "enum": ["custom", "featured"]
+    },
+    "itemFeaturedImage": {
+        "type": "boolean",
+        "default": false
+    },
+    "itemDefaultImageId": {
+        "type": "number",
+        "default": 0
+    },
+    "itemDefaultImageUrl": {
+        "type": "string",
+        "default": ""
+    },
+    "itemBgPosition": {
+      "type": "string",
+      "default": "center center"
+    },
+    "itemBgSize": {
+      "type": "string",
+      "default": "cover",
+      "enum": ["cover", "contain", "auto"]
+    },
+    "itemBgRepeat": {
+      "type": "string",
+      "default": "no-repeat",
+      "enum": ["no-repeat", "repeat", "repeat-x", "repeat-y"]
+    },
+    "itemBgOverlay": {
+      "type": "string",
+      "default": ""
+    }
+  }
 }

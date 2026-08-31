@@ -347,13 +347,21 @@
       "default": ""
     },
     "itemBgImageSource": {
-      "type": "string",
-      "default": "custom",
-      "enum": ["custom", "featured"]
+        "type": "string",
+        "default": "custom",
+        "enum": ["custom", "featured"]
     },
     "itemFeaturedImage": {
-      "type": "boolean",
-      "default": false
+        "type": "boolean",
+        "default": false
+    },
+    "itemDefaultImageId": {
+        "type": "number",
+        "default": 0
+    },
+    "itemDefaultImageUrl": {
+        "type": "string",
+        "default": ""
     },
     "itemBgPosition": {
       "type": "string",

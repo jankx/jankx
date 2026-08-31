@@ -182,6 +182,9 @@ class TermTemplateBlockGenerator extends AbstractContentGenerator
                     }
                 }
             }
+            if ($imageUrl === '' && !empty($attrs['itemDefaultImageUrl'])) {
+                $imageUrl = $attrs['itemDefaultImageUrl'];
+            }
             if ($imageUrl !== '') {
                 $styles[] = 'background-image: url(' . esc_url($imageUrl) . ')';
             }

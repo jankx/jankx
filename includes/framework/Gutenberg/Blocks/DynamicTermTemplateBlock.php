@@ -151,6 +151,8 @@ class DynamicTermTemplateBlock extends DynamicDataTemplateBlock
             'data-item-bg-size' => $attributes['itemBgSize'] ?? 'cover',
             'data-item-bg-repeat' => $attributes['itemBgRepeat'] ?? 'no-repeat',
             'data-item-bg-overlay' => $attributes['itemBgOverlay'] ?? '',
+            'data-item-default-image-id' => $attributes['itemDefaultImageId'] ?? 0,
+            'data-item-default-image-url' => $attributes['itemDefaultImageUrl'] ?? '',
         ]);
 
         return sprintf(
