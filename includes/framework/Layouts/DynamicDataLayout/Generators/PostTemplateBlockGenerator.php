@@ -366,7 +366,15 @@ class PostTemplateBlockGenerator extends AbstractContentGenerator
             if ($bgImageSource === 'featured' && has_post_thumbnail($post->ID)) {
                 $bgImageUrl = get_the_post_thumbnail_url($post->ID, 'full');
             }
-
+            if ($bgImageUrl === '' && !empty($attrs['itemDefaultImageUrl'])) {
+                $bgImageUrl = $attrs['itemDefaultImageUrl'];
+            }
+            if ($bgImageUrl === '') {
+                $defaultImagePath = get_template_directory() . '/resources/assets/images/placeholder-image.png';
+                if (file_exists($defaultImagePath)) {
+                    $bgImageUrl = get_template_directory_uri() . '/resources/assets/images/placeholder-image.png';
+                }
+            }
             if (!empty($bgImageUrl)) {
                 $styles[] = 'background-image: url(' . esc_url($bgImageUrl) . ')';
             }
