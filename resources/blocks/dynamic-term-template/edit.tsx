@@ -24,6 +24,7 @@ import { useSelect, useDispatch } from '@wordpress/data';
 import { createBlocksFromTemplate } from '@wordpress/blocks';
 import type { CSSProperties } from 'react';
 import type { BlockInstance } from '@wordpress/blocks';
+import ResponsiveAspectRatioControl from '@jankx/gutenberg-controls/controls/ResponsiveAspectRatioControl';
 
 interface DynamicDataTemplateAttributes {
     templateLayout: string;
@@ -421,6 +422,42 @@ const buildItemBackgroundStyle = (attributes: any): CSSProperties => {
     }
 
     return styles;
+};
+
+const getItemBgRatioDesktop = (attributes: any): string => {
+    const map = attributes?.itemBgRatio || {};
+    const ratio = map?.desktop || map?.ultrawide || map?.tablet || map?.mobile || '';
+    return ratio && ratio !== 'auto' ? ratio : '';
+};
+
+const getItemBgRatioMediaStyles = (attributes: any, selector: string): string => {
+    const map = attributes?.itemBgRatio || {};
+    const rules: string[] = [];
+
+    const breakpoints: Record<string, { min?: number; max?: number }> = {
+        ultrawide: { min: 1600 },
+        tablet: { min: 768, max: 1024 },
+        mobile: { max: 767 },
+    };
+
+    Object.keys(breakpoints).forEach((device) => {
+        const ratio = map[device];
+        if (!ratio || ratio === 'auto') {
+            return;
+        }
+        const bp = breakpoints[device];
+        let mq = '';
+        if (bp.min != null && bp.max != null) {
+            mq = `@media (min-width:${bp.min}px) and (max-width:${bp.max}px)`;
+        } else if (bp.min != null) {
+            mq = `@media (min-width:${bp.min}px)`;
+        } else {
+            mq = `@media (max-width:${bp.max}px)`;
+        }
+        rules.push(`${mq} { ${selector} { aspect-ratio: ${ratio}; } }`);
+    });
+
+    return rules.length ? `<style>${rules.join('\n')}</style>` : '';
 };
 
 const buildItemBackgroundOverlayStyle = (attributes: any): CSSProperties => {
@@ -1180,6 +1217,13 @@ export default function Edit({
                         </>
                     )}
                     {(itemBgType === 'color' || itemBgType === 'image') && (
+                        <ResponsiveAspectRatioControl
+                            label={__('Aspect Ratio', 'jankx')}
+                            value={attributes.itemBgRatio || {}}
+                            onChange={(ratio) => setAttributes({ itemBgRatio: ratio })}
+                        />
+                    )}
+                    {(itemBgType === 'color' || itemBgType === 'image') && (
                         <div className="components-base-control">
                             <label className="components-base-control__label">
                                 {__('Overlay Color', 'jankx')}
@@ -1354,7 +1398,7 @@ export default function Edit({
                             } as CSSProperties}
                         >
                             <div
-                                className={`dynamic-data-template__items-container layout-${displayLayout} columns-${columns} columns-tablet-${columnsTablet} columns-mobile-${columnsMobile}`}
+                                className={`dynamic-data-template__items-container jankx-term-ratio-${clientId} layout-${displayLayout} columns-${columns} columns-tablet-${columnsTablet} columns-mobile-${columnsMobile}`}
                                 style={{
                                     '--columns-desktop': columns,
                                     '--columns-tablet': columnsTablet,
@@ -1362,6 +1406,7 @@ export default function Edit({
                                     display: 'flex',
                                     gap: '1rem',
                                     scrollSnapType: 'x mandatory',
+                                    ...(getItemBgRatioDesktop(attributes) ? { aspectRatio: getItemBgRatioDesktop(attributes) } : {}),
                                 } as CSSProperties}
                             >
                                 {Array.from({ length: totalItems }).map((_, index) => {
@@ -1459,7 +1504,7 @@ export default function Edit({
                     </div>
                 ) : (
                     <div
-                        className={`dynamic-data-template__items-container layout-${displayLayout} columns-${columns} columns-tablet-${columnsTablet} columns-mobile-${columnsMobile}`}
+                        className={`dynamic-data-template__items-container jankx-term-ratio-${clientId} layout-${displayLayout} columns-${columns} columns-tablet-${columnsTablet} columns-mobile-${columnsMobile}`}
                         style={{
                             '--columns-desktop': columns,
                             '--columns-tablet': columnsTablet,
@@ -1469,6 +1514,7 @@ export default function Edit({
                                 ? `repeat(${columns}, minmax(0, 1fr))`
                                 : 'none',
                             gap: '1rem',
+                            ...(getItemBgRatioDesktop(attributes) ? { aspectRatio: getItemBgRatioDesktop(attributes) } : {}),
                         } as CSSProperties}
                     >
                         {Array.from({ length: totalItems }).map((_, index) => {
@@ -1578,6 +1624,9 @@ export default function Edit({
                             );
                         })}
                     </div>
+                )}
+                {getItemBgRatioMediaStyles(attributes, '.jankx-term-ratio-' + clientId) && (
+                    <style dangerouslySetInnerHTML={{ __html: getItemBgRatioMediaStyles(attributes, '.jankx-term-ratio-' + clientId) }} />
                 )}
             </div>
         </>

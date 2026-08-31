@@ -100,7 +100,95 @@ class PostTemplateBlockGenerator extends AbstractContentGenerator
             return '';
         }
 
-        return sprintf('%s<div %s>%s</div>%s', $before, $this->stringifyAttributes($wrapperAttributes), $items, $after);
+        $ratioHtml = '';
+        $templateAttrs = $this->getTemplateAttrs();
+        $desktopRatio = $this->getItemBgRatioDesktop($templateAttrs);
+        if ($desktopRatio !== '' && $desktopRatio !== 'auto') {
+            $wrapperAttributes['style'] = ($wrapperAttributes['style'] ?? '') .
+                ($wrapperAttributes['style'] ?? '' !== '' ? '; ' : '') .
+                'aspect-ratio: ' . esc_attr($desktopRatio);
+        }
+
+        $queryId = $this->getOption('queryId');
+        if (empty($queryId)) {
+            $queryId = 'r' . md5((string) spl_object_id($this));
+        }
+        $selector = '.jankx-post-ratio-' . sanitize_html_class($queryId);
+        $wrapperAttributes['class'] = ($wrapperAttributes['class'] ?? '') . ' ' . $selector;
+        $ratioHtml = $this->buildPostItemRatioStyles($templateAttrs, $selector);
+
+        return sprintf('%s<div %s>%s</div>%s', $before, $this->stringifyAttributes($wrapperAttributes), $items . $ratioHtml, $after);
+    }
+
+    /**
+     * Get the template block attributes, merging the template block's own attrs
+     * with any template attrs provided through the options.
+     *
+     * @return array
+     */
+    protected function getTemplateAttrs(): array
+    {
+        $attrs = $this->templateBlock['attrs'] ?? [];
+        $templateFromOptions = $this->getOption('postTemplate');
+        if (is_array($templateFromOptions) && !empty($templateFromOptions['attrs'])) {
+            $attrs = array_merge($attrs, $templateFromOptions['attrs']);
+        }
+        return $attrs;
+    }
+
+    /**
+     * Get the desktop (base) aspect ratio from the responsive ratio attribute.
+     *
+     * @param array $attrs Block attributes
+     * @return string
+     */
+    protected function getItemBgRatioDesktop(array $attrs): string
+    {
+        $map = $attrs['itemBgRatio'] ?? [];
+        if (!is_array($map)) {
+            $map = [];
+        }
+        $ratio = $map['desktop'] ?? $map['ultrawide'] ?? $map['tablet'] ?? $map['mobile'] ?? '';
+        return is_string($ratio) ? trim($ratio) : '';
+    }
+
+    /**
+     * Build a style tag with responsive aspect-ratio media queries for the post items wrapper.
+     *
+     * @param array $attrs Block attributes
+     * @param string $selector CSS selector targeting the wrapper
+     * @return string
+     */
+    protected function buildPostItemRatioStyles(array $attrs, string $selector): string
+    {
+        $map = $attrs['itemBgRatio'] ?? [];
+        if (!is_array($map) || empty($map)) {
+            return '';
+        }
+
+        $breakpoints = [
+            'ultrawide' => ['min' => 1600, 'max' => null],
+            'tablet'    => ['min' => 768, 'max' => 1024],
+            'mobile'    => ['min' => null, 'max' => 767],
+        ];
+
+        $css = '';
+        foreach ($breakpoints as $device => $bp) {
+            $ratio = $map[$device] ?? '';
+            if ($ratio === '' || $ratio === 'auto') {
+                continue;
+            }
+            if ($bp['min'] !== null && $bp['max'] !== null) {
+                $mq = sprintf('@media (min-width: %dpx) and (max-width: %dpx)', $bp['min'], $bp['max']);
+            } elseif ($bp['min'] !== null) {
+                $mq = sprintf('@media (min-width: %dpx)', $bp['min']);
+            } else {
+                $mq = sprintf('@media (max-width: %dpx)', $bp['max']);
+            }
+            $css .= sprintf("%s { %s { aspect-ratio: %s; } }\n", $mq, $selector, esc_attr($ratio));
+        }
+
+        return $css !== '' ? sprintf('<style>%s</style>', $css) : '';
     }
 
     protected function renderPreviewContent(array $options = []): array

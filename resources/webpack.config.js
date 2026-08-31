@@ -246,7 +246,7 @@ module.exports = {
       plyr$: path.resolve(__dirname, '../node_modules/plyr/dist/plyr.js'),
       'plyr/src/js/plyr.js': path.resolve(__dirname, '../node_modules/plyr/dist/plyr.js'),
       plyr: path.resolve(__dirname, '../node_modules/plyr/dist/plyr.js'),
-
+      '@jankx/gutenberg-controls/controls': path.resolve(__dirname, '../vendor/jankx/gutenberg-controls/assets/src/controls'),
     },
   },
   externals: {

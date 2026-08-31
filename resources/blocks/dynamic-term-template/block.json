@@ -363,6 +363,10 @@
         "type": "string",
         "default": ""
     },
+    "itemBgRatio": {
+        "type": "object",
+        "default": {}
+    },
     "itemBgPosition": {
       "type": "string",
       "default": "center center"

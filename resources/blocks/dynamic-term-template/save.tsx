@@ -28,7 +28,12 @@ export default function Save({ attributes }: SaveProps): JSX.Element {
             attr(!!attributes.itemBgOverlay, 'data-item-bg-overlay', attributes.itemBgOverlay),
             attr(attributes.itemFeaturedImage, 'data-item-featured-image', attributes.itemFeaturedImage),
             attr(!!attributes.itemDefaultImageId, 'data-item-default-image-id', attributes.itemDefaultImageId),
-            attr(!!attributes.itemDefaultImageUrl, 'data-item-default-image-url', attributes.itemDefaultImageUrl)
+            attr(!!attributes.itemDefaultImageUrl, 'data-item-default-image-url', attributes.itemDefaultImageUrl),
+            attr(
+                attributes.itemBgRatio && Object.keys(attributes.itemBgRatio).length > 0,
+                'data-item-bg-ratio',
+                JSON.stringify(attributes.itemBgRatio)
+            )
         )
     );
     return (

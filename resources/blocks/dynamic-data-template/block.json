@@ -365,6 +365,10 @@
     "itemBgOverlay": {
       "type": "string",
       "default": ""
+    },
+    "itemBgRatio": {
+      "type": "object",
+      "default": {}
     }
   }
 }
