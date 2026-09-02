@@ -93,6 +93,8 @@
 .wp-block-jankx-user-menu .user-menu-trigger .user-avatar img {
   border-radius: 50%;
   object-fit: cover;
+  width: 100%;
+  height: auto;
 }
 .wp-block-jankx-user-menu .user-menu-dropdown {
   display: none;

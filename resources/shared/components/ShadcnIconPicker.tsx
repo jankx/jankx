@@ -318,10 +318,7 @@ const ShadcnIconPicker = ({
 
     const handleIconSelect = useCallback((icon: IconData) => {
         onSelect(icon);
-        // Gọi onClose sau một chút để đảm bảo state được cập nhật
-        setTimeout(() => {
-            onClose();
-        }, 100);
+        onClose();
     }, [onSelect, onClose]);
 
     const handleSearchChange = useCallback((value: string) => {
@@ -339,8 +336,6 @@ const ShadcnIconPicker = ({
     }, []);
 
     const handleClose = useCallback(() => {
-        setSearch('');
-        setSelectedCategory('all');
         onClose();
     }, [onClose]);
 
