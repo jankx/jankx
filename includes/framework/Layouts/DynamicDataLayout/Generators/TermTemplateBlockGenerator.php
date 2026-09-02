@@ -63,11 +63,26 @@ class TermTemplateBlockGenerator extends AbstractContentGenerator
         $layoutType = $this->getOption('layout', $options['layout'] ?? '');
         $this->currentLayout = $layoutType;
 
+        $queryId = $this->getOption('queryId');
+        if (empty($queryId)) {
+            $queryId = 'r' . md5((string) spl_object_id($this));
+        }
+        $ratioClass = 'jankx-term-ratio-' . sanitize_html_class($queryId);
+        $selector = '.' . $ratioClass;
+
+        // Append class name (no dot) to items wrapper (works for both grid and carousel)
+        $options['itemsWrapperClass'] = trim(($options['itemsWrapperClass'] ?? '') . ' ' . $ratioClass);
+        // Sync to runtimeOptions so getOption() picks up the updated value
+        $this->runtimeOptions['itemsWrapperClass'] = $options['itemsWrapperClass'];
+
+        $templateAttrs = $this->getTemplateAttrs();
+        $ratioHtml = $this->buildTermItemRatioStyles($templateAttrs, $selector);
+
         if ($layoutType === 'carousel') {
             $html = $this->renderTermsCarousel($terms, $options);
             $this->runtimeOptions = [];
             $this->currentLayout = '';
-            return $html;
+            return $html . $ratioHtml;
         }
 
         $wrapperAttributes = $this->buildWrapperAttributes($options);
@@ -79,19 +94,6 @@ class TermTemplateBlockGenerator extends AbstractContentGenerator
         if ($items === '') {
             return '';
         }
-
-        $ratioHtml = '';
-        $templateAttrs = $this->getTemplateAttrs();
-        $desktopRatio = $this->getItemBgRatioDesktop($templateAttrs);
-        // Inline aspect-ratio removed from wrapper; it belongs to items via CSS in buildTermItemRatioStyles
-
-        $queryId = $this->getOption('queryId');
-        if (empty($queryId)) {
-            $queryId = 'r' . md5((string) spl_object_id($this));
-        }
-        $selector = '.jankx-term-ratio-' . sanitize_html_class($queryId);
-        $wrapperAttributes['class'] = ($wrapperAttributes['class'] ?? '') . ' ' . $selector;
-        $ratioHtml = $this->buildTermItemRatioStyles($templateAttrs, $selector);
 
         return sprintf('<div %s>%s%s</div>', $this->stringifyAttributes($wrapperAttributes), $items, $ratioHtml);
     }
@@ -256,6 +258,17 @@ class TermTemplateBlockGenerator extends AbstractContentGenerator
         ];
 
         $css = '';
+
+        $desktopRatio = $map['desktop'] ?? '';
+        if ($desktopRatio !== '' && $desktopRatio !== 'auto') {
+            $desktopRatio = str_replace(':', '/', $desktopRatio);
+            $css .= sprintf(
+                "%s .dynamic-data-template__item { aspect-ratio: %s; display: flex; flex-direction: column; }\n",
+                $selector,
+                esc_attr($desktopRatio)
+            );
+        }
+
         foreach ($breakpoints as $device => $bp) {
             $ratio = $map[$device] ?? '';
             if ($ratio === '' || $ratio === 'auto') {
@@ -560,7 +573,9 @@ class TermTemplateBlockGenerator extends AbstractContentGenerator
 
         $customWrapperClass = $this->getOption('itemsWrapperClass', $options['itemsWrapperClass'] ?? '');
         if (!empty($customWrapperClass)) {
-            $classes[] = sanitize_html_class($customWrapperClass);
+            $wrapperClasses = preg_split('/\s+/', $customWrapperClass);
+            $wrapperClasses = array_filter(array_map('sanitize_html_class', (array) $wrapperClasses));
+            $classes = array_merge($classes, $wrapperClasses);
         }
 
         $classes = array_unique(array_filter($classes));
@@ -630,6 +645,11 @@ class TermTemplateBlockGenerator extends AbstractContentGenerator
             'columns-tablet-' . $columnsTablet,
             'columns-mobile-' . $columnsMobile,
         ];
+
+        $customWrapperClass = $this->getOption('itemsWrapperClass', $options['itemsWrapperClass'] ?? '');
+        if (!empty($customWrapperClass)) {
+            $wrapperClasses = array_merge($wrapperClasses, preg_split('/\s+/', $customWrapperClass));
+        }
 
         $styleRules = [
             '--carousel-columns: ' . $effectiveColumns,

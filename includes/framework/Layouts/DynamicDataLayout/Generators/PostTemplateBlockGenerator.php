@@ -66,6 +66,21 @@ class PostTemplateBlockGenerator extends AbstractContentGenerator
         $layoutType = $this->getOption('layout', $options['layout'] ?? '');
         $this->currentLayout = $layoutType;
 
+        $queryId = $this->getOption('queryId');
+        if (empty($queryId)) {
+            $queryId = 'r' . md5((string) spl_object_id($this));
+        }
+        $ratioClass = 'jankx-post-ratio-' . sanitize_html_class($queryId);
+        $selector = '.' . $ratioClass;
+
+        // Append class name (no dot) to items wrapper (works for both grid and carousel)
+        $options['itemsWrapperClass'] = trim(($options['itemsWrapperClass'] ?? '') . ' ' . $ratioClass);
+        // Sync to runtimeOptions so getOption() picks up the updated value
+        $this->runtimeOptions['itemsWrapperClass'] = $options['itemsWrapperClass'];
+
+        $templateAttrs = $this->getTemplateAttrs();
+        $ratioHtml = $this->buildPostItemRatioStyles($templateAttrs, $selector);
+
         if ($layoutType === 'carousel') {
             $before = '';
             $after = '';
@@ -76,7 +91,7 @@ class PostTemplateBlockGenerator extends AbstractContentGenerator
             ob_start();
             do_action('jankx/dynamic-data-template/after_loop', $options, $query, $this->getLayout());
             $after = (string) ob_get_clean();
-            $html = $before . $html . $after;
+            $html = $before . $html . $ratioHtml . $after;
             $this->runtimeOptions = [];
             $this->currentLayout = '';
             return $html;
@@ -99,19 +114,6 @@ class PostTemplateBlockGenerator extends AbstractContentGenerator
         if ($items === '') {
             return '';
         }
-
-        $ratioHtml = '';
-        $templateAttrs = $this->getTemplateAttrs();
-        $desktopRatio = $this->getItemBgRatioDesktop($templateAttrs);
-        // Inline aspect-ratio removed from wrapper; it belongs to items via CSS in buildPostItemRatioStyles
-
-        $queryId = $this->getOption('queryId');
-        if (empty($queryId)) {
-            $queryId = 'r' . md5((string) spl_object_id($this));
-        }
-        $selector = '.jankx-post-ratio-' . sanitize_html_class($queryId);
-        $wrapperAttributes['class'] = ($wrapperAttributes['class'] ?? '') . ' ' . $selector;
-        $ratioHtml = $this->buildPostItemRatioStyles($templateAttrs, $selector);
 
         return sprintf('%s<div %s>%s</div>%s', $before, $this->stringifyAttributes($wrapperAttributes), $items . $ratioHtml, $after);
     }
@@ -170,6 +172,17 @@ class PostTemplateBlockGenerator extends AbstractContentGenerator
         ];
 
         $css = '';
+
+        $desktopRatio = $map['desktop'] ?? '';
+        if ($desktopRatio !== '' && $desktopRatio !== 'auto') {
+            $desktopRatio = str_replace(':', '/', $desktopRatio);
+            $css .= sprintf(
+                "%s .dynamic-data-template__item { aspect-ratio: %s; display: flex; flex-direction: column; }\n",
+                $selector,
+                esc_attr($desktopRatio)
+            );
+        }
+
         foreach ($breakpoints as $device => $bp) {
             $ratio = $map[$device] ?? '';
             if ($ratio === '' || $ratio === 'auto') {

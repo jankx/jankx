@@ -444,7 +444,9 @@ trait PostTemplateRendererTrait
 
         $customWrapperClass = $this->getOption('itemsWrapperClass', $options['itemsWrapperClass'] ?? '');
         if (!empty($customWrapperClass)) {
-            $classes[] = sanitize_html_class($customWrapperClass);
+            $wrapperClasses = preg_split('/\s+/', $customWrapperClass);
+            $wrapperClasses = array_filter(array_map('sanitize_html_class', (array) $wrapperClasses));
+            $classes = array_merge($classes, $wrapperClasses);
         }
 
         $classes = array_unique(array_filter($classes));
