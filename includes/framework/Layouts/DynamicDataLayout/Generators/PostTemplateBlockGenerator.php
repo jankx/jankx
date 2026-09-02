@@ -42,7 +42,7 @@ class PostTemplateBlockGenerator extends AbstractContentGenerator
             $layoutName = $this->templateBlock['attrs']['templateLayout'];
             $manager = \Jankx\Layouts\DynamicDataLayout\ContentLoopLayoutManager::getInstance();
             $postType = $this->parentAttributes['postType'] ?? 'post';
-            
+
             // Try to find the layout class
             $layouts = $manager->getLayoutsForPostType($postType);
             foreach ($layouts as $layoutInfo) {
@@ -103,11 +103,7 @@ class PostTemplateBlockGenerator extends AbstractContentGenerator
         $ratioHtml = '';
         $templateAttrs = $this->getTemplateAttrs();
         $desktopRatio = $this->getItemBgRatioDesktop($templateAttrs);
-        if ($desktopRatio !== '' && $desktopRatio !== 'auto') {
-            $wrapperAttributes['style'] = ($wrapperAttributes['style'] ?? '') .
-                ($wrapperAttributes['style'] ?? '' !== '' ? '; ' : '') .
-                'aspect-ratio: ' . esc_attr($desktopRatio);
-        }
+        // Inline aspect-ratio removed from wrapper; it belongs to items via CSS in buildPostItemRatioStyles
 
         $queryId = $this->getOption('queryId');
         if (empty($queryId)) {
@@ -149,7 +145,8 @@ class PostTemplateBlockGenerator extends AbstractContentGenerator
             $map = [];
         }
         $ratio = $map['desktop'] ?? $map['ultrawide'] ?? $map['tablet'] ?? $map['mobile'] ?? '';
-        return is_string($ratio) ? trim($ratio) : '';
+        $ratio = is_string($ratio) ? trim($ratio) : '';
+        return str_replace(':', '/', $ratio);
     }
 
     /**
@@ -168,8 +165,8 @@ class PostTemplateBlockGenerator extends AbstractContentGenerator
 
         $breakpoints = [
             'ultrawide' => ['min' => 1600, 'max' => null],
-            'tablet'    => ['min' => 768, 'max' => 1024],
-            'mobile'    => ['min' => null, 'max' => 767],
+            'tablet' => ['min' => 768, 'max' => 1024],
+            'mobile' => ['min' => null, 'max' => 767],
         ];
 
         $css = '';
@@ -178,6 +175,7 @@ class PostTemplateBlockGenerator extends AbstractContentGenerator
             if ($ratio === '' || $ratio === 'auto') {
                 continue;
             }
+            $ratio = str_replace(':', '/', $ratio);
             if ($bp['min'] !== null && $bp['max'] !== null) {
                 $mq = sprintf('@media (min-width: %dpx) and (max-width: %dpx)', $bp['min'], $bp['max']);
             } elseif ($bp['min'] !== null) {
@@ -185,7 +183,12 @@ class PostTemplateBlockGenerator extends AbstractContentGenerator
             } else {
                 $mq = sprintf('@media (max-width: %dpx)', $bp['max']);
             }
-            $css .= sprintf("%s { %s { aspect-ratio: %s; } }\n", $mq, $selector, esc_attr($ratio));
+            $css .= sprintf(
+                "%s { %s .dynamic-data-template__item { aspect-ratio: %s; display: flex; flex-direction: column; } }\n",
+                $mq,
+                $selector,
+                esc_attr($ratio)
+            );
         }
 
         return $css !== '' ? sprintf('<style>%s</style>', $css) : '';
