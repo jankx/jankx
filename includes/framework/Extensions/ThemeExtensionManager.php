@@ -26,6 +26,13 @@ class ThemeExtensionManager
     protected $extensions = [];
 
     /**
+     * Resolved priorities: [dir => ['name'=>..,'level'=>..,'pos'=>..,'priority'=>..]]
+     *
+     * @var array
+     */
+    protected $resolvedPriorities = [];
+
+    /**
      * Registry of extensions that are disabled (enabled=false) — stores manifest path + data.
      * @var array
      */
@@ -122,9 +129,149 @@ class ThemeExtensionManager
             }
         }
 
-        foreach ($extensionDirs as $dir) {
+        // Resolve load priority from the dependency tree, then load in order.
+        foreach ($this->sortExtensionsByPriority($extensionDirs) as $dir) {
             $this->loadExtension($dir);
         }
+    }
+
+    /**
+     * Build a dependency tree from the extension manifests and compute a
+     * numeric priority for every extension so that extensions can be loaded
+     * before (or after) the extensions they depend on.
+     *
+     * Priority model (per requirement):
+     *   - Build a tree such that an extension's `dependencies.extensions`
+     *     are its parents (things that must load first).
+     *   - level 1 (roots, no dependencies): priority = position + 1000
+     *   - level n: priority = position(parent) + position(self) + n*1000
+     *     where "position" is the 1-based index among siblings.
+     *
+     * After resolving, each manifest's priority is set so callers can sort.
+     *
+     * @param array $extensionDirs List of extension absolute paths.
+     * @return array Flat map: extension name => integer priority.
+     */
+    protected function resolveExtensionPriorities(array $extensionDirs): array
+    {
+        $manifests = [];
+        $depsOf = [];  // extension => list of dependency extension names (parents)
+        foreach ($extensionDirs as $dir) {
+            $name = basename($dir);
+            $manifestFile = $dir . '/manifest.json';
+            if (!file_exists($manifestFile)) {
+                continue;
+            }
+            $manifest = json_decode(file_get_contents($manifestFile), true);
+            if (!$manifest) {
+                continue;
+            }
+            $manifests[$name] = $manifest;
+            $deps = [];
+            if (isset($manifest['dependencies']['extensions'])) {
+                $deps = (array) $manifest['dependencies']['extensions'];
+            }
+            $depsOf[$name] = $deps;
+        }
+
+        // Compute level = longest path from a root (an extension with no deps).
+        $level = [];
+        $computeLevel = null;
+        $computeLevel = function (string $name) use (&$computeLevel, &$level, $depsOf): int {
+            if (isset($level[$name])) {
+                return $level[$name];
+            }
+            $deps = $depsOf[$name] ?? [];
+            if (empty($deps)) {
+                return $level[$name] = 1;
+            }
+            $max = 0;
+            foreach ($deps as $dep) {
+                if ($dep === $name) {
+                    continue; // ignore self-reference
+                }
+                $max = max($max, $computeLevel($dep));
+            }
+            return $level[$name] = $max + 1;
+        };
+        foreach (array_keys($manifests) as $name) {
+            $computeLevel($name);
+        }
+
+        // Resolve a single "parent" for each extension = its deepest dependency.
+        $parentOf = [];
+        foreach ($manifests as $name => $manifest) {
+            $deps = $depsOf[$name] ?? [];
+            if (empty($deps)) {
+                $parentOf[$name] = '';
+                continue;
+            }
+            $best = null;
+            $bestLvl = -1;
+            foreach ($deps as $dep) {
+                $depLvl = $level[$dep] ?? 1;
+                if ($depLvl > $bestLvl) {
+                    $bestLvl = $depLvl;
+                    $best = $dep;
+                }
+            }
+            $parentOf[$name] = (string) $best;
+        }
+
+        // Group children under each parent to compute sibling positions.
+        $childrenByParent = [];
+        foreach ($manifests as $name => $manifest) {
+            $p = $parentOf[$name];
+            $childrenByParent[$p][] = $name;
+        }
+
+        $pos = [];
+        foreach ($childrenByParent as $parent => $kids) {
+            $i = 1;
+            foreach ($kids as $kid) {
+                $pos[$kid] = $i++;
+            }
+        }
+
+        // Flat, one-dimensional priority map: extension name => integer priority.
+        // No nested objects — cheap to build, traverse, and sort.
+        $priorities = [];
+        foreach ($manifests as $name => $manifest) {
+            $parent = $parentOf[$name];
+            $parentPos = $parent === '' ? 0 : ($pos[$parent] ?? 0);
+            $selfPos = $pos[$name] ?? 1;
+            $lv = $level[$name] ?? 1;
+            $priorities[$name] = $parentPos + $selfPos + ($lv * 1000);
+        }
+
+        return $priorities;
+    }
+
+    /**
+     * Sort extension directories by their resolved priority (ascending),
+     * so dependencies load before their dependents. Equal priorities are
+     * disambiguated by directory name for a stable, deterministic order.
+     *
+     * @param array $extensionDirs List of extension absolute paths.
+     * @return array Sorted list of extension absolute paths.
+     */
+    protected function sortExtensionsByPriority(array $extensionDirs): array
+    {
+        $priorities = $this->resolveExtensionPriorities($extensionDirs);
+
+        usort($extensionDirs, function ($a, $b) use ($priorities) {
+            $pa = $priorities[basename($a)] ?? PHP_INT_MAX;
+            $pb = $priorities[basename($b)] ?? PHP_INT_MAX;
+            if ($pa === $pb) {
+                return strcmp($a, $b);
+            }
+            return $pa <=> $pb;
+        });
+
+        // Keep the flat priority map (name => priority) accessible.
+        $this->resolvedPriorities = $priorities;
+
+        return $extensionDirs;
     }
 
     /**
