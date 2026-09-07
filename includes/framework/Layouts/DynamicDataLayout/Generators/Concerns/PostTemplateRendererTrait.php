@@ -147,7 +147,11 @@ trait PostTemplateRendererTrait
             }
             $styles[] = 'background-size: ' . esc_attr($attrs['itemBgSize'] ?? 'cover');
             $styles[] = 'background-repeat: ' . esc_attr($attrs['itemBgRepeat'] ?? 'no-repeat');
-            $styles[] = 'background-position: ' . esc_attr($attrs['itemBgPosition'] ?? 'center center');
+            $bgPosition = $attrs['itemBgPosition'] ?? 'center center';
+            if (is_array($bgPosition)) {
+                $bgPosition = (($bgPosition['x'] ?? 0.5) * 100) . '% ' . (($bgPosition['y'] ?? 0.5) * 100) . '%';
+            }
+            $styles[] = 'background-position: ' . esc_attr($bgPosition);
             if (!empty($attrs['itemBgOverlay'])) {
                 $styles[] = 'position: relative';
             }
