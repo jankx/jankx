@@ -117,10 +117,125 @@ abstract class Block implements BlockInterface
             $args['render_callback'] = [$this, 'render'];
         }
         $registered = register_block_type_from_metadata($this->blockPath, $args);
-        
-        // Note: Script translations are loaded automatically by WordPress
-        // when scripts are enqueued. We don't need to manually load them here
-        // to avoid warnings when scripts haven't been built yet.
+
+        if ($registered instanceof \WP_Block_Type) {
+            $this->fixBrokenScriptUrls($registered);
+        }
+    }
+
+    /**
+     * Fix broken script/style URLs for blocks in child theme extensions.
+     *
+     * On Windows, `get_block_asset_url()` in wp-includes/blocks.php may fall
+     * through to `plugins_url()` when the block path doesn't match parent/child
+     * theme directories (due to realpath() differences). Polylang's `plugins_url`
+     * filter then corrupts the URL (e.g. missing `/` between domain and path).
+     *
+     * This method detects broken URLs and re-registers the affected assets with
+     * correct URLs resolved via `get_theme_file_uri()`.
+     */
+    protected function fixBrokenScriptUrls(\WP_Block_Type $block): void
+    {
+        if (!$this->blockPath || !is_child_theme()) {
+            return;
+        }
+
+        $stylesheetDir = wp_normalize_path(get_stylesheet_directory());
+        $templateDir = wp_normalize_path(get_template_directory());
+        $blockPathNorm = wp_normalize_path($this->blockPath);
+
+        // Only fix blocks whose path is inside the child theme (stylesheet) directory
+        if (strpos($blockPathNorm, trailingslashit($stylesheetDir)) !== 0) {
+            return;
+        }
+
+        // Skip if path is actually in the parent theme
+        if (strpos($blockPathNorm, trailingslashit($templateDir)) === 0) {
+            return;
+        }
+
+        $fixable = [
+            'editor_script',
+            'editor_style',
+            'style',
+            'view_script',
+        ];
+
+        foreach ($fixable as $property) {
+            $handle = $block->$property ?? '';
+            if (empty($handle) || !is_string($handle)) {
+                continue;
+            }
+
+            if (!wp_script_is($handle, 'registered') && !wp_style_is($handle, 'registered')) {
+                continue;
+            }
+
+            $isStyle = in_array($property, ['editor_style', 'style'], true);
+            $wpAsset = $isStyle ? wp_styles() : wp_scripts();
+            $asset = $wpAsset->registered[$handle] ?? null;
+
+            if (!$asset || empty($asset->src)) {
+                continue;
+            }
+
+            $src = $asset->src;
+
+            // Detect the broken URL pattern: domain concatenated with path without separator
+            // e.g. "https://nibitour.localhostassets/..." instead of "https://nibitour.localhost/assets/..."
+            $siteUrl = esc_url(get_site_url());
+            $siteUrlNorm = rtrim($siteUrl, '/');
+
+            if (strpos($src, $siteUrlNorm) !== 0) {
+                continue;
+            }
+
+            $pathPart = substr($src, strlen($siteUrlNorm));
+
+            // Check for missing slash: path starts directly with a letter (e.g. "assets/...")
+            if (empty($pathPart) || $pathPart[0] === '/') {
+                continue;
+            }
+
+            // Broken URL detected — resolve the correct URL from the block path
+            $blockJsonPath = $this->blockPath . '/block.json';
+            if (!file_exists($blockJsonPath)) {
+                continue;
+            }
+
+            $blockJson = json_decode(file_get_contents($blockJsonPath), true);
+            $fieldMap = [
+                'editor_script' => 'editorScript',
+                'editor_style'  => 'editorStyle',
+                'style'         => 'style',
+                'view_script'   => 'viewScript',
+            ];
+            $metaKey = $fieldMap[$property] ?? '';
+            $fileRef = $blockJson[$metaKey] ?? '';
+
+            if (empty($fileRef) || strpos($fileRef, 'file:') !== 0) {
+                continue;
+            }
+
+            $fileRef = substr($fileRef, 5); // strip "file:"
+            $fileRef = ltrim($fileRef, './');
+            $absoluteFile = wp_normalize_path($this->blockPath . '/' . $fileRef);
+
+            if (!file_exists($absoluteFile)) {
+                continue;
+            }
+
+            // Build correct URL relative to stylesheet directory
+            $fileRelative = ltrim(substr($absoluteFile, strlen(trailingslashit($stylesheetDir))), '/');
+            $correctUrl = get_stylesheet_directory_uri() . '/' . $fileRelative;
+
+            if ($correctUrl === $src) {
+                continue;
+            }
+
+            // Fix the registered asset URL
+            $asset->src = $correctUrl;
+        }
     }
     
     /**
