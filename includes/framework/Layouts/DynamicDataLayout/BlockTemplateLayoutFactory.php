@@ -6,6 +6,7 @@ use Jankx\Layouts\DynamicDataLayout\Contracts\BlockTemplateLayoutInterface;
 use Jankx\Layouts\DynamicDataLayout\BlockLayouts\GridLayout;
 use Jankx\Layouts\DynamicDataLayout\BlockLayouts\ListLayout;
 use Jankx\Layouts\DynamicDataLayout\BlockLayouts\MasonryLayout;
+use Jankx\Layouts\DynamicDataLayout\BlockLayouts\CardLayout;
 use Jankx\Layouts\DynamicDataLayout\BlockLayouts\CarouselLayout;
 use InvalidArgumentException;
 
@@ -22,6 +23,10 @@ class BlockTemplateLayoutFactory
         self::register(
             'list',  
             class_exists('\App\BlockLayouts\ListLayout') ? '\App\BlockLayouts\ListLayout' : ListLayout::class
+        );
+        self::register(
+            'card',  
+            class_exists('\App\BlockLayouts\CardLayout') ? '\App\BlockLayouts\CardLayout' : CardLayout::class
         );
         self::register(
             'masonry',  

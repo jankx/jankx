@@ -342,8 +342,9 @@ class DynamicDataLayoutBlock extends Block
             return;
         }
 
-        $view_js_path = dirname($this->blockPath) . '/dist/blocks/dynamic-data-layout/view.js';
-        $view_asset_path = dirname($this->blockPath) . '/dist/blocks/dynamic-data-layout/view.asset.php';
+        $dist_base = dirname($this->blockPath, 2) . '/dist/blocks/dynamic-data-layout';
+        $view_js_path = $dist_base . '/view.js';
+        $view_asset_path = $dist_base . '/view.asset.php';
 
         if (file_exists($view_js_path)) {
             $asset = file_exists($view_asset_path) ? require $view_asset_path : [
@@ -354,8 +355,7 @@ class DynamicDataLayoutBlock extends Block
             $block_name = str_replace('jankx/', '', $this->blockId);
             $handle = 'jankx-' . str_replace('/', '-', $block_name) . '-view';
 
-            // Use UrlManager to get correct URL
-            $script_url = (new \Jankx\Managers\UrlManager())->blockAsset('dist/blocks/dynamic-data-layout/view.js');
+            $script_url = get_template_directory_uri() . '/resources/dist/blocks/dynamic-data-layout/view.js';
 
             wp_enqueue_script(
                 $handle,
@@ -373,8 +373,9 @@ class DynamicDataLayoutBlock extends Block
         }
 
         // Enqueue dynamic-data-template styles since it's rendered via this block
-        $template_style_path = dirname($this->blockPath) . '/dist/blocks/dynamic-data-template/style.css';
-        $template_asset_path = dirname($this->blockPath) . '/dist/blocks/dynamic-data-template/style.asset.php';
+        $template_dist = dirname($this->blockPath, 2) . '/dist/blocks/dynamic-data-template';
+        $template_style_path = $template_dist . '/style.css';
+        $template_asset_path = $template_dist . '/style.asset.php';
 
         if (file_exists($template_style_path)) {
             $template_asset = file_exists($template_asset_path) ? require $template_asset_path : [
@@ -382,7 +383,7 @@ class DynamicDataLayoutBlock extends Block
                 'version' => filemtime($template_style_path)
             ];
 
-            $template_style_url = get_template_directory_uri() . str_replace(get_template_directory(), '', dirname($this->blockPath)) . '/dist/blocks/dynamic-data-template/style.css';
+            $template_style_url = get_template_directory_uri() . '/resources/dist/blocks/dynamic-data-template/style.css';
 
             wp_enqueue_style(
                 'jankx-dynamic-data-template-style',

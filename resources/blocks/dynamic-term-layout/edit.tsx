@@ -176,13 +176,27 @@ export default function Edit({ attributes, setAttributes }: EditProps) {
         ? (window as any).jankxPublicTaxonomies
         : [];
 
+    // Fallback: fetch taxonomies from WordPress core store if jankxPublicTaxonomies is empty
+    const coreTaxonomies = useSelect((select) => {
+        if (publicTaxonomies.length > 0) return [];
+        return (select(coreStore).getTaxonomies as any)({ per_page: -1 }) as Array<{ slug: string; name: string; visibility?: { public?: boolean } }> | null;
+    }, [publicTaxonomies.length]);
+
     const taxonomyOptions = useMemo(() => {
         const map = new Map<string, string>();
         publicTaxonomies.forEach((t) => {
             if (!map.has(t.slug)) map.set(t.slug, t.name || t.slug);
         });
+        // Merge core taxonomies as fallback
+        if (publicTaxonomies.length === 0 && coreTaxonomies) {
+            coreTaxonomies.forEach((t) => {
+                if (t.visibility?.public !== false && !map.has(t.slug)) {
+                    map.set(t.slug, t.name || t.slug);
+                }
+            });
+        }
         return Array.from(map.entries()).map(([value, label]) => ({ label, value }));
-    }, [publicTaxonomies]);
+    }, [publicTaxonomies, coreTaxonomies]);
 
     const { terms, termsResolved } = useSelect((select) => {
         const selectorArgs = ['taxonomy', taxonomy, { per_page: 100, orderby: 'name', order: 'asc', hide_empty: false, _fields: 'id,name,count' }];
@@ -276,7 +290,14 @@ export default function Edit({ attributes, setAttributes }: EditProps) {
                         label={__('Taxonomy', 'jankx')}
                         value={taxonomy}
                         options={taxonomyOptions}
-                        onChange={(value) => setAttr('taxonomy', value)}
+                        onChange={(value) => {
+                            setAttributes({
+                                taxonomy: value,
+                                termIn: [],
+                                termNotIn: [],
+                                termParent: 0,
+                            } as any);
+                        }}
                         help={__('Select a taxonomy to display its terms.', 'jankx')}
                     />
 

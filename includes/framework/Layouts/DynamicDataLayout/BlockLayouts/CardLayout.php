@@ -1,0 +1,100 @@
+<?php
+
+namespace Jankx\Layouts\DynamicDataLayout\BlockLayouts;
+
+use Jankx\Layouts\DynamicDataLayout\BlockTemplateLayout;
+
+class CardLayout extends BlockTemplateLayout
+{
+    protected $name = 'card';
+    protected $title = 'Card Layout';
+
+    public function supportsColumns(): bool
+    {
+        return true;
+    }
+
+    public function getIcon(): string
+    {
+        return 'dashicons-card';
+    }
+
+    public function renderDefault(): string
+    {
+        if (!$this->query || !$this->query->have_posts()) {
+            return '';
+        }
+
+        return $this->renderView('post-layout/card', $this->getTemplateData());
+    }
+
+    public function renderDefaultPreview(): array
+    {
+        return [
+            'name' => $this->name,
+            'title' => $this->title,
+            'type' => 'card',
+            'columns' => $this->getOption('columns', 3),
+            'supportedOptions' => $this->getSupportedOptions(),
+        ];
+    }
+
+    public function getSupportedOptions(): array
+    {
+        return [
+            'columns',
+            'columnsTablet',
+            'columnsMobile',
+            'postsPerPage',
+            'showFeaturedImage',
+            'showTitle',
+            'showExcerpt',
+            'showDate',
+            'showAuthor',
+            'excerptLength',
+            'thumbnailPosition',
+            'itemStyle',
+        ];
+    }
+
+    public function getReadOnlyOptions(): array
+    {
+        return ['showTitle'];
+    }
+
+    public function appendClassesToWrapper(array $classes, array $options = []): array
+    {
+        $columns = (int) $this->getOption('columns', 3);
+        $columnsTablet = (int) $this->getOption('columnsTablet', 2);
+        $columnsMobile = (int) $this->getOption('columnsMobile', 1);
+
+        $classes[] = 'post-type-layout-card';
+        $classes[] = 'columns-' . max(1, $columns);
+        $classes[] = 'columns-tablet-' . max(1, $columnsTablet);
+        $classes[] = 'columns-mobile-' . max(1, $columnsMobile);
+
+        return $classes;
+    }
+
+    protected function getContainerStructure(array $options): array
+    {
+        $structure = parent::getContainerStructure($options);
+        $structure['tag'] = 'ul';
+
+        if (!empty($options['columnsTablet'])) {
+            $structure['classes'][] = 'columns-tablet-' . intval($options['columnsTablet']);
+        }
+        if (!empty($options['columnsMobile'])) {
+            $structure['classes'][] = 'columns-mobile-' . intval($options['columnsMobile']);
+        }
+
+        return $structure;
+    }
+
+    protected function getItemWrapperStructure(array $options): array
+    {
+        $structure = parent::getItemWrapperStructure($options);
+        $structure['tag'] = 'li';
+        return $structure;
+    }
+}
