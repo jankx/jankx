@@ -31,7 +31,6 @@ class GridLayoutDataParser extends DefaultLayoutDataParser
 
         $ulClasses = [
             'post-type-layout-grid',
-            'is-flex-container',
             'columns-' . max(1, $columns),
             'columns-tablet-' . max(1, $columnsTablet),
             'columns-mobile-' . max(1, $columnsMobile),

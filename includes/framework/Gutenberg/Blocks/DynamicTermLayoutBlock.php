@@ -461,18 +461,6 @@ class DynamicTermLayoutBlock extends DynamicDataLayoutBlock
      */
     public function enqueueEditorAssets()
     {
-        // Patch for WP 7.1 where UnitControl was moved to experimental
-        $compat_handle = 'jankx-unitcontrol-compat';
-        if (!wp_script_is($compat_handle, 'registered')) {
-            wp_register_script($compat_handle, false, ['wp-components'], null, false);
-        }
-        wp_enqueue_script($compat_handle);
-        wp_add_inline_script(
-            $compat_handle,
-            'window.wp=window.wp||{};window.wp.components=window.wp.components||{};if(!window.wp.components.UnitControl&&window.wp.components.__experimentalUnitControl){window.wp.components.UnitControl=window.wp.components.__experimentalUnitControl;}',
-            'before'
-        );
-
         $asset_file = dirname($this->blockPath) . '/dist/blocks/dynamic-term-layout/index.asset.php';
 
         if (!file_exists($asset_file)) {
@@ -521,21 +509,6 @@ class DynamicTermLayoutBlock extends DynamicDataLayoutBlock
         $common_layouts_names = ['grid', 'list', 'card', 'carousel', 'masonry'];
         $commonLayouts = array_values(array_intersect_key($structured_layouts, array_flip($common_layouts_names)));
 
-        // Register a small inline data script that is always available to the block script
-        $data_handle = 'jankx-dynamic-term-layout-editor-data';
-
-        if (!wp_script_is($data_handle, 'registered')) {
-            wp_register_script(
-                $data_handle,
-                false,
-                ['wp-blocks', 'wp-i18n'],
-                null,
-                false
-            );
-        }
-
-        wp_enqueue_script($data_handle);
-
         $inline_data = sprintf(
             'window.jankxDynamicTermLayouts = %s;' .
             'window.jankxPublicTaxonomies = %s;',
@@ -546,17 +519,10 @@ class DynamicTermLayoutBlock extends DynamicDataLayoutBlock
             wp_json_encode($public_taxonomies, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP)
         );
 
-        wp_add_inline_script($data_handle, $inline_data, 'before');
-
-        // Also try localizing on the block script handle for compatibility
-        $block_name = str_replace('jankx/', '', $this->blockId);
-        $script_handle = 'jankx-' . str_replace('/', '-', $block_name) . '-editor-script';
-
-        if (!wp_script_is($script_handle, 'registered')) {
-            $script_handle = 'jankx-' . str_replace('/', '-', $block_name) . '-editor';
-        }
-
+        // Resolve the block's editor script handle from the block registry
+        $script_handle = null;
         $registered_block = \WP_Block_Type_Registry::get_instance()->get_registered($this->blockId);
+
         if ($registered_block) {
             if (!empty($registered_block->editor_script_handles) && is_array($registered_block->editor_script_handles)) {
                 $script_handle = $registered_block->editor_script_handles[0];
@@ -565,17 +531,33 @@ class DynamicTermLayoutBlock extends DynamicDataLayoutBlock
             }
         }
 
-        if (wp_script_is($script_handle, 'registered')) {
+        // Fallback: try the WP core generated handle pattern
+        if (!$script_handle || !wp_script_is($script_handle, 'registered')) {
+            $block_name = str_replace('jankx/', '', $this->blockId);
+            $script_handle = 'jankx-' . str_replace('/', '-', $block_name) . '-block-editor-script';
+
+            if (!wp_script_is($script_handle, 'registered')) {
+                // Try other common patterns
+                $alternatives = [
+                    'jankx-' . str_replace('/', '-', $block_name) . '-editor-script',
+                    'jankx-' . str_replace('/', '-', $block_name) . '-editor',
+                ];
+                foreach ($alternatives as $alt) {
+                    if (wp_script_is($alt, 'registered')) {
+                        $script_handle = $alt;
+                        break;
+                    }
+                }
+            }
+        }
+
+        if ($script_handle && wp_script_is($script_handle, 'registered')) {
+            wp_add_inline_script($script_handle, $inline_data, 'before');
             wp_add_inline_script(
                 $script_handle,
                 'window.wp=window.wp||{};window.wp.components=window.wp.components||{};if(!window.wp.components.UnitControl&&window.wp.components.__experimentalUnitControl){window.wp.components.UnitControl=window.wp.components.__experimentalUnitControl;}',
                 'before'
             );
-            wp_localize_script($script_handle, 'jankxDynamicTermLayouts', [
-                'layoutsByTaxonomy' => $layouts_by_taxonomy,
-                'commonLayouts' => $commonLayouts,
-            ]);
-            wp_localize_script($script_handle, 'jankxPublicTaxonomies', $public_taxonomies);
         }
     }
 

@@ -424,7 +424,6 @@ trait PostTemplateRendererTrait
         $columnsSupported = in_array($layoutType, ['grid', 'masonry', 'card'], true);
 
         if ($layoutType === 'grid') {
-            $classes[] = 'is-flex-container';
             if ($columnsSupported && $columns > 0) {
                 $classes[] = 'columns-' . $columns;
             }

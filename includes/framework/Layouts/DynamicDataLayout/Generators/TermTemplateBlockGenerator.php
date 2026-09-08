@@ -549,7 +549,6 @@ class TermTemplateBlockGenerator extends AbstractContentGenerator
         $columnsSupported = in_array($layoutType, ['grid', 'masonry', 'card'], true);
 
         if ($layoutType === 'grid') {
-            $classes[] = 'is-flex-container';
             if ($columns > 0) {
                 $classes[] = 'columns-' . $columns;
             }

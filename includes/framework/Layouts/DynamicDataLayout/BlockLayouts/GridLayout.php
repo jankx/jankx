@@ -75,7 +75,6 @@ class GridLayout extends BlockTemplateLayout
 
         // Add grid-specific classes
         $classes[] = 'post-type-layout-grid';
-        $classes[] = 'is-flex-container';
         $classes[] = 'columns-' . max(1, $columns);
         $classes[] = 'columns-tablet-' . max(1, $columnsTablet);
         $classes[] = 'columns-mobile-' . max(1, $columnsMobile);
@@ -89,7 +88,6 @@ class GridLayout extends BlockTemplateLayout
     {
         $structure = parent::getContainerStructure($options);
         $structure['tag'] = 'ul';
-        $structure['classes'][] = 'is-flex-container';
         
         // Ensure columns-tablet and columns-mobile are present in classes if defined
         if (!empty($options['columnsTablet'])) {

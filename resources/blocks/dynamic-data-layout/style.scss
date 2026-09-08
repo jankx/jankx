@@ -25,6 +25,7 @@
     }
 
     // Grid và Card layout - columns được áp dụng cho container bên trong
+    // Case 1: class nằm trực tiếp trên wrapper (editor/save.tsx)
     &.dynamic-data-layout--grid,
     &.dynamic-data-layout--card {
 
@@ -47,8 +48,30 @@
         }
     }
 
+    // Case 2: class nằm trên child wrapper (PHP render - Renderer.php tạo ra
+    // .dynamic-data-layout-wrapper.dynamic-data-layout--grid bên trong wrapper này)
+    .dynamic-data-layout--grid,
+    .dynamic-data-layout--card {
+        .post-type-layout-grid,
+        .post-type-layout-card {
+            display: grid;
+            gap: var(--jankx-block-gap, var(--wp--style--block-gap, 1.5rem));
+
+            grid-template-columns: repeat(var(--columns-mobile, 1), 1fr);
+
+            @media (min-width: 768px) {
+                grid-template-columns: repeat(var(--columns-tablet, 2), 1fr);
+            }
+
+            @media (min-width: 1024px) {
+                grid-template-columns: repeat(var(--columns-desktop, 3), 1fr);
+            }
+        }
+    }
+
     // List layout
-    &.dynamic-data-layout--list {
+    &.dynamic-data-layout--list,
+    .dynamic-data-layout--list {
         .post-type-layout-list {
             display: flex;
             flex-direction: column;

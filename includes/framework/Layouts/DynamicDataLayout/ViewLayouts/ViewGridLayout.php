@@ -28,7 +28,6 @@ class ViewGridLayout extends AbstractViewLayout
         $ul_classes = [
             'wp-block-jankx-dynamic-ssr-layout',
             'view-type-layout-grid',
-            'is-flex-container',
             'columns-' . max(1, $columns),
             'columns-tablet-' . max(1, $columnsTablet),
             'columns-mobile-' . max(1, $columnsMobile),
@@ -95,7 +94,6 @@ class ViewGridLayout extends AbstractViewLayout
 
         // Add grid-specific classes
         $classes[] = 'view-type-layout-grid';
-        $classes[] = 'is-flex-container';
         $classes[] = 'columns-' . max(1, $columns);
         $classes[] = 'columns-tablet-' . max(1, $columnsTablet);
         $classes[] = 'columns-mobile-' . max(1, $columnsMobile);
