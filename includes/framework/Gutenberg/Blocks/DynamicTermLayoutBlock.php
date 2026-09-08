@@ -26,6 +26,24 @@ class DynamicTermLayoutBlock extends DynamicDataLayoutBlock
     protected $blockId = 'jankx/dynamic-term-layout';
 
     /**
+     * Render the block – bail early when no taxonomy is selected
+     *
+     * @param array $attributes Block attributes
+     * @param string $content Block content
+     * @param \WP_Block|null $block Block instance
+     * @return string Rendered HTML
+     */
+    public function render($attributes, $content = '', $block = null)
+    {
+        $taxonomy = $attributes['taxonomy'] ?? '';
+        if (empty($taxonomy) || !taxonomy_exists($taxonomy)) {
+            return '';
+        }
+
+        return parent::render($attributes, $content, $block);
+    }
+
+    /**
      * Register WordPress hooks for this block
      *
      * @return void
@@ -202,6 +220,11 @@ class DynamicTermLayoutBlock extends DynamicDataLayoutBlock
         Log::debug('[TermLayout] Incoming Filters: ' . json_encode($filters));
 
         if (empty($attributes['queryId'])) {
+            return [];
+        }
+
+        $taxonomy = $attributes['taxonomy'] ?? '';
+        if (empty($taxonomy) || !taxonomy_exists($taxonomy)) {
             return [];
         }
 
@@ -566,6 +589,11 @@ class DynamicTermLayoutBlock extends DynamicDataLayoutBlock
     {
         $sanitizedAttributes = $this->attributeSanitizer->sanitize($attributes);
         $layoutName = $sanitizedAttributes['layout'] ?? 'grid';
+
+        $taxonomy = $sanitizedAttributes['taxonomy'] ?? '';
+        if (empty($taxonomy) || !taxonomy_exists($taxonomy)) {
+            return new \WP_Term_Query(['taxonomy' => 'category', 'number' => 0]);
+        }
 
         $layout = $this->layoutManager->createLayout($layoutName);
         $decorator = new BlockTemplateLayoutDecorator($layout);
