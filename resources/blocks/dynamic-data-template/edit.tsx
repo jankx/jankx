@@ -1362,7 +1362,6 @@ export default function Edit({
                                     display: 'flex',
                                     gap: '1rem',
                                     scrollSnapType: 'x mandatory',
-                                    ...(getItemBgRatioDesktop(attributes) ? { aspectRatio: getItemBgRatioDesktop(attributes) } : {}),
                                 } as CSSProperties}
                             >
                                 {Array.from({ length: totalItems }).map((_, index) => {
@@ -1398,6 +1397,11 @@ export default function Edit({
                                     const bgStyle = buildItemBackgroundStyle(attributes);
                                     Object.assign(itemStyle, bgStyle);
                                     Object.assign(itemStyle, buildTemplateItemStyle(attributes));
+                                    // Apply aspect ratio to each item (not the container)
+                                    const itemRatio = getItemBgRatioDesktop(attributes);
+                                    if (itemRatio) {
+                                        itemStyle.aspectRatio = itemRatio;
+                                    }
 
                                     const postData = posts && posts[index] ? posts[index] : null;
                                     const contextValue = postData ? { postId: postData.id, postType: postData.type } : {};
@@ -1469,7 +1473,6 @@ export default function Edit({
                                 ? `repeat(${columns}, minmax(0, 1fr))`
                                 : 'none',
                             gap: '1rem',
-                            ...(getItemBgRatioDesktop(attributes) ? { aspectRatio: getItemBgRatioDesktop(attributes) } : {}),
                         } as CSSProperties}
                     >
                         {Array.from({ length: totalItems }).map((_, index) => {
@@ -1503,6 +1506,11 @@ export default function Edit({
                                 const bgStyle2 = buildItemBackgroundStyle(attributes);
                                 Object.assign(itemStyle2, bgStyle2);
                                 Object.assign(itemStyle2, buildTemplateItemStyle(attributes));
+                                // Apply aspect ratio to each item (not the container)
+                                const itemRatio2 = getItemBgRatioDesktop(attributes);
+                                if (itemRatio2) {
+                                    itemStyle2.aspectRatio = itemRatio2;
+                                }
 
                                 return (
                                     <div
@@ -1547,6 +1555,11 @@ export default function Edit({
                             const bgStyle3 = buildItemBackgroundStyle(attributes);
                             Object.assign(itemStyle3, bgStyle3);
                             Object.assign(itemStyle3, buildTemplateItemStyle(attributes));
+                            // Apply aspect ratio to each item (not the container)
+                            const itemRatio3 = getItemBgRatioDesktop(attributes);
+                            if (itemRatio3) {
+                                itemStyle3.aspectRatio = itemRatio3;
+                            }
 
                             return (
                                 <div
