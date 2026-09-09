@@ -1,3 +1,33 @@
-.wp-block-jankx-post-terms{display:flex;flex-wrap:wrap;gap:var(--wp--style--block-gap)}.wp-block-jankx-post-terms.layout-newline{flex-direction:column;gap:var(--wp--style--block-gap, 4px)}.wp-block-jankx-post-terms .jankx-post-term{display:inline-block;white-space:nowrap}.wp-block-jankx-post-terms.display-style-hashtag .jankx-post-term{margin-right:8px;color:var(--wp--preset--color--vivid-cyan-blue, #0693e3);font-weight:500}.wp-block-jankx-post-terms.display-style-hashtag.layout-inline .jankx-post-term-separator{display:none}.wp-block-jankx-post-terms a{text-decoration:none;color:inherit}.wp-block-jankx-post-terms a:hover{text-decoration:underline}
+/*!**********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/.pnpm/css-loader@7.1.2_webpack@5.104.1/node_modules/css-loader/dist/cjs.js!./node_modules/.pnpm/postcss-loader@8.2.0_postcss@8.5.6_typescript@5.9.3_webpack@5.104.1/node_modules/postcss-loader/dist/cjs.js!./node_modules/.pnpm/sass-loader@16.0.6_sass@1.97.3_webpack@5.104.1/node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!./blocks/post-terms/style.scss ***!
+  \**********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+.wp-block-jankx-post-terms {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--wp--style--block-gap);
+}
+.wp-block-jankx-post-terms.layout-newline {
+  flex-direction: column;
+  gap: var(--wp--style--block-gap, 4px);
+}
+.wp-block-jankx-post-terms .jankx-post-term {
+  display: inline-block;
+  white-space: nowrap;
+}
+.wp-block-jankx-post-terms.display-style-hashtag .jankx-post-term {
+  margin-right: 8px;
+  color: var(--wp--preset--color--vivid-cyan-blue, #0693e3);
+  font-weight: 500;
+}
+.wp-block-jankx-post-terms.display-style-hashtag.layout-inline .jankx-post-term-separator {
+  display: none;
+}
+.wp-block-jankx-post-terms a {
+  text-decoration: none;
+  color: inherit;
+}
+.wp-block-jankx-post-terms a:hover {
+  text-decoration: underline;
+}
 
 /*# sourceMappingURL=style.css.map*/

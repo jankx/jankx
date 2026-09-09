@@ -1,3 +1,37 @@
-.wp-block-jankx-typography>*{--jankx-line-clamp: var(--jankx-line-clamp-desktop);font-size:var(--jankx-font-size-desktop, initial);display:-webkit-box;-webkit-box-orient:vertical;overflow:hidden;text-overflow:ellipsis;-webkit-line-clamp:var(--jankx-line-clamp-desktop, initial);line-clamp:var(--jankx-line-clamp-desktop, initial)}@media(max-width: 1024px){.wp-block-jankx-typography>*{--jankx-line-clamp: var(--jankx-line-clamp-tablet, var(--jankx-line-clamp-desktop));font-size:var(--jankx-font-size-tablet, var(--jankx-font-size-desktop, initial));-webkit-line-clamp:var(--jankx-line-clamp-tablet, var(--jankx-line-clamp-desktop, initial));line-clamp:var(--jankx-line-clamp-tablet, var(--jankx-line-clamp-desktop, initial))}}@media(max-width: 768px){.wp-block-jankx-typography>*{--jankx-line-clamp: var(--jankx-line-clamp-mobile, var(--jankx-line-clamp-tablet, var(--jankx-line-clamp-desktop)));font-size:var(--jankx-font-size-mobile, var(--jankx-font-size-tablet, var(--jankx-font-size-desktop, initial)));-webkit-line-clamp:var(--jankx-line-clamp-mobile, var(--jankx-line-clamp-tablet, var(--jankx-line-clamp-desktop, initial)));line-clamp:var(--jankx-line-clamp-mobile, var(--jankx-line-clamp-tablet, var(--jankx-line-clamp-desktop, initial)))}}
+/*!**********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/.pnpm/css-loader@7.1.2_webpack@5.104.1/node_modules/css-loader/dist/cjs.js!./node_modules/.pnpm/postcss-loader@8.2.0_postcss@8.5.6_typescript@5.9.3_webpack@5.104.1/node_modules/postcss-loader/dist/cjs.js!./node_modules/.pnpm/sass-loader@16.0.6_sass@1.97.3_webpack@5.104.1/node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!./blocks/typography/style.scss ***!
+  \**********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/**
+ * Typography Block - Frontend & Editor Styles
+ *
+ * Responsive line-clamp and font-size via CSS custom properties.
+ */
+.wp-block-jankx-typography > * {
+  --jankx-line-clamp: var(--jankx-line-clamp-desktop);
+  font-size: var(--jankx-font-size-desktop, initial);
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -webkit-line-clamp: var(--jankx-line-clamp-desktop, initial);
+  line-clamp: var(--jankx-line-clamp-desktop, initial);
+}
+
+@media (max-width: 1024px) {
+  .wp-block-jankx-typography > * {
+    --jankx-line-clamp: var(--jankx-line-clamp-tablet, var(--jankx-line-clamp-desktop));
+    font-size: var(--jankx-font-size-tablet, var(--jankx-font-size-desktop, initial));
+    -webkit-line-clamp: var(--jankx-line-clamp-tablet, var(--jankx-line-clamp-desktop, initial));
+    line-clamp: var(--jankx-line-clamp-tablet, var(--jankx-line-clamp-desktop, initial));
+  }
+}
+@media (max-width: 768px) {
+  .wp-block-jankx-typography > * {
+    --jankx-line-clamp: var(--jankx-line-clamp-mobile, var(--jankx-line-clamp-tablet, var(--jankx-line-clamp-desktop)));
+    font-size: var(--jankx-font-size-mobile, var(--jankx-font-size-tablet, var(--jankx-font-size-desktop, initial)));
+    -webkit-line-clamp: var(--jankx-line-clamp-mobile, var(--jankx-line-clamp-tablet, var(--jankx-line-clamp-desktop, initial)));
+    line-clamp: var(--jankx-line-clamp-mobile, var(--jankx-line-clamp-tablet, var(--jankx-line-clamp-desktop, initial)));
+  }
+}
 
 /*# sourceMappingURL=style.css.map*/

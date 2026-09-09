@@ -1,3 +1,25 @@
-.jankx-layout-switcher-edit{padding:15px;background:#fff;border:1px dashed #cbd5e1;border-radius:8px}.jankx-layout-switcher-edit .components-placeholder{min-height:auto;padding:20px;background:rgba(0,0,0,0);border:none}.jankx-layout-switcher-edit.layout-switcher--align-center{display:flex;justify-content:center}.jankx-layout-switcher-edit.layout-switcher--align-right{display:flex;justify-content:flex-end}
+/*!****************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/.pnpm/css-loader@7.1.2_webpack@5.104.1/node_modules/css-loader/dist/cjs.js!./node_modules/.pnpm/postcss-loader@8.2.0_postcss@8.5.6_typescript@5.9.3_webpack@5.104.1/node_modules/postcss-loader/dist/cjs.js!./node_modules/.pnpm/sass-loader@16.0.6_sass@1.97.3_webpack@5.104.1/node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!./blocks/layout-switcher/editor.scss ***!
+  \****************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+.jankx-layout-switcher-edit {
+  padding: 15px;
+  background: #fff;
+  border: 1px dashed #cbd5e1;
+  border-radius: 8px;
+}
+.jankx-layout-switcher-edit .components-placeholder {
+  min-height: auto;
+  padding: 20px;
+  background: transparent;
+  border: none;
+}
+.jankx-layout-switcher-edit.layout-switcher--align-center {
+  display: flex;
+  justify-content: center;
+}
+.jankx-layout-switcher-edit.layout-switcher--align-right {
+  display: flex;
+  justify-content: flex-end;
+}
 
 /*# sourceMappingURL=editor.css.map*/

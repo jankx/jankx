@@ -1,4 +1,73 @@
-.wp-block-jankx-carousel-slide{position:relative;min-height:200px;display:flex;flex-direction:column;justify-content:center;align-items:center;overflow:hidden}.wp-block-jankx-carousel-slide .carousel-slide__content{position:relative;z-index:2;width:100%;height:100%;display:flex;flex-direction:column;justify-content:center;align-items:center}.wp-block-jankx-carousel-slide .carousel-slide__overlay{position:absolute;inset:0;z-index:1;pointer-events:none}.wp-block-jankx-carousel-slide.image-size-contain{background-size:contain}.wp-block-jankx-carousel-slide.image-size-cover{background-size:cover}.wp-block-jankx-carousel-slide.image-size-fullwidth{background-size:100% 100%;background-position:center}
-.editor-styles-wrapper .wp-block-jankx-carousel-slide{position:relative;overflow:hidden}.editor-styles-wrapper .wp-block-jankx-carousel-slide *{transition:none !important;animation:none !important}.editor-styles-wrapper .wp-block-jankx-carousel-slide .carousel-slide__content{position:relative;z-index:2;width:100%;height:100%}.editor-styles-wrapper .wp-block-jankx-carousel-slide .carousel-slide__overlay{position:absolute;inset:0;z-index:1;pointer-events:none}.editor-styles-wrapper .wp-block-jankx-carousel-slide.image-size-contain{background-size:contain}.editor-styles-wrapper .wp-block-jankx-carousel-slide.image-size-cover{background-size:cover}.editor-styles-wrapper .wp-block-jankx-carousel-slide.image-size-fullwidth{background-size:100% 100%;background-position:center}
+/*!**************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/.pnpm/css-loader@7.1.2_webpack@5.104.1/node_modules/css-loader/dist/cjs.js!./node_modules/.pnpm/postcss-loader@8.2.0_postcss@8.5.6_typescript@5.9.3_webpack@5.104.1/node_modules/postcss-loader/dist/cjs.js!./node_modules/.pnpm/sass-loader@16.0.6_sass@1.97.3_webpack@5.104.1/node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!./blocks/carousel-slide/style.scss ***!
+  \**************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+.wp-block-jankx-carousel-slide {
+  position: relative;
+  min-height: 200px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+.wp-block-jankx-carousel-slide .carousel-slide__content {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.wp-block-jankx-carousel-slide .carousel-slide__overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+.wp-block-jankx-carousel-slide.image-size-contain {
+  background-size: contain;
+}
+.wp-block-jankx-carousel-slide.image-size-cover {
+  background-size: cover;
+}
+.wp-block-jankx-carousel-slide.image-size-fullwidth {
+  background-size: 100% 100%;
+  background-position: center;
+}
+/*!***************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/.pnpm/css-loader@7.1.2_webpack@5.104.1/node_modules/css-loader/dist/cjs.js!./node_modules/.pnpm/postcss-loader@8.2.0_postcss@8.5.6_typescript@5.9.3_webpack@5.104.1/node_modules/postcss-loader/dist/cjs.js!./node_modules/.pnpm/sass-loader@16.0.6_sass@1.97.3_webpack@5.104.1/node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!./blocks/carousel-slide/editor.scss ***!
+  \***************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+.editor-styles-wrapper .wp-block-jankx-carousel-slide {
+  position: relative;
+  overflow: hidden;
+}
+.editor-styles-wrapper .wp-block-jankx-carousel-slide * {
+  transition: none !important;
+  animation: none !important;
+}
+.editor-styles-wrapper .wp-block-jankx-carousel-slide .carousel-slide__content {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+}
+.editor-styles-wrapper .wp-block-jankx-carousel-slide .carousel-slide__overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+.editor-styles-wrapper .wp-block-jankx-carousel-slide.image-size-contain {
+  background-size: contain;
+}
+.editor-styles-wrapper .wp-block-jankx-carousel-slide.image-size-cover {
+  background-size: cover;
+}
+.editor-styles-wrapper .wp-block-jankx-carousel-slide.image-size-fullwidth {
+  background-size: 100% 100%;
+  background-position: center;
+}
 
 /*# sourceMappingURL=index.css.map*/
