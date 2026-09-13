@@ -268,6 +268,16 @@ class DynamicDataLayoutBlock extends Block
                             'overlayIconBackground',
                             'overlayIconShowMode',
                             'overlayIconTarget',
+                            'itemBgType',
+                            'itemBgColor',
+                            'itemBgImageUrl',
+                            'itemBgImageSource',
+                            'itemBgPosition',
+                            'itemBgSize',
+                            'itemBgRepeat',
+                            'itemBgOverlay',
+                            'itemBgRatio',
+                            'itemBgContentAlign',
                         ];
                         foreach ($keysToMerge as $k) {
                             if (array_key_exists($k, $templateAttrs)) {

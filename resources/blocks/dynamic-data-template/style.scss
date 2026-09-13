@@ -31,6 +31,61 @@
 }
 
 // =====================================================
+// Item Background Content Align — per-item
+// Áp dụng khi item có background (color hoặc image)
+// =====================================================
+.dynamic-data-template__item {
+    box-sizing: border-box;
+
+    &[data-item-bg-type],
+    &[data-item-bg-content-align],
+    &.has-item-bg {
+        display: flex;
+        flex-direction: column;
+    }
+
+    &[data-item-bg-content-align="top"],
+    &.item-bg-align-top {
+        justify-content: flex-start;
+    }
+
+    &[data-item-bg-content-align="center"],
+    &.item-bg-align-center {
+        justify-content: center;
+    }
+
+    &[data-item-bg-content-align="bottom"],
+    &.item-bg-align-bottom {
+        justify-content: flex-end;
+    }
+
+    &[data-item-bg-content-align],
+    &.has-item-bg {
+        > * {
+            box-sizing: border-box;
+        }
+    }
+}
+
+.dynamic-data-template[data-item-bg-type] .dynamic-data-template__item,
+.dynamic-data-template[data-item-bg-content-align] .dynamic-data-template__item {
+    display: flex;
+    flex-direction: column;
+}
+
+.dynamic-data-template[data-item-bg-content-align="top"] .dynamic-data-template__item {
+    justify-content: flex-start;
+}
+
+.dynamic-data-template[data-item-bg-content-align="center"] .dynamic-data-template__item {
+    justify-content: center;
+}
+
+.dynamic-data-template[data-item-bg-content-align="bottom"] .dynamic-data-template__item {
+    justify-content: flex-end;
+}
+
+// =====================================================
 // Hero Overlay Layout — per-item
 // =====================================================
 .jankx-hero-overlay-box {

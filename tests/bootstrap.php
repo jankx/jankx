@@ -283,6 +283,7 @@ if (!function_exists('parse_blocks')) {
 // Posts
 if (!function_exists('get_post')) {
     function get_post($post = null) {
+        if (empty($post) && isset($GLOBALS['post'])) $post = $GLOBALS['post'];
         if (is_numeric($post) && isset($GLOBALS['mock_posts'][$post])) return $GLOBALS['mock_posts'][$post];
         if (is_object($post)) return $post;
         return null;

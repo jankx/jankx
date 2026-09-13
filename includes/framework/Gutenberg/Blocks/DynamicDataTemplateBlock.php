@@ -240,6 +240,7 @@ class DynamicDataTemplateBlock extends Block
             'data-item-bg-size' => $attributes['itemBgSize'] ?? 'cover',
             'data-item-bg-repeat' => $attributes['itemBgRepeat'] ?? 'no-repeat',
             'data-item-bg-overlay' => $attributes['itemBgOverlay'] ?? '',
+            'data-item-bg-content-align' => $attributes['itemBgContentAlign'] ?? 'bottom',
         ]);
 
         if ($block instanceof \WP_Block) {

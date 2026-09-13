@@ -83,6 +83,7 @@ interface DynamicDataTemplateAttributes {
     itemBgSize?: 'cover' | 'contain' | 'auto';
     itemBgRepeat?: 'no-repeat' | 'repeat' | 'repeat-x' | 'repeat-y';
     itemBgOverlay?: string;
+    itemBgContentAlign?: 'top' | 'center' | 'bottom';
 }
 
 
@@ -436,6 +437,16 @@ const buildItemBackgroundStyle = (attributes: any): CSSProperties => {
         }
     }
 
+    // Apply content vertical alignment when background is active
+    styles.display = 'flex';
+    styles.flexDirection = 'column';
+    const alignMap: Record<string, string> = {
+        top: 'flex-start',
+        center: 'center',
+        bottom: 'flex-end',
+    };
+    styles.justifyContent = alignMap[attributes?.itemBgContentAlign || 'bottom'] || 'flex-end';
+
     return styles;
 };
 
@@ -579,6 +590,7 @@ export default function Edit({
         itemBgSize = 'cover',
         itemBgRepeat = 'no-repeat',
         itemBgOverlay = '',
+        itemBgContentAlign = 'bottom',
     } = attributes;
 
 
@@ -1044,6 +1056,18 @@ export default function Edit({
                             onChange={(ratio) => setAttributes({ itemBgRatio: ratio })}
                         />
                     )}
+                    {(itemBgType === 'color' || itemBgType === 'image') && (
+                        <SelectControl
+                            label={__('Content Vertical Align', 'jankx')}
+                            value={itemBgContentAlign}
+                            options={[
+                                { label: __('Top', 'jankx'), value: 'top' },
+                                { label: __('Center', 'jankx'), value: 'center' },
+                                { label: __('Bottom (slide up)', 'jankx'), value: 'bottom' },
+                            ]}
+                            onChange={(value) => setAttributes({ itemBgContentAlign: value as any })}
+                        />
+                    )}
                 </PanelBody>
             </InspectorControls>
 
@@ -1401,6 +1425,17 @@ export default function Edit({
                                     const itemRatio = getItemBgRatioDesktop(attributes);
                                     if (itemRatio) {
                                         itemStyle.aspectRatio = itemRatio;
+                                    }
+                                    // Apply content alignment when bg is active
+                                    if (itemBgType && itemBgType !== 'none') {
+                                        itemStyle.display = 'flex';
+                                        itemStyle.flexDirection = 'column';
+                                        const alignMap: Record<string, string> = {
+                                            top: 'flex-start',
+                                            center: 'center',
+                                            bottom: 'flex-end',
+                                        };
+                                        itemStyle.justifyContent = alignMap[itemBgContentAlign] || 'flex-end';
                                     }
 
                                     const postData = posts && posts[index] ? posts[index] : null;

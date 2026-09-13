@@ -11,6 +11,7 @@
   "textdomain": "jankx",
   "editorScript": "file:../../dist/blocks/dynamic-data-template/index.js",
   "editorStyle": "file:../../dist/blocks/dynamic-data-template/editor.css",
+  "style": "file:../../dist/blocks/dynamic-data-template/style.css",
   "viewScript": "file:../../dist/blocks/dynamic-data-template/frontend.js",
   "usesContext": [
     "queryId",
@@ -369,6 +370,11 @@
     "itemBgRatio": {
       "type": "object",
       "default": {}
+    },
+    "itemBgContentAlign": {
+      "type": "string",
+      "default": "bottom",
+      "enum": ["top", "center", "bottom"]
     }
   }
 }

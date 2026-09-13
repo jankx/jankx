@@ -40,6 +40,17 @@ trait PostTemplateRendererTrait
             $hoverDataAttrs .= sprintf(' data-unhover-ani="%s"', esc_attr($unhoverAnimation));
         }
 
+        $itemDataAttrs = $hoverDataAttrs;
+        $bgType = $templateAttrs['itemBgType'] ?? 'none';
+        if ($bgType !== 'none') {
+            $contentAlign = $templateAttrs['itemBgContentAlign'] ?? 'bottom';
+            $itemDataAttrs .= sprintf(
+                ' data-item-bg-type="%s" data-item-bg-content-align="%s"',
+                esc_attr($bgType),
+                esc_attr($contentAlign)
+            );
+        }
+
         $itemIndex = 0;
 
         while ($query->have_posts()) {
@@ -85,16 +96,18 @@ trait PostTemplateRendererTrait
                     '<div class="embla__slide"><div class="%s"%s%s>%s</div></div>',
                     esc_attr($classes),
                     $currentStyleAttr,
-                    $hoverDataAttrs,
+                    $itemDataAttrs,
                     $itemContent
                 );
             } else {
-                $output[] = sprintf('<div class="%s"%s%s>%s</div>', esc_attr($classes), $currentStyleAttr, $hoverDataAttrs, $itemContent);
+                $output[] = sprintf('<div class="%s"%s%s>%s</div>', esc_attr($classes), $currentStyleAttr, $itemDataAttrs, $itemContent);
             }
             $itemIndex++;
         }
 
-        wp_reset_postdata();
+        if (function_exists('wp_reset_postdata')) {
+            wp_reset_postdata();
+        }
 
         if ($originalPost instanceof WP_Post) {
             $GLOBALS['post'] = $originalPost;
@@ -125,6 +138,14 @@ trait PostTemplateRendererTrait
             $classes[] = 'has-background';
         }
 
+        $bgType = $attrs['itemBgType'] ?? 'none';
+        if ($bgType !== 'none') {
+            $classes[] = 'has-item-bg';
+            $classes[] = 'item-bg-type-' . sanitize_html_class($bgType);
+            $contentAlign = $attrs['itemBgContentAlign'] ?? 'bottom';
+            $classes[] = 'item-bg-align-' . sanitize_html_class($contentAlign);
+        }
+
         return implode(' ', array_unique(array_filter($classes)));
     }
 
@@ -143,7 +164,14 @@ trait PostTemplateRendererTrait
                 $imageUrl = get_the_post_thumbnail_url($post->ID, 'full');
             }
             if ($imageUrl !== '') {
-                $styles[] = 'background-image: url(' . esc_url($imageUrl) . ')';
+                if (!empty($attrs['itemBgOverlay'])) {
+                    $overlayColor = $attrs['itemBgOverlay'];
+                    $styles[] = 'background-image: linear-gradient(' . $overlayColor . ', ' . $overlayColor . '), url(' . esc_url($imageUrl) . ')';
+                } else {
+                    $styles[] = 'background-image: url(' . esc_url($imageUrl) . ')';
+                }
+            } elseif (!empty($attrs['itemBgOverlay'])) {
+                $styles[] = 'background-color: ' . esc_attr($attrs['itemBgOverlay']);
             }
             $styles[] = 'background-size: ' . esc_attr($attrs['itemBgSize'] ?? 'cover');
             $styles[] = 'background-repeat: ' . esc_attr($attrs['itemBgRepeat'] ?? 'no-repeat');
@@ -155,6 +183,18 @@ trait PostTemplateRendererTrait
             if (!empty($attrs['itemBgOverlay'])) {
                 $styles[] = 'position: relative';
             }
+        }
+
+        if (in_array($backgroundType, ['color', 'image'], true)) {
+            $styles[] = 'display: flex';
+            $styles[] = 'flex-direction: column';
+            $contentAlign = $attrs['itemBgContentAlign'] ?? 'bottom';
+            $alignMap = [
+                'top' => 'flex-start',
+                'center' => 'center',
+                'bottom' => 'flex-end',
+            ];
+            $styles[] = 'justify-content: ' . ($alignMap[$contentAlign] ?? 'flex-end');
         }
 
         return implode('; ', $styles);

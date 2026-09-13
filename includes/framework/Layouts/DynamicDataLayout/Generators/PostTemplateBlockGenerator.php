@@ -173,13 +173,22 @@ class PostTemplateBlockGenerator extends AbstractContentGenerator
 
         $css = '';
 
+        $align = $attrs['itemBgContentAlign'] ?? 'bottom';
+        $alignMap = [
+            'top' => 'flex-start',
+            'center' => 'center',
+            'bottom' => 'flex-end',
+        ];
+        $justifyContent = $alignMap[$align] ?? 'flex-end';
+
         $desktopRatio = $map['desktop'] ?? '';
         if ($desktopRatio !== '' && $desktopRatio !== 'auto') {
             $desktopRatio = str_replace(':', '/', $desktopRatio);
             $css .= sprintf(
-                "%s .dynamic-data-template__item { aspect-ratio: %s; display: flex; flex-direction: column; }\n",
+                "%s .dynamic-data-template__item { aspect-ratio: %s; display: flex; flex-direction: column; justify-content: %s; }\n",
                 $selector,
-                esc_attr($desktopRatio)
+                esc_attr($desktopRatio),
+                esc_attr($justifyContent)
             );
         }
 
@@ -197,10 +206,11 @@ class PostTemplateBlockGenerator extends AbstractContentGenerator
                 $mq = sprintf('@media (max-width: %dpx)', $bp['max']);
             }
             $css .= sprintf(
-                "%s { %s .dynamic-data-template__item { aspect-ratio: %s; display: flex; flex-direction: column; } }\n",
+                "%s { %s .dynamic-data-template__item { aspect-ratio: %s; display: flex; flex-direction: column; justify-content: %s; } }\n",
                 $mq,
                 $selector,
-                esc_attr($ratio)
+                esc_attr($ratio),
+                esc_attr($justifyContent)
             );
         }
 

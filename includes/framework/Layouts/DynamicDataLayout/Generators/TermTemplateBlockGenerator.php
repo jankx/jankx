@@ -151,6 +151,17 @@ class TermTemplateBlockGenerator extends AbstractContentGenerator
         $templateAttrs = $this->getTemplateAttrs();
         $itemInlineStyle = $this->buildTemplateItemInlineStyle($templateAttrs);
 
+        $bgType = $templateAttrs['itemBgType'] ?? 'none';
+        $itemBgDataAttrs = '';
+        if ($bgType !== 'none') {
+            $contentAlign = $templateAttrs['itemBgContentAlign'] ?? 'bottom';
+            $itemBgDataAttrs = sprintf(
+                ' data-item-bg-type="%s" data-item-bg-content-align="%s"',
+                esc_attr($bgType),
+                esc_attr($contentAlign)
+            );
+        }
+
         foreach ($terms as $term) {
             $itemContent = $this->renderTermItem($term, $terms, $options);
             if ($itemContent === '') {
@@ -164,7 +175,7 @@ class TermTemplateBlockGenerator extends AbstractContentGenerator
                 $currentStyle .= ($currentStyle !== '' ? '; ' : '') . $bgStyle;
             }
             $currentStyleAttr = $currentStyle !== '' ? sprintf(' style="%s"', esc_attr($currentStyle)) : '';
-            $output[] = sprintf('<div class="%s"%s>%s</div>', esc_attr($classes), $currentStyleAttr, $itemContent);
+            $output[] = sprintf('<div class="%s"%s%s>%s</div>', esc_attr($classes), $currentStyleAttr, $itemBgDataAttrs, $itemContent);
         }
 
         return implode('', $output);
@@ -217,6 +228,18 @@ class TermTemplateBlockGenerator extends AbstractContentGenerator
             }
         }
 
+        if (in_array($bgType, ['color', 'image'], true)) {
+            $styles[] = 'display: flex';
+            $styles[] = 'flex-direction: column';
+            $contentAlign = $attrs['itemBgContentAlign'] ?? 'bottom';
+            $alignMap = [
+                'top' => 'flex-start',
+                'center' => 'center',
+                'bottom' => 'flex-end',
+            ];
+            $styles[] = 'justify-content: ' . ($alignMap[$contentAlign] ?? 'flex-end');
+        }
+
         return implode('; ', $styles);
     }
 
@@ -259,13 +282,22 @@ class TermTemplateBlockGenerator extends AbstractContentGenerator
 
         $css = '';
 
+        $align = $attrs['itemBgContentAlign'] ?? 'bottom';
+        $alignMap = [
+            'top' => 'flex-start',
+            'center' => 'center',
+            'bottom' => 'flex-end',
+        ];
+        $justifyContent = $alignMap[$align] ?? 'flex-end';
+
         $desktopRatio = $map['desktop'] ?? '';
         if ($desktopRatio !== '' && $desktopRatio !== 'auto') {
             $desktopRatio = str_replace(':', '/', $desktopRatio);
             $css .= sprintf(
-                "%s .dynamic-data-template__item { aspect-ratio: %s; display: flex; flex-direction: column; }\n",
+                "%s .dynamic-data-template__item { aspect-ratio: %s; display: flex; flex-direction: column; justify-content: %s; }\n",
                 $selector,
-                esc_attr($desktopRatio)
+                esc_attr($desktopRatio),
+                esc_attr($justifyContent)
             );
         }
 
@@ -283,10 +315,11 @@ class TermTemplateBlockGenerator extends AbstractContentGenerator
                 $mq = sprintf('@media (max-width: %dpx)', $bp['max']);
             }
             $css .= sprintf(
-                "%s { %s .dynamic-data-template__item { aspect-ratio: %s; display: flex; flex-direction: column; } }\n",
+                "%s { %s .dynamic-data-template__item { aspect-ratio: %s; display: flex; flex-direction: column; justify-content: %s; } }\n",
                 $mq,
                 $selector,
-                esc_attr($ratio)
+                esc_attr($ratio),
+                esc_attr($justifyContent)
             );
         }
 
