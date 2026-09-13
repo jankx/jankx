@@ -52,6 +52,7 @@
     // .dynamic-data-layout-wrapper.dynamic-data-layout--grid bên trong wrapper này)
     .dynamic-data-layout--grid,
     .dynamic-data-layout--card {
+
         .post-type-layout-grid,
         .post-type-layout-card {
             display: grid;
@@ -105,7 +106,6 @@
             padding: 0 0 20px;
             list-style: none;
             flex-wrap: nowrap;
-            overflow: hidden;
 
             // Embla carousel structure
             &.embla__viewport {

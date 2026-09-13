@@ -110,7 +110,6 @@
   padding: 0 0 20px;
   list-style: none;
   flex-wrap: nowrap;
-  overflow: hidden;
 }
 .wp-block-jankx-dynamic-data-layout.dynamic-data-layout--carousel .carousel-container.embla__viewport,
 .wp-block-jankx-dynamic-data-layout.dynamic-data-layout--carousel .jankx-carousel-container.embla__viewport, .wp-block-jankx-dynamic-data-layout.jankx-carousel .carousel-container.embla__viewport,

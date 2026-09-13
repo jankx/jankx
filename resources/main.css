@@ -110,11 +110,18 @@
   padding: 0 0 20px;
   list-style: none;
   flex-wrap: nowrap;
-  overflow: hidden;
+  /* NOTE: overflow: hidden removed — .jankx-carousel-container is the embla__container (track),
+     not the viewport. Clipping must only happen on .embla__viewport to avoid hiding off-screen slides. */
 }
 .wp-block-jankx-dynamic-data-layout.dynamic-data-layout--carousel .carousel-container.embla__viewport,
 .wp-block-jankx-dynamic-data-layout.dynamic-data-layout--carousel .jankx-carousel-container.embla__viewport, .wp-block-jankx-dynamic-data-layout.jankx-carousel .carousel-container.embla__viewport,
 .wp-block-jankx-dynamic-data-layout.jankx-carousel .jankx-carousel-container.embla__viewport {
+  overflow: hidden;
+  width: 100%;
+}
+/* PHP-generated Embla structure: .jankx-carousel > .embla__viewport > .embla__container */
+.wp-block-jankx-dynamic-data-layout.dynamic-data-layout--carousel > .embla__viewport,
+.wp-block-jankx-dynamic-data-layout.jankx-carousel > .embla__viewport {
   overflow: hidden;
   width: 100%;
 }
