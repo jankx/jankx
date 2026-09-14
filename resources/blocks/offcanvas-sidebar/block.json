@@ -127,6 +127,22 @@
             "type": "string",
             "default": "inherit"
         },
+        "closeButtonOffsetTop": {
+            "type": "string",
+            "default": ""
+        },
+        "closeButtonOffsetRight": {
+            "type": "string",
+            "default": ""
+        },
+        "closeButtonOffsetBottom": {
+            "type": "string",
+            "default": ""
+        },
+        "closeButtonOffsetLeft": {
+            "type": "string",
+            "default": ""
+        },
         "triggerText": {
             "type": "string",
             "default": "Menu"

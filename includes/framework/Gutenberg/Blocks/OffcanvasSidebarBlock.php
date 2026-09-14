@@ -51,6 +51,10 @@ class OffcanvasSidebarBlock extends Block
             $closeButtonSize = $attributes['closeButtonSize'] ?? 'medium';
             $closeButtonStyle = $attributes['closeButtonStyle'] ?? 'circle';
             $closeButtonColor = $attributes['closeButtonColor'] ?? 'inherit';
+            $closeButtonOffsetTop = $attributes['closeButtonOffsetTop'] ?? '';
+            $closeButtonOffsetRight = $attributes['closeButtonOffsetRight'] ?? '';
+            $closeButtonOffsetBottom = $attributes['closeButtonOffsetBottom'] ?? '';
+            $closeButtonOffsetLeft = $attributes['closeButtonOffsetLeft'] ?? '';
             $className = $attributes['className'] ?? '';
 
             // Generate unique ID for this block instance or use the one provided by anchor support
@@ -187,7 +191,11 @@ class OffcanvasSidebarBlock extends Block
                 'closeButtonPosition' => $closeButtonPosition,
                 'closeButtonSize' => $closeButtonSize,
                 'closeButtonStyle' => $closeButtonStyle,
-                'closeButtonColor' => $closeButtonColor
+                'closeButtonColor' => $closeButtonColor,
+                'closeButtonOffsetTop' => $closeButtonOffsetTop,
+                'closeButtonOffsetRight' => $closeButtonOffsetRight,
+                'closeButtonOffsetBottom' => $closeButtonOffsetBottom,
+                'closeButtonOffsetLeft' => $closeButtonOffsetLeft
             ]);
 
             // Build data attributes for JavaScript
@@ -276,6 +284,10 @@ class OffcanvasSidebarBlock extends Block
         $size = $settings['closeButtonSize'] ?? 'medium';
         $style = $settings['closeButtonStyle'] ?? 'circle';
         $color = $settings['closeButtonColor'] ?? 'inherit';
+        $offsetTop = $settings['closeButtonOffsetTop'] ?? '';
+        $offsetRight = $settings['closeButtonOffsetRight'] ?? '';
+        $offsetBottom = $settings['closeButtonOffsetBottom'] ?? '';
+        $offsetLeft = $settings['closeButtonOffsetLeft'] ?? '';
 
         $buttonColor = $color === 'inherit' ? $textColor : $color;
 
@@ -286,11 +298,31 @@ class OffcanvasSidebarBlock extends Block
             'style-' . $style
         ];
 
+        // Build inline offset styles
+        $offsetStyles = '';
+        if (!empty($offsetTop)) {
+            $offsetStyles .= sprintf('top: %s;', esc_attr($offsetTop));
+        }
+        if (!empty($offsetRight)) {
+            $offsetStyles .= sprintf('right: %s;', esc_attr($offsetRight));
+        }
+        if (!empty($offsetBottom)) {
+            $offsetStyles .= sprintf('bottom: %s;', esc_attr($offsetBottom));
+        }
+        if (!empty($offsetLeft)) {
+            $offsetStyles .= sprintf('left: %s;', esc_attr($offsetLeft));
+        }
+
+        $buttonStyle = sprintf('color: %s;', esc_attr($buttonColor));
+        if (!empty($offsetStyles)) {
+            $buttonStyle .= ' ' . $offsetStyles;
+        }
+
         return sprintf(
-            '<button class="%s" data-target="%s" type="button" style="color: %s;" aria-label="%s">×</button>',
+            '<button class="%s" data-target="%s" type="button" style="%s" aria-label="%s">×</button>',
             esc_attr(implode(' ', $classes)),
             esc_attr($blockId),
-            esc_attr($buttonColor),
+            esc_attr($buttonStyle),
             esc_attr__('Close sidebar', 'jankx')
         );
     }

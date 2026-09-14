@@ -31,6 +31,10 @@ interface OffcanvasSidebarAttributes {
     closeButtonSize: 'small' | 'medium' | 'large';
     closeButtonStyle: 'circle' | 'square' | 'rounded' | 'minimal';
     closeButtonColor: string;
+    closeButtonOffsetTop: string;
+    closeButtonOffsetRight: string;
+    closeButtonOffsetBottom: string;
+    closeButtonOffsetLeft: string;
     anchor?: string;
     className?: string;
     style?: any;
@@ -60,6 +64,10 @@ function OffcanvasSidebarEdit({ attributes, setAttributes }: OffcanvasSidebarEdi
         closeButtonSize,
         closeButtonStyle,
         closeButtonColor,
+        closeButtonOffsetTop,
+        closeButtonOffsetRight,
+        closeButtonOffsetBottom,
+        closeButtonOffsetLeft,
         className,
         style
     } = attributes;
@@ -205,7 +213,13 @@ function OffcanvasSidebarEdit({ attributes, setAttributes }: OffcanvasSidebarEdi
                             className={`close-button editor-close-button position-${closeButtonPosition} size-${closeButtonSize} style-${closeButtonStyle}`}
                             type="button"
                             disabled
-                            style={{ color: closeButtonColor }}
+                            style={{
+                                color: closeButtonColor,
+                                ...(closeButtonOffsetTop ? { top: closeButtonOffsetTop } : {}),
+                                ...(closeButtonOffsetRight ? { right: closeButtonOffsetRight } : {}),
+                                ...(closeButtonOffsetBottom ? { bottom: closeButtonOffsetBottom } : {}),
+                                ...(closeButtonOffsetLeft ? { left: closeButtonOffsetLeft } : {}),
+                            }}
                             title={__('Close button preview', 'jankx')}
                         >
                             ×
@@ -349,6 +363,41 @@ function OffcanvasSidebarEdit({ attributes, setAttributes }: OffcanvasSidebarEdi
                                 ]}
                                 onChange={(value: 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left' | 'center-right' | 'center-left') => setAttributes({ closeButtonPosition: value })}
                             />
+
+                            <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                                <div style={{ flex: '1 1 45%', minWidth: '120px' }}>
+                                    <TextControl
+                                        label={__('Offset Top', 'jankx')}
+                                        value={closeButtonOffsetTop}
+                                        onChange={(value: string) => setAttributes({ closeButtonOffsetTop: value })}
+                                        placeholder="15px"
+                                    />
+                                </div>
+                                <div style={{ flex: '1 1 45%', minWidth: '120px' }}>
+                                    <TextControl
+                                        label={__('Offset Right', 'jankx')}
+                                        value={closeButtonOffsetRight}
+                                        onChange={(value: string) => setAttributes({ closeButtonOffsetRight: value })}
+                                        placeholder="15px"
+                                    />
+                                </div>
+                                <div style={{ flex: '1 1 45%', minWidth: '120px' }}>
+                                    <TextControl
+                                        label={__('Offset Bottom', 'jankx')}
+                                        value={closeButtonOffsetBottom}
+                                        onChange={(value: string) => setAttributes({ closeButtonOffsetBottom: value })}
+                                        placeholder="15px"
+                                    />
+                                </div>
+                                <div style={{ flex: '1 1 45%', minWidth: '120px' }}>
+                                    <TextControl
+                                        label={__('Offset Left', 'jankx')}
+                                        value={closeButtonOffsetLeft}
+                                        onChange={(value: string) => setAttributes({ closeButtonOffsetLeft: value })}
+                                        placeholder="15px"
+                                    />
+                                </div>
+                            </div>
 
                             <div style={{ display: 'flex', gap: '8px' }}>
                                 <div style={{ flex: 1 }}>
