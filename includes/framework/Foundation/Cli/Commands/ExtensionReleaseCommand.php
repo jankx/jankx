@@ -314,7 +314,7 @@ jobs:
       - name: Determine PHP versions
         id: php
         run: |
-          CONSTRAINT="${phpConstraint}"
+          CONSTRAINT="{$phpConstraint}"
           ALL="7.4 8.0 8.1 8.2 8.3 8.4 8.5"
 
           if [ -z "\$CONSTRAINT" ]; then
@@ -338,13 +338,13 @@ jobs:
         env:
           GITHUB_TOKEN: \$\{{ secrets.GITHUB_TOKEN }}
         run: |
-          SLUG="${slug}"
+          SLUG="{$slug}"
           RELEASE_TAG="\$\{{ github.event.release.tag_name }}"
 
           for php_ver in \$\{{ steps.php.outputs.versions }}; do
             echo "Building for PHP \$php_ver..."
 
-            rm -rf ${vendorDir} composer.lock
+            rm -rf {$vendorDir} composer.lock
 
             if composer install --prefer-dist --no-dev --no-interaction --no-progress 2>/dev/null; then
               zip_name="\${SLUG}.php\${php_ver}.zip"
@@ -359,9 +359,9 @@ jobs:
           done
 
           # Generic zip (no vendor)
-          rm -rf ${vendorDir} composer.lock
+          rm -rf {$vendorDir} composer.lock
           zip -r "/tmp/\${SLUG}.zip" . \
-            -x ".git/*" ".DS_Store" ".phpunit.result.cache" "tests/*" "node_modules/*" "${vendorDir}/*" "libs/*"
+            -x ".git/*" ".DS_Store" ".phpunit.result.cache" "tests/*" "node_modules/*" "{$vendorDir}/*" "libs/*"
           gh release upload "\$RELEASE_TAG" "/tmp/\${SLUG}.zip" --clobber
           echo "  Uploaded: \${SLUG}.zip (generic)"
 YAML;

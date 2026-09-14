@@ -11,6 +11,7 @@ use Jankx\Foundation\Cli\Commands\SeedCommand;
 use Jankx\Foundation\Cli\Commands\DemoCommand;
 use Jankx\Foundation\Cli\Commands\ExtensionCommand;
 use Jankx\Foundation\Cli\Commands\ExtensionReleaseCommand;
+use Jankx\Foundation\Cli\Commands\TestCommand;
 use Jankx\Foundation\Cli\Seeders\SeederRegistry;
 use Jankx\Demo\Seeders\GamingPortalSeeder;
 use Jankx\Demo\Seeders\BlogDemoSeeder;
@@ -89,6 +90,10 @@ class WordPressCliServiceProvider extends ServiceProvider
             return new ExtensionReleaseCommand();
         });
 
+        $this->app->singleton('jankx.test.command', function () {
+            return new TestCommand();
+        });
+
         // ── Extra commands from config/cli.php ───────────────────────────────
         $commands = $this->app['config']->get('cli.commands', []);
         if (is_array($commands)) {
@@ -147,6 +152,7 @@ class WordPressCliServiceProvider extends ServiceProvider
         \WP_CLI::add_command('jankx demo',   $this->app->make('jankx.demo.command'));
         \WP_CLI::add_command('jankx extension', $this->app->make('jankx.extension.command'));
         \WP_CLI::add_command('jankx extension release', $this->app->make('jankx.extension.release.command'));
+        \WP_CLI::add_command('jankx test', $this->app->make('jankx.test.command'));
 
         // Commands defined in config/cli.php → cli.commands
         $commands = $this->app->get('config')->get('cli.commands', []);
@@ -205,6 +211,9 @@ class WordPressCliServiceProvider extends ServiceProvider
             'jankx extension' => [
                 'release setup' => 'Setup GitHub Actions release workflow for extensions',
                 'release list'  => 'List extensions for release builds',
+            ],
+            'jankx test' => [
+                'io' => 'Benchmark disk I/O performance (sequential read/write and random small file IOPS)',
             ],
         ];
     }
