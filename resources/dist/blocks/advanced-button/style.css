@@ -12,6 +12,7 @@
  */
 .wp-block-jankx-advanced-button {
   box-sizing: border-box;
+  display: flex;
   padding: 0;
 }
 .wp-block-jankx-advanced-button[style*=width] {
