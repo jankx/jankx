@@ -165,6 +165,16 @@ export function Edit(props: EditProps) {
 		},
 		[clientId]
 	);
+
+	// Detect if button is inside a search block (form submit trigger)
+	const isInsideSearchBlock = useSelect(
+		(select: any) => {
+			const { getBlockParents, getBlock } = select('core/block-editor');
+			const parents: string[] = getBlockParents(clientId) || [];
+			return parents.some((id) => getBlock(id)?.name === 'jankx-advanced-search/search');
+		},
+		[clientId]
+	);
 	const wpPostTypes = useSelect((select: any) => {
 		const core = select('core');
 		return core.getPostTypes({ per_page: -1 }) || [];
@@ -533,8 +543,8 @@ export function Edit(props: EditProps) {
 	return (
 		<>
 			<BlockControls group="block">
-				{/* Hide link toolbar for detail-link and modal triggers */}
-				{triggerType === 'link' && (
+				{/* Hide link toolbar for detail-link, modal triggers, and when inside search block */}
+				{triggerType === 'link' && !isInsideSearchBlock && (
 					<>
 						<ToolbarButton
 							ref={linkRef}
@@ -604,6 +614,9 @@ export function Edit(props: EditProps) {
 						});
 					}}
 				>
+					{/* Hide trigger-specific items when inside search block (always submit trigger) */}
+					{!isInsideSearchBlock && (
+					<>
 					<ToolsPanelItem
 						label={__('Condition Type', 'jankx')}
 						isShownByDefault
@@ -1041,6 +1054,8 @@ export function Edit(props: EditProps) {
 								</div>
 							</ToolsPanelItem>
 						</>
+					)}
+					</>
 					)}
 
 					<ToolsPanelItem

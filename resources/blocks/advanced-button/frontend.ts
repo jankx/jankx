@@ -46,27 +46,47 @@ declare global {
         const links = Array.from(document.querySelectorAll('.jankx-advanced-button__link')) as HTMLElement[];
         const bodyClass = document.body.className || '';
         const match = bodyClass.match(/post-type-([^\s]+)/);
-        links.forEach(link => {
-            // Check if button is inside an advanced-filter block
-            const isInsideAdvancedFilter = link.closest('.wp-block-jankx-advanced-filter') !== null;
+		links.forEach(link => {
+			// Check if button is inside an advanced-filter block
+			const isInsideAdvancedFilter = link.closest('.wp-block-jankx-advanced-filter') !== null;
 
-            // If button is inside advanced-filter, skip all custom logic
-            // The button should follow the filter's behavior (form submission)
-            if (isInsideAdvancedFilter) {
-                // Change button type to submit if it's a button element
-                if (link.tagName === 'BUTTON') {
-                    (link as HTMLButtonElement).type = 'submit';
-                }
-                // Add click handler to trigger form submission
-                link.addEventListener('click', (e) => {
-                    const form = link.closest('form');
-                    if (form) {
-                        e.preventDefault();
-                        form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
-                    }
-                });
-                return;
-            }
+			// If button is inside advanced-filter, skip all custom logic
+			// The button should follow the filter's behavior (form submission)
+			if (isInsideAdvancedFilter) {
+				// Change button type to submit if it's a button element
+				if (link.tagName === 'BUTTON') {
+					(link as HTMLButtonElement).type = 'submit';
+				}
+				// Add click handler to trigger form submission
+				link.addEventListener('click', (e) => {
+					const form = link.closest('form');
+					if (form) {
+						e.preventDefault();
+						form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+					}
+				});
+				return;
+			}
+
+			// Check if button is inside a search block (form submit trigger)
+			const isInsideSearchBlock = link.closest('.wp-block-jankx-advanced-search') !== null;
+
+			// If button is inside search block, make it a form submit trigger
+			if (isInsideSearchBlock) {
+				// Change button type to submit if it's a button element
+				if (link.tagName === 'BUTTON') {
+					(link as HTMLButtonElement).type = 'submit';
+				}
+				// Add click handler to trigger form submission
+				link.addEventListener('click', (e) => {
+					const form = link.closest('form');
+					if (form) {
+						e.preventDefault();
+						form.submit();
+					}
+				});
+				return;
+			}
 
             const layout = link.closest('.wp-block-jankx-dynamic-data-layout') as HTMLElement | null;
             const contextPostType = (layout && layout.getAttribute('data-post-type')) || (match ? match[1] : '');
@@ -110,18 +130,34 @@ declare global {
             }
         });
 
-        const buttons = document.querySelectorAll('.jankx-button-modal-trigger');
-        buttons.forEach(button => {
-            // Check if button is inside an advanced-filter block
-            const isInsideAdvancedFilter = button.closest('.wp-block-jankx-advanced-filter') !== null;
+		const buttons = document.querySelectorAll('.jankx-button-modal-trigger');
+		buttons.forEach(button => {
+			// Check if button is inside an advanced-filter block
+			const isInsideAdvancedFilter = button.closest('.wp-block-jankx-advanced-filter') !== null;
 
-            // If button is inside advanced-filter, skip modal event handling
-            // The button should follow the filter's behavior (form submission)
-            if (isInsideAdvancedFilter) {
-                // Change button type to submit
-                (button as HTMLButtonElement).type = 'submit';
-                return;
-            }
+			// If button is inside advanced-filter, skip modal event handling
+			// The button should follow the filter's behavior (form submission)
+			if (isInsideAdvancedFilter) {
+				// Change button type to submit
+				(button as HTMLButtonElement).type = 'submit';
+				return;
+			}
+
+			// Check if button is inside a search block (form submit trigger)
+			const isInsideSearchBlock = button.closest('.wp-block-jankx-advanced-search') !== null;
+
+			// If button is inside search block, make it a form submit trigger
+			if (isInsideSearchBlock) {
+				(button as HTMLButtonElement).type = 'submit';
+				button.addEventListener('click', (e) => {
+					const form = button.closest('form');
+					if (form) {
+						e.preventDefault();
+						form.submit();
+					}
+				});
+				return;
+			}
 
             // Check if event listener is already attached (to avoid duplicates if called multiple times)
             if (button.getAttribute('data-jankx-click-attached') === 'true') {
