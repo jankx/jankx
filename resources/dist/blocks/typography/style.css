@@ -18,6 +18,15 @@
   line-clamp: var(--jankx-line-clamp-desktop, initial);
 }
 
+.jankx-typography-block > * .jankx-typography-block > a {
+  display: inherit;
+  -webkit-box-orient: inherit;
+  overflow: inherit;
+  text-overflow: inherit;
+  -webkit-line-clamp: inherit;
+  line-clamp: inherit;
+}
+
 @media (max-width: 1024px) {
   .wp-block-jankx-typography > *,
   .jankx-typography-block > * {
