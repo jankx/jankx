@@ -17,7 +17,7 @@
 	line-clamp: var(--jankx-line-clamp-desktop, initial);
 }
 
-.jankx-typography-block>* .jankx-typography-block>a {
+.jankx-typography-block>*>a {
 	display: inherit;
 	-webkit-box-orient: inherit;
 	overflow: inherit;
