@@ -168,11 +168,7 @@ class TermTemplateBlockGenerator extends AbstractContentGenerator
             }
 
             $classes = $this->buildItemClasses($term);
-            $currentStyle = '';
-            $bgStyle = $this->buildTermItemBackgroundStyle($templateAttrs, $term);
-            if ($bgStyle !== '') {
-                $currentStyle .= ($currentStyle !== '' ? '; ' : '') . $bgStyle;
-            }
+            $currentStyle = $this->buildTermItemBackgroundStyle($templateAttrs, $term);
             $currentStyleAttr = $currentStyle !== '' ? sprintf(' style="%s"', esc_attr($currentStyle)) : '';
             $output[] = sprintf('<div class="%s"%s%s>%s</div>', esc_attr($classes), $currentStyleAttr, $itemBgDataAttrs, $itemContent);
         }
@@ -337,7 +333,7 @@ class TermTemplateBlockGenerator extends AbstractContentGenerator
     {
         $innerBlocks = $this->getInnerBlocks();
         if (empty($innerBlocks)) {
-            return $this->renderDefaultTermItem($term, $options);
+            return $this->wrapTermItem($this->renderDefaultTermItem($term, $options), $this->getTemplateAttrs());
         }
 
         // Set current term for nested block context fallback (e.g. jankx/term-featured-image inside columns/group)
@@ -639,11 +635,7 @@ class TermTemplateBlockGenerator extends AbstractContentGenerator
                 continue;
             }
             $classes = $this->buildItemClasses($term);
-            $currentStyle = '';
-            $bgStyle = $this->buildTermItemBackgroundStyle($templateAttrs, $term);
-            if ($bgStyle !== '') {
-                $currentStyle .= ($currentStyle !== '' ? '; ' : '') . $bgStyle;
-            }
+            $currentStyle = $this->buildTermItemBackgroundStyle($templateAttrs, $term);
             $styleAttr = $currentStyle !== '' ? sprintf(' style="%s"', esc_attr($currentStyle)) : '';
             $slides[] = sprintf(
                 '<div class="embla__slide"><div class="%s"%s>%s</div></div>',
