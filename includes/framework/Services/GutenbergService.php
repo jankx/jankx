@@ -184,6 +184,7 @@ class GutenbergService
         $this->repository->registerBlock(TestimonialsBlock::class);
         $this->repository->registerBlock(TestimonialBlock::class);
         $this->repository->registerBlock(StarRatingBlock::class);
+        StarRatingBlock::bootProviders();
         $this->repository->registerBlock(StickyBoxBlock::class);
         $this->repository->registerBlock(DividerBlock::class);
         $this->repository->registerBlock(LayoutSwitcherBlock::class);

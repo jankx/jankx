@@ -1,10 +1,11 @@
 import { InspectorControls, useBlockProps } from '@wordpress/block-editor';
-import { PanelBody, SelectControl, RangeControl, TextControl, ColorPalette, ToggleControl, TextareaControl } from '@wordpress/components';
+import { PanelBody, SelectControl, RangeControl, TextControl, ColorPalette, ToggleControl, TextareaControl, Spinner } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 import { useEffect, useState } from '@wordpress/element';
+import apiFetch from '@wordpress/api-fetch';
 
 interface Attributes {
-    ratingSource: 'manual' | 'woocommerce' | 'meta' | 'crawler';
+    ratingSource: string;
     manualRating: number;
     metaKey: string;
     crawlerTable: string;
@@ -19,6 +20,7 @@ interface Attributes {
     svgFull: string;
     svgHalf: string;
     svgEmpty: string;
+    position?: string;
 }
 
 interface EditProps {
@@ -26,8 +28,13 @@ interface EditProps {
     setAttributes: (attributes: Partial<Attributes>) => void;
 }
 
-const DEFAULT_SVG_FULL = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>';
-const DEFAULT_SVG_HALF = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M22 9.24l-7.19-.62L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27 18.18 21l-1.63-7.03L22 9.24zM12 15.4V6.1l1.71 4.04 4.38.38-3.32 2.88 1 4.28L12 15.4z"/></svg>';
+interface ProviderOption {
+    value: string;
+    label: string;
+}
+
+const DEFAULT_SVG_FULL  = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>';
+const DEFAULT_SVG_HALF  = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M22 9.24l-7.19-.62L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27 18.18 21l-1.63-7.03L22 9.24zM12 15.4V6.1l1.71 4.04 4.38.38-3.32 2.88 1 4.28L12 15.4z"/></svg>';
 const DEFAULT_SVG_EMPTY = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M22 9.24l-7.19-.62L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27 18.18 21l-1.63-7.03L22 9.24zM12 15.4l-3.76 2.27 1-4.28-3.32-2.88 4.38-.38L12 6.1l1.71 4.04 4.38.38-3.32 2.88 1 4.28L12 15.4z"/></svg>';
 
 const Edit = ({ attributes, setAttributes }: EditProps) => {
@@ -46,7 +53,29 @@ const Edit = ({ attributes, setAttributes }: EditProps) => {
         svgFull,
         svgHalf,
         svgEmpty,
+        position,
     } = attributes;
+
+    // Fetch provider list from REST endpoint so extensions can add their own.
+    const [providerOptions, setProviderOptions] = useState<ProviderOption[]>([]);
+    const [loadingProviders, setLoadingProviders] = useState(true);
+
+    useEffect(() => {
+        apiFetch<ProviderOption[]>({ path: '/jankx/v1/star-rating/providers' })
+            .then((options) => {
+                setProviderOptions(options);
+            })
+            .catch(() => {
+                // Fallback to built-in sources when REST is unavailable.
+                setProviderOptions([
+                    { label: __('Manual', 'jankx'), value: 'manual' },
+                    { label: __('WooCommerce Product', 'jankx'), value: 'woocommerce' },
+                    { label: __('Post Meta', 'jankx'), value: 'meta' },
+                    { label: __('Crawler Data', 'jankx'), value: 'crawler' },
+                ]);
+            })
+            .finally(() => setLoadingProviders(false));
+    }, []);
 
     const blockProps = useBlockProps({
         style: {
@@ -54,6 +83,7 @@ const Edit = ({ attributes, setAttributes }: EditProps) => {
             '--star-color': starColor,
             '--star-empty-color': starEmptyColor,
             textAlign: attributes.align,
+            position: position ? position : undefined,
         } as React.CSSProperties
     });
 
@@ -64,7 +94,7 @@ const Edit = ({ attributes, setAttributes }: EditProps) => {
         if (ratingSource === 'manual') {
             setRating(manualRating);
         } else {
-            // For other sources, just show a placeholder rating in editor
+            // For other sources, show a placeholder rating in editor
             setRating(4.5);
         }
     }, [ratingSource, manualRating]);
@@ -77,10 +107,10 @@ const Edit = ({ attributes, setAttributes }: EditProps) => {
         const renderIcon = (type: 'full' | 'half' | 'empty') => {
             if (iconType === 'svg') {
                 let svgContent = '';
-                if (type === 'full') svgContent = svgFull || DEFAULT_SVG_FULL;
-                if (type === 'half') svgContent = svgHalf || DEFAULT_SVG_HALF;
+                if (type === 'full')  svgContent = svgFull  || DEFAULT_SVG_FULL;
+                if (type === 'half')  svgContent = svgHalf  || DEFAULT_SVG_HALF;
                 if (type === 'empty') svgContent = svgEmpty || DEFAULT_SVG_EMPTY;
-                
+
                 return <span className={`jankx-star ${type} is-svg`} dangerouslySetInnerHTML={{ __html: svgContent }} />;
             }
             return <span className={`jankx-star ${type}`}>{type === 'full' ? '★' : (type === 'half' ? '★' : '☆')}</span>;
@@ -102,17 +132,17 @@ const Edit = ({ attributes, setAttributes }: EditProps) => {
         <>
             <InspectorControls>
                 <PanelBody title={__('Rating Settings', 'jankx')}>
-                    <SelectControl
-                        label={__('Rating Source', 'jankx')}
-                        value={ratingSource}
-                        options={[
-                            { label: __('Manual', 'jankx'), value: 'manual' },
-                            { label: __('WooCommerce Product', 'jankx'), value: 'woocommerce' },
-                            { label: __('Post Meta', 'jankx'), value: 'meta' },
-                            { label: __('Crawler Data', 'jankx'), value: 'crawler' },
-                        ]}
-                        onChange={(value) => setAttributes({ ratingSource: value as any })}
-                    />
+                    {loadingProviders ? (
+                        <Spinner />
+                    ) : (
+                        <SelectControl
+                            label={__('Rating Source', 'jankx')}
+                            value={ratingSource}
+                            options={providerOptions}
+                            onChange={(value) => setAttributes({ ratingSource: value })}
+                            help={__('Sources registered by active extensions will appear here.', 'jankx')}
+                        />
+                    )}
 
                     {ratingSource === 'manual' && (
                         <RangeControl
@@ -142,6 +172,18 @@ const Edit = ({ attributes, setAttributes }: EditProps) => {
                             help={__('Enter the custom table name if needed.', 'jankx')}
                         />
                     )}
+
+                    <SelectControl
+                        label={__('Position', 'jankx')}
+                        value={position || ''}
+                        options={[
+                            { label: __('Default (Static)', 'jankx'), value: '' },
+                            { label: __('Relative', 'jankx'), value: 'relative' },
+                            { label: __('Absolute', 'jankx'), value: 'absolute' },
+                            { label: __('Fixed', 'jankx'), value: 'fixed' },
+                        ]}
+                        onChange={(value) => setAttributes({ position: value })}
+                    />
                 </PanelBody>
 
                 <PanelBody title={__('Visual Settings', 'jankx')}>
@@ -152,7 +194,7 @@ const Edit = ({ attributes, setAttributes }: EditProps) => {
                         min={10}
                         max={50}
                     />
-                    
+
                     <p>{__('Star Filled Color', 'jankx')}</p>
                     <ColorPalette
                         value={starColor}

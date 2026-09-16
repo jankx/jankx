@@ -5,12 +5,12 @@
 /* Icon Block styles. */
 .wp-block-jankx-svg-icon {
 	display: flex;
- 	line-height: 0;
+	line-height: 0;
 
-    // Unset border styling inherited from block props.
-    &.has-border-color {
-        border: none;
-    }
+	// Unset border styling inherited from block props.
+	&.has-border-color {
+		border: none;
+	}
 
 	&.has-icon-color,
 	.has-icon-color {
@@ -19,6 +19,7 @@
 		}
 
 		&:not(.has-no-icon-fill-color) {
+
 			svg,
 			svg path,
 			svg g,
@@ -34,10 +35,10 @@
 		}
 	}
 
-    // box-sizing is set in the Editor but not on the frontend.
-    .icon-container {
-        box-sizing: border-box;
-    }
+	// box-sizing is set in the Editor but not on the frontend.
+	.icon-container {
+		box-sizing: border-box;
+	}
 
 	a,
 	svg {
@@ -46,10 +47,10 @@
 		transition: transform 0.1s ease-in-out;
 	}
 
-    // Added for a11y. In-block hover/focus controls will be added in future releases.
-    a:hover {
-        transform: scale(1.1);
-    }
+	// Added for a11y. In-block hover/focus controls will be added in future releases.
+	a:hover {
+		transform: scale(1.1);
+	}
 
 	// Deprecated classes as of v2.0.0. Will be removed in v2.5.0.
 	svg {
@@ -99,11 +100,12 @@
 	&.items-justified-right {
 		justify-content: flex-end;
 	}
- }
+}
 
 
 .has-light-text-color {
 	.wp-block-jankx-svg-icon {
+
 		svg,
 		svg path,
 		svg g,
@@ -115,22 +117,6 @@
 		svg ellipse,
 		svg text {
 			fill: var(--wp--preset--color--light-text);
-		}
-	}
-}
-.has-dark-text-color {
-	.wp-block-jankx-svg-icon {
-		svg,
-		svg path,
-		svg g,
-		svg rect,
-		svg circle,
-		svg polygon,
-		svg polyline,
-		svg line,
-		svg ellipse,
-		svg text {
-			fill: var(--wp--preset--color--dark-text);
 		}
 	}
 }

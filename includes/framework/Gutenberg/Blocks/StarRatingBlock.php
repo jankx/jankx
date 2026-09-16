@@ -3,91 +3,156 @@
 namespace Jankx\Gutenberg\Blocks;
 
 use Jankx\Gutenberg\Block;
-use WC_Product;
+use Jankx\Gutenberg\StarRating\StarRatingRegistry;
+use Jankx\Gutenberg\StarRating\Providers\ManualRatingProvider;
+use Jankx\Gutenberg\StarRating\Providers\WooCommerceRatingProvider;
+use Jankx\Gutenberg\StarRating\Providers\PostMetaRatingProvider;
+use Jankx\Gutenberg\StarRating\Providers\CrawlerRatingProvider;
 
 class StarRatingBlock extends Block
 {
     protected $blockId = 'jankx/star-rating';
 
-    const DEFAULT_SVG_FULL = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>';
-    const DEFAULT_SVG_HALF = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M22 9.24l-7.19-.62L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27 18.18 21l-1.63-7.03L22 9.24zM12 15.4V6.1l1.71 4.04 4.38.38-3.32 2.88 1 4.28L12 15.4z"/></svg>';
+    const DEFAULT_SVG_FULL  = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>';
+    const DEFAULT_SVG_HALF  = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M22 9.24l-7.19-.62L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27 18.18 21l-1.63-7.03L22 9.24zM12 15.4V6.1l1.71 4.04 4.38.38-3.32 2.88 1 4.28L12 15.4z"/></svg>';
     const DEFAULT_SVG_EMPTY = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M22 9.24l-7.19-.62L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27 18.18 21l-1.63-7.03L22 9.24zM12 15.4l-3.76 2.27 1-4.28-3.32-2.88 4.38-.38L12 6.1l1.71 4.04 4.38.38-3.32 2.88 1 4.28L12 15.4z"/></svg>';
+
+    /**
+     * Register built-in providers and hook up the REST endpoint.
+     * Call this once during block bootstrap (e.g. from GutenbergRepository).
+     *
+     * Named explicitly (instead of overriding Block::boot(), which is an
+     * instance method) to avoid a fatal "cannot make non static method static".
+     */
+    public static function bootProviders(): void
+    {
+        self::registerBuiltinProviders();
+        add_action('rest_api_init', [self::class, 'registerRestEndpoint']);
+    }
+
+    /**
+     * Register the four built-in rating providers.
+     * Extensions may call StarRatingRegistry::register() to add more,
+     * or StarRatingRegistry::deregister() to remove any of these.
+     */
+    private static function registerBuiltinProviders(): void
+    {
+        StarRatingRegistry::register(new ManualRatingProvider());
+        StarRatingRegistry::register(new WooCommerceRatingProvider());
+        StarRatingRegistry::register(new PostMetaRatingProvider());
+        StarRatingRegistry::register(new CrawlerRatingProvider());
+    }
+
+    /**
+     * Register a REST endpoint so Gutenberg can fetch the dynamic provider list.
+     *
+     * GET /wp-json/jankx/v1/star-rating/providers[?post_type=tour]
+     * Response: [{ "value": "manual", "label": "Manual" }, ...]
+     */
+    public static function registerRestEndpoint(): void
+    {
+        register_rest_route('jankx/v1', '/star-rating/providers', [
+            'methods'             => \WP_REST_Server::READABLE,
+            'callback'            => [self::class, 'restGetProviders'],
+            'permission_callback' => static function () {
+                return current_user_can('edit_posts');
+            },
+            'args' => [
+                'post_type' => [
+                    'type'              => 'string',
+                    'sanitize_callback' => 'sanitize_key',
+                    'default'           => '',
+                ],
+            ],
+        ]);
+    }
+
+    /**
+     * REST callback — returns editor-ready options array.
+     *
+     * @param \WP_REST_Request $request
+     * @return \WP_REST_Response
+     */
+    public static function restGetProviders(\WP_REST_Request $request): \WP_REST_Response
+    {
+        $postType = $request->get_param('post_type');
+        $options  = StarRatingRegistry::getEditorOptions($postType ?: null);
+        return new \WP_REST_Response($options, 200);
+    }
+
+    // -----------------------------------------------------------------------
+    // Block render
+    // -----------------------------------------------------------------------
 
     public function render($attributes, $content = '')
     {
         $attributes = wp_parse_args($attributes, [
-            'ratingSource' => 'manual',
-            'manualRating' => 5,
-            'metaKey' => 'rating_score',
-            'crawlerTable' => '',
-            'starSize' => 16,
-            'starColor' => '#f1c40f',
+            'ratingSource'   => 'manual',
+            'manualRating'   => 5,
+            'metaKey'        => 'rating_score',
+            'crawlerTable'   => '',
+            'starSize'       => 16,
+            'starColor'      => '#f1c40f',
             'starEmptyColor' => '#dddddd',
-            'showCount' => false,
-            'countMetaKey' => 'rating_count',
-            'align' => 'left',
-            'iconType' => 'text',
-            'svgFull' => '',
-            'svgHalf' => '',
-            'svgEmpty' => '',
+            'showCount'      => false,
+            'showScoreText'  => false,
+            'countMetaKey'   => 'rating_count',
+            'align'          => 'left',
+            'position'       => '',
+            'iconType'       => 'text',
+            'svgFull'        => '',
+            'svgHalf'        => '',
+            'svgEmpty'       => '',
         ]);
 
-        $rating = 0;
-        $count = 0;
+        $postId   = get_the_ID() ?: 0;
+        $source   = $attributes['ratingSource'];
+        $provider = StarRatingRegistry::getProvider($source);
 
-        switch ($attributes['ratingSource']) {
-            case 'woocommerce':
-                if (function_exists('wc_get_product')) {
-                    global $product;
-                    if (!$product instanceof WC_Product) {
-                        $product = wc_get_product(get_the_ID());
-                    }
-                    if ($product) {
-                        $rating = $product->get_average_rating();
-                        $count = $product->get_rating_count();
-                    }
-                }
-                break;
-
-            case 'meta':
-                $post_id = get_the_ID();
-                $rating = (float) get_post_meta($post_id, $attributes['metaKey'], true);
-                if ($attributes['showCount']) {
-                    $count = (int) get_post_meta($post_id, $attributes['countMetaKey'], true);
-                }
-                break;
-
-            case 'crawler':
-                // Placeholder for custom crawler logic
-                // Assuming data is stored in a custom table linked by post_id or similar
-                $rating = $this->getCrawlerRating($attributes['crawlerTable']);
-                $count = $this->getCrawlerCount($attributes['crawlerTable']);
-                break;
-
-            case 'manual':
-            default:
-                $rating = (float) $attributes['manualRating'];
-                break;
+        if ($provider === null) {
+            /**
+             * Filter: allow extensions to handle an unknown/missing provider ID.
+             *
+             * @param float  $rating     Default fallback (0.0).
+             * @param string $source     The requested provider ID.
+             * @param int    $postId     Current post ID.
+             * @param array  $attributes Block attributes.
+             */
+            $rating = (float) apply_filters(
+                'jankx/star_rating/unknown_provider_rating',
+                0.0,
+                $source,
+                $postId,
+                $attributes
+            );
+            $count  = 0;
+        } else {
+            $rating = $provider->getRating($postId, $attributes);
+            $count  = $provider->getCount($postId, $attributes);
         }
 
-        // Apply filters to allow external modification of rating data
-        $rating = apply_filters('jankx/star_rating/value', $rating, $attributes, get_the_ID());
-        $count = apply_filters('jankx/star_rating/count', $count, $attributes, get_the_ID());
+        // Allow final override via filters (backwards-compatible).
+        $rating = (float) apply_filters('jankx/star_rating/value', $rating, $attributes, $postId);
+        $count  = (int)   apply_filters('jankx/star_rating/count', $count,  $attributes, $postId);
 
-        // Clamp rating between 0 and 5
-        $rating = max(0, min(5, $rating));
+        // Clamp rating 0-5.
+        $rating = max(0.0, min(5.0, $rating));
 
-        // Render HTML
+        // Build inline style.
         $style = sprintf(
             '--star-size: %dpx; --star-color: %s; --star-empty-color: %s; text-align: %s;',
-            $attributes['starSize'],
-            $attributes['starColor'],
-            $attributes['starEmptyColor'],
-            $attributes['align']
+            (int) $attributes['starSize'],
+            esc_attr($attributes['starColor']),
+            esc_attr($attributes['starEmptyColor']),
+            esc_attr($attributes['align'])
         );
 
+        if (!empty($attributes['position'])) {
+            $style .= sprintf(' position: %s;', esc_attr($attributes['position']));
+        }
+
         $wrapper_classes = ['wp-block-jankx-star-rating'];
-        if (isset($attributes['className'])) {
+        if (!empty($attributes['className'])) {
             $wrapper_classes[] = $attributes['className'];
         }
 
@@ -114,55 +179,44 @@ class StarRatingBlock extends Block
         return ob_get_clean();
     }
 
+    // -----------------------------------------------------------------------
+    // Star rendering helpers
+    // -----------------------------------------------------------------------
+
     protected function renderStars($rating, $attributes)
     {
-        $output = '';
-        $full_stars = floor($rating);
+        $output        = '';
+        $full_stars    = floor($rating);
         $has_half_star = ($rating - $full_stars) >= 0.5;
-
-        $iconType = $attributes['iconType'] ?? 'text';
+        $iconType      = $attributes['iconType'] ?? 'text';
 
         for ($i = 1; $i <= 5; $i++) {
             if ($i <= $full_stars) {
                 $output .= $this->getStarIcon('full', $iconType, $attributes);
-            } elseif ($i == $full_stars + 1 && $has_half_star) {
+            } elseif ($i === $full_stars + 1 && $has_half_star) {
                 $output .= $this->getStarIcon('half', $iconType, $attributes);
             } else {
                 $output .= $this->getStarIcon('empty', $iconType, $attributes);
             }
         }
+
         return $output;
     }
 
     protected function getStarIcon($type, $iconType, $attributes)
     {
         $classes = "jankx-star {$type}";
-        
+
         if ($iconType === 'svg') {
             $svgContent = '';
-            if ($type === 'full') $svgContent = !empty($attributes['svgFull']) ? $attributes['svgFull'] : self::DEFAULT_SVG_FULL;
-            if ($type === 'half') $svgContent = !empty($attributes['svgHalf']) ? $attributes['svgHalf'] : self::DEFAULT_SVG_HALF;
+            if ($type === 'full')  $svgContent = !empty($attributes['svgFull'])  ? $attributes['svgFull']  : self::DEFAULT_SVG_FULL;
+            if ($type === 'half')  $svgContent = !empty($attributes['svgHalf'])  ? $attributes['svgHalf']  : self::DEFAULT_SVG_HALF;
             if ($type === 'empty') $svgContent = !empty($attributes['svgEmpty']) ? $attributes['svgEmpty'] : self::DEFAULT_SVG_EMPTY;
 
-            // Ensure SVG has current color fill if not specified (or force it via CSS)
             return sprintf('<span class="%s is-svg">%s</span>', $classes, $svgContent);
         }
 
         $symbol = ($type === 'full' || $type === 'half') ? '★' : '☆';
         return sprintf('<span class="%s">%s</span>', $classes, $symbol);
-    }
-
-    protected function getCrawlerRating($table)
-    {
-        // Example implementation: query custom table
-        // This is a placeholder. You would typically use $wpdb here.
-        // global $wpdb;
-        // ...
-        return 0;
-    }
-
-    protected function getCrawlerCount($table)
-    {
-        return 0;
     }
 }

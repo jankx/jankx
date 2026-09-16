@@ -1,0 +1,28 @@
+<?php
+
+namespace Jankx\Gutenberg\StarRating\Providers;
+
+use Jankx\Gutenberg\StarRating\AbstractStarRatingProvider;
+
+/**
+ * Manual Rating Provider
+ *
+ * Returns a hard-coded rating value set directly in the block attributes.
+ */
+class ManualRatingProvider extends AbstractStarRatingProvider
+{
+    public function getId(): string
+    {
+        return 'manual';
+    }
+
+    public function getLabel(): string
+    {
+        return __('Manual', 'jankx');
+    }
+
+    public function getRating(int $postId, array $attributes): float
+    {
+        return (float) ($attributes['manualRating'] ?? 5.0);
+    }
+}

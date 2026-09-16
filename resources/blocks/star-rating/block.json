@@ -83,6 +83,10 @@
     "align": {
       "type": "string",
       "default": "left"
+    },
+    "position": {
+      "type": "string",
+      "default": ""
     }
   },
   "supports": {
