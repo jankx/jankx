@@ -7,6 +7,7 @@ use Jankx\Dashboard\Factories\FieldFactory;
 use Jankx\Dashboard\Elements\Page;
 use Jankx\Dashboard\Elements\Section;
 use Jankx\Adapter\Options\Framework as OptionFramework;
+use Jankx\Adapter\Options\Helper;
 
 /**
  * Theme Options Integration
@@ -57,7 +58,10 @@ class ThemeOptionsIntegration
             }
         }
 
-        $saved = get_option('jankx_options', []);
+        $saved = [
+            TaxonomyImageService::OPTION_ENABLED => Helper::getOption(TaxonomyImageService::OPTION_ENABLED, 1),
+            TaxonomyImageService::OPTION_TAXONOMIES => Helper::getOption(TaxonomyImageService::OPTION_TAXONOMIES, null),
+        ];
 
         $page = new Page(__('Taxonomy Featured Image', 'jankx'), [], 'dashicons-before dashicons-format-image');
         $page->setId(self::PAGE_ID);

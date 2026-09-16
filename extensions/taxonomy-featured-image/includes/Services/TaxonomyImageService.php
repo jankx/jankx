@@ -2,6 +2,8 @@
 
 namespace Jankx\Extensions\TaxonomyFeaturedImage\Services;
 
+use Jankx\Adapter\Options\Helper;
+
 /**
  * Taxonomy Image Service
  *
@@ -22,7 +24,7 @@ class TaxonomyImageService
     protected $allowedTaxonomies = null;
 
     /**
-     * Get raw option value from jankx_options
+     * Get option value via the Jankx option adapter
      *
      * @param string $key Option key
      * @param mixed $default Default value
@@ -30,11 +32,7 @@ class TaxonomyImageService
      */
     public function getOption(string $key, $default = null)
     {
-        $options = get_option('jankx_options', []);
-        if (is_array($options) && array_key_exists($key, $options)) {
-            return $options[$key];
-        }
-        return $default;
+        return Helper::getOption($key, $default);
     }
 
     /**
