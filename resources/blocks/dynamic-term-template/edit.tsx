@@ -353,6 +353,11 @@ const buildTemplateItemStyle = (attributes: any): CSSProperties => {
         }
     }
 
+    // Preset border color (theme color)
+    if (attributes?.borderColor) {
+        styles.borderColor = `var(--wp--preset--color--${attributes.borderColor})`;
+    }
+
     return styles;
 };
 
@@ -391,6 +396,14 @@ const buildTemplateItemClasses = (attributes: any): string => {
     // Add font size class if using preset
     if (attributes?.fontSize) {
         classes.push(`has-${attributes.fontSize}-font-size`);
+    }
+
+    // Add border color class if using theme color
+    if (attributes?.borderColor || attributes?.style?.border?.color) {
+        classes.push('has-border-color');
+    }
+    if (attributes?.borderColor) {
+        classes.push(`has-${attributes.borderColor}-border-color`);
     }
 
     return classes.filter(Boolean).join(' ');

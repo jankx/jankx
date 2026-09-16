@@ -516,7 +516,14 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
     }, [queryId, clientId, setAttributes]);
 
     // Reset queryPreset if current preset is not valid for the current postType
+    // Note: 'default' and 'custom' are always valid built-in presets
     useEffect(() => {
+        const BUILTIN_PRESETS = ['default', 'custom'];
+        if (BUILTIN_PRESETS.includes(queryPreset)) {
+            // Built-in presets are always valid, never reset them
+            return;
+        }
+
         const allPresets: QueryPresetOption[] = window.jankxQueryOptions?.queryPresets || [];
 
         const validPresets = allPresets.filter((preset: QueryPresetOption) =>
@@ -973,7 +980,19 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
     }, []);
 
     // Pre-compute query preset options outside JSX
-    const normalizedPresets = useMemo<QueryPresetOption[]>(() => normalizeQueryPresets(window.jankxQueryOptions?.queryPresets), []);
+    // Built-in presets: 'default' (main WP_Query) and 'custom' (fully custom query)
+    // are always available regardless of PHP registrations.
+    const BUILTIN_PRESET_OPTIONS: QueryPresetOption[] = [
+        { value: 'default', label: __('Default (Main Query)', 'jankx'), postType: null },
+        { value: 'custom', label: __('Custom Query', 'jankx'), postType: null },
+    ];
+    const normalizedPresets = useMemo<QueryPresetOption[]>(() => {
+        const fromPHP = normalizeQueryPresets(window.jankxQueryOptions?.queryPresets);
+        // Merge: built-in first, then PHP-registered ones (skip duplicates of built-in values)
+        const builtinValues = BUILTIN_PRESET_OPTIONS.map((p) => p.value);
+        const extra = fromPHP.filter((p) => !builtinValues.includes(p.value));
+        return [...BUILTIN_PRESET_OPTIONS, ...extra];
+    }, []);
 
     const queryPresetOptions = useMemo(() => {
         const allPresets: QueryPresetOption[] = normalizedPresets;

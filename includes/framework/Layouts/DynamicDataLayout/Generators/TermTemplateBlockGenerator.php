@@ -149,7 +149,6 @@ class TermTemplateBlockGenerator extends AbstractContentGenerator
     {
         $output = [];
         $templateAttrs = $this->getTemplateAttrs();
-        $itemInlineStyle = $this->buildTemplateItemInlineStyle($templateAttrs);
 
         $bgType = $templateAttrs['itemBgType'] ?? 'none';
         $itemBgDataAttrs = '';
@@ -169,7 +168,7 @@ class TermTemplateBlockGenerator extends AbstractContentGenerator
             }
 
             $classes = $this->buildItemClasses($term);
-            $currentStyle = $itemInlineStyle;
+            $currentStyle = '';
             $bgStyle = $this->buildTermItemBackgroundStyle($templateAttrs, $term);
             if ($bgStyle !== '') {
                 $currentStyle .= ($currentStyle !== '' ? '; ' : '') . $bgStyle;
@@ -634,14 +633,13 @@ class TermTemplateBlockGenerator extends AbstractContentGenerator
     {
         $slides = [];
         $templateAttrs = $this->getTemplateAttrs();
-        $itemInlineStyle = $this->buildTemplateItemInlineStyle($templateAttrs);
         foreach ($terms as $term) {
             $itemContent = $this->renderTermItem($term, $terms, $options);
             if ($itemContent === '') {
                 continue;
             }
             $classes = $this->buildItemClasses($term);
-            $currentStyle = $itemInlineStyle;
+            $currentStyle = '';
             $bgStyle = $this->buildTermItemBackgroundStyle($templateAttrs, $term);
             if ($bgStyle !== '') {
                 $currentStyle .= ($currentStyle !== '' ? '; ' : '') . $bgStyle;
@@ -800,6 +798,36 @@ class TermTemplateBlockGenerator extends AbstractContentGenerator
     }
 
     /**
+     * Resolve a preset border color slug to its CSS color value.
+     *
+     * Mirrors the editor's useBorderProps behavior so preset border colors
+     * render reliably on the frontend.
+     *
+     * @param string $slug Color preset slug.
+     * @return string CSS color value.
+     */
+    protected function resolveBorderColorValue(string $slug): string
+    {
+        if (function_exists('wp_get_global_settings')) {
+            $palettes = wp_get_global_settings(['color', 'palette']);
+            if (is_array($palettes)) {
+                foreach ($palettes as $colors) {
+                    if (!is_array($colors)) {
+                        continue;
+                    }
+                    foreach ($colors as $color) {
+                        if (is_array($color) && ($color['slug'] ?? '') === $slug && !empty($color['color'])) {
+                            return $color['color'];
+                        }
+                    }
+                }
+            }
+        }
+
+        return 'var(--wp--preset--color--' . sanitize_html_class($slug) . ')';
+    }
+
+    /**
      * Build inline styles for template item from block attributes
      *
      * @param array $attrs Block attributes
@@ -826,7 +854,17 @@ class TermTemplateBlockGenerator extends AbstractContentGenerator
         }
 
         if (!empty($attrs['style']['border']) && is_array($attrs['style']['border'])) {
-            $styleConfig['border'] = $attrs['style']['border'];
+            $border = $attrs['style']['border'];
+        } else {
+            $border = [];
+        }
+
+        if (!empty($attrs['borderColor']) && empty($border['color'])) {
+            $border['color'] = $this->resolveBorderColorValue($attrs['borderColor']);
+        }
+
+        if (!empty($border)) {
+            $styleConfig['border'] = $border;
         }
 
         if (empty($styleConfig)) {
@@ -870,6 +908,14 @@ class TermTemplateBlockGenerator extends AbstractContentGenerator
 
         if (!empty($attrs['fontSize'])) {
             $classes[] = 'has-' . sanitize_html_class($attrs['fontSize']) . '-font-size';
+        }
+
+        $hasBorderColor = !empty($attrs['borderColor']) || !empty($attrs['style']['border']['color']);
+        if ($hasBorderColor) {
+            $classes[] = 'has-border-color';
+        }
+        if (!empty($attrs['borderColor'])) {
+            $classes[] = 'has-' . sanitize_html_class($attrs['borderColor']) . '-border-color';
         }
 
         return implode(' ', array_unique(array_filter($classes)));
