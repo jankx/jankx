@@ -538,7 +538,7 @@ class ThemeExtensionManager
             $context = (array) $manifest['context'];
             $is_match = false;
 
-            if (in_array('admin', $context) && is_admin() && !wp_doing_ajax())
+            if (in_array('admin', $context) && is_admin())
                 $is_match = true;
             if (in_array('frontend', $context) && !is_admin())
                 $is_match = true;
