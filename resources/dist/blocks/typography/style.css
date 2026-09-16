@@ -19,7 +19,7 @@
 }
 
 .jankx-typography-block > * > a {
-  display: inherit;
+  display: -webkit-box;
   -webkit-box-orient: inherit;
   overflow: inherit;
   text-overflow: inherit;
