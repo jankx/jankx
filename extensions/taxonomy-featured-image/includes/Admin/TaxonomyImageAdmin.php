@@ -24,6 +24,11 @@ class TaxonomyImageAdmin
 
     public function register(): void
     {
+        // Register term meta on `init` (late) so it is available everywhere,
+        // including REST requests used by the editor (Term Featured Image
+        // block preview). `admin_init` alone would leave REST responses
+        // without the `_thumbnail_id` meta.
+        add_action('init', [$this, 'registerTermMeta'], 99);
         add_action('admin_init', [$this, 'registerTermMeta']);
         add_action('admin_enqueue_scripts', [$this, 'enqueueAssets']);
         add_action('admin_init', [$this, 'registerTaxonomyHooks'], 20);

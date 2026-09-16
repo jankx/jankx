@@ -26,9 +26,10 @@
 
 	.jankx-advanced-button__link {
 		box-sizing: border-box;
-		border-width: 2px;
-		border-style: solid;
-		border-color: transparent;
+		// Note: border properties are controlled by WordPress Border Support
+		// (attributes.style.border) and applied via inline styles.
+		// Do NOT hardcode border-width/style/color here as it will override
+		// user-configured borders from the editor.
 	}
 
 	// Default behavior for FILL mode (Not Outline and Not Text Link)

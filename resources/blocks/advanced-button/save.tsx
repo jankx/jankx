@@ -87,19 +87,40 @@ export default function Save(props: SaveProps) {
 
 	const blockProps = useBlockProps.save();
 
-	// Get border props (border radius) from attributes.style.border
-	const borderRadius = props.attributes.style?.border?.radius;
-	const borderStyle: Record<string, any> = {};
+	// Get full border props from attributes.style.border
+	// WordPress __experimentalBorder support stores: radius, color, width, style, top/right/bottom/left
+	const styleBorder = props.attributes.style?.border || {};
+	const borderInlineStyle: Record<string, any> = {};
+
+	// Border radius
+	const borderRadius = styleBorder.radius;
 	if (borderRadius) {
 		if (typeof borderRadius === 'object') {
-			// Individual corner radii
 			const { topLeft, topRight, bottomRight, bottomLeft } = borderRadius as any;
-			borderStyle.borderRadius = `${topLeft || '0'} ${topRight || '0'} ${bottomRight || '0'} ${bottomLeft || '0'}`;
+			borderInlineStyle.borderRadius = `${topLeft || '0'} ${topRight || '0'} ${bottomRight || '0'} ${bottomLeft || '0'}`;
 		} else {
-			borderStyle.borderRadius = borderRadius;
+			borderInlineStyle.borderRadius = borderRadius;
 		}
 	}
-	const borderProps = { className: '', style: borderStyle };
+
+	// Uniform border (color, width, style)
+	if (styleBorder.color) borderInlineStyle.borderColor = styleBorder.color;
+	if (styleBorder.width) borderInlineStyle.borderWidth = styleBorder.width;
+	if (styleBorder.style) borderInlineStyle.borderStyle = styleBorder.style;
+
+	// Individual side borders (top, right, bottom, left)
+	const sides = ['top', 'right', 'bottom', 'left'] as const;
+	sides.forEach((side) => {
+		const sideBorder = styleBorder[side] as any;
+		if (sideBorder) {
+			const capSide = side.charAt(0).toUpperCase() + side.slice(1);
+			if (sideBorder.color) borderInlineStyle[`border${capSide}Color`] = sideBorder.color;
+			if (sideBorder.width) borderInlineStyle[`border${capSide}Width`] = sideBorder.width;
+			if (sideBorder.style) borderInlineStyle[`border${capSide}Style`] = sideBorder.style;
+		}
+	});
+
+	const borderProps = { className: '', style: borderInlineStyle };
 
 
 	// Check if button has no color settings
