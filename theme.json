@@ -236,6 +236,9 @@
 			},
 			"core/template-part": {
 				"css": ".wp-block-template-part[data-area='footer'] { margin-block-start: 0px; }"
+			},
+			"core/cover": {
+				"css": ".wp-block-cover.has-custom-content-position.has-custom-content-position .wp-block-cover__inner-container{min-height:inherit;}"
 			}
 		}
 	},
