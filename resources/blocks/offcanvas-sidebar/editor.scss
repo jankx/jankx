@@ -379,6 +379,7 @@
 /* Toolbar Toggle Show/Hide Styles */
 .offcanvas-sidebar-block {
     &.sidebar-hidden {
+        display: none;
         .offcanvas-sidebar-preview {
             max-height: 0;
             overflow: hidden;
