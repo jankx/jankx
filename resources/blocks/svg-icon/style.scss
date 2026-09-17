@@ -103,23 +103,7 @@
 }
 
 
-.has-light-text-color {
-	.wp-block-jankx-svg-icon {
 
-		svg,
-		svg path,
-		svg g,
-		svg rect,
-		svg circle,
-		svg polygon,
-		svg polyline,
-		svg line,
-		svg ellipse,
-		svg text {
-			fill: var(--wp--preset--color--light-text);
-		}
-	}
-}
 
 // When SVG icon is inside a button (advanced-button, core/button, etc.)
 // Inherit text color and remove own background
