@@ -2,6 +2,7 @@
     "$schema": "https://schemas.wp.org/trunk/block.json",
     "apiVersion": 3,
     "name": "jankx/smart-tab",
+    "version": "1.0.0",
     "title": "Smart Tab",
     "category": "jankx",
     "description": "Single tab item for Smart Tabs",

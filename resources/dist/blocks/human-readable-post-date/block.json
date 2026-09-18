@@ -2,6 +2,7 @@
     "$schema": "https://schemas.wp.org/trunk/block.json",
     "apiVersion": 3,
     "name": "jankx/human-readable-post-date",
+    "version": "1.0.0",
     "title": "Human Readable Post Date",
     "category": "jankx",
     "icon": "clock",

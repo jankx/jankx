@@ -1,6 +1,7 @@
 {
 	"apiVersion": 3,
 	"name": "jankx/svg-icon",
+	"version": "1.0.0",
 	"title": "SVG Icon",
 	"category": "jankx",
 	"description": "Insert an SVG icon or graphic.",

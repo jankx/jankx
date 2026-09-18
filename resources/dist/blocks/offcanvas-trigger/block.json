@@ -1,6 +1,7 @@
 {
     "apiVersion": 3,
     "name": "jankx/offcanvas-trigger",
+    "version": "1.0.0",
     "title": "Offcanvas Trigger",
     "category": "jankx",
     "icon": "button",

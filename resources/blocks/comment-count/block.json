@@ -2,6 +2,7 @@
     "$schema": "https://schemas.wp.org/trunk/block.json",
     "apiVersion": 3,
     "name": "jankx/comment-count",
+    "version": "1.0.0",
     "title": "Comment Count",
     "category": "jankx",
     "description": "Display the number of comments for the current post.",

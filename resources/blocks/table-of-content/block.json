@@ -2,6 +2,7 @@
     "$schema": "https://schemas.wp.org/trunk/block.json",
     "apiVersion": 3,
     "name": "jankx/table-of-content",
+    "version": "1.0.0",
     "title": "Table of Content",
     "category": "jankx",
     "description": "Display interactive table of content for the current post",

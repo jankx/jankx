@@ -2,6 +2,7 @@
     "$schema": "https://schemas.wp.org/trunk/block.json",
     "apiVersion": 3,
     "name": "jankx/slideshow-item",
+    "version": "1.0.0",
     "title": "Slideshow Item",
     "category": "jankx",
     "description": "Single slide item for slideshow (locked block)",

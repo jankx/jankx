@@ -2,6 +2,7 @@
     "$schema": "https://schemas.wp.org/trunk/block.json",
     "apiVersion": 3,
     "name": "jankx/divider",
+    "version": "1.0.0",
     "title": "Divider",
     "category": "jankx",
     "description": "Divider giống core/separator với các style variants: dashed, dotted, line",
