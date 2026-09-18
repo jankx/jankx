@@ -191,6 +191,12 @@ class Jankx_Framework
     {
         return $this->loaded;
     }
+
+    public function setup()
+    {
+        // Add theme support for block styles
+        add_theme_support('enqueue-block-styles');
+    }
 }
 
 
@@ -207,3 +213,5 @@ require dirname(__FILE__) . '/boot/helpers.php';
 $app = require dirname(__FILE__) . '/boot/app.php';
 $framework->setApp($app);
 $framework->init();
+
+add_action( 'after_setup_theme', [$framework, 'setup' ], 0 );
