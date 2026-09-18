@@ -185,6 +185,31 @@ class LayoutQueryBuilder
                 continue;
             }
             $operator = $this->sanitizeOperator($taxItem['operator'] ?? 'IN');
+
+            if ($operator === 'CURRENT_QUERIED_OBJECT') {
+                $queriedObject = get_queried_object();
+                if ($queriedObject instanceof \WP_Term && (empty($taxonomy) || $queriedObject->taxonomy === $taxonomy)) {
+                    $taxQuery[] = [
+                        'taxonomy' => $queriedObject->taxonomy,
+                        'field' => 'term_id',
+                        'terms' => [$queriedObject->term_id],
+                        'operator' => 'IN',
+                    ];
+                } elseif (is_singular()) {
+                    $terms = get_the_terms(get_the_ID(), $taxonomy);
+                    if (!empty($terms) && !is_wp_error($terms)) {
+                        $term_ids = wp_list_pluck($terms, 'term_id');
+                        $taxQuery[] = [
+                            'taxonomy' => sanitize_key($taxonomy),
+                            'field' => 'term_id',
+                            'terms' => $term_ids,
+                            'operator' => 'IN',
+                        ];
+                    }
+                }
+                continue;
+            }
+
             $taxQueryItem = [
                 'taxonomy' => sanitize_key($taxonomy),
                 'operator' => $operator,
@@ -238,7 +263,7 @@ class LayoutQueryBuilder
 
     protected function sanitizeOperator(string $operator): string
     {
-        $allowed = ['IN', 'NOT IN', 'AND', 'EXISTS', 'NOT EXISTS'];
+        $allowed = ['IN', 'NOT IN', 'AND', 'EXISTS', 'NOT EXISTS', 'CURRENT_QUERIED_OBJECT'];
         return in_array($operator, $allowed, true) ? $operator : 'IN';
     }
 

@@ -168,7 +168,17 @@ class TermTemplateBlockGenerator extends AbstractContentGenerator
             }
 
             $classes = $this->buildItemClasses($term);
-            $currentStyle = $this->buildTermItemBackgroundStyle($templateAttrs, $term);
+            $templateClasses = $this->buildTemplateItemClasses($templateAttrs);
+            if ($templateClasses !== '') {
+                $classes .= ' ' . $templateClasses;
+            }
+
+            $currentStyle = $this->buildTemplateItemInlineStyle($templateAttrs);
+            $bgStyle = $this->buildTermItemBackgroundStyle($templateAttrs, $term);
+            if ($bgStyle !== '') {
+                $currentStyle .= ($currentStyle !== '' ? '; ' : '') . $bgStyle;
+            }
+
             $currentStyleAttr = $currentStyle !== '' ? sprintf(' style="%s"', esc_attr($currentStyle)) : '';
             $output[] = sprintf('<div class="%s"%s%s>%s</div>', esc_attr($classes), $currentStyleAttr, $itemBgDataAttrs, $itemContent);
         }
@@ -333,7 +343,7 @@ class TermTemplateBlockGenerator extends AbstractContentGenerator
     {
         $innerBlocks = $this->getInnerBlocks();
         if (empty($innerBlocks)) {
-            return $this->wrapTermItem($this->renderDefaultTermItem($term, $options), $this->getTemplateAttrs());
+            return $this->renderDefaultTermItem($term, $options);
         }
 
         // Set current term for nested block context fallback (e.g. jankx/term-featured-image inside columns/group)
@@ -386,11 +396,10 @@ class TermTemplateBlockGenerator extends AbstractContentGenerator
             }
         }
 
-        $result = $this->wrapTermItem($output, $this->getTemplateAttrs());
         remove_filter('jankx/term-featured-image/current-term', $filter, 10);
         self::$currentRenderingTerm = $prevTerm;
 
-        return $result;
+        return $output;
     }
 
     /**
@@ -635,7 +644,15 @@ class TermTemplateBlockGenerator extends AbstractContentGenerator
                 continue;
             }
             $classes = $this->buildItemClasses($term);
-            $currentStyle = $this->buildTermItemBackgroundStyle($templateAttrs, $term);
+            $templateClasses = $this->buildTemplateItemClasses($templateAttrs);
+            if ($templateClasses !== '') {
+                $classes .= ' ' . $templateClasses;
+            }
+            $currentStyle = $this->buildTemplateItemInlineStyle($templateAttrs);
+            $bgStyle = $this->buildTermItemBackgroundStyle($templateAttrs, $term);
+            if ($bgStyle !== '') {
+                $currentStyle .= ($currentStyle !== '' ? '; ' : '') . $bgStyle;
+            }
             $styleAttr = $currentStyle !== '' ? sprintf(' style="%s"', esc_attr($currentStyle)) : '';
             $slides[] = sprintf(
                 '<div class="embla__slide"><div class="%s"%s>%s</div></div>',

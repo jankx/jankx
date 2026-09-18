@@ -36,11 +36,30 @@ interface TermItem {
     count?: number;
 }
 
+interface SettingDefinition {
+    name?: string;
+    type?: 'text' | 'number' | 'range' | 'toggle' | 'select' | 'panel' | string;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    default?: any;
+    label?: string;
+    min?: number;
+    max?: number;
+    step?: number;
+    help?: string;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    condition?: Record<string, any>;
+    options?: Array<{ label: string; value: string }>;
+    title?: string;
+    initialOpen?: boolean;
+    controls?: SettingDefinition[];
+}
+
 interface LayoutInfo {
     name: string;
     title: string;
     supportedOptions?: string[];
     readOnlyOptions?: string[];
+    settingsDefinition?: SettingDefinition[];
 }
 
 interface TermLayoutAttributes {
@@ -236,14 +255,28 @@ export default function Edit({ attributes, setAttributes }: EditProps) {
 
     const tokenFromIds = (ids: number[] | undefined): string[] => (ids || []).map((id) => termNameById(id));
 
-    const layoutsData = (window as any).jankxDynamicTermContentLoopLayouts || (window as any).jankxDynamicTermLayouts || null;
+    const layoutsData = (window as any).jankxDynamicTermLayouts || (window as any).jankxDynamicTermContentLoopLayouts || null;
 
     const availableLayouts = useMemo(() => {
         const layouts: LayoutInfo[] = [];
         const push = (info: LayoutInfo) => {
-            if (!layouts.some((l) => l.name === info.name)) {
-                layouts.push({ name: info.name, title: info.title || info.name });
+            if (!info?.name || layouts.some((l) => l.name === info.name)) {
+                return;
             }
+            const layoutItem: LayoutInfo = {
+                name: info.name,
+                title: info.title || info.name,
+            };
+            if (Array.isArray(info.supportedOptions)) {
+                layoutItem.supportedOptions = info.supportedOptions;
+            }
+            if (Array.isArray(info.readOnlyOptions)) {
+                layoutItem.readOnlyOptions = info.readOnlyOptions;
+            }
+            if (Array.isArray(info.settingsDefinition)) {
+                layoutItem.settingsDefinition = info.settingsDefinition;
+            }
+            layouts.push(layoutItem);
         };
         if (layoutsData && Array.isArray(layoutsData.layoutsByTaxonomy?.[taxonomy])) {
             layoutsData.layoutsByTaxonomy[taxonomy].forEach(push);
@@ -259,6 +292,94 @@ export default function Edit({ attributes, setAttributes }: EditProps) {
     const resolvedLayout = layoutOptions.some((o) => o.value === layout) ? layout : (layoutOptions[0]?.value || 'grid');
     const isCarousel = resolvedLayout === 'carousel';
 
+    // Layout specific settings provided by PHP (e.g. full carousel config)
+    const currentLayout = availableLayouts.find((l) => l.name === resolvedLayout);
+    const settingsDefinition: SettingDefinition[] = currentLayout?.settingsDefinition || [];
+
+    const editorStyle: CSSProperties = {
+        '--columns-desktop': columns,
+        '--columns-tablet': columnsTablet,
+        '--columns-mobile': columnsMobile,
+        '--peek-amount': '0%',
+        '--slides-per-view': (columns || 1) + ((carouselPeek || 0) / 100),
+    } as CSSProperties;
+
+    // Helper to render dynamic settings from the layout definition
+    const renderSettingsControl = (setting: SettingDefinition, index: number): JSX.Element | null => {
+        if (setting.condition) {
+            const shouldRender = Object.entries(setting.condition).every(([key, value]) => {
+                return (attributes as any)[key] === value;
+            });
+            if (!shouldRender) {
+                return null;
+            }
+        }
+
+        const commonProps = {
+            key: index,
+            label: setting.label,
+            help: setting.help,
+        };
+
+        switch (setting.type) {
+            case 'text':
+                return (
+                    <TextControl
+                        {...commonProps}
+                        value={(attributes as any)[setting.name!] || setting.default || ''}
+                        onChange={(value) => setAttributes({ [setting.name!]: value })}
+                    />
+                );
+            case 'number':
+                return (
+                    <TextControl
+                        {...commonProps}
+                        type="number"
+                        value={(attributes as any)[setting.name!] || setting.default || ''}
+                        onChange={(value) => setAttributes({ [setting.name!]: Number(value) })}
+                    />
+                );
+            case 'range':
+                return (
+                    <RangeControl
+                        {...commonProps}
+                        value={(attributes as any)[setting.name!] || setting.default}
+                        onChange={(value) => setAttributes({ [setting.name!]: value })}
+                        min={setting.min}
+                        max={setting.max}
+                        step={setting.step}
+                    />
+                );
+            case 'toggle':
+                return (
+                    <ToggleControl
+                        {...commonProps}
+                        checked={(attributes as any)[setting.name!] ?? setting.default}
+                        onChange={(value) => setAttributes({ [setting.name!]: value })}
+                    />
+                );
+            case 'select':
+                return (
+                    <SelectControl
+                        {...commonProps}
+                        value={(attributes as any)[setting.name!] || setting.default}
+                        options={setting.options || []}
+                        onChange={(value) => setAttributes({ [setting.name!]: value })}
+                    />
+                );
+            case 'panel':
+                return (
+                    <PanelBody title={setting.title} initialOpen={setting.initialOpen} key={index}>
+                        {setting.controls?.map((childSetting, childIndex) =>
+                            renderSettingsControl(childSetting, childIndex)
+                        )}
+                    </PanelBody>
+                );
+            default:
+                return null;
+        }
+    };
+
     const blockProps = useBlockProps({
         className: [
             'dynamic-term-layout',
@@ -269,10 +390,13 @@ export default function Edit({ attributes, setAttributes }: EditProps) {
             itemsWrapperClass,
             className,
         ].filter(Boolean).join(' ') || undefined,
+        style: editorStyle,
         'data-layout': resolvedLayout,
         'data-columns': columns,
         'data-columns-tablet': columnsTablet,
         'data-columns-mobile': columnsMobile,
+        'data-slides-per-view': columns,
+        'data-peek-amount': carouselPeek || 0,
         ...(isCarousel && spaceBetween ? { 'data-space-between': spaceBetween } : {}),
     });
 
@@ -466,48 +590,16 @@ export default function Edit({ attributes, setAttributes }: EditProps) {
                         );
                     })()}
 
-                    {isCarousel && (
-                        <>
-                            <ToggleControl
-                                label={__('Loop', 'jankx')}
-                                checked={loop}
-                                onChange={(value) => setAttr('loop', value)}
-                            />
-                            <ToggleControl
-                                label={__('Autoplay', 'jankx')}
-                                checked={autoplay}
-                                onChange={(value) => setAttr('autoplay', value)}
-                            />
-                            {autoplay && (
-                                <RangeControl
-                                    label={__('Autoplay Delay (ms)', 'jankx')}
-                                    value={autoplayDelay}
-                                    onChange={(value) => setAttr('autoplayDelay', value || 3000)}
-                                    min={500}
-                                    max={10000}
-                                    step={500}
-                                />
-                            )}
-                            <ToggleControl
-                                label={__('Show Arrows', 'jankx')}
-                                checked={showArrows}
-                                onChange={(value) => setAttr('showArrows', value)}
-                            />
-                            <ToggleControl
-                                label={__('Show Dots', 'jankx')}
-                                checked={showDots}
-                                onChange={(value) => setAttr('showDots', value)}
-                            />
-                            <RangeControl
-                                label={__('Peek', 'jankx')}
-                                value={carouselPeek}
-                                onChange={(value) => setAttr('carouselPeek', value || 0)}
-                                min={0}
-                                max={200}
-                            />
-                        </>
-                    )}
+                    {/* Layout Specific Settings (Inline) */}
+                    {settingsDefinition
+                        .filter((setting) => setting.type !== 'panel')
+                        .map((setting, index) => renderSettingsControl(setting, index))}
                 </PanelBody>
+
+                {/* Layout Specific Panels (Dynamic) */}
+                {settingsDefinition
+                    .filter((setting) => setting.type === 'panel')
+                    .map((setting, index) => renderSettingsControl(setting, index))}
 
                 <PanelBody title={__('Empty State', 'jankx')} initialOpen={false}>
                     <ToggleControl

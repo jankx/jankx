@@ -22,7 +22,7 @@ import './editor.scss';
 interface TaxQueryItem {
     taxonomy: string;
     terms: number[];
-    operator: 'IN' | 'NOT IN' | 'AND' | 'EXISTS' | 'NOT EXISTS';
+    operator: 'IN' | 'NOT IN' | 'AND' | 'EXISTS' | 'NOT EXISTS' | 'CURRENT_QUERIED_OBJECT';
 }
 
 interface MetaQueryItem {
@@ -463,6 +463,11 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
         spaceBetween = 16,
     } = attributes;
 
+    // Sanitize taxQuery for editor REST API preview
+    const editorTaxQuery = useMemo(() => {
+        return taxQuery.filter(tq => tq.operator !== 'CURRENT_QUERIED_OBJECT');
+    }, [taxQuery]);
+
     // Fetch posts based on query attributes
     const fetchedPosts = useSelect(
         (select) => select('core').getEntityRecords(
@@ -479,12 +484,12 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                 author: authorIn.length > 0 ? authorIn[0] : undefined,
                 author_not_in: authorNotIn,
                 meta_query: metaQuery,
-                tax_query: taxQuery,
+                tax_query: editorTaxQuery,
                 post_status: postStatus,
                 ignore_sticky_posts: includeStickyPosts ? undefined : true,
             }
         ),
-        [postType, postsPerPage, offset, keyword, orderBy, order, postIn, postNotIn, authorIn, authorNotIn, metaQuery, taxQuery, postStatus, includeStickyPosts]
+        [postType, postsPerPage, offset, keyword, orderBy, order, postIn, postNotIn, authorIn, authorNotIn, metaQuery, editorTaxQuery, postStatus, includeStickyPosts]
     );
 
     // States for taxonomies and authors
@@ -1645,6 +1650,7 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                                                 { label: __('AND (Must Have All)', 'jankx'), value: 'AND' },
                                                 { label: __('EXISTS (Has Terms)', 'jankx'), value: 'EXISTS' },
                                                 { label: __('NOT EXISTS (No Terms)', 'jankx'), value: 'NOT EXISTS' },
+                                                { label: __('CURRENT QUERIED OBJECT (Current Term)', 'jankx'), value: 'CURRENT_QUERIED_OBJECT' },
                                             ]}
                                             onChange={(value) => {
                                                 const newTaxQuery = [...taxQuery];
@@ -1658,11 +1664,11 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                                                 };
                                                 setAttributes({ taxQuery: newTaxQuery });
                                             }}
-                                            help={__('EXISTS/NOT EXISTS checks if taxonomy has any terms', 'jankx')}
+                                            help={__('CURRENT QUERIED OBJECT filters by the current queried term on taxonomy archive pages', 'jankx')}
                                         />
 
-                                        {/* Only show term selection if operator is not EXISTS/NOT EXISTS */}
-                                        {!['EXISTS', 'NOT EXISTS'].includes(currentQuery.operator) ? (
+                                        {/* Only show term selection if operator is not EXISTS/NOT EXISTS/CURRENT_QUERIED_OBJECT */}
+                                        {!['EXISTS', 'NOT EXISTS', 'CURRENT_QUERIED_OBJECT'].includes(currentQuery.operator) ? (
                                             <>
                                                 {terms ? (
                                                     <BaseControl
