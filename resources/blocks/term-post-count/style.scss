@@ -1,0 +1,20 @@
+.jankx-term-post-count {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25em;
+    line-height: 1;
+
+    .term-post-count__number {
+        font-weight: 600;
+    }
+
+    .term-post-count__label {
+        opacity: 0.85;
+    }
+
+    .term-post-count__preview-note {
+        font-size: 0.75em;
+        opacity: 0.6;
+        font-style: italic;
+    }
+}

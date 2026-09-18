@@ -48,6 +48,10 @@ module.exports = {
     'dist/blocks/search-results-count/style': './blocks/search-results-count/style.scss',
     'dist/blocks/search-results-count/editor': './blocks/search-results-count/editor.scss',
 
+    'dist/blocks/term-post-count/index': './blocks/term-post-count/index.tsx',
+    'dist/blocks/term-post-count/style': './blocks/term-post-count/style.scss',
+    'dist/blocks/term-post-count/editor': './blocks/term-post-count/editor.scss',
+
     'dist/blocks/modal/index': './blocks/modal/index.js',
     'dist/blocks/modal/style': './blocks/modal/style.scss',
     'dist/blocks/modal/editor': './blocks/modal/editor.scss',

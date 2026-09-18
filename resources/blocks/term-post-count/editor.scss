@@ -1,0 +1,11 @@
+.jankx-term-post-count {
+    border: 1px dashed #aaa;
+    padding: 2px 6px;
+    border-radius: 3px;
+    background: rgba(0, 0, 0, 0.04);
+
+    .term-post-count__preview-note {
+        color: #999;
+        font-size: 11px;
+    }
+}

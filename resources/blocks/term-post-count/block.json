@@ -1,0 +1,90 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "jankx/term-post-count",
+  "version": "1.0.0",
+  "title": "Term Post Count",
+  "category": "jankx",
+  "icon": "tag",
+  "description": "Hiển thị tổng số bài viết (post) thuộc về một taxonomy term. Dùng bên trong Dynamic Term Template hoặc Dynamic Term Layout.",
+  "keywords": [
+    "term",
+    "count",
+    "taxonomy",
+    "posts"
+  ],
+  "textdomain": "jankx",
+  "parent": [
+    "jankx/dynamic-term-template",
+    "jankx/dynamic-term-layout"
+  ],
+  "usesContext": [
+    "termId",
+    "taxonomy",
+    "postId",
+    "postType"
+  ],
+  "supports": {
+    "html": false,
+    "align": [
+      "left",
+      "center",
+      "right"
+    ],
+    "typography": {
+      "fontSize": true,
+      "lineHeight": true,
+      "fontFamily": true,
+      "fontStyle": true,
+      "fontWeight": true,
+      "letterSpacing": true,
+      "textTransform": true,
+      "textDecoration": true
+    },
+    "color": {
+      "text": true,
+      "background": true
+    },
+    "spacing": {
+      "margin": true,
+      "padding": true
+    }
+  },
+  "attributes": {
+    "postTypes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": []
+    },
+    "labelSingular": {
+      "type": "string",
+      "default": ""
+    },
+    "labelPlural": {
+      "type": "string",
+      "default": ""
+    },
+    "showLabel": {
+      "type": "boolean",
+      "default": true
+    },
+    "labelPosition": {
+      "type": "string",
+      "default": "after",
+      "enum": ["before", "after"]
+    },
+    "showZero": {
+      "type": "boolean",
+      "default": true
+    },
+    "zeroText": {
+      "type": "string",
+      "default": ""
+    }
+  },
+  "editorScript": "file:../../dist/blocks/term-post-count/index.js",
+  "style": "file:../../dist/blocks/term-post-count/style.css",
+  "editorStyle": "file:../../dist/blocks/term-post-count/editor.css"
+}
