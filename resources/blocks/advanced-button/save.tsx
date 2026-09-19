@@ -87,40 +87,6 @@ export default function Save(props: SaveProps) {
 
 	const blockProps = useBlockProps.save();
 
-	// Get full border props from attributes.style.border
-	// WordPress __experimentalBorder support stores: radius, color, width, style, top/right/bottom/left
-	const styleBorder = props.attributes.style?.border || {};
-	const borderInlineStyle: Record<string, any> = {};
-
-	// Border radius
-	const borderRadius = styleBorder.radius;
-	if (borderRadius) {
-		if (typeof borderRadius === 'object') {
-			const { topLeft, topRight, bottomRight, bottomLeft } = borderRadius as any;
-			borderInlineStyle.borderRadius = `${topLeft || '0'} ${topRight || '0'} ${bottomRight || '0'} ${bottomLeft || '0'}`;
-		} else {
-			borderInlineStyle.borderRadius = borderRadius;
-		}
-	}
-
-	// Uniform border (color, width, style)
-	if (styleBorder.color) borderInlineStyle.borderColor = styleBorder.color;
-	if (styleBorder.width) borderInlineStyle.borderWidth = styleBorder.width;
-	if (styleBorder.style) borderInlineStyle.borderStyle = styleBorder.style;
-
-	// Individual side borders (top, right, bottom, left)
-	const sides = ['top', 'right', 'bottom', 'left'] as const;
-	sides.forEach((side) => {
-		const sideBorder = styleBorder[side] as any;
-		if (sideBorder) {
-			const capSide = side.charAt(0).toUpperCase() + side.slice(1);
-			if (sideBorder.color) borderInlineStyle[`border${capSide}Color`] = sideBorder.color;
-			if (sideBorder.width) borderInlineStyle[`border${capSide}Width`] = sideBorder.width;
-			if (sideBorder.style) borderInlineStyle[`border${capSide}Style`] = sideBorder.style;
-		}
-	});
-
-	const borderProps = { className: '', style: borderInlineStyle };
 
 
 	// Check if button has no color settings
@@ -135,7 +101,7 @@ export default function Save(props: SaveProps) {
 	const isOutline = props.attributes.className?.includes('is-style-outline');
 	const isTextLink = props.attributes.className?.includes('is-style-text-link');
 
-	const buttonClasses = classnames('jankx-advanced-button__link', borderProps?.className, {
+	const buttonClasses = classnames('jankx-advanced-button__link', {
 		[`has-${backgroundColor}-background-color`]: backgroundColor && !isOutline,
 		[`has-${textColor}-color`]: textColor,
 		[`has-${gradient}-gradient-background`]: gradient,
@@ -150,10 +116,11 @@ export default function Save(props: SaveProps) {
 		'jankx-button-modal-trigger': triggerType === 'modal',
 	});
 
-	// Build button styles - include custom background/text colors from style.color
+	// Build button styles - gradient takes priority over background color
+	// Note: border is handled by WordPress on the wrapper div via useBlockProps.save(),
+	// so we do NOT manually apply border here to avoid overriding WordPress serialization.
 	const buttonStyles: Record<string, any> = {
 		...(blockProps.style || {}),
-		...borderProps?.style,
 	};
 
 	// Copy spacing (padding, margin) from blockProps if needed

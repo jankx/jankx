@@ -13,8 +13,8 @@
 .wp-block-jankx-advanced-button.is-style-outline .jankx-advanced-button__link {
   background-color: transparent !important;
   background: transparent !important;
-  border-width: 2px;
-  border-style: solid;
+  border-width: var(--wp--style--border--width, 2px);
+  border-style: var(--wp--style--border--style, solid);
 }
 .wp-block-jankx-advanced-button.is-style-outline .jankx-advanced-button__link.is-default-colors:not([style*=color]) {
   color: var(--wp--preset--color--primary, #503AA8);

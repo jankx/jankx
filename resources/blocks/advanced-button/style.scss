@@ -51,9 +51,9 @@
 			background-color: transparent !important;
 			background: transparent !important;
 
-			// Set border styling
-			border-width: 2px;
-			border-style: solid;
+			// Default border for outline style (user can override via Border panel)
+			border-width: var(--wp--style--border--width, 2px);
+			border-style: var(--wp--style--border--style, solid);
 
 			// Fallback text/border color if none set - only apply when no inline styles are present
 			&.is-default-colors:not([style*="color"]) {

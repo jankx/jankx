@@ -316,7 +316,7 @@ export function Edit(props: EditProps) {
 	const isOutline = attributes.className?.includes('is-style-outline');
 	const isTextLink = attributes.className?.includes('is-style-text-link');
 
-	const buttonClasses = classnames('jankx-advanced-button__link', borderProps?.className, {
+	const buttonClasses = classnames('jankx-advanced-button__link', {
 		[`has-${backgroundColor?.slug}-background-color`]: backgroundColor?.slug && !isOutline,
 		[`has-${textColor?.slug}-color`]: textColor?.slug,
 		'has-background': backgroundColor?.color && !isOutline,
@@ -328,9 +328,10 @@ export function Edit(props: EditProps) {
 	});
 
 	// Build button styles - gradient takes priority over background color
+	// Note: border is handled by WordPress on the wrapper div via useBlockProps(),
+	// so we do NOT spread borderProps.style here to avoid double-applying border.
 	const buttonStyles: Record<string, any> = {
 		...blockProps.style,
-		...borderProps?.style,
 	};
 
 	// Apply custom colors from style.color if set (these have highest priority)

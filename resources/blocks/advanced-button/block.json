@@ -241,12 +241,11 @@
             "radius": true,
             "style": true,
             "width": true,
-            "__experimentalSkipSerialization": true,
             "__experimentalDefaultControls": {
-                "color": true,
+                "color": false,
                 "radius": true,
-                "style": true,
-                "width": true
+                "style": false,
+                "width": false
             }
         }
     },
