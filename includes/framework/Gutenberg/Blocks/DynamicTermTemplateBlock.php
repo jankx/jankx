@@ -153,12 +153,17 @@ class DynamicTermTemplateBlock extends DynamicDataTemplateBlock
             'data-item-bg-overlay' => $attributes['itemBgOverlay'] ?? '',
             'data-item-default-image-id' => $attributes['itemDefaultImageId'] ?? 0,
             'data-item-default-image-url' => $attributes['itemDefaultImageUrl'] ?? '',
+            // Overlay attributes
+            'data-enable-overlay' => !empty($attributes['enableOverlay']) ? 'true' : 'false',
+            'data-overlay-gradient' => $attributes['overlayGradient'] ?? '',
+            'data-overlay-link-to-post' => !empty($attributes['overlayLinkToPost']) ? 'true' : 'false',
         ]);
 
         return sprintf(
-            '<div %s>%s</div>',
+            '<div %s>%s%s</div>',
             $wrapper_attributes,
-            $content
+            $content,
+            $this->renderOverlay($attributes, $block)
         );
     }
 }

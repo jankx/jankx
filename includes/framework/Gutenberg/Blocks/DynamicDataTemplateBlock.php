@@ -241,6 +241,10 @@ class DynamicDataTemplateBlock extends Block
             'data-item-bg-repeat' => $attributes['itemBgRepeat'] ?? 'no-repeat',
             'data-item-bg-overlay' => $attributes['itemBgOverlay'] ?? '',
             'data-item-bg-content-align' => $attributes['itemBgContentAlign'] ?? 'bottom',
+            // Overlay attributes
+            'data-enable-overlay' => !empty($attributes['enableOverlay']) ? 'true' : 'false',
+            'data-overlay-gradient' => $attributes['overlayGradient'] ?? '',
+            'data-overlay-link-to-post' => !empty($attributes['overlayLinkToPost']) ? 'true' : 'false',
         ]);
 
         if ($block instanceof \WP_Block) {
@@ -256,10 +260,12 @@ class DynamicDataTemplateBlock extends Block
                         if ($layout instanceof BlockTemplateLayoutInterface) {
                             $generator->setLayout($layout);
                         }
+                        $inner = $generator->generate($query, $options);
                         return sprintf(
-                            '<div %s>%s</div>',
+                            '<div %s>%s%s</div>',
                             $wrapper_attributes,
-                            $generator->generate($query, $options)
+                            $inner,
+                            $this->renderOverlay($attributes, $block)
                         );
                     }
                 }
@@ -267,9 +273,10 @@ class DynamicDataTemplateBlock extends Block
         }
         
         return sprintf(
-            '<div %s>%s</div>',
+            '<div %s>%s%s</div>',
             $wrapper_attributes,
-            $content
+            $content,
+            $this->renderOverlay($attributes, $block)
         );
     }
 
@@ -294,7 +301,75 @@ class DynamicDataTemplateBlock extends Block
             $classes[] = sprintf('overlay-icon-target-%s', $attributes['overlayIconTarget'] ?? 'featured-image');
         }
         
+        if (!empty($attributes['enableOverlay'])) {
+            $classes[] = 'has-overlay';
+        }
+        
+        if (!empty($attributes['overlayLinkToPost'])) {
+            $classes[] = 'overlay-link-to-post';
+        }
+        
         return implode(' ', $classes);
+    }
+
+    /**
+     * Render the overlay with gradient and optional link
+     *
+     * @param array $attributes Block attributes
+     * @param \WP_Block|null $block Block instance
+     * @return string Rendered overlay HTML
+     */
+    protected function renderOverlay($attributes, $block = null)
+    {
+        if (empty($attributes['enableOverlay'])) {
+            return '';
+        }
+
+        $gradient = $attributes['overlayGradient'] ?? 'linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 100%)';
+        $linkToPost = !empty($attributes['overlayLinkToPost']);
+
+        $overlayStyle = sprintf(
+            'background: %s; position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: 1;',
+            esc_attr($gradient)
+        );
+
+        $overlayHtml = sprintf(
+            '<div class="dynamic-data-template__overlay" style="%s"></div>',
+            $overlayStyle
+        );
+
+        if ($linkToPost) {
+            $permalink = '';
+            if ($block instanceof \WP_Block) {
+                $context = $block->context['jankxPostTypeLayout'] ?? null;
+                if (is_array($context)) {
+                    $query = $context['query'] ?? null;
+                    if ($query instanceof WP_Query && $query->have_posts()) {
+                        $query->the_post();
+                        $permalink = get_permalink();
+                        wp_reset_postdata();
+                    }
+                }
+            }
+
+            if (empty($permalink)) {
+                $queried = get_queried_object();
+                if ($queried instanceof \WP_Post) {
+                    $permalink = get_permalink($queried->ID);
+                }
+            }
+
+            if (!empty($permalink)) {
+                $overlayHtml = sprintf(
+                    '<a href="%s" class="dynamic-data-template__overlay dynamic-data-template__overlay-link" style="%s" aria-label="%s"></a>',
+                    esc_url($permalink),
+                    $overlayStyle,
+                    esc_attr__('View details', 'jankx')
+                );
+            }
+        }
+
+        return $overlayHtml;
     }
 
     public static function renderTemplateWithQuery(array $templateBlock, WP_Query $query, array $options, ?BlockTemplateLayoutInterface $layout = null): string

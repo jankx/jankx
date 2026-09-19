@@ -376,6 +376,18 @@
       "type": "string",
       "default": "bottom",
       "enum": ["top", "center", "bottom"]
+    },
+    "enableOverlay": {
+      "type": "boolean",
+      "default": false
+    },
+    "overlayGradient": {
+      "type": "string",
+      "default": "linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 100%)"
+    },
+    "overlayLinkToPost": {
+      "type": "boolean",
+      "default": false
     }
   }
 }

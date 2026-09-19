@@ -84,6 +84,10 @@ interface DynamicDataTemplateAttributes {
     itemBgRepeat?: 'no-repeat' | 'repeat' | 'repeat-x' | 'repeat-y';
     itemBgOverlay?: string;
     itemBgContentAlign?: 'top' | 'center' | 'bottom';
+    // Overlay settings
+    enableOverlay?: boolean;
+    overlayGradient?: string;
+    overlayLinkToPost?: boolean;
 }
 
 
@@ -591,6 +595,9 @@ export default function Edit({
         itemBgRepeat = 'no-repeat',
         itemBgOverlay = '',
         itemBgContentAlign = 'bottom',
+        enableOverlay = false,
+        overlayGradient = 'linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 100%)',
+        overlayLinkToPost = false,
     } = attributes;
 
 
@@ -1359,6 +1366,33 @@ export default function Edit({
                         onChange={(value) => setAttributes({ unhoverAnimation: value })}
                         help={__('animate.css effect when mouse leaves an item', 'jankx')}
                     />
+                </PanelBody>
+            </InspectorControls>
+
+            <InspectorControls>
+                <PanelBody title={__('Overlay Settings', 'jankx')} initialOpen={false}>
+                    <ToggleControl
+                        label={__('Enable Overlay', 'jankx')}
+                        checked={enableOverlay || false}
+                        onChange={(value) => setAttributes({ enableOverlay: value })}
+                        help={__('Enable gradient overlay on the item', 'jankx')}
+                    />
+                    {enableOverlay && (
+                        <>
+                            <TextControl
+                                label={__('Overlay Gradient', 'jankx')}
+                                value={overlayGradient || ''}
+                                onChange={(value) => setAttributes({ overlayGradient: value })}
+                                help={__('CSS gradient value (e.g., linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 100%))', 'jankx')}
+                            />
+                            <ToggleControl
+                                label={__('Link Overlay to Post', 'jankx')}
+                                checked={overlayLinkToPost || false}
+                                onChange={(value) => setAttributes({ overlayLinkToPost: value })}
+                                help={__('Make the entire overlay clickable and link to the post', 'jankx')}
+                            />
+                        </>
+                    )}
                 </PanelBody>
             </InspectorControls>
             <div {...blockProps}>

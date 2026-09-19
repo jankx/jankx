@@ -310,3 +310,26 @@
         }
     }
 }
+
+// =====================================================
+// Overlay — clickable overlay with gradient
+// =====================================================
+.dynamic-data-template__overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.dynamic-data-template__overlay-link {
+    pointer-events: auto;
+    cursor: pointer;
+    text-decoration: none;
+
+    &:hover {
+        opacity: 0.9;
+    }
+}
