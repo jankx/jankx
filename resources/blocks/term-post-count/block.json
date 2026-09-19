@@ -82,6 +82,14 @@
     "zeroText": {
       "type": "string",
       "default": ""
+    },
+    "prefix": {
+      "type": "string",
+      "default": ""
+    },
+    "suffix": {
+      "type": "string",
+      "default": ""
     }
   },
   "editorScript": "file:../../dist/blocks/term-post-count/index.js",

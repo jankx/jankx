@@ -28,21 +28,32 @@ class TermPostCountBlock extends Block
         $zeroText = isset($attributes['zeroText']) ? (string) $attributes['zeroText'] : '';
         $number = ($count === 0 && $zeroText !== '') ? $zeroText : number_format_i18n($count);
 
+        $prefix = isset($attributes['prefix']) ? (string) $attributes['prefix'] : '';
+        $suffix = isset($attributes['suffix']) ? (string) $attributes['suffix'] : '';
+
         $showLabel = !isset($attributes['showLabel']) || (bool) $attributes['showLabel'];
         $labelPosition = isset($attributes['labelPosition']) && $attributes['labelPosition'] === 'before' ? 'before' : 'after';
-        $label = $showLabel ? $this->resolveLabel($attributes, $count) : '';
+        $label = ($prefix === '' && $suffix === '' && $showLabel) ? $this->resolveLabel($attributes, $count) : '';
 
-        $numberHtml = sprintf('<span class="term-post-count__number">%s</span>', esc_html($number));
-        $labelHtml = sprintf(
-            '<span class="term-post-count__label term-post-count__label--%s">%s</span>',
-            esc_attr($labelPosition),
-            esc_html($label)
+        $numberHtml = sprintf(
+            '<span class="term-post-count__number">%s%s%s</span>',
+            esc_html($prefix),
+            esc_html($number),
+            esc_html($suffix)
         );
 
-        if ($showLabel && $labelPosition === 'before') {
-            $inner = $labelHtml . ' ' . $numberHtml;
-        } elseif ($showLabel) {
-            $inner = $numberHtml . ' ' . $labelHtml;
+        if ($label !== '') {
+            $labelHtml = sprintf(
+                '<span class="term-post-count__label term-post-count__label--%s">%s</span>',
+                esc_attr($labelPosition),
+                esc_html($label)
+            );
+
+            if ($labelPosition === 'before') {
+                $inner = $labelHtml . ' ' . $numberHtml;
+            } else {
+                $inner = $numberHtml . ' ' . $labelHtml;
+            }
         } else {
             $inner = $numberHtml;
         }
@@ -82,19 +93,29 @@ class TermPostCountBlock extends Block
             return (int) $term->count;
         }
 
+        // Build a deterministic cache key from term_id + sorted post types
+        $sortedPostTypes = array_unique($postTypes);
+        sort($sortedPostTypes);
+        $cacheKey = 'jankx_tpc_' . $term->term_id . '_' . md5(implode(',', $sortedPostTypes));
+
+        $cached = get_transient($cacheKey);
+        if ($cached !== false) {
+            return (int) $cached;
+        }
+
         $total = 0;
-        foreach (array_unique($postTypes) as $postType) {
+        foreach ($sortedPostTypes as $postType) {
             $query = new \WP_Query([
-                'post_type' => $postType,
-                'post_status' => 'publish',
-                'posts_per_page' => 1,
-                'fields' => 'ids',
+                'post_type'           => $postType,
+                'post_status'         => 'publish',
+                'posts_per_page'      => 1,
+                'fields'              => 'ids',
                 'ignore_sticky_posts' => true,
-                'tax_query' => [
+                'tax_query'           => [
                     [
                         'taxonomy' => $term->taxonomy,
-                        'field' => 'term_id',
-                        'terms' => $term->term_id,
+                        'field'    => 'term_id',
+                        'terms'    => $term->term_id,
                     ],
                 ],
             ]);
@@ -102,7 +123,29 @@ class TermPostCountBlock extends Block
             $total += (int) $query->found_posts;
         }
 
+        // Cache for 1 hour (3600 seconds)
+        set_transient($cacheKey, $total, HOUR_IN_SECONDS);
+
         return $total;
+    }
+
+    /**
+     * Clear all cached post counts for a given term.
+     * Called automatically when a term is updated or a post is saved/deleted.
+     *
+     * @param int $termId
+     */
+    public static function clearCountCache(int $termId): void
+    {
+        global $wpdb;
+        // Remove all transients whose key starts with jankx_tpc_{termId}_
+        $prefix = '_transient_jankx_tpc_' . $termId . '_';
+        $wpdb->query(
+            $wpdb->prepare(
+                "DELETE FROM {$wpdb->options} WHERE option_name LIKE %s",
+                $wpdb->esc_like($prefix) . '%'
+            )
+        );
     }
 
     protected function resolveLabel(array $attributes, int $count): string

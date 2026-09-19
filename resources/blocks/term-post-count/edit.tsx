@@ -19,6 +19,8 @@ interface TermPostCountAttributes {
     labelPosition: 'before' | 'after';
     showZero: boolean;
     zeroText: string;
+    prefix: string;
+    suffix: string;
 }
 
 interface TermPostCountEditProps {
@@ -41,6 +43,8 @@ export default function Edit({ attributes, setAttributes, context }: TermPostCou
         labelPosition,
         showZero,
         zeroText,
+        prefix,
+        suffix,
     } = attributes;
 
     const selectedPostTypes = Array.isArray(postTypes) ? postTypes : [];
@@ -146,6 +150,9 @@ export default function Edit({ attributes, setAttributes, context }: TermPostCou
     const resolvedLabelPlural = labelPlural || __('bài viết', 'jankx');
     const label = displayCount === 1 ? resolvedLabelSingular : resolvedLabelPlural;
 
+    const hasPrefixSuffix = (prefix ?? '') !== '' || (suffix ?? '') !== '';
+    const useLabel = !hasPrefixSuffix && showLabel;
+
     return (
         <>
             <InspectorControls>
@@ -207,6 +214,18 @@ export default function Edit({ attributes, setAttributes, context }: TermPostCou
                             placeholder={__('Để trống = hiển thị số 0', 'jankx')}
                         />
                     )}
+                    <TextControl
+                        label={__('Prefix (trước số)', 'jankx')}
+                        value={prefix}
+                        onChange={(val: string) => setAttributes({ prefix: val })}
+                        placeholder={__('vd: Có ', 'jankx')}
+                    />
+                    <TextControl
+                        label={__('Suffix (sau số)', 'jankx')}
+                        value={suffix}
+                        onChange={(val: string) => setAttributes({ suffix: val })}
+                        placeholder={__('vd:  hành trình', 'jankx')}
+                    />
                 </PanelBody>
             </InspectorControls>
 
@@ -215,15 +234,15 @@ export default function Edit({ attributes, setAttributes, context }: TermPostCou
                     <Spinner />
                 ) : shouldHide ? null : (
                     <>
-                        {showLabel && labelPosition === 'before' && (
+                        {useLabel && labelPosition === 'before' && (
                             <span className="term-post-count__label term-post-count__label--before">
                                 {label}:{' '}
                             </span>
                         )}
                         <span className="term-post-count__number">
-                            {displayCount === 0 && zeroText ? zeroText : displayCount}
+                            {prefix}{displayCount === 0 && zeroText ? zeroText : displayCount}{suffix}
                         </span>
-                        {showLabel && labelPosition === 'after' && (
+                        {useLabel && labelPosition === 'after' && (
                             <span className="term-post-count__label term-post-count__label--after">
                                 {' '}{label}
                             </span>
