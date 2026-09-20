@@ -241,6 +241,7 @@
             "radius": true,
             "style": true,
             "width": true,
+            "__experimentalSkipSerialization": true,
             "__experimentalDefaultControls": {
                 "color": false,
                 "radius": true,
