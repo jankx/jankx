@@ -333,3 +333,22 @@
         opacity: 0.9;
     }
 }
+
+// =====================================================
+// Post Title link color override
+// core/post-title with isLink renders <a> which inherits
+// WordPress core link colors instead of block's text color
+// =====================================================
+.dynamic-data-template .wp-block-post-title {
+    a {
+        color: inherit;
+        text-decoration: none;
+
+        &:hover,
+        &:focus,
+        &:active,
+        &:visited {
+            color: inherit;
+        }
+    }
+}

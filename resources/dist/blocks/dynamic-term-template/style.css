@@ -267,4 +267,12 @@
   opacity: 0.9;
 }
 
+.dynamic-data-template .wp-block-post-title a {
+  color: inherit;
+  text-decoration: none;
+}
+.dynamic-data-template .wp-block-post-title a:hover, .dynamic-data-template .wp-block-post-title a:focus, .dynamic-data-template .wp-block-post-title a:active, .dynamic-data-template .wp-block-post-title a:visited {
+  color: inherit;
+}
+
 /*# sourceMappingURL=style.css.map*/
