@@ -66,6 +66,10 @@ interface DynamicDataTemplateAttributes {
     animationReverse?: boolean;
     hoverAnimation?: string;
     unhoverAnimation?: string;
+    // Overlay settings
+    enableOverlay?: boolean;
+    overlayGradient?: string;
+    overlayLinkToPost?: boolean;
     // Overlap Card specific settings
     overlapMarginTop?: string;
     overlapPadding?: string;
@@ -556,6 +560,9 @@ export default function Edit({
         animationReverse = false,
         hoverAnimation = 'none',
         unhoverAnimation = 'none',
+        enableOverlay = false,
+        overlayGradient = '',
+        overlayLinkToPost = false,
         overlapMarginTop = '-60px',
         overlapPadding = '20px',
         overlapBorderRadius = '8px',
@@ -1392,6 +1399,31 @@ export default function Edit({
                         onChange={(value) => setAttributes({ unhoverAnimation: value })}
                         help={__('animate.css effect when mouse leaves an item', 'jankx')}
                     />
+                </PanelBody>
+
+                <PanelBody title={__('Overlay Settings', 'jankx')} initialOpen={false}>
+                    <ToggleControl
+                        label={__('Enable Overlay', 'jankx')}
+                        checked={enableOverlay || false}
+                        onChange={(value) => setAttributes({ enableOverlay: value })}
+                        help={__('Enable gradient overlay on the item', 'jankx')}
+                    />
+                    {enableOverlay && (
+                        <>
+                            <TextControl
+                                label={__('Overlay Gradient', 'jankx')}
+                                value={overlayGradient || ''}
+                                onChange={(value) => setAttributes({ overlayGradient: value })}
+                                help={__('CSS gradient value (e.g., linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 100%))', 'jankx')}
+                            />
+                            <ToggleControl
+                                label={__('Link Overlay to Term', 'jankx')}
+                                checked={overlayLinkToPost || false}
+                                onChange={(value) => setAttributes({ overlayLinkToPost: value })}
+                                help={__('Make the entire overlay clickable and link to the term archive', 'jankx')}
+                            />
+                        </>
+                    )}
                 </PanelBody>
             </InspectorControls>
             <div {...blockProps}>
