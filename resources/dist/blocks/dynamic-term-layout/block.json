@@ -13,7 +13,6 @@
   "style": "file:../../dist/blocks/dynamic-term-layout/style.css",
   "supports": {
     "align": false,
-    "layout": true,
     "spacing": {
       "margin": true,
       "padding": true,

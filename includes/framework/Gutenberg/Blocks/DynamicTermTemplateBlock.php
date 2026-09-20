@@ -20,6 +20,35 @@ class DynamicTermTemplateBlock extends DynamicDataTemplateBlock
 {
     protected $blockId = 'jankx/dynamic-term-template';
 
+    protected function registerHooks(): void
+    {
+        parent::registerHooks();
+
+        // Enable margin/padding controls on core blocks used as term inner blocks.
+        add_filter('block_type_metadata', [$this, 'enableInnerBlockSpacing'], 10, 2);
+    }
+
+    /**
+     * Add spacing.margin support to core blocks used inside dynamic-term-template.
+     *
+     * core/post-title, core/post-excerpt, core/paragraph don't expose margin
+     * controls by default. This filter enables them when the block is registered.
+     */
+    public function enableInnerBlockSpacing(array $block_type, array $args): array
+    {
+        $name = $block_type['name'] ?? $block_type ?? '';
+
+        if (in_array($name, ['core/post-title', 'core/post-excerpt', 'core/paragraph', 'core/heading'], true)) {
+            if (!isset($block_type['supports']['spacing'])) {
+                $block_type['supports']['spacing'] = [];
+            }
+            $block_type['supports']['spacing']['margin'] = true;
+            $block_type['supports']['spacing']['padding'] = true;
+        }
+
+        return $block_type;
+    }
+
     /**
      * Enqueue editor assets
      *
