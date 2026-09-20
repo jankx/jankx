@@ -12,7 +12,20 @@
   "editorStyle": "file:../../dist/blocks/dynamic-term-layout/editor.css",
   "style": "file:../../dist/blocks/dynamic-term-layout/style.css",
   "supports": {
-    "align": false
+    "align": false,
+    "layout": true,
+    "spacing": {
+      "margin": true,
+      "padding": true,
+      "blockGap": {
+        "__experimentalDefault": "1.25em"
+      },
+      "__experimentalDefaultControls": {
+        "blockGap": true,
+        "padding": true,
+        "margin": true
+      }
+    }
   },
   "providesContext": {
     "queryId": "queryId",
