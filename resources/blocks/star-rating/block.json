@@ -15,6 +15,14 @@
   ],
   "textdomain": "jankx",
   "attributes": {
+    "displayStyle": {
+      "type": "string",
+      "default": "stars",
+      "enum": [
+        "stars",
+        "summary"
+      ]
+    },
     "ratingSource": {
       "type": "string",
       "default": "manual",
@@ -103,7 +111,21 @@
     },
     "color": {
       "text": true,
-      "background": true
+      "background": true,
+      "enableBackground": true
+    },
+    "typography": {
+      "fontSize": true,
+      "lineHeight": true,
+      "__experimentalFontFamily": true,
+      "__experimentalFontWeight": true,
+      "__experimentalFontStyle": true,
+      "__experimentalTextTransform": true,
+      "__experimentalTextDecoration": true,
+      "__experimentalLetterSpacing": true,
+      "__experimentalDefaultControls": {
+        "fontSize": true
+      }
     }
   },
   "editorScript": "file:../../dist/blocks/star-rating/index.js",

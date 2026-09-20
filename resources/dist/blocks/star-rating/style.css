@@ -37,5 +37,22 @@
   font-size: 0.9em;
   color: #444;
 }
+.wp-block-jankx-star-rating .jankx-rating-summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: var(--star-size, 16px);
+  line-height: 1;
+}
+.wp-block-jankx-star-rating .jankx-rating-summary__icon {
+  color: var(--star-color, #f1c40f);
+}
+.wp-block-jankx-star-rating .jankx-rating-summary__score {
+  font-weight: 600;
+}
+.wp-block-jankx-star-rating .jankx-rating-summary__count {
+  color: #666;
+  font-size: 0.85em;
+}
 
 /*# sourceMappingURL=style.css.map*/

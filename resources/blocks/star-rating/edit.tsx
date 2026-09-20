@@ -5,6 +5,7 @@ import { useEffect, useState } from '@wordpress/element';
 import apiFetch from '@wordpress/api-fetch';
 
 interface Attributes {
+    displayStyle: 'stars' | 'summary';
     ratingSource: string;
     manualRating: number;
     metaKey: string;
@@ -39,6 +40,7 @@ const DEFAULT_SVG_EMPTY = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 
 
 const Edit = ({ attributes, setAttributes }: EditProps) => {
     const {
+        displayStyle,
         ratingSource,
         manualRating,
         metaKey,
@@ -132,6 +134,16 @@ const Edit = ({ attributes, setAttributes }: EditProps) => {
         <>
             <InspectorControls>
                 <PanelBody title={__('Rating Settings', 'jankx')}>
+                    <SelectControl
+                        label={__('Display Style', 'jankx')}
+                        value={displayStyle}
+                        options={[
+                            { label: __('Stars', 'jankx'), value: 'stars' },
+                            { label: __('Summary (★ 4.6 (123))', 'jankx'), value: 'summary' },
+                        ]}
+                        onChange={(value) => setAttributes({ displayStyle: value as any })}
+                    />
+
                     {loadingProviders ? (
                         <Spinner />
                     ) : (
@@ -263,18 +275,32 @@ const Edit = ({ attributes, setAttributes }: EditProps) => {
 
             <div {...blockProps}>
                 <div className="jankx-star-rating">
-                    <div className="jankx-stars">
-                        {renderStars(rating)}
-                    </div>
-                    {showScoreText && (
-                        <span className="jankx-rating-text">
-                            ({Number.isFinite(rating) ? rating.toFixed(1) : '0.0'}/5.0)
+                    {displayStyle === 'summary' ? (
+                        <span className="jankx-rating-summary">
+                            <span className="jankx-rating-summary__icon">★</span>
+                            <span className="jankx-rating-summary__score">
+                                {Number.isFinite(rating) ? rating.toFixed(1) : '0.0'}
+                            </span>
+                            <span className="jankx-rating-summary__count">
+                                (123)
+                            </span>
                         </span>
-                    )}
-                    {showCount && (
-                        <span className="jankx-rating-count">
-                            (123)
-                        </span>
+                    ) : (
+                        <>
+                            <div className="jankx-stars">
+                                {renderStars(rating)}
+                            </div>
+                            {showScoreText && (
+                                <span className="jankx-rating-text">
+                                    ({Number.isFinite(rating) ? rating.toFixed(1) : '0.0'}/5.0)
+                                </span>
+                            )}
+                            {showCount && (
+                                <span className="jankx-rating-count">
+                                    (123)
+                                </span>
+                            )}
+                        </>
                     )}
                 </div>
                 {ratingSource !== 'manual' && (

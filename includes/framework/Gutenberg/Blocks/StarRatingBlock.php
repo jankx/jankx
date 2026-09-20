@@ -87,6 +87,7 @@ class StarRatingBlock extends Block
     public function render($attributes, $content = '')
     {
         $attributes = wp_parse_args($attributes, [
+            'displayStyle'   => 'stars',
             'ratingSource'   => 'manual',
             'manualRating'   => 5,
             'metaKey'        => 'rating_score',
@@ -160,18 +161,28 @@ class StarRatingBlock extends Block
         ?>
         <div class="<?php echo esc_attr(implode(' ', $wrapper_classes)); ?>" style="<?php echo esc_attr($style); ?>">
             <div class="jankx-star-rating">
-                <div class="jankx-stars" title="<?php echo esc_attr(sprintf(__('Rated %s out of 5', 'jankx'), $rating)); ?>">
-                    <?php echo $this->renderStars($rating, $attributes); ?>
-                </div>
-                <?php if (!empty($attributes['showScoreText'])): ?>
-                    <span class="jankx-rating-text">
-                        (<?php echo esc_html(number_format_i18n($rating, 1)); ?>/5.0)
+                <?php if ($attributes['displayStyle'] === 'summary'): ?>
+                    <span class="jankx-rating-summary">
+                        <span class="jankx-rating-summary__icon">★</span>
+                        <span class="jankx-rating-summary__score"><?php echo esc_html(number_format_i18n($rating, 1)); ?></span>
+                        <?php if ($attributes['showCount'] && $count > 0): ?>
+                            <span class="jankx-rating-summary__count">(<?php echo number_format_i18n($count); ?>)</span>
+                        <?php endif; ?>
                     </span>
-                <?php endif; ?>
-                <?php if ($attributes['showCount'] && $count > 0): ?>
-                    <span class="jankx-rating-count">
-                        (<?php echo number_format_i18n($count); ?>)
-                    </span>
+                <?php else: ?>
+                    <div class="jankx-stars" title="<?php echo esc_attr(sprintf(__('Rated %s out of 5', 'jankx'), $rating)); ?>">
+                        <?php echo $this->renderStars($rating, $attributes); ?>
+                    </div>
+                    <?php if (!empty($attributes['showScoreText'])): ?>
+                        <span class="jankx-rating-text">
+                            (<?php echo esc_html(number_format_i18n($rating, 1)); ?>/5.0)
+                        </span>
+                    <?php endif; ?>
+                    <?php if ($attributes['showCount'] && $count > 0): ?>
+                        <span class="jankx-rating-count">
+                            (<?php echo number_format_i18n($count); ?>)
+                        </span>
+                    <?php endif; ?>
                 <?php endif; ?>
             </div>
         </div>
