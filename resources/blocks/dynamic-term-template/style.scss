@@ -10,6 +10,14 @@
 // Import Animate.css for hover/unhover animation support
 @import url('https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css');
 
+.dynamic-data-template__item {
+    .wp-block-term-name {
+        &.has-link-color {
+            color: inherit;
+        }
+    }
+}
+
 .content-loop-layout--overlap-card {
     .overlap-card-content {
         position: relative;
