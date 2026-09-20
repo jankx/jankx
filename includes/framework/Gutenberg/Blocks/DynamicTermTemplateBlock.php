@@ -34,7 +34,7 @@ class DynamicTermTemplateBlock extends DynamicDataTemplateBlock
      * core/post-title, core/post-excerpt, core/paragraph don't expose margin
      * controls by default. This filter enables them when the block is registered.
      */
-    public function enableInnerBlockSpacing(array $block_type, array $args): array
+    public function enableInnerBlockSpacing(array $block_type, array $args = []): array
     {
         $name = $block_type['name'] ?? $block_type ?? '';
 
