@@ -55,7 +55,7 @@ class BlockCacheInterceptor
 
         // WP-CLI command
         if (defined('WP_CLI') && WP_CLI) {
-            \WP_CLI::add_command('jankx-block-cache', [$this, 'cliCommand']);
+            \WP_CLI::add_command('jankx block-cache', [$this, 'cliCommand']);
         }
     }
 
@@ -492,6 +492,27 @@ class BlockCacheInterceptor
 
     /**
      * WP-CLI command
+     *
+     * ## OPTIONS
+     *
+     * [<subcommand>]
+     * : Subcommand to run.
+     *
+     * ---
+     * default: status
+     * options:
+     *   - build
+     *   - invalidate
+     *   - delete
+     *   - sync
+     *   - status
+     * ---
+     *
+     * ## EXAMPLES
+     *
+     *     wp jankx block-cache build
+     *     wp jankx block-cache sync
+     *     wp jankx block-cache status
      */
     public function cliCommand($args, $assoc_args): void
     {
