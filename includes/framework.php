@@ -214,25 +214,24 @@ $app = require dirname(__FILE__) . '/boot/app.php';
 $framework->setApp($app);
 $framework->init();
 
-// Initialize Block SQLite Cache for Gutenberg editor
-// Reduces MySQL connections on shared hosting by caching block data
+// Initialize Block Cache for Gutenberg editor
+// Reduces MySQL connections on shared hosting by caching block data in SQLite
 add_action('after_setup_theme', function () {
     try {
         $isCli = defined('WP_CLI') && WP_CLI;
         $isRelevant = is_admin() || wp_doing_ajax() || (defined('REST_REQUEST') && REST_REQUEST) || $isCli;
 
-        if ($isRelevant) {
-            $cacheFile = dirname(__FILE__) . '/framework/Cache/BlockSQLiteCache.php';
-            $interceptorFile = dirname(__FILE__) . '/framework/Cache/BlockCacheInterceptor.php';
+        if ($isRelevant && extension_loaded('sqlite3')) {
+            $baseDir = dirname(__FILE__) . '/framework/Cache';
 
-            if (file_exists($cacheFile) && file_exists($interceptorFile)
-                && extension_loaded('pdo_sqlite')) {
-                require_once $cacheFile;
-                require_once $interceptorFile;
+            require_once $baseDir . '/Contracts/CacheDriverInterface.php';
+            require_once $baseDir . '/Drivers/SQLite3Driver.php';
+            require_once $baseDir . '/CacheManager.php';
+            require_once $baseDir . '/BlockCache.php';
+            require_once $baseDir . '/BlockCacheInterceptor.php';
 
-                $interceptor = new \Jankx\Cache\BlockCacheInterceptor();
-                $interceptor->init();
-            }
+            $interceptor = new \Jankx\Cache\BlockCacheInterceptor();
+            $interceptor->init();
         }
     } catch (\Throwable $e) {
         error_log('Jankx Block Cache init failed: ' . $e->getMessage());

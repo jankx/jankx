@@ -3,7 +3,7 @@
 namespace Jankx\Foundation\Cli\Commands;
 
 use WP_CLI_Command;
-use Jankx\Cache\BlockSQLiteCache;
+use Jankx\Cache\BlockCache;
 
 /**
  * Block Cache management commands.
@@ -21,9 +21,6 @@ class BlockCacheCommand extends WP_CLI_Command
     /**
      * Build block cache from MySQL.
      *
-     * Reads all registered block types, patterns, and categories from WordPress
-     * and stores them in SQLite for faster reads.
-     *
      * ## EXAMPLES
      *
      *     wp jankx block-cache build
@@ -32,31 +29,28 @@ class BlockCacheCommand extends WP_CLI_Command
      */
     public function build($args, $assoc_args)
     {
-        if (!extension_loaded('pdo_sqlite')) {
-            \WP_CLI::error('pdo_sqlite extension is not available.');
-            return;
+        if (!extension_loaded('sqlite3')) {
+            \WP_CLI::error('sqlite3 extension is not available.');
         }
 
         \WP_CLI::log('Building block cache...');
 
-        $cache = BlockSQLiteCache::instance();
-        $cache->deleteCache();
-        $cache->buildCache();
+        $cache = BlockCache::instance();
+        $cache->flush();
+        $cache->build();
 
-        $stats = $cache->getStats();
+        $stats = $cache->stats();
         \WP_CLI::success(sprintf(
             'Cache built: %d blocks, %d patterns, %d categories (%s)',
             $stats['block_count'],
             $stats['pattern_count'],
             $stats['category_count'],
-            $stats['db_size']
+            size_format($stats['size'] ?? 0)
         ));
     }
 
     /**
      * Sync block cache from MySQL.
-     *
-     * Same as build, but only rebuilds if cache is invalid.
      *
      * ## EXAMPLES
      *
@@ -66,20 +60,18 @@ class BlockCacheCommand extends WP_CLI_Command
      */
     public function sync($args, $assoc_args)
     {
-        if (!extension_loaded('pdo_sqlite')) {
-            \WP_CLI::error('pdo_sqlite extension is not available.');
-            return;
+        if (!extension_loaded('sqlite3')) {
+            \WP_CLI::error('sqlite3 extension is not available.');
         }
 
         \WP_CLI::log('Syncing cache from MySQL...');
 
-        $cache = BlockSQLiteCache::instance();
+        $cache = BlockCache::instance();
 
         if ($cache->isValid()) {
-            \WP_CLI::log('Cache is already valid. Use "build" to force rebuild.');
-            $stats = $cache->getStats();
+            $stats = $cache->stats();
             \WP_CLI::log(sprintf(
-                'Current cache: %d blocks, %d patterns, %d categories',
+                'Cache already valid: %d blocks, %d patterns, %d categories',
                 $stats['block_count'],
                 $stats['pattern_count'],
                 $stats['category_count']
@@ -87,9 +79,9 @@ class BlockCacheCommand extends WP_CLI_Command
             return;
         }
 
-        $cache->syncFromMySQL();
+        $cache->build();
 
-        $stats = $cache->getStats();
+        $stats = $cache->stats();
         \WP_CLI::success(sprintf(
             'Cache synced: %d blocks, %d patterns, %d categories',
             $stats['block_count'],
@@ -101,8 +93,6 @@ class BlockCacheCommand extends WP_CLI_Command
     /**
      * Invalidate block cache.
      *
-     * Marks cache as invalid. Next request will rebuild it.
-     *
      * ## EXAMPLES
      *
      *     wp jankx block-cache invalidate
@@ -111,21 +101,16 @@ class BlockCacheCommand extends WP_CLI_Command
      */
     public function invalidate($args, $assoc_args)
     {
-        if (!extension_loaded('pdo_sqlite')) {
-            \WP_CLI::error('pdo_sqlite extension is not available.');
-            return;
+        if (!extension_loaded('sqlite3')) {
+            \WP_CLI::error('sqlite3 extension is not available.');
         }
 
-        $cache = BlockSQLiteCache::instance();
-        $cache->invalidate();
-
-        \WP_CLI::success('Cache invalidated. Next request will rebuild it.');
+        BlockCache::instance()->invalidate();
+        \WP_CLI::success('Cache invalidated.');
     }
 
     /**
-     * Delete block cache file.
-     *
-     * Completely removes the SQLite cache file.
+     * Delete block cache.
      *
      * ## EXAMPLES
      *
@@ -135,15 +120,12 @@ class BlockCacheCommand extends WP_CLI_Command
      */
     public function delete($args, $assoc_args)
     {
-        if (!extension_loaded('pdo_sqlite')) {
-            \WP_CLI::error('pdo_sqlite extension is not available.');
-            return;
+        if (!extension_loaded('sqlite3')) {
+            \WP_CLI::error('sqlite3 extension is not available.');
         }
 
-        $cache = BlockSQLiteCache::instance();
-        $cache->deleteCache();
-
-        \WP_CLI::success('Cache file deleted.');
+        BlockCache::instance()->flush();
+        \WP_CLI::success('Cache deleted.');
     }
 
     /**
@@ -157,25 +139,19 @@ class BlockCacheCommand extends WP_CLI_Command
      */
     public function status($args, $assoc_args)
     {
-        if (!extension_loaded('pdo_sqlite')) {
-            \WP_CLI::error('pdo_sqlite extension is not available.');
-            return;
+        if (!extension_loaded('sqlite3')) {
+            \WP_CLI::error('sqlite3 extension is not available.');
         }
 
-        $cache = BlockSQLiteCache::instance();
-        $stats = $cache->getStats();
-
-        if (isset($stats['error'])) {
-            \WP_CLI::error($stats['error']);
-            return;
-        }
+        $stats = BlockCache::instance()->stats();
 
         \WP_CLI::log('Block Cache Status:');
-        \WP_CLI::log(sprintf('  Valid:    %s', $stats['is_valid'] ? 'Yes' : 'No'));
-        \WP_CLI::log(sprintf('  Blocks:   %d', $stats['block_count']));
-        \WP_CLI::log(sprintf('  Patterns: %d', $stats['pattern_count']));
-        \WP_CLI::log(sprintf('  Categories: %d', $stats['category_count']));
-        \WP_CLI::log(sprintf('  Last Built: %s', $stats['last_build_human']));
-        \WP_CLI::log(sprintf('  Size:     %s', $stats['db_size']));
+        \WP_CLI::log(sprintf('  Driver:    %s', $stats['driver'] ?? 'unknown'));
+        \WP_CLI::log(sprintf('  Valid:     %s', $stats['is_valid'] ? 'Yes' : 'No'));
+        \WP_CLI::log(sprintf('  Blocks:    %d', $stats['block_count'] ?? 0));
+        \WP_CLI::log(sprintf('  Patterns:  %d', $stats['pattern_count'] ?? 0));
+        \WP_CLI::log(sprintf('  Categories: %d', $stats['category_count'] ?? 0));
+        \WP_CLI::log(sprintf('  Last Built: %s', $stats['last_build_human'] ?? 'never'));
+        \WP_CLI::log(sprintf('  Size:      %s', size_format($stats['size'] ?? 0)));
     }
 }

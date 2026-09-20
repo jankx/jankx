@@ -5,18 +5,18 @@ namespace Jankx\Cache;
 /**
  * Block Cache Interceptor
  *
- * Intercepts Gutenberg REST API requests and serves block data from SQLite cache.
- * Reduces MySQL connections by avoiding repeated queries for block types/patterns.
+ * Intercepts Gutenberg REST API requests and serves block data from cache.
+ * Uses WordPress hooks to intercept requests and serve cached responses.
  *
  * @package Jankx\Cache
  */
 class BlockCacheInterceptor
 {
-    private BlockSQLiteCache $cache;
+    private BlockCache $blockCache;
 
     public function __construct()
     {
-        $this->cache = BlockSQLiteCache::instance();
+        $this->blockCache = BlockCache::instance();
     }
 
     public function init(): void
@@ -24,73 +24,25 @@ class BlockCacheInterceptor
         // Build cache on init if not valid
         add_action('init', [$this, 'maybeBuildCache'], 5);
 
-        // Intercept REST API responses for block types
-        add_filter('rest_prepare_block_type', [$this, 'filterBlockTypeResponse'], 10, 3);
-        add_filter('rest_dispatch_request', [$this, 'interceptBlockTypesRequest'], 10, 3);
-        add_filter('rest_dispatch_request', [$this, 'interceptBlockPatternsRequest'], 10, 3);
+        // REST API interception
+        add_filter('rest_dispatch_request', [$this, 'interceptRequest'], 10, 3);
 
-        // Preload block data into editor to reduce REST API calls
+        // Preload block data into editor
         add_filter('block_editor_rest_api_preload_paths', [$this, 'addPreloadPaths'], 10, 2);
 
-        // Inject cached block types directly into editor settings
-        add_filter('block_editor_settings_all', [$this, 'injectCachedBlockTypes'], 10, 2);
+        // Write-through: sync when block registered
+        add_action('registered_block_type', [$this, 'onBlockRegistered'], 10, 2);
 
-        // =============================================
-        // Write-through: Hook into block registration
-        // When a block is registered, also update SQLite
-        // =============================================
-
-        // After a block type is registered
-        add_action('registered_block_type', [$this, 'onBlockTypeRegistered'], 10, 2);
-
-        // After a block pattern is registered
-        add_action('wp_loaded', [$this, 'syncPatternsToSQLite'], 20);
-
-        // Admin page for cache management
-        add_action('admin_menu', [$this, 'addAdminPage']);
-
-        // Invalidate on plugin/theme changes
-        add_action('upgrader_process_complete', [$this, 'onUpgrade']);
+        // Auto-invalidate on updates
+        add_action('upgrader_process_complete', [$this, 'invalidate']);
         add_action('switch_theme', [$this, 'invalidate']);
 
-        // WP-CLI commands are registered via WordPressCliServiceProvider
+        // Admin page
+        add_action('admin_menu', [$this, 'addAdminPage']);
     }
 
     /**
-     * Sync block patterns to SQLite after WordPress loads
-     */
-    public function syncPatternsToSQLite(): void
-    {
-        if (!$this->shouldRun()) {
-            return;
-        }
-
-        try {
-            $cache = BlockSQLiteCache::instance();
-
-            // Sync patterns from WordPress to SQLite
-            if (function_exists('get_block_patterns')) {
-                $patterns = get_block_patterns();
-                foreach ($patterns as $name => $pattern) {
-                    $cache->saveBlockPattern($name, $pattern);
-                }
-            }
-
-            // Sync categories from WordPress to SQLite
-            $categories = function_exists('get_block_categories_all')
-                ? get_block_categories_all(new \WP_Block_Editor_Context())
-                : [];
-
-            foreach ($categories as $category) {
-                $cache->saveBlockCategory($category['slug'], $category);
-            }
-        } catch (\Exception $e) {
-            error_log('Jankx Block Cache: Pattern sync failed - ' . $e->getMessage());
-        }
-    }
-
-    /**
-     * Build cache if not valid
+     * Build cache if needed
      */
     public function maybeBuildCache(): void
     {
@@ -98,212 +50,167 @@ class BlockCacheInterceptor
             return;
         }
 
-        if (!$this->cache->isValid()) {
-            $this->buildCacheSilently();
-        }
-    }
-
-    /**
-     * Build cache without output
-     */
-    private function buildCacheSilently(): void
-    {
         try {
-            $this->cache->buildCache();
+            if (!$this->blockCache->isValid()) {
+                $this->blockCache->build();
+            }
         } catch (\Exception $e) {
-            error_log('Jankx Block Cache: Failed to build - ' . $e->getMessage());
+            error_log('Jankx Block Cache: build failed - ' . $e->getMessage());
         }
     }
 
     /**
-     * Intercept /wp/v2/block-types requests and serve from cache
+     * Intercept REST API requests for block-types and block-patterns
      *
-     * rest_dispatch_request filter signature: (mixed $dispatch_result, WP_REST_Request $request, string $route)
+     * rest_dispatch_request filter: (mixed $result, WP_REST_Request $request, string $route)
      */
-    public function interceptBlockTypesRequest($dispatch_result, $request, $route): mixed
+    public function interceptRequest(mixed $result, \WP_REST_Request $request, string $route): mixed
     {
-        // Only intercept block-types endpoint
-        if (!str_contains($route, '/block-types')) {
-            return $dispatch_result;
-        }
-
-        if (!$this->shouldRun() || !$this->cache->isValid()) {
-            return $dispatch_result;
-        }
-
         try {
-            $blocks = $this->cache->getAllBlockTypes();
-            $context = $request->get_param('context') ?: 'view';
+            if (!$this->shouldRun() || !$this->blockCache->isValid()) {
+                return $result;
+            }
 
-            $data = [];
-            foreach ($blocks as $blockData) {
-                // Filter by namespace if specified
-                $namespace = $request->get_param('namespace');
-                if ($namespace) {
-                    list($blockNamespace) = explode('/', $blockData['name'] ?? '');
-                    if ($blockNamespace !== $namespace) {
-                        continue;
-                    }
+            // Intercept block-types
+            if (str_contains($route, '/block-types') && !str_contains($route, '/block-types/')) {
+                return $this->serveBlockTypes($request);
+            }
+
+            // Intercept block-patterns
+            if (str_contains($route, '/block-patterns/patterns')) {
+                return $this->servePatterns();
+            }
+
+            // Intercept block-patterns categories
+            if (str_contains($route, '/block-patterns/categories')) {
+                return $this->serveCategories();
+            }
+        } catch (\Exception $e) {
+            error_log('Jankx Block Cache: intercept failed - ' . $e->getMessage());
+        }
+
+        return $result;
+    }
+
+    /**
+     * Serve block types from cache
+     */
+    private function serveBlockTypes(\WP_REST_Request $request): \WP_REST_Response
+    {
+        $blocks = $this->blockCache->getBlockTypes();
+        $context = $request->get_param('context') ?: 'view';
+        $namespace = $request->get_param('namespace');
+
+        $data = [];
+        foreach ($blocks as $blockData) {
+            if ($namespace) {
+                list($blockNamespace) = explode('/', $blockData['name'] ?? '');
+                if ($blockNamespace !== $namespace) {
+                    continue;
                 }
-
-                // Filter by context
-                $filteredData = $this->filterByContext($blockData, $context);
-                $filteredData['_links'] = $this->buildLinks($blockData['name'] ?? '');
-                $data[] = $filteredData;
             }
 
-            $restResponse = new \WP_REST_Response($data);
-            $restResponse->add_header('X-Jankx-Cache', 'HIT');
-            return $restResponse;
-        } catch (\Exception $e) {
-            return $dispatch_result;
-        }
-    }
-
-    /**
-     * Intercept block-patterns requests
-     *
-     * rest_dispatch_request filter signature: (mixed $dispatch_result, WP_REST_Request $request, string $route)
-     */
-    public function interceptBlockPatternsRequest($dispatch_result, $request, $route): mixed
-    {
-        if (!str_contains($route, '/block-patterns')) {
-            return $dispatch_result;
+            $data[] = $this->filterByContext($blockData, $context);
         }
 
-        if (!$this->shouldRun() || !$this->cache->isValid()) {
-            return $dispatch_result;
-        }
-
-        try {
-            $patterns = $this->cache->getAllBlockPatterns();
-
-            // Check if requesting patterns or categories
-            if (str_ends_with($route, '/categories')) {
-                // Return categories from cache
-                $categories = $this->cache->getAllBlockCategories();
-                $restResponse = new \WP_REST_Response($categories);
-                $restResponse->add_header('X-Jankx-Cache', 'HIT');
-                return $restResponse;
-            }
-
-            $data = array_values($patterns);
-            $restResponse = new \WP_REST_Response($data);
-            $restResponse->add_header('X-Jankx-Cache', 'HIT');
-            return $restResponse;
-        } catch (\Exception $e) {
-            return $dispatch_result;
-        }
-    }
-
-    /**
-     * Filter block data by context (view, edit, embed)
-     */
-    private function filterByContext(array $data, string $context): array
-    {
-        // For 'view' context, remove edit-only fields
-        if ($context === 'view') {
-            unset($data['editor_script_handles']);
-            unset($data['editor_style_handles']);
-        }
-
-        return $data;
-    }
-
-    /**
-     * Build _links for block type response
-     */
-    private function buildLinks(string $blockName): array
-    {
-        if (empty($blockName)) {
-            return [];
-        }
-
-        list($namespace) = explode('/', $blockName);
-
-        $links = [
-            'collection' => [
-                'href' => rest_url('wp/v2/block-types'),
-            ],
-            'self' => [
-                'href' => rest_url('wp/v2/block-types/' . $blockName),
-            ],
-            'up' => [
-                'href' => rest_url('wp/v2/block-types/' . $namespace),
-            ],
-        ];
-
-        return $links;
-    }
-
-    /**
-     * Filter block type response (single block)
-     */
-    public function filterBlockTypeResponse($response, $blockType, $request): \WP_REST_Response
-    {
-        // Add cache header
-        $response->header('X-Jankx-Cache', 'PARTIAL');
+        $response = new \WP_REST_Response($data);
+        $response->add_header('X-Jankx-Cache', 'HIT');
         return $response;
     }
 
     /**
-     * Add preload paths to reduce REST API calls
+     * Serve patterns from cache
      */
-    public function addPreloadPaths($preloadPaths, $blockEditorContext): array
+    private function servePatterns(): \WP_REST_Response
     {
-        if (!$this->shouldRun() || !$this->cache->isValid()) {
+        $patterns = $this->blockCache->getPatterns();
+        $response = new \WP_REST_Response(array_values($patterns));
+        $response->add_header('X-Jankx-Cache', 'HIT');
+        return $response;
+    }
+
+    /**
+     * Serve categories from cache
+     */
+    private function serveCategories(): \WP_REST_Response
+    {
+        $categories = $this->blockCache->getCategories();
+        $response = new \WP_REST_Response(array_values($categories));
+        $response->add_header('X-Jankx-Cache', 'HIT');
+        return $response;
+    }
+
+    /**
+     * Filter data by context
+     */
+    private function filterByContext(array $data, string $context): array
+    {
+        if ($context === 'view') {
+            unset($data['editor_script_handles'], $data['editor_style_handles']);
+        }
+        return $data;
+    }
+
+    /**
+     * Add preload paths to editor
+     */
+    public function addPreloadPaths(array $preloadPaths, \WP_Block_Editor_Context $context): array
+    {
+        if (!$this->shouldRun() || !$this->blockCache->isValid()) {
             return $preloadPaths;
         }
 
-        // These paths will be preloaded by Gutenberg
-        // If we cache the responses, we avoid DB queries entirely
-        $cachedPaths = [
+        return array_merge($preloadPaths, [
             '/wp/v2/block-types?context=edit',
             '/wp/v2/block-patterns/patterns',
             '/wp/v2/block-patterns/categories',
-        ];
-
-        return array_merge($preloadPaths, $cachedPaths);
+        ]);
     }
 
     /**
-     * Inject cached block types directly into editor settings
-     * This bypasses REST API entirely
+     * Sync block type to cache when registered
      */
-    public function injectCachedBlockTypes(array $settings, \WP_Block_Editor_Context $context): array
+    public function onBlockRegistered(string $name, \WP_Block_Type $blockType): void
     {
-        if (!$this->shouldRun() || !$this->cache->isValid()) {
-            return $settings;
-        }
-
-        if (!is_admin() || wp_doing_ajax()) {
-            return $settings;
-        }
-
-        // Check if this is a block editor screen
-        if (!function_exists('get_current_screen') || !get_current_screen()) {
-            return $settings;
+        if (!$this->shouldRun()) {
+            return;
         }
 
         try {
-            $blocks = $this->cache->getAllBlockTypes();
-            $settings['_jankx_cached_block_types'] = $blocks;
-            $settings['_jankx_cache_stats'] = $this->cache->getStats();
+            $this->blockCache->saveBlockType($name, [
+                'name' => $blockType->name,
+                'title' => $blockType->title,
+                'description' => $blockType->description,
+                'icon' => $blockType->icon,
+                'category' => $blockType->category,
+                'is_dynamic' => $blockType->is_dynamic(),
+                // ... other fields as needed
+            ]);
         } catch (\Exception $e) {
-            // Silently fail
+            error_log('Jankx Block Cache: sync failed for ' . $name);
         }
-
-        return $settings;
     }
 
     /**
-     * Add admin page for cache management
+     * Invalidate cache
+     */
+    public function invalidate(): void
+    {
+        try {
+            $this->blockCache->invalidate();
+        } catch (\Exception $e) {
+            // Silent fail
+        }
+    }
+
+    /**
+     * Add admin page
      */
     public function addAdminPage(): void
     {
         add_submenu_page(
             'tools.php',
-            'Jankx Block Cache',
+            'Block Cache',
             'Block Cache',
             'manage_options',
             'jankx-block-cache',
@@ -320,260 +227,76 @@ class BlockCacheInterceptor
             return;
         }
 
-        if (isset($_POST['jankx_rebuild_cache']) && check_admin_referer('jankx_block_cache')) {
-            $this->cache->deleteCache();
-            $this->cache->buildCache();
-            wp_redirect(admin_url('tools.php?page=jankx-block-cache&rebuilt=1'));
-            exit;
+        // Handle actions
+        if (isset($_POST['action']) && check_admin_referer('jankx_block_cache')) {
+            switch ($_POST['action']) {
+                case 'build':
+                    $this->blockCache->build();
+                    wp_redirect(admin_url('tools.php?page=jankx-block-cache&done=build'));
+                    exit;
+                case 'flush':
+                    $this->blockCache->flush();
+                    wp_redirect(admin_url('tools.php?page=jankx-block-cache&done=flush'));
+                    exit;
+                case 'invalidate':
+                    $this->blockCache->invalidate();
+                    wp_redirect(admin_url('tools.php?page=jankx-block-cache&done=invalidate'));
+                    exit;
+            }
         }
 
-        if (isset($_POST['jankx_invalidate_cache']) && check_admin_referer('jankx_block_cache')) {
-            $this->cache->invalidate();
-            wp_redirect(admin_url('tools.php?page=jankx-block-cache&invalidated=1'));
-            exit;
-        }
-
-        if (isset($_POST['jankx_sync_from_mysql']) && check_admin_referer('jankx_block_cache')) {
-            $this->cache->syncFromMySQL();
-            wp_redirect(admin_url('tools.php?page=jankx-block-cache&synced=1'));
-            exit;
-        }
-
-        $stats = $this->cache->getStats();
+        $stats = $this->blockCache->stats();
         ?>
         <div class="wrap">
-            <h1>Jankx Block Cache</h1>
-            <p>Caches Gutenberg block data in SQLite to reduce MySQL connections on shared hosting.</p>
-            <p><strong>Write-through mode:</strong> MySQL = source of truth, SQLite = read cache. Both are always in sync.</p>
+            <h1>Block Cache</h1>
+            <p>Caches Gutenberg block data to reduce MySQL connections on shared hosting.</p>
 
-            <?php if (isset($_GET['rebuilt'])): ?>
-                <div class="notice notice-success"><p>Cache rebuilt successfully.</p></div>
-            <?php endif; ?>
-            <?php if (isset($_GET['invalidated'])): ?>
-                <div class="notice notice-success"><p>Cache invalidated.</p></div>
-            <?php endif; ?>
-            <?php if (isset($_GET['synced'])): ?>
-                <div class="notice notice-success"><p>Cache synced from MySQL.</p></div>
+            <?php if (isset($_GET['done'])): ?>
+                <div class="notice notice-success"><p>
+                    <?php echo esc_html(ucfirst($_GET['done'])) ?> completed successfully.
+                </p></div>
             <?php endif; ?>
 
-            <h2>Cache Stats</h2>
-            <table class="widefat fixed striped" style="max-width: 500px;">
-                <tr><td>Status</td><td><?php echo $stats['is_valid'] ? '✅ Valid' : '❌ Invalid'; ?></td></tr>
-                <tr><td>Cached Blocks</td><td><?php echo esc_html($stats['block_count'] ?? 0); ?></td></tr>
-                <tr><td>Cached Patterns</td><td><?php echo esc_html($stats['pattern_count'] ?? 0); ?></td></tr>
-                <tr><td>Cached Categories</td><td><?php echo esc_html($stats['category_count'] ?? 0); ?></td></tr>
-                <tr><td>Last Built</td><td><?php echo esc_html($stats['last_build_human'] ?? 'never'); ?></td></tr>
-                <tr><td>Cache Size</td><td><?php echo esc_html($stats['db_size'] ?? '0 B'); ?></td></tr>
+            <h2>Cache Status</h2>
+            <table class="widefat fixed striped" style="max-width:500px">
+                <tr><td>Driver</td><td><?php echo esc_html($stats['driver'] ?? 'unknown') ?></td></tr>
+                <tr><td>Valid</td><td><?php echo $stats['is_valid'] ? '✅ Yes' : '❌ No' ?></td></tr>
+                <tr><td>Block Types</td><td><?php echo (int) ($stats['block_count'] ?? 0) ?></td></tr>
+                <tr><td>Patterns</td><td><?php echo (int) ($stats['pattern_count'] ?? 0) ?></td></tr>
+                <tr><td>Categories</td><td><?php echo (int) ($stats['category_count'] ?? 0) ?></td></tr>
+                <tr><td>Last Built</td><td><?php echo esc_html($stats['last_build_human'] ?? 'never') ?></td></tr>
+                <tr><td>Size</td><td><?php echo size_format($stats['size'] ?? 0) ?></td></tr>
             </table>
 
             <h2>Actions</h2>
-            <form method="post" style="display: inline;">
-                <?php wp_nonce_field('jankx_block_cache'); ?>
-                <button type="submit" name="jankx_rebuild_cache" class="button button-primary">
-                    Rebuild Cache
-                </button>
+            <form method="post" style="display:inline">
+                <?php wp_nonce_field('jankx_block_cache') ?>
+                <input type="hidden" name="action" value="build">
+                <button class="button button-primary">Rebuild Cache</button>
             </form>
-            <form method="post" style="display: inline; margin-left: 10px;">
-                <?php wp_nonce_field('jankx_block_cache'); ?>
-                <button type="submit" name="jankx_invalidate_cache" class="button">
-                    Invalidate Cache
-                </button>
+            <form method="post" style="display:inline;margin-left:10px">
+                <?php wp_nonce_field('jankx_block_cache') ?>
+                <input type="hidden" name="action" value="invalidate">
+                <button class="button">Invalidate</button>
             </form>
-            <form method="post" style="display: inline; margin-left: 10px;">
-                <?php wp_nonce_field('jankx_block_cache'); ?>
-                <button type="submit" name="jankx_sync_from_mysql" class="button">
-                    Sync from MySQL
-                </button>
+            <form method="post" style="display:inline;margin-left:10px">
+                <?php wp_nonce_field('jankx_block_cache') ?>
+                <input type="hidden" name="action" value="flush">
+                <button class="button">Flush All</button>
             </form>
-
-            <h2>How It Works</h2>
-            <ol>
-                <li><strong>Read:</strong> Block data served from SQLite (0 MySQL connections)</li>
-                <li><strong>Write:</strong> Changes written to both MySQL AND SQLite simultaneously</li>
-                <li><strong>Invalidate:</strong> Cache auto-invalidates on plugin/theme update</li>
-                <li><strong>Sync:</strong> Use "Sync from MySQL" if cache gets corrupted</li>
-            </ol>
         </div>
         <?php
     }
 
     /**
-     * Handle block type registration - sync to SQLite
-     *
-     * Called automatically when register_block_type() is called.
-     * This ensures SQLite cache stays in sync with MySQL (WordPress registry).
-     *
-     * @param string $name Block name
-     * @param \WP_Block_Type $block_type Block type object
-     */
-    public function onBlockTypeRegistered(string $name, \WP_Block_Type $block_type): void
-    {
-        if (!$this->shouldRun()) {
-            return;
-        }
-
-        try {
-            $cache = BlockSQLiteCache::instance();
-
-            $metadata = [
-                'name' => $block_type->name,
-                'title' => $block_type->title,
-                'description' => $block_type->description,
-                'icon' => $block_type->icon,
-                'category' => $block_type->category,
-                'keywords' => $block_type->keywords,
-                'parent' => $block_type->parent,
-                'ancestor' => $block_type->ancestor,
-                'attributes' => $block_type->get_attributes(),
-                'supports' => $block_type->supports,
-                'styles' => $block_type->styles,
-                'variations' => $block_type->variations,
-                'example' => $block_type->example,
-                'provides_context' => $block_type->provides_context,
-                'uses_context' => $block_type->uses_context,
-                'selectors' => $block_type->selectors,
-                'block_hooks' => $block_type->block_hooks,
-                'api_version' => $block_type->api_version,
-                'textdomain' => $block_type->textdomain,
-                'is_dynamic' => $block_type->is_dynamic(),
-            ];
-
-            $settings = [
-                'editor_script_handles' => $block_type->editor_script_handles,
-                'script_handles' => $block_type->script_handles,
-                'view_script_handles' => $block_type->view_script_handles,
-                'editor_style_handles' => $block_type->editor_style_handles,
-                'style_handles' => $block_type->style_handles,
-                'view_style_handles' => $block_type->view_style_handles,
-                'view_script_module_ids' => $block_type->view_script_module_ids,
-            ];
-
-            // Write-through: MySQL (already done by WP) + SQLite
-            $cache->saveBlockType($name, $metadata, $settings);
-        } catch (\Exception $e) {
-            error_log('Jankx Block Cache: Failed to sync block type - ' . $e->getMessage());
-        }
-    }
-
-    /**
-     * Check if cache interceptor should run
+     * Check if interceptor should run
      */
     private function shouldRun(): bool
     {
-        // Allow WP-CLI for cache management commands
         if (defined('WP_CLI') && WP_CLI) {
             return true;
         }
 
-        // Only run on admin, AJAX, or REST API
-        if (!is_admin() && !wp_doing_ajax() && !(defined('REST_REQUEST') && REST_REQUEST)) {
-            return false;
-        }
-
-        // Check if SQLite extension is available
-        if (!extension_loaded('pdo_sqlite')) {
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
-     * Handle upgrade events
-     */
-    public function onUpgrade($upgrader_object, $options): void
-        {
-        if ($options['type'] === 'theme' || $options['type'] === 'plugin') {
-            $this->invalidate();
-        }
-    }
-
-    /**
-     * Invalidate cache
-     */
-    public function invalidate(): void
-    {
-        $this->cache->invalidate();
-    }
-
-    /**
-     * WP-CLI command
-     *
-     * ## OPTIONS
-     *
-     * [<subcommand>]
-     * : Subcommand to run.
-     *
-     * ---
-     * default: status
-     * options:
-     *   - build
-     *   - invalidate
-     *   - delete
-     *   - sync
-     *   - status
-     * ---
-     *
-     * ## EXAMPLES
-     *
-     *     wp jankx block-cache build
-     *     wp jankx block-cache sync
-     *     wp jankx block-cache status
-     */
-    public function cliCommand($args, $assoc_args): void
-    {
-        $subcommand = $args[0] ?? 'status';
-
-        switch ($subcommand) {
-            case 'build':
-                \WP_CLI::log('Building block cache...');
-                $this->cache->deleteCache();
-                $this->cache->buildCache();
-                $stats = $this->cache->getStats();
-                \WP_CLI::success(sprintf(
-                    'Cache built: %d blocks, %d patterns, %d categories',
-                    $stats['block_count'],
-                    $stats['pattern_count'],
-                    $stats['category_count']
-                ));
-                break;
-
-            case 'invalidate':
-                $this->cache->invalidate();
-                \WP_CLI::success('Cache invalidated.');
-                break;
-
-            case 'delete':
-                $this->cache->deleteCache();
-                \WP_CLI::success('Cache file deleted.');
-                break;
-
-            case 'sync':
-                \WP_CLI::log('Syncing cache from MySQL...');
-                $this->cache->syncFromMySQL();
-                $stats = $this->cache->getStats();
-                \WP_CLI::success(sprintf(
-                    'Cache synced: %d blocks, %d patterns, %d categories',
-                    $stats['block_count'],
-                    $stats['pattern_count'],
-                    $stats['category_count']
-                ));
-                break;
-
-            case 'status':
-            default:
-                $stats = $this->cache->getStats();
-                if (isset($stats['error'])) {
-                    \WP_CLI::error($stats['error']);
-                }
-                \WP_CLI::log('Block Cache Status:');
-                \WP_CLI::log(sprintf('  Valid: %s', $stats['is_valid'] ? 'Yes' : 'No'));
-                \WP_CLI::log(sprintf('  Blocks: %d', $stats['block_count']));
-                \WP_CLI::log(sprintf('  Patterns: %d', $stats['pattern_count']));
-                \WP_CLI::log(sprintf('  Categories: %d', $stats['category_count']));
-                \WP_CLI::log(sprintf('  Last Built: %s', $stats['last_build_human']));
-                \WP_CLI::log(sprintf('  Size: %s', $stats['db_size']));
-                break;
-        }
+        return is_admin() || wp_doing_ajax() || (defined('REST_REQUEST') && REST_REQUEST);
     }
 }
