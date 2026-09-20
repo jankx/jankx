@@ -217,7 +217,10 @@ $framework->init();
 // Initialize Block SQLite Cache for Gutenberg editor
 // Reduces MySQL connections on shared hosting by caching block data
 add_action('after_setup_theme', function () {
-    if (is_admin() || wp_doing_ajax() || (defined('REST_REQUEST') && REST_REQUEST)) {
+    $isCli = defined('WP_CLI') && WP_CLI;
+    $isRelevant = is_admin() || wp_doing_ajax() || (defined('REST_REQUEST') && REST_REQUEST) || $isCli;
+
+    if ($isRelevant) {
         $cacheFile = dirname(__FILE__) . '/framework/Cache/BlockSQLiteCache.php';
         $interceptorFile = dirname(__FILE__) . '/framework/Cache/BlockCacheInterceptor.php';
 

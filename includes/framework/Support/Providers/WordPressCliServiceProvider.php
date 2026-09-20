@@ -12,6 +12,7 @@ use Jankx\Foundation\Cli\Commands\DemoCommand;
 use Jankx\Foundation\Cli\Commands\ExtensionCommand;
 use Jankx\Foundation\Cli\Commands\ExtensionReleaseCommand;
 use Jankx\Foundation\Cli\Commands\TestCommand;
+use Jankx\Foundation\Cli\Commands\BlockCacheCommand;
 use Jankx\Foundation\Cli\Seeders\SeederRegistry;
 use Jankx\Demo\Seeders\GamingPortalSeeder;
 use Jankx\Demo\Seeders\BlogDemoSeeder;
@@ -94,6 +95,10 @@ class WordPressCliServiceProvider extends ServiceProvider
             return new TestCommand();
         });
 
+        $this->app->singleton('jankx.block-cache.command', function () {
+            return new BlockCacheCommand();
+        });
+
         // ── Extra commands from config/cli.php ───────────────────────────────
         $commands = $this->app['config']->get('cli.commands', []);
         if (is_array($commands)) {
@@ -153,6 +158,7 @@ class WordPressCliServiceProvider extends ServiceProvider
         \WP_CLI::add_command('jankx extension', $this->app->make('jankx.extension.command'));
         \WP_CLI::add_command('jankx extension release', $this->app->make('jankx.extension.release.command'));
         \WP_CLI::add_command('jankx test', $this->app->make('jankx.test.command'));
+        \WP_CLI::add_command('jankx block-cache', $this->app->make('jankx.block-cache.command'));
 
         // Commands defined in config/cli.php → cli.commands
         $commands = $this->app->get('config')->get('cli.commands', []);

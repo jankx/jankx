@@ -53,10 +53,7 @@ class BlockCacheInterceptor
         add_action('upgrader_process_complete', [$this, 'onUpgrade']);
         add_action('switch_theme', [$this, 'invalidate']);
 
-        // WP-CLI command
-        if (defined('WP_CLI') && WP_CLI) {
-            \WP_CLI::add_command('jankx block-cache', [$this, 'cliCommand']);
-        }
+        // WP-CLI commands are registered via WordPressCliServiceProvider
     }
 
     /**
@@ -459,6 +456,11 @@ class BlockCacheInterceptor
      */
     private function shouldRun(): bool
     {
+        // Allow WP-CLI for cache management commands
+        if (defined('WP_CLI') && WP_CLI) {
+            return true;
+        }
+
         // Only run on admin, AJAX, or REST API
         if (!is_admin() && !wp_doing_ajax() && !(defined('REST_REQUEST') && REST_REQUEST)) {
             return false;
