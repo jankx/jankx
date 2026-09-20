@@ -13,7 +13,9 @@
 .dynamic-data-template__item {
     .wp-block-term-name {
         &.has-link-color {
-            color: inherit;
+            a { 
+                color: inherit;
+            }
         }
     }
 }
