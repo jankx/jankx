@@ -117,16 +117,18 @@ class BlockCacheInterceptor
 
     /**
      * Intercept /wp/v2/block-types requests and serve from cache
+     *
+     * rest_dispatch_request filter signature: (mixed $dispatch_result, WP_REST_Request $request, string $route)
      */
-    public function interceptBlockTypesRequest($response, $handler, $request): mixed
+    public function interceptBlockTypesRequest($dispatch_result, $request, $route): mixed
     {
         // Only intercept block-types endpoint
-        if (!str_contains($request->get_route(), '/block-types')) {
-            return $response;
+        if (!str_contains($route, '/block-types')) {
+            return $dispatch_result;
         }
 
         if (!$this->shouldRun() || !$this->cache->isValid()) {
-            return $response;
+            return $dispatch_result;
         }
 
         try {
@@ -154,28 +156,30 @@ class BlockCacheInterceptor
             $restResponse->add_header('X-Jankx-Cache', 'HIT');
             return $restResponse;
         } catch (\Exception $e) {
-            return $response;
+            return $dispatch_result;
         }
     }
 
     /**
      * Intercept block-patterns requests
+     *
+     * rest_dispatch_request filter signature: (mixed $dispatch_result, WP_REST_Request $request, string $route)
      */
-    public function interceptBlockPatternsRequest($response, $handler, $request): mixed
+    public function interceptBlockPatternsRequest($dispatch_result, $request, $route): mixed
     {
-        if (!str_contains($request->get_route(), '/block-patterns')) {
-            return $response;
+        if (!str_contains($route, '/block-patterns')) {
+            return $dispatch_result;
         }
 
         if (!$this->shouldRun() || !$this->cache->isValid()) {
-            return $response;
+            return $dispatch_result;
         }
 
         try {
             $patterns = $this->cache->getAllBlockPatterns();
 
             // Check if requesting patterns or categories
-            if (str_ends_with($request->get_route(), '/categories')) {
+            if (str_ends_with($route, '/categories')) {
                 // Return categories from cache
                 $categories = $this->cache->getAllBlockCategories();
                 $restResponse = new \WP_REST_Response($categories);
@@ -188,7 +192,7 @@ class BlockCacheInterceptor
             $restResponse->add_header('X-Jankx-Cache', 'HIT');
             return $restResponse;
         } catch (\Exception $e) {
-            return $response;
+            return $dispatch_result;
         }
     }
 

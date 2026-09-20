@@ -217,20 +217,25 @@ $framework->init();
 // Initialize Block SQLite Cache for Gutenberg editor
 // Reduces MySQL connections on shared hosting by caching block data
 add_action('after_setup_theme', function () {
-    $isCli = defined('WP_CLI') && WP_CLI;
-    $isRelevant = is_admin() || wp_doing_ajax() || (defined('REST_REQUEST') && REST_REQUEST) || $isCli;
+    try {
+        $isCli = defined('WP_CLI') && WP_CLI;
+        $isRelevant = is_admin() || wp_doing_ajax() || (defined('REST_REQUEST') && REST_REQUEST) || $isCli;
 
-    if ($isRelevant) {
-        $cacheFile = dirname(__FILE__) . '/framework/Cache/BlockSQLiteCache.php';
-        $interceptorFile = dirname(__FILE__) . '/framework/Cache/BlockCacheInterceptor.php';
+        if ($isRelevant) {
+            $cacheFile = dirname(__FILE__) . '/framework/Cache/BlockSQLiteCache.php';
+            $interceptorFile = dirname(__FILE__) . '/framework/Cache/BlockCacheInterceptor.php';
 
-        if (file_exists($cacheFile) && file_exists($interceptorFile)) {
-            require_once $cacheFile;
-            require_once $interceptorFile;
+            if (file_exists($cacheFile) && file_exists($interceptorFile)
+                && extension_loaded('pdo_sqlite')) {
+                require_once $cacheFile;
+                require_once $interceptorFile;
 
-            $interceptor = new \Jankx\Cache\BlockCacheInterceptor();
-            $interceptor->init();
+                $interceptor = new \Jankx\Cache\BlockCacheInterceptor();
+                $interceptor->init();
+            }
         }
+    } catch (\Throwable $e) {
+        error_log('Jankx Block Cache init failed: ' . $e->getMessage());
     }
 }, 5);
 
