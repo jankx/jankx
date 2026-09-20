@@ -248,4 +248,23 @@
   transform: perspective(400px) rotate3d(0, 1, 0, 90deg);
 }
 
+.dynamic-data-template__overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.dynamic-data-template__overlay-link {
+  pointer-events: auto;
+  cursor: pointer;
+  text-decoration: none;
+}
+.dynamic-data-template__overlay-link:hover {
+  opacity: 0.9;
+}
+
 /*# sourceMappingURL=index.css.map*/
