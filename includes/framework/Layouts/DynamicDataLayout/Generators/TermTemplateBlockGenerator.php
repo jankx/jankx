@@ -161,6 +161,8 @@ class TermTemplateBlockGenerator extends AbstractContentGenerator
             );
         }
 
+        $enableOverlay = !empty($templateAttrs['enableOverlay']);
+
         foreach ($terms as $term) {
             $itemContent = $this->renderTermItem($term, $terms, $options);
             if ($itemContent === '') {
@@ -178,9 +180,14 @@ class TermTemplateBlockGenerator extends AbstractContentGenerator
             if ($bgStyle !== '') {
                 $currentStyle .= ($currentStyle !== '' ? '; ' : '') . $bgStyle;
             }
+            if ($enableOverlay && strpos($currentStyle, 'position:') === false) {
+                $currentStyle .= ($currentStyle !== '' ? '; ' : '') . 'position: relative';
+            }
+
+            $overlayHtml = $this->buildTermItemOverlayHtml($templateAttrs, $term);
 
             $currentStyleAttr = $currentStyle !== '' ? sprintf(' style="%s"', esc_attr($currentStyle)) : '';
-            $output[] = sprintf('<div class="%s"%s%s>%s</div>', esc_attr($classes), $currentStyleAttr, $itemBgDataAttrs, $itemContent);
+            $output[] = sprintf('<div class="%s"%s%s>%s%s</div>', esc_attr($classes), $currentStyleAttr, $itemBgDataAttrs, $itemContent, $overlayHtml);
         }
 
         return implode('', $output);
@@ -246,6 +253,38 @@ class TermTemplateBlockGenerator extends AbstractContentGenerator
         }
 
         return implode('; ', $styles);
+    }
+
+    protected function buildTermItemOverlayHtml(array $attrs, \WP_Term $term): string
+    {
+        if (empty($attrs['enableOverlay'])) {
+            return '';
+        }
+
+        $gradient = $attrs['overlayGradient'] ?? 'linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 100%)';
+        $linkToTerm = !empty($attrs['overlayLinkToPost']);
+
+        $overlayStyle = sprintf(
+            'background: %s; position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: 1;',
+            esc_attr($gradient)
+        );
+
+        if ($linkToTerm) {
+            $permalink = get_term_link($term);
+            if (!is_wp_error($permalink)) {
+                return sprintf(
+                    '<a href="%s" class="dynamic-data-template__overlay dynamic-data-template__overlay-link" style="%s" aria-label="%s"></a>',
+                    esc_url($permalink),
+                    $overlayStyle,
+                    esc_attr($term->name)
+                );
+            }
+        }
+
+        return sprintf(
+            '<div class="dynamic-data-template__overlay" style="%s"></div>',
+            $overlayStyle
+        );
     }
 
     /**
@@ -638,6 +677,7 @@ class TermTemplateBlockGenerator extends AbstractContentGenerator
     {
         $slides = [];
         $templateAttrs = $this->getTemplateAttrs();
+        $enableOverlay = !empty($templateAttrs['enableOverlay']);
         foreach ($terms as $term) {
             $itemContent = $this->renderTermItem($term, $terms, $options);
             if ($itemContent === '') {
@@ -653,12 +693,17 @@ class TermTemplateBlockGenerator extends AbstractContentGenerator
             if ($bgStyle !== '') {
                 $currentStyle .= ($currentStyle !== '' ? '; ' : '') . $bgStyle;
             }
+            if ($enableOverlay && strpos($currentStyle, 'position:') === false) {
+                $currentStyle .= ($currentStyle !== '' ? '; ' : '') . 'position: relative';
+            }
+            $overlayHtml = $this->buildTermItemOverlayHtml($templateAttrs, $term);
             $styleAttr = $currentStyle !== '' ? sprintf(' style="%s"', esc_attr($currentStyle)) : '';
             $slides[] = sprintf(
-                '<div class="embla__slide"><div class="%s"%s>%s</div></div>',
+                '<div class="embla__slide"><div class="%s"%s>%s%s</div></div>',
                 esc_attr($classes),
                 $styleAttr,
-                $itemContent
+                $itemContent,
+                $overlayHtml
             );
         }
 
