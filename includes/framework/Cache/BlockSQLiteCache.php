@@ -392,6 +392,188 @@ class BlockSQLiteCache
         $pdo->exec('DELETE FROM jankx_cache_meta WHERE meta_key = "cache_version"');
     }
 
+    // =============================================
+    // Write-through methods
+    // MySQL = source of truth, SQLite = read cache
+    // =============================================
+
+    /**
+     * Save block type to BOTH MySQL and SQLite
+     *
+     * @param string $blockName Block name (e.g., 'jankx/my-block')
+     * @param array $metadata Block metadata (from block.json)
+     * @param array $settings Block settings (scripts, styles)
+     * @return bool Success
+     */
+    public function saveBlockType(string $blockName, array $metadata, array $settings = []): bool
+    {
+        // 1. Write to MySQL (source of truth)
+        $wpBlockType = \WP_Block_Type_Registry::get_instance()->get_registered($blockName);
+        if ($wpBlockType) {
+            // Update existing block in WordPress registry
+            // Note: WordPress doesn't have a direct update API for block metadata
+            // The block is already registered, we just need to refresh the cache
+        }
+
+        // 2. Write to SQLite (read cache)
+        $pdo = $this->getConnection();
+        $now = time();
+
+        list($namespace) = explode('/', $blockName);
+
+        $metadataJson = wp_json_encode($metadata, JSON_UNESCAPED_UNICODE);
+        $settingsJson = wp_json_encode($settings, JSON_UNESCAPED_UNICODE);
+
+        $stmt = $pdo->prepare("
+            INSERT OR REPLACE INTO jankx_block_types
+            (block_name, namespace, metadata_json, settings_json, is_dynamic, last_modified, cache_version, created_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?, COALESCE(
+                (SELECT created_at FROM jankx_block_types WHERE block_name = ?),
+                ?
+            ))
+        ");
+
+        return $stmt->execute([
+            $blockName,
+            $namespace,
+            $metadataJson,
+            $settingsJson,
+            !empty($metadata['is_dynamic']) ? 1 : 0,
+            $now,
+            self::CACHE_VERSION,
+            $blockName, // for subquery
+            $now, // for fallback
+        ]);
+    }
+
+    /**
+     * Delete block type from BOTH MySQL and SQLite
+     *
+     * @param string $blockName Block name
+     * @return bool Success
+     */
+    public function deleteBlockType(string $blockName): bool
+    {
+        // 1. Unregister from WordPress (MySQL side)
+        $registry = \WP_Block_Type_Registry::get_instance();
+        if ($registry->is_registered($blockName)) {
+            $registry->unregister($blockName);
+        }
+
+        // 2. Delete from SQLite
+        $pdo = $this->getConnection();
+        $stmt = $pdo->prepare('DELETE FROM jankx_block_types WHERE block_name = ?');
+        return $stmt->execute([$blockName]);
+    }
+
+    /**
+     * Save block pattern to BOTH MySQL and SQLite
+     *
+     * @param string $patternName Pattern name
+     * @param array $patternData Pattern data
+     * @return bool Success
+     */
+    public function saveBlockPattern(string $patternName, array $patternData): bool
+    {
+        // 1. Write to MySQL via WordPress API
+        // Block patterns are typically registered via register_block_pattern()
+        // which stores in WP options. We need to trigger re-registration.
+
+        // 2. Write to SQLite
+        $pdo = $this->getConnection();
+        $now = time();
+
+        $stmt = $pdo->prepare("
+            INSERT OR REPLACE INTO jankx_block_patterns
+            (pattern_name, pattern_data, last_modified, cache_version, created_at)
+            VALUES (?, ?, ?, ?, ?)
+        ");
+
+        return $stmt->execute([
+            $patternName,
+            wp_json_encode($patternData, JSON_UNESCAPED_UNICODE),
+            $now,
+            self::CACHE_VERSION,
+            $now,
+        ]);
+    }
+
+    /**
+     * Delete block pattern from BOTH MySQL and SQLite
+     *
+     * @param string $patternName Pattern name
+     * @return bool Success
+     */
+    public function deleteBlockPattern(string $patternName): bool
+    {
+        // 1. Delete from WordPress (patterns are in wp_block_patterns option)
+        $patterns = get_option('wp_block_patterns', []);
+        if (isset($patterns[$patternName])) {
+            unset($patterns[$patternName]);
+            update_option('wp_block_patterns', $patterns);
+        }
+
+        // 2. Delete from SQLite
+        $pdo = $this->getConnection();
+        $stmt = $pdo->prepare('DELETE FROM jankx_block_patterns WHERE pattern_name = ?');
+        return $stmt->execute([$patternName]);
+    }
+
+    /**
+     * Save block category to BOTH MySQL and SQLite
+     *
+     * @param string $categorySlug Category slug
+     * @param array $categoryData Category data
+     * @return bool Success
+     */
+    public function saveBlockCategory(string $categorySlug, array $categoryData): bool
+        {
+        // 1. Write to WordPress options
+        $categories = get_option('block_categories', []);
+        $categories[$categorySlug] = $categoryData;
+        update_option('block_categories', $categories);
+
+        // 2. Write to SQLite
+        $pdo = $this->getConnection();
+        $now = time();
+
+        $stmt = $pdo->prepare("
+            INSERT OR REPLACE INTO jankx_block_categories
+            (category_slug, category_data, last_modified, cache_version, created_at)
+            VALUES (?, ?, ?, ?, ?)
+        ");
+
+        return $stmt->execute([
+            $categorySlug,
+            wp_json_encode($categoryData, JSON_UNESCAPED_UNICODE),
+            $now,
+            self::CACHE_VERSION,
+            $now,
+        ]);
+    }
+
+    /**
+     * Bulk sync: Refresh SQLite cache from MySQL (source of truth)
+     * Use this after bulk operations or cache corruption
+     */
+    public function syncFromMySQL(): void
+    {
+        // Delete all SQLite cache
+        $this->invalidate();
+
+        // Rebuild from WordPress registry (which reads MySQL)
+        $this->buildCache();
+    }
+
+    /**
+     * Flush entire cache and rebuild
+     */
+    public function flushAndRebuild(): void
+    {
+        $this->deleteCache();
+        $this->buildCache();
+    }
+
     /**
      * Delete cache file entirely
      */

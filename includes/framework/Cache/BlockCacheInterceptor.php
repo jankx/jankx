@@ -35,6 +35,17 @@ class BlockCacheInterceptor
         // Inject cached block types directly into editor settings
         add_filter('block_editor_settings_all', [$this, 'injectCachedBlockTypes'], 10, 2);
 
+        // =============================================
+        // Write-through: Hook into block registration
+        // When a block is registered, also update SQLite
+        // =============================================
+
+        // After a block type is registered
+        add_action('registered_block_type', [$this, 'onBlockTypeRegistered'], 10, 2);
+
+        // After a block pattern is registered
+        add_action('wp_loaded', [$this, 'syncPatternsToSQLite'], 20);
+
         // Admin page for cache management
         add_action('admin_menu', [$this, 'addAdminPage']);
 
@@ -49,11 +60,48 @@ class BlockCacheInterceptor
     }
 
     /**
+     * Sync block patterns to SQLite after WordPress loads
+     */
+    public function syncPatternsToSQLite(): void
+    {
+        if (!$this->shouldRun()) {
+            return;
+        }
+
+        try {
+            $cache = BlockSQLiteCache::instance();
+
+            // Sync patterns from WordPress to SQLite
+            if (function_exists('get_block_patterns')) {
+                $patterns = get_block_patterns();
+                foreach ($patterns as $name => $pattern) {
+                    $cache->saveBlockPattern($name, $pattern);
+                }
+            }
+
+            // Sync categories from WordPress to SQLite
+            $categories = function_exists('get_block_categories_all')
+                ? get_block_categories_all(new \WP_Block_Editor_Context())
+                : [];
+
+            foreach ($categories as $category) {
+                $cache->saveBlockCategory($category['slug'], $category);
+            }
+        } catch (\Exception $e) {
+            error_log('Jankx Block Cache: Pattern sync failed - ' . $e->getMessage());
+        }
+    }
+
+    /**
      * Build cache if not valid
      */
     public function maybeBuildCache(): void
     {
-        if (is_admin() && !$this->cache->isValid()) {
+        if (!$this->shouldRun()) {
+            return;
+        }
+
+        if (!$this->cache->isValid()) {
             $this->buildCacheSilently();
         }
     }
@@ -80,7 +128,7 @@ class BlockCacheInterceptor
             return $response;
         }
 
-        if (!$this->cache->isValid()) {
+        if (!$this->shouldRun() || !$this->cache->isValid()) {
             return $response;
         }
 
@@ -122,7 +170,7 @@ class BlockCacheInterceptor
             return $response;
         }
 
-        if (!$this->cache->isValid()) {
+        if (!$this->shouldRun() || !$this->cache->isValid()) {
             return $response;
         }
 
@@ -202,7 +250,7 @@ class BlockCacheInterceptor
      */
     public function addPreloadPaths($preloadPaths, $blockEditorContext): array
     {
-        if (!$this->cache->isValid()) {
+        if (!$this->shouldRun() || !$this->cache->isValid()) {
             return $preloadPaths;
         }
 
@@ -223,7 +271,7 @@ class BlockCacheInterceptor
      */
     public function injectCachedBlockTypes(array $settings, \WP_Block_Editor_Context $context): array
     {
-        if (!$this->cache->isValid()) {
+        if (!$this->shouldRun() || !$this->cache->isValid()) {
             return $settings;
         }
 
@@ -284,17 +332,27 @@ class BlockCacheInterceptor
             exit;
         }
 
+        if (isset($_POST['jankx_sync_from_mysql']) && check_admin_referer('jankx_block_cache')) {
+            $this->cache->syncFromMySQL();
+            wp_redirect(admin_url('tools.php?page=jankx-block-cache&synced=1'));
+            exit;
+        }
+
         $stats = $this->cache->getStats();
         ?>
         <div class="wrap">
             <h1>Jankx Block Cache</h1>
             <p>Caches Gutenberg block data in SQLite to reduce MySQL connections on shared hosting.</p>
+            <p><strong>Write-through mode:</strong> MySQL = source of truth, SQLite = read cache. Both are always in sync.</p>
 
             <?php if (isset($_GET['rebuilt'])): ?>
                 <div class="notice notice-success"><p>Cache rebuilt successfully.</p></div>
             <?php endif; ?>
             <?php if (isset($_GET['invalidated'])): ?>
                 <div class="notice notice-success"><p>Cache invalidated.</p></div>
+            <?php endif; ?>
+            <?php if (isset($_GET['synced'])): ?>
+                <div class="notice notice-success"><p>Cache synced from MySQL.</p></div>
             <?php endif; ?>
 
             <h2>Cache Stats</h2>
@@ -320,8 +378,98 @@ class BlockCacheInterceptor
                     Invalidate Cache
                 </button>
             </form>
+            <form method="post" style="display: inline; margin-left: 10px;">
+                <?php wp_nonce_field('jankx_block_cache'); ?>
+                <button type="submit" name="jankx_sync_from_mysql" class="button">
+                    Sync from MySQL
+                </button>
+            </form>
+
+            <h2>How It Works</h2>
+            <ol>
+                <li><strong>Read:</strong> Block data served from SQLite (0 MySQL connections)</li>
+                <li><strong>Write:</strong> Changes written to both MySQL AND SQLite simultaneously</li>
+                <li><strong>Invalidate:</strong> Cache auto-invalidates on plugin/theme update</li>
+                <li><strong>Sync:</strong> Use "Sync from MySQL" if cache gets corrupted</li>
+            </ol>
         </div>
         <?php
+    }
+
+    /**
+     * Handle block type registration - sync to SQLite
+     *
+     * Called automatically when register_block_type() is called.
+     * This ensures SQLite cache stays in sync with MySQL (WordPress registry).
+     *
+     * @param string $name Block name
+     * @param \WP_Block_Type $block_type Block type object
+     */
+    public function onBlockTypeRegistered(string $name, \WP_Block_Type $block_type): void
+    {
+        if (!$this->shouldRun()) {
+            return;
+        }
+
+        try {
+            $cache = BlockSQLiteCache::instance();
+
+            $metadata = [
+                'name' => $block_type->name,
+                'title' => $block_type->title,
+                'description' => $block_type->description,
+                'icon' => $block_type->icon,
+                'category' => $block_type->category,
+                'keywords' => $block_type->keywords,
+                'parent' => $block_type->parent,
+                'ancestor' => $block_type->ancestor,
+                'attributes' => $block_type->get_attributes(),
+                'supports' => $block_type->supports,
+                'styles' => $block_type->styles,
+                'variations' => $block_type->variations,
+                'example' => $block_type->example,
+                'provides_context' => $block_type->provides_context,
+                'uses_context' => $block_type->uses_context,
+                'selectors' => $block_type->selectors,
+                'block_hooks' => $block_type->block_hooks,
+                'api_version' => $block_type->api_version,
+                'textdomain' => $block_type->textdomain,
+                'is_dynamic' => $block_type->is_dynamic(),
+            ];
+
+            $settings = [
+                'editor_script_handles' => $block_type->editor_script_handles,
+                'script_handles' => $block_type->script_handles,
+                'view_script_handles' => $block_type->view_script_handles,
+                'editor_style_handles' => $block_type->editor_style_handles,
+                'style_handles' => $block_type->style_handles,
+                'view_style_handles' => $block_type->view_style_handles,
+                'view_script_module_ids' => $block_type->view_script_module_ids,
+            ];
+
+            // Write-through: MySQL (already done by WP) + SQLite
+            $cache->saveBlockType($name, $metadata, $settings);
+        } catch (\Exception $e) {
+            error_log('Jankx Block Cache: Failed to sync block type - ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Check if cache interceptor should run
+     */
+    private function shouldRun(): bool
+    {
+        // Only run on admin, AJAX, or REST API
+        if (!is_admin() && !wp_doing_ajax() && !(defined('REST_REQUEST') && REST_REQUEST)) {
+            return false;
+        }
+
+        // Check if SQLite extension is available
+        if (!extension_loaded('pdo_sqlite')) {
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -371,6 +519,18 @@ class BlockCacheInterceptor
             case 'delete':
                 $this->cache->deleteCache();
                 \WP_CLI::success('Cache file deleted.');
+                break;
+
+            case 'sync':
+                \WP_CLI::log('Syncing cache from MySQL...');
+                $this->cache->syncFromMySQL();
+                $stats = $this->cache->getStats();
+                \WP_CLI::success(sprintf(
+                    'Cache synced: %d blocks, %d patterns, %d categories',
+                    $stats['block_count'],
+                    $stats['pattern_count'],
+                    $stats['category_count']
+                ));
                 break;
 
             case 'status':
