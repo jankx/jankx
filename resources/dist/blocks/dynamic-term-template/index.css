@@ -14,7 +14,7 @@
  * Visual styles (color, padding, border-radius, size...) được PHP generate
  * thành inline styles từ block attributes để fully custom qua Block Editor.
  */
-.dynamic-data-template__item .wp-block-term-name.has-link-color {
+.dynamic-data-template__item .wp-block-term-name.has-link-color a {
   color: inherit;
 }
 
