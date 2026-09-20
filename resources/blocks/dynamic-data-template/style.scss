@@ -17,6 +17,8 @@
 // Overlap Card Layout — per-item
 // =====================================================
 .dynamic-data-template__item {
+    position:relative;
+    
     .overlap-card-content {
         position: relative;
         z-index: 10;

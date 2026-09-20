@@ -17,6 +17,9 @@
  * SCOPE: Tất cả styles apply cho TỪNG ITEM riêng lẻ (.dynamic-data-template__item).
  * Wrapper cho toàn bộ items thuộc dynamic-data-layout block.
  */
+.dynamic-data-template__item {
+  position: relative;
+}
 .dynamic-data-template__item .overlap-card-content {
   position: relative;
   z-index: 10;
