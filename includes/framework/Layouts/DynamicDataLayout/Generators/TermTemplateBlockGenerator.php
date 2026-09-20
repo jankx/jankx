@@ -180,8 +180,13 @@ class TermTemplateBlockGenerator extends AbstractContentGenerator
             if ($bgStyle !== '') {
                 $currentStyle .= ($currentStyle !== '' ? '; ' : '') . $bgStyle;
             }
-            if ($enableOverlay && strpos($currentStyle, 'position:') === false) {
-                $currentStyle .= ($currentStyle !== '' ? '; ' : '') . 'position: relative';
+            if ($enableOverlay) {
+                if (strpos($currentStyle, 'position:') === false) {
+                    $currentStyle .= ($currentStyle !== '' ? '; ' : '') . 'position: relative';
+                }
+                if (strpos($currentStyle, 'overflow:') === false) {
+                    $currentStyle .= ($currentStyle !== '' ? '; ' : '') . 'overflow: hidden';
+                }
             }
 
             $overlayHtml = $this->buildTermItemOverlayHtml($templateAttrs, $term);
@@ -697,8 +702,13 @@ class TermTemplateBlockGenerator extends AbstractContentGenerator
             if ($bgStyle !== '') {
                 $currentStyle .= ($currentStyle !== '' ? '; ' : '') . $bgStyle;
             }
-            if ($enableOverlay && strpos($currentStyle, 'position:') === false) {
-                $currentStyle .= ($currentStyle !== '' ? '; ' : '') . 'position: relative';
+            if ($enableOverlay) {
+                if (strpos($currentStyle, 'position:') === false) {
+                    $currentStyle .= ($currentStyle !== '' ? '; ' : '') . 'position: relative';
+                }
+                if (strpos($currentStyle, 'overflow:') === false) {
+                    $currentStyle .= ($currentStyle !== '' ? '; ' : '') . 'overflow: hidden';
+                }
             }
             $overlayHtml = $this->buildTermItemOverlayHtml($templateAttrs, $term);
 
