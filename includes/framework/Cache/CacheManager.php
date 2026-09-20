@@ -33,6 +33,24 @@ class CacheManager
         return self::$instance;
     }
 
+    /**
+     * Create a CacheManager with an explicit driver (for testing or custom setups)
+     */
+    public static function createWithDriver(CacheDriverInterface $driver, string $prefix = 'jankx_'): self
+    {
+        $reflection = new \ReflectionClass(self::class);
+        $instance = $reflection->newInstanceWithoutConstructor();
+        $instance->driver = $driver;
+        $instance->prefix = $prefix;
+        self::$instance = $instance;
+        return $instance;
+    }
+
+    public static function reset(): void
+    {
+        self::$instance = null;
+    }
+
     private function __construct()
     {
         $this->prefix = 'jankx_';
@@ -141,7 +159,7 @@ class CacheManager
      */
     public function getMany(array $keys, mixed $default = null): array
     {
-        $prefixed = array_map(fn($k) => $this->prefix . $key, $keys);
+        $prefixed = array_map(fn($k) => $this->prefix . $k, $keys);
         $results = $this->driver->getMany($prefixed, $default);
 
         // Remove prefix from keys
@@ -157,7 +175,7 @@ class CacheManager
      */
     public function deleteMany(array $keys): bool
     {
-        $prefixed = array_map(fn($k) => $this->prefix . $key, $keys);
+        $prefixed = array_map(fn($k) => $this->prefix . $k, $keys);
         return $this->driver->deleteMany($prefixed);
     }
 

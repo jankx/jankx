@@ -26,6 +26,11 @@ class BlockCache
         return self::$instance;
     }
 
+    public static function reset(): void
+    {
+        self::$instance = null;
+    }
+
     private function __construct()
     {
         $this->cache = CacheManager::instance();

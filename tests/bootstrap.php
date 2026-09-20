@@ -16,7 +16,7 @@ if (!function_exists('wp_upload_dir')) {
         ];
     }
 }
-if (!function_exists('wp_mkdir_p')) { function wp_mkdir_p($path) { return true; } }
+if (!function_exists('wp_mkdir_p')) { function wp_mkdir_p($path) { return @mkdir($path, 0777, true) || is_dir($path); } }
 if (!function_exists('wp_normalize_path')) { function wp_normalize_path($path) { return str_replace('\\', '/', $path); } }
 if (!function_exists('get_template_directory_uri')) { function get_template_directory_uri() { return 'http://example.com/wp-content/themes/jankx'; } }
 if (!function_exists('get_user_meta')) { function get_user_meta($u, $k = '', $s = false) { if ($k === 'description') return 'Test Bio'; return $s ? '' : []; } }
@@ -163,6 +163,45 @@ if (!class_exists('WP_Block_Type_Registry')) {
         public function is_registered($name) { return isset($this->registered_block_types[$name]); }
         public function get_registered($name) { return $this->registered_block_types[$name] ?? null; }
         public function unregister($name) { unset($this->registered_block_types[$name]); }
+        public function get_all_registered() { return $this->registered_block_types; }
+    }
+}
+
+if (!class_exists('WP_REST_Request')) {
+    class WP_REST_Request {
+        private $method;
+        private $route;
+        private $params = [];
+        public function __construct($method = 'GET', $route = '') {
+            $this->method = $method;
+            $this->route = $route;
+        }
+        public function get_method() { return $this->method; }
+        public function get_route() { return $this->route; }
+        public function get_param($key, $default = null) { return $this->params[$key] ?? $default; }
+        public function set_param($key, $value) { $this->params[$key] = $value; }
+    }
+}
+
+if (!class_exists('WP_REST_Response')) {
+    class WP_REST_Response {
+        private $data;
+        private $status;
+        private $headers = [];
+        public function __construct($data = null, $status = 200) {
+            $this->data = $data;
+            $this->status = $status;
+        }
+        public function get_data() { return $this->data; }
+        public function get_status() { return $this->status; }
+        public function header($key, $value) { $this->headers[$key] = $value; }
+        public function get_headers() { return $this->headers; }
+    }
+}
+
+if (!class_exists('WP_Block_Editor_Context')) {
+    class WP_Block_Editor_Context {
+        public $name = 'core/edit-site';
     }
 }
 

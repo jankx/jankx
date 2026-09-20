@@ -114,7 +114,7 @@ class BlockCacheInterceptor
         }
 
         $response = new \WP_REST_Response($data);
-        $response->add_header('X-Jankx-Cache', 'HIT');
+        $response->header('X-Jankx-Cache', 'HIT');
         return $response;
     }
 
@@ -125,7 +125,7 @@ class BlockCacheInterceptor
     {
         $patterns = $this->blockCache->getPatterns();
         $response = new \WP_REST_Response(array_values($patterns));
-        $response->add_header('X-Jankx-Cache', 'HIT');
+        $response->header('X-Jankx-Cache', 'HIT');
         return $response;
     }
 
@@ -136,7 +136,7 @@ class BlockCacheInterceptor
     {
         $categories = $this->blockCache->getCategories();
         $response = new \WP_REST_Response(array_values($categories));
-        $response->add_header('X-Jankx-Cache', 'HIT');
+        $response->header('X-Jankx-Cache', 'HIT');
         return $response;
     }
 
