@@ -186,6 +186,10 @@ class TermTemplateBlockGenerator extends AbstractContentGenerator
 
             $overlayHtml = $this->buildTermItemOverlayHtml($templateAttrs, $term);
 
+            if ($enableOverlay) {
+                $itemContent = sprintf('<div class="dynamic-data-template__content" style="position: relative; z-index: 2">%s</div>', $itemContent);
+            }
+
             $currentStyleAttr = $currentStyle !== '' ? sprintf(' style="%s"', esc_attr($currentStyle)) : '';
             $output[] = sprintf('<div class="%s"%s%s>%s%s</div>', esc_attr($classes), $currentStyleAttr, $itemBgDataAttrs, $itemContent, $overlayHtml);
         }
@@ -697,6 +701,11 @@ class TermTemplateBlockGenerator extends AbstractContentGenerator
                 $currentStyle .= ($currentStyle !== '' ? '; ' : '') . 'position: relative';
             }
             $overlayHtml = $this->buildTermItemOverlayHtml($templateAttrs, $term);
+
+            if ($enableOverlay) {
+                $itemContent = sprintf('<div class="dynamic-data-template__content" style="position: relative; z-index: 2">%s</div>', $itemContent);
+            }
+
             $styleAttr = $currentStyle !== '' ? sprintf(' style="%s"', esc_attr($currentStyle)) : '';
             $slides[] = sprintf(
                 '<div class="embla__slide"><div class="%s"%s>%s%s</div></div>',
