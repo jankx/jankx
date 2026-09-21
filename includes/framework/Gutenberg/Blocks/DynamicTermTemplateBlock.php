@@ -38,7 +38,7 @@ class DynamicTermTemplateBlock extends DynamicDataTemplateBlock
     {
         $name = $block_type['name'] ?? $block_type ?? '';
 
-        if (in_array($name, ['core/post-title', 'core/post-excerpt', 'core/paragraph', 'core/heading'], true)) {
+        if (in_array($name, ['core/post-title', 'core/post-excerpt', 'core/paragraph', 'core/heading', 'core/term-name', 'core/term-description'], true)) {
             if (!isset($block_type['supports']['spacing'])) {
                 $block_type['supports']['spacing'] = [];
             }
