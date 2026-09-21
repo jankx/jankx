@@ -81,10 +81,6 @@
       "type": "boolean",
       "default": false
     },
-    "showScoreText": {
-      "type": "boolean",
-      "default": false
-    },
     "countMetaKey": {
       "type": "string",
       "default": "rating_count"

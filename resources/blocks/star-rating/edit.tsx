@@ -14,7 +14,6 @@ interface Attributes {
     starColor: string;
     starEmptyColor: string;
     showCount: boolean;
-    showScoreText: boolean;
     countMetaKey: string;
     align?: string;
     iconType: 'text' | 'svg';
@@ -49,7 +48,6 @@ const Edit = ({ attributes, setAttributes }: EditProps) => {
         starColor,
         starEmptyColor,
         showCount,
-        showScoreText,
         countMetaKey,
         iconType,
         svgFull,
@@ -134,16 +132,6 @@ const Edit = ({ attributes, setAttributes }: EditProps) => {
         <>
             <InspectorControls>
                 <PanelBody title={__('Rating Settings', 'jankx')}>
-                    <SelectControl
-                        label={__('Display Style', 'jankx')}
-                        value={displayStyle}
-                        options={[
-                            { label: __('Stars', 'jankx'), value: 'stars' },
-                            { label: __('Summary (★ 4.6 (123))', 'jankx'), value: 'summary' },
-                        ]}
-                        onChange={(value) => setAttributes({ displayStyle: value as any })}
-                    />
-
                     {loadingProviders ? (
                         <Spinner />
                     ) : (
@@ -257,11 +245,6 @@ const Edit = ({ attributes, setAttributes }: EditProps) => {
                         checked={showCount}
                         onChange={(value) => setAttributes({ showCount: value })}
                     />
-                    <ToggleControl
-                        label={__('Show Score Text (x.x/5.0)', 'jankx')}
-                        checked={showScoreText}
-                        onChange={(value) => setAttributes({ showScoreText: value })}
-                    />
 
                     {showCount && (ratingSource === 'meta' || ratingSource === 'crawler') && (
                         <TextControl
@@ -281,20 +264,17 @@ const Edit = ({ attributes, setAttributes }: EditProps) => {
                             <span className="jankx-rating-summary__score">
                                 {Number.isFinite(rating) ? rating.toFixed(1) : '0.0'}
                             </span>
-                            <span className="jankx-rating-summary__count">
-                                (123)
-                            </span>
+                            {showCount && (
+                                <span className="jankx-rating-summary__count">
+                                    (123)
+                                </span>
+                            )}
                         </span>
                     ) : (
                         <>
                             <div className="jankx-stars">
                                 {renderStars(rating)}
                             </div>
-                            {showScoreText && (
-                                <span className="jankx-rating-text">
-                                    ({Number.isFinite(rating) ? rating.toFixed(1) : '0.0'}/5.0)
-                                </span>
-                            )}
                             {showCount && (
                                 <span className="jankx-rating-count">
                                     (123)
