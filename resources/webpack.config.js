@@ -264,9 +264,7 @@ module.exports = {
     '@wordpress/data': ['wp', 'data'],
     '@wordpress/core-data': ['wp', 'coreData'],
     '@wordpress/server-side-render': ['wp', 'serverSideRender'],
-    // Swiper will be bundled, not external
-    // embla-carousel-react will be bundled into editor script
-    // embla-carousel will be bundled into frontend carousel script
+    '@wordpress/icons': ['wp', 'icons'],
   },
   plugins: [
     new RemoveEmptyScriptsPlugin(),
@@ -283,6 +281,9 @@ module.exports = {
       useDefaults: true,
       // Request external dependencies
       requestToExternal: (request) => {
+        if (request === '@wordpress/icons') {
+          return ['wp', 'icons'];
+        }
         if (request === '@wordpress/blocks') {
           return ['wp', 'blocks'];
         }
@@ -325,10 +326,19 @@ module.exports = {
     rules: [
       {
         test: /\.[jt]sx?$/,
+        include: [
+          path.resolve(__dirname),
+          path.resolve(__dirname, '../vendor'),
+        ],
         use: {
           loader: 'babel-loader',
           options: {
-            presets: [require.resolve('@wordpress/babel-preset-default')],
+            configFile: false,
+            babelrc: false,
+            presets: [
+              ['@babel/preset-react', { runtime: 'classic' }],
+              '@babel/preset-typescript',
+            ],
           },
         },
       },

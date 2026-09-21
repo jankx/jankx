@@ -413,9 +413,18 @@ const buildTemplateItemClasses = (attributes: any): string => {
     return classes.filter(Boolean).join(' ');
 };
 
-const buildItemBackgroundStyle = (attributes: any): CSSProperties => {
+const buildItemBackgroundStyle = (attributes: any, termData?: any, mediaUrlMap?: Record<number, string>): CSSProperties => {
     const styles: CSSProperties = {};
-    const { itemBgType, itemBgColor, itemBgImageUrl, itemBgImageSource, itemBgPosition, itemBgSize, itemBgRepeat, itemFeaturedImage } = attributes;
+    const {
+        itemBgType,
+        itemBgColor,
+        itemBgImageUrl,
+        itemBgImageSource,
+        itemBgPosition,
+        itemBgSize,
+        itemBgRepeat,
+        itemDefaultImageUrl
+    } = attributes;
 
     if (!itemBgType || itemBgType === 'none') {
         return styles;
@@ -429,7 +438,36 @@ const buildItemBackgroundStyle = (attributes: any): CSSProperties => {
     }
 
     if (itemBgType === 'image') {
-        const url = itemBgImageSource === 'featured' ? '' : (itemBgImageUrl || '');
+        let url = '';
+
+        if (itemBgImageSource === 'featured') {
+            const thumbId = termData?.meta?._thumbnail_id || termData?.featured_media || (typeof termData?.image === 'number' ? termData.image : 0);
+            if (thumbId && typeof thumbId === 'number' && thumbId > 0 && mediaUrlMap && mediaUrlMap[thumbId]) {
+                url = mediaUrlMap[thumbId];
+            } else if (termData?.featured_image_url) {
+                url = termData.featured_image_url;
+            } else if (termData?.image?.url) {
+                url = termData.image.url;
+            } else if (termData?.meta?.featured_image_url) {
+                url = termData.meta.featured_image_url;
+            }
+
+            if (!url && itemBgImageUrl) {
+                url = itemBgImageUrl;
+            }
+
+            if (!url && itemDefaultImageUrl) {
+                url = itemDefaultImageUrl;
+            }
+        } else {
+            // custom image
+            url = itemBgImageUrl || itemDefaultImageUrl || '';
+        }
+
+        if (!url) {
+            url = 'https://nibitour.vn/wp-content/uploads/2026/08/placeholder-image.png';
+        }
+
         if (url) {
             styles.backgroundImage = `url(${url})`;
         }
@@ -632,6 +670,24 @@ export default function Edit({
             hasResolved: hasFinishedResolution('getEntityRecords', selectorArgs),
         };
     }, [taxonomy, queryArgs]);
+
+    // Media map for term featured images in editor preview
+    const mediaUrlMap = useSelect((select) => {
+        const { getMedia } = select(coreStore);
+        const map: Record<number, string> = {};
+        if (!terms || !Array.isArray(terms)) return map;
+
+        terms.forEach((term: any) => {
+            const thumbId = term?.meta?._thumbnail_id || term?.featured_media || (typeof term?.image === 'number' ? term.image : 0);
+            if (thumbId && typeof thumbId === 'number' && thumbId > 0) {
+                const media = getMedia(thumbId);
+                if (media?.source_url) {
+                    map[thumbId] = media.source_url;
+                }
+            }
+        });
+        return map;
+    }, [terms]);
 
     // Get layouts data from PHP
     const layoutsData = window.jankxDynamicTermContentLoopLayouts || window.jankxDynamicTermLayouts || DEFAULT_LAYOUTS_DATA;
@@ -1487,7 +1543,7 @@ export default function Edit({
                                     const contextValue = termData ? { postId: termData.id, postType: 'term', taxonomy, termId: termData.id } : {};
 
                                     // Apply item background styles
-                                    const bgStyle = buildItemBackgroundStyle(attributes);
+                                    const bgStyle = buildItemBackgroundStyle(attributes, termData, mediaUrlMap);
                                     Object.assign(itemStyle, bgStyle);
 
                                     if (index === 0) {
@@ -1590,7 +1646,7 @@ export default function Edit({
                                 }
 
                                 // Apply item background styles
-                                const bgStyle2 = buildItemBackgroundStyle(attributes);
+                                const bgStyle2 = buildItemBackgroundStyle(attributes, termData, mediaUrlMap);
                                 Object.assign(itemStyle2, bgStyle2);
 
                                 return (
@@ -1633,7 +1689,7 @@ export default function Edit({
                             }
 
                             // Apply item background styles
-                            const bgStyle3 = buildItemBackgroundStyle(attributes);
+                            const bgStyle3 = buildItemBackgroundStyle(attributes, termData, mediaUrlMap);
                             Object.assign(itemStyle3, bgStyle3);
 
                             return (
