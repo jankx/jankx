@@ -35,4 +35,15 @@ abstract class AbstractStarRatingProvider implements StarRatingProviderInterface
     {
         return 0;
     }
+
+    /**
+     * Default editor config: no extra controls.
+     * Override to declare provider-specific editor controls.
+     *
+     * @return array
+     */
+    public function getEditorConfig(): array
+    {
+        return [];
+    }
 }

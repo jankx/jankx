@@ -35,4 +35,24 @@ class PostMetaRatingProvider extends AbstractStarRatingProvider
         $countMetaKey = $attributes['countMetaKey'] ?? 'rating_count';
         return (int) get_post_meta($postId, $countMetaKey, true);
     }
+
+    public function getEditorConfig(): array
+    {
+        return [
+            [
+                'type'      => 'text',
+                'attribute' => 'metaKey',
+                'label'     => __('Rating Meta Key', 'jankx'),
+                'help'      => __('Custom field name for rating score.', 'jankx'),
+                'default'   => 'rating_score',
+            ],
+            [
+                'type'      => 'text',
+                'attribute' => 'countMetaKey',
+                'label'     => __('Count Meta Key', 'jankx'),
+                'help'      => __('Custom field name for review count.', 'jankx'),
+                'default'   => 'rating_count',
+            ],
+        ];
+    }
 }

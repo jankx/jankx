@@ -6,7 +6,7 @@ namespace Jankx\Gutenberg\StarRating;
  * Interface StarRatingProviderInterface
  *
  * Contract that all star rating providers must implement.
- * Extensions can register their own providers via StarRatingRegistry.
+ * Extensions register their own providers via StarRatingRegistry.
  *
  * @package Jankx\Gutenberg\StarRating
  * @since 1.0.0
@@ -53,4 +53,35 @@ interface StarRatingProviderInterface
      * @return int
      */
     public function getCount(int $postId, array $attributes): int;
+
+    /**
+     * Declare the editor controls for this provider.
+     *
+     * Return an array of control definitions that the Gutenberg editor
+     * will render dynamically when this source is selected.
+     *
+     * Each control is an associative array with:
+     *   - type:      string  One of 'range', 'text', 'select', 'toggle'
+     *   - attribute: string  The block attribute name to bind
+     *   - label:     string  Human-readable label
+     *   - help:      string  (optional) Help text
+     *   - default:   mixed   (optional) Default value
+     *
+     * Type-specific keys:
+     *   range:   min, max, step
+     *   select:  options (array of {value, label})
+     *
+     * @return array<array{
+     *   type: string,
+     *   attribute: string,
+     *   label: string,
+     *   help?: string,
+     *   default?: mixed,
+     *   min?: int|float,
+     *   max?: int|float,
+     *   step?: int|float,
+     *   options?: array<array{value: string, label: string}>
+     * }>
+     */
+    public function getEditorConfig(): array;
 }

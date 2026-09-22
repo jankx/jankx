@@ -112,7 +112,7 @@ class StarRatingRegistry
      * Optionally filter by post type.
      *
      * @param string|null $postType  If provided, only include providers for this post type.
-     * @return array<array{value: string, label: string}>
+     * @return array<array{value: string, label: string, editorConfig: array}>
      */
     public static function getEditorOptions(?string $postType = null): array
     {
@@ -122,8 +122,9 @@ class StarRatingRegistry
 
         return array_values(array_map(
             static fn(StarRatingProviderInterface $p) => [
-                'value' => $p->getId(),
-                'label' => $p->getLabel(),
+                'value'       => $p->getId(),
+                'label'       => $p->getLabel(),
+                'editorConfig' => $p->getEditorConfig(),
             ],
             $providers
         ));

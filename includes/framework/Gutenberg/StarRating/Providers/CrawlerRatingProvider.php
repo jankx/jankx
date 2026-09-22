@@ -57,4 +57,16 @@ class CrawlerRatingProvider extends AbstractStarRatingProvider
             $attributes
         );
     }
+
+    public function getEditorConfig(): array
+    {
+        return [
+            [
+                'type'      => 'text',
+                'attribute' => 'crawlerTable',
+                'label'     => __('Crawler Table', 'jankx'),
+                'help'      => __('Custom table name if needed.', 'jankx'),
+            ],
+        ];
+    }
 }
