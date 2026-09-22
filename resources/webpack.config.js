@@ -264,7 +264,6 @@ module.exports = {
     '@wordpress/data': ['wp', 'data'],
     '@wordpress/core-data': ['wp', 'coreData'],
     '@wordpress/server-side-render': ['wp', 'serverSideRender'],
-    '@wordpress/icons': ['wp', 'icons'],
   },
   plugins: [
     new RemoveEmptyScriptsPlugin(),
@@ -282,7 +281,8 @@ module.exports = {
       // Request external dependencies
       requestToExternal: (request) => {
         if (request === '@wordpress/icons') {
-          return ['wp', 'icons'];
+          // WP 7.1 removed the wp-icons script handle; bundle icons inline instead.
+          return false;
         }
         if (request === '@wordpress/blocks') {
           return ['wp', 'blocks'];
