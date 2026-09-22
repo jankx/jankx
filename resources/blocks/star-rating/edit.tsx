@@ -1,5 +1,5 @@
 import { InspectorControls, useBlockProps } from '@wordpress/block-editor';
-import { PanelBody, SelectControl, RangeControl, TextControl, ColorPalette, ToggleControl, TextareaControl, Spinner } from '@wordpress/components';
+import { PanelBody, SelectControl, RangeControl, TextControl, ColorPalette, ToggleControl, TextareaControl, Spinner, Button, Flex, FlexItem } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 import { useEffect, useState } from '@wordpress/element';
 import apiFetch from '@wordpress/api-fetch';
@@ -36,6 +36,90 @@ interface ProviderOption {
 const DEFAULT_SVG_FULL  = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>';
 const DEFAULT_SVG_HALF  = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M22 9.24l-7.19-.62L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27 18.18 21l-1.63-7.03L22 9.24zM12 15.4V6.1l1.71 4.04 4.38.38-3.32 2.88 1 4.28L12 15.4z"/></svg>';
 const DEFAULT_SVG_EMPTY = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M22 9.24l-7.19-.62L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27 18.18 21l-1.63-7.03L22 9.24zM12 15.4l-3.76 2.27 1-4.28-3.32-2.88 4.38-.38L12 6.1l1.71 4.04 4.38.38-3.32 2.88 1 4.28L12 15.4z"/></svg>';
+
+/** Built-in presets — each preset defines a full set of attributes to apply at once */
+const PRESETS: Array<{
+    name: string;
+    label: string;
+    preview: string;
+    attributes: Partial<Attributes>;
+}> = [
+    {
+        name: 'stars-default',
+        label: __('Stars', 'jankx'),
+        preview: '★★★★☆',
+        attributes: {
+            displayStyle: 'stars',
+            showCount: false,
+            starColor: '#f1c40f',
+            starEmptyColor: '#dddddd',
+            starSize: 16,
+            className: '',
+        },
+    },
+    {
+        name: 'stars-with-count',
+        label: __('Stars + Count', 'jankx'),
+        preview: '★★★★☆ (123)',
+        attributes: {
+            displayStyle: 'stars',
+            showCount: true,
+            starColor: '#f1c40f',
+            starEmptyColor: '#dddddd',
+            starSize: 16,
+            className: '',
+        },
+    },
+    {
+        name: 'summary-default',
+        label: __('Summary', 'jankx'),
+        preview: '★ 4.5 (123)',
+        attributes: {
+            displayStyle: 'summary',
+            showCount: true,
+            starColor: '#f1c40f',
+            starEmptyColor: '#dddddd',
+            starSize: 18,
+            className: '',
+        },
+    },
+    {
+        name: 'google-summary',
+        label: __('Google Summary', 'jankx'),
+        preview: '★ 4.6 (39,092)',
+        attributes: {
+            displayStyle: 'summary',
+            showCount: true,
+            starColor: '#5b8e29',
+            starEmptyColor: '#dddddd',
+            starSize: 20,
+            className: 'is-style-google-summary',
+        },
+    },
+    {
+        name: 'compact-stars',
+        label: __('Compact', 'jankx'),
+        preview: '★★★★★',
+        attributes: {
+            displayStyle: 'stars',
+            showCount: false,
+            starColor: '#f1c40f',
+            starEmptyColor: '#dddddd',
+            starSize: 12,
+            className: 'is-style-compact-stars',
+        },
+    },
+];
+
+/** Detect which preset is currently active based on attributes */
+const getActivePreset = (attributes: Attributes): string => {
+    if (attributes.className === 'is-style-google-summary') return 'google-summary';
+    if (attributes.className === 'is-style-compact-stars') return 'compact-stars';
+    if (attributes.displayStyle === 'summary') return 'summary-default';
+    if (attributes.displayStyle === 'stars' && attributes.showCount) return 'stars-with-count';
+    return 'stars-default';
+};
+
 
 const Edit = ({ attributes, setAttributes }: EditProps) => {
     const {
@@ -131,6 +215,45 @@ const Edit = ({ attributes, setAttributes }: EditProps) => {
     return (
         <>
             <InspectorControls>
+                {/* ── Preset / Style picker ── */}
+                <PanelBody title={__('Style Preset', 'jankx')} initialOpen={true}>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '6px' }}>
+                        {PRESETS.map((preset) => {
+                            const isActive = getActivePreset(attributes) === preset.name;
+                            return (
+                                <Button
+                                    key={preset.name}
+                                    onClick={() => setAttributes(preset.attributes as any)}
+                                    style={{
+                                        display: 'flex',
+                                        flexDirection: 'column',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        height: '64px',
+                                        padding: '6px 4px',
+                                        border: isActive
+                                            ? '2px solid var(--wp-admin-theme-color, #007cba)'
+                                            : '1px solid #ddd',
+                                        borderRadius: '4px',
+                                        background: isActive ? '#f0f6fc' : '#fff',
+                                        cursor: 'pointer',
+                                        gap: '4px',
+                                        fontSize: '11px',
+                                        whiteSpace: 'normal',
+                                        textAlign: 'center',
+                                        lineHeight: '1.3',
+                                        color: isActive ? 'var(--wp-admin-theme-color, #007cba)' : '#1e1e1e',
+                                        fontWeight: isActive ? 600 : 400,
+                                    }}
+                                >
+                                    <span style={{ fontSize: '13px', letterSpacing: '-1px' }}>{preset.preview}</span>
+                                    <span>{preset.label}</span>
+                                </Button>
+                            );
+                        })}
+                    </div>
+                </PanelBody>
+
                 <PanelBody title={__('Rating Settings', 'jankx')}>
                     {loadingProviders ? (
                         <Spinner />
