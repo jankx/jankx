@@ -32,6 +32,14 @@
             "type": "string",
             "default": "large"
         },
+        "width": {
+            "type": "string",
+            "default": ""
+        },
+        "height": {
+            "type": "string",
+            "default": ""
+        },
         "aspectRatio": {
             "type": "string",
             "default": ""

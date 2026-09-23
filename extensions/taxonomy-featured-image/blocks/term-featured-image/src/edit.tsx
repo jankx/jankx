@@ -104,6 +104,12 @@ export default function Edit({ attributes, setAttributes, context }: any) {
 	});
 
 	const imgStyle: Record<string, string> = {};
+	if (attributes.width) {
+		imgStyle.width = attributes.width;
+	}
+	if (attributes.height) {
+		imgStyle.height = attributes.height;
+	}
 	if (aspectRatio && aspectRatio !== 'auto') {
 		imgStyle.aspectRatio = aspectRatio.replace('/', ' / ');
 		if (objectFit) {
@@ -138,6 +144,18 @@ export default function Edit({ attributes, setAttributes, context }: any) {
 							onChange={(value) => setAttributes({ objectFit: value })}
 						/>
 					)}
+					<TextControl
+						label={__('Width', 'jankx')}
+						value={attributes.width || ''}
+						placeholder="e.g. 100px, 50%"
+						onChange={(value) => setAttributes({ width: value || '' })}
+					/>
+					<TextControl
+						label={__('Height', 'jankx')}
+						value={attributes.height || ''}
+						placeholder="e.g. 100px, auto"
+						onChange={(value) => setAttributes({ height: value || '' })}
+					/>
 				</PanelBody>
 
 				<PanelBody title={__('Link Settings', 'jankx')} initialOpen={false}>

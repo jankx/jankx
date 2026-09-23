@@ -136,6 +136,13 @@ class TermFeaturedImageBlock
             $imageClasses = ['term-featured-image__img'];
             $imageStyles = [];
 
+            if (!empty($attributes['width'])) {
+                $imageStyles[] = sprintf('width: %s;', esc_attr($attributes['width']));
+            }
+            if (!empty($attributes['height'])) {
+                $imageStyles[] = sprintf('height: %s;', esc_attr($attributes['height']));
+            }
+
             if (!empty($attributes['aspectRatio'])) {
                 if ('auto' !== $attributes['aspectRatio']) {
                     $imageStyles[] = sprintf('aspect-ratio: %s;', str_replace('/', ' / ', $attributes['aspectRatio']));
@@ -157,6 +164,13 @@ class TermFeaturedImageBlock
             $imageMarkup = wp_get_attachment_image($imageId, $attributes['imageSize'], false, $imgAttr);
         } elseif (!empty($attributes['showPlaceholder'])) {
             $placeholderStyles = [];
+            if (!empty($attributes['width'])) {
+                $placeholderStyles[] = sprintf('width: %s;', esc_attr($attributes['width']));
+            }
+            if (!empty($attributes['height'])) {
+                $placeholderStyles[] = sprintf('height: %s;', esc_attr($attributes['height']));
+            }
+
             if (!empty($attributes['aspectRatio'])) {
                 if ('auto' !== $attributes['aspectRatio']) {
                     $placeholderStyles[] = sprintf('aspect-ratio: %s;', str_replace('/', ' / ', $attributes['aspectRatio']));
