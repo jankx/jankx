@@ -106,8 +106,6 @@ export default function Edit({ attributes, setAttributes, context }: any) {
 	const imgStyle: Record<string, string> = {};
 	if (aspectRatio && aspectRatio !== 'auto') {
 		imgStyle.aspectRatio = aspectRatio.replace('/', ' / ');
-		imgStyle.width = '100%';
-		imgStyle.height = '100%';
 		if (objectFit) {
 			imgStyle.objectFit = objectFit;
 		}

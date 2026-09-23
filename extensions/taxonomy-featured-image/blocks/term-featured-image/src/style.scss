@@ -1,23 +1,40 @@
 .wp-block-jankx-term-featured-image {
 	display: block;
+	position: relative;
+	overflow: hidden;
+	margin: 0;
+
+	img, .term-featured-image__img {
+		display: block;
+		max-width: 100%;
+		height: auto;
+	}
+
+	&.aligncenter {
+		text-align: center;
+		margin-left: auto;
+		margin-right: auto;
+		
+		img, .term-featured-image__img, .term-featured-image__link {
+			margin-left: auto;
+			margin-right: auto;
+		}
+	}
+
+	&.alignright {
+		text-align: right;
+		margin-left: auto;
+
+		img, .term-featured-image__img, .term-featured-image__link {
+			margin-left: auto;
+			margin-right: 0;
+		}
+	}
 
 	.term-featured-image {
 		position: relative;
 		overflow: hidden;
 		margin: 0;
-
-		img {
-			display: block;
-			max-width: 100%;
-			height: auto;
-		}
-	}
-
-	&.has-aspect-ratio {
-		.term-featured-image img {
-			width: 100%;
-			height: 100%;
-		}
 	}
 
 	.term-featured-image__placeholder {
@@ -47,7 +64,7 @@
 		}
 	}
 
-	a {
+	a, .term-featured-image__link {
 		display: block;
 		text-decoration: none;
 	}

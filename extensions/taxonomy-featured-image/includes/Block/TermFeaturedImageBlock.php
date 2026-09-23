@@ -140,7 +140,6 @@ class TermFeaturedImageBlock
                 if ('auto' !== $attributes['aspectRatio']) {
                     $imageStyles[] = sprintf('aspect-ratio: %s;', str_replace('/', ' / ', $attributes['aspectRatio']));
                 }
-                $imageStyles[] = 'width: 100%; height: 100%;';
             }
 
             if (!empty($attributes['objectFit'])) {
@@ -162,7 +161,6 @@ class TermFeaturedImageBlock
                 if ('auto' !== $attributes['aspectRatio']) {
                     $placeholderStyles[] = sprintf('aspect-ratio: %s;', str_replace('/', ' / ', $attributes['aspectRatio']));
                 }
-                $placeholderStyles[] = 'width: 100%; height: 100%;';
             }
 
             $styleAttr = '';
