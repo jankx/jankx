@@ -11,6 +11,7 @@ if (fs.existsSync(blocksDir)) {
         const blockPath = path.join(blocksDir, file);
         if (fs.statSync(blockPath).isDirectory()) {
             const candidates = [
+                path.join(blockPath, 'src/index.jsx'),
                 path.join(blockPath, 'src/index.tsx'),
                 path.join(blockPath, 'src/index.ts'),
                 path.join(blockPath, 'src/index.js'),

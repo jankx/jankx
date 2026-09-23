@@ -1,71 +1,48 @@
 .wp-block-jankx-term-featured-image {
-	display: block;
-	position: relative;
-	overflow: hidden;
-	margin: 0;
+	margin-left: 0;
+	margin-right: 0;
 
-	img, .term-featured-image__img {
+	a {
 		display: block;
+		height: 100%;
+	}
+
+	:where(img) {
 		max-width: 100%;
-		height: auto;
-	}
-
-	&.aligncenter {
-		text-align: center;
-		margin-left: auto;
-		margin-right: auto;
-		
-		img, .term-featured-image__img, .term-featured-image__link {
-			margin-left: auto;
-			margin-right: auto;
-		}
-	}
-
-	&.alignright {
-		text-align: right;
-		margin-left: auto;
-
-		img, .term-featured-image__img, .term-featured-image__link {
-			margin-left: auto;
-			margin-right: 0;
-		}
-	}
-
-	.term-featured-image {
-		position: relative;
-		overflow: hidden;
-		margin: 0;
-	}
-
-	.term-featured-image__placeholder {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		justify-content: center;
-		gap: 8px;
 		width: 100%;
-		min-height: 160px;
-		padding: 24px;
-		background: #f0f0f1;
-		color: #757575;
-		border-radius: inherit;
+		height: auto;
+		vertical-align: bottom;
 		box-sizing: border-box;
+	}
 
-		.dashicons {
-			font-size: 32px;
-			width: 32px;
-			height: 32px;
+	&.alignwide img,
+	&.alignfull img {
+		width: 100%;
+	}
+
+	.wp-block-jankx-term-featured-image__overlay {
+		&.has-background-dim {
+			position: absolute;
+			inset: 0;
+			background-color: #000;
+
+			@at-root .wp-block-jankx-term-featured-image {
+				position: relative;
+			}
 		}
 
-		.term-featured-image__hint {
-			font-size: 13px;
-			line-height: 1.4;
-			text-align: center;
+		&.has-background-gradient {
+			background-color: transparent;
+		}
+
+		@for $i from 0 through 10 {
+			&.has-background-dim-#{ $i * 10 } {
+				opacity: $i * 0.1;
+			}
 		}
 	}
 
-	a, .term-featured-image__link {
-		display: block;
-		text-decoration: none;
+	&:where(.alignleft, .alignright) {
+		width: 100%;
 	}
 }

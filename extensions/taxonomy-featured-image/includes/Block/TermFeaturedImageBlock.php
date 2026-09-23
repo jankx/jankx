@@ -11,9 +11,8 @@ use WP_Term;
  *
  * Resolves the current term in this order:
  *  1. Block context (`termId` provided by Dynamic Term Template loops)
- *  2. Explicit `termId` attribute (static usage)
- *  3. Current queried object (taxonomy archive templates)
- *  4. `jankx/term-featured-image/current-term` filter
+ *  2. Current queried object (taxonomy archive templates)
+ *  3. `jankx/term-featured-image/current-term` filter
  */
 class TermFeaturedImageBlock
 {
@@ -78,15 +77,7 @@ class TermFeaturedImageBlock
             }
         }
 
-        // 2. Explicit static attribute.
-        if (!$term instanceof WP_Term && !empty($attributes['termId'])) {
-            $candidate = get_term(absint($attributes['termId']), $attributes['taxonomy'] ?: '');
-            if ($candidate instanceof WP_Term) {
-                $term = $candidate;
-            }
-        }
-
-        // 3. Current queried object on taxonomy archives.
+        // 2. Current queried object on taxonomy archives.
         if (!$term instanceof WP_Term && (is_tax() || is_category() || is_tag())) {
             $queried = get_queried_object();
             if ($queried instanceof WP_Term) {
@@ -94,14 +85,14 @@ class TermFeaturedImageBlock
             }
         }
 
-        // 4. Allow other code (custom loops etc.) to provide the term.
+        // 3. Allow other code (custom loops etc.) to provide the term.
         $term = apply_filters('jankx/term-featured-image/current-term', $term, $attributes, $block);
 
         return $term instanceof WP_Term ? $term : null;
     }
 
     /**
-     * Render callback.
+     * Render callback — mirrors core/post-featured-image server-side rendering.
      */
     public function render(array $attributes, string $content = '', ?WP_Block $block = null): string
     {
@@ -112,109 +103,205 @@ class TermFeaturedImageBlock
         }
 
         $defaults = [
-            'imageSize' => 'large',
+            'isLink'      => true,
+            'sizeSlug'    => 'large',
             'aspectRatio' => '',
-            'objectFit' => 'cover',
-            'isLink' => true,
-            'linkTarget' => '_self',
-            'rel' => '',
-            'showPlaceholder' => false,
+            'width'       => '',
+            'height'      => '',
+            'scale'       => 'cover',
+            'rel'         => '',
+            'linkTarget'  => '_self',
         ];
         $attributes = wp_parse_args($attributes, $defaults);
 
         $term = $this->resolveTerm($attributes, $block);
-        $imageId = $term instanceof WP_Term ? $service->getTermImageId($term) : 0;
-        if ($imageId <= 0) {
-            $imageId = absint($attributes['defaultImageId'] ?? 0);
-        }
-
-        $classes = ['term-featured-image'];
-
-        $imageMarkup = '';
-
-        if ($imageId > 0) {
-            $imageClasses = ['term-featured-image__img'];
-            $imageStyles = [];
-
-            if (!empty($attributes['width'])) {
-                $imageStyles[] = sprintf('width: %s;', esc_attr($attributes['width']));
-            }
-            if (!empty($attributes['height'])) {
-                $imageStyles[] = sprintf('height: %s;', esc_attr($attributes['height']));
-            }
-
-            if (!empty($attributes['aspectRatio'])) {
-                if ('auto' !== $attributes['aspectRatio']) {
-                    $imageStyles[] = sprintf('aspect-ratio: %s;', str_replace('/', ' / ', $attributes['aspectRatio']));
-                }
-            }
-
-            if (!empty($attributes['objectFit'])) {
-                $imageStyles[] = sprintf('object-fit: %s;', esc_attr($attributes['objectFit']));
-            }
-
-            $imgAttr = [
-                'class' => implode(' ', $imageClasses),
-            ];
-
-            if (!empty($imageStyles)) {
-                $imgAttr['style'] = safecss_filter_attr(implode(' ', $imageStyles));
-            }
-
-            $imageMarkup = wp_get_attachment_image($imageId, $attributes['imageSize'], false, $imgAttr);
-        } elseif (!empty($attributes['showPlaceholder'])) {
-            $placeholderStyles = [];
-            if (!empty($attributes['width'])) {
-                $placeholderStyles[] = sprintf('width: %s;', esc_attr($attributes['width']));
-            }
-            if (!empty($attributes['height'])) {
-                $placeholderStyles[] = sprintf('height: %s;', esc_attr($attributes['height']));
-            }
-
-            if (!empty($attributes['aspectRatio'])) {
-                if ('auto' !== $attributes['aspectRatio']) {
-                    $placeholderStyles[] = sprintf('aspect-ratio: %s;', str_replace('/', ' / ', $attributes['aspectRatio']));
-                }
-            }
-
-            $styleAttr = '';
-            if (!empty($placeholderStyles)) {
-                $styleAttr = sprintf(' style="%s"', safecss_filter_attr(implode(' ', $placeholderStyles)));
-            }
-
-            $imageMarkup = sprintf(
-                '<span class="term-featured-image__placeholder"%s><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="32" height="32" fill="currentColor" aria-hidden="true" focusable="false"><path d="M6 4h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2zm0 2v9.586l3-3L12 15l3.5-4.5L18 13V6H6zm0 12h12v-.414l-3.293-3.293-1.207 1.55L10 11.914l-4 4V18z"/></svg></span>',
-                $styleAttr
-            );
-        } else {
+        if (!$term instanceof WP_Term) {
             return '';
         }
 
-        $wrapperAttributes = get_block_wrapper_attributes([
-            'class' => implode(' ', array_map('sanitize_html_class', $classes)),
-        ]);
-
-        if (!empty($attributes['isLink']) && $term instanceof WP_Term) {
-            $link = get_term_link($term);
-
-            if (!is_wp_error($link)) {
-                $rel = trim((string) $attributes['rel']);
-                $linkAttributes = sprintf(
-                    'href="%s" target="%s"%s',
-                    esc_url($link),
-                    esc_attr($attributes['linkTarget'] === '_blank' ? '_blank' : '_self'),
-                    $rel !== '' ? sprintf(' rel="%s"', esc_attr($rel)) : ''
-                );
-
-                return sprintf(
-                    '<div %1$s><a class="term-featured-image__link" %2$s>%3$s</a></div>',
-                    $wrapperAttributes,
-                    $linkAttributes,
-                    $imageMarkup
-                );
-            }
+        $imageId = $service->getTermImageId($term);
+        if ($imageId <= 0) {
+            return '';
         }
 
-        return sprintf('<div %1$s>%2$s</div>', $wrapperAttributes, $imageMarkup);
+        $isLink       = !empty($attributes['isLink']);
+        $sizeSlug     = $attributes['sizeSlug'] ?: 'large';
+        $borderAttr   = $this->get_border_attributes($attributes);
+        $overlayMarkup = $this->get_overlay_element_markup($attributes);
+
+        // Build image attributes.
+        $attr = [];
+        if (!empty($borderAttr['class'])) {
+            $attr['class'] = $borderAttr['class'];
+        }
+
+        // Extra styles for aspect ratio, dimensions, scale, shadow.
+        $extraStyles = '';
+        if (!empty($attributes['aspectRatio'])) {
+            $extraStyles .= 'width:100%;height:100%;';
+        } elseif (!empty($attributes['height'])) {
+            $extraStyles .= 'height:' . $attributes['height'] . ';';
+        }
+        if (!empty($attributes['width'])) {
+            $extraStyles .= 'width:' . $attributes['width'] . ';';
+        }
+        if (!empty($attributes['scale'])) {
+            $extraStyles .= 'object-fit:' . $attributes['scale'] . ';';
+        }
+        if (!empty($attributes['style']['shadow'])) {
+            $shadowStyles = wp_style_engine_get_styles(['shadow' => $attributes['style']['shadow']]);
+            if (!empty($shadowStyles['css'])) {
+                $extraStyles .= $shadowStyles['css'];
+            }
+        }
+        if (!empty($borderAttr['style'])) {
+            $extraStyles .= $borderAttr['style'];
+        }
+        if (!empty($extraStyles)) {
+            $attr['style'] = $extraStyles;
+        }
+
+        $featuredImage = wp_get_attachment_image($imageId, $sizeSlug, false, $attr);
+
+        if (!$featuredImage) {
+            return '';
+        }
+
+        if ($isLink) {
+            $link       = get_term_link($term);
+            $linkTarget = $attributes['linkTarget'];
+            $rel        = !empty($attributes['rel']) ? 'rel="' . esc_attr($attributes['rel']) . '"' : '';
+            $height     = !empty($attributes['height']) ? 'style="' . esc_attr(safecss_filter_attr('height:' . $attributes['height'])) . '"' : '';
+
+            if (!is_wp_error($link)) {
+                $featuredImage = sprintf(
+                    '<a href="%1$s" target="%2$s" %3$s %4$s>%5$s%6$s</a>',
+                    esc_url($link),
+                    esc_attr($linkTarget),
+                    $rel,
+                    $height,
+                    $featuredImage,
+                    $overlayMarkup
+                );
+            }
+        } else {
+            $featuredImage = $featuredImage . $overlayMarkup;
+        }
+
+        // Wrapper attributes (aspect ratio, width, height).
+        $aspectRatio = !empty($attributes['aspectRatio'])
+            ? esc_attr(safecss_filter_attr('aspect-ratio:' . $attributes['aspectRatio'])) . ';'
+            : '';
+        $w           = !empty($attributes['width'])
+            ? esc_attr(safecss_filter_attr('width:' . $attributes['width'])) . ';'
+            : '';
+        $h           = !empty($attributes['height'])
+            ? esc_attr(safecss_filter_attr('height:' . $attributes['height'])) . ';'
+            : '';
+
+        if (!$h && !$w && !$aspectRatio) {
+            $wrapperAttributes = get_block_wrapper_attributes();
+        } else {
+            $wrapperAttributes = get_block_wrapper_attributes(['style' => $aspectRatio . $w . $h]);
+        }
+
+        return sprintf('<figure %1$s>%2$s</figure>', $wrapperAttributes, $featuredImage);
+    }
+
+    /**
+     * Generate overlay markup — mirrors core/post-featured-image.
+     */
+    protected function get_overlay_element_markup(array $attributes): string
+    {
+        $hasDimBackground  = isset($attributes['dimRatio']) && $attributes['dimRatio'];
+        $hasGradient       = isset($attributes['gradient']) && $attributes['gradient'];
+        $hasCustomGradient = isset($attributes['customGradient']) && $attributes['customGradient'];
+        $hasSolidOverlay   = isset($attributes['overlayColor']) && $attributes['overlayColor'];
+        $hasCustomOverlay  = isset($attributes['customOverlayColor']) && $attributes['customOverlayColor'];
+        $classNames        = ['wp-block-jankx-term-featured-image__overlay'];
+        $styles           = [];
+
+        if (!$hasDimBackground) {
+            return '';
+        }
+
+        $borderAttributes = $this->get_border_attributes($attributes);
+        if (!empty($borderAttributes['class'])) {
+            $classNames[] = $borderAttributes['class'];
+        }
+        if (!empty($borderAttributes['style'])) {
+            $styles[] = $borderAttributes['style'];
+        }
+
+        if ($hasDimBackground) {
+            $classNames[] = 'has-background-dim';
+            $classNames[] = 'has-background-dim-' . $attributes['dimRatio'];
+        }
+        if ($hasSolidOverlay) {
+            $classNames[] = 'has-' . $attributes['overlayColor'] . '-background-color';
+        }
+        if ($hasGradient || $hasCustomGradient) {
+            $classNames[] = 'has-background-gradient';
+        }
+        if ($hasGradient) {
+            $classNames[] = 'has-' . $attributes['gradient'] . '-gradient-background';
+        }
+
+        if ($hasCustomGradient) {
+            $styles[] = 'background-image: ' . $attributes['customGradient'] . ';';
+        }
+        if ($hasCustomOverlay) {
+            $styles[] = 'background-color: ' . $attributes['customOverlayColor'] . ';';
+        }
+
+        return sprintf(
+            '<span class="%s" style="%s" aria-hidden="true"></span>',
+            esc_attr(implode(' ', $classNames)),
+            esc_attr(safecss_filter_attr(implode(' ', $styles)))
+        );
+    }
+
+    /**
+     * Generate border attributes — mirrors core/post-featured-image.
+     */
+    protected function get_border_attributes(array $attributes): array
+    {
+        $borderStyles = [];
+        $sides        = ['top', 'right', 'bottom', 'left'];
+
+        if (isset($attributes['style']['border']['radius'])) {
+            $borderStyles['radius'] = $attributes['style']['border']['radius'];
+        }
+        if (isset($attributes['style']['border']['style'])) {
+            $borderStyles['style'] = $attributes['style']['border']['style'];
+        }
+        if (isset($attributes['style']['border']['width'])) {
+            $borderStyles['width'] = $attributes['style']['border']['width'];
+        }
+
+        $presetColor           = array_key_exists('borderColor', $attributes)
+            ? 'var:preset|color|' . $attributes['borderColor']
+            : null;
+        $customColor           = $attributes['style']['border']['color'] ?? null;
+        $borderStyles['color'] = $presetColor ?: $customColor;
+
+        foreach ($sides as $side) {
+            $border              = $attributes['style']['border'][$side] ?? null;
+            $borderStyles[$side] = [
+                'color' => $border['color'] ?? null,
+                'style' => $border['style'] ?? null,
+                'width' => $border['width'] ?? null,
+            ];
+        }
+
+        $styles    = wp_style_engine_get_styles(['border' => $borderStyles]);
+        $result   = [];
+        if (!empty($styles['classnames'])) {
+            $result['class'] = $styles['classnames'];
+        }
+        if (!empty($styles['css'])) {
+            $result['style'] = $styles['css'];
+        }
+        return $result;
     }
 }

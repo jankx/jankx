@@ -1,0 +1,119 @@
+.wp-block-jankx-term-featured-image {
+	.block-editor-media-placeholder {
+		z-index: 1;
+		backdrop-filter: none;
+	}
+
+	.wp-block-jankx-term-featured-image__placeholder,
+	.components-placeholder {
+		justify-content: center;
+		align-items: center;
+		padding: 0;
+		display: flex;
+
+		.components-form-file-upload {
+			display: none;
+		}
+
+		.components-button {
+			margin: auto;
+			padding: 0;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			width: 48px;
+			height: 48px;
+			border-radius: 50%;
+			position: relative;
+			background: var(--wp-admin-theme-color);
+			border-color: var(--wp-admin-theme-color);
+			border-style: solid;
+			color: #fff;
+
+			> svg {
+				color: inherit;
+			}
+		}
+
+		min-height: 200px;
+	}
+
+	.wp-block-jankx-term-featured-image__placeholder,
+	.components-placeholder,
+	img {
+		&:where(.has-border-color) {
+			border-style: solid;
+		}
+		&:where([style*="border-top-color"]) {
+			border-top-style: solid;
+		}
+		&:where([style*="border-right-color"]) {
+			border-right-style: solid;
+		}
+		&:where([style*="border-bottom-color"]) {
+			border-bottom-style: solid;
+		}
+		&:where([style*="border-left-color"]) {
+			border-left-style: solid;
+		}
+
+		&:where([style*="border-width"]) {
+			border-style: solid;
+		}
+		&:where([style*="border-top-width"]) {
+			border-top-style: solid;
+		}
+		&:where([style*="border-right-width"]) {
+			border-right-style: solid;
+		}
+		&:where([style*="border-bottom-width"]) {
+			border-bottom-style: solid;
+		}
+		&:where([style*="border-left-width"]) {
+			border-left-style: solid;
+		}
+	}
+
+	&[style*="height"] .components-placeholder {
+		min-height: 48px;
+		min-width: 48px;
+		height: 100%;
+		width: 100%;
+	}
+
+	> a {
+		pointer-events: none;
+	}
+
+	&.is-selected .components-placeholder.has-illustration {
+		.components-button,
+		.components-placeholder__instructions,
+		.components-placeholder__label {
+			opacity: 1;
+			pointer-events: auto;
+		}
+	}
+
+	&.is-transient {
+		position: relative;
+
+		img {
+			opacity: 0.3;
+		}
+
+		.components-spinner {
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+		}
+	}
+}
+
+div[data-type="jankx/term-featured-image"] {
+	img {
+		max-width: 100%;
+		height: auto;
+		display: block;
+	}
+}
