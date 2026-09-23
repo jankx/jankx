@@ -220,11 +220,23 @@ function TermFeaturedImageEdit( {
 				/>
 			</InspectorControls>
 			<InspectorControls group="dimensions">
-				<DimensionControls
-					clientId={ 'term-featured-image' }
-					attributes={ attributes }
-					setAttributes={ setAttributes }
-				/>
+				<ToolsPanel
+					label={ __( 'Dimensions' ) }
+					resetAll={ () => {
+						setAttributes( {
+							aspectRatio: undefined,
+							width: undefined,
+							height: undefined,
+							scale: 'cover',
+						} );
+					} }
+				>
+					<DimensionControls
+						clientId={ 'term-featured-image' }
+						attributes={ attributes }
+						setAttributes={ setAttributes }
+					/>
+				</ToolsPanel>
 			</InspectorControls>
 			{ ( media || ! termId ) && (
 				<InspectorControls>
