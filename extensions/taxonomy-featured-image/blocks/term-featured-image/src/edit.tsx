@@ -103,16 +103,14 @@ export default function Edit({ attributes, setAttributes, context }: any) {
 		className: 'term-featured-image-block',
 	});
 
-	const figureStyle: Record<string, string> = {};
-	if (aspectRatio) {
-		figureStyle.aspectRatio = aspectRatio.replace('/', ' / ');
-	}
-
 	const imgStyle: Record<string, string> = {};
-	if (aspectRatio) {
-		imgStyle.objectFit = objectFit;
+	if (aspectRatio && aspectRatio !== 'auto') {
+		imgStyle.aspectRatio = aspectRatio.replace('/', ' / ');
 		imgStyle.width = '100%';
 		imgStyle.height = '100%';
+		if (objectFit) {
+			imgStyle.objectFit = objectFit;
+		}
 	}
 
 	const showImage = !!(media && media.source_url);
@@ -230,7 +228,7 @@ export default function Edit({ attributes, setAttributes, context }: any) {
 				</PanelBody>
 			</InspectorControls>
 
-			<div className="term-featured-image" style={figureStyle}>
+			<div className="term-featured-image">
 				{showImage ? (
 					<img
 						src={media.source_url}
@@ -240,7 +238,7 @@ export default function Edit({ attributes, setAttributes, context }: any) {
 				) : showDefaultImage ? (
 					<img src={defaultImage.source_url} alt={defaultImage.alt_text || ''} style={imgStyle as any} />
 				) : showPlaceholder || !hasResolved ? (
-					<div className="term-featured-image__placeholder">
+					<div className="term-featured-image__placeholder" style={imgStyle as any}>
 						<span className="dashicons dashicons-format-image"></span>
 						<span className="term-featured-image__hint">
 							{contextTermId

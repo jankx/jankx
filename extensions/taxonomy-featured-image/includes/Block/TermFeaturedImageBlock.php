@@ -129,28 +129,50 @@ class TermFeaturedImageBlock
         }
 
         $classes = ['term-featured-image'];
-        $inlineStyles = [];
-
-        if (!empty($attributes['aspectRatio'])) {
-            $classes[] = 'has-aspect-ratio';
-            $inlineStyles[] = sprintf('aspect-ratio: %s;', str_replace('/', ' / ', $attributes['aspectRatio']));
-        }
 
         $imageMarkup = '';
 
         if ($imageId > 0) {
             $imageClasses = ['term-featured-image__img'];
+            $imageStyles = [];
 
             if (!empty($attributes['aspectRatio'])) {
-                $imageClasses[] = sprintf('object-fit--%s', sanitize_html_class($attributes['objectFit']));
+                if ('auto' !== $attributes['aspectRatio']) {
+                    $imageStyles[] = sprintf('aspect-ratio: %s;', str_replace('/', ' / ', $attributes['aspectRatio']));
+                }
+                $imageStyles[] = 'width: 100%; height: 100%;';
             }
 
-            $imageMarkup = wp_get_attachment_image($imageId, $attributes['imageSize'], false, [
+            if (!empty($attributes['objectFit'])) {
+                $imageStyles[] = sprintf('object-fit: %s;', esc_attr($attributes['objectFit']));
+            }
+
+            $imgAttr = [
                 'class' => implode(' ', $imageClasses),
-            ]);
+            ];
+
+            if (!empty($imageStyles)) {
+                $imgAttr['style'] = safecss_filter_attr(implode(' ', $imageStyles));
+            }
+
+            $imageMarkup = wp_get_attachment_image($imageId, $attributes['imageSize'], false, $imgAttr);
         } elseif (!empty($attributes['showPlaceholder'])) {
+            $placeholderStyles = [];
+            if (!empty($attributes['aspectRatio'])) {
+                if ('auto' !== $attributes['aspectRatio']) {
+                    $placeholderStyles[] = sprintf('aspect-ratio: %s;', str_replace('/', ' / ', $attributes['aspectRatio']));
+                }
+                $placeholderStyles[] = 'width: 100%; height: 100%;';
+            }
+
+            $styleAttr = '';
+            if (!empty($placeholderStyles)) {
+                $styleAttr = sprintf(' style="%s"', safecss_filter_attr(implode(' ', $placeholderStyles)));
+            }
+
             $imageMarkup = sprintf(
-                '<span class="term-featured-image__placeholder"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="32" height="32" fill="currentColor" aria-hidden="true" focusable="false"><path d="M6 4h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2zm0 2v9.586l3-3L12 15l3.5-4.5L18 13V6H6zm0 12h12v-.414l-3.293-3.293-1.207 1.55L10 11.914l-4 4V18z"/></svg></span>'
+                '<span class="term-featured-image__placeholder"%s><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="32" height="32" fill="currentColor" aria-hidden="true" focusable="false"><path d="M6 4h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2zm0 2v9.586l3-3L12 15l3.5-4.5L18 13V6H6zm0 12h12v-.414l-3.293-3.293-1.207 1.55L10 11.914l-4 4V18z"/></svg></span>',
+                $styleAttr
             );
         } else {
             return '';
@@ -158,7 +180,6 @@ class TermFeaturedImageBlock
 
         $wrapperAttributes = get_block_wrapper_attributes([
             'class' => implode(' ', array_map('sanitize_html_class', $classes)),
-            'style' => safecss_filter_attr(implode(' ', $inlineStyles)),
         ]);
 
         if (!empty($attributes['isLink']) && $term instanceof WP_Term) {
