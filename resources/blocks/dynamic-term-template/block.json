@@ -65,6 +65,9 @@
     "reusable": false,
     "html": false,
     "align": [
+      "left",
+      "center",
+      "right",
       "wide",
       "full"
     ],
