@@ -204,6 +204,8 @@ class SmartTabsBlock extends Block
             return '';
         }
 
+        $tab_type = (string) ($parent_attributes['tabType'] ?? 'horizontal');
+
         // Get parent tab styles (applied to all tabs as defaults)
         $parent_tab_item_text_color = $parent_attributes['tabItemTextColor'] ?? '';
         $parent_tab_item_bg_color = $parent_attributes['tabItemBackgroundColor'] ?? '';
@@ -211,6 +213,9 @@ class SmartTabsBlock extends Block
         $parent_active_tab_text_color = $parent_attributes['activeTabTextColor'] ?? '';
         $parent_active_tab_bg_color = $parent_attributes['activeTabBackgroundColor'] ?? '';
         $parent_active_tab_gradient = $parent_attributes['activeTabGradient'] ?? '';
+        $parent_active_border_color = $parent_attributes['activeTabBorderColor'] ?? '';
+        $parent_active_border_style = $parent_attributes['activeTabBorderStyle'] ?? '';
+        $parent_active_border_width = $parent_attributes['activeTabBorderWidth'] ?? '';
 
         $registry = SmartTabTriggerRegistry::instance();
         $nav_items = [];
@@ -293,6 +298,19 @@ class SmartTabsBlock extends Block
                     $tab_styles[] = sprintf('background: %s', esc_attr($gradient));
                 } elseif (!empty($bg_color)) {
                     $tab_styles[] = sprintf('background-color: %s', esc_attr($bg_color));
+                }
+
+                if (!empty($parent_active_border_color) && $parent_active_border_style !== 'none') {
+                    $active_border_width = !empty($parent_active_border_width) ? $parent_active_border_width : '3px';
+                    $active_border_style = !empty($parent_active_border_style) ? $parent_active_border_style : 'solid';
+                    $border_side = $tab_type === 'vertical' ? 'border-right' : 'border-bottom';
+                    $tab_styles[] = sprintf(
+                        '%s: %s %s %s',
+                        $border_side,
+                        esc_attr($active_border_width),
+                        esc_attr($active_border_style),
+                        esc_attr($parent_active_border_color)
+                    );
                 }
             } else {
                 // Normal tab: use parent styles first, then individual overrides

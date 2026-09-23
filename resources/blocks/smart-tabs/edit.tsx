@@ -14,6 +14,10 @@ import {
     ToggleControl,
     TextControl,
     Button,
+    BaseControl,
+    ColorPalette,
+    GradientPicker,
+    __experimentalUnitControl as UnitControl,
     ToolbarGroup,
     ToolbarButton,
 } from '@wordpress/components';
@@ -21,12 +25,16 @@ import { useSelect, useDispatch } from '@wordpress/data';
 import { createBlock } from '@wordpress/blocks';
 import { plus } from '@wordpress/icons';
 import { useMemo } from '@wordpress/element';
+import {
+    __experimentalUseMultipleOriginColorsAndGradients as useMultipleOriginColorsAndGradients,
+} from '@wordpress/block-editor';
 
 /**
  * Internal dependencies
  */
 import type { SmartTabsProps, TabItem, WPBlock, BlockEditorSelect, BlockEditorDispatch } from './types';
 import type { SmartTabTriggerConfig } from '../smart-tab/types';
+import type { CSSProperties } from 'react';
 
 /**
  * Edit component for Smart Tabs block
@@ -42,7 +50,15 @@ export default function Edit({ attributes, setAttributes, clientId }: SmartTabsP
         hideTabContent = false,
         label = '',
         showLabel = false,
+        activeTabTextColor = '',
+        activeTabBackgroundColor = '',
+        activeTabGradient = '',
+        activeTabBorderColor = '',
+        activeTabBorderStyle = 'solid',
+        activeTabBorderWidth = '',
     } = attributes;
+
+    const { gradients } = useMultipleOriginColorsAndGradients() || {};
 
     const { innerBlocks, selectedBlockClientId } = useSelect(
         (select) => {
@@ -161,6 +177,43 @@ export default function Edit({ attributes, setAttributes, clientId }: SmartTabsP
     // Determine which tab is active
     const currentActiveTab = Math.min(activeTab, tabItems.length - 1);
 
+    // Active tab styles mirror the server render (SmartTabsBlock::renderTabNavigation):
+    // horizontal uses a bottom border, vertical uses a right border.
+    const activeTabStyles = useMemo<CSSProperties>(() => {
+        const styles: CSSProperties = {};
+
+        if (activeTabTextColor) {
+            styles.color = activeTabTextColor;
+        }
+
+        if (activeTabGradient) {
+            styles.background = activeTabGradient;
+        } else if (activeTabBackgroundColor) {
+            styles.backgroundColor = activeTabBackgroundColor;
+        }
+
+        if (activeTabBorderColor && activeTabBorderStyle !== 'none') {
+            const width = activeTabBorderWidth || '3px';
+            const style = activeTabBorderStyle || 'solid';
+            const border = `${width} ${style} ${activeTabBorderColor}`;
+            if (tabType === 'vertical') {
+                styles.borderRight = border;
+            } else {
+                styles.borderBottom = border;
+            }
+        }
+
+        return styles;
+    }, [
+        activeTabTextColor,
+        activeTabBackgroundColor,
+        activeTabGradient,
+        activeTabBorderColor,
+        activeTabBorderStyle,
+        activeTabBorderWidth,
+        tabType,
+    ]);
+
     return (
         <>
             <BlockControls>
@@ -260,6 +313,69 @@ export default function Edit({ attributes, setAttributes, clientId }: SmartTabsP
                     />
                 </PanelBody>
 
+                <PanelBody title={__('Active Tab Styles', 'jankx')} initialOpen={false}>
+                    <BaseControl label={__('Text color', 'jankx')}>
+                        <ColorPalette
+                            value={activeTabTextColor}
+                            onChange={(value: string | undefined) =>
+                                setAttributes({ activeTabTextColor: value || '' })
+                            }
+                        />
+                    </BaseControl>
+
+                    <BaseControl label={__('Background', 'jankx')}>
+                        <ColorPalette
+                            value={activeTabBackgroundColor}
+                            onChange={(value: string | undefined) =>
+                                setAttributes({ activeTabBackgroundColor: value || '' })
+                            }
+                        />
+                        <GradientPicker
+                            value={activeTabGradient}
+                            onChange={(value: string | undefined) =>
+                                setAttributes({ activeTabGradient: value || '' })
+                            }
+                            gradients={gradients}
+                        />
+                    </BaseControl>
+
+                    <SelectControl
+                        label={__('Border style', 'jankx')}
+                        value={activeTabBorderStyle || 'solid'}
+                        options={[
+                            { label: __('None', 'jankx'), value: 'none' },
+                            { label: __('Solid', 'jankx'), value: 'solid' },
+                            { label: __('Dashed', 'jankx'), value: 'dashed' },
+                            { label: __('Dotted', 'jankx'), value: 'dotted' },
+                            { label: __('Double', 'jankx'), value: 'double' },
+                        ]}
+                        onChange={(value: string) =>
+                            setAttributes({
+                                activeTabBorderStyle: value as 'solid' | 'dashed' | 'dotted' | 'double' | 'none',
+                            })
+                        }
+                        help={__('Border style of the active tab.', 'jankx')}
+                    />
+
+                    <UnitControl
+                        label={__('Border width', 'jankx')}
+                        value={activeTabBorderWidth}
+                        onChange={(value: string | undefined) =>
+                            setAttributes({ activeTabBorderWidth: value || '' })
+                        }
+                        units={[{ value: 'px', label: 'px' }]}
+                    />
+
+                    <BaseControl label={__('Border color', 'jankx')}>
+                        <ColorPalette
+                            value={activeTabBorderColor}
+                            onChange={(value: string | undefined) =>
+                                setAttributes({ activeTabBorderColor: value || '' })
+                            }
+                        />
+                    </BaseControl>
+                </PanelBody>
+
                 <PanelBody title={__('Label Settings', 'jankx')} initialOpen={false}>
                     <ToggleControl
                         label={__('Show Label', 'jankx')}
@@ -308,6 +424,7 @@ export default function Edit({ attributes, setAttributes, clientId }: SmartTabsP
                                     className={`smart-tabs__nav-item${
                                         isActiveTab ? ' is-active' : ''
                                     }`}
+                                    style={isActiveTab ? activeTabStyles : undefined}
                                     onClick={() => handleTabClick(index, tab.clientId)}
                                     type="button"
                                 >
