@@ -7,6 +7,10 @@
 			"contentSize": "1200px",
 			"wideSize": "1320px"
 		},
+		"dimensions": {
+			"minHeight": true,
+			"minWidth": true
+		},
 		"spacing": {
 			"padding": true,
 			"margin": true,
