@@ -1,0 +1,99 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "jankx/review-form",
+  "version": "1.0.0",
+  "title": "Review Form",
+  "category": "jankx",
+  "icon": "edit",
+  "description": "Star rating submission form for users to leave reviews.",
+  "keywords": [
+    "review",
+    "rating",
+    "feedback",
+    "form",
+    "star"
+  ],
+  "textdomain": "jankx",
+  "attributes": {
+    "postId": {
+      "type": "number",
+      "default": 0
+    },
+    "maxRating": {
+      "type": "number",
+      "default": 5
+    },
+    "showReview": {
+      "type": "boolean",
+      "default": true
+    },
+    "showProsCons": {
+      "type": "boolean",
+      "default": false
+    },
+    "showLoginForm": {
+      "type": "boolean",
+      "default": true
+    },
+    "formTitle": {
+      "type": "string",
+      "default": ""
+    },
+    "submitText": {
+      "type": "string",
+      "default": ""
+    },
+    "starSize": {
+      "type": "number",
+      "default": 32
+    },
+    "starColor": {
+      "type": "string",
+      "default": "#f1c40f"
+    },
+    "starEmptyColor": {
+      "type": "string",
+      "default": "#dddddd"
+    },
+    "customCSS": {
+      "type": "string",
+      "default": ""
+    }
+  },
+  "supports": {
+    "html": false,
+    "align": [
+      "left",
+      "center",
+      "right",
+      "wide",
+      "full"
+    ],
+    "spacing": {
+      "margin": true,
+      "padding": true
+    },
+    "color": {
+      "text": true,
+      "background": true,
+      "enableBackground": true
+    },
+    "typography": {
+      "fontSize": true,
+      "lineHeight": true,
+      "__experimentalFontFamily": true,
+      "__experimentalFontWeight": true,
+      "__experimentalFontStyle": true,
+      "__experimentalTextTransform": true,
+      "__experimentalTextDecoration": true,
+      "__experimentalLetterSpacing": true,
+      "__experimentalDefaultControls": {
+        "fontSize": true
+      }
+    }
+  },
+  "editorScript": "file:../../dist/blocks/review-form/index.js",
+  "style": "file:../../dist/blocks/review-form/style.css",
+  "editorStyle": "file:../../dist/blocks/review-form/editor.css"
+}

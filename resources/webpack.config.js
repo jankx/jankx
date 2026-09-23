@@ -175,6 +175,11 @@ module.exports = {
     'dist/blocks/star-rating/style': './blocks/star-rating/style.scss',
     'dist/blocks/star-rating/editor': './blocks/star-rating/editor.scss',
 
+    'dist/blocks/review-form/index': './blocks/review-form/index.tsx',
+    'dist/blocks/review-form/frontend': './blocks/review-form/frontend.js',
+    'dist/blocks/review-form/style': './blocks/review-form/style.scss',
+    'dist/blocks/review-form/editor': './blocks/review-form/editor.scss',
+
     'dist/blocks/post-type-badge/index': './blocks/post-type-badge/index.tsx',
     'dist/blocks/post-type-badge/style': './blocks/post-type-badge/style.scss',
 
