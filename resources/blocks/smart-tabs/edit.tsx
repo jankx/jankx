@@ -7,6 +7,7 @@ import {
     useBlockProps,
     useInnerBlocksProps,
     BlockControls,
+    __experimentalUseMultipleOriginColorsAndGradients as useMultipleOriginColorsAndGradients, // eslint-disable-line
 } from '@wordpress/block-editor';
 import {
     PanelBody,
@@ -17,7 +18,7 @@ import {
     BaseControl,
     ColorPalette,
     GradientPicker,
-    __experimentalUnitControl as UnitControl,
+    __experimentalUnitControl as UnitControl, // eslint-disable-line
     ToolbarGroup,
     ToolbarButton,
 } from '@wordpress/components';
@@ -25,9 +26,6 @@ import { useSelect, useDispatch } from '@wordpress/data';
 import { createBlock } from '@wordpress/blocks';
 import { plus } from '@wordpress/icons';
 import { useMemo } from '@wordpress/element';
-import {
-    __experimentalUseMultipleOriginColorsAndGradients as useMultipleOriginColorsAndGradients,
-} from '@wordpress/block-editor';
 
 /**
  * Internal dependencies
@@ -331,7 +329,7 @@ export default function Edit({ attributes, setAttributes, clientId }: SmartTabsP
                             }
                         />
                         <GradientPicker
-                            value={activeTabGradient}
+                            value={activeTabGradient || undefined}
                             onChange={(value: string | undefined) =>
                                 setAttributes({ activeTabGradient: value || '' })
                             }
