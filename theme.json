@@ -218,7 +218,8 @@
 					"fontWeight": "700",
 					"fontSize": "16px",
 					"lineHeight": "24px"
-				}
+				},
+				"css": ".wp-block-post-title.has-base-color a {color:inherit !important;}"
 			},
 			"core/navigation": {
 				"typography": {
