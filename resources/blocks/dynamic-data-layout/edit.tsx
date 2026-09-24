@@ -611,6 +611,20 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
         fetchTaxonomiesAndAuthors();
     }, [postType]);
 
+    // Prune taxQuery items whose taxonomy is not registered for the selected post type.
+    // Prevents orphan filters (e.g. a "category" item saved while the block used "post")
+    // from being persisted when that taxonomy is invisible/unsupported in the UI.
+    useEffect(() => {
+        if (taxonomies.length === 0 || useMultiPostType) {
+            return;
+        }
+        const availableSlugs = new Set(taxonomies.map((taxonomy) => taxonomy.slug));
+        const pruned = taxQuery.filter((query) => availableSlugs.has(query.taxonomy));
+        if (pruned.length !== taxQuery.length) {
+            setAttributes({ taxQuery: pruned });
+        }
+    }, [taxonomies, taxQuery, useMultiPostType, setAttributes]);
+
     // Function to fetch terms for a specific taxonomy
     const fetchTermsForTaxonomy = useCallback(async (taxonomySlug: string) => {
 
