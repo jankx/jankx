@@ -63,8 +63,43 @@ class LayoutQueryBuilder
             return [$orderby, $order];
         }
 
-        $orderbyArray = [$orderby => $order, 'ID' => 'DESC'];
-        return [$orderbyArray, null];
+        // Native WP_Query orderby values keep the primary + ID tiebreaker form.
+        // Custom orderby values (e.g. `post_views` from the metrics extension)
+        // are passed through as a plain string so `pre_get_posts` handlers can
+        // intercept and translate them (array orderby would silently break them).
+        if (in_array($orderby, $this->getNativeOrderbyValues(), true)) {
+            $orderbyArray = [$orderby => $order, 'ID' => 'DESC'];
+            return [$orderbyArray, null];
+        }
+
+        return [$orderby, $order];
+    }
+
+    /**
+     * Orderby values natively understood by WP_Query.
+     *
+     * @return string[]
+     */
+    protected function getNativeOrderbyValues(): array
+    {
+        return [
+            'ID',
+            'author',
+            'title',
+            'name',
+            'date',
+            'modified',
+            'parent',
+            'type',
+            'menu_order',
+            'comment_count',
+            'meta_value',
+            'meta_value_num',
+            'post__in',
+            'post_name__in',
+            'post_parent__in',
+            'post_in',
+        ];
     }
 
     protected function applyPaginationArgs(array $args): array
