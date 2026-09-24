@@ -74,7 +74,21 @@ class PostTitle extends AbstractBlockExtra
 
                 if ($closing_quote_pos !== false) {
                     $existing_style = substr($attributes, $value_start, $closing_quote_pos - $value_start);
-                    $new_style = rtrim($existing_style, '; ') . '; ' . $inline_style;
+
+                    // Only append design token properties that are not already
+                    // declared inline, so block-level styles (e.g. a custom text
+                    // color) are preserved instead of being duplicated.
+                    $existing_declarations = $this->parseDeclarations($existing_style);
+                    $extra_style = '';
+                    foreach ($design_tokens as $prop => $value) {
+                        if (isset($existing_declarations[strtolower($prop)])) {
+                            continue;
+                        }
+                        $escaped_value = str_replace('"', '&quot;', $value);
+                        $extra_style .= "{$prop}: {$escaped_value}; ";
+                    }
+
+                    $new_style = rtrim($existing_style, '; ') . '; ' . $extra_style;
                     $new_attributes = substr($attributes, 0, $value_start) . $new_style . substr($attributes, $closing_quote_pos);
                 } else {
                     $new_attributes = $attributes . ' style="' . rtrim($inline_style) . '"';
@@ -88,5 +102,32 @@ class PostTitle extends AbstractBlockExtra
         }
 
         return $block_content;
+    }
+
+    /**
+     * Parse an inline style value into a property => value map.
+     *
+     * @param string $style Existing inline style content.
+     * @return array<string, string>
+     */
+    protected function parseDeclarations(string $style): array
+    {
+        $declarations = [];
+
+        foreach (explode(';', $style) as $declaration) {
+            $parts = explode(':', $declaration, 2);
+            if (count($parts) !== 2) {
+                continue;
+            }
+
+            $property = strtolower(trim($parts[0]));
+            if ($property === '') {
+                continue;
+            }
+
+            $declarations[$property] = trim($parts[1]);
+        }
+
+        return $declarations;
     }
 }
