@@ -44,7 +44,7 @@ class RatingSubmissionShortcode
         $showReview = $atts['show_review'] === 'yes';
         $showProsCons = $atts['show_pros_cons'] === 'yes';
 
-        $restUrl = rest_url('jankx/v1/star-rating/submit');
+        $restUrl = rest_url('jankx/v1/reviews');
         $nonce = wp_create_nonce('wp_rest');
 
         // Enqueue the React component

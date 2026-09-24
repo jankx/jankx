@@ -39,7 +39,7 @@ $starSize      = (int) $attributes['starSize'];
 $starColor     = esc_attr($attributes['starColor']);
 $starEmptyColor= esc_attr($attributes['starEmptyColor']);
 
-$restUrl = esc_url_raw(rest_url('jankx/v1/star-rating/submit'));
+$restUrl = esc_url_raw(rest_url('jankx/v1/reviews'));
 $nonce   = wp_create_nonce('wp_rest');
 $isLoggedIn = is_user_logged_in();
 $currentUser = wp_get_current_user();
