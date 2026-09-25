@@ -349,9 +349,9 @@ trait PostTemplateRendererTrait
             $output = '';
             foreach ($innerBlocks as $innerBlock) {
                 $normalizedBlock = [
-                    'blockName' => $innerBlock['blockName'] ?? '',
-                    'attrs' => is_array($innerBlock['attrs'] ?? null) ? $innerBlock['attrs'] : [],
-                    'innerBlocks' => is_array($innerBlock['innerBlocks'] ?? null) ? $innerBlock['innerBlocks'] : [],
+                    'blockName'    => $innerBlock['blockName'] ?? '',
+                    'attrs'        => is_array($innerBlock['attrs'] ?? null) ? $innerBlock['attrs'] : [],
+                    'innerBlocks'  => is_array($innerBlock['innerBlocks'] ?? null) ? $innerBlock['innerBlocks'] : [],
                     'innerContent' => is_array($innerBlock['innerContent'] ?? null) ? $innerBlock['innerContent'] : [],
                 ];
 
@@ -359,8 +359,7 @@ trait PostTemplateRendererTrait
                     $normalizedBlock['originalContent'] = $innerBlock['originalContent'];
                 }
 
-                $blockInstance = new WP_Block($normalizedBlock, $context);
-                $output .= $blockInstance->render();
+                $output .= $this->renderBlockWithContext($normalizedBlock, $context, $post);
             }
 
             $templateAttrs = $this->templateBlock['attrs'] ?? [];
@@ -379,6 +378,74 @@ trait PostTemplateRendererTrait
             ));
             return '';
         }
+    }
+
+    /**
+     * Render a single block with the correct post context.
+     *
+     * - core/template-part: uses render_block() + render_block_context filter
+     *   to inject postId/postType into every inner block rendered by do_blocks().
+     * - core/block (unresolved fallback): resolves the ref post and renders its blocks.
+     * - All other blocks: standard new WP_Block($block, $context)->render().
+     *
+     * @param array   $block   Normalised block array
+     * @param array   $context Block context (postId, postType, …)
+     * @param WP_Post $post    Current post object
+     * @return string Rendered HTML
+     */
+    protected function renderBlockWithContext(array $block, array $context, WP_Post $post): string
+    {
+        $blockName = $block['blockName'] ?? '';
+
+        // ── core/template-part ──────────────────────────────────────────────
+        // render_callback calls do_blocks() internally. do_blocks() creates new
+        // WP_Block instances without any outer context, so core/post-title,
+        // core/post-featured-image, etc. inside the template part would render
+        // for the wrong (or no) post. Fix: temporarily hook render_block_context
+        // to inject postId and postType before every block rendered by do_blocks().
+        if ($blockName === 'core/template-part') {
+            $postId   = $post->ID;
+            $postType = $post->post_type;
+
+            $injectContext = static function (array $blockCtx) use ($postId, $postType): array {
+                // Only inject if the block type actually uses these context keys
+                // (core/post-title, core/post-featured-image, etc. all do).
+                $blockCtx['postId']   = $postId;
+                $blockCtx['postType'] = $postType;
+                return $blockCtx;
+            };
+
+            add_filter('render_block_context', $injectContext, 1);
+            $html = render_block($block);
+            remove_filter('render_block_context', $injectContext, 1);
+
+            return $html;
+        }
+
+        // ── core/block (unresolved reusable/pattern reference) ───────────────
+        // Should have been resolved by resolvePatternBlocks() in
+        // DynamicDataLayoutBlock before serialising, but act as a safety net.
+        if ($blockName === 'core/block') {
+            $ref = (int) ($block['attrs']['ref'] ?? 0);
+            if ($ref > 0) {
+                $reusablePost = get_post($ref);
+                if ($reusablePost && in_array($reusablePost->post_status, ['publish', 'private'], true)) {
+                    $parsedBlocks = parse_blocks($reusablePost->post_content);
+                    $html = '';
+                    foreach ($parsedBlocks as $parsedBlock) {
+                        if (!empty($parsedBlock['blockName'])) {
+                            $html .= $this->renderBlockWithContext($parsedBlock, $context, $post);
+                        }
+                    }
+                    return $html;
+                }
+            }
+            // ref unresolvable: fall through to generic rendering
+        }
+
+        // ── Generic block ────────────────────────────────────────────────────
+        $blockInstance = new WP_Block($block, $context);
+        return $blockInstance->render();
     }
 
     protected function buildBlockContext(WP_Post $post, WP_Query $query, array $options): array

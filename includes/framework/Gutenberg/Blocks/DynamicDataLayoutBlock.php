@@ -242,6 +242,10 @@ class DynamicDataLayoutBlock extends Block
                 Log::debug('Template extraction result: ' . ($templateBlock ? 'FOUND' : 'NOT FOUND'));
 
                 if ($templateBlock) {
+                    // Resolve pattern/reusable block references (core/block, core/template-part)
+                    // BEFORE serializing, so AJAX render has real block data without DB lookups.
+                    $templateBlock = $this->resolvePatternBlocks($templateBlock);
+
                     // Store the template inside attributes so it's included in data-block-settings
                     // This makes AJAX updates completely stateless and robust against cache misses
                     $attributes['postTemplate'] = $templateBlock;
@@ -308,6 +312,70 @@ class DynamicDataLayoutBlock extends Block
                 esc_html($e->getMessage())
             );
         }
+    }
+
+    /**
+     * Recursively resolve pattern/reusable block and template part references.
+     *
+     * - core/block (ref: ID)      → fetched from DB, parsed, expanded inline.
+     * - core/template-part        → kept as-is (resolved at render time via render_block).
+     * - All other blocks           → innerBlocks resolved recursively.
+     *
+     * @param array $block Raw parsed block
+     * @return array Block with references expanded
+     */
+    protected function resolvePatternBlocks(array $block): array
+    {
+        $blockName = $block['blockName'] ?? '';
+
+        // Resolve reusable block / synced pattern reference
+        if ($blockName === 'core/block') {
+            $ref = (int) ($block['attrs']['ref'] ?? 0);
+            if ($ref > 0) {
+                $reusablePost = get_post($ref);
+                if ($reusablePost && in_array($reusablePost->post_status, ['publish', 'private'], true)) {
+                    $parsedBlocks = parse_blocks($reusablePost->post_content);
+                    $resolved = [];
+                    foreach ($parsedBlocks as $parsedBlock) {
+                        if (!empty($parsedBlock['blockName'])) {
+                            $resolved[] = $this->resolvePatternBlocks($parsedBlock);
+                        }
+                    }
+                    if (count($resolved) === 1) {
+                        return $resolved[0];
+                    }
+                    if (count($resolved) > 1) {
+                        return [
+                            'blockName'    => 'core/group',
+                            'attrs'        => [],
+                            'innerBlocks'  => $resolved,
+                            'innerHTML'    => '',
+                            'innerContent' => [''],
+                        ];
+                    }
+                }
+            }
+            // Could not resolve: return as-is (fallback renderer will handle)
+            return $block;
+        }
+
+        // core/template-part: cannot be fully serialized, keep as-is.
+        // PostTemplateBlockGenerator will call render_block() at runtime.
+        if ($blockName === 'core/template-part') {
+            return $block;
+        }
+
+        // Recursively resolve innerBlocks for all other block types
+        if (!empty($block['innerBlocks']) && is_array($block['innerBlocks'])) {
+            $block['innerBlocks'] = array_map(
+                function (array $inner): array {
+                    return $this->resolvePatternBlocks($inner);
+                },
+                $block['innerBlocks']
+            );
+        }
+
+        return $block;
     }
 
     /**
@@ -963,8 +1031,11 @@ class DynamicDataLayoutBlock extends Block
                     Log::debug('Fallback: Searching post content for template. ID: ' . (string) $attributes['queryId']);
                     $realAttrs = $this->getBlockAttributes($post_id, (string) $attributes['queryId']);
                     if (!empty($realAttrs['postTemplate'])) {
+                        // Resolve pattern references before caching so subsequent AJAX
+                        // requests also benefit from fully-expanded block data.
+                        $realAttrs['postTemplate'] = $this->resolvePatternBlocks($realAttrs['postTemplate']);
                         $attributes['postTemplate'] = $realAttrs['postTemplate'];
-                        Log::debug('Fallback SUCCESS: Template found in post content.');
+                        Log::debug('Fallback SUCCESS: Template found in post content (patterns resolved).');
                         // Cache it now for next time
                         $this->cacheTemplateByBlockId((string) $attributes['queryId'], $attributes['postTemplate']);
                     }
