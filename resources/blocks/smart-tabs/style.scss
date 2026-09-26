@@ -76,11 +76,11 @@
         padding: 12px 20px;
         border: none;
         border-bottom: 3px solid transparent;
-        background: transparent;
+        background: var(--smart-tabs-item-bg, transparent);
         cursor: pointer;
         font-size: 16px;
         font-weight: 500;
-        color: var(--smart-tabs-text-color);
+        color: var(--smart-tabs-item-color, var(--smart-tabs-text-color));
         transition: all 0.3s ease;
         margin-bottom: -2px;
 
@@ -89,8 +89,11 @@
         }
 
         &.is-active {
-            color: var(--smart-tabs-primary-color);
-            border-bottom-color: var(--smart-tabs-primary-color);
+            color: var(--smart-tabs-active-color, var(--smart-tabs-primary-color));
+            background: var(--smart-tabs-active-bg, transparent);
+            border-bottom-width: var(--smart-tabs-active-border-width, 3px);
+            border-bottom-style: var(--smart-tabs-active-border-style, solid);
+            border-bottom-color: var(--smart-tabs-active-border-color, var(--smart-tabs-primary-color));
         }
     }
 
@@ -158,7 +161,9 @@
 
             &.is-active {
                 border-bottom-color: transparent;
-                border-right-color: var(--smart-tabs-primary-color);
+                border-right-width: var(--smart-tabs-active-border-width, 3px);
+                border-right-style: var(--smart-tabs-active-border-style, solid);
+                border-right-color: var(--smart-tabs-active-border-color, var(--smart-tabs-primary-color));
             }
         }
 
@@ -194,7 +199,7 @@
             margin-bottom: 0;
 
             &.is-active {
-                background: var(--smart-tabs-bg-white);
+                background: var(--smart-tabs-active-bg, var(--smart-tabs-bg-white));
                 box-shadow: 0 2px 4px var(--smart-tabs-shadow);
             }
         }
@@ -208,7 +213,7 @@
             margin-bottom: 0;
 
             &.is-active {
-                border-color: var(--smart-tabs-primary-color);
+                border-color: var(--smart-tabs-active-border-color, var(--smart-tabs-primary-color));
                 border-bottom: 2px solid var(--smart-tabs-bg-white);
                 position: relative;
                 z-index: 1;
@@ -246,8 +251,8 @@
             }
 
             &.is-active {
-                background: var(--smart-tabs-primary-color);
-                color: var(--smart-tabs-bg-white);
+                background: var(--smart-tabs-active-bg, var(--smart-tabs-primary-color));
+                color: var(--smart-tabs-active-color, var(--smart-tabs-bg-white));
                 border-bottom: none;
                 border-right: 1px solid var(--smart-tabs-primary-color);
                 position: relative;

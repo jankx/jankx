@@ -283,50 +283,48 @@ class SmartTabsBlock extends Block
                 $item_classes[] = 'is-active';
             }
 
-            // Build tab inline styles (parent styles as default, individual styles can override)
+            // Build tab style as CSS custom properties (parent styles as default,
+            // individual styles can override). Exposing normal + active states as
+            // custom properties lets the CSS `is-active` class decide which state
+            // applies, so switching tabs (class toggling) behaves consistently.
             $tab_styles = [];
-            if ($is_active) {
-                // Active tab: use parent styles first, then individual overrides
-                $text_color = !empty($individual_active_text_color) ? $individual_active_text_color : $parent_active_tab_text_color;
-                $gradient = !empty($individual_active_gradient) ? $individual_active_gradient : $parent_active_tab_gradient;
-                $bg_color = !empty($individual_active_bg_color) ? $individual_active_bg_color : $parent_active_tab_bg_color;
 
-                if (!empty($text_color)) {
-                    $tab_styles[] = sprintf('color: %s', esc_attr($text_color));
-                }
-                if (!empty($gradient)) {
-                    $tab_styles[] = sprintf('background: %s', esc_attr($gradient));
-                } elseif (!empty($bg_color)) {
-                    $tab_styles[] = sprintf('background-color: %s', esc_attr($bg_color));
-                }
+            // Normal state: color + background (gradient or solid color)
+            $text_color = !empty($individual_normal_text_color) ? $individual_normal_text_color : $parent_tab_item_text_color;
+            $gradient = !empty($individual_normal_gradient) ? $individual_normal_gradient : $parent_tab_item_gradient;
+            $bg_color = !empty($individual_normal_bg_color) ? $individual_normal_bg_color : $parent_tab_item_bg_color;
 
-                if (!empty($parent_active_border_color) && $parent_active_border_style !== 'none') {
-                    $active_border_width = !empty($parent_active_border_width) ? $parent_active_border_width : '3px';
-                    $active_border_style = !empty($parent_active_border_style) ? $parent_active_border_style : 'solid';
-                    $border_side = $tab_type === 'vertical' ? 'border-right' : 'border-bottom';
-                    $tab_styles[] = sprintf(
-                        '%s: %s %s %s',
-                        $border_side,
-                        esc_attr($active_border_width),
-                        esc_attr($active_border_style),
-                        esc_attr($parent_active_border_color)
-                    );
-                }
-            } else {
-                // Normal tab: use parent styles first, then individual overrides
-                $text_color = !empty($individual_normal_text_color) ? $individual_normal_text_color : $parent_tab_item_text_color;
-                $gradient = !empty($individual_normal_gradient) ? $individual_normal_gradient : $parent_tab_item_gradient;
-                $bg_color = !empty($individual_normal_bg_color) ? $individual_normal_bg_color : $parent_tab_item_bg_color;
-
-                if (!empty($text_color)) {
-                    $tab_styles[] = sprintf('color: %s', esc_attr($text_color));
-                }
-                if (!empty($gradient)) {
-                    $tab_styles[] = sprintf('background: %s', esc_attr($gradient));
-                } elseif (!empty($bg_color)) {
-                    $tab_styles[] = sprintf('background-color: %s', esc_attr($bg_color));
-                }
+            if (!empty($text_color)) {
+                $tab_styles[] = sprintf('--smart-tabs-item-color: %s', esc_attr($text_color));
             }
+            if (!empty($gradient)) {
+                $tab_styles[] = sprintf('--smart-tabs-item-bg: %s', esc_attr($gradient));
+            } elseif (!empty($bg_color)) {
+                $tab_styles[] = sprintf('--smart-tabs-item-bg: %s', esc_attr($bg_color));
+            }
+
+            // Active state: color + background (gradient or solid color)
+            $active_text_color = !empty($individual_active_text_color) ? $individual_active_text_color : $parent_active_tab_text_color;
+            $active_gradient = !empty($individual_active_gradient) ? $individual_active_gradient : $parent_active_tab_gradient;
+            $active_bg_color = !empty($individual_active_bg_color) ? $individual_active_bg_color : $parent_active_tab_bg_color;
+
+            if (!empty($active_text_color)) {
+                $tab_styles[] = sprintf('--smart-tabs-active-color: %s', esc_attr($active_text_color));
+            }
+            if (!empty($active_gradient)) {
+                $tab_styles[] = sprintf('--smart-tabs-active-bg: %s', esc_attr($active_gradient));
+            } elseif (!empty($active_bg_color)) {
+                $tab_styles[] = sprintf('--smart-tabs-active-bg: %s', esc_attr($active_bg_color));
+            }
+
+            if (!empty($parent_active_border_color) && $parent_active_border_style !== 'none') {
+                $active_border_width = !empty($parent_active_border_width) ? $parent_active_border_width : '3px';
+                $active_border_style = !empty($parent_active_border_style) ? $parent_active_border_style : 'solid';
+                $tab_styles[] = sprintf('--smart-tabs-active-border-color: %s', esc_attr($parent_active_border_color));
+                $tab_styles[] = sprintf('--smart-tabs-active-border-style: %s', esc_attr($active_border_style));
+                $tab_styles[] = sprintf('--smart-tabs-active-border-width: %s', esc_attr($active_border_width));
+            }
+
             $tab_style_attr = !empty($tab_styles) ? sprintf(' style="%s"', implode('; ', $tab_styles)) : '';
 
             // Build icon HTML

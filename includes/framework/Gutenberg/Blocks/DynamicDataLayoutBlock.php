@@ -303,7 +303,7 @@ class DynamicDataLayoutBlock extends Block
             $headingHtml = $this->renderHeadingBlock($headingBlock, $query);
 
             // Expose data attributes so other blocks (e.g., advanced-filters) can find and update this block via AJAX
-            $wrapperAttrs = $this->buildWrapperAttributes($attributes);
+            $wrapperAttrs = $this->buildWrapperAttributes($this->resolveQueriedObjectTaxQuery($attributes));
 
             return sprintf('<div %s>%s%s</div>', $wrapperAttrs, $headingHtml, $rendered);
         } catch (\Exception $e) {
@@ -717,6 +717,13 @@ class DynamicDataLayoutBlock extends Block
         // Render layout
         $html = $decorator->render();
 
+        if ($query->post_count === 0 && ($attributes['showEmptyMessage'] ?? true)) {
+            $html = sprintf(
+                '<div class="wp-block-jankx-dynamic-data-layout empty-state">%s</div>',
+                esc_html($attributes['emptyMessage'] ?? __('No posts found.', 'jankx'))
+            );
+        }
+
         // Wrap with data attributes so subsequent AJAX updates keep block metadata
         $wrapperAttrs = $this->buildWrapperAttributes($attributes);
         $html = sprintf('<div %s>%s</div>', $wrapperAttrs, $html);
@@ -830,6 +837,60 @@ class DynamicDataLayoutBlock extends Block
         $postType = $sanitizedAttributes['postType'] ?? 'post';
 
         return $this->buildQueryForPreset($decorator, $sanitizedAttributes, $originalPreset, $postType);
+    }
+
+    protected function resolveQueriedObjectTaxQuery(array $attributes): array
+    {
+        if (empty($attributes['taxQuery']) || !is_array($attributes['taxQuery'])) {
+            return $attributes;
+        }
+
+        $changed = false;
+        $taxQuery = [];
+        foreach ($attributes['taxQuery'] as $entry) {
+            if (($entry['operator'] ?? '') !== 'CURRENT_QUERIED_OBJECT') {
+                $taxQuery[] = $entry;
+                continue;
+            }
+
+            $taxonomy = $entry['taxonomy'] ?? '';
+            $queriedObject = get_queried_object();
+
+            if ($queriedObject instanceof \WP_Term && (empty($taxonomy) || $queriedObject->taxonomy === $taxonomy)) {
+                $taxQuery[] = [
+                    'taxonomy' => $queriedObject->taxonomy,
+                    'field' => 'term_id',
+                    'terms' => [(int) $queriedObject->term_id],
+                    'operator' => 'IN',
+                ];
+                $changed = true;
+                continue;
+            }
+
+            if (is_singular() && $taxonomy) {
+                $terms = get_the_terms(get_the_ID(), $taxonomy);
+                if (is_array($terms) && !empty($terms)) {
+                    $taxQuery[] = [
+                        'taxonomy' => $taxonomy,
+                        'field' => 'term_id',
+                        'terms' => array_map('intval', wp_list_pluck($terms, 'term_id')),
+                        'operator' => 'IN',
+                    ];
+                    $changed = true;
+                    continue;
+                }
+            }
+
+            $taxQuery[] = $entry;
+        }
+
+        if (!$changed) {
+            return $attributes;
+        }
+
+        $attributes['taxQuery'] = $taxQuery;
+
+        return $attributes;
     }
 
 
