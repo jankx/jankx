@@ -276,17 +276,6 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
     }, [filterType]);
 
 
-    // Khi nằm trong smart-tab, không render inspector controls — smart-tab xử lý tất cả
-    if (isSmartTabChild) {
-        return (
-            <div {...blockProps}>
-                <span style={{ fontSize: '12px', color: '#999', fontStyle: 'italic' }}>
-                    [{filterType}{taxonomy ? `: ${taxonomy}` : ''}]
-                </span>
-            </div>
-        );
-    }
-
     return (
         <>
             <InspectorControls>
@@ -294,6 +283,11 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                     <p style={{ marginBottom: '8px', fontSize: '12px', color: '#555' }}>
                         {__('Post type kế thừa từ Advanced Filters:', 'jankx')} <strong>{resolvedTargetPostType}</strong>
                     </p>
+                    {isSmartTabChild && (
+                        <p style={{ marginBottom: '8px', fontSize: '12px', color: '#555' }}>
+                            {__('Chọn block layout cần filter ở Tab Settings → Target Blocks.', 'jankx')}
+                        </p>
+                    )}
                     <SelectControl
                         label={__('Filter Type', 'jankx')}
                         value={filterType}
