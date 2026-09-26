@@ -1,0 +1,28 @@
+.wp-block-jankx-term-list {
+    min-height: 96px;
+
+    // The canvas preview container is rendered by jankx/dynamic-term-template.
+    // Its inline style already handles grid/flex display, so only item sizing
+    // is adjusted here.
+    .dynamic-data-template__items-container {
+        &.layout-flex {
+            > .dynamic-data-template__item {
+                flex: 1 1 var(--jankx-term-item-basis, 240px);
+            }
+        }
+
+        &.layout-list > .dynamic-data-template__item {
+            width: 100%;
+        }
+    }
+
+    .dynamic-data-template__item {
+        box-sizing: border-box;
+        max-width: 100%;
+    }
+}
+
+.jankx-term-list__empty {
+    font-style: italic;
+    opacity: 0.7;
+}

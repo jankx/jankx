@@ -163,6 +163,10 @@ module.exports = {
     'dist/blocks/dynamic-term-template/style': './blocks/dynamic-term-template/style.scss',
     'dist/blocks/dynamic-term-template/editor': './blocks/dynamic-term-template/editor.scss',
 
+    'dist/blocks/term-list/index': './blocks/term-list/index.ts',
+    'dist/blocks/term-list/style': './blocks/term-list/style.scss',
+    'dist/blocks/term-list/editor': './blocks/term-list/editor.scss',
+
     'dist/blocks/human-readable-post-date/index': './blocks/human-readable-post-date/index.tsx',
     'dist/blocks/human-readable-post-date/style': './blocks/human-readable-post-date/style.scss',
 
@@ -243,6 +247,11 @@ module.exports = {
   },
   resolve: {
     extensions: ['.ts', '.tsx', '.js', '.jsx', '.scss', '.css'],
+    // Blocks live under resources/, but the @jankx/gutenberg-controls alias points at
+    // ../vendor. Without an explicit modules entry, imports such as @wordpress/icons
+    // are resolved by walking up from the vendor folder and never reach
+    // resources/node_modules.
+    modules: [path.resolve(__dirname, 'node_modules'), 'node_modules'],
     alias: {
       // Force all plyr imports (including plyr-react's internal `import PlyrJS from "plyr"`)
       // to use the compiled dist build. This avoids webpack 5 strict ESM "fully specified"

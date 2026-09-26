@@ -622,7 +622,7 @@ export default function Edit({
     // Get taxonomy and settings from context
     const taxonomy: string = context?.taxonomy || attributes.taxonomy || 'category';
     const postType: string = context?.query?.postType || context?.postType || 'post';
-    const postsPerPage: number = context?.postsPerPage || 10;
+    const postsPerPage: number = context?.postsPerPage ?? 10;
     const displayLayout: string = context?.displayLayout || 'grid';
     const columns: number = context?.columns || 3;
     const columnsTablet: number = context?.columnsTablet || 2;
@@ -647,7 +647,8 @@ export default function Edit({
     // Prepare query args for terms
     const queryArgs = useMemo(() => {
         const args: Record<string, any> = {
-            per_page: Math.min(Math.max(1, postsPerPage), 100),
+            // 0 = show all terms; the REST endpoint caps per_page at 100.
+            per_page: postsPerPage > 0 ? Math.min(Math.max(1, postsPerPage), 100) : 100,
             order: (context.order || 'asc').toLowerCase(),
             orderby: context.orderBy || 'name',
             hide_empty: typeof context.hideEmpty === 'boolean' ? context.hideEmpty : true,
@@ -1610,10 +1611,17 @@ export default function Edit({
                             '--columns-desktop': columns,
                             '--columns-tablet': columnsTablet,
                             '--columns-mobile': columnsMobile,
-                            display: displayLayout === 'grid' || displayLayout === 'card' ? 'grid' : 'block',
-                            gridTemplateColumns: (displayLayout === 'grid' || displayLayout === 'card')
-                                ? `repeat(${columns}, minmax(0, 1fr))`
-                                : 'none',
+                            display:
+                                displayLayout === 'grid' || displayLayout === 'card'
+                                    ? 'grid'
+                                    : displayLayout === 'flex'
+                                    ? 'flex'
+                                    : 'block',
+                            gridTemplateColumns:
+                                displayLayout === 'grid' || displayLayout === 'card'
+                                    ? `repeat(${columns}, minmax(0, 1fr))`
+                                    : 'none',
+                            flexWrap: displayLayout === 'flex' ? 'wrap' : undefined,
                             gap: '1rem',
                             ...(getItemBgRatioDesktop(attributes) ? { aspectRatio: getItemBgRatioDesktop(attributes) } : {}),
                         } as CSSProperties}

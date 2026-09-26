@@ -1,0 +1,134 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "jankx/term-list",
+    "version": "1.0.0",
+    "title": "Terms List",
+    "category": "jankx",
+    "icon": "category",
+    "description": "Hiển thị toàn bộ term của một taxonomy với template nội dung tùy chỉnh cho từng term.",
+    "textdomain": "jankx",
+    "attributes": {
+        "taxonomy": {
+            "type": "string",
+            "default": "category"
+        },
+        "postsPerPage": {
+            "type": "number",
+            "default": 0
+        },
+        "orderBy": {
+            "type": "string",
+            "default": "name",
+            "enum": [
+                "name",
+                "slug",
+                "count",
+                "term_order",
+                "description"
+            ]
+        },
+        "order": {
+            "type": "string",
+            "default": "ASC",
+            "enum": [
+                "ASC",
+                "DESC"
+            ]
+        },
+        "hideEmpty": {
+            "type": "boolean",
+            "default": true
+        },
+        "showOnlyTopLevel": {
+            "type": "boolean",
+            "default": false
+        },
+        "showTermCount": {
+            "type": "boolean",
+            "default": false
+        },
+        "layout": {
+            "type": "string",
+            "default": "list",
+            "enum": [
+                "list",
+                "grid",
+                "flex"
+            ]
+        },
+        "columns": {
+            "type": "number",
+            "default": 3
+        }
+    },
+    "providesContext": {
+        "taxonomy": "taxonomy",
+        "hideEmpty": "hideEmpty",
+        "showTermCount": "showTermCount",
+        "displayLayout": "layout",
+        "postsPerPage": "postsPerPage",
+        "columns": "columns",
+        "orderBy": "orderBy",
+        "order": "order"
+    },
+    "supports": {
+        "anchor": true,
+        "align": [
+            "wide",
+            "full"
+        ],
+        "html": false,
+        "spacing": {
+            "margin": true,
+            "padding": true,
+            "blockGap": {
+                "__experimentalDefault": "1rem"
+            },
+            "__experimentalDefaultControls": {
+                "blockGap": true,
+                "padding": true,
+                "margin": true
+            }
+        },
+        "color": {
+            "text": true,
+            "background": true,
+            "gradients": true,
+            "link": true,
+            "__experimentalDefaultControls": {
+                "background": true,
+                "text": true,
+                "link": true
+            }
+        },
+        "typography": {
+            "fontSize": true,
+            "lineHeight": true,
+            "__experimentalFontFamily": true,
+            "__experimentalFontWeight": true,
+            "__experimentalFontStyle": true,
+            "__experimentalTextTransform": true,
+            "__experimentalTextDecoration": true,
+            "__experimentalLetterSpacing": true,
+            "__experimentalDefaultControls": {
+                "fontSize": true
+            }
+        },
+        "__experimentalBorder": {
+            "radius": true,
+            "color": true,
+            "width": true,
+            "style": true,
+            "__experimentalDefaultControls": {
+                "radius": true,
+                "color": true,
+                "width": true,
+                "style": true
+            }
+        }
+    },
+    "editorScript": "file:../../dist/blocks/term-list/index.js",
+    "editorStyle": "file:../../dist/blocks/term-list/editor.css",
+    "style": "file:../../dist/blocks/term-list/style.css"
+}

@@ -6,9 +6,10 @@
   "title": "Dynamic Term Template",
   "category": "jankx",
   "parent": [
-    "jankx/dynamic-term-layout"
+    "jankx/dynamic-term-layout",
+    "jankx/term-list"
   ],
-  "description": "Markup template để render từng term trong Dynamic Term Layout block",
+  "description": "Markup template để render từng term trong Dynamic Term Layout / Terms List block",
   "textdomain": "jankx",
   "editorScript": "file:../../dist/blocks/dynamic-term-template/index.js",
   "editorStyle": "file:../../dist/blocks/dynamic-term-template/editor.css",
@@ -16,6 +17,7 @@
   "usesContext": [
     "queryId",
     "postType",
+    "taxonomy",
     "displayLayout",
     "postsPerPage",
     "columns",
@@ -58,6 +60,8 @@
     "postParentNotIn",
     "customQueryId",
     "hideEmpty",
+    "termIn",
+    "termNotIn",
     "termParent",
     "showTermCount"
   ],

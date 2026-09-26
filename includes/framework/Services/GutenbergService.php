@@ -15,6 +15,7 @@ use Jankx\Gutenberg\Blocks\SearchResultsCountBlock;
 use Jankx\Gutenberg\Blocks\PostTypeBadgeBlock;
 use Jankx\Gutenberg\Blocks\PostTermsBlock;
 use Jankx\Gutenberg\Blocks\TermPostCountBlock;
+use Jankx\Gutenberg\Blocks\TermListBlock;
 use Jankx\Gutenberg\Blocks\DynamicDataLayoutBlock;
 use Jankx\Gutenberg\Blocks\DynamicDataTemplateBlock;
 use Jankx\Gutenberg\Blocks\DynamicTermLayoutBlock;
@@ -165,6 +166,7 @@ class GutenbergService
         $this->repository->registerBlock(DynamicDataTemplateBlock::class);
         $this->repository->registerBlock(DynamicTermLayoutBlock::class);
         $this->repository->registerBlock(DynamicTermTemplateBlock::class);
+        $this->repository->registerBlock(TermListBlock::class);
         $this->repository->registerBlock(ModalBlock::class);
         $this->repository->registerBlock(OffcanvasSidebarBlock::class);
         $this->repository->registerBlock(OffcanvasTriggerBlock::class);
