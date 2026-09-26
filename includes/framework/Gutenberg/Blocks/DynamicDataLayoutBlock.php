@@ -479,7 +479,7 @@ class DynamicDataLayoutBlock extends Block
      */
     public function enqueueEditorAssets()
     {
-        $asset_file = dirname($this->blockPath) . '/dist/blocks/dynamic-data-layout/index.asset.php';
+        $asset_file = dirname($this->blockPath, 2) . '/dist/blocks/dynamic-data-layout/index.asset.php';
 
         if (!file_exists($asset_file)) {
             return;
