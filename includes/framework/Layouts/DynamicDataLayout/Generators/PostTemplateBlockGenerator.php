@@ -277,9 +277,9 @@ class PostTemplateBlockGenerator extends AbstractContentGenerator
             $contentOutput = '';
             foreach ($innerBlocks as $innerBlock) {
                 $normalizedBlock = [
-                    'blockName' => $innerBlock['blockName'] ?? '',
-                    'attrs' => is_array($innerBlock['attrs'] ?? null) ? $innerBlock['attrs'] : [],
-                    'innerBlocks' => is_array($innerBlock['innerBlocks'] ?? null) ? $innerBlock['innerBlocks'] : [],
+                    'blockName'    => $innerBlock['blockName'] ?? '',
+                    'attrs'        => is_array($innerBlock['attrs'] ?? null) ? $innerBlock['attrs'] : [],
+                    'innerBlocks'  => is_array($innerBlock['innerBlocks'] ?? null) ? $innerBlock['innerBlocks'] : [],
                     'innerContent' => is_array($innerBlock['innerContent'] ?? null) ? $innerBlock['innerContent'] : [],
                 ];
 
@@ -292,15 +292,13 @@ class PostTemplateBlockGenerator extends AbstractContentGenerator
                     $normalizedBlock['originalContent'] = $innerBlock['originalContent'];
                 }
 
-                $blockInstance = new WP_Block($normalizedBlock, $context);
-                $blockHtml = $blockInstance->render();
-
-                // Fix missing styles: Apply render_block filters to ensure block supports are applied
-                $blockHtml = apply_filters('render_block', $blockHtml, $normalizedBlock, $blockInstance);
+                // Use renderBlockWithContext() to correctly handle core/template-part
+                // and core/block references with the right post context injected.
+                $blockHtml = $this->renderBlockWithContext($normalizedBlock, $context, $post);
 
                 // Handle hero-overlay layout via itemLayout class
                 if ($itemLayout instanceof \Jankx\Layouts\DynamicDataLayout\ContentLoopLayouts\HeroOverlayItemLayout) {
-                    if (in_array($normalizedBlock['blockName'], ['core/post-featured-image', 'jankx/advanced-image-box'], true)) {
+                    if (in_array($normalizedBlock['blockName'], ['core/post-featured-image', 'jankx/advanced-image-box', 'core/template-part'], true)) {
                         $output .= $blockHtml; // This will be the imageHtml
                         continue;
                     } else {
@@ -311,7 +309,7 @@ class PostTemplateBlockGenerator extends AbstractContentGenerator
 
                 // Handle overlap-card layout via itemLayout class
                 if ($itemLayout instanceof \Jankx\Layouts\DynamicDataLayout\ContentLoopLayouts\OverlapCardItemLayout) {
-                    if (in_array($normalizedBlock['blockName'], ['core/post-featured-image', 'woocommerce/product-image', 'jankx/advanced-image-box'], true)) {
+                    if (in_array($normalizedBlock['blockName'], ['core/post-featured-image', 'woocommerce/product-image', 'jankx/advanced-image-box', 'core/template-part'], true)) {
                         $output .= $blockHtml; // This will be the imageHtml
                         continue;
                     } else {
@@ -321,6 +319,7 @@ class PostTemplateBlockGenerator extends AbstractContentGenerator
                 }
 
                 // Inject overlay only when targeting featured image (Standard Overlay)
+                // Note: core/template-part wrapping images is handled internally by the template.
                 if (
                     $overlayTarget === 'featured-image'
                     && ($overlayIcon || $overlayImage || $overlayText)

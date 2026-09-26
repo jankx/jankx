@@ -17,6 +17,9 @@ export interface SmartTabsAttributes {
     activeTabTextColor?: string;
     activeTabBackgroundColor?: string;
     activeTabGradient?: string;
+    activeTabBorderColor?: string;
+    activeTabBorderStyle?: 'solid' | 'dashed' | 'dotted' | 'double' | 'none';
+    activeTabBorderWidth?: string;
     hideTabsNavigation?: boolean;
     hideTabContent?: boolean;
     label?: string;

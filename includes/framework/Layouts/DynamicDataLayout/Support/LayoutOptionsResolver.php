@@ -43,6 +43,7 @@ class LayoutOptionsResolver
             'showDots' => $this->attributes['showDots'] ?? true,
             'itemsWrapperClass' => $this->sanitizeClass($this->attributes['itemsWrapperClass'] ?? ''),
             'itemClass' => $this->sanitizeClass($this->attributes['itemClass'] ?? ''),
+            'queryId' => $this->attributes['queryId'] ?? '',
             'postTemplate' => $templateBlock,
         ];
 
@@ -95,9 +96,6 @@ class LayoutOptionsResolver
     {
         if ($templateBlock === null) {
             return $options;
-        }
-        if (empty($options['itemsWrapperClass'])) {
-            $options['itemsWrapperClass'] = 'wp-block-jankx-dynamic-data-layout';
         }
         if (empty($options['itemClass'])) {
             $options['itemClass'] = 'wp-block-post';

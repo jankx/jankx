@@ -63,8 +63,43 @@ class LayoutQueryBuilder
             return [$orderby, $order];
         }
 
-        $orderbyArray = [$orderby => $order, 'ID' => 'DESC'];
-        return [$orderbyArray, null];
+        // Native WP_Query orderby values keep the primary + ID tiebreaker form.
+        // Custom orderby values (e.g. `post_views` from the metrics extension)
+        // are passed through as a plain string so `pre_get_posts` handlers can
+        // intercept and translate them (array orderby would silently break them).
+        if (in_array($orderby, $this->getNativeOrderbyValues(), true)) {
+            $orderbyArray = [$orderby => $order, 'ID' => 'DESC'];
+            return [$orderbyArray, null];
+        }
+
+        return [$orderby, $order];
+    }
+
+    /**
+     * Orderby values natively understood by WP_Query.
+     *
+     * @return string[]
+     */
+    protected function getNativeOrderbyValues(): array
+    {
+        return [
+            'ID',
+            'author',
+            'title',
+            'name',
+            'date',
+            'modified',
+            'parent',
+            'type',
+            'menu_order',
+            'comment_count',
+            'meta_value',
+            'meta_value_num',
+            'post__in',
+            'post_name__in',
+            'post_parent__in',
+            'post_in',
+        ];
     }
 
     protected function applyPaginationArgs(array $args): array
@@ -184,7 +219,11 @@ class LayoutQueryBuilder
             if ($taxonomy === '') {
                 continue;
             }
+            if (!$this->isTaxonomyRegisteredForQueriedPostType($taxonomy)) {
+                continue;
+            }
             $operator = $this->sanitizeOperator($taxItem['operator'] ?? 'IN');
+
 
             if ($operator === 'CURRENT_QUERIED_OBJECT') {
                 $queriedObject = get_queried_object();
@@ -265,6 +304,47 @@ class LayoutQueryBuilder
     {
         $allowed = ['IN', 'NOT IN', 'AND', 'EXISTS', 'NOT EXISTS', 'CURRENT_QUERIED_OBJECT'];
         return in_array($operator, $allowed, true) ? $operator : 'IN';
+    }
+
+    /**
+     * Whether a taxonomy is registered for any of the post types the block queries.
+     *
+     * Prevents orphan taxQuery items (e.g. a "category" filter left over from when
+     * the block used "post") from silently being applied to post types that do not
+     * support that taxonomy - which the editor UI cannot display either.
+     *
+     * @param string $taxonomy Taxonomy slug
+     * @return bool
+     */
+    protected function isTaxonomyRegisteredForQueriedPostType(string $taxonomy): bool
+    {
+        $postTypes = $this->resolveQueryPostTypes();
+        if (empty($postTypes)) {
+            return true;
+        }
+        foreach ($postTypes as $postType) {
+            if (in_array($taxonomy, get_object_taxonomies($postType, 'names'), true)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Resolve the post types the block can query (supports multi post type).
+     *
+     * @return array
+     */
+    protected function resolveQueryPostTypes(): array
+    {
+        if (!empty($this->attributes['useMultiPostType']) && !empty($this->attributes['postTypes']) && is_array($this->attributes['postTypes'])) {
+            $types = array_map('sanitize_key', (array) $this->attributes['postTypes']);
+            $types = array_values(array_filter($types, 'post_type_exists'));
+        } else {
+            $type = $this->attributes['postType'] ?? 'post';
+            $types = post_type_exists($type) ? [$type] : [];
+        }
+        return $types;
     }
 
     protected function sanitizeCompareOperator(string $compare): string

@@ -46,6 +46,18 @@
         "activeTabGradient": {
             "type": "string"
         },
+        "activeTabBorderColor": {
+            "type": "string"
+        },
+        "activeTabBorderStyle": {
+            "type": "string",
+            "enum": ["solid", "dashed", "dotted", "double", "none"],
+            "default": "solid"
+        },
+        "activeTabBorderWidth": {
+            "type": "string",
+            "default": ""
+        },
         "hideTabsBorderBottom": {
             "type": "boolean",
             "default": false

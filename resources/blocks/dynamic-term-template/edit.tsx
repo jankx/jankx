@@ -512,7 +512,7 @@ const getItemBgRatioMediaStyles = (attributes: any, selector: string): string =>
         rules.push(`${mq} { ${selector} { aspect-ratio: ${ratio}; } }`);
     });
 
-    return rules.length ? `<style>${rules.join('\n')}</style>` : '';
+    return rules.length ? rules.join('\n') : '';
 };
 
 const buildItemBackgroundOverlayStyle = (attributes: any): CSSProperties => {
@@ -1508,7 +1508,6 @@ export default function Edit({
                                     display: 'flex',
                                     gap: '1rem',
                                     scrollSnapType: 'x mandatory',
-                                    ...(getItemBgRatioDesktop(attributes) ? { aspectRatio: getItemBgRatioDesktop(attributes) } : {}),
                                 } as CSSProperties}
                             >
                                 {Array.from({ length: totalItems }).map((_, index) => {
@@ -1546,6 +1545,12 @@ export default function Edit({
                                     // Apply item background styles
                                     const bgStyle = buildItemBackgroundStyle(attributes, termData, mediaUrlMap);
                                     Object.assign(itemStyle, bgStyle);
+
+                                    // Apply aspect ratio to each item (not the container)
+                                    const desktopRatio = getItemBgRatioDesktop(attributes);
+                                    if (desktopRatio) {
+                                        itemStyle.aspectRatio = desktopRatio;
+                                    }
 
                                     if (index === 0) {
                                         return (
@@ -1623,7 +1628,6 @@ export default function Edit({
                                     : 'none',
                             flexWrap: displayLayout === 'flex' ? 'wrap' : undefined,
                             gap: '1rem',
-                            ...(getItemBgRatioDesktop(attributes) ? { aspectRatio: getItemBgRatioDesktop(attributes) } : {}),
                         } as CSSProperties}
                     >
                         {Array.from({ length: totalItems }).map((_, index) => {
@@ -1656,6 +1660,12 @@ export default function Edit({
                                 // Apply item background styles
                                 const bgStyle2 = buildItemBackgroundStyle(attributes, termData, mediaUrlMap);
                                 Object.assign(itemStyle2, bgStyle2);
+
+                                // Apply aspect ratio to each item (not the container)
+                                const desktopRatio2 = getItemBgRatioDesktop(attributes);
+                                if (desktopRatio2) {
+                                    itemStyle2.aspectRatio = desktopRatio2;
+                                }
 
                                 return (
                                     <div
@@ -1699,6 +1709,12 @@ export default function Edit({
                             // Apply item background styles
                             const bgStyle3 = buildItemBackgroundStyle(attributes, termData, mediaUrlMap);
                             Object.assign(itemStyle3, bgStyle3);
+
+                            // Apply aspect ratio to each item (not the container)
+                            const desktopRatio3 = getItemBgRatioDesktop(attributes);
+                            if (desktopRatio3) {
+                                itemStyle3.aspectRatio = desktopRatio3;
+                            }
 
                             return (
                                 <div

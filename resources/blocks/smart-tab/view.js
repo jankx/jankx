@@ -1387,9 +1387,18 @@ function fetchDynamicDataLayout(targetBlockId, filtersPayload, updateUrl = true)
     if (afConfigEl) {
         nonce = afConfigEl.getAttribute('data-nonce') || '';
         ajaxUrl = afConfigEl.getAttribute('data-ajax-url') || ajaxUrl;
-    } else if (window.jankxAdvancedFilters) {
-        nonce = window.jankxAdvancedFilters.nonce || '';
-        ajaxUrl = window.jankxAdvancedFilters.ajaxUrl || ajaxUrl;
+    }
+    if (!nonce) {
+        const nonceSources = [
+            window.jankxAdvancedFilters,
+            window.jankxDynamicDataLayoutView,
+            window.jankxSmartTabView,
+        ];
+        const nonceSource = nonceSources.find((source) => source && source.nonce);
+        if (nonceSource) {
+            nonce = nonceSource.nonce;
+            ajaxUrl = nonceSource.ajaxUrl || ajaxUrl;
+        }
     }
     
     // Ensure AJAX URL is absolute

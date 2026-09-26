@@ -121,19 +121,29 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                 const parent = getBlock(parentId);
                 const attrs = parent?.attributes || {};
                 const triggerSettings = (attrs.triggerSettings || {}) as Record<string, unknown>;
-                const targetBlockId = triggerSettings.targetBlockId as string | undefined;
+                const targetBlockId = (triggerSettings.targetBlockId as string | undefined) ||
+                    ((triggerSettings.targetBlockIds as string[] | undefined) || [])[0];
+                const storedPostType = triggerSettings.targetBlockPostType as string | undefined;
 
-                // Tìm dynamic-data-layout block để lấy post type
-                let targetPostType = 'post';
+                // Tìm layout block để lấy post type
+                let targetPostType = storedPostType || 'post';
                 if (targetBlockId) {
                     const allBlocks = select('core/block-editor').getBlocks();
+                    const targetableNames = [
+                        'jankx/dynamic-data-layout',
+                        'jankx/dynamic-ssr-layout',
+                        'jankx/dynamic-term-layout',
+                        'jankx/advanced-filters',
+                    ];
+                    const matchesTarget = (block: any) =>
+                        targetableNames.includes(block.name) &&
+                        [block.attributes?.customQueryId, block.attributes?.queryId, block.clientId].some(
+                            (id: any) => id !== undefined && id !== null && id !== '' && String(id) === String(targetBlockId)
+                        );
                     const findBlock = (blocks: any[]): any => {
                         for (const block of blocks) {
-                            if (block.name === 'jankx/dynamic-data-layout' || block.name === 'jankx/dynamic-ssr-layout') {
-                                const queryId = block.attributes?.queryId || block.clientId;
-                                if (String(queryId) === targetBlockId) {
-                                    return block;
-                                }
+                            if (matchesTarget(block)) {
+                                return block;
                             }
                             if (block.innerBlocks?.length > 0) {
                                 const found = findBlock(block.innerBlocks);
@@ -145,7 +155,7 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
 
                     const targetBlock = findBlock(allBlocks);
                     if (targetBlock) {
-                        targetPostType = targetBlock.attributes?.postType || 'post';
+                        targetPostType = targetBlock.attributes?.postType || storedPostType || 'post';
                     }
                 }
 
@@ -276,17 +286,6 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
     }, [filterType]);
 
 
-    // Khi nằm trong smart-tab, không render inspector controls — smart-tab xử lý tất cả
-    if (isSmartTabChild) {
-        return (
-            <div {...blockProps}>
-                <span style={{ fontSize: '12px', color: '#999', fontStyle: 'italic' }}>
-                    [{filterType}{taxonomy ? `: ${taxonomy}` : ''}]
-                </span>
-            </div>
-        );
-    }
-
     return (
         <>
             <InspectorControls>
@@ -294,6 +293,11 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                     <p style={{ marginBottom: '8px', fontSize: '12px', color: '#555' }}>
                         {__('Post type kế thừa từ Advanced Filters:', 'jankx')} <strong>{resolvedTargetPostType}</strong>
                     </p>
+                    {isSmartTabChild && (
+                        <p style={{ marginBottom: '8px', fontSize: '12px', color: '#555' }}>
+                            {__('Chọn block layout cần filter ở Tab Settings → Target Blocks.', 'jankx')}
+                        </p>
+                    )}
                     <SelectControl
                         label={__('Filter Type', 'jankx')}
                         value={filterType}
@@ -344,6 +348,22 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                                 onChange={(value) => setAttributes({ taxonomy: value })}
                                 help={__('Taxonomy lấy theo post type của block cha', 'jankx')}
                             />
+
+                            {isSmartTabChild && taxonomy && (
+                                <SelectControl
+                                    label={__('Select Term', 'jankx')}
+                                    value={filterValue || 'all'}
+                                    options={[
+                                        { label: __('Tất cả', 'jankx'), value: 'all' },
+                                        ...(loadingTerms ? [] : terms.map((term: any) => ({
+                                            label: `${term.name}${term.count !== undefined ? ` (${term.count})` : ''}`,
+                                            value: String(term.id),
+                                        }))),
+                                    ]}
+                                    onChange={(value) => setAttributes({ filterValue: value === 'all' ? '' : value })}
+                                    help={__('Chọn "Tất cả" để hiển thị tất cả data, hoặc chọn term cụ thể để filter', 'jankx')}
+                                />
+                            )}
 
                             <SelectControl
                                 label={__('Display Style', 'jankx')}
@@ -464,6 +484,16 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                                 value={placeholder || ''}
                                 onChange={(value) => setAttributes({ placeholder: value })}
                             />
+
+                            {isSmartTabChild && metaKey && (
+                                <TextControl
+                                    label={__('Meta Value', 'jankx')}
+                                    value={filterValue || ''}
+                                    onChange={(value) => setAttributes({ filterValue: value })}
+                                    placeholder={__('Nhập giá trị meta để filter', 'jankx')}
+                                    help={__('Giá trị meta để filter khi tab được click', 'jankx')}
+                                />
+                            )}
                         </>
                     )}
 
@@ -475,18 +505,39 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                                 onChange={(value) => setAttributes({ currency: value })}
                             />
 
-                            <TextControl
-                                label={__('Min Price', 'jankx')}
-                                value={minPrice || ''}
-                                onChange={(value) => setAttributes({ minPrice: value })}
-                                type="number"
-                            />
-                            <TextControl
-                                label={__('Max Price', 'jankx')}
-                                value={maxPrice || ''}
-                                onChange={(value) => setAttributes({ maxPrice: value })}
-                                type="number"
-                            />
+                            {isSmartTabChild ? (
+                                <>
+                                    <TextControl
+                                        label={__('Min Price', 'jankx')}
+                                        value={filterValueMin || ''}
+                                        onChange={(value) => setAttributes({ filterValueMin: value })}
+                                        type="number"
+                                        placeholder={__('Giá tối thiểu', 'jankx')}
+                                    />
+                                    <TextControl
+                                        label={__('Max Price', 'jankx')}
+                                        value={filterValueMax || ''}
+                                        onChange={(value) => setAttributes({ filterValueMax: value })}
+                                        type="number"
+                                        placeholder={__('Giá tối đa', 'jankx')}
+                                    />
+                                </>
+                            ) : (
+                                <>
+                                    <TextControl
+                                        label={__('Min Price', 'jankx')}
+                                        value={minPrice || ''}
+                                        onChange={(value) => setAttributes({ minPrice: value })}
+                                        type="number"
+                                    />
+                                    <TextControl
+                                        label={__('Max Price', 'jankx')}
+                                        value={maxPrice || ''}
+                                        onChange={(value) => setAttributes({ maxPrice: value })}
+                                        type="number"
+                                    />
+                                </>
+                            )}
                         </>
                     )}
 
@@ -507,6 +558,25 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                                 onChange={(value) => setAttributes({ dateRange: value })}
                                 help={__('Allow users to select a date range', 'jankx')}
                             />
+
+                            {isSmartTabChild && (
+                                <>
+                                    <TextControl
+                                        label={__('Start Date', 'jankx')}
+                                        type="date"
+                                        value={filterValueStart || ''}
+                                        onChange={(value) => setAttributes({ filterValueStart: value })}
+                                        help={__('Ngày bắt đầu để filter', 'jankx')}
+                                    />
+                                    <TextControl
+                                        label={__('End Date', 'jankx')}
+                                        type="date"
+                                        value={filterValueEnd || ''}
+                                        onChange={(value) => setAttributes({ filterValueEnd: value })}
+                                        help={__('Ngày kết thúc để filter', 'jankx')}
+                                    />
+                                </>
+                            )}
                         </>
                     )}
 
@@ -528,6 +598,22 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                                 onChange={(value) => setAttributes({ multipleSelection: value })}
                                 help={__('Allow users to select multiple authors', 'jankx')}
                             />
+
+                            {isSmartTabChild && (
+                                <SelectControl
+                                    label={__('Select Author', 'jankx')}
+                                    value={filterValue || ''}
+                                    options={[
+                                        { label: loadingAuthors ? __('Loading...', 'jankx') : __('-- Select Author --', 'jankx'), value: '' },
+                                        ...authors.map((author: any) => ({
+                                            label: author.name,
+                                            value: String(author.id),
+                                        })),
+                                    ]}
+                                    onChange={(value) => setAttributes({ filterValue: value })}
+                                    help={__('Chọn author để filter khi tab được click', 'jankx')}
+                                />
+                            )}
                         </>
                     )}
 
@@ -585,6 +671,16 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                                     help={__('Dán SVG hoặc HTML icon. Sử dụng cẩn thận.', 'jankx')}
                                 />
                             ) : null}
+
+                            {isSmartTabChild && (
+                                <TextControl
+                                    label={__('Search Keyword', 'jankx')}
+                                    value={filterValue || ''}
+                                    onChange={(value) => setAttributes({ filterValue: value })}
+                                    placeholder={__('Nhập từ khóa để filter', 'jankx')}
+                                    help={__('Từ khóa để filter khi tab được click', 'jankx')}
+                                />
+                            )}
                         </>
                     )}
                 </PanelBody>

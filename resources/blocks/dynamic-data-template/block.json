@@ -63,6 +63,9 @@
     "reusable": false,
     "html": false,
     "align": [
+      "left",
+      "center",
+      "right",
       "wide",
       "full"
     ],
@@ -94,6 +97,7 @@
       "blockGap": {
         "__experimentalDefault": "1.25em"
       },
+      "__experimentalSkipSerialization": true,
       "__experimentalDefaultControls": {
         "blockGap": true,
         "padding": true,
@@ -107,7 +111,8 @@
       "radius": true,
       "color": true,
       "width": true,
-      "style": true
+      "style": true,
+      "__experimentalSkipSerialization": true
     }
   },
   "attributes": {

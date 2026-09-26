@@ -50,6 +50,20 @@ class SmartTabBlock extends Block
         add_action('enqueue_block_editor_assets', [$this, 'enqueueEditorAssets']);
     }
 
+    protected function registerHooks(): void
+    {
+        add_action('wp_enqueue_scripts', function () {
+            wp_localize_script(
+                'jankx-smart-tab-view-script',
+                'jankxSmartTabView',
+                [
+                    'ajaxUrl' => admin_url('admin-ajax.php'),
+                    'nonce' => wp_create_nonce('jankx_load_more'),
+                ]
+            );
+        }, 20);
+    }
+
     /**
      * Localise trigger configuration for the block editor.
      *

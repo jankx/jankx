@@ -521,9 +521,9 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
     }, [queryId, clientId, setAttributes]);
 
     // Reset queryPreset if current preset is not valid for the current postType
-    // Note: 'default' and 'custom' are always valid built-in presets
+    // Note: 'default', 'related' and 'custom' are always valid built-in presets
     useEffect(() => {
-        const BUILTIN_PRESETS = ['default', 'custom'];
+        const BUILTIN_PRESETS = ['default', 'related', 'custom'];
         if (BUILTIN_PRESETS.includes(queryPreset)) {
             // Built-in presets are always valid, never reset them
             return;
@@ -610,6 +610,20 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
 
         fetchTaxonomiesAndAuthors();
     }, [postType]);
+
+    // Prune taxQuery items whose taxonomy is not registered for the selected post type.
+    // Prevents orphan filters (e.g. a "category" item saved while the block used "post")
+    // from being persisted when that taxonomy is invisible/unsupported in the UI.
+    useEffect(() => {
+        if (taxonomies.length === 0 || useMultiPostType) {
+            return;
+        }
+        const availableSlugs = new Set(taxonomies.map((taxonomy) => taxonomy.slug));
+        const pruned = taxQuery.filter((query) => availableSlugs.has(query.taxonomy));
+        if (pruned.length !== taxQuery.length) {
+            setAttributes({ taxQuery: pruned });
+        }
+    }, [taxonomies, taxQuery, useMultiPostType, setAttributes]);
 
     // Function to fetch terms for a specific taxonomy
     const fetchTermsForTaxonomy = useCallback(async (taxonomySlug: string) => {
@@ -985,10 +999,12 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
     }, []);
 
     // Pre-compute query preset options outside JSX
-    // Built-in presets: 'default' (main WP_Query) and 'custom' (fully custom query)
-    // are always available regardless of PHP registrations.
+    // Built-in presets: 'default' (main WP_Query), 'related' (same taxonomy)
+    // and 'custom' (fully custom query) are always available regardless of
+    // PHP registrations.
     const BUILTIN_PRESET_OPTIONS: QueryPresetOption[] = [
         { value: 'default', label: __('Default (Main Query)', 'jankx'), postType: null },
+        { value: 'related', label: __('Related Posts (Same Taxonomy)', 'jankx'), postType: null },
         { value: 'custom', label: __('Custom Query', 'jankx'), postType: null },
     ];
     const normalizedPresets = useMemo<QueryPresetOption[]>(() => {

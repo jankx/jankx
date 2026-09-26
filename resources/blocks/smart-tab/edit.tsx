@@ -455,14 +455,35 @@ export default function Edit({ attributes, setAttributes, clientId, context }: S
                 setDynamicDataLayoutBlocks(layoutBlocks);
 
                 // Restore selected block from triggerSettings (only if trigger is advanced-filter)
-                if (trigger === 'advanced-filter') {
-                    const savedBlockIds = (triggerSettings as Record<string, unknown>)?.targetBlockIds as string[] | undefined;
-                    const savedBlockId = (triggerSettings as Record<string, unknown>)?.targetBlockId as string | undefined;
-                    const targetId = savedBlockIds?.[0] || savedBlockId;
+                const freshBlock = wpData.select('core/block-editor').getBlock(clientId);
+                const freshAttrs = (freshBlock?.attributes || {}) as Record<string, unknown>;
+                if (freshAttrs.trigger === 'advanced-filter') {
+                    const currentSettings = (freshAttrs.triggerSettings || {}) as Record<string, unknown>;
+                    const savedBlockIds = (currentSettings.targetBlockIds as string[] | undefined) ||
+                        (currentSettings.targetBlockId ? [currentSettings.targetBlockId as string] : []);
+                    const targetId = savedBlockIds[0];
                     if (targetId) {
-                        const block = layoutBlocks.find((b) => b.id === targetId || b.clientId === targetId);
+                        const block = layoutBlocks.find((b) => b.id === targetId) ||
+                            layoutBlocks.find((b) => b.clientId === targetId);
                         if (block) {
                             setSelectedTargetBlock({ id: block.id, postType: block.postType });
+                            const healedIds = savedBlockIds.map((id) => {
+                                const match = layoutBlocks.find((b) => b.id === id) ||
+                                    layoutBlocks.find((b) => b.clientId === id);
+                                return match ? match.id : id;
+                            });
+                            const healedSettings = {
+                                ...currentSettings,
+                                targetBlockIds: healedIds,
+                                targetBlockId: healedIds[0] || '',
+                                targetBlockPostType: block.postType,
+                            };
+                            const needsHeal = healedIds.some((id, i) => id !== savedBlockIds[i]) ||
+                                currentSettings.targetBlockId !== healedSettings.targetBlockId ||
+                                currentSettings.targetBlockPostType !== block.postType;
+                            if (needsHeal) {
+                                setAttributes({ triggerSettings: healedSettings });
+                            }
                         }
                     }
                 }
@@ -476,22 +497,42 @@ export default function Edit({ attributes, setAttributes, clientId, context }: S
 
         // Subscribe to block changes
         let timeoutId: NodeJS.Timeout | null = null;
-        let lastBlockCount = 0;
         const wpData = window.wp?.data;
         if (!wpData) {
             return;
         }
+        const targetableNames = [
+            'jankx/dynamic-data-layout',
+            'jankx/dynamic-ssr-layout',
+            'jankx/advanced-filters',
+            'jankx/dynamic-term-layout',
+        ];
+        const getLayoutSignature = (): string => {
+            const parts: string[] = [];
+            const walk = (blocks: Block[]): void => {
+                blocks.forEach((block) => {
+                    if (targetableNames.includes(block.name)) {
+                        const attrs = (block.attributes || {}) as Record<string, unknown>;
+                        parts.push(`${block.name}:${String(attrs.customQueryId || attrs.queryId || '')}:${block.clientId}`);
+                    }
+                    if (block.innerBlocks && block.innerBlocks.length > 0) {
+                        walk(block.innerBlocks);
+                    }
+                });
+            };
+            walk(wpData.select('core/block-editor').getBlocks() || []);
+            return parts.join('|');
+        };
+        let lastSignature = getLayoutSignature();
         const unsubscribe = wpData.subscribe(() => {
-            // Only check if block count actually changed
-            const currentBlocks = wpData.select('core/block-editor').getBlocks();
-            const currentBlockCount = currentBlocks.length;
-            
-            if (currentBlockCount === lastBlockCount) {
+            const signature = getLayoutSignature();
+
+            if (signature === lastSignature) {
                 return;
             }
-            
-            lastBlockCount = currentBlockCount;
-            
+
+            lastSignature = signature;
+
             if (timeoutId) {
                 clearTimeout(timeoutId);
             }
@@ -579,11 +620,14 @@ export default function Edit({ attributes, setAttributes, clientId, context }: S
                                                 label={`${block.name} (${block.postType})`}
                                                 checked={checked}
                                                 onChange={(isChecked: boolean) => {
-                                                    const baseIds = ((triggerSettings as Record<string, unknown>)?.targetBlockIds as string[]) ||
+                                                    const savedIds = ((triggerSettings as Record<string, unknown>)?.targetBlockIds as string[]) ||
                                                         ((triggerSettings as Record<string, unknown>)?.targetBlockId ? [(triggerSettings as Record<string, unknown>)?.targetBlockId as string] : []);
+                                                    const isKnownId = (id: string) =>
+                                                        dynamicDataLayoutBlocks.some((b) => b.id === id || b.clientId === id);
+                                                    const baseIds = dynamicDataLayoutBlocks.length > 0 ? savedIds.filter(isKnownId) : savedIds;
                                                     const newIds = isChecked
                                                         ? [...baseIds, block.id]
-                                                        : baseIds.filter((id) => id !== block.id);
+                                                        : baseIds.filter((id) => id !== block.id && id !== block.clientId);
                                                     setSelectedTargetBlock(
                                                         newIds.length > 0
                                                             ? { id: newIds[0], postType: dynamicDataLayoutBlocks.find((b) => b.id === newIds[0])?.postType || '' }
@@ -594,6 +638,9 @@ export default function Edit({ attributes, setAttributes, clientId, context }: S
                                                             ...triggerSettings,
                                                             targetBlockIds: newIds,
                                                             targetBlockId: newIds[0] || '',
+                                                            targetBlockPostType: newIds.length > 0
+                                                                ? dynamicDataLayoutBlocks.find((b) => b.id === newIds[0])?.postType || ''
+                                                                : '',
                                                         },
                                                     });
                                                 }}

@@ -25,4 +25,18 @@ class ManualRatingProvider extends AbstractStarRatingProvider
     {
         return (float) ($attributes['manualRating'] ?? 5.0);
     }
+
+    public function getEditorConfig(): array
+    {
+        return [
+            [
+                'type'      => 'range',
+                'attribute' => 'manualRating',
+                'label'     => __('Rating Value', 'jankx'),
+                'min'       => 0,
+                'max'       => 5,
+                'step'      => 0.1,
+            ],
+        ];
+    }
 }

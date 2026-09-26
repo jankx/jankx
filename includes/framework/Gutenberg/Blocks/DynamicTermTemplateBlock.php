@@ -40,7 +40,7 @@ class DynamicTermTemplateBlock extends DynamicDataTemplateBlock
             'before'
         );
 
-        $asset_file = dirname($this->blockPath) . '/dist/blocks/dynamic-term-template/index.asset.php';
+        $asset_file = dirname($this->blockPath, 2) . '/dist/blocks/dynamic-term-template/index.asset.php';
 
         if (!file_exists($asset_file)) {
             return;

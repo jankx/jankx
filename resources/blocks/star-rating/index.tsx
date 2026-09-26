@@ -33,3 +33,52 @@ registerBlockVariation('jankx/star-rating', {
     isActive: (attributes) => attributes.displayStyle === 'summary',
     scope: ['block', 'inserter'],
 });
+
+/**
+ * "Google Summary" preset — mimics the Google Maps / Play Store rating chip:
+ *   ★  4.6  (39,092)
+ * - Single filled star in green
+ * - Bold score number in dark color
+ * - Review count in parentheses, light grey
+ */
+registerBlockVariation('jankx/star-rating', {
+    name: 'google-summary',
+    title: __('Google Summary', 'jankx'),
+    description: __('Single green star with bold score and review count — e.g. ★ 4.6 (39,092)', 'jankx'),
+    icon: 'star-filled',
+    attributes: {
+        displayStyle: 'summary',
+        showCount: true,
+        starColor: '#5b8e29',
+        starEmptyColor: '#dddddd',
+        starSize: 20,
+        className: 'is-style-google-summary',
+    },
+    isActive: (attributes) =>
+        attributes.displayStyle === 'summary' &&
+        attributes.className === 'is-style-google-summary',
+    scope: ['block', 'inserter'],
+});
+
+/**
+ * "Compact Stars" preset — small inline stars, no count, yellow.
+ * Useful inside cards / list items.
+ */
+registerBlockVariation('jankx/star-rating', {
+    name: 'compact-stars',
+    title: __('Compact Stars', 'jankx'),
+    description: __('Small inline star icons, no count — ideal for cards', 'jankx'),
+    icon: 'star-filled',
+    attributes: {
+        displayStyle: 'stars',
+        showCount: false,
+        starSize: 12,
+        starColor: '#f1c40f',
+        starEmptyColor: '#dddddd',
+        className: 'is-style-compact-stars',
+    },
+    isActive: (attributes) =>
+        attributes.displayStyle === 'stars' &&
+        attributes.className === 'is-style-compact-stars',
+    scope: ['block', 'inserter'],
+});

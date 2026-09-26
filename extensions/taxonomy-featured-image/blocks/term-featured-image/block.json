@@ -1,85 +1,107 @@
 {
-    "$schema": "https://schemas.wp.org/trunk/block.json",
-    "apiVersion": 3,
-    "name": "jankx/term-featured-image",
-    "version": "1.0.0",
-    "title": "Term Featured Image",
-    "category": "jankx",
-    "icon": "format-image",
-    "description": "Hiển thị ảnh đại diện (featured image) của taxonomy term. Hoạt động trong trang archive, template taxonomy và bên trong Dynamic Term Template.",
-    "keywords": [
-        "term",
-        "taxonomy",
-        "featured image",
-        "thumbnail",
-        "category image"
-    ],
-    "textdomain": "jankx",
-    "usesContext": [
-        "termId",
-        "taxonomy"
-    ],
-    "attributes": {
-        "termId": {
-            "type": "number",
-            "default": 0
-        },
-        "taxonomy": {
-            "type": "string",
-            "default": ""
-        },
-        "imageSize": {
-            "type": "string",
-            "default": "large"
-        },
-        "aspectRatio": {
-            "type": "string",
-            "default": ""
-        },
-        "objectFit": {
-            "type": "string",
-            "default": "cover"
-        },
-        "isLink": {
-            "type": "boolean",
-            "default": true
-        },
-        "linkTarget": {
-            "type": "string",
-            "default": "_self"
-        },
-        "rel": {
-            "type": "string",
-            "default": ""
-        },
-        "showPlaceholder": {
-            "type": "boolean",
-            "default": false
-        },
-        "defaultImageId": {
-            "type": "number",
-            "default": 0
-        }
-    },
-    "supports": {
-        "anchor": true,
-        "align": [ "wide", "full" ],
-        "spacing": {
-            "margin": true,
-            "padding": true,
-            "__experimentalDefaultControls": {
-                "margin": true,
-                "padding": true
-            }
-        },
-        "__experimentalBorder": {
-            "radius": true,
-            "__experimentalDefaultControls": {
-                "radius": true
-            }
-        },
-        "html": false
-    },
-    "editorScript": "file:../../dist/term-featured-image/index.js",
-    "style": "file:../../dist/style-term-featured-image.css"
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "jankx/term-featured-image",
+	"title": "Term Featured Image",
+	"category": "jankx",
+	"description": "Hiển thị ảnh đại diện (featured image) của taxonomy term.",
+	"icon": "format-image",
+	"textdomain": "jankx",
+	"keywords": [ "term", "taxonomy", "featured image", "thumbnail" ],
+	"attributes": {
+		"isLink": {
+			"type": "boolean",
+			"default": true,
+			"role": "content"
+		},
+		"aspectRatio": {
+			"type": "string"
+		},
+		"width": {
+			"type": "string"
+		},
+		"height": {
+			"type": "string"
+		},
+		"scale": {
+			"type": "string",
+			"default": "cover"
+		},
+		"sizeSlug": {
+			"type": "string",
+			"default": "large"
+		},
+		"rel": {
+			"type": "string",
+			"attribute": "rel",
+			"default": "",
+			"role": "content"
+		},
+		"linkTarget": {
+			"type": "string",
+			"default": "_self",
+			"role": "content"
+		},
+		"overlayColor": {
+			"type": "string"
+		},
+		"customOverlayColor": {
+			"type": "string"
+		},
+		"dimRatio": {
+			"type": "number",
+			"default": 0
+		},
+		"gradient": {
+			"type": "string"
+		},
+		"customGradient": {
+			"type": "string"
+		}
+	},
+	"usesContext": [ "termId", "taxonomy" ],
+	"example": {
+		"viewportWidth": 350
+	},
+	"supports": {
+		"anchor": true,
+		"align": [ "left", "right", "center", "wide", "full" ],
+		"color": {
+			"text": false,
+			"background": false
+		},
+		"__experimentalBorder": {
+			"color": true,
+			"radius": true,
+			"width": true,
+			"__experimentalSkipSerialization": true,
+			"__experimentalDefaultControls": {
+				"color": true,
+				"radius": true,
+				"width": true
+			}
+		},
+		"filter": {
+			"duotone": true
+		},
+		"shadow": {
+			"__experimentalSkipSerialization": true
+		},
+		"html": false,
+		"spacing": {
+			"margin": true,
+			"padding": true
+		}
+	},
+	"selectors": {
+		"dimensions": ".wp-block-jankx-term-featured-image img",
+		"border": ".wp-block-jankx-term-featured-image img, .wp-block-jankx-term-featured-image .block-editor-media-placeholder, .wp-block-jankx-term-featured-image .wp-block-jankx-term-featured-image__overlay",
+		"shadow": ".wp-block-jankx-term-featured-image img, .wp-block-jankx-term-featured-image .components-placeholder",
+		"filter": {
+			"duotone": ".wp-block-jankx-term-featured-image img, .wp-block-jankx-term-featured-image .wp-block-jankx-term-featured-image__placeholder, .wp-block-jankx-term-featured-image .components-placeholder__illustration, .wp-block-jankx-term-featured-image .components-placeholder::before"
+		}
+	},
+	"editorScript": "file:../../dist/term-featured-image/index.js",
+	"editorStyle": "file:../../dist/term-featured-image.css",
+	"style": "file:../../dist/style-term-featured-image.css"
 }

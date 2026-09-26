@@ -4,6 +4,8 @@ namespace Jankx\Gutenberg\Blocks;
 
 use Jankx\Gutenberg\Block;
 use Jankx\Gutenberg\StarRating\StarRatingRegistry;
+use Jankx\Gutenberg\StarRating\RatingSubmission;
+use Jankx\Gutenberg\StarRating\RatingSubmissionShortcode;
 use Jankx\Gutenberg\StarRating\Providers\ManualRatingProvider;
 use Jankx\Gutenberg\StarRating\Providers\WooCommerceRatingProvider;
 use Jankx\Gutenberg\StarRating\Providers\PostMetaRatingProvider;
@@ -28,6 +30,8 @@ class StarRatingBlock extends Block
     {
         self::registerBuiltinProviders();
         add_action('rest_api_init', [self::class, 'registerRestEndpoint']);
+        RatingSubmission::register();
+        RatingSubmissionShortcode::register();
     }
 
     /**

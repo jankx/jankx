@@ -242,6 +242,10 @@ class DynamicDataLayoutBlock extends Block
                 Log::debug('Template extraction result: ' . ($templateBlock ? 'FOUND' : 'NOT FOUND'));
 
                 if ($templateBlock) {
+                    // Resolve pattern/reusable block references (core/block, core/template-part)
+                    // BEFORE serializing, so AJAX render has real block data without DB lookups.
+                    $templateBlock = $this->resolvePatternBlocks($templateBlock);
+
                     // Store the template inside attributes so it's included in data-block-settings
                     // This makes AJAX updates completely stateless and robust against cache misses
                     $attributes['postTemplate'] = $templateBlock;
@@ -299,7 +303,7 @@ class DynamicDataLayoutBlock extends Block
             $headingHtml = $this->renderHeadingBlock($headingBlock, $query);
 
             // Expose data attributes so other blocks (e.g., advanced-filters) can find and update this block via AJAX
-            $wrapperAttrs = $this->buildWrapperAttributes($attributes);
+            $wrapperAttrs = $this->buildWrapperAttributes($this->resolveQueriedObjectTaxQuery($attributes));
 
             return sprintf('<div %s>%s%s</div>', $wrapperAttrs, $headingHtml, $rendered);
         } catch (\Exception $e) {
@@ -308,6 +312,70 @@ class DynamicDataLayoutBlock extends Block
                 esc_html($e->getMessage())
             );
         }
+    }
+
+    /**
+     * Recursively resolve pattern/reusable block and template part references.
+     *
+     * - core/block (ref: ID)      → fetched from DB, parsed, expanded inline.
+     * - core/template-part        → kept as-is (resolved at render time via render_block).
+     * - All other blocks           → innerBlocks resolved recursively.
+     *
+     * @param array $block Raw parsed block
+     * @return array Block with references expanded
+     */
+    protected function resolvePatternBlocks(array $block): array
+    {
+        $blockName = $block['blockName'] ?? '';
+
+        // Resolve reusable block / synced pattern reference
+        if ($blockName === 'core/block') {
+            $ref = (int) ($block['attrs']['ref'] ?? 0);
+            if ($ref > 0) {
+                $reusablePost = get_post($ref);
+                if ($reusablePost && in_array($reusablePost->post_status, ['publish', 'private'], true)) {
+                    $parsedBlocks = parse_blocks($reusablePost->post_content);
+                    $resolved = [];
+                    foreach ($parsedBlocks as $parsedBlock) {
+                        if (!empty($parsedBlock['blockName'])) {
+                            $resolved[] = $this->resolvePatternBlocks($parsedBlock);
+                        }
+                    }
+                    if (count($resolved) === 1) {
+                        return $resolved[0];
+                    }
+                    if (count($resolved) > 1) {
+                        return [
+                            'blockName'    => 'core/group',
+                            'attrs'        => [],
+                            'innerBlocks'  => $resolved,
+                            'innerHTML'    => '',
+                            'innerContent' => [''],
+                        ];
+                    }
+                }
+            }
+            // Could not resolve: return as-is (fallback renderer will handle)
+            return $block;
+        }
+
+        // core/template-part: cannot be fully serialized, keep as-is.
+        // PostTemplateBlockGenerator will call render_block() at runtime.
+        if ($blockName === 'core/template-part') {
+            return $block;
+        }
+
+        // Recursively resolve innerBlocks for all other block types
+        if (!empty($block['innerBlocks']) && is_array($block['innerBlocks'])) {
+            $block['innerBlocks'] = array_map(
+                function (array $inner): array {
+                    return $this->resolvePatternBlocks($inner);
+                },
+                $block['innerBlocks']
+            );
+        }
+
+        return $block;
     }
 
     /**
@@ -411,7 +479,7 @@ class DynamicDataLayoutBlock extends Block
      */
     public function enqueueEditorAssets()
     {
-        $asset_file = dirname($this->blockPath) . '/dist/blocks/dynamic-data-layout/index.asset.php';
+        $asset_file = dirname($this->blockPath, 2) . '/dist/blocks/dynamic-data-layout/index.asset.php';
 
         if (!file_exists($asset_file)) {
             return;
@@ -603,6 +671,8 @@ class DynamicDataLayoutBlock extends Block
         $layoutName = $attributes['layout'] ?? 'grid';
         $postType = $attributes['postType'] ?? 'post';
 
+        $sourceAttributes = $attributes;
+
         // Apply filters to attributes
         $attributes = DynamicDataLayoutQueryHelper::applyFiltersToAttributes($attributes, $filters);
 
@@ -611,6 +681,8 @@ class DynamicDataLayoutBlock extends Block
 
         // Sanitize attributes
         $attributes = $this->attributeSanitizer->sanitize($attributes, $layoutName, true);
+
+        $attributes = array_merge($sourceAttributes, $attributes);
 
         // Create layout decorator
         $layout = $this->layoutManager->createLayout($layoutName);
@@ -644,6 +716,13 @@ class DynamicDataLayoutBlock extends Block
 
         // Render layout
         $html = $decorator->render();
+
+        if ($query->post_count === 0 && ($attributes['showEmptyMessage'] ?? true)) {
+            $html = sprintf(
+                '<div class="wp-block-jankx-dynamic-data-layout empty-state">%s</div>',
+                esc_html($attributes['emptyMessage'] ?? __('No posts found.', 'jankx'))
+            );
+        }
 
         // Wrap with data attributes so subsequent AJAX updates keep block metadata
         $wrapperAttrs = $this->buildWrapperAttributes($attributes);
@@ -758,6 +837,60 @@ class DynamicDataLayoutBlock extends Block
         $postType = $sanitizedAttributes['postType'] ?? 'post';
 
         return $this->buildQueryForPreset($decorator, $sanitizedAttributes, $originalPreset, $postType);
+    }
+
+    protected function resolveQueriedObjectTaxQuery(array $attributes): array
+    {
+        if (empty($attributes['taxQuery']) || !is_array($attributes['taxQuery'])) {
+            return $attributes;
+        }
+
+        $changed = false;
+        $taxQuery = [];
+        foreach ($attributes['taxQuery'] as $entry) {
+            if (($entry['operator'] ?? '') !== 'CURRENT_QUERIED_OBJECT') {
+                $taxQuery[] = $entry;
+                continue;
+            }
+
+            $taxonomy = $entry['taxonomy'] ?? '';
+            $queriedObject = get_queried_object();
+
+            if ($queriedObject instanceof \WP_Term && (empty($taxonomy) || $queriedObject->taxonomy === $taxonomy)) {
+                $taxQuery[] = [
+                    'taxonomy' => $queriedObject->taxonomy,
+                    'field' => 'term_id',
+                    'terms' => [(int) $queriedObject->term_id],
+                    'operator' => 'IN',
+                ];
+                $changed = true;
+                continue;
+            }
+
+            if (is_singular() && $taxonomy) {
+                $terms = get_the_terms(get_the_ID(), $taxonomy);
+                if (is_array($terms) && !empty($terms)) {
+                    $taxQuery[] = [
+                        'taxonomy' => $taxonomy,
+                        'field' => 'term_id',
+                        'terms' => array_map('intval', wp_list_pluck($terms, 'term_id')),
+                        'operator' => 'IN',
+                    ];
+                    $changed = true;
+                    continue;
+                }
+            }
+
+            $taxQuery[] = $entry;
+        }
+
+        if (!$changed) {
+            return $attributes;
+        }
+
+        $attributes['taxQuery'] = $taxQuery;
+
+        return $attributes;
     }
 
 
@@ -963,8 +1096,11 @@ class DynamicDataLayoutBlock extends Block
                     Log::debug('Fallback: Searching post content for template. ID: ' . (string) $attributes['queryId']);
                     $realAttrs = $this->getBlockAttributes($post_id, (string) $attributes['queryId']);
                     if (!empty($realAttrs['postTemplate'])) {
+                        // Resolve pattern references before caching so subsequent AJAX
+                        // requests also benefit from fully-expanded block data.
+                        $realAttrs['postTemplate'] = $this->resolvePatternBlocks($realAttrs['postTemplate']);
                         $attributes['postTemplate'] = $realAttrs['postTemplate'];
-                        Log::debug('Fallback SUCCESS: Template found in post content.');
+                        Log::debug('Fallback SUCCESS: Template found in post content (patterns resolved).');
                         // Cache it now for next time
                         $this->cacheTemplateByBlockId((string) $attributes['queryId'], $attributes['postTemplate']);
                     }
