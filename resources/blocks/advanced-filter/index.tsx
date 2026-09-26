@@ -121,19 +121,29 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                 const parent = getBlock(parentId);
                 const attrs = parent?.attributes || {};
                 const triggerSettings = (attrs.triggerSettings || {}) as Record<string, unknown>;
-                const targetBlockId = triggerSettings.targetBlockId as string | undefined;
+                const targetBlockId = (triggerSettings.targetBlockId as string | undefined) ||
+                    ((triggerSettings.targetBlockIds as string[] | undefined) || [])[0];
+                const storedPostType = triggerSettings.targetBlockPostType as string | undefined;
 
-                // Tìm dynamic-data-layout block để lấy post type
-                let targetPostType = 'post';
+                // Tìm layout block để lấy post type
+                let targetPostType = storedPostType || 'post';
                 if (targetBlockId) {
                     const allBlocks = select('core/block-editor').getBlocks();
+                    const targetableNames = [
+                        'jankx/dynamic-data-layout',
+                        'jankx/dynamic-ssr-layout',
+                        'jankx/dynamic-term-layout',
+                        'jankx/advanced-filters',
+                    ];
+                    const matchesTarget = (block: any) =>
+                        targetableNames.includes(block.name) &&
+                        [block.attributes?.customQueryId, block.attributes?.queryId, block.clientId].some(
+                            (id: any) => id !== undefined && id !== null && id !== '' && String(id) === String(targetBlockId)
+                        );
                     const findBlock = (blocks: any[]): any => {
                         for (const block of blocks) {
-                            if (block.name === 'jankx/dynamic-data-layout' || block.name === 'jankx/dynamic-ssr-layout') {
-                                const queryId = block.attributes?.queryId || block.clientId;
-                                if (String(queryId) === targetBlockId) {
-                                    return block;
-                                }
+                            if (matchesTarget(block)) {
+                                return block;
                             }
                             if (block.innerBlocks?.length > 0) {
                                 const found = findBlock(block.innerBlocks);
@@ -145,7 +155,7 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
 
                     const targetBlock = findBlock(allBlocks);
                     if (targetBlock) {
-                        targetPostType = targetBlock.attributes?.postType || 'post';
+                        targetPostType = targetBlock.attributes?.postType || storedPostType || 'post';
                     }
                 }
 
