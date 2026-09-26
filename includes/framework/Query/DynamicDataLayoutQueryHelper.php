@@ -216,21 +216,22 @@ class DynamicDataLayoutQueryHelper
         }
 
         if (!empty($tax_query_by_taxonomy)) {
-            $attributes['taxQuery'] = array_values($tax_query_by_taxonomy);
-        } else {
-            unset($attributes['taxQuery']);
+            $base_tax_query = is_array($attributes['taxQuery'] ?? null) ? $attributes['taxQuery'] : [];
+            $kept_base = array_filter($base_tax_query, static function ($entry) use ($tax_query_by_taxonomy) {
+                if (($entry['operator'] ?? 'IN') === 'CURRENT_QUERIED_OBJECT') {
+                    return true;
+                }
+                return !isset($tax_query_by_taxonomy[$entry['taxonomy'] ?? '']);
+            });
+            $attributes['taxQuery'] = array_merge($kept_base, array_values($tax_query_by_taxonomy));
         }
 
         if (!empty($meta_query)) {
             $attributes['metaQuery'] = $meta_query;
-        } else {
-            unset($attributes['metaQuery']);
         }
 
         if (!empty($author_in)) {
             $attributes['authorIn'] = array_values(array_unique($author_in));
-        } else {
-            unset($attributes['authorIn']);
         }
 
         return $attributes;

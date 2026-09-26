@@ -671,6 +671,8 @@ class DynamicDataLayoutBlock extends Block
         $layoutName = $attributes['layout'] ?? 'grid';
         $postType = $attributes['postType'] ?? 'post';
 
+        $sourceAttributes = $attributes;
+
         // Apply filters to attributes
         $attributes = DynamicDataLayoutQueryHelper::applyFiltersToAttributes($attributes, $filters);
 
@@ -679,6 +681,8 @@ class DynamicDataLayoutBlock extends Block
 
         // Sanitize attributes
         $attributes = $this->attributeSanitizer->sanitize($attributes, $layoutName, true);
+
+        $attributes = array_merge($sourceAttributes, $attributes);
 
         // Create layout decorator
         $layout = $this->layoutManager->createLayout($layoutName);
