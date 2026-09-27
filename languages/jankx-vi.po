@@ -28,11 +28,11 @@ msgstr "Phông chữ"
 
 #: includes/theme-options/typography/fonts.php:9
 msgid "Configure fonts for headings and content"
-msgstr "Thiết lập font cho tiêu đề và nội dung"
+msgstr "Cấu hình phông chữ cho tiêu đề và nội dung"
 
 #: includes/theme-options/typography/fonts.php:13
 msgid "Body Font"
-msgstr "Body font"
+msgstr "Phông nội dung"
 
 #: includes/theme-options/layout/layout.php:8
 #: includes/theme-options/pages.php:27
@@ -41,55 +41,55 @@ msgstr "Bố cục & Khoảng cách"
 
 #: includes/theme-options/layout/layout.php:9
 msgid "General layout options"
-msgstr "Các tuỳ chọn layout chung"
+msgstr "Tùy chọn bố cục chung"
 
 #: includes/theme-options/layout/layout.php:13
 msgid "Container Width"
-msgstr "Chiều rộng container"
+msgstr "Độ rộng khung chứa"
 
 #: includes/theme-options/layout/layout.php:23
 msgid "Sidebar Position"
-msgstr "Vị trí sidebar"
+msgstr "Vị trí thanh bên"
 
 #: includes/theme-options/layout/layout.php:26
 msgid "Right"
-msgstr "Bên phải"
+msgstr "Phải"
 
 #: includes/theme-options/layout/layout.php:27
 msgid "Left"
-msgstr "Bên trái"
+msgstr "Trái"
 
 #: includes/theme-options/layout/layout.php:28
 msgid "No Sidebar"
-msgstr "Không sidebar"
+msgstr "Ẩn thanh bên"
 
 #: includes/theme-options/general/base.php:8
 msgid "General Settings"
-msgstr "Thiết lập chung"
+msgstr "Cài đặt chung"
 
 #: includes/theme-options/general/base.php:9
 msgid "Basic configuration options"
-msgstr "Các tuỳ chọn cơ bản"
+msgstr "Tùy chọn cấu hình cơ bản"
 
 #: includes/theme-options/general/base.php:13
 msgid "Site Title"
-msgstr "Tiêu đề site"
+msgstr "Tiêu đề trang"
 
 #: includes/theme-options/general/base.php:17
 msgid "Displayed in the header and as an SEO title fallback"
-msgstr "Hiển thị tại header và SEO title fallback"
+msgstr "Hiển thị ở phần đầu trang và làm tiêu đề SEO dự phòng"
 
 #: includes/theme-options/general/base.php:21
 msgid "Tagline"
-msgstr "Mô tả ngắn"
+msgstr "Khẩu hiệu"
 
 #: includes/theme-options/general/base.php:24
 msgid "Displayed in some hero and footer blocks"
-msgstr "Hiển thị ở một số block hero/footer"
+msgstr "Hiển thị ở một số khối phần mở đầu và chân trang"
 
 #: includes/theme-options/general/base.php:28
 msgid "Enable Back to Top"
-msgstr "Bật nút Back to Top"
+msgstr "Bật nút Trở về đầu trang"
 
 #: includes/theme-options/general/base.php:31
 msgid "On"
@@ -109,27 +109,27 @@ msgstr "Tổng quan"
 
 #: includes/theme-options/pages.php:11
 msgid "Basic configuration for the entire site"
-msgstr "Cấu hình cơ bản cho toàn site"
+msgstr "Cấu hình cơ bản cho toàn bộ trang web"
 
 #: includes/theme-options/pages.php:18
 msgid "Branding"
-msgstr "Thương hiệu"
+msgstr "Nhận diện thương hiệu"
 
 #: includes/theme-options/pages.php:20
 msgid "Logo and brand identity colors"
-msgstr "Logo, màu sắc nhận diện"
+msgstr "Logo và màu sắc nhận diện"
 
 #: includes/theme-options/pages.php:29
 msgid "Layout, spacing, and slider options"
-msgstr "Layout, khoảng cách, slider"
+msgstr "Bố cục, khoảng cách và thanh trượt"
 
 #: includes/theme-options/pages.php:36
 msgid "Typography"
-msgstr "Typography"
+msgstr "Kiểu chữ"
 
 #: includes/theme-options/pages.php:38
 msgid "Fonts and font sizes"
-msgstr "Phông chữ và cỡ chữ"
+msgstr "Phông chữ và kích thước chữ"
 
 #: includes/theme-options/pages.php:45
 #: includes/theme-options/preset/presets_overview.php:161
@@ -146,16 +146,16 @@ msgstr "Mạng xã hội"
 
 #: includes/theme-options/pages.php:56
 msgid "Social links and sharing options"
-msgstr "Liên kết mạng xã hội và chia sẻ"
+msgstr "Liên kết mạng xã hội và tùy chọn chia sẻ"
 
 #: includes/theme-options/pages.php:63
 #: includes/theme-options/preset/presets_overview.php:137
 msgid "Preset & Layout"
-msgstr "Preset & Layout"
+msgstr "Mẫu sẵn & Bố cục"
 
 #: includes/theme-options/pages.php:65
 msgid "Choose UI presets and page layouts"
-msgstr "Chọn preset giao diện và bố cục trang"
+msgstr "Chọn mẫu giao diện và bố cục trang"
 
 #: includes/theme-options/branding/colors.php:8
 msgid "Colors & Logo"
@@ -163,7 +163,7 @@ msgstr "Màu sắc & Logo"
 
 #: includes/theme-options/branding/colors.php:9
 msgid "Configure brand colors and logo"
-msgstr "Thiết lập màu nhận diện và logo"
+msgstr "Cấu hình màu sắc thương hiệu và logo"
 
 #: includes/theme-options/branding/colors.php:13
 msgid "Primary Logo"
@@ -171,11 +171,11 @@ msgstr "Logo chính"
 
 #: includes/theme-options/branding/colors.php:15
 msgid "Logo displayed in the header"
-msgstr "Logo hiển thị ở header"
+msgstr "Logo hiển thị ở phần đầu trang"
 
 #: includes/theme-options/branding/colors.php:19
 msgid "Primary Color"
-msgstr "Màu chủ đạo"
+msgstr "Màu chính"
 
 #: includes/theme-options/branding/colors.php:25
 msgid "Secondary Color"
@@ -189,17 +189,17 @@ msgstr "Liên kết mạng xã hội"
 msgid ""
 "Add social media URLs to display in the header, footer, or widgets. You can "
 "add custom profiles using the \"Add Custom Profile\" button."
-msgstr ""
+msgstr "Thêm đường dẫn mạng xã hội để hiển thị ở đầu trang, chân trang hoặc widget. Bạn có thể thêm hồ sơ tùy chỉnh bằng nút \"Thêm hồ sơ tùy chỉnh\"."
 
 #: includes/theme-options/socials/links.php:13
 msgid "Social Profiles"
-msgstr "Mạng xã hội"
+msgstr "Hồ sơ mạng xã hội"
 
 #: includes/theme-options/socials/links.php:15
 msgid ""
 "Manage your social links. Click an icon to toggle on/off, and drag-and-drop "
 "to reorder items."
-msgstr "Quản lý các liên kết mạng xã hội. Click vào icon để bật/tắt, kéo thả để sắp xếp thứ tự."
+msgstr "Quản lý liên kết mạng xã hội. Nhấp vào biểu tượng để bật/tắt và kéo thả để sắp xếp lại thứ tự."
 
 #: includes/theme-options/blog/posts.php:8
 msgid "Blog Posts"
@@ -207,11 +207,11 @@ msgstr "Bài viết"
 
 #: includes/theme-options/blog/posts.php:9
 msgid "Display and metadata settings for blog posts"
-msgstr "Hiển thị và meta cho bài viết"
+msgstr "Cài đặt hiển thị và siêu dữ liệu cho bài viết"
 
 #: includes/theme-options/blog/posts.php:13
 msgid "Blog Layout"
-msgstr "Layout blog"
+msgstr "Bố cục blog"
 
 #: includes/theme-options/blog/posts.php:16
 msgid "Grid"
@@ -225,54 +225,54 @@ msgstr "Danh sách"
 #: includes/theme-options/blog/posts.php:18
 #: includes/theme-options/preset/presets_overview.php:188
 msgid "Masonry"
-msgstr "Masonry"
+msgstr "Lưới nghệ thuật (Masonry)"
 
 #: includes/theme-options/blog/posts.php:24
 msgid "Show Post Metadata (Author, Date)"
-msgstr "Hiển thị meta (tác giả, ngày)"
+msgstr "Hiển thị thông tin bài viết (Tác giả, Ngày đăng)"
 
 #: includes/theme-options/preset/presets_overview.php:138
 msgid "Choose the overall visual style preset, post layout, and header layout"
-msgstr "Chọn preset giao diện tổng thể, bố cục bài viết và layout header"
+msgstr "Chọn mẫu giao diện tổng thể, bố cục bài viết và bố cục phần đầu trang"
 
 #: includes/theme-options/preset/presets_overview.php:144
 msgid "Theme Presets"
-msgstr "Preset giao diện"
+msgstr "Mẫu giao diện"
 
 #: includes/theme-options/preset/presets_overview.php:151
 msgid "Theme Preset"
-msgstr "Theme Preset"
+msgstr "Mẫu giao diện"
 
 #: includes/theme-options/preset/presets_overview.php:153
 msgid ""
 "Choose the overall style for the entire site. Each preset has unique colors, "
 "fonts, and layouts."
-msgstr "Chọn phong cách tổng thể cho toàn site. Mỗi preset có màu sắc, font và layout riêng."
+msgstr "Chọn phong cách tổng thể cho toàn trang. Mỗi mẫu có màu sắc, phông chữ và bố cục riêng."
 
 #: includes/theme-options/preset/presets_overview.php:158
 #: includes/theme-options/preset/presets_overview.php:211
 msgid "Classic"
-msgstr "Classic"
+msgstr "Cổ điển"
 
 #: includes/theme-options/preset/presets_overview.php:159
 msgid "Magazine"
-msgstr "Magazine"
+msgstr "Tạp chí"
 
 #: includes/theme-options/preset/presets_overview.php:160
 msgid "Minimal"
-msgstr "Minimal"
+msgstr "Tối giản"
 
 #: includes/theme-options/preset/presets_overview.php:162
 msgid "E-Commerce"
-msgstr "E-Commerce"
+msgstr "Thương mại điện tử"
 
 #: includes/theme-options/preset/presets_overview.php:163
 msgid "Landing"
-msgstr "Landing"
+msgstr "Trang giới thiệu (Landing)"
 
 #: includes/theme-options/preset/presets_overview.php:171
 msgid "Post Layouts"
-msgstr "Bố cục Posts"
+msgstr "Bố cục bài viết"
 
 #: includes/theme-options/preset/presets_overview.php:178
 msgid "Post Layout"
@@ -280,44 +280,44 @@ msgstr "Bố cục bài viết"
 
 #: includes/theme-options/preset/presets_overview.php:180
 msgid "Choose how post lists are displayed on the Blog / Archive pages."
-msgstr "Chọn cách hiển thị danh sách bài viết trên trang Blog / Archive."
+msgstr "Chọn cách hiển thị danh sách bài viết trên trang Blog / Lưu trữ."
 
 #: includes/theme-options/preset/presets_overview.php:185
 msgid "3-Column Grid"
-msgstr "Grid 3 cột"
+msgstr "Lưới 3 cột"
 
 #: includes/theme-options/preset/presets_overview.php:186
 msgid "2-Column Grid"
-msgstr "Grid 2 cột"
+msgstr "Lưới 2 cột"
 
 #: includes/theme-options/preset/presets_overview.php:189
 msgid "Featured"
-msgstr "Nổi bật"
+msgstr "Đặc sắc"
 
 #: includes/theme-options/preset/presets_overview.php:197
 msgid "Header Layouts"
-msgstr "Bố cục Header"
+msgstr "Bố cục đầu trang"
 
 #: includes/theme-options/preset/presets_overview.php:204
 msgid "Header Layout"
-msgstr "Bố cục Header"
+msgstr "Bố cục đầu trang"
 
 #: includes/theme-options/preset/presets_overview.php:206
 msgid ""
 "Choose the arrangement of the logo, menu, and action buttons in the header."
-msgstr "Chọn kiểu sắp xếp logo, menu và các nút hành động trong phần đầu trang."
+msgstr "Chọn cách sắp xếp logo, trình đơn và các nút thao tác ở phần đầu trang."
 
 #: includes/theme-options/preset/presets_overview.php:212
 msgid "Centered"
-msgstr "Centered"
+msgstr "Canh giữa"
 
 #: includes/theme-options/preset/presets_overview.php:213
 msgid "Split CTA"
-msgstr "Split CTA"
+msgstr "Nút kêu gọi hành động tách biệt"
 
 #: includes/theme-options/preset/presets_overview.php:214
 msgid "Top Bar"
-msgstr "Top Bar"
+msgstr "Thanh thông tin phía trên"
 
 #: includes/framework/Rest/AdvancedFiltersRestApiHandler.php:87
 msgid "Current post ID"
@@ -325,7 +325,7 @@ msgstr "ID bài viết hiện tại"
 
 #: includes/framework/Rest/PostTypeLayoutAjaxHandler.php:59
 msgid "You must be logged in to access this endpoint."
-msgstr "Bạn phải đăng nhập để truy cập endpoint này."
+msgstr "Bạn phải đăng nhập để truy cập đường dẫn này."
 
 #: includes/framework/Rest/PostTypeLayoutAjaxHandler.php:80
 #: includes/framework/Rest/PostTypeLayoutAjaxHandler.php:135
@@ -344,18 +344,18 @@ msgstr "Bạn không có quyền xem %s."
 
 #: includes/framework/Rest/PostTypeLayoutAjaxHandler.php:144
 msgid "Failed to fetch posts data"
-msgstr "Không thể lấy dữ liệu bài viết"
+msgstr "Không thể tải dữ liệu bài viết"
 
 #: includes/framework/Rest/PostTypeLayoutAjaxHandler.php:277
 #: includes/framework/Gutenberg/Blocks/DynamicDataLayoutBlock.php:833
 #: extensions/dynamic-ssr/includes/Blocks/DynamicSsrLayoutBlock.php:622
 msgid "Block ID is required"
-msgstr "Yêu cầu phải có Block ID"
+msgstr "Yêu cầu phải có ID khối"
 
 #: includes/framework/Rest/PostTypeLayoutAjaxHandler.php:312
 #: includes/framework/Gutenberg/Blocks/DynamicDataLayoutBlock.php:866
 msgid "Block attributes not found"
-msgstr "Không tìm thấy thuộc tính block"
+msgstr "Không tìm thấy thuộc tính của khối"
 
 #: includes/framework/Layouts/DynamicDataLayout/BlockTemplateRenderer.php:82
 #: includes/framework/Layouts/DynamicDataLayout/ViewLayouts/ViewRenderer.php:92
@@ -367,16 +367,16 @@ msgstr "Không tìm thấy bài viết nào."
 
 #: includes/framework/Layouts/DynamicDataLayout/ViewLayouts/AbstractViewLayout.php:251
 msgid "No views found."
-msgstr "Không tìm thấy view nào."
+msgstr "Không tìm thấy góc nhìn nào."
 
 #: includes/framework/Layouts/DynamicDataLayout/ViewLayouts/AbstractViewLayout.php:384
 #: includes/framework/Layouts/DynamicDataLayout/ViewLayouts/Generators/ViewSsrGenerator.php:211
 msgid "Read More"
-msgstr "Đọc tiếp"
+msgstr "Đọc thêm"
 
 #: includes/framework/Layouts/DynamicDataLayout/ViewLayouts/TaxonomyRenderer.php:78
 msgid "No terms found."
-msgstr "Không tìm thấy thuật ngữ nào."
+msgstr "Không tìm thấy phân loại nào."
 
 #: includes/framework/Layouts/DynamicDataLayout/ViewLayouts/Generators/ViewSsrGenerator.php:416
 #: includes/framework/Layouts/DynamicDataLayout/ViewLayouts/Generators/ViewTemplateContentGenerator.php:113
@@ -385,7 +385,7 @@ msgstr "Tiêu đề mẫu"
 
 #: includes/framework/Layouts/DynamicDataLayout/ViewLayouts/Generators/ViewSsrGenerator.php:418
 msgid "Sample content preview..."
-msgstr "Nội dung mẫu xem trước..."
+msgstr "Xem trước nội dung mẫu..."
 
 #: includes/framework/Layouts/DynamicDataLayout/ViewLayouts/Generators/ViewSsrGenerator.php:422
 msgid "Sample preview content"
@@ -393,20 +393,20 @@ msgstr "Nội dung xem trước mẫu"
 
 #: includes/framework/Layouts/DynamicDataLayout/ViewLayouts/Generators/ViewTemplateContentGenerator.php:114
 msgid "January 1, 2024"
-msgstr "1 tháng 1, 2024"
+msgstr "01 tháng 01, 2024"
 
 #: includes/framework/Layouts/DynamicDataLayout/ViewLayouts/Generators/ViewTemplateContentGenerator.php:115
 msgid "Sample excerpt content for preview..."
-msgstr "Nội dung trích dẫn mẫu xem thử..."
+msgstr "Đoạn trích nội dung mẫu để xem trước..."
 
 #: includes/framework/Layouts/DynamicDataLayout/Renderer.php:46
 #, php-format
 msgid "Layout \"%s\" does not exist for post type \"%s\"."
-msgstr ""
+msgstr "Bố cục \"%s\" không tồn tại cho loại bài viết \"%s\"."
 
 #: includes/framework/Layouts/DynamicDataLayout/BlockLayouts/CarouselLayout.php:73
 msgid "Slides Per View"
-msgstr "Số slide hiển thị"
+msgstr "Số slide mỗi khung nhìn"
 
 #: includes/framework/Layouts/DynamicDataLayout/BlockLayouts/CarouselLayout.php:79
 msgid "Number of slides visible at once"
@@ -418,11 +418,11 @@ msgstr "Khoảng cách"
 
 #: includes/framework/Layouts/DynamicDataLayout/BlockLayouts/CarouselLayout.php:89
 msgid "Space between slides in pixels"
-msgstr "Khoảng cách giữa các slide (pixel)"
+msgstr "Khoảng cách giữa các slide (tính bằng pixel)"
 
 #: includes/framework/Layouts/DynamicDataLayout/BlockLayouts/CarouselLayout.php:93
 msgid "Slides to Scroll"
-msgstr "Số slide cuộn"
+msgstr "Số slide cuộn qua"
 
 #: includes/framework/Layouts/DynamicDataLayout/BlockLayouts/CarouselLayout.php:99
 msgid "Number of slides to scroll at a time"
@@ -443,7 +443,7 @@ msgstr "Tự động chạy"
 
 #: includes/framework/Layouts/DynamicDataLayout/BlockLayouts/CarouselLayout.php:113
 msgid "Automatically advance slides"
-msgstr "Tự động chuyển slide"
+msgstr "Tự động chuyển sang slide tiếp theo"
 
 #: includes/framework/Layouts/DynamicDataLayout/BlockLayouts/CarouselLayout.php:117
 msgid "Autoplay Delay (ms)"
@@ -451,7 +451,7 @@ msgstr "Độ trễ tự động chạy (ms)"
 
 #: includes/framework/Layouts/DynamicDataLayout/BlockLayouts/CarouselLayout.php:124
 msgid "Time between autoplay transitions"
-msgstr "Thời gian giữa các lần chuyển slide tự động"
+msgstr "Thời gian giữa các lần chuyển động tự động"
 
 #: includes/framework/Layouts/DynamicDataLayout/BlockLayouts/CarouselLayout.php:128
 msgid "Show Arrows"
@@ -459,7 +459,7 @@ msgstr "Hiển thị mũi tên"
 
 #: includes/framework/Layouts/DynamicDataLayout/BlockLayouts/CarouselLayout.php:131
 msgid "Display navigation arrows"
-msgstr "Hiển thị mũi tên điều hướng"
+msgstr "Hiển thị các mũi tên điều hướng"
 
 #: includes/framework/Layouts/DynamicDataLayout/BlockLayouts/CarouselLayout.php:135
 msgid "Show Dots"
@@ -467,28 +467,28 @@ msgstr "Hiển thị dấu chấm"
 
 #: includes/framework/Layouts/DynamicDataLayout/BlockLayouts/CarouselLayout.php:138
 msgid "Display pagination dots"
-msgstr "Hiển thị dấu chấm phân trang"
+msgstr "Hiển thị các chấm phân trang"
 
 #: includes/framework/Layouts/DynamicDataLayout/BlockLayouts/CarouselLayout.php:142
 msgid "Alignment"
-msgstr "Căn chỉnh"
+msgstr "Canh lề"
 
 #: includes/framework/Layouts/DynamicDataLayout/BlockLayouts/CarouselLayout.php:146
 msgid "Start"
-msgstr "Bắt đầu"
+msgstr "Đầu"
 
 #: includes/framework/Layouts/DynamicDataLayout/BlockLayouts/CarouselLayout.php:147
 #: includes/framework/Layouts/AdvancedImageBox/Presets/BorderedFramePreset.php:34
 msgid "Center"
-msgstr "Ở giữa"
+msgstr "Giữa"
 
 #: includes/framework/Layouts/DynamicDataLayout/BlockLayouts/CarouselLayout.php:148
 msgid "End"
-msgstr "Kết thúc"
+msgstr "Cuối"
 
 #: includes/framework/Layouts/DynamicDataLayout/BlockLayouts/CarouselLayout.php:150
 msgid "Align slides within the viewport"
-msgstr "Căn chỉnh slide trong khung nhìn"
+msgstr "Canh chỉnh các slide trong khung nhìn"
 
 #: includes/framework/Layouts/DynamicDataLayout/BlockLayouts/CarouselLayout.php:154
 msgid "Scroll Containment"
@@ -500,11 +500,11 @@ msgstr "Không (Không giới hạn)"
 
 #: includes/framework/Layouts/DynamicDataLayout/BlockLayouts/CarouselLayout.php:159
 msgid "Trim Snaps"
-msgstr "Trim Snaps"
+msgstr "Cắt điểm dừng (Trim Snaps)"
 
 #: includes/framework/Layouts/DynamicDataLayout/BlockLayouts/CarouselLayout.php:160
 msgid "Keep Snaps"
-msgstr "Keep Snaps"
+msgstr "Giữ điểm dừng (Keep Snaps)"
 
 #: includes/framework/Layouts/DynamicDataLayout/BlockLayouts/CarouselLayout.php:162
 msgid "Constrain scrolling to bounds"
@@ -532,11 +532,11 @@ msgstr "Hướng"
 
 #: includes/framework/Layouts/DynamicDataLayout/BlockLayouts/CarouselLayout.php:185
 msgid "LTR (Left to Right)"
-msgstr "LTR (Trái sang Phải)"
+msgstr "Từ trái sang phải (LTR)"
 
 #: includes/framework/Layouts/DynamicDataLayout/BlockLayouts/CarouselLayout.php:186
 msgid "RTL (Right to Left)"
-msgstr "RTL (Phải sang Trái)"
+msgstr "Từ phải sang trái (RTL)"
 
 #: includes/framework/Layouts/DynamicDataLayout/BlockLayouts/CarouselLayout.php:191
 msgid "Duration (ms)"
@@ -544,7 +544,7 @@ msgstr "Thời gian (ms)"
 
 #: includes/framework/Layouts/DynamicDataLayout/BlockLayouts/CarouselLayout.php:196
 msgid "Transition duration"
-msgstr "Thời gian chuyển đổi"
+msgstr "Thời gian chuyển tiếp"
 
 #: includes/framework/Layouts/DynamicDataLayout/PaginationRenderer.php:24
 msgid "&laquo; Previous"
@@ -552,7 +552,7 @@ msgstr "&laquo; Trước"
 
 #: includes/framework/Layouts/DynamicDataLayout/PaginationRenderer.php:25
 msgid "Next &raquo;"
-msgstr "Tiếp &raquo;"
+msgstr "Sau &raquo;"
 
 #: includes/framework/Layouts/DynamicDataLayout/PaginationRenderer.php:42
 msgid "Previous"
@@ -560,7 +560,7 @@ msgstr "Trước"
 
 #: includes/framework/Layouts/DynamicDataLayout/PaginationRenderer.php:45
 msgid "Next"
-msgstr "Tiếp theo"
+msgstr "Sau"
 
 #: includes/framework/Layouts/DynamicDataLayout/PaginationRenderer.php:76
 msgid "Posts navigation"
@@ -576,11 +576,11 @@ msgstr "Đang tải..."
 
 #: includes/framework/Layouts/DynamicDataLayout/Generators/SsrViewGenerator.php:96
 msgid "SSR View Generator"
-msgstr "SSR View Generator"
+msgstr "Bộ tạo giao diện SSR"
 
 #: includes/framework/Layouts/DynamicDataLayout/Generators/PostTemplateBlockGenerator.php:97
 msgid "Post Template Block Generator"
-msgstr "Post Template Block Generator"
+msgstr "Bộ tạo khối mẫu bài viết"
 
 #: includes/framework/Layouts/DynamicDataLayout/Generators/Concerns/PostTemplateRendererTrait.php:204
 #: includes/framework/Layouts/templates/post-layout/carousel.php:21
@@ -592,19 +592,19 @@ msgstr "Slide trước"
 #: includes/framework/Layouts/templates/post-layout/carousel.php:28
 #: includes/framework/Gutenberg/Blocks/SlideshowContainerBlock.php:109
 msgid "Next slide"
-msgstr "Slide tiếp"
+msgstr "Slide sau"
 
 #: includes/framework/Layouts/DynamicDataLayout/Generators/DefaultTaxonomyContentGenerator.php:32
 msgid "Default Taxonomy Content Generator"
-msgstr "Default Taxonomy Content Generator"
+msgstr "Bộ tạo nội dung phân loại mặc định"
 
 #: includes/framework/Layouts/DynamicDataLayout/Generators/ViewTemplateContentGenerator.php:98
 msgid "View Template Content Generator"
-msgstr "View Template Content Generator"
+msgstr "Bộ tạo nội dung mẫu giao diện"
 
 #: includes/framework/Layouts/DynamicDataLayout/Generators/ViewTemplateContentGenerator.php:178
 msgid "Template rendering error: "
-msgstr "Lỗi hiển thị giao diện mẫu: "
+msgstr "Lỗi kết xuất mẫu giao diện: "
 
 #: includes/framework/Layouts/AdvancedFilters/Renderers/TaxonomyFilterRenderer.php:122
 #: includes/framework/Layouts/AdvancedFilters/Renderers/KeywordFilterRenderer.php:66
@@ -626,25 +626,24 @@ msgid "Keyword"
 msgstr "Từ khóa"
 
 #: includes/framework/Layouts/AdvancedFilters/Renderers/KeywordFilterRenderer.php:64
-#, fuzzy
 msgid "Post Type"
-msgstr "Post Type"
+msgstr "Loại bài viết"
 
 #: includes/framework/Layouts/AdvancedImageBox/Presets/BorderedFramePreset.php:11
 msgid "Bordered Frame"
-msgstr "Khung có viền"
+msgstr "Khung viền"
 
 #: includes/framework/Layouts/AdvancedImageBox/Presets/BorderedFramePreset.php:12
 msgid "Image with inner border frame and title box"
-msgstr "Hình ảnh với khung viền bên trong và hộp tiêu đề"
+msgstr "Hình ảnh có khung viền bên trong và hộp tiêu đề"
 
 #: includes/framework/Layouts/AdvancedImageBox/Presets/BorderedFramePreset.php:17
 msgid "Border Width"
-msgstr "Độ rộng viền"
+msgstr "Độ dày viền"
 
 #: includes/framework/Layouts/AdvancedImageBox/Presets/BorderedFramePreset.php:17
 msgid "Width of the inner border frame in pixels"
-msgstr "Chiều rộng của khung viền bên trong (pixel)"
+msgstr "Độ dày của khung viền bên trong (tính bằng pixel)"
 
 #: includes/framework/Layouts/AdvancedImageBox/Presets/BorderedFramePreset.php:18
 msgid "Border Color"
@@ -652,23 +651,23 @@ msgstr "Màu viền"
 
 #: includes/framework/Layouts/AdvancedImageBox/Presets/BorderedFramePreset.php:18
 msgid "Color of the inner border frame"
-msgstr "Màu của khung viền bên trong"
+msgstr "Màu sắc của khung viền bên trong"
 
 #: includes/framework/Layouts/AdvancedImageBox/Presets/BorderedFramePreset.php:19
 msgid "Border Offset"
-msgstr "Khoảng cách viền"
+msgstr "Khoảng cách lề viền"
 
 #: includes/framework/Layouts/AdvancedImageBox/Presets/BorderedFramePreset.php:19
 msgid "Distance from image edges to border in pixels"
-msgstr "Khoảng cách từ viền ngoài vào khung bên trong (pixel)"
+msgstr "Khoảng cách từ mép hình ảnh đến khung viền (tính bằng pixel)"
 
 #: includes/framework/Layouts/AdvancedImageBox/Presets/BorderedFramePreset.php:20
 msgid "Title Full Width"
-msgstr "Tiêu đề tràn viền"
+msgstr "Tiêu đề toàn chiều rộng"
 
 #: includes/framework/Layouts/AdvancedImageBox/Presets/BorderedFramePreset.php:20
 msgid "Make title box full width of the frame"
-msgstr "Cho hộp tiêu đề rộng bằng khung"
+msgstr "Làm cho hộp tiêu đề trải dài toàn bộ khung"
 
 #: includes/framework/Layouts/AdvancedImageBox/Presets/BorderedFramePreset.php:21
 msgid "Title Position"
@@ -724,7 +723,7 @@ msgstr "Phải Dưới"
 
 #: includes/framework/Layouts/AdvancedImageBox/Presets/BorderedFramePreset.php:35
 msgid "Position of the title box (only applies when Full Width is disabled)"
-msgstr "Vị trí của hộp tiêu đề (chỉ áp dụng khi không bật Tràn viền)"
+msgstr "Vị trí của hộp tiêu đề (chỉ áp dụng khi tắt tùy chọn toàn chiều rộng)"
 
 #: includes/framework/Layouts/AdvancedImageBox/Presets/BorderedFramePreset.php:36
 msgid "Title Background"
@@ -744,51 +743,51 @@ msgstr "Màu văn bản của tiêu đề"
 
 #: includes/framework/Layouts/AdvancedImageBox/Presets/BorderedFramePreset.php:38
 msgid "Title Margin Top"
-msgstr "Margin trên"
+msgstr "Khoảng cách trên tiêu đề"
 
 #: includes/framework/Layouts/AdvancedImageBox/Presets/BorderedFramePreset.php:38
 msgid "Top margin of the title box in pixels"
-msgstr "Khoảng cách lề trên hộp tiêu đề"
+msgstr "Khoảng cách lề trên của hộp tiêu đề (pixel)"
 
 #: includes/framework/Layouts/AdvancedImageBox/Presets/BorderedFramePreset.php:39
 msgid "Title Margin Right"
-msgstr "Margin phải"
+msgstr "Khoảng cách phải tiêu đề"
 
 #: includes/framework/Layouts/AdvancedImageBox/Presets/BorderedFramePreset.php:39
 msgid "Right margin of the title box in pixels"
-msgstr "Khoảng cách lề phải hộp tiêu đề"
+msgstr "Khoảng cách lề phải của hộp tiêu đề (pixel)"
 
 #: includes/framework/Layouts/AdvancedImageBox/Presets/BorderedFramePreset.php:40
 msgid "Title Margin Bottom"
-msgstr "Margin dưới"
+msgstr "Khoảng cách dưới tiêu đề"
 
 #: includes/framework/Layouts/AdvancedImageBox/Presets/BorderedFramePreset.php:40
 msgid "Bottom margin of the title box in pixels"
-msgstr "Khoảng cách lề dưới hộp tiêu đề"
+msgstr "Khoảng cách lề dưới của hộp tiêu đề (pixel)"
 
 #: includes/framework/Layouts/AdvancedImageBox/Presets/BorderedFramePreset.php:41
 msgid "Title Margin Left"
-msgstr "Margin trái"
+msgstr "Khoảng cách trái tiêu đề"
 
 #: includes/framework/Layouts/AdvancedImageBox/Presets/BorderedFramePreset.php:41
 msgid "Left margin of the title box in pixels"
-msgstr "Khoảng cách lề trái hộp tiêu đề"
+msgstr "Khoảng cách lề trái của hộp tiêu đề (pixel)"
 
 #: includes/framework/Layouts/AdvancedImageBox/Presets/BorderedFramePreset.php:42
 msgid "Title Width"
-msgstr "Chiều rộng"
+msgstr "Chiều rộng tiêu đề"
 
 #: includes/framework/Layouts/AdvancedImageBox/Presets/BorderedFramePreset.php:42
 msgid "Width of the title box (0 = auto)"
-msgstr "Chiều rộng hộp tiêu đề (0 = tự động)"
+msgstr "Chiều rộng của hộp tiêu đề (0 = tự động)"
 
 #: includes/framework/Layouts/AdvancedImageBox/Presets/BorderedFramePreset.php:43
 msgid "Title Width Unit"
-msgstr "Đơn vị chiều rộng"
+msgstr "Đơn vị chiều rộng tiêu đề"
 
 #: includes/framework/Layouts/AdvancedImageBox/Presets/BorderedFramePreset.php:44
 msgid "Pixels (px)"
-msgstr "Pixels (px)"
+msgstr "Pixel (px)"
 
 #: includes/framework/Layouts/AdvancedImageBox/Presets/BorderedFramePreset.php:45
 msgid "Percent (%)"
@@ -800,47 +799,47 @@ msgstr "Rem"
 
 #: includes/framework/Layouts/AdvancedImageBox/Presets/BorderedFramePreset.php:47
 msgid "Unit for the title box width"
-msgstr "Đơn vị cho chiều rộng hộp tiêu đề"
+msgstr "Đơn vị tính cho chiều rộng hộp tiêu đề"
 
 #: includes/framework/Layouts/AdvancedImageBox/Presets/BorderedFramePreset.php:48
 msgid "Title Min Width"
-msgstr "Chiều rộng tối thiểu"
+msgstr "Chiều rộng tối thiểu tiêu đề"
 
 #: includes/framework/Layouts/AdvancedImageBox/Presets/BorderedFramePreset.php:48
 msgid "Minimum width of the title box in pixels"
-msgstr "Chiều rộng nhỏ nhất của hộp tiêu đề"
+msgstr "Chiều rộng tối thiểu của hộp tiêu đề (pixel)"
 
 #: includes/framework/Layouts/AdvancedImageBox/Presets/BorderedFramePreset.php:49
 msgid "Title Padding Top"
-msgstr "Padding trên"
+msgstr "Khoảng đệm trên tiêu đề"
 
 #: includes/framework/Layouts/AdvancedImageBox/Presets/BorderedFramePreset.php:49
 msgid "Top padding of the title box in pixels"
-msgstr "Độ đệm phía trên của hộp tiêu đề"
+msgstr "Khoảng đệm phía trên của hộp tiêu đề (pixel)"
 
 #: includes/framework/Layouts/AdvancedImageBox/Presets/BorderedFramePreset.php:50
 msgid "Title Padding Right"
-msgstr "Padding phải"
+msgstr "Khoảng đệm phải tiêu đề"
 
 #: includes/framework/Layouts/AdvancedImageBox/Presets/BorderedFramePreset.php:50
 msgid "Right padding of the title box in pixels"
-msgstr "Độ đệm phía bên phải của hộp tiêu đề"
+msgstr "Khoảng đệm phía bên phải của hộp tiêu đề (pixel)"
 
 #: includes/framework/Layouts/AdvancedImageBox/Presets/BorderedFramePreset.php:51
 msgid "Title Padding Bottom"
-msgstr "Padding dưới"
+msgstr "Khoảng đệm dưới tiêu đề"
 
 #: includes/framework/Layouts/AdvancedImageBox/Presets/BorderedFramePreset.php:51
 msgid "Bottom padding of the title box in pixels"
-msgstr "Độ đệm phía dưới của hộp tiêu đề"
+msgstr "Khoảng đệm phía dưới của hộp tiêu đề (pixel)"
 
 #: includes/framework/Layouts/AdvancedImageBox/Presets/BorderedFramePreset.php:52
 msgid "Title Padding Left"
-msgstr "Padding trài"
+msgstr "Khoảng đệm trái tiêu đề"
 
 #: includes/framework/Layouts/AdvancedImageBox/Presets/BorderedFramePreset.php:52
 msgid "Left padding of the title box in pixels"
-msgstr "Độ đệm phia bên trái của hộp tiêu đề"
+msgstr "Khoảng đệm phía bên trái của hộp tiêu đề (pixel)"
 
 #: includes/framework/Layouts/AdvancedImageBox/Presets/BorderedFramePreset.php:58
 msgid "Enter image title"
@@ -864,15 +863,15 @@ msgstr "Kích hoạt JANKX PRO"
 msgid ""
 "Activate JANKX PRO to receive automatic updates, access the premium "
 "extension repository and receive technical support from the development team."
-msgstr "Kích hoạt JANKX PRO để nhận cập nhật tự động, truy cập thư viện Extension cao cấp và nhận hỗ trợ kỹ thuật từ nhóm phát triển."
+msgstr "Kích hoạt JANKX PRO để nhận các bản cập nhật tự động, truy cập kho tiện ích mở rộng cao cấp và nhận hỗ trợ kỹ thuật từ đội ngũ phát triển."
 
 #: includes/framework/Services/AdminPageService.php:90
 msgid "Activate Now"
-msgstr "Kích hoạt Ngay"
+msgstr "Kích hoạt ngay"
 
 #: includes/framework/Services/AdminPageService.php:91
 msgid "Buy License"
-msgstr "Mua Bản quyền"
+msgstr "Mua bản quyền"
 
 #: includes/framework/Services/AdminPageService.php:107
 #, php-format
@@ -881,11 +880,11 @@ msgstr "JANKX PRO v%s"
 
 #: includes/framework/Services/AdminPageService.php:108
 msgid "Operational"
-msgstr "Hoạt động Tốt"
+msgstr "Đang hoạt động"
 
 #: includes/framework/Services/AdminPageService.php:111
 msgid "Welcome back! Here are the latest updates from Jankx Portal:"
-msgstr "Chào mừng bạn trở lại! Dưới đây là thông tin mới nhất từ Jankx Portal:"
+msgstr "Chào mừng bạn trở lại! Dưới đây là các cập nhật mới nhất từ cổng thông tin Jankx:"
 
 #: includes/framework/Services/AdminPageService.php:118
 #: includes/framework/Support/Providers/Admin/JankxAdminPagesServiceProvider.php:81
@@ -898,11 +897,11 @@ msgstr "Bảng điều khiển Jankx"
 #: includes/app/Services/ThemeOptionsService.php:230
 #: includes/app/Services/ThemeOptionsService.php:273
 msgid "Theme Options"
-msgstr "Tùy chọn Theme"
+msgstr "Tùy chọn giao diện"
 
 #: includes/framework/Services/AdminPageService.php:223
 msgid "Could not load news at this time. Please try again later."
-msgstr "Không thể tải tin tức lúc này. Xin vui lòng thử lại sau."
+msgstr "Không thể tải tin tức vào lúc này. Vui lòng thử lại sau."
 
 #: includes/framework/Services/AdminPageService.php:224
 msgid "View on Jankx Hub"
@@ -932,7 +931,7 @@ msgstr "Bảng điều khiển JANKX PRO"
 msgid ""
 "Dashboard for your website with system information and quick management "
 "utilities."
-msgstr "Bảng điều khiển cho trang web của bạn với thông tin hệ thống và các tiện ích quản lý nhanh."
+msgstr "Bảng điều khiển trang web của bạn đi kèm thông tin hệ thống và các tiện ích quản lý nhanh."
 
 #: includes/framework/Services/AdminPageService.php:256
 #: includes/framework/Support/Providers/Admin/JankxAdminPagesServiceProvider.php:94
@@ -942,13 +941,13 @@ msgstr "Bảng điều khiển"
 #: includes/framework/Services/AdminPageService.php:265
 #: includes/framework/Services/AdminPageService.php:267
 msgid "Theme Activation"
-msgstr "Kích hoạt Theme"
+msgstr "Kích hoạt giao diện"
 
 #: includes/framework/Services/AdminPageService.php:266
 msgid ""
 "Activate your JANKX PRO license to receive automatic updates and premium "
 "support."
-msgstr "Kích hoạt bản quyền JANKX PRO của bạn để nhận cập nhật tự động và hỗ trợ cao cấp."
+msgstr "Kích hoạt bản quyền JANKX PRO để nhận cập nhật tự động và hỗ trợ cao cấp."
 
 #: includes/framework/Services/AdminPageService.php:276
 #: includes/framework/Services/AdminPageService.php:278
@@ -962,15 +961,15 @@ msgstr "Kết nối tài khoản Optilarity của bạn để mở khóa các gi
 
 #: includes/framework/Services/AdminPageService.php:287
 msgid "Managed Extensions"
-msgstr "Quản lý Extensions"
+msgstr "Quản lý tiện ích mở rộng"
 
 #: includes/framework/Services/AdminPageService.php:288
 msgid "Manage functional extensions for the Jankx Framework."
-msgstr "Quản lý các extension tính năng cho Jankx Framework."
+msgstr "Quản lý các tiện ích mở rộng tính năng cho Jankx Framework."
 
 #: includes/framework/Services/AdminPageService.php:289
 msgid "Extensions"
-msgstr "Extensions"
+msgstr "Tiện ích mở rộng"
 
 #: includes/framework/Services/AdminPageService.php:298
 msgid "Extension Marketplace"
@@ -2086,7 +2085,7 @@ msgstr "Hỏng Thấy Mất Bóng Bài Báo Mẫu Tức Tưởi"
 
 #: includes/framework/Gutenberg/Blocks/UserMenuBlock.php:48
 msgid "Hello,"
-msgstr "Xin chào trân trọng,"
+msgstr "Xin chào,"
 
 #: includes/framework/Gutenberg/Blocks/UserMenuBlock.php:52
 msgid "Profile"
@@ -2098,15 +2097,15 @@ msgstr "Tiễn Đường Sang - Thao Thoát Khỏi Login (Đăng Xuất)"
 
 #: includes/framework/Gutenberg/Blocks/UserMenuBlock.php:136
 msgid "Login"
-msgstr "Tham Kết Form Về Tài Tuyên Đăng Khóa Login"
+msgstr "Đăng nhập"
 
 #: includes/framework/Gutenberg/Blocks/UserMenuBlock.php:144
 msgid "Register"
-msgstr "Bấm Vô Chấp Múi Ký Ghi Hồ Sơ Nền (Đăng Ký Ngay)"
+msgstr "Đăng ký"
 
 #: includes/framework/Gutenberg/SmartTabs/Triggers/OpenLinkTabTrigger.php:16
 msgid "Open Link"
-msgstr "Buông Cửa Quét Tới Cái Móc Sáng"
+msgstr "Mở liên kết"
 
 #: includes/framework/Gutenberg/SmartTabs/Triggers/OpenLinkTabTrigger.php:21
 msgid "Clicking this tab opens a link. No tab content is displayed."
@@ -2114,11 +2113,11 @@ msgstr "Kích vô tab sẽ tung mở trễ móc link đường vòng, hỏng ng�
 
 #: includes/framework/Gutenberg/SmartTabs/Triggers/OpenLinkTabTrigger.php:38
 msgid "URL"
-msgstr "Bảng URL Rò"
+msgstr "URL"
 
 #: includes/framework/Gutenberg/SmartTabs/Triggers/OpenLinkTabTrigger.php:43
 msgid "Target"
-msgstr "Đích Thu Tới Target"
+msgstr "Mục tiêu"
 
 #: includes/framework/Gutenberg/SmartTabs/Triggers/OpenLinkTabTrigger.php:50
 msgid "Rel"
