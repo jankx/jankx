@@ -981,22 +981,22 @@ msgstr "Khám phá và cài đặt hàng trăm extension từ cộng đồng Jan
 
 #: includes/framework/Services/AdminPageService.php:300
 msgid "Marketplace"
-msgstr "Chợ Plugin"
+msgstr "Kho ứng dụng"
 
 #: includes/framework/Services/AdminPageService.php:309
 #: includes/framework/Services/AdminPageService.php:311
 msgid "Icon Repository"
-msgstr "Kho Hình Icons"
+msgstr "Kho biểu tượng"
 
 #: includes/framework/Services/AdminPageService.php:310
 msgid "Centralized icon library for the theme and website content."
-msgstr "Thư viện biểu tượng tập trung cho theme và nội dung website."
+msgstr "Thư viện biểu tượng tập trung cho giao diện và nội dung trang web."
 
 #: includes/framework/Services/AdminPageService.php:320
 #: includes/framework/Services/AdminPageService.php:322
 #: includes/framework/Services/AdminPageService.php:513
 msgid "Utilities"
-msgstr "Công Cụ Tiện Ích"
+msgstr "Tiện ích"
 
 #: includes/framework/Services/AdminPageService.php:321
 msgid "System optimization tools, images and advanced configuration."
@@ -1006,7 +1006,7 @@ msgstr "Công cụ tối ưu hệ thống, hình ảnh và cấu hình nâng cao
 #: includes/framework/Services/AdminPageService.php:333
 #: includes/framework/Services/AdminPageService.php:733
 msgid "System Information"
-msgstr "Thông Tin Hệ Thống"
+msgstr "Thông tin hệ thống"
 
 #: includes/framework/Services/AdminPageService.php:332
 msgid ""
@@ -1015,23 +1015,23 @@ msgstr "Thông tin chi tiết về môi trường máy chủ và nhật ký lỗ
 
 #: includes/framework/Services/AdminPageService.php:499
 msgid "Quick Actions"
-msgstr "Thao Tác Nhanh"
+msgstr "Thao tác nhanh"
 
 #: includes/framework/Services/AdminPageService.php:506
 msgid "Manage Icons"
-msgstr "Quản lý Icons"
+msgstr "Quản lý biểu tượng"
 
 #: includes/framework/Services/AdminPageService.php:520
 msgid "Customize Theme"
-msgstr "Tùy biến Theme"
+msgstr "Tuỳ chỉnh giao diện"
 
 #: includes/framework/Services/AdminPageService.php:530
 msgid "Activate License"
-msgstr "Kích hoạt Bản quyền"
+msgstr "Kích hoạt bản quyền"
 
 #: includes/framework/Services/AdminPageService.php:543
 msgid "System Health"
-msgstr "Tình Trạng Hệ Thống"
+msgstr "Tình trạng hệ thống"
 
 #: includes/framework/Services/AdminPageService.php:548
 msgid "All systems operational"
@@ -1045,15 +1045,15 @@ msgstr "Trang web của bạn đang hoạt động mượt mà. Hãy kiểm tra 
 
 #: includes/framework/Services/AdminPageService.php:552
 msgid "View full report"
-msgstr "Xem báo cáo chuẩn"
+msgstr "Xem báo cáo đầy đủ"
 
 #: includes/framework/Services/AdminPageService.php:561
 msgid "Installed Extensions"
-msgstr "Đã cài đặt Plugins"
+msgstr "Tiện ích đã cài đặt"
 
 #: includes/framework/Services/AdminPageService.php:562
 msgid "Manage All"
-msgstr "Quản lý Tất cả"
+msgstr "Quản lý tất cả"
 
 #: includes/framework/Services/AdminPageService.php:585
 #: includes/framework/Services/AdminPageService.php:1600
@@ -1067,11 +1067,11 @@ msgstr "Chưa kích hoạt"
 
 #: includes/framework/Services/AdminPageService.php:595
 msgid "You have not installed any extensions for the theme yet."
-msgstr "Bạn chưa cài đặt plugin hoặc extension nào cho theme này."
+msgstr "Bạn chưa cài đặt tiện ích nào cho giao diện này."
 
 #: includes/framework/Services/AdminPageService.php:600
 msgid "Explore Marketplace"
-msgstr "Dạo quanh Chợ Ứng dụng"
+msgstr "Khám phá kho ứng dụng"
 
 #: includes/framework/Services/AdminPageService.php:625
 msgid "Jankx News & Updates"
@@ -1083,23 +1083,23 @@ msgstr "Xem tất cả"
 
 #: includes/framework/Services/AdminPageService.php:735
 msgid "Debug Log"
-msgstr "Debug Log"
+msgstr "Nhật ký debug"
 
 #: includes/framework/Services/AdminPageService.php:775
 msgid "Services Status"
-msgstr "Trạng Thái Services"
+msgstr "Trạng thái dịch vụ"
 
 #: includes/framework/Services/AdminPageService.php:809
 msgid "Debug log file not found."
-msgstr "Không tìm thấy file debug log."
+msgstr "Không tìm thấy file nhật ký debug."
 
 #: includes/framework/Services/AdminPageService.php:821
 msgid "Last 100 lines of debug.log"
-msgstr "100 dòng mới nhất của debug.log"
+msgstr "100 dòng mới nhất trong debug.log"
 
 #: includes/framework/Services/AdminPageService.php:827
 msgid "Clear Log"
-msgstr "Xóa Log"
+msgstr "Xoá nhật ký"
 
 #: includes/framework/Services/AdminPageService.php:841
 msgid "Premium WordPress experience by Jankx Framework."
@@ -1112,49 +1112,49 @@ msgstr "&copy; %1$s JANKX PRO. Được làm bằng %2$s bởi %3$s"
 
 #: includes/framework/Services/AdminPageService.php:889
 msgid "License Activated"
-msgstr "Bản quyền Đã Kích hoạt"
+msgstr "Bản quyền đã kích hoạt"
 
 #: includes/framework/Services/AdminPageService.php:889
 msgid "License Activation Required"
-msgstr "Bắt buộc Cần Kích Hoạt Bản Quyền"
+msgstr "Yêu cầu kích hoạt bản quyền"
 
 #: includes/framework/Services/AdminPageService.php:891
 msgid "Pro Enabled"
-msgstr "Đã Bật Pro"
+msgstr "Đã bật Pro"
 
 #: includes/framework/Services/AdminPageService.php:901
 msgid ""
 "Enter your license key below to unlock cloud assets, premium templates, and "
 "automatic updates."
-msgstr "Nhập key bản quyền của bạn phía bên dưới để mở khoá bộ cài bổ trợ nâng cao, giao diện premium và tự động update."
+msgstr "Nhập mã bản quyền để mở khoá tính năng nâng cao, giao diện cao cấp và cập nhật tự động."
 
 #: includes/framework/Services/AdminPageService.php:911
 msgid "License Key"
-msgstr "Mã Bản Quyền"
+msgstr "Mã bản quyền"
 
 #: includes/framework/Services/AdminPageService.php:915
 msgid "Email Address"
-msgstr "Địa chỉ Email"
+msgstr "Địa chỉ email"
 
 #: includes/framework/Services/AdminPageService.php:927
 msgid "Bound License Key"
-msgstr "Mã Bản quyền Bị khoá"
+msgstr "Mã bản quyền đã ràng buộc"
 
 #: includes/framework/Services/AdminPageService.php:931
 msgid "Owner Account"
-msgstr "Tài khoản Sở hữu"
+msgstr "Tài khoản sở hữu"
 
 #: includes/framework/Services/AdminPageService.php:935
 msgid "Authorized Domain"
-msgstr "Miền được Ủy quyền"
+msgstr "Tên miền được uỷ quyền"
 
 #: includes/framework/Services/AdminPageService.php:939
 msgid "Support Status"
-msgstr "Trạng thái Hỗ trợ"
+msgstr "Trạng thái hỗ trợ"
 
 #: includes/framework/Services/AdminPageService.php:942
 msgid "Premium Support Active"
-msgstr "Hỗ trợ Premium Đang Bật"
+msgstr "Hỗ trợ cao cấp đang hoạt động"
 
 #: includes/framework/Services/AdminPageService.php:948
 msgid "Deactivating will remove PRO features. Continue?"
@@ -1167,11 +1167,11 @@ msgstr "Hủy kích hoạt bản quyền này"
 #: includes/framework/Services/AdminPageService.php:966
 #: includes/framework/Services/AdminPageService.php:1399
 msgid "Need Help?"
-msgstr "Cần Giúp Đỡ?"
+msgstr "Cần hỗ trợ?"
 
 #: includes/framework/Services/AdminPageService.php:968
 msgid "If you lost your license key or need help activating, visit our portal."
-msgstr "Nếu bạn bị mất key bản quyền hoặc cần trợ giúp mở khóa, vui lòng ghé trang portal."
+msgstr "Nếu bạn mất mã bản quyền hoặc cần hỗ trợ kích hoạt, hãy truy cập cổng thông tin của chúng tôi."
 
 #: includes/framework/Services/AdminPageService.php:969
 msgid "Optilarity Portal"
@@ -1179,27 +1179,27 @@ msgstr "Cổng Optilarity"
 
 #: includes/framework/Services/AdminPageService.php:975
 msgid "Pro Benefits"
-msgstr "Quyền Lợi Pro"
+msgstr "Quyền lợi Pro"
 
 #: includes/framework/Services/AdminPageService.php:978
 msgid "500+ Cloud Templates"
-msgstr "Hơn 500+ Mẫu Giao diện Cloud"
+msgstr "Hơn 500 mẫu giao diện trên Cloud"
 
 #: includes/framework/Services/AdminPageService.php:979
 msgid "Automatic Updates"
-msgstr "Tự động Cập nhật"
+msgstr "Cập nhật tự động"
 
 #: includes/framework/Services/AdminPageService.php:980
 msgid "Priority Support"
-msgstr "Hỗ trợ Kỹ thuật Riêng"
+msgstr "Hỗ trợ ưu tiên"
 
 #: includes/framework/Services/AdminPageService.php:1011
 msgid "Account Overview"
-msgstr "Thông Tin Tài Khoản"
+msgstr "Thông tin tài khoản"
 
 #: includes/framework/Services/AdminPageService.php:1023
 msgid "Connect to Optilarity"
-msgstr "Kết Nối vói Optilarity"
+msgstr "Kết nối với Optilarity"
 
 #: includes/framework/Services/AdminPageService.php:1025
 msgid ""
@@ -1209,19 +1209,19 @@ msgstr "Liên kết trang web của bạn với mạng Optilarity để đồng 
 
 #: includes/framework/Services/AdminPageService.php:1029
 msgid "Authorize with OAuth2"
-msgstr "Đăng Nhập qua Cổng OAuth2"
+msgstr "Xác thực qua OAuth2"
 
 #: includes/framework/Services/AdminPageService.php:1035
 msgid "Current Membership"
-msgstr "Gói Thành Viên Hiện Tại"
+msgstr "Gói thành viên hiện tại"
 
 #: includes/framework/Services/AdminPageService.php:1039
 msgid "Expiration Date"
-msgstr "Ngày Hết Hạn"
+msgstr "Ngày hết hạn"
 
 #: includes/framework/Services/AdminPageService.php:1040
 msgid "Lifetime Active"
-msgstr "Hoạt động Vĩnh viễn"
+msgstr "Kích hoạt vĩnh viễn"
 
 #: includes/framework/Services/AdminPageService.php:1046
 msgid "Your account is currently synced with Optilarity Cloud Services."
@@ -1229,54 +1229,54 @@ msgstr "Tài khoản của bạn hiện đang được đồng bộ hoá với D
 
 #: includes/framework/Services/AdminPageService.php:1055
 msgid "Disconnect Account"
-msgstr "Ngắt Kết Nối"
+msgstr "Ngắt kết nối tài khoản"
 
 #: includes/framework/Services/AdminPageService.php:1068
 msgid "Cloud Resources"
-msgstr "Tài Nguyên Máy Chủ"
+msgstr "Tài nguyên Cloud"
 
 #: includes/framework/Services/AdminPageService.php:1078
 msgid "Premium Templates"
-msgstr "Giao diện Cao cấp"
+msgstr "Mẫu giao diện cao cấp"
 
 #: includes/framework/Services/AdminPageService.php:1086
 msgid "Managed"
-msgstr "Đang Quản lý"
+msgstr "Đang quản lý"
 
 #: includes/framework/Services/AdminPageService.php:1087
 msgid "Cloud Deployment"
-msgstr "Triển khai trên Đám mây"
+msgstr "Triển khai trên đám mây"
 
 #: includes/framework/Services/AdminPageService.php:1094
 msgid "Upgrade Options"
-msgstr "Lựa Chọn Nâng Cấp"
+msgstr "Tuỳ chọn nâng cấp"
 
 #: includes/framework/Services/AdminPageService.php:1095
 msgid "Need more sites or advanced features? Explore our professional plans."
-msgstr "Cần thêm dung lượng trang web hoặc các tính năng phân tầng nâng cao? Hãy dạo và khám phá gói chuyên nghiệp của chúng tôi."
+msgstr "Cần thêm số trang web hoặc tính năng nâng cao? Khám phá các gói dịch vụ chuyên nghiệp của chúng tôi."
 
 #: includes/framework/Services/AdminPageService.php:1096
 msgid "Compare Plans"
-msgstr "So Sánh Các Gói Dịch Vụ"
+msgstr "So sánh các gói dịch vụ"
 
 #: includes/framework/Services/AdminPageService.php:1252
 msgid "This page is under construction."
-msgstr "Trang này hiện đang được nâng cấp xây dựng."
+msgstr "Trang này đang trong quá trình xây dựng."
 
 #: includes/framework/Services/AdminPageService.php:1303
 msgid "Media Optimization"
-msgstr "Tối Ưu Hình Ảnh (Media)"
+msgstr "Tối ưu hoá media"
 
 #: includes/framework/Services/AdminPageService.php:1308
 msgid "Select All"
-msgstr "Chọn Tất Cả"
+msgstr "Chọn tất cả"
 
 #: includes/framework/Services/AdminPageService.php:1314
 msgid ""
 "Enable or disable specific image sizes. Unused image sizes consume disk "
 "space and slow down your site. Disabling them will prevent WordPress from "
 "generating these sizes for new uploads."
-msgstr "Bật hoặc tắt cấu hình cho kích thước hình ảnh. Hình ảnh rác sẽ đốt dung lượng ổ cứng hosting và làm chậm quá trình thiết kế của bạn. Tắt chúng đi sẽ tối ưu quy trình render hơn nhiều."
+msgstr "Bật hoặc tắt từng kích thước hình ảnh. Các kích thước không dùng sẽ tốn dung lượng ổ đĩa và làm chậm trang web. Tắt đi sẽ ngăn WordPress tạo các kích thước này cho ảnh mới tải lên."
 
 #: includes/framework/Services/AdminPageService.php:1330
 msgid "Crop: Yes"
@@ -1288,39 +1288,39 @@ msgstr "Cắt: Không"
 
 #: includes/framework/Services/AdminPageService.php:1347
 msgid "Save Media Settings"
-msgstr "Lưu Cài Đặt Media"
+msgstr "Lưu cài đặt media"
 
 #: includes/framework/Services/AdminPageService.php:1359
 msgid "System Actions"
-msgstr "Xử Lý Của Hệ Thống"
+msgstr "Thao tác hệ thống"
 
 #: includes/framework/Services/AdminPageService.php:1366
 msgid "Regenerate Thumbnails"
-msgstr "Khởi Tạo Lại Hình Ảnh (Thumbnails)"
+msgstr "Tạo lại hình thu nhỏ"
 
 #: includes/framework/Services/AdminPageService.php:1367
 msgid "Fix broken images and create new sizes."
-msgstr "Khôi phục hình ảnh rách và tạo form ảnh mới."
+msgstr "Khôi phục hình ảnh bị lỗi và tạo các kích thước mới."
 
 #: includes/framework/Services/AdminPageService.php:1369
 msgid "Requires plugin"
-msgstr "Cần Plugin"
+msgstr "Cần cài đặt plugin"
 
 #: includes/framework/Services/AdminPageService.php:1375
 msgid "Clear Image Cache"
-msgstr "Xoá Cache Ảnh"
+msgstr "Xoá cache hình ảnh"
 
 #: includes/framework/Services/AdminPageService.php:1376
 msgid "Remove transient image metadata."
-msgstr "Xoá dữ liệu siêu hình ảnh rác."
+msgstr "Xoá siêu dữ liệu hình ảnh tạm thời."
 
 #: includes/framework/Services/AdminPageService.php:1384
 msgid "Export Settings"
-msgstr "Trích Xuất Cài Đặt"
+msgstr "Xuất cài đặt"
 
 #: includes/framework/Services/AdminPageService.php:1385
 msgid "Download your configuration."
-msgstr "Tải xuống file cài đặt cấu hình."
+msgstr "Tải xuống file cấu hình của bạn."
 
 #: includes/framework/Services/AdminPageService.php:1400
 msgid "Check our documentation for advanced media optimization tips."
@@ -1328,12 +1328,12 @@ msgstr "Xem tài liệu hướng dẫn và mẹo tối ưu media."
 
 #: includes/framework/Services/AdminPageService.php:1401
 msgid "Read Docs"
-msgstr "Đọc Tài Liệu"
+msgstr "Đọc tài liệu"
 
 #: includes/framework/Services/AdminPageService.php:1613
 #: includes/framework/Services/AdminPageService.php:1860
 msgid "Required"
-msgstr "Bắt Bộc"
+msgstr "Bắt buộc"
 
 #: includes/framework/Services/AdminPageService.php:1621
 #: includes/framework/Services/AdminPageService.php:1739
@@ -1349,15 +1349,15 @@ msgstr "Mô tả"
 
 #: includes/framework/Services/AdminPageService.php:1629
 msgid "No extensions found."
-msgstr "Không tìm thấy addon / extension nào."
+msgstr "Không tìm thấy tiện ích nào."
 
 #: includes/framework/Services/AdminPageService.php:1675
 msgid "This extension is required by the theme but not installed."
-msgstr "Extension này là extension bắt buộc của theme nhưng bạn chưa cài nó."
+msgstr "Tiện ích này là bắt buộc cho giao diện nhưng chưa được cài đặt."
 
 #: includes/framework/Services/AdminPageService.php:1703
 msgid "This extension is recommended by the theme but not installed."
-msgstr "Extension này là các extension cài đặt thêm bổ dung nhưng chưa thiết lập."
+msgstr "Tiện ích này được giao diện khuyến nghị nhưng chưa được cài đặt."
 
 #: includes/framework/Services/AdminPageService.php:1779
 msgid "An error occurred."
@@ -1374,7 +1374,7 @@ msgstr "Đang tiến hành cài đặt..."
 #: includes/framework/Services/AdminPageService.php:2569
 #: includes/framework/Services/AdminPageService.php:2582
 msgid "Install Now"
-msgstr "Cài Trong 1 Nốt Nhạc"
+msgstr "Cài đặt ngay"
 
 #: includes/framework/Services/AdminPageService.php:1810
 msgid "An error occurred during installation."
@@ -1383,23 +1383,23 @@ msgstr "Đã xảy ra lỗi trong tiến trình cài đặt."
 #: includes/framework/Services/AdminPageService.php:1820
 msgid ""
 "Are you sure you want to delete this extension? This action cannot be undone."
-msgstr "Xoá extension này và dọn dẹp các tệp liên quan ra khỏi kho giao diện? Thao tác sẽ không thể phục hồi."
+msgstr "Bạn có chắc muốn xoá tiện ích này? Hành động này không thể hoàn tác."
 
 #: includes/framework/Services/AdminPageService.php:1862
 msgid "Recommended"
-msgstr "Khuyên dùng"
+msgstr "Khuyến nghị"
 
 #: includes/framework/Services/AdminPageService.php:1875
 msgid "Deactivate"
-msgstr "Huỷ Kịch Hoạt"
+msgstr "Vô hiệu hoá"
 
 #: includes/framework/Services/AdminPageService.php:1881
 msgid "Activate"
-msgstr "Kích Hoạt"
+msgstr "Kích hoạt"
 
 #: includes/framework/Services/AdminPageService.php:1888
 msgid "Delete"
-msgstr "Xoá Xổ"
+msgstr "Xoá"
 
 #: includes/framework/Services/AdminPageService.php:1893
 msgid "Show more details"
@@ -1428,7 +1428,7 @@ msgid ""
 "Explore and install functional extensions for your Jankx theme. All "
 "extensions are automatically compatible with the current PHP and Jankx "
 "versions."
-msgstr "Dạo quanh thư việc và cài đặt addon cho theme Jankx của bạn. Toàn bộ addon / extensions ở đây đều được tự động hỗ trợ cho đúng PHP mà hệ thống phân bổ."
+msgstr "Khám phá và cài đặt các tiện ích cho giao diện Jankx của bạn. Tất cả tiện ích đều tự động tương thích với phiên bản PHP và Jankx hiện tại."
 
 #: includes/framework/Services/AdminPageService.php:1947
 msgid "Search extensions..."
@@ -1436,37 +1436,37 @@ msgstr "Tìm extension..."
 
 #: includes/framework/Services/AdminPageService.php:1951
 msgid "Most Popular"
-msgstr "Bán Chạy Nhất"
+msgstr "Phổ biến nhất"
 
 #: includes/framework/Services/AdminPageService.php:1952
 #: includes/framework/Services/AdminPageService.php:2010
 #: includes/framework/Services/AdminPageService.php:2508
 #: includes/framework/Services/AdminPageService.php:2619
 msgid "Free"
-msgstr "Kho Miễn Phí"
+msgstr "Miễn phí"
 
 #: includes/framework/Services/AdminPageService.php:1953
 #: includes/framework/Services/AdminPageService.php:2008
 msgid "Premium"
-msgstr "Kho Trả Phí"
+msgstr "Cao cấp"
 
 #: includes/framework/Services/AdminPageService.php:1954
 msgid "Newest"
-msgstr "Mới Nhất"
+msgstr "Mới nhất"
 
 #: includes/framework/Services/AdminPageService.php:1962
 msgid "No extensions found"
-msgstr "Mất kiên nhẫn, chưa thấy extension luôn."
+msgstr "Không tìm thấy tiện ích nào"
 
 #: includes/framework/Services/AdminPageService.php:1963
 msgid ""
 "The extension library is currently being updated. Please come back in a few "
 "minutes or try refreshing the data."
-msgstr "Kho dữ liệu extension hiện đang được update. Vui lòng quay lại trong nháy mắt hoặc kiên nhẫn load lạo."
+msgstr "Kho tiện ích đang được cập nhật. Vui lòng quay lại sau vài phút hoặc thử tải lại dữ liệu."
 
 #: includes/framework/Services/AdminPageService.php:1964
 msgid "Refresh Data"
-msgstr "Nạp Lại Kho"
+msgstr "Tải lại dữ liệu"
 
 #: includes/framework/Services/AdminPageService.php:1974
 msgid "Just now"
@@ -1499,15 +1499,15 @@ msgstr "bởi %s"
 
 #: includes/framework/Services/AdminPageService.php:2041
 msgid "Details"
-msgstr "Rõ ràng hơn"
+msgstr "Chi tiết"
 
 #: includes/framework/Services/AdminPageService.php:2046
 msgid "Already Installed"
-msgstr "Đã Cài Đặt Xong Xuôi"
+msgstr "Đã cài đặt"
 
 #: includes/framework/Services/AdminPageService.php:2053
 msgid "Install"
-msgstr "Cài"
+msgstr "Cài đặt"
 
 #: includes/framework/Services/AdminPageService.php:2089
 #, php-format
@@ -1535,7 +1535,7 @@ msgstr "Phiên Bản"
 
 #: includes/framework/Services/AdminPageService.php:2523
 msgid "Installs"
-msgstr "Cài Trong Giây"
+msgstr "Lượt cài đặt"
 
 #: includes/framework/Services/AdminPageService.php:2527
 msgid "Rating"
@@ -1551,7 +1551,7 @@ msgstr "Thành công:"
 
 #: includes/framework/Services/AdminPageService.php:2560
 msgid "Installed"
-msgstr "Được cài nè"
+msgstr "Đã cài đặt"
 
 #: includes/framework/Services/AdminPageService.php:2566
 msgid "Installation failed."
@@ -1560,11 +1560,11 @@ msgstr "Cài đặt thất bại."
 #: includes/framework/Services/AdminPageService.php:2568
 #: includes/framework/Services/AdminPageService.php:2581
 msgid "Error:"
-msgstr "Lỗi bự:"
+msgstr "Lỗi:"
 
 #: includes/framework/Services/AdminPageService.php:2573
 msgid "Connection error. Please try again."
-msgstr "Mất kết nối server. Hãy thử lại giùm."
+msgstr "Lỗi kết nối. Vui lòng thử lại."
 
 #: includes/framework/Services/GutenbergService.php:317
 msgid "Jankx"
@@ -1572,97 +1572,97 @@ msgstr "Jankx"
 
 #: includes/framework/Services/ExtensionService.php:601
 msgid "Extension installed successfully."
-msgstr "Tuyệt vời! Extension thiết lập trơn tru."
+msgstr "Tiện ích đã được cài đặt thành công."
 
 #: includes/framework/Services/FontIcons/Admin/AjaxHandler.php:34
 msgid "Missing required fields."
-msgstr "Bị hở trường giá trị cần thiết."
+msgstr "Thiếu các trường bắt buộc."
 
 #: includes/framework/Services/FontIcons/Admin/AjaxHandler.php:60
 #: includes/framework/Services/FontIcons/Admin/AjaxHandler.php:109
 msgid "Missing icon type."
-msgstr "Bị thiếu mục tuỳ icon type."
+msgstr "Thiếu loại biểu tượng."
 
 #: includes/framework/Services/FontIcons/Admin/AjaxHandler.php:68
 msgid "Icon set not found."
-msgstr "Icon set lạc trôi."
+msgstr "Không tìm thấy bộ biểu tượng."
 
 #: includes/framework/Services/FontIcons/Admin/AjaxHandler.php:80
 msgid "CSS URL not configured for this set."
-msgstr "CSS URL cho mục này bị trống rỗng."
+msgstr "URL CSS chưa được cấu hình cho bộ này."
 
 #: includes/framework/Services/FontIcons/Admin/AjaxHandler.php:94
 msgid "Icon set updated successfully."
-msgstr "Icon set được nâng cấp mới thành công."
+msgstr "Bộ biểu tượng đã được cập nhật thành công."
 
 #: includes/framework/Services/FontIcons/Admin/AjaxHandler.php:117
 msgid "Icon set removed successfully."
-msgstr "Bay hơi em tuỳ set icon cũ thành công."
+msgstr "Bộ biểu tượng đã được xoá thành công."
 
 #: includes/framework/Services/FontIcons/Admin/AjaxHandler.php:119
 msgid "Failed to remove icon set."
-msgstr "Không thể remove icon set này, chắc bị lỗi."
+msgstr "Không thể xoá bộ biểu tượng."
 
 #: includes/framework/Services/FontIcons/Admin/AjaxHandler.php:133
 msgid "Repository cache refreshed successfully."
-msgstr "Đã nạp cache kho lưu trữ trơn tru."
+msgstr "Cache kho lưu trữ đã được làm mới thành công."
 
 #: includes/framework/Services/FontIcons/Admin/DashboardRenderer.php:22
 msgid "Icon Pack"
-msgstr "Bộ Font Icons"
+msgstr "Bộ biểu tượng"
 
 #: includes/framework/Services/FontIcons/Admin/DashboardRenderer.php:24
 msgid "Settings"
-msgstr "Cài đặt Vận hành"
+msgstr "Cài đặt"
 
 #: includes/framework/Services/FontIcons/Admin/DashboardRenderer.php:61
 msgid "Storage System:"
-msgstr "Hệ Thống Phân Kho:"
+msgstr "Hệ thống lưu trữ:"
 
 #: includes/framework/Services/FontIcons/Admin/DashboardRenderer.php:68
 #, php-format
 msgid "Database Path: %s"
-msgstr "Chuỗi thư DB: %s"
+msgstr "Đường dẫn cơ sở dữ liệu: %s"
 
 #: includes/framework/Services/FontIcons/Admin/DashboardRenderer.php:69
 #, php-format
 msgid "Total Stored Sets: %d"
-msgstr "Trữ kho Cụm Set: %d"
+msgstr "Tổng bộ đã lưu: %d"
 
 #: includes/framework/Services/FontIcons/Admin/DashboardRenderer.php:71
 #, php-format
 msgid "Storage Directory: %s"
-msgstr "Kho thư mục Directory gốc: %s"
+msgstr "Thư mục lưu trữ: %s"
 
 #: includes/framework/Services/FontIcons/Admin/DashboardRenderer.php:72
 #, php-format
 msgid "Total JSON Files: %d"
-msgstr "Số Lượng Files JSON: %d"
+msgstr "Tổng số file JSON: %d"
 
 #: includes/framework/Services/FontIcons/Admin/DashboardRenderer.php:78
 #: includes/framework/Services/FontIcons/Admin/DashboardRenderer.php:297
 msgid "Icon Pack Management"
-msgstr "Quản Lý Icon Pack"
+msgstr "Quản lý bộ biểu tượng"
 
 #: includes/framework/Services/FontIcons/Admin/DashboardRenderer.php:80
 msgid "Import New Icon Set"
-msgstr "Nhập (Import) Icon Set Mới"
+msgstr "Nhập bộ biểu tượng mới"
 
 #: includes/framework/Services/FontIcons/Admin/DashboardRenderer.php:81
 msgid "Refresh Cache"
-msgstr "Khơi thông Cache Lại"
+msgstr "Làm mới cache"
 
 #: includes/framework/Services/FontIcons/Admin/DashboardRenderer.php:87
 msgid "No icon sets registered in repository."
-msgstr "Không có các kho bộ icons set có mặt đưuọc đăng ký nốt."
+msgstr "Chưa có bộ biểu tượng nào được đăng ký trong kho."
 
 #: includes/framework/Services/FontIcons/Admin/DashboardRenderer.php:95
 msgid "Enabled"
-msgstr "Bật lên"
+msgstr "Đang bật"
 
 #: includes/framework/Services/FontIcons/Admin/DashboardRenderer.php:95
 msgid "Disabled"
-msgstr "Tắt nghỉ"
+msgstr "Đang tắt"
 
 #: includes/framework/Services/FontIcons/Admin/DashboardRenderer.php:98
 #: includes/framework/Services/FontIcons/Admin/DashboardRenderer.php:162
@@ -1671,15 +1671,15 @@ msgstr "Tải Tự Động"
 
 #: includes/framework/Services/FontIcons/Admin/DashboardRenderer.php:105
 msgid "Type"
-msgstr "Loại form"
+msgstr "Loại"
 
 #: includes/framework/Services/FontIcons/Admin/DashboardRenderer.php:109
 msgid "Font Family"
-msgstr "Chuỗi Font Family"
+msgstr "Font chữ"
 
 #: includes/framework/Services/FontIcons/Admin/DashboardRenderer.php:113
 msgid "Total Icons"
-msgstr "Tổng hợp Tất Cả Icons"
+msgstr "Tổng số biểu tượng"
 
 #: includes/framework/Services/FontIcons/Admin/DashboardRenderer.php:123
 msgid "View Icons"
@@ -1692,150 +1692,150 @@ msgstr "Cập Nhật CSS"
 
 #: includes/framework/Services/FontIcons/Admin/DashboardRenderer.php:127
 msgid "Remove From Repository"
-msgstr "Ngừng Từ Thư Viện"
+msgstr "Xoá khỏi kho lưu trữ"
 
 #: includes/framework/Services/FontIcons/Admin/DashboardRenderer.php:138
 msgid "Import New Icon Set from CSS URL"
-msgstr "Nhập Mới Lượt Bộ Icon TỪ Kênh CSS URLs"
+msgstr "Nhập bộ biểu tượng mới từ URL CSS"
 
 #: includes/framework/Services/FontIcons/Admin/DashboardRenderer.php:142
 msgid "Icon Type Slug"
-msgstr "Dấu Loại Của Biểu Tượng Icon (Type Slug)"
+msgstr "Slug loại biểu tượng"
 
 #: includes/framework/Services/FontIcons/Admin/DashboardRenderer.php:145
 msgid "Unique identifier for this icon set."
-msgstr "Dấu định danh loại trừ chéo cho Icons."
+msgstr "Khoá nhận dạng duy nhất cho bộ biểu tượng này."
 
 #: includes/framework/Services/FontIcons/Admin/DashboardRenderer.php:149
 msgid "Display Name"
-msgstr "Tên Xuất Hiển (Display Name)"
+msgstr "Tên hiển thị"
 
 #: includes/framework/Services/FontIcons/Admin/DashboardRenderer.php:155
 msgid "CSS URL"
-msgstr "Gắn Chuỗi URL CSS"
+msgstr "URL CSS"
 
 #: includes/framework/Services/FontIcons/Admin/DashboardRenderer.php:158
 msgid "Absolute URL to the font icon CSS file."
-msgstr "Khoản URL Absolute đẫn đến File Font."
+msgstr "URL tuyệt đối đến file CSS của bộ biểu tượng."
 
 #: includes/framework/Services/FontIcons/Admin/DashboardRenderer.php:165
 msgid "Automatically enqueue this CSS on every page?"
-msgstr "Tự ngốn CSS này khi duyệt qua all forms trang (every page)?"
+msgstr "Tự động tải CSS này trên mọi trang?"
 
 #: includes/framework/Services/FontIcons/Admin/DashboardRenderer.php:170
 #: includes/framework/Services/FontIcons/Admin/DashboardRenderer.php:211
 msgid "Start Import"
-msgstr "Chạy Quy Trình Bắt Tay Nhập (Import)"
+msgstr "Bắt đầu nhập"
 
 #: includes/framework/Services/FontIcons/Admin/DashboardRenderer.php:171
 msgid "Cancel"
-msgstr "Huỷ Tuốt"
+msgstr "Huỷ"
 
 #: includes/framework/Services/FontIcons/Admin/DashboardRenderer.php:196
 msgid "Importing..."
-msgstr "Đang Mở Trình Ngốn (Import)..."
+msgstr "Đang nhập..."
 
 #: includes/framework/Services/FontIcons/Admin/DashboardRenderer.php:207
 msgid "Import successful!"
-msgstr "Tiến độ Nhập Thành Công Ầm Ầm!"
+msgstr "Nhập thành công!"
 
 #: includes/framework/Services/FontIcons/Admin/DashboardRenderer.php:210
 msgid "Import failed."
-msgstr "Quá trình Nhập Mẻ. Hỏng Vỡ Rồi."
+msgstr "Nhập không thành công."
 
 #: includes/framework/Services/FontIcons/Admin/DashboardRenderer.php:221
 msgid "Update icon data from CSS URL? This will refresh the icon cache."
-msgstr "Có muốn bồi update cho bản Data từ CSS? (Sẽ tạt Cache lại đó)."
+msgstr "Cập nhật dữ liệu biểu tượng từ URL CSS? Thao tác này sẽ làm mới cache."
 
 #: includes/framework/Services/FontIcons/Admin/DashboardRenderer.php:223
 msgid "Updating..."
-msgstr "Hệ thống Bắt Bồi Update (Updating)..."
+msgstr "Đang cập nhật..."
 
 #: includes/framework/Services/FontIcons/Admin/DashboardRenderer.php:246
 msgid ""
 "Remove this icon set from repository? Permanent data will be kept but set "
 "will be disabled."
-msgstr "Loại bỏ hoàn toàn icon set ra góc? Số Database tạm ứng sẽ vẫn được dự phòng (disable ngốn)."
+msgstr "Xoá bộ biểu tượng này khỏi kho? Dữ liệu lưu trữ vĩnh viễn sẽ được giữ nguyên nhưng bộ sẽ bị vô hiệu hoá."
 
 #: includes/framework/Services/FontIcons/Admin/DashboardRenderer.php:264
 msgid "Refreshing..."
-msgstr "Làm Mới Lại Cache Tiến Trình..."
+msgstr "Đang làm mới..."
 
 #: includes/framework/Services/FontIcons/Admin/DashboardRenderer.php:285
 #, php-format
 msgid "Icon pack \"%s\" not found in repository."
-msgstr ""
+msgstr "Không tìm thấy gói biểu tượng \"%s\" trong kho."
 
 #: includes/framework/Services/FontIcons/Admin/DashboardRenderer.php:286
 msgid "Back to Management"
-msgstr "Quay Gót Tuột Lại Khu Vực System"
+msgstr "Quay lại quản lý"
 
 #: includes/framework/Services/FontIcons/Admin/DashboardRenderer.php:302
 msgid "Search icons in this pack..."
-msgstr "Liệu lục icon form Pack này xem..."
+msgstr "Tìm kiếm biểu tượng trong bộ này..."
 
 #: includes/framework/Services/FontIcons/Admin/DashboardRenderer.php:303
 msgid "Back"
-msgstr "Bỏ chạy"
+msgstr "Quay lại"
 
 #: includes/framework/Services/FontIcons/Admin/DashboardRenderer.php:309
 msgid "Total Icons:"
-msgstr "Gộp Thảy Các Biểu Tượng:"
+msgstr "Tổng biểu tượng:"
 
 #: includes/framework/Services/FontIcons/Admin/DashboardRenderer.php:313
 msgid "Prefixes:"
-msgstr "Loại Mã Gắn Cho Đầu Form Prefix:"
+msgstr "Tiền tố:"
 
 #: includes/framework/Services/FontIcons/Admin/DashboardRenderer.php:317
 msgid "Font Family:"
-msgstr "Font Của Biểu Tượng Family:"
+msgstr "Font chữ:"
 
 #: includes/framework/Services/FontIcons/Admin/DashboardRenderer.php:321
 msgid "Render Type:"
-msgstr "Phác Thảo Lên:"
+msgstr "Kiểu hiển thị:"
 
 #: includes/framework/Services/FontIcons/Admin/DashboardRenderer.php:328
 msgid "No icons found in this pack. Try updating CSS."
-msgstr "Bị thất thoát Icon này. Trở lại test Update CSS nha."
+msgstr "Không tìm thấy biểu tượng nào trong bộ này. Hãy thử cập nhật CSS."
 
 #: includes/framework/Services/FontIcons/Admin/DashboardRenderer.php:374
 msgid "Copied!"
-msgstr "Ngậm Copy Kéo Ra Nhá!"
+msgstr "Đã sao chép!"
 
 #: includes/framework/Services/FontIcons/Admin/DashboardRenderer.php:388
 msgid "Global Icon Settings"
-msgstr "Sửa Set Settings Của Icon Khung"
+msgstr "Cài đặt biểu tượng toàn cục"
 
 #: includes/framework/Services/FontIcons/Admin/DashboardRenderer.php:393
 msgid "Default Icon Set"
-msgstr "Thiết Lập Bộ Default Icons"
+msgstr "Bộ biểu tượng mặc định"
 
 #: includes/framework/Services/FontIcons/Admin/DashboardRenderer.php:408
 msgid "Load via CDN"
-msgstr "Tải Vào Khung Form CDN"
+msgstr "Tải qua CDN"
 
 #: includes/framework/Services/FontIcons/Admin/DashboardRenderer.php:411
 msgid "Use CDN for built-in icon sets"
-msgstr "Hành Tải Mạch Nổi Của Cloud Cho Tận Dụng Forms Assets Icons Set"
+msgstr "Sử dụng CDN cho các bộ biểu tượng tích hợp sẵn"
 
 #: includes/framework/Extensions/EnvatoManager.php:61
 msgid "Purchase code cannot be empty."
-msgstr "Xin nhập mã Purchase code để làm chảo."
+msgstr "Mã mua hàng không được để trống."
 
 #: includes/framework/Extensions/EnvatoManager.php:103
 msgid "Invalid purchase code or activation failed."
-msgstr "Key Purchase hỏng lỗi bèo mã hoặc chưa setup đủ."
+msgstr "Mã mua hàng không hợp lệ hoặc kích hoạt thất bại."
 
 #: includes/framework/Extensions/EnvatoManager.php:129
 msgid "Server rejected deactivation."
-msgstr "Văng Ra Thông Điệp Chóp Để Cúp (Deactive)."
+msgstr "Máy chủ từ chối yêu cầu vô hiệu hoá."
 
 #: includes/framework/Extensions/ExtensionManager.php:587
 #, php-format
 msgid ""
 "The following extensions are <strong>required</strong> for %s theme: %s. "
 "Please install and activate them."
-msgstr "Danh mục sau bị dính lệnh Extension <strong>BẮT BUỘC</strong> từ theme %s là cài: %s. Lo làm nhiệm vụ này."
+msgstr "Các tiện ích sau đây là <strong>bắt buộc</strong> đối với giao diện %s: %s. Vui lòng cài đặt và kích hoạt chúng."
 
 #: includes/framework/Extensions/ExtensionManager.php:615
 #, php-format
@@ -1846,18 +1846,18 @@ msgstr "Đính Extension này <strong>Thêm Lực Chọn Chút Đỉnh Nho Nhỏ
 
 #: includes/framework/Extensions/ExtensionManager.php:664
 msgid "Could not resolve download URL from Jankx Hub."
-msgstr "Hỏng Mạch Để Móc Qua Vút Bản Tải File Qua Jankx Khum Hub."
+msgstr "Không thể xác định URL tải xuống từ Jankx Hub."
 
 #: includes/framework/Extensions/ExtensionManager.php:719
 msgid "Failed to move extension to final directory."
-msgstr "Sút Thất Sóng Vì Mắc Kẹt Cuốn Đường Dẫn Thư Mục."
+msgstr "Không thể di chuyển tiện ích đến thư mục đích."
 
 #: includes/framework/Patches/NavigationBlockPatch.php:59
 #: includes/framework/Patches/NavigationBlockPatch.php:132
 #: includes/framework/Patches/NavigationBlockPatch.php:193
 #: includes/app/Services/NavigationBlockService.php:90
 msgid "Submenu"
-msgstr "Kho Lại Thả Bên Nách Mục (Submenu)"
+msgstr "Trình đơn con"
 
 #: includes/framework/Patches/NavigationBlockPatch.php:59
 #: includes/framework/Patches/NavigationBlockPatch.php:92
@@ -1870,34 +1870,34 @@ msgstr "Kho Lại Thả Bên Nách Mục (Submenu)"
 #: includes/framework/Gutenberg/SmartTabs/Triggers/OpenLinkTabTrigger.php:86
 #: includes/app/Services/NavigationBlockService.php:72
 msgid "Link"
-msgstr "Dẫn Liên Vào Kết Này (Link)"
+msgstr "Liên kết"
 
 #: includes/framework/Support/Providers/ExtensionServiceProvider.php:54
 #: includes/framework/Support/Providers/ExtensionServiceProvider.php:81
 msgid "Unauthorized."
-msgstr "Bị Mất Tín Vạch Bấm Uỷ Mã."
+msgstr "Không có quyền truy cập."
 
 #: includes/framework/Support/Providers/ExtensionServiceProvider.php:59
 msgid "Extension slug is required."
-msgstr "Khum Có Slug Này Ko Làm (Slug cho Extension Is Required)."
+msgstr "Slug tiện ích là bắt buộc."
 
 #: includes/framework/Support/Providers/ExtensionServiceProvider.php:70
 #, php-format
 msgid "Extension \"%s\" installed successfully."
-msgstr ""
+msgstr "Tiện ích \"%s\" đã được cài đặt thành công."
 
 #: includes/framework/Support/Providers/FontIconsServiceProvider.php:84
 #: includes/framework/Support/Providers/FontIconsServiceProvider.php:85
 msgid "Icons Repository"
-msgstr "Tập Lệnh Icon Repository"
+msgstr "Kho biểu tượng"
 
 #: includes/framework/Support/Providers/FontIconsServiceProvider.php:177
 msgid "Font Icons Repository"
-msgstr "Tập Lệnh Icons Nguồn Mở"
+msgstr "Kho biểu tượng font"
 
 #: includes/framework/Support/Providers/FontIconsServiceProvider.php:178
 msgid "Manage your font icons collection."
-msgstr "Điều Giao Toàn Diện Hệ Font Kho."
+msgstr "Quản lý bộ sưu tập biểu tượng font."
 
 #: includes/framework/Support/Providers/FontIconsServiceProvider.php:181
 msgid "Registered Icon Types:"
@@ -1905,20 +1905,20 @@ msgstr "Icon Type Dách Lọt Túi (Đăng Ký Xong Định):"
 
 #: includes/framework/Support/Providers/FontIconsServiceProvider.php:188
 msgid " [Auto-load]"
-msgstr " [Bật Ngốn Tựa Trình - Tự Lên Định Load]"
+msgstr " [Tự động tải]"
 
 #: includes/framework/Support/Providers/FontIconsServiceProvider.php:188
 msgid " [Manual]"
-msgstr " [Sữa Tai Nhúng Kéo Đội Lên Thủ Đẩy]"
+msgstr " [Thủ công]"
 
 #: includes/framework/Support/Providers/FontIconsServiceProvider.php:193
 msgid "No icon types registered yet."
-msgstr "Không có form kiểu form lót ngốn icons nào."
+msgstr "Chưa có loại biểu tượng nào được đăng ký."
 
 #: includes/framework/Support/Providers/Admin/JankxAdminPagesServiceProvider.php:82
 #, fuzzy
 msgid "Jankx Admin"
-msgstr "Jankx"
+msgstr "Trang quản trị Jankx"
 
 #: includes/framework/Admin/Handlers/FormHandler.php:88
 #: includes/framework/Admin/Handlers/FormHandler.php:125
@@ -1926,7 +1926,7 @@ msgstr "Jankx"
 #: includes/framework/Admin/Handlers/FormHandler.php:189
 #: includes/framework/Admin/Handlers/FormHandler.php:216
 msgid "Security check failed"
-msgstr "Check Điểm Mắc An Ninh Lủng Check Thất Lỗi."
+msgstr "Kiểm tra bảo mật thất bại"
 
 #: includes/framework/Admin/Handlers/FormHandler.php:92
 #: includes/framework/Admin/Handlers/FormHandler.php:129
@@ -1934,31 +1934,31 @@ msgstr "Check Điểm Mắc An Ninh Lủng Check Thất Lỗi."
 #: includes/framework/Admin/Handlers/FormHandler.php:193
 #: includes/framework/Admin/Handlers/FormHandler.php:220
 msgid "You do not have permission to perform this action."
-msgstr "Xác Bạn Đi Lạc, Cút Lối Này Không Quyền Vào Ra."
+msgstr "Bạn không có quyền thực hiện hành động này."
 
 #: includes/framework/Admin/Handlers/FormHandler.php:102
 msgid "Activation failed."
-msgstr "Nạp Lên Vô Sụp Hoạt Động (Failed Sơ)."
+msgstr "Kích hoạt thất bại."
 
 #: includes/framework/Admin/Handlers/FormHandler.php:113
 msgid "Theme JANKX PRO activated successfully via Optilarity!"
-msgstr "Tuyệt Làm, Hở Chéo Phát Theme JANKX PRO Lên Dễ Dàng Qua Cổng Optilarity!"
+msgstr "Giao diện JANKX PRO đã được kích hoạt thành công qua Optilarity!"
 
 #: includes/framework/Admin/Handlers/FormHandler.php:138
 msgid "License deactivated."
-msgstr "Tháo Bản Quyền Ra Mất Băng Rồi Tụ. Tạch (Deactived)."
+msgstr "Bản quyền đã bị vô hiệu hoá."
 
 #: includes/framework/Admin/Handlers/FormHandler.php:162
 msgid "Membership disconnected."
-msgstr "Tắt Tuyến Nguồn Thành Cụm. Cut Line Khớp Nối."
+msgstr "Tài khoản thành viên đã được ngắt kết nối."
 
 #: includes/framework/Admin/Handlers/FormHandler.php:202
 msgid "Image size settings saved."
-msgstr "Đã Nhúng Thư Trữ Nguồn Frame Chỉnh Size Cứng (Save Lên)."
+msgstr "Cài đặt kích thước hình ảnh đã được lưu."
 
 #: includes/framework/Admin/Handlers/FormHandler.php:231
 msgid "Debug log cleared."
-msgstr "Rửa Tiếng Rác Log System Khoanh Hoà."
+msgstr "Nhật ký debug đã được xoá."
 
 #: includes/framework/Gutenberg/Blocks/WordPressBlock.php:184
 msgid "&larr; Previous"
@@ -1976,7 +1976,7 @@ msgstr[0] ""
 #: includes/framework/Gutenberg/Blocks/StarRatingBlock.php:98
 #, php-format
 msgid "Rated %s out of 5"
-msgstr "Sao Cứng Điểm Nén %s So Với Điểm 5"
+msgstr "Xếp hạng %s trên 5"
 
 #: includes/framework/Gutenberg/Blocks/SmartBreadcrumbBlock.php:13
 #: includes/framework/Gutenberg/Blocks/SmartBreadcrumbBlock.php:191
@@ -1985,12 +1985,12 @@ msgstr "Trang chủ"
 
 #: includes/framework/Gutenberg/Blocks/SmartBreadcrumbBlock.php:35
 msgid "No breadcrumb available"
-msgstr "Thiếu vắng Lối Ra Ghi Dấu Tuyến Breadcrumb."
+msgstr "Không có đường dẫn trang"
 
 #: includes/framework/Gutenberg/Blocks/SmartBreadcrumbBlock.php:69
 #: includes/framework/Gutenberg/Blocks/SmartBreadcrumbBlock.php:175
 msgid "Breadcrumb"
-msgstr "Thanh Danh Sách ĐI Đường (Breadcrumb)"
+msgstr "Thanh đường dẫn"
 
 #: includes/framework/Gutenberg/Blocks/SmartBreadcrumbBlock.php:179
 msgctxt "breadcrumb"
@@ -1999,35 +1999,35 @@ msgstr "Trang chủ"
 
 #: includes/framework/Gutenberg/Blocks/SmartBreadcrumbBlock.php:215
 msgid "Sample Category"
-msgstr "Góc Mẫu Category Thường"
+msgstr "Danh mục mẫu"
 
 #: includes/framework/Gutenberg/Blocks/SmartBreadcrumbBlock.php:219
 msgid "Sample Post Title"
-msgstr "Tiêu Tên Báo Bài Viết Sương Mẫu Báo"
+msgstr "Tiêu đề bài viết mẫu"
 
 #: includes/framework/Gutenberg/Blocks/SmartBreadcrumbBlock.php:239
 #: includes/framework/Gutenberg/Blocks/SmartBreadcrumbBlock.php:372
 #, php-format
 msgid "Search Results for: \"%s\""
-msgstr ""
+msgstr "Kết quả tìm kiếm cho: \"%s\""
 
 #: includes/framework/Gutenberg/Blocks/SmartBreadcrumbBlock.php:242
 #: includes/framework/Gutenberg/Blocks/SmartBreadcrumbBlock.php:374
 msgid "Page not found"
-msgstr "Mất Tung Tích, Nhầm Lối Không Lộ Ra Trang Được"
+msgstr "Không tìm thấy trang"
 
 #: includes/framework/Gutenberg/Blocks/SmartBreadcrumbBlock.php:334
 #, php-format
 msgid "Author: %s"
-msgstr "Chủ Nhà Tác Thảo Này: %s"
+msgstr "Tác giả: %s"
 
 #: includes/framework/Gutenberg/Blocks/SmartSearchBlock.php:63
 msgid "Post type to get taxonomies for"
-msgstr "Bóc Tên Dạng Post Lọc Căn Taxonomies Qua"
+msgstr "Loại bài viết để lấy phân loại"
 
 #: includes/framework/Gutenberg/Blocks/AdvancedFiltersBlock.php:55
 msgid "Reset Filters"
-msgstr "Chùi Vết Filter Cũ"
+msgstr "Xóa bộ lọc"
 
 #: includes/framework/Gutenberg/Blocks/IconPickerBlock.php:174
 msgid "Chọn icon từ Jankx Font Icons System để hiển thị ở đây."
@@ -2035,15 +2035,15 @@ msgstr "Chọn icon từ Jankx Font Icons System để hiển thị ở đây."
 
 #: includes/framework/Gutenberg/Blocks/SlideshowBlock.php:82
 msgid "Fullscreen"
-msgstr "Phóng Khung Full Khó"
+msgstr "Toàn màn hình"
 
 #: includes/framework/Gutenberg/Blocks/PostTypeBadgeBlock.php:172
 msgid "Post"
-msgstr "Bảng Báo"
+msgstr "Bài viết"
 
 #: includes/framework/Gutenberg/Blocks/OffcanvasSidebarBlock.php:218
 msgid "Sidebar navigation"
-msgstr "Mở Bảng Điều Hưng Đứng Sidebar Nè"
+msgstr "Thanh điều hướng bên"
 
 #: includes/framework/Gutenberg/Blocks/OffcanvasSidebarBlock.php:294
 msgid "Close sidebar"
@@ -2051,29 +2051,29 @@ msgstr "Cóp Cất Các Thanh Vách Mẽo Sidebar Xa"
 
 #: includes/framework/Gutenberg/Blocks/OffcanvasSidebarBlock.php:330
 msgid "Add your content here using any available blocks."
-msgstr "Bồi Vào Các Block Phẳng Tuỳ Ưa Viết Tại Phía Đây"
+msgstr "Thêm nội dung của bạn ở đây bằng bất kỳ khối có sẵn nào."
 
 #: includes/framework/Gutenberg/Blocks/SmartTabsBlock.php:247
 #: includes/framework/Gutenberg/SmartTabs/Triggers/ManualTabTrigger.php:62
 #, php-format
 msgid "Tab %d"
-msgstr "Mảng Thẻ Động %d"
+msgstr "Tab %d"
 
 #: includes/framework/Gutenberg/Blocks/SafeIframeBlock.php:21
 msgid "Invalid iframe URL"
-msgstr "Chết Điểm Sập Đường Mạch URL Khi Văng Iframe"
+msgstr "URL iframe không hợp lệ"
 
 #: includes/framework/Gutenberg/Blocks/OffcanvasTriggerBlock.php:79
 msgid "Toggle menu"
-msgstr "Lật Vở Dãy Menu Nút Kéo Khung Toggle"
+msgstr "Bật/tắt menu"
 
 #: includes/framework/Gutenberg/Blocks/AuthorBoxBlock.php:44
 msgid "No author found"
-msgstr "Rỗng Tuếch Form Chủ Thảo Biên Không Có Tác Giả Được Đứng"
+msgstr "Không tìm thấy tác giả"
 
 #: includes/framework/Gutenberg/Blocks/AuthorBoxBlock.php:51
 msgid "Author not found"
-msgstr "Xóa Bóng Tác Giả Nên Lục Hỏng"
+msgstr "Không tìm thấy tác giả"
 
 #: includes/framework/Gutenberg/Blocks/AuthorBoxBlock.php:93
 msgid "Recent Posts"
@@ -2093,7 +2093,7 @@ msgstr "Hồ sơ"
 
 #: includes/framework/Gutenberg/Blocks/UserMenuBlock.php:57
 msgid "Logout"
-msgstr "Tiễn Đường Sang - Thao Thoát Khỏi Login (Đăng Xuất)"
+msgstr "Đăng xuất"
 
 #: includes/framework/Gutenberg/Blocks/UserMenuBlock.php:136
 msgid "Login"
@@ -2109,7 +2109,7 @@ msgstr "Mở liên kết"
 
 #: includes/framework/Gutenberg/SmartTabs/Triggers/OpenLinkTabTrigger.php:21
 msgid "Clicking this tab opens a link. No tab content is displayed."
-msgstr "Kích vô tab sẽ tung mở trễ móc link đường vòng, hỏng ngáp thêm đoạn nội văn câm."
+msgstr "Nhấp vào tab này sẽ mở liên kết. Không có nội dung tab nào được hiển thị."
 
 #: includes/framework/Gutenberg/SmartTabs/Triggers/OpenLinkTabTrigger.php:38
 msgid "URL"
@@ -2121,48 +2121,48 @@ msgstr "Mục tiêu"
 
 #: includes/framework/Gutenberg/SmartTabs/Triggers/OpenLinkTabTrigger.php:50
 msgid "Rel"
-msgstr "Khu Thu Chốt Cấn Tới Móc Rel"
+msgstr "Rel"
 
 #: includes/framework/Gutenberg/SmartTabs/Triggers/ManualTabTrigger.php:25
 msgid "Custom Content"
-msgstr "Sửa Biên Tạo Riêng (Nội Biến Content Mới Vít)"
+msgstr "Nội dung tuỳ chỉnh"
 
 #: includes/framework/Gutenberg/SmartTabs/Triggers/ManualTabTrigger.php:33
 msgid "Use manual title and inner blocks as tab content."
-msgstr "Mang tay gõ tiêu đề & cài thót block riêng vô khối trong làm thành thẻ tab mới kẹp."
+msgstr "Sử dụng tiêu đề thủ công và các khối bên trong làm nội dung tab."
 
 #: includes/framework/Gutenberg/SmartTabs/Triggers/ManualTabTrigger.php:65
 #: includes/framework/Gutenberg/SmartTabs/SmartTabTriggerRegistry.php:145
 msgid "Tab"
-msgstr "Tab (Góc Cạnh Nút)"
+msgstr "Tab"
 
 #: includes/framework/Gutenberg/SmartTabs/Triggers/AdvancedFilterTabTrigger.php:27
 msgid "Advanced Filter"
-msgstr "Bộ Siêu Lọc Cứng (Filter Nặng Chóp Advanced)"
+msgstr "Bộ lọc nâng cao"
 
 #: includes/framework/Gutenberg/SmartTabs/Triggers/AdvancedFilterTabTrigger.php:35
 msgid ""
 "Trigger advanced filter when tab is clicked. Configure filter using Advanced "
 "Filter block inside this tab. Updates dynamic-data-layout blocks with "
 "filtered results."
-msgstr "Khảy bóp Filter bộ Advanced khi nảy tab. Cấu cài cái chọc filter Advanced nhích bên lồng trong tab này, qua update vô Dynamic Lộn Layout bồi lại khối filter sạch."
+msgstr "Kích hoạt bộ lọc nâng cao khi nhấp vào tab. Cấu hình bộ lọc bằng khối Bộ lọc nâng cao bên trong tab này. Cập nhật các khối Dynamic Data Layout với kết quả đã lọc."
 
 #: includes/framework/Gutenberg/SmartTabs/Triggers/AdvancedFilterTabTrigger.php:66
 msgid "Target Block"
-msgstr "Chọn Khối Đích (Chạy Target Qua Chóp Định Lồng)"
+msgstr "Khối mục tiêu"
 
 #: includes/framework/Gutenberg/SmartTabs/Triggers/AdvancedFilterTabTrigger.php:67
 msgid "Select the Dynamic Data Layout block to filter"
-msgstr "Ních Lựa Điểm Dynamic Data Layout Xuyên Chọc Bộ Filter Qua Này Nè"
+msgstr "Chọn khối Dynamic Data Layout cần lọc"
 
 #: includes/framework/Gutenberg/SmartTabs/Triggers/AdvancedFilterTabTrigger.php:89
 #, php-format
 msgid "Filter: %s"
-msgstr "Bấm Lọc Cấn %s"
+msgstr "Bộ lọc: %s"
 
 #: includes/framework/Gutenberg/SmartTabs/Triggers/AdvancedFilterTabTrigger.php:92
 msgid "Advanced Filter Tab"
-msgstr "Thẻ Góc Block Filter Cao Cốt Siêu (Tab Filter Nhanh Nút)"
+msgstr "Tab bộ lọc nâng cao"
 
 #: includes/framework/Gutenberg/QueryOptions.php:25
 msgid "Date"
@@ -2288,7 +2288,7 @@ msgstr "NOT EXISTS"
 
 #: includes/framework/Gutenberg/QueryOptions.php:218
 msgid "-- Auto --"
-msgstr "-- Tự động lướt lọt ngàm --"
+msgstr "-- Tự động --"
 
 #: includes/framework/Gutenberg/QueryOptions.php:270
 msgid "And (AND)"
@@ -2296,52 +2296,52 @@ msgstr "AND"
 
 #: includes/framework/Gutenberg/QueryOptions.php:302
 msgid "Default (Main Query)"
-msgstr "Mặc định (Truy vấn gốc nền Main)"
+msgstr "Mặc định (Truy vấn chính)"
 
 #: includes/framework/Gutenberg/QueryOptions.php:304
 msgid "Use WordPress main query. Query parameters will be hidden."
-msgstr "Xài lại chính dòng WordPress Main chọc, mấy khoản Query thừa sẽ văng mất dấu bị ẩn."
+msgstr "Sử dụng truy vấn chính của WordPress. Các tham số truy vấn sẽ bị ẩn."
 
 #: includes/framework/Gutenberg/QueryOptions.php:308
 msgid "Related Posts (Same Taxonomy)"
-msgstr "Tuyến Mạch Cùng Thể Mục (Bài Dính Dáng Liên Hệ Cùng)"
+msgstr "Bài viết liên quan (cùng phân loại)"
 
 #: includes/framework/Gutenberg/QueryOptions.php:310
 msgid "Display related posts (same taxonomy as current post)."
-msgstr "Xuất màng kéo lồng các bả bài phụ cận hở lồi (xài chính taxonomy vạch của bài này nè)."
+msgstr "Hiển thị các bài viết liên quan (cùng phân loại với bài hiện tại)."
 
 #: includes/framework/Gutenberg/QueryOptions.php:314
 msgid "Custom Query"
-msgstr "Lộc Truy Vấn Thợ Tay Form Tư Sửa Bắt"
+msgstr "Truy vấn tuỳ chỉnh"
 
 #: includes/framework/Gutenberg/QueryOptions.php:316
 msgid "Customize query parameters as you wish."
-msgstr "Tự móc tùy biến chọc parameter móc cấu ý ưa muốn sờ theo ý bạn."
+msgstr "Tuỳ chỉnh các tham số truy vấn theo ý muốn."
 
 #: includes/framework/Helper/ServiceHelper.php:34
 msgid ""
 "ServiceHelper has not been initialized. Call ServiceHelper::init() first."
-msgstr "ServiceHelper mất kẹt dòng khơi chạy nạp lố. Hãy kêu gõ lên ServiceHelper::init() sạc form trước lác mót."
+msgstr "ServiceHelper chưa được khởi tạo. Hãy gọi ServiceHelper::init() trước."
 
 #: includes/framework/Helper/ServiceHelper.php:192
 msgid "Lazy Services Debug"
-msgstr "Gọt Sửa Sòng Services Hờ Ẩn Màng Nhúng Lazy Loading Rỗi:"
+msgstr "Debug dịch vụ khởi động lười"
 
 #: includes/framework/Helper/ServiceHelper.php:193
 msgid "Registered:"
-msgstr "Lên Báo Nhanh Thành Lên Sổ Đăng Ký Trót Lọt Đủ:"
+msgstr "Đã đăng ký:"
 
 #: includes/framework/Helper/ServiceHelper.php:194
 msgid "Loaded:"
-msgstr "Ngáp Cẩu Tải Phũ Qua Khởi Bốc Chạy Tót Nạp (Loaded Xong):"
+msgstr "Đã tải:"
 
 #: includes/framework/Helper/ServiceHelper.php:195
 msgid "Total Providers:"
-msgstr "Toán Tính Trụ Gốc Cộng Hết Đám Phân Phát Đi Nè:"
+msgstr "Tổng số nhà cung cấp:"
 
 #: includes/framework/Helper/ServiceHelper.php:196
 msgid "Total Loaded:"
-msgstr "Thảy Total Đã Tính Kéo Chạy Trĩu (Tải Total Đủ):"
+msgstr "Tổng đã tải:"
 
 #: includes/framework/Helper/ServiceHelper.php:197
 msgid "Memory:"
@@ -2349,15 +2349,15 @@ msgstr "Nóc Quoắt Cục Memory Xốc Lên Gồng Nhớ Ram:"
 
 #: includes/framework/Helper/ServiceHelper.php:198
 msgid "Peak:"
-msgstr "Bung Sóng Lên Vút Đỉnh Nhấn Lên:"
+msgstr "Cực đại:"
 
 #: includes/app/Services/LicenseService.php:65
 msgid "No license found."
-msgstr "Thất Trắng Lạc Bị Sập Ko Khui Mức Nổi Cái Nhãn Mã Key Mất Gì Lấp Đi Đâu Hỏng Kì Rồi Nè."
+msgstr "Không tìm thấy bản quyền."
 
 #: includes/app/Services/TemplateService.php:72
 msgid "No active membership or license found."
-msgstr "Lục Không Có Ra Quyền Đang Nhúng License/Mem Đang Sáng Vốn Nào Sống Lên Thấy Thể Bật Hết Nên Gục Kì Đó Nè Bạn Khui Chút Hơi."
+msgstr "Không tìm thấy gói thành viên hoặc bản quyền đang hoạt động."
 
 #: includes/app/Services/WooCommerce/BuyNowService.php:42
 msgid "MUA NGAY"
@@ -2366,7 +2366,7 @@ msgstr "CHỐT TRẢ MUA XONG"
 #: includes/app/Services/WooCommerce/SaleBadgeService.php:128
 #: includes/app/Services/WooCommerce/SaleBadgeService.php:226
 msgid "Sale!"
-msgstr "Khuyến mãi lủng chảo!"
+msgstr "Khuyến mãi!"
 
 #: includes/app/Services/MembershipService.php:79
 msgid "Token exchange failed."
@@ -2374,15 +2374,15 @@ msgstr "Nẹt Sang Hồi Mã Sụp Chốt Đổ Lồi Token Ko Chạy. Què Toke
 
 #: includes/app/Services/MembershipService.php:89
 msgid "No access token found."
-msgstr "Rõ Là Ko Có Ra Cái Mã Nhấn Cấp Token Trúng Trong Cục Này."
+msgstr "Không tìm thấy mã truy cập."
 
 #: includes/app/Services/ExampleService.php:35
 msgid "Service initialized successfully!"
-msgstr "Hoan Nhanh Sửa Cụm Khởi Chạy Sạc Services Thành Quả Ngọt Lập Trúc Quá Đỉnh Cơ Thành Tự Nè!"
+msgstr "Dịch vụ đã được khởi tạo thành công!"
 
 #: includes/app/Services/ExampleService.php:75
 msgid "ExampleService: "
-msgstr "Bản Hỗ Trợ Services Vờ Thử Example Đây Đi:"
+msgstr "ExampleService: "
 
 #: includes/app/Services/ThemeOptionsService.php:159
 #: includes/app/Services/ThemeOptionsService.php:164
@@ -2391,125 +2391,86 @@ msgstr "Bản Hỗ Trợ Services Vờ Thử Example Đây Đi:"
 #: includes/app/Services/ThemeOptionsService.php:272
 #: includes/app/Services/ThemeOptionsService.php:300
 msgid "Jankx Theme Options"
-msgstr "Hộp Mảng Tùy Chỉnh Jankx Option Phê Option Quản Lí Chọn Vô Sớ Theme Lên Jankx Cho Sướng Theme Option To Ngót Tùy Theme Tận Option Nhanh Nha"
+msgstr "Tùy chọn giao diện Jankx"
 
 #: includes/app/Services/ThemeOptionsService.php:301
 msgid "Framework Mode: "
-msgstr "Bộ Định Máy Nhúng Dòng Vận Hành Phom Đóng Khung Mode Nè Nhanh Nè Lẹ Cơ Core Core Framework Theme Core: "
+msgstr "Chế độ Framework: "
 
 #: includes/app/Services/ThemeOptionsService.php:302
 msgid "Adapter: "
-msgstr "Cáp Màng Khung Nhận Cập Ngõ Giao Node Adapt Trúc Khớp Kéo Adapter Khung Đây Áp Vô: "
+msgstr "Adapter: "
 
 #: includes/app/Services/ThemeOptionsService.php:302
 msgid "Not loaded"
-msgstr "Rơi Lệnh Rụng Tuột Không Có Cuốn Tải Loaded Đâu (Chưa Nạp Vô Cuộn)"
+msgstr "Chưa tải"
 
 #: includes/app/Services/ThemeOptionsService.php:303
 msgid "Options Data: "
-msgstr "Bọn Cấu Kết Chọn Tích Gắn Trúc Định Options Quét Lọc Option Cục Option Data Data Dữ Data Này (Số Mục Gắn Options Check Data): "
+msgstr "Dữ liệu tuỳ chọn: "
 
 #: includes/app/Services/ThemeOptionsService.php:303
 msgid "Empty"
-msgstr "Trống Trơn Rỗng Hỏng Lủng Bể Gáo Đi (Rỗng Nào Thấy Gì)"
+msgstr "Trống"
 
 #: includes/app/Services/ThemeOptionsService.php:303
 msgid "Loaded"
-msgstr "Kéo Cuốn Ôm Tải Xốc Chạy Lẹ Nạp Đủ Nhồi Vào File Rồi"
+msgstr "Đã tải"
 
 #: includes/app/Providers/WordPress/VisualTermDescriptionEditorServiceProvider.php:131
 #: includes/app/Providers/WordPress/VisualTermDescriptionEditorServiceProvider.php:177
 msgid ""
 "The description is not prominent by default; however, some themes may show "
 "it."
-msgstr "Mục ghi chú này theo gốc định là không sáng mặt hiện ra, nhưng vài theme dính sẽ móc nó lên."
+msgstr "Mô tả này mặc định sẽ không hiển thị nổi bật; tuy nhiên, một số giao diện có thể hiển thị nó."
 
 #: patterns/hero-section.php:11
 msgid "Transform Your Business with Jankx"
-msgstr "Thay Cục Diện Thay Phẳng Việc Kinh Trúc Nước Web Nhờ Vô Gói Jankx Nhanh Vô Nhát Thấy Ngay Biến Kịp Tán Kinh Jankx Biến Kinh Đổi Thành Mới (Đổi Mới Tốc Cơ Đội Kinh Web Jankx Transform Kíp Bật Jankx) Gói Kích Kinh Nhanh Trục Tới Lượng Transform Jankx Nâng Phẩm Bật Sảng Biến Transform Kinh (Hô Biến Việc Kinh Khả Kịp Cho Quá Jankx Vô Gói Đỉnh Vực Transformation Jankx Mới Web Việc Jankx Biến Cuộc Chơi Jankx Á)"
+msgstr "Chuyển đổi doanh nghiệp của bạn với Jankx"
 
 #: patterns/hero-section.php:15
 msgid "Fast, modern, and AI-ready WordPress theme framework."
-msgstr "Chiến Nhanh Gió Cuốn Nhanh Mượt Mà Hết Lốc Hút Cuộn Cánh Modern Ảo Hiện Trục Đội Theme Cho Kịp Và Tận Tựa Gắn Nhanh Có Luôn Bất Bật Code Cho Core Nhúng WP Nẹ WP Đóng AI Nhuận Nhu Cân Vào Đủ Cụm Trúc AI Chờ AI Gói Code Chuẩn Framework Modern Mới Đẹp (Gói Framework Theme Khung AI Gắn Theme Vô Hiện Nhúng Đội Đua Framework Nhanh (Gợi Khung AI Ráp Tầng Bám Đang Xài Phẳng Trend Bọc Trend Mượt Tựa). Mượt, Khung Vận Máy Theme Cao)."
+msgstr "Framework giao diện WordPress nhanh, hiện đại và sẵn sàng cho AI."
 
 #: patterns/hero-section.php:20
 msgid "Get Started"
-msgstr "Khua Lệnh Nấp Chuẩn Chiêu Bắn Khóa Chuẩn Chạy Bước Làm Cú Dẫn (Vô Kịp Mở Bào Phóng)"
+msgstr "Bắt đầu"
 
 #: patterns/hero-section.php:22
 msgid "Learn More"
-msgstr "Soi Chi Tiết Lủng Lỗ Thông Tiếp Lọt Soi Kín (Hiểu Nặng Thâm Cứu Tới Chót Thêm Đoạn Học Coi Qua Lấp Góc Để Nhận Lọc Thông Hiểu Hiểu Khấu Hiểu Dụng Sớ Nhóm Cho Xong) Tới Đây Qua Biết Cuộn Xem Quá Lẹ Ngắt Vào"
+msgstr "Tìm hiểu thêm"
 
 #: extensions/hello-extension/HelloExtension.php:48
 msgid "Jankx Hello Extension"
-msgstr "Gõ Cửa Extension Nạp Chào Mặt Jankx Hello Sấm Lớp Plugin Phụ Nhanh (Khay Thả Mảng Mở Ra Đón Cửa Bạn Nhắn Cục Vô Jankx Thể Gọi Là Chào Ext Jankx Đút Chàng Cho Nhập Dịch Chào Tiên Có Lời Khấn Tiên Cào App Tới Góc Nhập App Hello Bốc Dọn Vô Khai Khách Qua Nhác Form Jankx Đầu Khúc)"
+msgstr "Tiện ích Jankx Hello"
 
 #: extensions/hello-extension/HelloExtension.php:48
 msgid "Greetings from your newly created extension! It is successfully loaded."
-msgstr "Mở miệng chào sân từ đứa Extension bé bỏng mòn rút ruột non vinh danh mới khai nảy đó nghen! Nó đang cất bánh chạy bung ngon bá cháy bò chét load tít đính lẹ chót trót ròi khỏi lo lợ cấn bận nha (Chào tớ Extension Mới, Khởi Lên Khá Nhạy Loading Mượt Ròi Ấy Ạ)."
+msgstr "Xin chào từ tiện ích mới tạo của bạn! Nó đã được tải thành công."
 
 #: extensions/dynamic-ssr/includes/Blocks/DynamicSsrLayoutBlock.php:645
 msgid "Attributes not found"
-msgstr "Lủng cục Attribute thuộc tính kiếm cất giấu không quẹt ra mắc khuyết Attribute Khuyết Form Tăm Hơi Ngắt Điểm Trúc Tiết Thuộc Khống Tích Tuộc Đóng Rỗng Quét Tìm Bỏ (Bị Quăng Form Thao Thuộc Tích Ko Tồn Tồn Ra Văng Ở Trong Data Lôi Bết Tích Nhãn Đánh Rỗng Dữ Thấy Nhanh Kím Thuộc)."
+msgstr "Không tìm thấy thuộc tính"
 
 #: extensions/dynamic-ssr/includes/Blocks/DynamicSsrLayoutBlock.php:875
 msgid "Invalid attributes"
-msgstr "Bả gõ dính thuộc lỗi đống Attribute ko có giá ăn hỏng sứt Valid rạn gẫy vạch Lỗi Cuộn Tuột Form Vô Thuộc Gãy Vỡ Móc Ra Lỗi Valid Value Vấp Hỏng Ko Cho Có Thiếu Tính Gắn Invalid Form Valid Thuộc Dữ Cụp Tính Sai Gõ Sứt Khùng Tróc Attribute Ko Chứa Tính Điểm Valid Cú Valid Cân Tích Không Thuộc Căn Sút Ngắm Đúng"
+msgstr "Thuộc tính không hợp lệ"
 
 #: extensions/table-builder/includes/Blocks/TableOfContentBlock.php:899
 msgid "No headings found in the post content."
-msgstr "Dòm lục đỏ pha mắt chả thấy lột rớt rinh cấn cái đề góc header khom Title Headding Cấp Mấy H Heading Heading Thẻ Mảng Trong Khúc Đống Vần Nội Ngòi Báo Điểm Content Cuốn Header Kím Vẹt Mà Head Bị Tiêu Tuốt Đề Cụt H Mất Vô Bỏ Góc Lọt Đi Mục Cho Soi Header Gán Content Vướng Sục Mục Cấu Kẹp Nào Văng Nấp. Ề. Rỗng Header Thẻ Heading Nằm Khúc Form Rỗng."
+msgstr "Không tìm thấy tiêu đề nào trong nội dung bài viết."
 
 #: extensions/table-builder/includes/Blocks/TableOfContentBlock.php:943
 msgid "Table of Contents"
-msgstr "Đống Sớ Lục Mục Báo Mục Khoanh Table Cân Đủ Cuốn Thư Góc Gắn Trạc Thư Nhánh Dóng List Cho Phân Bảng Góc Đích Cho Coi Content Thước List Dòng Menu Sớ Bài Phân Form Cho Thấy Đoạn Nội Đứng Khung Góc Để Xem Lướt Contents Trúc Mục Form"
+msgstr "Mục lục"
 
 #: extensions/plyr-player/includes/Blocks/PlyrPlayerBlock.php:38
 msgid "No media URL provided."
-msgstr "Lủng Điểm Trúc Chốt Ko Hè Cho Kéo Vệt Cho Giao Kênh Gắn Vạch Móc Vốn Khú Mạch Tới Ngắm Dường Chạy Chút Hình Form Media Vút URL Hút Giật Cúp Móng Móc Điểm Chả Link Nào Khum Bồi Dọng Văng Không Trút Ko Trích Nhả Mỏ Nhả Điểm Tới Giao Đường Điểm Cung Dịch Vụ Khẳng Màn Chỉ Ra Móc Vô Sứt Media Liên Sơ Gắn Nạp Media Có Khép Dường Truy Phá Media Sợ Bỏ Phế Kiếu Nhả Lệnh Cấn Móc Hở Link Kênh Chỗ Này Rỗng Link Đường Sợi Cắm Qua Chấu Nhãn Khống Tích Không Đâm Màn Phóng Truy Url Ko Mới Nằm Giáng Góc Media Dọn Có URL Chết. Khum Móng Góp. Tiệt Link Chạy Góc Tích Media Nâng Nhánh Lệnh Tục Form Chả Cung Form Để Qua Đi Đâu Không Bão Đường Có Chõ Rỗng Hình Hình Thức Url Nạp (Url Quá Mất Media Tít Góc Cuộn)"
+msgstr "Không có URL media được cung cấp."
 
 #: extensions/language-switcher/includes/Blocks/LanguageSwitcherBlock.php:365
 msgid "Polylang plugin is not active. Language switcher cannot be displayed."
-msgstr "Cái gốc rễ Plug Polylang trùm đa ngôn ngủ gáo chọc khum thức. Bạn khơi mảng nút chuyển language lộc cộc khum đút qua gắm vào hiện form cục chọc đâu! Kích lại Form Mở Polog Plug Giùm Tặng Cú Đưa!"
+msgstr "Plugin Polylang chưa được kích hoạt. Không thể hiển thị thanh chuyển ngôn ngữ."
 
-#~ msgid "Post Views (Lượt xem)"
-#~ msgstr "Lượt xem"
 
-#~ msgid "Date (Ngày đăng)"
-#~ msgstr "Ngày đăng"
 
-#~ msgid "Modified (Ngày sửa)"
-#~ msgstr "Ngày sửa"
-
-#~ msgid "Title (Tiêu đề)"
-#~ msgstr "Tiêu đề"
-
-#~ msgid "Name (Slug)"
-#~ msgstr "Slug"
-
-#~ msgid "Author (Tác giả)"
-#~ msgstr "Tác giả"
-
-#~ msgid "Random (Ngẫu nhiên)"
-#~ msgstr "Ngẫu nhiên"
-
-#~ msgid "Comment Count (Số bình luận)"
-#~ msgstr "Số bình luận"
-
-#~ msgid "Relevance (Độ liên quan)"
-#~ msgstr "Độ liên quan"
-
-#~ msgid "Meta Value (Giá trị meta)"
-#~ msgstr "Giá trị meta"
-
-#~ msgid "Meta Value Num (Giá trị meta số)"
-#~ msgstr "Giá trị meta số"
-
-#~ msgid "Post__in (Thứ tự trong mảng)"
-#~ msgstr "Thứ tự trong mảng"
-
-#~ msgid "Descending (Giảm dần)"
-#~ msgstr "Giảm dần"
-
-#~ msgid "Ascending (Tăng dần)"
-#~ msgstr "Tăng dần"
