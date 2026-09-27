@@ -724,6 +724,8 @@ class DynamicDataLayoutBlock extends Block
             );
         }
 
+        $html = $this->attachElementsStyles($html);
+
         // Wrap with data attributes so subsequent AJAX updates keep block metadata
         $wrapperAttrs = $this->buildWrapperAttributes($attributes);
         $html = sprintf('<div %s>%s</div>', $wrapperAttrs, $html);
@@ -732,6 +734,37 @@ class DynamicDataLayoutBlock extends Block
             'html' => $html,
             'attributes' => $attributes,
         ];
+    }
+
+    protected function attachElementsStyles(string $html): string
+    {
+        if (strpos($html, 'wp-elements-') === false) {
+            return $html;
+        }
+
+        if (!function_exists('wp_style_engine_get_stylesheet_from_context')) {
+            return $html;
+        }
+
+        $css = wp_style_engine_get_stylesheet_from_context('block-supports');
+        if (!is_string($css) || strpos($css, 'wp-elements-') === false) {
+            return $html;
+        }
+
+        $suffix = substr(md5(uniqid('ddl', true)), 0, 8);
+        $map = [];
+        $replace = static function (array $matches) use (&$map, $suffix): string {
+            if (!isset($map[$matches[1]])) {
+                $map[$matches[1]] = 'wp-elements-' . $suffix . '-' . $matches[1];
+            }
+
+            return $map[$matches[1]];
+        };
+
+        $html = preg_replace_callback('/wp-elements-(\d+)/', $replace, $html);
+        $css = preg_replace_callback('/wp-elements-(\d+)/', $replace, $css);
+
+        return $html . '<style class="jankx-ddl-elements">' . $css . '</style>';
     }
 
     /**

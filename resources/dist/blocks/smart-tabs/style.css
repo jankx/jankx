@@ -20,7 +20,8 @@
   display: flex;
   align-items: center;
   gap: 0;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
+  max-width: 100%;
 }
 .smart-tabs__label {
   background-color: #000000;
@@ -39,6 +40,12 @@
   border-bottom: 2px solid var(--smart-tabs-border-color);
   position: relative;
   flex: 1;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: thin;
+  -webkit-overflow-scrolling: touch;
+  min-width: 0;
 }
 .smart-tabs__nav-list.align-left {
   justify-content: flex-start;
@@ -71,6 +78,8 @@
   color: var(--smart-tabs-item-color, var(--smart-tabs-text-color));
   transition: all 0.3s ease;
   margin-bottom: -2px;
+  flex: 0 0 auto;
+  white-space: nowrap;
 }
 .smart-tabs__nav-item:hover {
   color: var(--smart-tabs-primary-color);
@@ -120,6 +129,8 @@
   flex-direction: column;
   border-bottom: none;
   border-right: 2px solid var(--smart-tabs-border-color);
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 .smart-tabs--vertical .smart-tabs__nav-item {
   border-bottom: none;

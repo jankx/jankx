@@ -22,7 +22,8 @@
         display: flex;
         align-items: center;
         gap: 0;
-        flex-wrap: wrap;
+        flex-wrap: nowrap;
+        max-width: 100%;
     }
 
     // Label
@@ -44,6 +45,12 @@
         border-bottom: 2px solid var(--smart-tabs-border-color);
         position: relative;
         flex: 1;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        overflow-y: hidden;
+        scrollbar-width: thin;
+        -webkit-overflow-scrolling: touch;
+        min-width: 0;
 
         // Alignment options
         &.align-left {
@@ -83,6 +90,8 @@
         color: var(--smart-tabs-item-color, var(--smart-tabs-text-color));
         transition: all 0.3s ease;
         margin-bottom: -2px;
+        flex: 0 0 auto;
+        white-space: nowrap;
 
         &:hover {
             color: var(--smart-tabs-primary-color);
@@ -150,6 +159,8 @@
             flex-direction: column;
             border-bottom: none;
             border-right: 2px solid var(--smart-tabs-border-color);
+            overflow-x: hidden;
+            overflow-y: auto;
         }
 
         .smart-tabs__nav-item {
