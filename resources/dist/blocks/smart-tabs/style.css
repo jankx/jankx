@@ -117,6 +117,10 @@
   width: fit-content;
   margin: 0 auto;
 }
+.smart-tabs--horizontal {
+  overflow: hidden;
+  overflow-x: scroll;
+}
 .smart-tabs--vertical {
   display: flex;
   gap: 20px;
