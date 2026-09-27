@@ -82,11 +82,23 @@ class TranslationServiceProvider extends ServiceProvider
     /**
      * Load text domain for translations
      *
+     * load_theme_textdomain() only registers the languages directory with the
+     * text domain registry - the file itself is then loaded just-in-time, and
+     * for a theme directory core looks for "{locale}.mo". This theme ships
+     * "{domain}-{locale}.mo", so the file is loaded explicitly here.
+     *
      * @return void
      */
     public function loadTextDomain()
     {
-        load_theme_textdomain('jankx', get_template_directory() . '/languages');
+        $dir = get_template_directory() . '/languages';
+
+        load_theme_textdomain('jankx', $dir);
+
+        $mofile = $dir . '/jankx-' . determine_locale() . '.mo';
+        if (is_readable($mofile)) {
+            load_textdomain('jankx', $mofile);
+        }
     }
 
     /**
