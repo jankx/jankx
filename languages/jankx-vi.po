@@ -2090,7 +2090,7 @@ msgstr "Xin chào trân trọng,"
 
 #: includes/framework/Gutenberg/Blocks/UserMenuBlock.php:52
 msgid "Profile"
-msgstr "Form Thư Sơ Hồ Thông Cá Vị"
+msgstr "Hồ sơ"
 
 #: includes/framework/Gutenberg/Blocks/UserMenuBlock.php:57
 msgid "Logout"
