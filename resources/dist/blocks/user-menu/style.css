@@ -6,6 +6,7 @@
   align-items: center;
   gap: 12px;
   font-family: inherit;
+  position: relative;
 }
 .wp-block-jankx-user-menu .user-menu-guest {
   display: flex;
@@ -96,13 +97,14 @@
   display: none;
   position: absolute;
   right: 0;
+  left: auto;
   top: 100%;
   background: #fff;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
   padding: 10px;
   min-width: 180px;
-  z-index: 100;
+  z-index: 1000;
   margin-top: 10px;
 }
 .wp-block-jankx-user-menu .user-menu-dropdown ul {
