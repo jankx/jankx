@@ -40,32 +40,43 @@ const Edit: React.FC<{
     const displayName = currentUser?.name || __('User', 'jankx');
     const avatarUrl = currentUser?.avatar_urls?.['96'] || currentUser?.avatar_urls?.['48'] || null;
 
-    // Logged-in preview
-    if (isLoggedIn) {
-        return (
-            <>
-                <InspectorControls>
-                    <PanelBody title={__('Cài đặt Menu', 'jankx')}>
-                        <ToggleControl
-                            label={__('Hiển thị tên người dùng', 'jankx')}
-                            checked={showUserName}
-                            onChange={(value: boolean) => setAttributes({ showUserName: value })}
-                        />
-                        <TextControl
-                            label={__('Lời chào', 'jankx')}
-                            value={greetingText}
-                            onChange={(value: string) => setAttributes({ greetingText: value })}
-                        />
-                        <RangeControl
-                            label={__('Kích thước Avatar', 'jankx')}
-                            value={avatarSize}
-                            onChange={(value: number) => setAttributes({ avatarSize: value })}
-                            min={20}
-                            max={100}
-                        />
-                    </PanelBody>
-                </InspectorControls>
+    return (
+        <>
+            <InspectorControls>
+                <PanelBody title={__('Cài đặt nút Đăng nhập / Đăng ký', 'jankx')}>
+                    <ToggleControl
+                        label={__('Hiển thị Đăng nhập', 'jankx')}
+                        checked={showLogin}
+                        onChange={(value: boolean) => setAttributes({ showLogin: value })}
+                    />
+                    <ToggleControl
+                        label={__('Hiển thị Đăng ký', 'jankx')}
+                        checked={showRegister}
+                        onChange={(value: boolean) => setAttributes({ showRegister: value })}
+                    />
+                </PanelBody>
+                <PanelBody title={__('Cài đặt Menu', 'jankx')}>
+                    <ToggleControl
+                        label={__('Hiển thị tên người dùng', 'jankx')}
+                        checked={showUserName}
+                        onChange={(value: boolean) => setAttributes({ showUserName: value })}
+                    />
+                    <TextControl
+                        label={__('Lời chào', 'jankx')}
+                        value={greetingText}
+                        onChange={(value: string) => setAttributes({ greetingText: value })}
+                    />
+                    <RangeControl
+                        label={__('Kích thước Avatar', 'jankx')}
+                        value={avatarSize}
+                        onChange={(value: number) => setAttributes({ avatarSize: value })}
+                        min={20}
+                        max={100}
+                    />
+                </PanelBody>
+            </InspectorControls>
 
+            {isLoggedIn ? (
                 <div {...blockProps}>
                     <div className="user-menu-trigger">
                         {showUserName && (
@@ -86,40 +97,20 @@ const Edit: React.FC<{
                         </div>
                     </div>
                 </div>
-            </>
-        );
-    }
-
-    // Logged-out preview
-    return (
-        <>
-            <InspectorControls>
-                <PanelBody title={__('Cài đặt Menu', 'jankx')}>
-                    <ToggleControl
-                        label={__('Hiển thị Đăng nhập', 'jankx')}
-                        checked={showLogin}
-                        onChange={(value: boolean) => setAttributes({ showLogin: value })}
-                    />
-                    <ToggleControl
-                        label={__('Hiển thị Đăng ký', 'jankx')}
-                        checked={showRegister}
-                        onChange={(value: boolean) => setAttributes({ showRegister: value })}
-                    />
-                </PanelBody>
-            </InspectorControls>
-
-            <div {...blockProps}>
-                {showLogin && (
-                    <a href="#" className="login-link" onClick={(e) => e.preventDefault()}>
-                        {__('Đăng nhập', 'jankx')}
-                    </a>
-                )}
-                {showRegister && (
-                    <a href="#" className="register-button" onClick={(e) => e.preventDefault()}>
-                        {__('Đăng ký', 'jankx')}
-                    </a>
-                )}
-            </div>
+            ) : (
+                <div {...blockProps}>
+                    {showLogin && (
+                        <a href="#" className="login-link" onClick={(e) => e.preventDefault()}>
+                            {__('Đăng nhập', 'jankx')}
+                        </a>
+                    )}
+                    {showRegister && (
+                        <a href="#" className="register-button" onClick={(e) => e.preventDefault()}>
+                            {__('Đăng ký', 'jankx')}
+                        </a>
+                    )}
+                </div>
+            )}
         </>
     );
 };
