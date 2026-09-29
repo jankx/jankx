@@ -23,6 +23,11 @@ class TermBlockTemplateRenderer extends BlockTemplateRenderer
     {
         $sanitizedAttributes = $this->attributeSanitizer->sanitize($attributes);
 
+        // Re-inject the carousel-arrows child block settings (see BlockTemplateRenderer).
+        if (isset($attributes['carouselArrows']) && is_array($attributes['carouselArrows'])) {
+            $sanitizedAttributes['carouselArrows'] = $attributes['carouselArrows'];
+        }
+
         $layoutName = $sanitizedAttributes['layout'] ?? 'grid';
         $layout = $this->layoutManager->createLayout($layoutName);
         $decorator = new BlockTemplateLayoutDecorator($layout);

@@ -63,7 +63,8 @@
   "allowedBlocks": [
     "core/heading",
     "jankx/dynamic-data-template",
-    "jankx/layout-switcher"
+    "jankx/layout-switcher",
+    "jankx/carousel-arrows"
   ],
   "supports": {
     "html": false,

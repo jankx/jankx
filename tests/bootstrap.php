@@ -346,6 +346,7 @@ if (!function_exists('wp_style_is')) { function wp_style_is($h, $s = 'registered
 if (!function_exists('wp_create_nonce')) { function wp_create_nonce($action = -1) { return 'mock-nonce'; } }
 if (!function_exists('wp_nonce_field')) { function wp_nonce_field($action = -1, $name = '_wpnonce', $referer = true, $echo = true) { echo '<input type="hidden" name="'.$name.'" value="mock-nonce" />'; } }
 if (!function_exists('esc_attr_e')) { function esc_attr_e($text, $domain = 'default') { echo esc_attr($text); } }
+if (!function_exists('esc_attr__')) { function esc_attr__($text, $domain = 'default') { return $text; } }
 if (!function_exists('add_query_arg')) { function add_query_arg(...$args) { return 'http://example.com/?' . http_build_query($args); } }
 if (!function_exists('sanitize_html_class')) { function sanitize_html_class($class, $fallback = '') { return preg_replace('/[^a-zA-Z0-9_-]/', '', $class) ?: $fallback; } }
 if (!function_exists('get_theme_file_path')) { function get_theme_file_path($path = '') { return ABSPATH . ltrim($path, '/'); } }
@@ -410,6 +411,7 @@ if (!function_exists('pll_current_language')) {
 
 // Missing WP mocks for TemplateEngineServiceProvider
 if (!function_exists('wp_kses_post')) { function wp_kses_post($t) { return $t; } }
+if (!function_exists('wp_kses')) { function wp_kses($t, $allowed = []) { return $t; } }
 if (!function_exists('esc_js')) { function esc_js($t) { return $t; } }
 if (!function_exists('wp_trim_words')) { function wp_trim_words($t, $n = 55, $m = '') { return $t; } }
 if (!function_exists('_x')) { function _x($t, $c, $d = 'default') { return $t; } }

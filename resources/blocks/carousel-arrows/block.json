@@ -1,0 +1,110 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "jankx/carousel-arrows",
+  "version": "1.0.0",
+  "title": "Carousel Arrows",
+  "category": "jankx",
+  "icon": "leftright",
+  "description": "Configure next/prev carousel arrows and their icon styles for dynamic data and dynamic term layout blocks.",
+  "keywords": [
+    "carousel",
+    "arrows",
+    "navigation",
+    "prev",
+    "next"
+  ],
+  "textdomain": "jankx",
+  "attributes": {
+    "showArrows": {
+      "type": "boolean",
+      "default": true
+    },
+    "arrowsPosition": {
+      "type": "string",
+      "enum": [
+        "inside",
+        "outside",
+        "bottom"
+      ],
+      "default": "inside"
+    },
+    "navIconType": {
+      "type": "string",
+      "enum": [
+        "arrow",
+        "image",
+        "svg",
+        "fonticon"
+      ],
+      "default": "arrow"
+    },
+    "prevIconImageId": {
+      "type": "number",
+      "default": 0
+    },
+    "prevIconImageUrl": {
+      "type": "string",
+      "default": ""
+    },
+    "nextIconImageId": {
+      "type": "number",
+      "default": 0
+    },
+    "nextIconImageUrl": {
+      "type": "string",
+      "default": ""
+    },
+    "prevIconSvg": {
+      "type": "string",
+      "default": ""
+    },
+    "nextIconSvg": {
+      "type": "string",
+      "default": ""
+    },
+    "prevIconClass": {
+      "type": "string",
+      "default": ""
+    },
+    "nextIconClass": {
+      "type": "string",
+      "default": ""
+    },
+    "navIconSize": {
+      "type": "number",
+      "default": 24
+    },
+    "navIconColor": {
+      "type": "string",
+      "default": ""
+    },
+    "navBtnWidth": {
+      "type": "number",
+      "default": 44
+    },
+    "navBtnHeight": {
+      "type": "number",
+      "default": 44
+    },
+    "navBtnBorderRadius": {
+      "type": "number",
+      "default": 50
+    },
+    "navBtnBgColor": {
+      "type": "string",
+      "default": ""
+    }
+  },
+  "supports": {
+    "html": false,
+    "inserter": true
+  },
+  "parent": [
+    "jankx/dynamic-data-layout",
+    "jankx/dynamic-term-layout"
+  ],
+  "editorScript": "file:../../dist/blocks/carousel-arrows/index.js",
+  "editorStyle": "file:../../dist/blocks/carousel-arrows/editor.css",
+  "style": "file:../../dist/blocks/carousel-arrows/style.css"
+}

@@ -619,7 +619,7 @@ export default function Edit({ attributes, setAttributes }: EditProps) {
 
             <div {...blockProps}>
                 <InnerBlocks
-                    allowedBlocks={['jankx/dynamic-term-template', 'core/heading']}
+                    allowedBlocks={['jankx/dynamic-term-template', 'core/heading', 'jankx/carousel-arrows']}
                     template={[['jankx/dynamic-term-template', {}]]}
                     templateLock={false}
                     renderAppender={InnerBlocks.ButtonBlockAppender}

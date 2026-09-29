@@ -87,6 +87,10 @@ module.exports = {
     'dist/blocks/carousel/style': './blocks/carousel/style.scss',
     'dist/blocks/carousel/editor': './blocks/carousel/editor.scss',
 
+    'dist/blocks/carousel-arrows/index': './blocks/carousel-arrows/index.tsx',
+    'dist/blocks/carousel-arrows/style': './blocks/carousel-arrows/style.scss',
+    'dist/blocks/carousel-arrows/editor': './blocks/carousel-arrows/editor.scss',
+
     'dist/blocks/carousel-slide/index': './blocks/carousel-slide/index.tsx',
     'dist/blocks/carousel-slide/style': './blocks/carousel-slide/style.scss',
     'dist/blocks/carousel-slide/editor': './blocks/carousel-slide/editor.scss',

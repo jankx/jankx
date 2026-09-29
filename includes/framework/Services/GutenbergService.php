@@ -36,6 +36,7 @@ use Jankx\Gutenberg\Blocks\SvgIconBlock;
 use Jankx\Gutenberg\Blocks\CarouselBannerBlock;
 use Jankx\Gutenberg\Blocks\CarouselBlock;
 use Jankx\Gutenberg\Blocks\CarouselSlideBlock;
+use Jankx\Gutenberg\Blocks\CarouselArrowsBlock;
 use Jankx\Gutenberg\Blocks\CarouselInnerBlocksOverlayBlock;
 use Jankx\Gutenberg\Blocks\TestimonialsBlock;
 use Jankx\Gutenberg\Blocks\TestimonialBlock;
@@ -184,6 +185,7 @@ class GutenbergService
         $this->repository->registerBlock(CarouselBannerBlock::class);
         $this->repository->registerBlock(CarouselBlock::class);
         $this->repository->registerBlock(CarouselSlideBlock::class);
+        $this->repository->registerBlock(CarouselArrowsBlock::class);
         $this->repository->registerBlock(CarouselInnerBlocksOverlayBlock::class);
         $this->repository->registerBlock(TableOfContentBlock::class);
         $this->repository->registerBlock(TestimonialsBlock::class);

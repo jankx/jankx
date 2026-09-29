@@ -243,7 +243,13 @@ class DynamicTermLayoutBlock extends DynamicDataLayoutBlock
             }
         }
 
+        $sourceAttributes = $attributes;
         $attributes = $this->attributeSanitizer->sanitize($attributes, $layoutName, true);
+
+        // Re-inject the carousel-arrows child block settings which the sanitizer strips.
+        if (isset($sourceAttributes['carouselArrows']) && is_array($sourceAttributes['carouselArrows'])) {
+            $attributes['carouselArrows'] = $sourceAttributes['carouselArrows'];
+        }
 
         $layout = $this->layoutManager->createLayout($layoutName);
         $decorator = new BlockTemplateLayoutDecorator($layout);
@@ -614,6 +620,15 @@ class DynamicTermLayoutBlock extends DynamicDataLayoutBlock
 
         if (($attributes['layout'] ?? '') === 'carousel') {
             $attrs['class'] .= ' jankx-carousel dynamic-term-layout--carousel';
+
+            // Add arrows position class from the carousel-arrows child block
+            $arrows = isset($attributes['carouselArrows']) && is_array($attributes['carouselArrows'])
+                ? $attributes['carouselArrows']
+                : [];
+            $arrowsPositionClass = \Jankx\Layouts\DynamicDataLayout\CarouselArrowsRenderer::positionClass($arrows);
+            if ($arrowsPositionClass !== '') {
+                $attrs['class'] .= ' ' . $arrowsPositionClass;
+            }
 
             $attrs['data-layout'] = 'carousel';
             $attrs['data-slides-per-view'] = esc_attr($attributes['columns'] ?? 3);

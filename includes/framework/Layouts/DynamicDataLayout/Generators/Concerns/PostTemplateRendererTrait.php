@@ -215,10 +215,13 @@ trait PostTemplateRendererTrait
         $loop = (bool) $this->getOption('loop', $options['loop'] ?? false);
         $autoplay = (bool) $this->getOption('autoplay', $options['autoplay'] ?? false);
         $autoplayDelay = max(1000, (int) $this->getOption('autoplayDelay', $options['autoplayDelay'] ?? 3000));
-        $showArrows = (bool) $this->getOption('showArrows', $options['showArrows'] ?? true);
+        $carouselArrows = (array) $this->getOption('carouselArrows', []);
+        $parentShowArrows = (bool) $this->getOption('showArrows', $options['showArrows'] ?? true);
+        $showArrows = isset($carouselArrows['showArrows']) ? (bool) $carouselArrows['showArrows'] : $parentShowArrows;
         $showDots = (bool) $this->getOption('showDots', $options['showDots'] ?? true);
         $peek = (float) $this->getOption('carouselPeek', $options['carouselPeek'] ?? 0);
         $effectiveColumns = max(0.1, $columns + ($peek / 100));
+        $arrowsPositionClass = \Jankx\Layouts\DynamicDataLayout\CarouselArrowsRenderer::positionClass($carouselArrows);
 
         $wrapperClasses = [
             'jankx-carousel',
@@ -228,6 +231,10 @@ trait PostTemplateRendererTrait
             'columns-tablet-' . $columnsTablet,
             'columns-mobile-' . $columnsMobile,
         ];
+
+        if ($arrowsPositionClass !== '') {
+            $wrapperClasses[] = $arrowsPositionClass;
+        }
 
         $customWrapperClass = $this->getOption('itemsWrapperClass', $options['itemsWrapperClass'] ?? '');
         if (!empty($customWrapperClass)) {
@@ -309,20 +316,7 @@ trait PostTemplateRendererTrait
             </div>
 
             <?php if ($showArrows): ?>
-                <button class="embla__button embla__button--prev" type="button"
-                    aria-label="<?php esc_attr_e('Previous slide', 'jankx'); ?>">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                        stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M15 18l-6-6 6-6" />
-                    </svg>
-                </button>
-                <button class="embla__button embla__button--next" type="button"
-                    aria-label="<?php esc_attr_e('Next slide', 'jankx'); ?>">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                        stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M9 18l6-6-6-6" />
-                    </svg>
-                </button>
+                <?php echo \Jankx\Layouts\DynamicDataLayout\CarouselArrowsRenderer::render($carouselArrows, $parentShowArrows); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
             <?php endif; ?>
 
             <?php if ($showDots): ?>

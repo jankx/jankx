@@ -1982,14 +1982,14 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                             {__('Add Dynamic Data Template to define item layout', 'jankx')}
                         </div>
                         <InnerBlocks
-                            allowedBlocks={['jankx/dynamic-data-template', 'core/heading']}
+                            allowedBlocks={['jankx/dynamic-data-template', 'core/heading', 'jankx/carousel-arrows']}
                             templateLock={false}
                             renderAppender={InnerBlocks.ButtonBlockAppender}
                         />
                     </div>
                 ) : (
                     <InnerBlocks
-                        allowedBlocks={['jankx/dynamic-data-template', 'core/heading']}
+                        allowedBlocks={['jankx/dynamic-data-template', 'core/heading', 'jankx/carousel-arrows']}
                         templateLock={false}
                         renderAppender={InnerBlocks.DefaultBlockAppender}
                     />

@@ -184,6 +184,40 @@
             }
         }
 
+        // Arrows positioned outside the carousel edges
+        &.carousel-arrows-position-outside {
+            .carousel-prev {
+                left: -56px;
+            }
+
+            .carousel-next {
+                right: -56px;
+            }
+        }
+
+        // Arrows positioned below the carousel
+        &.carousel-arrows-position-bottom {
+            .carousel-nav {
+                top: auto;
+                bottom: -52px;
+                transform: none;
+
+                &:hover {
+                    transform: scale(1.1);
+                }
+            }
+
+            .carousel-prev {
+                left: 0;
+                right: auto;
+            }
+
+            .carousel-next {
+                left: 52px;
+                right: auto;
+            }
+        }
+
         /* Pagination dots */
         .carousel-dots,
         .embla__dots {

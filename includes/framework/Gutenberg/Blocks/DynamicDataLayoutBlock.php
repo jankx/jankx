@@ -138,6 +138,35 @@ class DynamicDataLayoutBlock extends Block
     }
 
     /**
+     * Extract a child block of the given block name from the parsed block tree.
+     *
+     * @param array $parsedBlock Parsed block data.
+     * @param string $blockName Block name to look for.
+     * @return array|null
+     */
+    protected function extractChildBlockFromParsedBlock(array $parsedBlock, string $blockName): ?array
+    {
+        if (empty($parsedBlock)) {
+            return null;
+        }
+
+        if (($parsedBlock['blockName'] ?? '') === $blockName) {
+            return $parsedBlock;
+        }
+
+        if (!empty($parsedBlock['innerBlocks'])) {
+            foreach ($parsedBlock['innerBlocks'] as $inner) {
+                $found = $this->extractChildBlockFromParsedBlock($inner, $blockName);
+                if ($found !== null) {
+                    return $found;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    /**
      * Enqueue carousel assets if needed
      *
      * @return void
@@ -295,6 +324,18 @@ class DynamicDataLayoutBlock extends Block
             // Extract and separate heading block from inner blocks
             $innerBlocks = $this->separateInnerBlocks($block);
             $headingBlock = $innerBlocks['heading'];
+
+            // Extract carousel-arrows child block (next/prev settings + icon styles)
+            // and store it inside the parent attributes so it is:
+            //  - available to the renderer (sanitizer re-injects it),
+            //  - serialized into data-block-settings for stateless AJAX re-renders.
+            $arrowsBlock = null;
+            if ($block instanceof \WP_Block) {
+                $arrowsBlock = $this->extractChildBlockFromParsedBlock($block->parsed_block ?? [], 'jankx/carousel-arrows');
+            }
+            if (is_array($arrowsBlock) && is_array($arrowsBlock['attrs'] ?? null)) {
+                $attributes['carouselArrows'] = $arrowsBlock['attrs'];
+            }
 
             $rendered = $this->rendererService->render($attributes, $content, $block);
 
@@ -967,6 +1008,15 @@ class DynamicDataLayoutBlock extends Block
         if (($attributes['layout'] ?? '') === 'carousel') {
             // Add carousel class
             $attrs['class'] .= ' jankx-carousel dynamic-data-layout--carousel';
+
+            // Add arrows position class from the carousel-arrows child block
+            $arrows = isset($attributes['carouselArrows']) && is_array($attributes['carouselArrows'])
+                ? $attributes['carouselArrows']
+                : [];
+            $arrowsPositionClass = \Jankx\Layouts\DynamicDataLayout\CarouselArrowsRenderer::positionClass($arrows);
+            if ($arrowsPositionClass !== '') {
+                $attrs['class'] .= ' ' . $arrowsPositionClass;
+            }
 
             // Add carousel data attributes
             $attrs['data-layout'] = 'carousel';

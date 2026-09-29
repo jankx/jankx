@@ -40,6 +40,13 @@ class BlockTemplateRenderer
     {
         $sanitizedAttributes = $this->attributeSanitizer->sanitize($attributes);
 
+        // Re-inject the carousel-arrows child block settings. The sanitizer only
+        // keeps declared attributes, so carry the nested settings through so the
+        // layout can render the configured prev/next buttons.
+        if (isset($attributes['carouselArrows']) && is_array($attributes['carouselArrows'])) {
+            $sanitizedAttributes['carouselArrows'] = $attributes['carouselArrows'];
+        }
+
         $layoutName = $sanitizedAttributes['layout'] ?? 'grid';
         $layout = $this->layoutManager->createLayout($layoutName);
         $decorator = new BlockTemplateLayoutDecorator($layout);
