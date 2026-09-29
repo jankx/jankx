@@ -122,20 +122,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 event.preventDefault();
 
                 const panel = tabPanels[index];
-                
+
                 activateTab(index, { focusNav: true, force: true });
 
-                if (panel && panel.id) {
-                    const newHash = `#${panel.id}`;
-                    if (window.location.hash !== newHash) {
-                        history.replaceState(
-                            null,
-                            '',
-                            `${window.location.pathname}${window.location.search}${newHash}`
-                        );
-                    }
+                if (panel) {
                     scrollToPanel(index);
                 }
+
+                // URL is intentionally left untouched: no hash is written on tab click.
 
                 // Advanced-filter trigger is now handled by smart-tab/view.js
             });
