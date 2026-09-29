@@ -1,0 +1,8 @@
+.wp-block-jankx-loop-index-counter.is-outside-loop {
+  outline: 1px dashed rgba(214, 88, 88, 0.65);
+  outline-offset: 2px;
+}
+
+.wp-block-jankx-loop-index-counter[data-jankx-loop-total]:not([data-jankx-loop-total="1"]) {
+  min-width: var(--jankx-index-box);
+}

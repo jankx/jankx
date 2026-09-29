@@ -1,0 +1,86 @@
+/*!*****************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!./blocks/loop-index-counter/style.scss ***!
+  \*****************************************************************************************************************************************************************************************************/
+.wp-block-jankx-loop-index-counter {
+  --jankx-index-box: 2.4em;
+  --jankx-index-weight: 700;
+  --jankx-index-tint: 14%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  min-width: var(--jankx-index-box);
+  min-height: var(--jankx-index-box);
+  padding: 0.15em 0.5em;
+  font-weight: var(--jankx-index-weight);
+  line-height: 1;
+  text-align: center;
+  vertical-align: middle;
+  font-variant-numeric: tabular-nums;
+  -webkit-font-smoothing: antialiased;
+}
+
+.wp-block-jankx-loop-index-counter.aligncenter {
+  display: flex;
+  margin-inline: auto;
+}
+
+.wp-block-jankx-loop-index-counter.alignright {
+  display: flex;
+  margin-inline-start: auto;
+  margin-inline-end: 0;
+}
+
+.wp-block-jankx-loop-index-counter.alignwide,
+.wp-block-jankx-loop-index-counter.alignfull {
+  display: flex;
+}
+
+/* Shapes */
+.wp-block-jankx-loop-index-counter.is-style-plain {
+  min-width: 0;
+  min-height: 0;
+  padding: 0;
+  background: transparent;
+}
+
+.wp-block-jankx-loop-index-counter.is-style-circle {
+  border-radius: 999px;
+  background: color-mix(in srgb, currentColor var(--jankx-index-tint), transparent);
+}
+
+.wp-block-jankx-loop-index-counter.is-style-rounded {
+  border-radius: 0.35em;
+  background: color-mix(in srgb, currentColor var(--jankx-index-tint), transparent);
+}
+
+.wp-block-jankx-loop-index-counter.is-style-pill {
+  border-radius: 999px;
+  padding-inline: 0.9em;
+  background: color-mix(in srgb, currentColor var(--jankx-index-tint), transparent);
+}
+
+.wp-block-jankx-loop-index-counter.is-style-outline {
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  background: transparent;
+}
+
+.wp-block-jankx-loop-index-counter.is-style-ribbon {
+  border-radius: 999px 0.35em 0.35em 999px;
+  padding-inline-start: 0.75em;
+  background: color-mix(in srgb, currentColor var(--jankx-index-tint), transparent);
+}
+/*!******************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!./blocks/loop-index-counter/editor.scss ***!
+  \******************************************************************************************************************************************************************************************************/
+.wp-block-jankx-loop-index-counter.is-outside-loop {
+  outline: 1px dashed rgba(214, 88, 88, 0.65);
+  outline-offset: 2px;
+}
+
+.wp-block-jankx-loop-index-counter[data-jankx-loop-total]:not([data-jankx-loop-total="1"]) {
+  min-width: var(--jankx-index-box);
+}
+
+/*# sourceMappingURL=index.css.map*/

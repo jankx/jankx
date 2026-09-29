@@ -1,0 +1,101 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "jankx/loop-index-counter",
+  "version": "1.0.0",
+  "title": "Loop Index Counter",
+  "category": "jankx",
+  "description": "Đánh số thứ tự item trong loop (Post Template, Dynamic Data Template, Dynamic Term Template...). Số bắt đầu tùy chỉnh, hỗ trợ nhiều shape variation và đầy đủ style controls như core/group.",
+  "keywords": ["loop", "index", "counter", "number", "post", "query"],
+  "textdomain": "jankx",
+  "supports": {
+    "html": false,
+    "anchor": true,
+    "align": ["left", "center", "right", "wide", "full"],
+    "color": {
+      "background": true,
+      "text": true,
+      "gradients": true,
+      "link": false
+    },
+    "border": {
+      "color": true,
+      "radius": true,
+      "style": true,
+      "width": true
+    },
+    "spacing": {
+      "margin": true,
+      "padding": true,
+      "blockGap": false
+    },
+    "typography": {
+      "fontSize": true,
+      "lineHeight": true,
+      "fontStyle": true,
+      "fontWeight": true,
+      "letterSpacing": true,
+      "textDecoration": true,
+      "textTransform": true,
+      "__experimentalFontFamily": true,
+      "__experimentalFontStyle": true,
+      "__experimentalFontWeight": true,
+      "__experimentalLetterSpacing": true,
+      "__experimentalTextDecoration": true,
+      "__experimentalTextTransform": true,
+      "__experimentalDefaultControls": {
+        "fontSize": true
+      }
+    },
+    "dimensions": {
+      "minHeight": true,
+      "aspectRatio": true
+    },
+    "shadow": true,
+    "layout": {
+      "allowEditing": false,
+      "allowSizingOnChildren": false
+    },
+    "interactivity": {
+      "clientNavigation": true
+    },
+    "__experimentalDefaultControls": {
+      "color": "background",
+      "spacing": "padding",
+      "typography": "fontSize"
+    }
+  },
+  "attributes": {
+    "start": {
+      "type": "number",
+      "default": 1
+    },
+    "padStart": {
+      "type": "number",
+      "default": 0
+    },
+    "prefix": {
+      "type": "string",
+      "default": ""
+    },
+    "suffix": {
+      "type": "string",
+      "default": ""
+    },
+    "className": {
+      "type": "string"
+    }
+  },
+  "styles": [
+    { "name": "plain", "label": "Plain" },
+    { "name": "circle", "label": "Circle" },
+    { "name": "rounded", "label": "Rounded" },
+    { "name": "pill", "label": "Pill" },
+    { "name": "outline", "label": "Outline Circle" },
+    { "name": "ribbon", "label": "Ribbon" }
+  ],
+  "editorScript": "file:../../dist/blocks/loop-index-counter/index.js",
+  "editorStyle": "file:../../dist/blocks/loop-index-counter/editor.css",
+  "style": "file:../../dist/blocks/loop-index-counter/style.css",
+  "viewScript": "file:../../dist/blocks/loop-index-counter/view.js"
+}

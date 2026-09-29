@@ -44,6 +44,7 @@ use Jankx\Gutenberg\Blocks\StarRatingBlock;
 use Jankx\Gutenberg\Blocks\StickyBoxBlock;
 use Jankx\Gutenberg\Blocks\DividerBlock;
 use Jankx\Gutenberg\Blocks\LayoutSwitcherBlock;
+use Jankx\Gutenberg\Blocks\LoopIndexCounterBlock;
 use Jankx\Gutenberg\Blocks\HumanReadablePostDateBlock;
 use Jankx\Gutenberg\Blocks\UserMenuBlock;
 use Jankx\Gutenberg\Extra\Categories as ExtraCategories;
@@ -192,6 +193,7 @@ class GutenbergService
         $this->repository->registerBlock(StickyBoxBlock::class);
         $this->repository->registerBlock(DividerBlock::class);
         $this->repository->registerBlock(LayoutSwitcherBlock::class);
+        $this->repository->registerBlock(LoopIndexCounterBlock::class);
         $this->repository->registerBlock(SafeIframeBlock::class);
         $this->repository->registerBlock(WrapperBlock::class);
         $this->repository->registerBlock(OverlapGroupBlock::class);
