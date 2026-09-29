@@ -79,8 +79,4 @@
   outline-offset: 2px;
 }
 
-.wp-block-jankx-loop-index-counter[data-jankx-loop-total]:not([data-jankx-loop-total="1"]) {
-  min-width: var(--jankx-index-box);
-}
-
 /*# sourceMappingURL=index.css.map*/
