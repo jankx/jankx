@@ -688,9 +688,19 @@ class DynamicDataLayoutBlock extends Block
         $layout = $this->layoutManager->createLayout($layoutName);
         $decorator = new BlockTemplateLayoutDecorator($layout);
 
+        // Determine whether the advanced-filter actually switched the post type.
+        // compare the (merged) attributes with the original static post type so
+        // the allowlist enforced by applyFiltersToAttributes is respected.
+        $selectedPostType = isset($filters['post_type']) && is_string($filters['post_type']) && $filters['post_type'] !== ''
+            ? sanitize_key($filters['post_type'])
+            : '';
+        $filteredPostType = ($selectedPostType !== '' && ($attributes['postType'] ?? '') === $selectedPostType)
+            ? $selectedPostType
+            : '';
+
         // Build query
         $originalPreset = $attributes['queryPreset'] ?? 'custom';
-        $query = $this->buildQueryForPreset($decorator, $attributes, $originalPreset, $postType);
+        $query = $this->buildQueryForPreset($decorator, $attributes, $originalPreset, $postType, $filteredPostType);
         $decorator->withQuery($query);
         $decorator->withAttributes($attributes);
 
@@ -832,12 +842,13 @@ class DynamicDataLayoutBlock extends Block
      * @param array $attributes Block attributes
      * @param string $originalPreset Original preset
      * @param string $postType Post type
+     * @param string $filteredPostType Post type selected via an advanced-filter, empty otherwise
      * @return \WP_Query
      */
-    private function buildQueryForPreset($decorator, array $attributes, string $originalPreset, string $postType): \WP_Query
+    private function buildQueryForPreset($decorator, array $attributes, string $originalPreset, string $postType, string $filteredPostType = ''): \WP_Query
     {
         if ($originalPreset === 'default') {
-            return DynamicDataLayoutQueryHelper::buildDefaultQuery($attributes);
+            return DynamicDataLayoutQueryHelper::buildDefaultQuery($attributes, 1, $filteredPostType);
         } elseif ($originalPreset === 'related') {
             $attributes = DynamicDataLayoutQueryHelper::buildRelatedQuery($attributes);
             $decorator->withAttributes($attributes);

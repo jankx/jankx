@@ -22,9 +22,10 @@ class DynamicDataLayoutQueryHelper
      *
      * @param array $attributes Block attributes
      * @param int $page Page number for pagination
+     * @param string $filteredPostType Post type selected via an advanced-filter, empty otherwise
      * @return WP_Query
      */
-    public static function buildDefaultQuery(array $attributes, int $page = 1): WP_Query
+    public static function buildDefaultQuery(array $attributes, int $page = 1, string $filteredPostType = ''): WP_Query
     {
         global $wp_query;
 
@@ -43,6 +44,20 @@ class DynamicDataLayoutQueryHelper
             if (is_singular() && empty($query_vars['post_type'])) {
                 $query_vars['post_type'] = get_post_type();
                 unset($query_vars['p'], $query_vars['name'], $query_vars['pagename']);
+            }
+
+            // The block runs after the `wp` hook, so the main query is already
+            // resolved and cannot be rewritten. When an advanced-filter selects
+            // a post type for a "default" preset block, re-filter the block's
+            // own query instead: override the post type and carry any search
+            // keyword that reached the server (keeps cached-search results in
+            // the current search scope while switching the post type).
+            if ($filteredPostType !== '' && post_type_exists($filteredPostType)) {
+                $query_vars['post_type'] = $filteredPostType;
+                $keyword = isset($attributes['keyword']) ? sanitize_text_field($attributes['keyword']) : '';
+                if ($keyword !== '') {
+                    $query_vars['s'] = $keyword;
+                }
             }
 
             // IMPORTANT: Remove posts from query_vars to prevent WP_Query from using pre-fetched posts
