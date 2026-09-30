@@ -9,12 +9,14 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.5rem 1rem;
+  margin: 0;
   border: none;
   background: var(--wp--preset--color--primary, #f0f0f0);
   color: var(--wp--preset--color--base, #fff);
   cursor: pointer;
   transition: all 0.2s ease;
   font-size: 0.9rem;
+  line-height: 1.4;
   text-decoration: none;
   font-family: inherit;
   border-radius: 4px;
@@ -72,14 +74,18 @@
 }
 .wp-block-jankx-social-sharing-icon .sharing-icon-button.style-none {
   padding: 0;
-  background: transparent;
-  border: none;
+  margin: 0;
+  background: none;
+  border: 0;
   border-radius: 0;
   box-shadow: none;
   color: inherit;
+  text-decoration: none;
 }
-.wp-block-jankx-social-sharing-icon .sharing-icon-button.style-none:hover {
-  background: transparent;
+.wp-block-jankx-social-sharing-icon .sharing-icon-button.style-none:hover, .wp-block-jankx-social-sharing-icon .sharing-icon-button.style-none:active {
+  background: none;
+  border: 0;
+  box-shadow: none;
   transform: none;
 }
 .wp-block-jankx-social-sharing-icon .sharing-icon-button.style-none:focus {
@@ -95,6 +101,9 @@
 .wp-block-jankx-social-sharing-icon .sharing-icon-button.style-none .sharing-label {
   color: inherit;
 }
+.wp-block-jankx-social-sharing-icon .sharing-icon-button.style-none.size-small, .wp-block-jankx-social-sharing-icon .sharing-icon-button.style-none.size-large {
+  padding: 0;
+}
 .wp-block-jankx-social-sharing-icon .sharing-icon-button.style-outlined {
   background: transparent;
   border: 2px solid #ddd;
@@ -104,101 +113,120 @@
   background: transparent;
 }
 .wp-block-jankx-social-sharing-icon .sharing-icon-button.style-filled {
-  color: white;
+  color: #fff;
 }
 .wp-block-jankx-social-sharing-icon .sharing-icon-button.style-filled.facebook {
   background: #1877f2;
 }
 .wp-block-jankx-social-sharing-icon .sharing-icon-button.style-filled.facebook:hover {
-  background: #0c63d4;
+  background: rgb(11.4549180328, 95.1639344262, 203.5450819672);
 }
 .wp-block-jankx-social-sharing-icon .sharing-icon-button.style-filled.twitter {
   background: #1da1f2;
 }
 .wp-block-jankx-social-sharing-icon .sharing-icon-button.style-filled.twitter:hover {
-  background: #0d8bd9;
+  background: rgb(11.9665271967, 133.4728033473, 208.0334728033);
 }
 .wp-block-jankx-social-sharing-icon .sharing-icon-button.style-filled.linkedin {
   background: #0077b5;
 }
 .wp-block-jankx-social-sharing-icon .sharing-icon-button.style-filled.linkedin:hover {
-  background: #005e94;
+  background: rgb(0, 85.4696132597, 130);
 }
 .wp-block-jankx-social-sharing-icon .sharing-icon-button.style-filled.whatsapp {
   background: #25d366;
 }
 .wp-block-jankx-social-sharing-icon .sharing-icon-button.style-filled.whatsapp:hover {
-  background: #1ebe57;
+  background: rgb(29.3911290323, 167.6088709677, 81.0241935484);
 }
 .wp-block-jankx-social-sharing-icon .sharing-icon-button.style-filled.telegram {
   background: #0088cc;
 }
 .wp-block-jankx-social-sharing-icon .sharing-icon-button.style-filled.telegram:hover {
-  background: #006ca8;
+  background: #006699;
 }
 .wp-block-jankx-social-sharing-icon .sharing-icon-button.style-filled.pinterest {
   background: #bd081c;
 }
 .wp-block-jankx-social-sharing-icon .sharing-icon-button.style-filled.pinterest:hover {
-  background: #9a0616;
+  background: rgb(140.0710659898, 5.9289340102, 20.7512690355);
 }
 .wp-block-jankx-social-sharing-icon .sharing-icon-button.style-filled.reddit {
   background: #ff4500;
 }
 .wp-block-jankx-social-sharing-icon .sharing-icon-button.style-filled.reddit:hover {
-  background: #e03d00;
+  background: rgb(204, 55.2, 0);
 }
 .wp-block-jankx-social-sharing-icon .sharing-icon-button.style-filled.email {
   background: #666;
 }
 .wp-block-jankx-social-sharing-icon .sharing-icon-button.style-filled.email:hover {
-  background: #555;
+  background: rgb(76.5, 76.5, 76.5);
 }
 .wp-block-jankx-social-sharing-icon .sharing-icon-button.style-filled.copy {
   background: #999;
 }
 .wp-block-jankx-social-sharing-icon .sharing-icon-button.style-filled.copy:hover {
-  background: #888;
+  background: rgb(127.5, 127.5, 127.5);
 }
 .wp-block-jankx-social-sharing-icon .sharing-icon-button.style-filled.messenger {
   background: #0084ff;
 }
 .wp-block-jankx-social-sharing-icon .sharing-icon-button.style-filled.messenger:hover {
-  background: #006de0;
+  background: rgb(0, 105.6, 204);
 }
 .wp-block-jankx-social-sharing-icon .sharing-icon-button.style-filled.viber {
-  background: #665CAC;
+  background: #665cac;
 }
 .wp-block-jankx-social-sharing-icon .sharing-icon-button.style-filled.viber:hover {
-  background: #574d94;
+  background: rgb(80.5243902439, 71.8658536585, 141.1341463415);
 }
 .wp-block-jankx-social-sharing-icon .sharing-icon-button.style-filled.line {
-  background: #00B900;
+  background: #00b900;
 }
 .wp-block-jankx-social-sharing-icon .sharing-icon-button.style-filled.line:hover {
-  background: #009900;
+  background: #008600;
 }
-.wp-block-jankx-social-sharing-icon .sharing-icon-button.style-rounded, .wp-block-jankx-social-sharing-icon .sharing-icon-button.style-square {
+.wp-block-jankx-social-sharing-icon .sharing-icon-button.style-rounded {
   padding: 0.75rem;
   width: 45px;
   height: 45px;
   justify-content: center;
 }
-.wp-block-jankx-social-sharing-icon .sharing-icon-button.style-rounded .sharing-label, .wp-block-jankx-social-sharing-icon .sharing-icon-button.style-square .sharing-label {
+.wp-block-jankx-social-sharing-icon .sharing-icon-button.style-rounded .sharing-label {
   display: none;
 }
-.wp-block-jankx-social-sharing-icon .sharing-icon-button.style-rounded.size-small, .wp-block-jankx-social-sharing-icon .sharing-icon-button.style-square.size-small {
+.wp-block-jankx-social-sharing-icon .sharing-icon-button.style-rounded.size-small {
   width: 36px;
   height: 36px;
   padding: 0.5rem;
 }
-.wp-block-jankx-social-sharing-icon .sharing-icon-button.style-rounded.size-large, .wp-block-jankx-social-sharing-icon .sharing-icon-button.style-square.size-large {
+.wp-block-jankx-social-sharing-icon .sharing-icon-button.style-rounded.size-large {
   width: 56px;
   height: 56px;
   padding: 1rem;
 }
 .wp-block-jankx-social-sharing-icon .sharing-icon-button.style-rounded {
   border-radius: 50%;
+}
+.wp-block-jankx-social-sharing-icon .sharing-icon-button.style-square {
+  padding: 0.75rem;
+  width: 45px;
+  height: 45px;
+  justify-content: center;
+}
+.wp-block-jankx-social-sharing-icon .sharing-icon-button.style-square .sharing-label {
+  display: none;
+}
+.wp-block-jankx-social-sharing-icon .sharing-icon-button.style-square.size-small {
+  width: 36px;
+  height: 36px;
+  padding: 0.5rem;
+}
+.wp-block-jankx-social-sharing-icon .sharing-icon-button.style-square.size-large {
+  width: 56px;
+  height: 56px;
+  padding: 1rem;
 }
 .wp-block-jankx-social-sharing-icon .sharing-icon-button.style-square {
   border-radius: 8px;

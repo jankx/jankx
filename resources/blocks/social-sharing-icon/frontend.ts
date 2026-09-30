@@ -1,15 +1,34 @@
 import * as VanillaSharing from 'vanilla-sharing';
 
+import { getShareUrl } from './shareUrls';
+
+/**
+ * Resolve the URL/title to share.
+ *
+ * The saved href is '#' whenever the permalink was unknown at save time, so the
+ * real value has to be filled in here from the current page.
+ */
+const resolveShareTarget = (button: HTMLElement) => ({
+    url: button.getAttribute('data-url') || window.location.href,
+    title: button.getAttribute('data-title') || document.title,
+});
+
 document.addEventListener('DOMContentLoaded', () => {
     const sharingIcons = document.querySelectorAll('.wp-block-jankx-social-sharing-icon .sharing-icon-button');
 
-    sharingIcons.forEach((button) => {
+    sharingIcons.forEach((link) => {
+        const button = link as HTMLElement;
+        const network = button.getAttribute('data-network') || '';
+        const { url, title } = resolveShareTarget(button);
+
+        // Give every anchor a real destination so the markup still works as a
+        // plain link when JavaScript is unavailable. JS-only networks keep '#'.
+        if (!button.getAttribute('href') || button.getAttribute('href') === '#') {
+            button.setAttribute('href', getShareUrl(network, url, title));
+        }
+
         button.addEventListener('click', (e) => {
             e.preventDefault();
-
-            const network = button.getAttribute('data-network') || '';
-            const url = button.getAttribute('data-url') || window.location.href;
-            const title = button.getAttribute('data-title') || document.title;
 
             // Map network names to vanilla-sharing functions
             const sharingMap: { [key: string]: Function } = {
@@ -74,4 +93,3 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 });
-

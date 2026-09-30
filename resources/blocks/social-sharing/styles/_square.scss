@@ -1,0 +1,7 @@
+// `square` — rounded rectangle, label hidden.
+@use "icon-only";
+
+@mixin social-sharing-style-square {
+    @include icon-only.social-sharing-icon-only;
+    border-radius: 8px;
+}

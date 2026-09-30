@@ -1,0 +1,50 @@
+// `none` — render the nested SVG / image icon exactly as authored.
+//
+// Strips every piece of button chrome (background, border, radius, padding,
+// shadow) so the icon keeps its own colours, border and size. `all: unset`
+// would also drop the inline-block/flex layout the anchor needs, so the
+// properties that matter for layout and accessibility are restored explicitly.
+@mixin social-sharing-style-none {
+    padding: 0;
+    margin: 0;
+    background: none;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+    color: inherit;
+    text-decoration: none;
+
+    &:hover,
+    &:active {
+        background: none;
+        border: 0;
+        box-shadow: none;
+        transform: none;
+    }
+
+    // Restore a keyboard-only focus ring; removing it entirely would break a11y.
+    &:focus {
+        outline: none;
+    }
+
+    &:focus-visible {
+        outline: 2px solid #0073aa;
+        outline-offset: 2px;
+    }
+
+    .sharing-icon {
+        font-size: 1em;
+    }
+
+    .sharing-label {
+        color: inherit;
+    }
+
+    // `.size-small` / `.size-large` also set padding at the same specificity, so
+    // reset them here to guarantee the bare icon wins regardless of which
+    // stylesheet (parent variation or legacy child class) loads first.
+    &.size-small,
+    &.size-large {
+        padding: 0;
+    }
+}

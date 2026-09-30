@@ -28,45 +28,40 @@ Object.assign(navigator, {
 // Mock window.open
 global.open = jest.fn();
 
-describe('SocialSharing Frontend', () => {
+/**
+ * The anchors are rendered by the social-sharing-icon block, so this suite
+ * exercises social-sharing-icon/frontend.ts against the real markup: an <a>
+ * with a `.sharing-icon-button` class inside a `.wp-block-jankx-social-sharing-icon`
+ * wrapper.
+ */
+describe('SocialSharingIcon Frontend', () => {
     let container: HTMLElement;
 
+    const anchor = (network: string, label: string) =>
+        `<div class="wp-block-jankx-social-sharing-icon social-sharing-icon-block">
+            <a class="sharing-icon-button ${network} size-medium"
+               data-network="${network}"
+               href="#"
+               data-url="https://example.com/post"
+               data-title="Test Post">
+                <span class="sharing-label">${label}</span>
+            </a>
+        </div>`;
+
     beforeEach(() => {
-        // Setup DOM
         document.body.innerHTML = '';
         container = document.createElement('div');
-        container.className = 'wp-block-jankx-social-sharing';
+        container.className = 'wp-block-jankx-social-sharing social-sharing-block alignment-center';
         container.innerHTML = `
             <div class="sharing-buttons">
-                <button class="sharing-button" 
-                        data-network="facebook" 
-                        data-url="https://example.com/post" 
-                        data-title="Test Post">
-                    <span class="sharing-label">Facebook</span>
-                </button>
-                <button class="sharing-button" 
-                        data-network="twitter" 
-                        data-url="https://example.com/post" 
-                        data-title="Test Post">
-                    <span class="sharing-label">Twitter</span>
-                </button>
-                <button class="sharing-button" 
-                        data-network="copy" 
-                        data-url="https://example.com/post" 
-                        data-title="Test Post">
-                    <span class="sharing-label">Copy Link</span>
-                </button>
-                <button class="sharing-button" 
-                        data-network="pinterest" 
-                        data-url="https://example.com/post" 
-                        data-title="Test Post">
-                    <span class="sharing-label">Pinterest</span>
-                </button>
+                ${anchor('facebook', 'Facebook')}
+                ${anchor('twitter', 'Twitter/X')}
+                ${anchor('copy', 'Copy Link')}
+                ${anchor('pinterest', 'Pinterest')}
             </div>
         `;
         document.body.appendChild(container);
 
-        // Clear all mocks
         jest.clearAllMocks();
     });
 
@@ -74,107 +69,114 @@ describe('SocialSharing Frontend', () => {
         document.body.innerHTML = '';
     });
 
-    it('should initialize sharing buttons on DOMContentLoaded', (done) => {
-        // Simulate DOMContentLoaded
-        const event = new Event('DOMContentLoaded');
-        document.dispatchEvent(event);
+    const dispatchDomReady = () => document.dispatchEvent(new Event('DOMContentLoaded'));
 
-        // Wait a bit for event listeners to attach
+    it('should initialize sharing links on DOMContentLoaded', (done) => {
+        dispatchDomReady();
+
         setTimeout(() => {
-            const buttons = container.querySelectorAll('.sharing-button');
-            expect(buttons.length).toBeGreaterThan(0);
+            const links = container.querySelectorAll('.sharing-icon-button');
+            expect(links.length).toBeGreaterThan(0);
             done();
         }, 100);
     });
 
-    it('should handle Facebook share button click', (done) => {
-        const event = new Event('DOMContentLoaded');
-        document.dispatchEvent(event);
+    it('should replace the placeholder href with a real share URL', (done) => {
+        dispatchDomReady();
 
         setTimeout(() => {
-            const facebookButton = container.querySelector('[data-network="facebook"]') as HTMLButtonElement;
-            
-            if (facebookButton) {
-                facebookButton.click();
-                
-                expect(mockVanillaSharing.fbButton).toHaveBeenCalledWith({
-                    url: 'https://example.com/post',
-                    title: 'Test Post',
-                });
-            }
+            const facebookLink = container.querySelector(
+                '[data-network="facebook"]'
+            ) as HTMLAnchorElement;
+
+            expect(facebookLink.getAttribute('href')).toBe(
+                'https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fexample.com%2Fpost'
+            );
             done();
         }, 100);
     });
 
-    it('should handle Twitter share button click', (done) => {
-        const event = new Event('DOMContentLoaded');
-        document.dispatchEvent(event);
+    it('should handle Facebook share link click', (done) => {
+        dispatchDomReady();
 
         setTimeout(() => {
-            const twitterButton = container.querySelector('[data-network="twitter"]') as HTMLButtonElement;
-            
-            if (twitterButton) {
-                twitterButton.click();
-                
-                expect(mockVanillaSharing.tw).toHaveBeenCalledWith({
-                    url: 'https://example.com/post',
-                    title: 'Test Post',
-                });
-            }
+            const facebookLink = container.querySelector('[data-network="facebook"]') as HTMLAnchorElement;
+            facebookLink.click();
+
+            expect(mockVanillaSharing.fbButton).toHaveBeenCalledWith({
+                url: 'https://example.com/post',
+                title: 'Test Post',
+            });
             done();
         }, 100);
     });
 
-    it('should handle copy link button click', async () => {
-        const event = new Event('DOMContentLoaded');
-        document.dispatchEvent(event);
-
-        await new Promise(resolve => setTimeout(resolve, 100));
-
-        const copyButton = container.querySelector('[data-network="copy"]') as HTMLButtonElement;
-        
-        if (copyButton) {
-            copyButton.click();
-            
-            await new Promise(resolve => setTimeout(resolve, 50));
-            
-            expect(navigator.clipboard.writeText).toHaveBeenCalledWith('https://example.com/post');
-        }
-    });
-
-    it('should handle Pinterest share button click', (done) => {
-        const event = new Event('DOMContentLoaded');
-        document.dispatchEvent(event);
+    it('should handle Twitter share link click', (done) => {
+        dispatchDomReady();
 
         setTimeout(() => {
-            const pinterestButton = container.querySelector('[data-network="pinterest"]') as HTMLButtonElement;
-            
-            if (pinterestButton) {
-                pinterestButton.click();
-                
-                expect(global.open).toHaveBeenCalled();
-            }
+            const twitterLink = container.querySelector('[data-network="twitter"]') as HTMLAnchorElement;
+            twitterLink.click();
+
+            expect(mockVanillaSharing.tw).toHaveBeenCalledWith({
+                url: 'https://example.com/post',
+                title: 'Test Post',
+            });
             done();
         }, 100);
     });
 
-    it('should use current URL if data-url is not provided', (done) => {
-        const buttonWithoutUrl = document.createElement('button');
-        buttonWithoutUrl.className = 'sharing-button';
-        buttonWithoutUrl.setAttribute('data-network', 'facebook');
-        container.querySelector('.sharing-buttons')?.appendChild(buttonWithoutUrl);
+    it('should handle copy link click', async () => {
+        dispatchDomReady();
 
-        const event = new Event('DOMContentLoaded');
-        document.dispatchEvent(event);
+        await new Promise((resolve) => setTimeout(resolve, 100));
+
+        const copyLink = container.querySelector('[data-network="copy"]') as HTMLAnchorElement;
+        copyLink.click();
+
+        await new Promise((resolve) => setTimeout(resolve, 50));
+
+        expect(navigator.clipboard.writeText).toHaveBeenCalledWith('https://example.com/post');
+    });
+
+    it('should handle Pinterest share link click', (done) => {
+        dispatchDomReady();
 
         setTimeout(() => {
-            buttonWithoutUrl.click();
-            
-            expect(mockVanillaSharing.fbButton).toHaveBeenCalled();
+            const pinterestLink = container.querySelector('[data-network="pinterest"]') as HTMLAnchorElement;
+            pinterestLink.click();
+
+            expect(global.open).toHaveBeenCalled();
+            done();
+        }, 100);
+    });
+
+    it('should use the current URL when data-url is not provided', (done) => {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'wp-block-jankx-social-sharing-icon social-sharing-icon-block';
+        wrapper.innerHTML = `
+            <a class="sharing-icon-button facebook size-medium"
+               data-network="facebook"
+               href="#">
+                <span class="sharing-label">Facebook</span>
+            </a>
+        `;
+        container.querySelector('.sharing-buttons')?.appendChild(wrapper);
+
+        dispatchDomReady();
+
+        setTimeout(() => {
+            const link = wrapper.querySelector('.sharing-icon-button') as HTMLAnchorElement;
+            link.click();
+
+            expect(mockVanillaSharing.fbButton).toHaveBeenCalledWith({
+                url: window.location.href,
+                title: document.title,
+            });
             done();
         }, 100);
     });
 });
 
 // Import frontend code to trigger initialization
-import '../frontend';
+import '../social-sharing-icon/frontend';

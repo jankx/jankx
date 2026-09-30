@@ -1,0 +1,23 @@
+// Shared box shape for the icon-only `rounded` and `square` variations.
+@mixin social-sharing-icon-only($size: 45px, $padding: 0.75rem) {
+    padding: $padding;
+    width: $size;
+    height: $size;
+    justify-content: center;
+
+    .sharing-label {
+        display: none;
+    }
+
+    &.size-small {
+        width: 36px;
+        height: 36px;
+        padding: 0.5rem;
+    }
+
+    &.size-large {
+        width: 56px;
+        height: 56px;
+        padding: 1rem;
+    }
+}

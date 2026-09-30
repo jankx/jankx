@@ -1,0 +1,17 @@
+// `filled` — solid brand colour per network.
+@use "sass:color";
+@use "variables" as v;
+
+@mixin social-sharing-style-filled {
+    color: #fff;
+
+    @each $name, $color in v.$networks {
+        &.#{$name} {
+            background: $color;
+
+            &:hover {
+                background: color.adjust($color, $lightness: -10%);
+            }
+        }
+    }
+}

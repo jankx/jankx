@@ -1,3 +1,16 @@
+// Styling for the social sharing anchor.
+//
+// The link is rendered as an <a> (not a <button>) so it no longer inherits UA
+// button chrome. Per-network visual styles now come from the parent block's
+// WordPress style variations; the `.style-*` rules below are kept for
+// backward compatibility with content saved before that change.
+@use "../social-sharing/styles/filled";
+@use "../social-sharing/styles/icon-only";
+@use "../social-sharing/styles/none";
+@use "../social-sharing/styles/outlined";
+@use "../social-sharing/styles/rounded";
+@use "../social-sharing/styles/square";
+
 .wp-block-jankx-social-sharing-icon {
     display: inline-block;
 
@@ -6,12 +19,14 @@
         align-items: center;
         gap: 0.5rem;
         padding: 0.5rem 1rem;
+        margin: 0;
         border: none;
         background: var(--wp--preset--color--primary, #f0f0f0);
         color: var(--wp--preset--color--base, #fff);
         cursor: pointer;
         transition: all 0.2s ease;
         font-size: 0.9rem;
+        line-height: 1.4;
         text-decoration: none;
         font-family: inherit;
         border-radius: 4px;
@@ -82,182 +97,31 @@
             }
         }
 
-        // Styles
-        // style-none: strip every bit of button chrome (background, padding,
-        // border, radius) so the nested svg-icon / icon-picker / image keeps
-        // its own colors, border and size.
+        // ---------------------------------------------------------------------
+        // Legacy `style-*` classes.
+        //
+        // Blocks saved before style variations keep these classes on the
+        // anchor itself. They must stay in sync with the shared partials so
+        // old content keeps rendering exactly as before.
+        // ---------------------------------------------------------------------
         &.style-none {
-            padding: 0;
-            background: transparent;
-            border: none;
-            border-radius: 0;
-            box-shadow: none;
-            color: inherit;
-
-            &:hover {
-                background: transparent;
-                transform: none;
-            }
-
-            &:focus {
-                outline: none;
-            }
-
-            // Keep a visible focus ring for keyboard users only
-            &:focus-visible {
-                outline: 2px solid #0073aa;
-                outline-offset: 2px;
-            }
-
-            .sharing-icon {
-                font-size: 1em;
-            }
-
-            .sharing-label {
-                color: inherit;
-            }
+            @include none.social-sharing-style-none;
         }
 
         &.style-outlined {
-            background: transparent;
-            border: 2px solid #ddd;
-
-            &:hover {
-                border-color: #333;
-                background: transparent;
-            }
+            @include outlined.social-sharing-style-outlined;
         }
 
         &.style-filled {
-            color: white;
-
-            &.facebook {
-                background: #1877f2;
-
-                &:hover {
-                    background: #0c63d4;
-                }
-            }
-
-            &.twitter {
-                background: #1da1f2;
-
-                &:hover {
-                    background: #0d8bd9;
-                }
-            }
-
-            &.linkedin {
-                background: #0077b5;
-
-                &:hover {
-                    background: #005e94;
-                }
-            }
-
-            &.whatsapp {
-                background: #25d366;
-
-                &:hover {
-                    background: #1ebe57;
-                }
-            }
-
-            &.telegram {
-                background: #0088cc;
-
-                &:hover {
-                    background: #006ca8;
-                }
-            }
-
-            &.pinterest {
-                background: #bd081c;
-
-                &:hover {
-                    background: #9a0616;
-                }
-            }
-
-            &.reddit {
-                background: #ff4500;
-
-                &:hover {
-                    background: #e03d00;
-                }
-            }
-
-            &.email {
-                background: #666;
-
-                &:hover {
-                    background: #555;
-                }
-            }
-
-            &.copy {
-                background: #999;
-
-                &:hover {
-                    background: #888;
-                }
-            }
-
-            &.messenger {
-                background: #0084ff;
-
-                &:hover {
-                    background: #006de0;
-                }
-            }
-
-            &.viber {
-                background: #665CAC;
-
-                &:hover {
-                    background: #574d94;
-                }
-            }
-
-            &.line {
-                background: #00B900;
-
-                &:hover {
-                    background: #009900;
-                }
-            }
-        }
-
-        &.style-rounded,
-        &.style-square {
-            padding: 0.75rem;
-            width: 45px;
-            height: 45px;
-            justify-content: center;
-
-            .sharing-label {
-                display: none;
-            }
-
-            &.size-small {
-                width: 36px;
-                height: 36px;
-                padding: 0.5rem;
-            }
-
-            &.size-large {
-                width: 56px;
-                height: 56px;
-                padding: 1rem;
-            }
+            @include filled.social-sharing-style-filled;
         }
 
         &.style-rounded {
-            border-radius: 50%;
+            @include rounded.social-sharing-style-rounded;
         }
 
         &.style-square {
-            border-radius: 8px;
+            @include square.social-sharing-style-square;
         }
     }
 }

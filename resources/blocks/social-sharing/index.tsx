@@ -1,29 +1,19 @@
 import { registerBlockType, createBlock } from '@wordpress/blocks';
 import { InspectorControls, useBlockProps, InnerBlocks, useInnerBlocksProps } from '@wordpress/block-editor';
-import { PanelBody, CheckboxControl, SelectControl, RangeControl, ToggleControl, TextControl } from '@wordpress/components';
+import { PanelBody, CheckboxControl, SelectControl, ToggleControl, TextControl } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 import { useEffect } from '@wordpress/element';
 import { useDispatch, useSelect } from '@wordpress/data';
 
-// Available social networks from vanilla-sharing
-const AVAILABLE_NETWORKS = [
-    { value: 'facebook', label: 'Facebook' },
-    { value: 'twitter', label: 'Twitter/X' },
-    { value: 'linkedin', label: 'LinkedIn' },
-    { value: 'whatsapp', label: 'WhatsApp' },
-    { value: 'telegram', label: 'Telegram' },
-    { value: 'pinterest', label: 'Pinterest' },
-    { value: 'reddit', label: 'Reddit' },
-    { value: 'email', label: 'Email' },
-    { value: 'copy', label: 'Copy Link' },
-    { value: 'messenger', label: 'Messenger' },
-    { value: 'viber', label: 'Viber' },
-    { value: 'line', label: 'Line' },
-];
+import metadata from './block.json';
+import deprecated from './deprecated';
+import { AVAILABLE_NETWORKS } from '../social-sharing-icon/networks';
+
+const { name } = metadata;
 
 const Edit = (props) => {
     const { attributes, setAttributes, clientId } = props;
-    const { networks, iconSize, showLabels, style, alignment, showHeading, headingText } = attributes;
+    const { networks, iconSize, showLabels, alignment, showHeading, headingText } = attributes;
 
     const { replaceInnerBlocks } = useDispatch('core/block-editor');
 
@@ -43,7 +33,6 @@ const Edit = (props) => {
             const newBlocks = networks.map((network) =>
                 createBlock('jankx/social-sharing-icon', {
                     network,
-                    iconStyle: style,
                     iconSize,
                     showLabel: showLabels,
                 })
@@ -59,14 +48,13 @@ const Edit = (props) => {
                 ...block,
                 attributes: {
                     ...block.attributes,
-                    iconStyle: style,
                     iconSize,
                     showLabel: showLabels,
                 }
             }));
             replaceInnerBlocks(clientId, updatedBlocks, false);
         }
-    }, [iconSize, showLabels, style]);
+    }, [iconSize, showLabels]);
 
     const blockProps = useBlockProps({
         className: `social-sharing-block alignment-${alignment}`,
@@ -80,7 +68,6 @@ const Edit = (props) => {
                 'jankx/social-sharing-icon',
                 {
                     network,
-                    iconStyle: style,
                     iconSize,
                     showLabel: showLabels,
                 }
@@ -146,19 +133,6 @@ const Edit = (props) => {
                     />
 
                     <SelectControl
-                        label={__('Kiểu hiển thị', 'jankx')}
-                        value={style}
-                        options={[
-                            { label: __('Nguyên bản (dùng icon SVG)', 'jankx'), value: 'none' },
-                            { label: __('Mặc định', 'jankx'), value: 'default' },
-                            { label: __('Có viền', 'jankx'), value: 'outlined' },
-                            { label: __('Đầy màu', 'jankx'), value: 'filled' },
-                            { label: __('Tròn', 'jankx'), value: 'rounded' },
-                        ]}
-                        onChange={(value) => setAttributes({ style: value })}
-                    />
-
-                    <SelectControl
                         label={__('Căn chỉnh', 'jankx')}
                         value={alignment}
                         options={[
@@ -213,8 +187,11 @@ const Save = (props) => {
     );
 };
 
-registerBlockType('jankx/social-sharing', {
+registerBlockType(name, {
     edit: Edit,
     save: Save,
+    deprecated,
 });
+
+export { metadata, name };
 

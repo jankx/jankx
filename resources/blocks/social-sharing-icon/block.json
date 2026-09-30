@@ -28,11 +28,6 @@
       "type": "string",
       "default": "facebook"
     },
-    "iconStyle": {
-      "type": "string",
-      "default": "default",
-      "enum": ["default", "outlined", "filled", "rounded", "square"]
-    },
     "iconSize": {
       "type": "string",
       "default": "medium",

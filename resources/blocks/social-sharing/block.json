@@ -54,10 +54,6 @@
       "type": "boolean",
       "default": true
     },
-    "style": {
-      "type": "string",
-      "default": "default"
-    },
     "alignment": {
       "type": "string",
       "default": "left"
@@ -70,6 +66,33 @@
       "type": "string",
       "default": "Chia sẻ:"
     }
-  }
+  },
+  "styles": [
+    {
+      "name": "none",
+      "label": "Nguyên bản (dùng icon SVG)"
+    },
+    {
+      "name": "default",
+      "label": "Mặc định",
+      "isDefault": true
+    },
+    {
+      "name": "outlined",
+      "label": "Có viền"
+    },
+    {
+      "name": "filled",
+      "label": "Đầy màu"
+    },
+    {
+      "name": "rounded",
+      "label": "Tròn"
+    },
+    {
+      "name": "square",
+      "label": "Vuông"
+    }
+  ]
 }
 

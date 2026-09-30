@@ -1,0 +1,10 @@
+// `outlined` — transparent fill with a visible border.
+@mixin social-sharing-style-outlined {
+    background: transparent;
+    border: 2px solid #ddd;
+
+    &:hover {
+        border-color: #333;
+        background: transparent;
+    }
+}

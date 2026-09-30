@@ -1,0 +1,7 @@
+// `rounded` — circular, label hidden.
+@use "icon-only";
+
+@mixin social-sharing-style-rounded {
+    @include icon-only.social-sharing-icon-only;
+    border-radius: 50%;
+}
