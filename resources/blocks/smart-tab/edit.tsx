@@ -40,6 +40,7 @@ import type {
     AdvancedFilter,
     Term,
     Author,
+    IconType,
 } from './types';
 
 interface Block {
@@ -61,6 +62,24 @@ import {
     parseUploadedMediaAndSetIcon,
 } from '../svg-icon/utils';
 import getIcons from '../svg-icon/icons';
+
+/**
+ * Icon blocks that can be inserted as inner blocks to represent a tab icon.
+ */
+const ICON_BLOCK_NAMES = [
+    'jankx/svg-icon',
+    'jankx/advanced-image-box',
+    'jankx/icon-picker',
+];
+
+/**
+ * Map icon type to the inner block that carries the icon configuration.
+ */
+const ICON_TYPE_TO_BLOCK: Record<string, string> = {
+    svg: 'jankx/svg-icon',
+    image: 'jankx/advanced-image-box',
+    picker: 'jankx/icon-picker',
+};
 
 /**
  * Edit component for Smart Tab block
@@ -99,7 +118,7 @@ export default function Edit({ attributes, setAttributes, clientId, context }: S
         [clientId]
     );
 
-    const { insertBlocks } = useDispatch('core/block-editor');
+    const { insertBlocks, replaceInnerBlocks, selectBlock } = useDispatch('core/block-editor');
 
     // Advanced Filter Trigger State - Declare before useMemo to avoid initialization error
     const [dynamicDataLayoutBlocks, setDynamicDataLayoutBlocks] = useState<Array<{ id: string; clientId: string; postType: string; name: string }>>([]);
@@ -211,7 +230,7 @@ export default function Edit({ attributes, setAttributes, clientId, context }: S
     }
 
     const blockProps = useBlockProps({
-        className: `smart-tab${isActive ? ' is-active' : ''}`,
+        className: `smart-tab${isActive ? ' is-active' : ''}${iconType !== 'none' ? ' smart-tab--has-icon' : ''}`,
         'data-trigger': trigger,
         // Chỉ hiển thị tab đang active để tập trung edit
         style: {
@@ -222,7 +241,7 @@ export default function Edit({ attributes, setAttributes, clientId, context }: S
     // Determine allowed blocks based on trigger
     const allowedBlocks = useMemo(() => {
         if (trigger === 'advanced-filter') {
-            return ['jankx/advanced-filter'];
+            return ['jankx/advanced-filter', ...ICON_BLOCK_NAMES];
         }
         return undefined; // Allow all blocks for other triggers
     }, [trigger]);
@@ -264,6 +283,143 @@ export default function Edit({ attributes, setAttributes, clientId, context }: S
     };
 
     const allIcons = flattenIconsArray(getIcons());
+
+    // When the icon type changes on a content-capable tab, keep a single matching
+    // icon inner block in sync (insert/remove/replace) instead of storing attributes.
+    const handleIconTypeChange = (value: IconType): void => {
+        // Locked triggers (e.g. open-link) have no editable inner blocks, so keep
+        // the legacy attribute-based icon for them.
+        if (!allowCustomContent) {
+            setAttributes({ iconType: value });
+            return;
+        }
+
+        const targetBlockName = ICON_TYPE_TO_BLOCK[value];
+        const existingIconBlocks = innerBlocks.filter((inner: Block) =>
+            ICON_BLOCK_NAMES.includes(inner.name)
+        );
+        const contentBlocks = innerBlocks.filter(
+            (inner: Block) => !ICON_BLOCK_NAMES.includes(inner.name)
+        );
+
+        let nextBlocks: Block[] = contentBlocks;
+        if (targetBlockName) {
+            const alreadyInserted = existingIconBlocks.some(
+                (inner: Block) => inner.name === targetBlockName
+            );
+            if (!alreadyInserted) {
+                nextBlocks = [
+                    createBlock(targetBlockName) as unknown as Block,
+                    ...contentBlocks,
+                ];
+            } else {
+                nextBlocks = innerBlocks;
+            }
+        }
+
+        if (nextBlocks !== innerBlocks) {
+            replaceInnerBlocks(clientId, nextBlocks, false);
+        }
+
+        setAttributes({ iconType: value });
+    };
+
+    // Focus the inserted icon block so the user can configure it right away.
+    const handleEditIconBlock = (): void => {
+        const iconInnerBlock = innerBlocks.find((inner: Block) =>
+            ICON_BLOCK_NAMES.includes(inner.name)
+        );
+        if (iconInnerBlock) {
+            selectBlock(iconInnerBlock.clientId);
+        }
+    };
+
+    // Position/size/color controls that style the icon inside the tabs navigation.
+    const renderIconPositionControls = (): JSX.Element => (
+        <>
+            <SelectControl
+                label={__('Icon Position', 'jankx')}
+                value={iconPosition}
+                options={[
+                    { label: __('Before', 'jankx'), value: 'before' },
+                    { label: __('After', 'jankx'), value: 'after' },
+                ]}
+                onChange={(value: string) =>
+                    setAttributes({ iconPosition: value as 'before' | 'after' })
+                }
+            />
+
+            <UnitControl
+                label={__('Icon Size', 'jankx')}
+                value={iconSize}
+                onChange={(value: string | undefined) =>
+                    setAttributes({ iconSize: value || '16px' })
+                }
+            />
+
+            <div className="components-base-control">
+                <label className="components-base-control__label">
+                    {__('Icon Color', 'jankx')}
+                </label>
+                <Dropdown
+                    renderToggle={({ isOpen, onToggle }: { isOpen: boolean; onToggle: () => void }) => (
+                        <Button
+                            icon={brush as unknown as React.ComponentType<{}>}
+                            onClick={onToggle}
+                            aria-expanded={isOpen}
+                            variant="secondary"
+                        >
+                            {__('Choose Color', 'jankx')}
+                        </Button>
+                    )}
+                    renderContent={() => (
+                        <ColorPicker
+                            color={iconColor}
+                            onChange={(value: string) => setAttributes({ iconColor: value })}
+                            enableAlpha
+                            defaultValue="#000000"
+                        />
+                    )}
+                />
+            </div>
+        </>
+    );
+
+    // Migrate legacy attribute-based icons into inner icon blocks on load so
+    // existing tabs keep working with the new flow.
+    useEffect(() => {
+        if (!allowCustomContent || iconType === 'none') {
+            return;
+        }
+
+        const targetBlockName = ICON_TYPE_TO_BLOCK[iconType];
+        if (!targetBlockName) {
+            return;
+        }
+
+        const hasIconBlock = innerBlocks.some((inner: Block) =>
+            ICON_BLOCK_NAMES.includes(inner.name)
+        );
+        if (hasIconBlock) {
+            return;
+        }
+
+        const seedAttributes: Record<string, unknown> = {};
+        if (iconType === 'svg' && icon) {
+            seedAttributes.icon = icon;
+        } else if (iconType === 'picker' && iconName) {
+            seedAttributes.iconName = iconName;
+            seedAttributes.iconType = iconSet || 'material';
+        }
+
+        insertBlocks(
+            [createBlock(targetBlockName, seedAttributes)],
+            0,
+            clientId,
+            false
+        );
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [allowCustomContent, iconType, innerBlocks, icon, iconName, iconSet]);
 
     const handleTriggerChange = (value: string): void => {
         const newTriggerKey = triggersMap[value] ? value : 'manual';
@@ -721,92 +877,73 @@ export default function Edit({ attributes, setAttributes, clientId, context }: S
                         value={iconType}
                         options={[
                             { label: __('None', 'jankx'), value: 'none' },
-                            { label: __('SVG Code', 'jankx'), value: 'svg' },
+                            { label: __('SVG Icon', 'jankx'), value: 'svg' },
+                            { label: __('Image', 'jankx'), value: 'image' },
                             { label: __('Icon Picker', 'jankx'), value: 'picker' },
                         ]}
-                        onChange={(value: string) => setAttributes({ iconType: value as 'none' | 'svg' | 'picker' })}
+                        onChange={(value: string) => handleIconTypeChange(value as IconType)}
+                        help={
+                            allowCustomContent
+                                ? __('An icon block is inserted at the top of this tab. Configure the icon inside that block and set its position below.', 'jankx')
+                                : undefined
+                        }
                     />
 
-                    {iconType === 'svg' && (
-                        <>
-                            <InserterModal
-                                isInserterOpen={false}
-                                setInserterOpen={() => {}}
-                                onSelect={(selectedIcon: { icon?: string }) => {
-                                    if (selectedIcon?.icon) {
-                                        handleCustomSvg(selectedIcon.icon);
-                                    }
-                                }}
-                                icons={allIcons}
-                            />
-                            <TextControl
-                                label={__('SVG Code', 'jankx')}
-                                value={icon}
-                                onChange={handleCustomSvg}
-                                placeholder={__('Paste SVG code here', 'jankx')}
-                                help={__('Paste your SVG code', 'jankx')}
-                            />
-                        </>
-                    )}
-
-                    {iconType === 'picker' && (
-                        <div className="smart-tab-icon-picker">
-                            <IconPicker
-                                value={iconName ? ({ name: iconName, iconSet: iconSet } as { name: string; iconSet?: string }) : null}
-                                onChange={handleIconSelect}
-                                iconType={iconSet}
-                            />
-                        </div>
-                    )}
-
-                    {iconType !== 'none' && icon && (
-                        <>
-                            <SelectControl
-                                label={__('Icon Position', 'jankx')}
-                                value={iconPosition}
-                                options={[
-                                    { label: __('Before', 'jankx'), value: 'before' },
-                                    { label: __('After', 'jankx'), value: 'after' },
-                                ]}
-                                onChange={(value: string) =>
-                                    setAttributes({ iconPosition: value as 'before' | 'after' })
-                                }
-                            />
-
-                            <UnitControl
-                                label={__('Icon Size', 'jankx')}
-                                value={iconSize}
-                                onChange={(value: string | undefined) =>
-                                    setAttributes({ iconSize: value || '16px' })
-                                }
-                            />
-
-                            <div className="components-base-control">
-                                <label className="components-base-control__label">
-                                    {__('Icon Color', 'jankx')}
-                                </label>
-                                <Dropdown
-                                    renderToggle={({ isOpen, onToggle }: { isOpen: boolean; onToggle: () => void }) => (
-                                        <Button
-                                            icon={brush as unknown as React.ComponentType<{}>}
-                                            onClick={onToggle}
-                                            aria-expanded={isOpen}
-                                            variant="secondary"
-                                        >
-                                            {__('Choose Color', 'jankx')}
-                                        </Button>
-                                    )}
-                                    renderContent={() => (
-                                        <ColorPicker
-                                            color={iconColor}
-                                            onChange={(value: string) => setAttributes({ iconColor: value })}
-                                            enableAlpha
-                                            defaultValue="#000000"
+                    {allowCustomContent ? (
+                        iconType !== 'none' && (
+                            <>
+                                <div style={{ margin: '8px 0 12px', padding: '10px', backgroundColor: '#f0f0f1', borderRadius: '4px' }}>
+                                    <p style={{ margin: 0, fontSize: '12px', color: '#666' }}>
+                                        {__('Configure the icon inside the block at the top of this tab.', 'jankx')}
+                                    </p>
+                                    <Button
+                                        variant="secondary"
+                                        onClick={handleEditIconBlock}
+                                    >
+                                        {__('Edit Icon Block', 'jankx')}
+                                    </Button>
+                                </div>
+                                {renderIconPositionControls()}
+                            </>
+                        )
+                    ) : (
+                        iconType !== 'none' && (
+                            <>
+                                {iconType === 'svg' && (
+                                    <>
+                                        <InserterModal
+                                            isInserterOpen={false}
+                                            setInserterOpen={() => {}}
+                                            onSelect={(selectedIcon: { icon?: string }) => {
+                                                if (selectedIcon?.icon) {
+                                                    handleCustomSvg(selectedIcon.icon);
+                                                }
+                                            }}
+                                            icons={allIcons}
                                         />
-                                    )}
-                                />
-                            </div>
-                        </>
+                                        <TextControl
+                                            label={__('SVG Code', 'jankx')}
+                                            value={icon}
+                                            onChange={handleCustomSvg}
+                                            placeholder={__('Paste SVG code here', 'jankx')}
+                                            help={__('Paste your SVG code', 'jankx')}
+                                        />
+                                    </>
+                                )}
+
+                                {iconType === 'picker' && (
+                                    <div className="smart-tab-icon-picker">
+                                        <IconPicker
+                                            value={iconName ? ({ name: iconName, iconSet: iconSet } as { name: string; iconSet?: string }) : null}
+                                            onChange={handleIconSelect}
+                                            iconType={iconSet}
+                                        />
+                                    </div>
+                                )}
+
+                                {renderIconPositionControls()}
+                            </>
+                        )
                     )}
                 </PanelBody>
                 )}

@@ -60,6 +60,11 @@ if (!function_exists('wp_mail')) {
 if (!function_exists('is_wp_error')) {
     function is_wp_error($thing) { return false; }
 }
+if (!function_exists('wp_get_attachment_image_url')) {
+    function wp_get_attachment_image_url($attachment_id, $size = 'thumbnail') {
+        return 'mock-attachment-' . $attachment_id . '.jpg';
+    }
+}
 if (!function_exists('wp_remote_get')) {
     function wp_remote_get($url, $args = []) {
         $GLOBALS['wp_remote_gets'][] = ['url' => $url, 'args' => $args];

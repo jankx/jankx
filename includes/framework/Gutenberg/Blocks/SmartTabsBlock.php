@@ -327,23 +327,35 @@ class SmartTabsBlock extends Block
 
             $tab_style_attr = !empty($tab_styles) ? sprintf(' style="%s"', implode('; ', $tab_styles)) : '';
 
-            // Build icon HTML
+            // Build icon HTML. Prefer an icon inner block (jankx/svg-icon,
+            // jankx/advanced-image-box, jankx/icon-picker) that is inserted
+            // automatically when the user picks an icon type. Falls back to the
+            // legacy attribute-based icon for un-migrated content.
+            $icon_inner_block = $this->findTabIconBlock($block['innerBlocks'] ?? []);
             $icon_html = '';
-            if ($icon_type !== 'none' && !empty($icon)) {
-                $icon_styles = [];
-                if (!empty($icon_size)) {
-                    $icon_styles[] = sprintf('font-size: %s', esc_attr($icon_size));
-                }
-                if (!empty($icon_color)) {
-                    $icon_styles[] = sprintf('color: %s', esc_attr($icon_color));
+            if ($icon_type !== 'none') {
+                if (!empty($icon_inner_block)) {
+                    $icon_html = $this->renderTabIconMarkup($icon_inner_block);
+                } elseif (!empty($icon)) {
+                    $icon_html = wp_kses_post($icon);
                 }
 
-                $icon_style_attr = !empty($icon_styles) ? sprintf(' style="%s"', implode('; ', $icon_styles)) : '';
-                $icon_html = sprintf(
-                    '<span class="smart-tabs__nav-icon"%s>%s</span>',
-                    $icon_style_attr,
-                    wp_kses_post($icon)
-                );
+                if ($icon_html !== '') {
+                    $icon_styles = [];
+                    if (!empty($icon_size)) {
+                        $icon_styles[] = sprintf('font-size: %s', esc_attr($icon_size));
+                    }
+                    if (!empty($icon_color)) {
+                        $icon_styles[] = sprintf('color: %s', esc_attr($icon_color));
+                    }
+
+                    $icon_style_attr = !empty($icon_styles) ? sprintf(' style="%s"', implode('; ', $icon_styles)) : '';
+                    $icon_html = sprintf(
+                        '<span class="smart-tabs__nav-icon"%s>%s</span>',
+                        $icon_style_attr,
+                        $icon_html
+                    );
+                }
             }
 
             // Build nav item HTML
@@ -434,6 +446,119 @@ class SmartTabsBlock extends Block
             esc_attr($tab_alignment),
             implode('', $nav_items)
         );
+    }
+
+    /**
+     * Find the first icon inner block (svg / image / icon picker) inside a tab.
+     *
+     * @param array $inner_blocks Parsed inner blocks of the tab.
+     * @return array The matching parsed block or an empty array.
+     */
+    protected function findTabIconBlock($inner_blocks)
+    {
+        $icon_block_names = [
+            'jankx/svg-icon',
+            'jankx/advanced-image-box',
+            'jankx/icon-picker',
+        ];
+
+        foreach ((array) $inner_blocks as $inner_block) {
+            $name = $inner_block['blockName'] ?? '';
+            if (in_array($name, $icon_block_names, true)) {
+                return $inner_block;
+            }
+        }
+
+        return [];
+    }
+
+    /**
+     * Render the nav icon markup from an icon inner block.
+     *
+     * @param array $icon_block Parsed icon block.
+     * @return string Safe icon markup.
+     */
+    protected function renderTabIconMarkup(array $icon_block)
+    {
+        $name = $icon_block['blockName'] ?? '';
+        $attrs = $icon_block['attrs'] ?? [];
+
+        if ($name === 'jankx/svg-icon') {
+            $svg = $attrs['icon'] ?? '';
+            return $svg !== '' ? wp_kses_post($svg) : '';
+        }
+
+        if ($name === 'jankx/advanced-image-box') {
+            $url = $attrs['url'] ?? '';
+            if ($url === '') {
+                $attachment_id = (int) ($attrs['id'] ?? 0);
+                if ($attachment_id > 0 && function_exists('wp_get_attachment_image_url')) {
+                    $url = (string) wp_get_attachment_image_url($attachment_id, 'full');
+                }
+            }
+            if ($url === '') {
+                return '';
+            }
+
+            $alt = isset($attrs['alt']) ? esc_attr((string) $attrs['alt']) : '';
+            return sprintf(
+                '<img src="%s" alt="%s" class="smart-tabs__nav-image" />',
+                esc_url($url),
+                $alt
+            );
+        }
+
+        if ($name === 'jankx/icon-picker') {
+            $icon_name = (string) ($attrs['iconName'] ?? '');
+            if ($icon_name === '') {
+                return '';
+            }
+
+            $icon_type = (string) ($attrs['iconType'] ?? 'material');
+            $icon_category = (string) ($attrs['iconCategory'] ?? '');
+            $icon_style = (string) ($attrs['iconStyle'] ?? '');
+            $icon_size = (string) ($attrs['iconSize'] ?? '');
+            $icon_color = (string) ($attrs['iconColor'] ?? '');
+
+            $styles = [];
+            if ($icon_size !== '') {
+                $styles[] = sprintf('font-size: %s', esc_attr($icon_size));
+            }
+            if ($icon_color !== '') {
+                $styles[] = sprintf('color: %s', esc_attr($icon_color));
+            }
+            $style_attr = !empty($styles) ? sprintf(' style="%s"', implode('; ', $styles)) : '';
+
+            if ($icon_type === 'fontawesome') {
+                $prefix = $icon_category === 'brands' ? 'fab' : ($icon_category === 'regular' ? 'far' : 'fas');
+                return sprintf(
+                    '<i class="%s fa-%s"%s></i>',
+                    esc_attr($prefix),
+                    esc_attr($icon_name),
+                    $style_attr
+                );
+            }
+
+            if ($icon_type === 'custom') {
+                return sprintf(
+                    '<span class="icon icon-%s"%s></span>',
+                    esc_attr($icon_name),
+                    $style_attr
+                );
+            }
+
+            $material_class = ($icon_style !== '' && $icon_style !== 'filled')
+                ? 'material-icons-' . esc_attr($icon_style)
+                : 'material-icons';
+            return sprintf(
+                '<span class="%s"%s>%s</span>',
+                $material_class,
+                $style_attr,
+                esc_html($icon_name)
+            );
+        }
+
+        return '';
     }
 
     /**

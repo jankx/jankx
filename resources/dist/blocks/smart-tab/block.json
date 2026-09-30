@@ -28,7 +28,7 @@
         },
         "iconType": {
             "type": "string",
-            "enum": ["none", "svg", "picker"],
+            "enum": ["none", "svg", "image", "picker"],
             "default": "none"
         },
         "icon": {

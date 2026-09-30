@@ -127,6 +127,13 @@ export default function Edit({ attributes, setAttributes, clientId }: SmartTabsP
         })(),
         icon: (block.attributes.icon as string) || '',
         iconType: (block.attributes.iconType as string) || '',
+        iconName: (block.attributes.iconName as string) || '',
+        iconSet: (block.attributes.iconSet as string) || '',
+        iconPosition: (block.attributes.iconPosition as string) || 'before',
+        iconBlocks: (block.innerBlocks || []).map((inner: WPBlock) => ({
+            name: inner.name,
+            attributes: inner.attributes || {},
+        })),
         normalTabTextColor: (block.attributes.normalTabTextColor as string) || '',
         normalTabBackgroundColor: (block.attributes.normalTabBackgroundColor as string) || '',
         normalTabGradient: (block.attributes.normalTabGradient as string) || '',
@@ -416,7 +423,116 @@ export default function Edit({ attributes, setAttributes, clientId }: SmartTabsP
                         {tabItems.map((tab, index) => {
                             const isActiveTab = index === currentActiveTab;
 
-                            return (
+const ICON_BLOCK_NAMES = [
+        'jankx/svg-icon',
+        'jankx/advanced-image-box',
+        'jankx/icon-picker',
+    ];
+
+    // Render the tab navigation icon. Prefers an icon inner block (svg / image /
+    // icon picker) and falls back to the legacy attribute-based SVG.
+    const renderTabNavIcon = (tabItem: TabItem): JSX.Element | null => {
+        const iconBlock = (tabItem.iconBlocks || []).find((block) =>
+            ICON_BLOCK_NAMES.includes(block.name)
+        );
+
+        if (!iconBlock) {
+            if (tabItem.iconType !== 'none' && tabItem.icon) {
+                return (
+                    <span
+                        className="smart-tabs__nav-icon"
+                        dangerouslySetInnerHTML={{ __html: tabItem.icon }}
+                    />
+                );
+            }
+            return null;
+        }
+
+        const attrs = iconBlock.attributes || {};
+
+        switch (iconBlock.name) {
+            case 'jankx/svg-icon': {
+                const svg = (attrs.icon as string) || '';
+                if (!svg) {
+                    return null;
+                }
+                return (
+                    <span
+                        className="smart-tabs__nav-icon"
+                        dangerouslySetInnerHTML={{ __html: svg }}
+                    />
+                );
+            }
+            case 'jankx/advanced-image-box': {
+                const url = (attrs.url as string) || '';
+                if (!url) {
+                    return null;
+                }
+                const alt = (attrs.alt as string) || '';
+                return (
+                    <span className="smart-tabs__nav-icon">
+                        <img src={url} alt={alt} className="smart-tabs__nav-image" />
+                    </span>
+                );
+            }
+            case 'jankx/icon-picker': {
+                const name = (attrs.iconName as string) || '';
+                if (!name) {
+                    return null;
+                }
+                const pickerType = (attrs.iconType as string) || 'material';
+                const category = (attrs.iconCategory as string) || '';
+                const iconStyle = (attrs.iconStyle as string) || '';
+                const iconSize = (attrs.iconSize as string) || '';
+                const iconColor = (attrs.iconColor as string) || '';
+                const style: CSSProperties = {};
+                if (iconSize) {
+                    style.fontSize = iconSize;
+                }
+                if (iconColor) {
+                    style.color = iconColor;
+                }
+
+                if (pickerType === 'fontawesome') {
+                    let prefix = 'fas';
+                    if (category === 'brands') {
+                        prefix = 'fab';
+                    } else if (category === 'regular') {
+                        prefix = 'far';
+                    }
+                    return (
+                        <span className="smart-tabs__nav-icon">
+                            <i className={`${prefix} fa-${name}`} style={style} />
+                        </span>
+                    );
+                }
+
+                if (pickerType === 'custom') {
+                    return (
+                        <span className="smart-tabs__nav-icon">
+                            <span className={`icon icon-${name}`} style={style} />
+                        </span>
+                    );
+                }
+
+                const materialClass =
+                    iconStyle && iconStyle !== 'filled'
+                        ? `material-icons-${iconStyle}`
+                        : 'material-icons';
+                return (
+                    <span className="smart-tabs__nav-icon">
+                        <span className={materialClass} style={style}>
+                            {name}
+                        </span>
+                    </span>
+                );
+            }
+            default:
+                return null;
+        }
+    };
+
+    return (
                                 <button
                                     key={tab.clientId}
                                     className={`smart-tabs__nav-item${
@@ -426,13 +542,9 @@ export default function Edit({ attributes, setAttributes, clientId }: SmartTabsP
                                     onClick={() => handleTabClick(index, tab.clientId)}
                                     type="button"
                                 >
-                                    {tab.iconType !== 'none' && tab.icon && (
-                                        <span
-                                            className="smart-tabs__nav-icon"
-                                            dangerouslySetInnerHTML={{ __html: tab.icon }}
-                                        />
-                                    )}
+                                    {tab.iconPosition !== 'after' && renderTabNavIcon(tab)}
                                     <span className="smart-tabs__nav-label">{tab.title}</span>
+                                    {tab.iconPosition === 'after' && renderTabNavIcon(tab)}
                                 </button>
                             );
                         })}

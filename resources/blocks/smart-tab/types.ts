@@ -2,7 +2,7 @@
  * TypeScript type definitions for Smart Tab block
  */
 
-export type IconType = 'none' | 'svg' | 'picker';
+export type IconType = 'none' | 'svg' | 'image' | 'picker';
 export type IconPosition = 'before' | 'after';
 
 export interface SmartTabAttributes {

@@ -41,6 +41,10 @@ export interface TabItem {
     previewTitle?: string;
     icon?: string;
     iconType?: string;
+    iconName?: string;
+    iconSet?: string;
+    iconPosition?: string;
+    iconBlocks?: Array<{ name: string; attributes?: Record<string, unknown> }>;
     normalTabTextColor?: string;
     normalTabBackgroundColor?: string;
     normalTabGradient?: string;

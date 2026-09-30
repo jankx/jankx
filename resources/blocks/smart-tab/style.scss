@@ -23,6 +23,19 @@
     border-radius: 6px;
 }
 
+// The icon inner block at the top of the tab content is rendered small so it
+// reads as a decorative icon above the tab body.
+.smart-tab--has-icon .smart-tab__content > :first-child {
+    width: 48px;
+    max-width: 48px;
+    margin-bottom: 1rem;
+
+    img {
+        width: 100%;
+        height: auto;
+    }
+}
+
 @keyframes fadeIn {
     from {
         opacity: 0;

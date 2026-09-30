@@ -115,6 +115,14 @@
             height: 1em;
             fill: currentColor;
         }
+
+        .smart-tabs__nav-image {
+            display: inline-block;
+            width: 1em;
+            height: auto;
+            max-width: none;
+            object-fit: contain;
+        }
     }
 
     &__nav-label {
