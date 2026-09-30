@@ -83,6 +83,41 @@
         }
 
         // Styles
+        // style-none: strip every bit of button chrome (background, padding,
+        // border, radius) so the nested svg-icon / icon-picker / image keeps
+        // its own colors, border and size.
+        &.style-none {
+            padding: 0;
+            background: transparent;
+            border: none;
+            border-radius: 0;
+            box-shadow: none;
+            color: inherit;
+
+            &:hover {
+                background: transparent;
+                transform: none;
+            }
+
+            &:focus {
+                outline: none;
+            }
+
+            // Keep a visible focus ring for keyboard users only
+            &:focus-visible {
+                outline: 2px solid #0073aa;
+                outline-offset: 2px;
+            }
+
+            .sharing-icon {
+                font-size: 1em;
+            }
+
+            .sharing-label {
+                color: inherit;
+            }
+        }
+
         &.style-outlined {
             background: transparent;
             border: 2px solid #ddd;

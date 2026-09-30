@@ -149,6 +149,7 @@ const Edit = (props) => {
                         label={__('Kiểu hiển thị', 'jankx')}
                         value={style}
                         options={[
+                            { label: __('Nguyên bản (dùng icon SVG)', 'jankx'), value: 'none' },
                             { label: __('Mặc định', 'jankx'), value: 'default' },
                             { label: __('Có viền', 'jankx'), value: 'outlined' },
                             { label: __('Đầy màu', 'jankx'), value: 'filled' },
