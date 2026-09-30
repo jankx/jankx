@@ -4,7 +4,6 @@ document.addEventListener('DOMContentLoaded', () => {
         console.warn('Jankx: Header element not found for sticky header.');
         return;
     }
-
     // Get sticky settings from jankxThemeOptions
     const themeOptions = (window as any).jankxThemeOptions || {};
     const headerOptions = themeOptions.header || {};
@@ -62,6 +61,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let lastScrollY = window.scrollY || window.pageYOffset;
 
+    /**
+     * The header height changes once it becomes fixed (it switches to a
+     * condensed padding), so the measured value is refreshed at that point and
+     * published to the scroll engine for anchor offsets.
+     */
+    let appliedHeaderHeight = headerHeight;
+
     const calculateTriggerPosition = () => {
         if (triggerType === 'hero') {
             const hero = document.querySelector('.wp-block-jankx-carousel, .wp-block-jankx-slideshow, .wp-block-jankx-carousel-banner, .wp-block-jankx-carousel-slide, .jankx-carousel, .jankx-slider');
@@ -90,15 +96,20 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log('Jankx: Sticky trigger position calculated:', triggerPosition);
     };
 
-    const handleScroll = () => {
-        const scrollY = window.scrollY || window.pageYOffset;
-
+    const handleScroll = (scrollY: number) => {
         // Basic sticky behavior
         if (scrollY >= triggerPosition) {
             if (!header.classList.contains('is-sticky')) {
                 header.classList.add('is-sticky');
-                document.body.style.paddingTop = `${headerHeight}px`;
+                // The header is `position: fixed` while stuck, so it no longer
+                // occupies flow. Reserve its space to avoid a content jump.
+                document.body.style.paddingTop = `${appliedHeaderHeight}px`;
                 document.body.classList.add('has-sticky-header');
+
+                // Re-measure now that the fixed/condensed styles apply, then let
+                // the scroll engine recompute anchor offsets from the new value.
+                appliedHeaderHeight = header.offsetHeight;
+                window.jankxScroll?.resize();
 
                 // ── Swap to sticky logo ──────────────────────────────────────
                 if (stickyLogoUrl) {
@@ -125,6 +136,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.body.style.paddingTop = '0';
                 document.body.classList.remove('has-sticky-header');
 
+                // The header is back in normal flow, so the condensed height no
+                // longer applies to anchor offsets.
+                window.jankxScroll?.resize();
+
                 // ── Restore original logo ────────────────────────────────────
                 if (stickyLogoUrl) {
                     const logoImg = findLogoImg();
@@ -141,12 +156,30 @@ document.addEventListener('DOMContentLoaded', () => {
     // Calculate on load and resize
     const initSticky = () => {
         calculateTriggerPosition();
-        handleScroll();
+        handleScroll(window.scrollY || window.pageYOffset);
     };
+
+    /**
+     * Drive the header from the shared scroll engine.
+     *
+     * The engine callback already receives the smoothed scroll position, which
+     * keeps the header in sync during inertial scrolling. Falling back to a
+     * native listener means the header still works if the engine bundle is not
+     * loaded (e.g. a child theme that de-registered it).
+     */
+    const scroll = window.jankxScroll;
+    if (scroll) {
+        scroll.ready((api) => {
+            api.on((state) => handleScroll(state.scroll));
+            initSticky();
+        });
+    } else {
+        window.addEventListener('scroll', () => handleScroll(window.scrollY || window.pageYOffset), { passive: true });
+        initSticky();
+    }
 
     window.addEventListener('load', initSticky);
     window.addEventListener('resize', initSticky);
-    window.addEventListener('scroll', handleScroll);
 
     // Initial call
     setTimeout(initSticky, 100);

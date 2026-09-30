@@ -231,6 +231,7 @@ module.exports = {
 
     'dist/blocks/integration/jankx-blocks-bridge': './blocks/integration/jankx-blocks-bridge.js',
     'assets/js/sticky-header': './js/sticky-header.ts',
+    'assets/js/scroll': './js/scroll/index.ts',
     '../style': './scss/style.scss',
     '../style.min': './scss/style.scss',
   },
@@ -341,6 +342,15 @@ module.exports = {
   ],
   module: {
     rules: [
+      // `lenis` ships `"sideEffects": false` in its package.json, which makes
+      // webpack tree-shake away `import 'lenis/dist/lenis.css'`. That stylesheet
+      // is mandatory: it provides `html.lenis { height: auto }` (Lenis breaks
+      // without it) and the `overflow: clip` used by `lenis.stop()`.
+      {
+        test: /lenis[\\/]dist[\\/]lenis\.css$/,
+        sideEffects: true,
+      },
+
       {
         test: /\.[jt]sx?$/,
         include: [

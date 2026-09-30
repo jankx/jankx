@@ -88,7 +88,17 @@ function initTableOfContent(): void {
 
                     if (target) {
                         e.preventDefault();
-                        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+                        // Route through the shared scroll engine so the jump is
+                        // smooth when it is enabled and still works natively
+                        // when it is not. The engine also compensates for the
+                        // sticky header automatically.
+                        const scroll = window.jankxScroll;
+                        if (scroll) {
+                            scroll.scrollTo(target);
+                        } else {
+                            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        }
 
                         // Update URL without triggering scroll
                         if (window.history && window.history.pushState) {

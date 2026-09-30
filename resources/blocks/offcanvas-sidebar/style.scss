@@ -335,8 +335,12 @@ body.admin-bar {
     }
 }
 
+// Scrolling while the panel is open is locked by the shared scroll engine
+// (`jankxScroll.lock()`), which is reference counted. Setting `overflow`
+// here as well would bypass the engine and fight it, so the class is
+// styling-only.
 html.sidebar-open {
-    overflow: hidden;
+    // no scroll handling on purpose — see resources/js/scroll/lock.ts
 }
 
 /* ========================================

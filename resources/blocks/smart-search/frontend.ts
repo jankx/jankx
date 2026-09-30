@@ -244,6 +244,10 @@ class SmartSearch {
 			const dropdown = document.createElement('div');
 			dropdown.className = 'search-suggestions';
 			dropdown.style.display = 'none';
+			// The dropdown scrolls independently of the page. Without this the
+			// keyboard-driven `scrollIntoView` below can bubble to the window and
+			// scroll the whole document while arrowing through suggestions.
+			dropdown.setAttribute('data-lenis-prevent', '');
 			formWrapper.appendChild(dropdown);
 			this.suggestionDropdown = dropdown;
 		}

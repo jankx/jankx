@@ -3,6 +3,8 @@
  * Handles sidebar interactions and animations
  */
 
+import { lockPageScroll, unlockPageScroll, markNestedScroll } from '../../js/scroll/lock';
+
 interface OffcanvasSidebarState {
     isOpen: boolean;
     element: HTMLElement;
@@ -45,6 +47,14 @@ class OffcanvasSidebar {
     private init(): void {
         this.bindEvents();
         this.setupAccessibility();
+
+        // The panel and its body scroll independently of the page; keep them on
+        // native scrolling so gestures inside the panel are not smoothed by the
+        // document-level engine while the page is locked.
+        if (this.sidebar) {
+            markNestedScroll(this.sidebar);
+            this.sidebar.querySelectorAll('.sidebar-content').forEach(markNestedScroll);
+        }
     }
 
     private bindEvents(): void {
@@ -73,18 +83,6 @@ class OffcanvasSidebar {
                 this.close();
             }
         });
-
-        // Prevent body scroll when sidebar is open
-        this.element.addEventListener('transitionend', (e: TransitionEvent) => {
-            // Only handle transitions on the sidebar element itself
-            if (e.target !== this.sidebar) return;
-
-            if (this.isOpen) {
-                document.body.style.overflow = 'hidden';
-            } else {
-                document.body.style.overflow = '';
-            }
-        });
     }
 
     private setupAccessibility(): void {
@@ -105,7 +103,11 @@ class OffcanvasSidebar {
 
         this.isOpen = true;
         this.element.classList.add('active');
-        document.documentElement.classList.add('sidebar-open');
+
+        // Freeze the page through the shared scroll engine. The lock is
+        // reference counted, so a modal opened on top of this panel can take
+        // its own lock and release it without unlocking the page early.
+        lockPageScroll('sidebar-open');
 
         // Add active class to all hamburger triggers
         this.toggleHamburgerTriggers(true);
@@ -128,12 +130,10 @@ class OffcanvasSidebar {
 
         this.isOpen = false;
         this.element.classList.remove('active');
-        
-        // Only remove sidebar-open from html if no other sidebars are open
-        const activeSidebars = document.querySelectorAll('.offcanvas-sidebar-block.active');
-        if (activeSidebars.length === 0) {
-            document.documentElement.classList.remove('sidebar-open');
-        }
+
+        // Release this panel's lock. The engine resumes the page only after the
+        // last owner unlocks, so nested overlays stay safe.
+        unlockPageScroll('sidebar-open');
 
         // Remove active class from all hamburger triggers
         this.toggleHamburgerTriggers(false);

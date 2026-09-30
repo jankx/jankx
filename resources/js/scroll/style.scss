@@ -1,0 +1,51 @@
+// Jankx scroll engine — supplemental styles.
+//
+// The base rules come from `lenis/dist/lenis.css` (imported in `./index.ts`),
+// which webpack extracts into the same stylesheet. This file only adds the
+// behaviour the theme needs on top of it.
+
+/**
+ * Native-mode scroll lock.
+ *
+ * Lenis only applies `overflow: clip` via `.lenis:not(.lenis-autoToggle).lenis-stopped`,
+ * and the `.lenis` class is never added when the engine is disabled. Without
+ * this rule `jankxScroll.lock()` would silently do nothing in fallback mode.
+ */
+html.jankx-scroll-locked {
+    overflow: clip;
+}
+
+/**
+ * Offset applied to programmatic and native anchor scrolling so targets are not
+ * hidden behind the sticky header.
+ *
+ * `--jankx-scroll-offset` is kept in sync by ScrollManager whenever the sticky
+ * header height changes. Keeping it in CSS means native fragment navigation
+ * (`#heading`) is compensated too, not just Lenis-driven scrolling.
+ */
+:root {
+    --jankx-scroll-offset: 0px;
+}
+
+:where(a[id], h1[id], h2[id], h3[id], h4[id], h5[id], h6[id], [id][data-lenis-anchor]) {
+    scroll-margin-top: calc(var(--jankx-scroll-offset) + 16px);
+}
+
+/**
+ * When a modal or offcanvas panel holds the scroll lock, let its own scroll
+ * container keep working. Without this, dragging inside a long panel can
+ * bubble the gesture to the locked document.
+ */
+html.jankx-scroll-locked [data-lenis-prevent] {
+    overscroll-behavior: contain;
+}
+
+/**
+ * Scrollbar compensation. While the document scroll is locked the viewport
+ * scrollbar disappears, which nudges every centred/fixed element to the left.
+ * `lockPageScroll()` measures the gap and publishes it as a custom property.
+ */
+html.jankx-scrollbar-compensated body {
+    padding-right: var(--jankx-scrollbar-gap, 0);
+}
+

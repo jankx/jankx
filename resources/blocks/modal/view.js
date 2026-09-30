@@ -5,6 +5,7 @@
  */
 
 import MicroModal from 'micromodal';
+import { lockPageScroll, unlockPageScroll, markNestedScroll } from '../../js/scroll/lock';
 
 (function() {
     'use strict';
@@ -73,26 +74,10 @@ import MicroModal from 'micromodal';
             });
         });
 
-        // Calculate scrollbar width before hiding
-        const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
-        
-        // Store current scroll position
-        const scrollY = window.scrollY;
-        
-        // Disable scroll - add class to html element
-        document.documentElement.classList.add('modal-open');
-        document.body.style.overflow = 'hidden';
-        document.body.style.position = 'fixed';
-        document.body.style.top = `-${scrollY}px`;
-        document.body.style.width = '100%';
-        
-        // Add padding to prevent layout shift
-        if (scrollbarWidth > 0) {
-            document.body.style.paddingRight = scrollbarWidth + 'px';
-        }
-        
-        // Store scroll position for restoration
-        modal.setAttribute('data-scroll-y', scrollY);
+        // Freeze the page through the shared scroll engine. Using the engine
+        // instead of `position: fixed` on <body> keeps the scroll position
+        // intact, so nothing needs restoring on close.
+        lockPageScroll('modal-open');
 
         // Add backdrop blur if enabled
         if (wrapper && (wrapper.dataset.backdropBlur === 'true' || wrapper.dataset.backdropBlur === true)) {
@@ -154,20 +139,10 @@ import MicroModal from 'micromodal';
             modal.style.display = 'none';
         }, animationDuration);
 
-        // Get stored scroll position
-        const scrollY = modal.getAttribute('data-scroll-y') || 0;
-        
-        // Re-enable scroll - remove class from html element
-        document.documentElement.classList.remove('modal-open');
-        document.body.style.overflow = '';
-        document.body.style.position = '';
-        document.body.style.top = '';
-        document.body.style.width = '';
-        document.body.style.paddingRight = '';
+        // Release the scroll lock. The engine never moved the page, so the
+        // scroll position is already correct and needs no restoration.
+        unlockPageScroll('modal-open');
         document.body.classList.remove('modal-backdrop-blur');
-        
-        // Restore scroll position
-        window.scrollTo(0, parseInt(scrollY));
 
         // Dispatch event
         document.dispatchEvent(new CustomEvent('jankx:modal:close', {
@@ -179,6 +154,11 @@ import MicroModal from 'micromodal';
         // Get all modals directly (no wrapper)
         const allModals = document.querySelectorAll('.wp-block-jankx-modal');
         const modalConfigs = {};
+
+        // Modal bodies scroll independently of the document. Opt them out of
+        // engine smoothing so wheel gestures inside a long modal do not fight
+        // the page-level scroll lock.
+        document.querySelectorAll('.wp-block-jankx-modal__content').forEach(markNestedScroll);
 
         allModals.forEach(function(modal) {
             const modalId = modal.dataset.modalId || modal.id;
@@ -245,27 +225,8 @@ import MicroModal from 'micromodal';
                     }
                 }
 
-                // Calculate scrollbar width before hiding
-                const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
-                
-                // Store current scroll position
-                const scrollY = window.scrollY;
-                
-                // Lock scroll on html element
-                document.documentElement.classList.add('modal-open');
-                document.body.style.overflow = 'hidden';
-                document.body.style.position = 'fixed';
-                document.body.style.top = `-${scrollY}px`;
-                document.body.style.width = '100%';
-                
-                // Add padding to prevent layout shift
-                if (scrollbarWidth > 0) {
-                    document.body.style.paddingRight = scrollbarWidth + 'px';
-                }
-                
-                // Store scroll position for restoration
-                modal.setAttribute('data-scroll-y', scrollY);
-                
+                // Freeze the page via the shared scroll engine (see showModal).
+                lockPageScroll('modal-open');
                 // Apply backdrop blur if enabled
                 const config = modalConfigs[modal.id];
                 if (config && config.backdropBlur) {
@@ -286,24 +247,11 @@ import MicroModal from 'micromodal';
                 // Stop all media playback in modal
                 stopMediaInModal(modal);
 
-                // Get stored scroll position
-                const scrollY = modal.getAttribute('data-scroll-y') || 0;
-                
-                // Remove scroll lock from html element
-                document.documentElement.classList.remove('modal-open');
-                
-                // Remove styles
-                document.body.style.overflow = '';
-                document.body.style.position = '';
-                document.body.style.top = '';
-                document.body.style.width = '';
-                document.body.style.paddingRight = '';
-                
+                // Release the scroll lock (see hideModal).
+                unlockPageScroll('modal-open');
+
                 // Remove backdrop blur
                 document.body.classList.remove('modal-backdrop-blur');
-                
-                // Restore scroll position
-                window.scrollTo(0, parseInt(scrollY));
 
                 // Dispatch custom event
                 document.dispatchEvent(new CustomEvent('jankx:modal:close', {
@@ -311,7 +259,10 @@ import MicroModal from 'micromodal';
                 }));
             },
             openClass: 'is-open',
-            disableScroll: defaultConfig.disableScroll,
+            // The scroll lock is owned by the shared scroll engine (see
+            // onShow). MicroModal's own `disableScroll` uses `overflow: hidden`
+            // on <body>, which bypasses the engine and fights it, so it stays off.
+            disableScroll: false,
             disableFocus: defaultConfig.disableFocus,
             awaitOpenAnimation: defaultConfig.awaitOpenAnimation,
             awaitCloseAnimation: defaultConfig.awaitCloseAnimation,

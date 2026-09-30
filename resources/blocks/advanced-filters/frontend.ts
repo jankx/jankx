@@ -781,7 +781,14 @@ class AdvancedFilters {
         if (this.config && this.config.targetBlockIds.length > 0) {
             const firstTarget = document.querySelector(`[data-block-id="${this.config.targetBlockIds[0]}"]`);
             if (firstTarget) {
-                firstTarget.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                // Use the shared scroll engine when available so the jump matches
+                // the page easing and clears the sticky header.
+                const scroll = window.jankxScroll;
+                if (scroll) {
+                    scroll.scrollTo(firstTarget as HTMLElement);
+                } else {
+                    firstTarget.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
             }
         }
     }

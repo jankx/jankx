@@ -49,8 +49,7 @@ export default function Save({ attributes }) {
 
     const innerBlocksProps = useInnerBlocksProps.save({
         className: 'wp-block-jankx-modal__content-inner'
-    });
-    const triggerId = finalModalId + '-trigger';
+    });    const triggerId = finalModalId + '-trigger';
     const modalContentId = finalModalId + '-content';
 
     // Build trigger HTML
@@ -120,8 +119,15 @@ export default function Save({ attributes }) {
                         aria-modal="true"
                         aria-labelledby={`${finalModalId}-title`}
                     >
-                        {/* Modal content area */}
-                        <div className="wp-block-jankx-modal__content" id={modalContentId}>
+                        {/* Modal content area. `data-lenis-prevent` keeps this
+                            scrollable box out of the page-level smooth scroll
+                            engine, so wheel gestures inside a long modal do not
+                            compete with the locked document. */}
+                        <div
+                            className="wp-block-jankx-modal__content"
+                            id={modalContentId}
+                            data-lenis-prevent=""
+                        >
                             {showCloseButton && (
                                 <button
                                     className="wp-block-jankx-modal__close"

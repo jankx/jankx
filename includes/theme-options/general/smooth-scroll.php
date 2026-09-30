@@ -1,0 +1,80 @@
+<?php
+if (!defined('ABSPATH')) {
+    exit('Cheating huh?');
+}
+
+return [
+    'id' => 'general_smooth_scroll',
+    'name' => __('Smooth Scroll', 'jankx'),
+    'description' => __('Page scrolling behaviour powered by the Lenis engine', 'jankx'),
+    'fields' => [
+        [
+            'id' => 'enable_smooth_scroll',
+            'name' => __('Enable Smooth Scroll', 'jankx'),
+            'type' => 'switch',
+            'value' => 1,
+            'on' => __('On', 'jankx'),
+            'off' => __('Off', 'jankx'),
+            'description' => __('Smooth inertial page scrolling. Automatically disabled for visitors who prefer reduced motion.', 'jankx'),
+        ],
+        [
+            'id' => 'smooth_scroll_lerp',
+            'name' => __('Scroll Smoothness', 'jankx'),
+            'type' => 'slider',
+            'value' => 0.1,
+            'min' => 0.01,
+            'max' => 0.5,
+            'step' => 0.01,
+            'description' => __('Lower values glide longer, higher values track the wheel more tightly.', 'jankx'),
+        ],
+        [
+            'id' => 'smooth_scroll_wheel_multiplier',
+            'name' => __('Wheel Speed', 'jankx'),
+            'type' => 'number',
+            'value' => 1,
+            'min' => 0.1,
+            'max' => 3,
+            'step' => 0.1,
+            'description' => __('Multiplier applied to mouse wheel input.', 'jankx'),
+        ],
+        [
+            'id' => 'smooth_scroll_touch_multiplier',
+            'name' => __('Touch Speed', 'jankx'),
+            'type' => 'number',
+            'value' => 1.5,
+            'min' => 0.1,
+            'max' => 3,
+            'step' => 0.1,
+            'description' => __('Multiplier applied to touch input.', 'jankx'),
+        ],
+        [
+            'id' => 'smooth_scroll_sync_touch',
+            'name' => __('Sync Touch Devices', 'jankx'),
+            'type' => 'switch',
+            'value' => 0,
+            'on' => __('On', 'jankx'),
+            'off' => __('Off', 'jankx'),
+            'description' => __('Emulate inertial touch scrolling. Off is recommended: most mobile browsers already scroll smoothly and enabling this can feel sluggish.', 'jankx'),
+        ],
+        [
+            'id' => 'smooth_scroll_anchors',
+            'name' => __('Handle Anchor Links', 'jankx'),
+            'type' => 'switch',
+            'value' => 0,
+            'on' => __('On', 'jankx'),
+            'off' => __('Off', 'jankx'),
+            'description' => __('Let the scroll engine intercept in-page links (#section) so they animate smoothly.', 'jankx'),
+        ],
+        [
+            'id' => 'smooth_scroll_offset_padding',
+            'name' => __('Anchor Spacing', 'jankx'),
+            'type' => 'number',
+            'value' => 0,
+            'min' => 0,
+            'max' => 200,
+            'step' => 1,
+            'units' => 'px',
+            'description' => __('Extra spacing added below the sticky header when jumping to an anchor. Sticky header height is measured automatically.', 'jankx'),
+        ],
+    ],
+];

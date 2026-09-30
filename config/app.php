@@ -22,6 +22,7 @@ return [
         Jankx\Support\Providers\EnvatoServiceProvider::class,
 
         App\Providers\GutenbergServiceProvider::class,
+        App\Providers\ScrollServiceProvider::class,
         App\Providers\DemoImportServiceProvider::class,
         App\Providers\TemplateBundleServiceProvider::class,
         App\Providers\SetupWizardServiceProvider::class,

@@ -211,7 +211,7 @@ class OffcanvasSidebarBlock extends Block
                 '<div %s %s>
                     <div class="%s" data-effect="%s">
                         %s
-                        <div class="%s" style="%s" role="dialog" aria-modal="true" aria-label="%s">
+                        <div class="%s" style="%s" role="dialog" aria-modal="true" aria-label="%s" data-lenis-prevent>
                             %s
                         </div>
                     </div>
@@ -339,7 +339,7 @@ class OffcanvasSidebarBlock extends Block
         $processedContent = $this->processNestedBlocks($content);
 
         return sprintf(
-            '<div class="sidebar-content">
+            '<div class="sidebar-content" data-lenis-prevent>
                  %s
              </div>',
             $processedContent

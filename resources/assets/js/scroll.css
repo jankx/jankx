@@ -1,0 +1,79 @@
+/*!***********************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/.pnpm/css-loader@7.1.2_webpack@5.104.1/node_modules/css-loader/dist/cjs.js!./node_modules/.pnpm/postcss-loader@8.2.0_postcss@8.5.6_typescript@5.9.3_webpack@5.104.1/node_modules/postcss-loader/dist/cjs.js!./node_modules/.pnpm/lenis@1.3.26_react@18.3.1/node_modules/lenis/dist/lenis.css ***!
+  \***********************************************************************************************************************************************************************************************************************************************************************************************************************/
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis:not(.lenis-autoToggle).lenis-stopped {
+  overflow: clip;
+}
+
+.lenis [data-lenis-prevent],
+.lenis [data-lenis-prevent-wheel],
+.lenis [data-lenis-prevent-touch],
+.lenis [data-lenis-prevent-vertical],
+.lenis [data-lenis-prevent-horizontal] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-smooth iframe {
+  pointer-events: none;
+}
+
+.lenis.lenis-autoToggle {
+  transition-property: overflow;
+  transition-duration: 1ms;
+  transition-behavior: allow-discrete;
+}
+
+/*!**************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/.pnpm/css-loader@7.1.2_webpack@5.104.1/node_modules/css-loader/dist/cjs.js!./node_modules/.pnpm/postcss-loader@8.2.0_postcss@8.5.6_typescript@5.9.3_webpack@5.104.1/node_modules/postcss-loader/dist/cjs.js!./node_modules/.pnpm/sass-loader@16.0.6_sass@1.97.3_webpack@5.104.1/node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[3].use[3]!./js/scroll/style.scss ***!
+  \**************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/**
+ * Native-mode scroll lock.
+ *
+ * Lenis only applies `overflow: clip` via `.lenis:not(.lenis-autoToggle).lenis-stopped`,
+ * and the `.lenis` class is never added when the engine is disabled. Without
+ * this rule `jankxScroll.lock()` would silently do nothing in fallback mode.
+ */
+html.jankx-scroll-locked {
+  overflow: clip;
+}
+
+/**
+ * Offset applied to programmatic and native anchor scrolling so targets are not
+ * hidden behind the sticky header.
+ *
+ * `--jankx-scroll-offset` is kept in sync by ScrollManager whenever the sticky
+ * header height changes. Keeping it in CSS means native fragment navigation
+ * (`#heading`) is compensated too, not just Lenis-driven scrolling.
+ */
+:root {
+  --jankx-scroll-offset: 0px;
+}
+
+:where(a[id], h1[id], h2[id], h3[id], h4[id], h5[id], h6[id], [id][data-lenis-anchor]) {
+  scroll-margin-top: calc(var(--jankx-scroll-offset) + 16px);
+}
+
+/**
+ * When a modal or offcanvas panel holds the scroll lock, let its own scroll
+ * container keep working. Without this, dragging inside a long panel can
+ * bubble the gesture to the locked document.
+ */
+html.jankx-scroll-locked [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+/**
+ * Scrollbar compensation. While the document scroll is locked the viewport
+ * scrollbar disappears, which nudges every centred/fixed element to the left.
+ * `lockPageScroll()` measures the gap and publishes it as a custom property.
+ */
+html.jankx-scrollbar-compensated body {
+  padding-right: var(--jankx-scrollbar-gap, 0);
+}
+
+/*# sourceMappingURL=scroll.css.map*/

@@ -64,10 +64,18 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             window.requestAnimationFrame(() => {
-                panel.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'start',
-                });
+                // Route through the shared scroll engine so tab switching uses
+                // the same easing as the rest of the page and compensates for
+                // the sticky header. Falls back to native when unavailable.
+                const scroll = window.jankxScroll;
+                if (scroll) {
+                    scroll.scrollTo(panel);
+                } else {
+                    panel.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start',
+                    });
+                }
             });
         };
 
