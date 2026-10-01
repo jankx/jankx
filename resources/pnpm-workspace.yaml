@@ -1,3 +1,7 @@
+overrides:
+  '@types/react': 18.3.27
+  '@types/react-dom': 18.3.7
+
 allowBuilds:
   '@parcel/watcher': set this to true or false
   core-js: set this to true or false

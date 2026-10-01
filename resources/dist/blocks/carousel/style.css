@@ -81,7 +81,28 @@
   z-index: 5;
 }
 .wp-block-jankx-carousel .embla__button {
-  color: var(--wp--preset--color--contrast, #000);
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--wp--preset--color--contrast, #fff);
+}
+.wp-block-jankx-carousel .embla__button--prev {
+  left: 10px;
+}
+.wp-block-jankx-carousel .embla__button--next {
+  right: 10px;
+}
+.wp-block-jankx-carousel .embla__button:disabled {
+  opacity: 0.4;
+  cursor: default;
 }
 .wp-block-jankx-carousel .embla__button::after {
   font-size: 24px;
@@ -93,6 +114,23 @@
   display: flex;
   align-items: center;
   justify-content: center;
+}
+.wp-block-jankx-carousel.carousel-arrows-position-outside .embla__button--prev {
+  left: -56px;
+}
+.wp-block-jankx-carousel.carousel-arrows-position-outside .embla__button--next {
+  right: -56px;
+}
+.wp-block-jankx-carousel.carousel-arrows-position-bottom .embla__button {
+  position: static;
+  transform: none;
+  margin-top: 0;
+}
+.wp-block-jankx-carousel.carousel-arrows-position-bottom .carousel-arrows-bottom-row {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 10px;
 }
 .wp-block-jankx-carousel.is-style-banner .embla-banner {
   width: 100%;
