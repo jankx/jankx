@@ -83,6 +83,7 @@ interface DynamicDataTemplateAttributes {
     enableOverlay?: boolean;
     overlayGradient?: string;
     overlayLinkToPost?: boolean;
+    positionType?: 'none' | 'relative' | 'absolute';
 }
 
 
@@ -628,6 +629,7 @@ export default function Edit({
         enableOverlay = false,
         overlayGradient = 'linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 100%)',
         overlayLinkToPost = false,
+        positionType = 'relative',
     } = attributes;
 
 
@@ -740,12 +742,15 @@ export default function Edit({
     const blockProps = useBlockProps({
         className: `dynamic-data-template content-loop-layout--${templateLayout}`,
         ...(thumbnailPosition && { 'data-thumbnail-position': thumbnailPosition }),
-        style: templateLayout === 'overlap-card' ? {
-            '--jankx-overlap-margin-top': overlapMarginTop,
-            '--jankx-overlap-padding': overlapPadding,
-            '--jankx-overlap-radius': overlapBorderRadius,
-            '--jankx-overlap-bg': overlapBackgroundColor,
-        } as React.CSSProperties : undefined,
+        style: {
+            ...(templateLayout === 'overlap-card' ? {
+                '--jankx-overlap-margin-top': overlapMarginTop,
+                '--jankx-overlap-padding': overlapPadding,
+                '--jankx-overlap-radius': overlapBorderRadius,
+                '--jankx-overlap-bg': overlapBackgroundColor,
+            } : {}),
+            position: positionType === 'none' ? undefined : positionType,
+        } as React.CSSProperties,
     });
 
     // InnerBlocks props cho tất cả items (tất cả đều editable)
@@ -857,6 +862,17 @@ export default function Edit({
                             max={50}
                         />
                     )}
+                    <SelectControl
+                        label={__('Position', 'jankx')}
+                        value={positionType}
+                        options={[
+                            { label: __('None (default browser)', 'jankx'), value: 'none' },
+                            { label: __('Relative', 'jankx'), value: 'relative' },
+                            { label: __('Absolute', 'jankx'), value: 'absolute' },
+                        ]}
+                        onChange={(value: string) => setAttributes({ positionType: value as 'none' | 'relative' | 'absolute' })}
+                        help={__('CSS position của wrapper item. Mặc định: relative.', 'jankx')}
+                    />
                 </PanelBody>
 
                 {templateLayout === 'overlap-card' && (
