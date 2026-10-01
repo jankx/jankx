@@ -3,6 +3,7 @@
 namespace Jankx\Gutenberg\Blocks;
 
 use Jankx\Gutenberg\Block;
+use Jankx\Layouts\DynamicDataLayout\CarouselArrowsRenderer;
 
 /**
  * Carousel Block
@@ -38,7 +39,7 @@ class CarouselBlock extends Block
         $speed = $attributes['speed'] ?? 300;
         $navigation = $attributes['navigation'] ?? true;
         $pagination = $attributes['pagination'] ?? true;
-        $height = $attributes['height'] ?? 50;
+        $height = $attributes['height'] ?? 400;
         $min_height = $attributes['minHeight'] ?? 50;
         $class_name = $attributes['className'] ?? '';
         $anchor = $attributes['anchor'] ?? '';
@@ -75,6 +76,11 @@ class CarouselBlock extends Block
         $nav_btn_border_radius = $attributes['navBtnBorderRadius'] ?? 50;
         $nav_btn_bg_color = $attributes['navBtnBgColor'] ?? 'rgba(0,0,0,0.7)';
 
+        // Arrow position / visibility (mirrors the carousel-arrows block so
+        // both blocks share one renderer and one set of semantics).
+        $arrows_position = (string) ($attributes['arrowsPosition'] ?? 'inside');
+        $always_show_arrows = (bool) ($attributes['alwaysShowArrows'] ?? false);
+
         // Extract style variation from className
         $style_variation = 'default';
         if (preg_match('/is-style-(\w+)/', $class_name, $matches)) {
@@ -89,6 +95,14 @@ class CarouselBlock extends Block
         }
         if ($fit_vh_minus_header) {
             $custom_classes .= ' fit-vh-minus-header';
+        }
+        if ($navigation && $arrows_position !== 'inside') {
+            $position_class = CarouselArrowsRenderer::positionClass([
+                'arrowsPosition' => $arrows_position,
+            ]);
+            if ($position_class !== '') {
+                $custom_classes .= ' ' . $position_class;
+            }
         }
 
         // Build style string
@@ -131,7 +145,7 @@ class CarouselBlock extends Block
 
         // Build container data attributes for Embla initialization
         $container_attrs = sprintf(
-            'data-slides-per-view="%s" data-slides-per-view-tablet="%s" data-slides-per-view-mobile="%s" data-space-between="%s" data-loop="%s" data-autoplay="%s" data-autoplay-delay="%s" data-speed="%s" data-navigation="%s" data-pagination="%s" data-banner-style="%s" data-banner-text-color="%s" data-banner-background-color="%s" data-banner-padding="%s" data-banner-border-radius="%s" data-carousel-height="%s" data-gradient-overlay="%s" data-gradient-color="%s" data-gradient-opacity="%s" data-gradient-height="%s" data-nav-icon-type="%s" data-nav-icon-size="%s" data-nav-icon-color="%s" data-prev-icon-image-url="%s" data-next-icon-image-url="%s" data-prev-icon-svg="%s" data-next-icon-svg="%s" data-prev-icon-class="%s" data-next-icon-class="%s"',
+            'data-slides-per-view="%s" data-slides-per-view-tablet="%s" data-slides-per-view-mobile="%s" data-space-between="%s" data-loop="%s" data-autoplay="%s" data-autoplay-delay="%s" data-speed="%s" data-navigation="%s" data-pagination="%s" data-banner-style="%s" data-banner-text-color="%s" data-banner-background-color="%s" data-banner-padding="%s" data-banner-border-radius="%s" data-carousel-height="%s" data-gradient-overlay="%s" data-gradient-color="%s" data-gradient-opacity="%s" data-gradient-height="%s" data-nav-icon-type="%s" data-nav-icon-size="%s" data-nav-icon-color="%s" data-prev-icon-image-url="%s" data-next-icon-image-url="%s" data-prev-icon-svg="%s" data-next-icon-svg="%s" data-prev-icon-class="%s" data-next-icon-class="%s" data-always-show-arrows="%s"',
             esc_attr($slides_per_view),
             esc_attr($slides_per_view_tablet),
             esc_attr($slides_per_view_mobile),
@@ -160,7 +174,8 @@ class CarouselBlock extends Block
             esc_attr($prev_icon_svg),
             esc_attr($next_icon_svg),
             esc_attr($prev_icon_class),
-            esc_attr($next_icon_class)
+            esc_attr($next_icon_class),
+            $always_show_arrows ? 'true' : 'false'
         );
 
         // Separate slides and overlay
@@ -193,6 +208,35 @@ class CarouselBlock extends Block
             $slide_count = substr_count($slides_content, 'class="embla__slide"') ?: substr_count($slides_content, 'class="wp-block-jankx-carousel-slide"');
         }
 
+        $nav_enabled = $navigation && $slide_count > 1;
+
+        // Same renderer the carousel-arrows block uses, so icon handling,
+        // sanitisation and edge-hiding semantics stay identical across both
+        // blocks (and the dynamic-data/term layouts).
+        $buttons_html = '';
+        if ($nav_enabled) {
+            $buttons_html = CarouselArrowsRenderer::render([
+                'showArrows' => $navigation,
+                'alwaysShowArrows' => $always_show_arrows,
+                'arrowsPosition' => $arrows_position,
+                'navIconType' => $nav_icon_type,
+                'navIconSize' => $nav_icon_size,
+                'navIconColor' => $nav_icon_color,
+                'prevIconImageId' => $attributes['prevIconImageId'] ?? 0,
+                'prevIconImageUrl' => $prev_icon_image_url,
+                'nextIconImageId' => $attributes['nextIconImageId'] ?? 0,
+                'nextIconImageUrl' => $next_icon_image_url,
+                'prevIconSvg' => $prev_icon_svg,
+                'nextIconSvg' => $next_icon_svg,
+                'prevIconClass' => $prev_icon_class,
+                'nextIconClass' => $next_icon_class,
+                'navBtnWidth' => $nav_btn_width,
+                'navBtnHeight' => $nav_btn_height,
+                'navBtnBorderRadius' => $nav_btn_border_radius,
+                'navBtnBgColor' => $nav_btn_bg_color,
+            ], $navigation);
+        }
+
         ob_start();
         ?>
         <div <?php echo $block_wrapper_attrs; ?>>
@@ -203,43 +247,20 @@ class CarouselBlock extends Block
 
                 <?php echo $overlay_content; ?>
 
-                <?php if ($navigation && $slide_count > 1) : 
-                    $build_nav_icon = function($type, $img_url, $svg_code, $icon_class) use ($nav_icon_size, $nav_icon_color) {
-                        $size_style = sprintf('width:%dpx;height:%dpx;', $nav_icon_size, $nav_icon_size);
-                        $color_style = $nav_icon_color ? sprintf('color:%s;', esc_attr($nav_icon_color)) : '';
-                        
-                        if ($type === 'image' && $img_url) {
-                            return sprintf('<img src="%s" alt="" style="%sobject-fit:contain;display:block;" aria-hidden="true" />', esc_url($img_url), $size_style);
-                        }
-                        if ($type === 'svg' && $svg_code) {
-                            return sprintf('<span style="%sdisplay:flex;align-items:center;justify-content:center;%s" aria-hidden="true">%s</span>', $size_style, $color_style, $svg_code); // Taint: user could inject bad SVG
-                        }
-                        if ($type === 'fonticon' && $icon_class) {
-                            return sprintf('<span class="%s" style="font-size:%dpx;line-height:1;%s" aria-hidden="true"></span>', esc_attr($icon_class), $nav_icon_size, $color_style);
-                        }
-                        return '';
-                    };
-
-                    $prev_html = $nav_icon_type !== 'arrow' ? $build_nav_icon($nav_icon_type, $prev_icon_image_url, $prev_icon_svg, $prev_icon_class) : '';
-                    $next_html = $nav_icon_type !== 'arrow' ? $build_nav_icon($nav_icon_type, $next_icon_image_url, $next_icon_svg, $next_icon_class) : '';
-                    $btn_class_append = $nav_icon_type !== 'arrow' ? ' has-custom-icon' : '';
-                    
-                    $btn_inline_style = sprintf(
-                        'width:%dpx;height:%dpx;background:%s;border-radius:%s%%;position:absolute;top:50%%;transform:translateY(-50%%);z-index:2;',
-                        $nav_btn_width,
-                        $nav_btn_height,
-                        esc_attr($nav_btn_bg_color),
-                        $nav_btn_border_radius
-                    );
-                ?>
-                    <div class="embla__button embla__button--prev<?php echo $btn_class_append; ?>" style="left:10px;<?php echo $btn_inline_style; ?>"><?php echo $prev_html; ?></div>
-                    <div class="embla__button embla__button--next<?php echo $btn_class_append; ?>" style="right:10px;<?php echo $btn_inline_style; ?>"><?php echo $next_html; ?></div>
+                <?php if ($nav_enabled && $arrows_position === 'inside') : ?>
+                    <?php echo $buttons_html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
                 <?php endif; ?>
 
                 <?php if ($pagination && $slide_count > 1) : ?>
                     <div class="embla__dots" style="position:absolute;bottom:12px;left:50%;transform:translateX(-50%);display:flex;gap:8px;z-index:2;"></div>
                 <?php endif; ?>
             </div>
+
+            <?php if ($nav_enabled && $arrows_position === 'bottom') : ?>
+                <div class="carousel-arrows-bottom-row"><?php echo $buttons_html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></div>
+            <?php elseif ($nav_enabled && $arrows_position === 'outside') : ?>
+                <?php echo $buttons_html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+            <?php endif; ?>
         </div>
         <?php
         return ob_get_clean();

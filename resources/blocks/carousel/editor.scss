@@ -3,17 +3,8 @@
 .editor-styles-wrapper {
   .wp-block-jankx-carousel {
 
-    // Static preview: match the frontend look (first N slides visible),
-    // but never run the live slider in the editor.
     .embla {
       position: relative;
-    }
-
-    // Navigation and pagination are purely visual affordances in the editor.
-    // Keep them from stealing pointer events so slides stay editable.
-    .embla__button,
-    .embla__dots {
-      pointer-events: none;
     }
 
     // Remove performance-heavy transitions in editor for smoother editing
@@ -34,17 +25,58 @@
       opacity: 1 !important;
       transform: none !important;
     }
+
+    // The overlay inner block sits inside the (translated) track in the
+    // editor. Counter-translate it so it stays anchored to the viewport
+    // instead of sliding away with the track.
+    .wp-block-jankx-carousel-inner-blocks-overlay {
+      transform: translateX(calc(-1 * var(--jx-track-offset, 0px)));
+    }
+
+    // Pagination dots are authored in the editor (the frontend builds them
+    // with JS), so they need real styles here and must be clickable.
+    .embla__dots {
+      position: absolute;
+      bottom: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 8px;
+      z-index: 2;
+    }
+
+    .embla__dot {
+      width: 12px;
+      height: 12px;
+      padding: 0;
+      border: none;
+      border-radius: 9999px;
+      background: rgba(255, 255, 255, 0.6);
+      opacity: 0.8;
+      cursor: pointer;
+      transition: transform 0.2s ease, background 0.2s ease, opacity 0.2s ease;
+
+      &:hover {
+        opacity: 1;
+      }
+
+      &.is-active {
+        background: rgba(255, 255, 255, 0.95);
+        opacity: 1;
+        transform: scale(1.2);
+      }
+    }
   }
 }
 
-// Force viewport styles in editor if needed
+// Force viewport styles in editor
 .wp-block-jankx-carousel {
   .embla {
-    height: var(--carousel-height, 50px);
+    height: var(--carousel-height, 400px);
 
     @media (max-width: 1024px) {
       height: auto;
-      max-height: var(--carousel-height, 50px);
+      max-height: var(--carousel-height, 400px);
       min-height: var(--carousel-min-height, 50px);
     }
   }
@@ -62,5 +94,85 @@
     font-size: 12px;
     white-space: nowrap;
     pointer-events: none;
+  }
+
+  // ── Slide list panel (sidebar) ──────────────────────────────────────────
+  .jx-carousel-slide-list {
+    list-style: none;
+    margin: 0 0 4px;
+    padding: 0;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    overflow: hidden;
+
+    li {
+      display: flex;
+      align-items: stretch;
+      border-bottom: 1px solid #f0f0f1;
+
+      &:last-child {
+        border-bottom: none;
+      }
+
+      &.is-active {
+        background: #f0f6ff;
+
+        .jx-carousel-slide-list__jump {
+          font-weight: 600;
+        }
+      }
+    }
+
+    &__jump {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 10px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      text-align: left;
+      font-size: 13px;
+      color: #1e1e1e;
+
+      &:hover {
+        background: #f6f7f7;
+      }
+    }
+
+    &__index {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 20px;
+      height: 20px;
+      padding: 0 5px;
+      border-radius: 10px;
+      background: #1e1e1e;
+      color: #fff;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    &__label {
+      color: #50575e;
+    }
+
+    &__remove {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      background: none;
+      border: none;
+      border-left: 1px solid #f0f0f1;
+      color: #b32d2e;
+      cursor: pointer;
+
+      &:hover {
+        background: #fcf0f1;
+      }
+    }
   }
 }

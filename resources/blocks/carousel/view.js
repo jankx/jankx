@@ -94,6 +94,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const nextEl = block.querySelector('.embla__button--next');
       const prevEl = block.querySelector('.embla__button--prev');
       const paginationEl = block.querySelector('.embla__dots');
+      const alwaysShowArrows = container.dataset.alwaysShowArrows === 'true';
 
       // Navigation icon setup
       const navIconType = container.dataset.navIconType || 'arrow';
@@ -161,6 +162,37 @@ document.addEventListener('DOMContentLoaded', () => {
           const prevIndex = embla.selectedScrollSnap() - 1;
           embla.scrollTo(prevIndex, true);
         }, { passive: true });
+
+        // Hide/disable arrows at the edges unless "always show" is enabled.
+        const updateNavButtons = () => {
+          const canPrev = embla.canScrollPrev();
+          const canNext = embla.canScrollNext();
+
+          if (prevEl) {
+            prevEl.disabled = !canPrev;
+            if (alwaysShowArrows) {
+              prevEl.style.display = '';
+              prevEl.classList.remove('is-hidden');
+            } else {
+              prevEl.style.display = canPrev ? '' : 'none';
+              prevEl.classList.toggle('is-hidden', !canPrev);
+            }
+          }
+          if (nextEl) {
+            nextEl.disabled = !canNext;
+            if (alwaysShowArrows) {
+              nextEl.style.display = '';
+              nextEl.classList.remove('is-hidden');
+            } else {
+              nextEl.style.display = canNext ? '' : 'none';
+              nextEl.classList.toggle('is-hidden', !canNext);
+            }
+          }
+        };
+
+        updateNavButtons();
+        embla.on('select', updateNavButtons);
+        embla.on('reInit', updateNavButtons);
       }
 
       if (useAutoplay) {
@@ -173,9 +205,12 @@ document.addEventListener('DOMContentLoaded', () => {
       let bullets = [];
       const setupPagination = () => {
         if (!pagination || !paginationEl) return;
-        const slides = embla.slideNodes();
+        // One bullet per scroll snap (matches what the arrows can reach),
+        // not per slide — with multiple slides per view the last slides are
+        // not reachable as separate snaps.
+        const snaps = embla.scrollSnapList();
         paginationEl.innerHTML = '';
-        bullets = slides.map((_, index) => {
+        bullets = snaps.map((_, index) => {
           const b = document.createElement('span');
           b.className = 'embla__dot';
           b.style.display = 'inline-block';

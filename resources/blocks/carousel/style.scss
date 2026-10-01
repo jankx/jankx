@@ -129,8 +129,34 @@
   }
 
   // Navigation buttons
+  // Positioning lives in CSS (shared by editor and frontend) so the frontend
+  // renderer only needs to emit chrome styles (size/radius/background).
   .embla__button {
-    color: var(--wp--preset--color--contrast, #000);
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 2;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--wp--preset--color--contrast, #fff);
+
+    &--prev {
+      left: 10px;
+    }
+
+    &--next {
+      right: 10px;
+    }
+
+    &:disabled {
+      opacity: 0.4;
+      cursor: default;
+    }
 
     &::after {
       font-size: 24px;
@@ -144,6 +170,34 @@
       display: flex;
       align-items: center;
       justify-content: center;
+    }
+  }
+
+  // Arrows outside the viewport edges (rendered outside .embla so the
+  // overflow:hidden of the viewport does not clip them).
+  &.carousel-arrows-position-outside {
+    .embla__button--prev {
+      left: -56px;
+    }
+
+    .embla__button--next {
+      right: -56px;
+    }
+  }
+
+  // Arrows in a row below the carousel.
+  &.carousel-arrows-position-bottom {
+    .embla__button {
+      position: static;
+      transform: none;
+      margin-top: 0;
+    }
+
+    .carousel-arrows-bottom-row {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 10px;
     }
   }
 

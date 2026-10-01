@@ -49,6 +49,8 @@ export interface CarouselAttributes {
   navBtnHeight?: number;
   navBtnBorderRadius?: number;
   navBtnBgColor?: string;
+  arrowsPosition?: 'inside' | 'outside' | 'bottom';
+  alwaysShowArrows?: boolean;
 }
 
 export interface CarouselProps {

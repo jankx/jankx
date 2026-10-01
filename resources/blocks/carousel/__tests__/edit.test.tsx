@@ -3,9 +3,12 @@
  */
 
 import React from 'react';
-import { render, screen, fireEvent, act } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import Edit from '../edit';
+
+const mockReplaceInnerBlocks = jest.fn();
+const mockSelectBlock = jest.fn();
 
 // Mock WordPress dependencies
 jest.mock('@wordpress/block-editor', () => ({
@@ -33,12 +36,14 @@ jest.mock('@wordpress/data', () => ({
         if (scope === 'core/block-editor') {
             return {
                 getBlock: jest.fn(() => ({ innerBlocks: [] })),
+                getSelectedBlock: jest.fn(() => null),
             };
         }
         return {};
     })),
     dispatch: jest.fn(() => ({
-        replaceInnerBlocks: jest.fn(),
+        replaceInnerBlocks: mockReplaceInnerBlocks,
+        selectBlock: mockSelectBlock,
     })),
 }));
 
@@ -50,6 +55,7 @@ jest.mock('@wordpress/element', () => {
         useEffect: React.useEffect,
         useCallback: React.useCallback,
         useMemo: React.useMemo,
+        useRef: React.useRef,
         Fragment: React.Fragment,
     };
 });
@@ -89,22 +95,38 @@ jest.mock('@wordpress/components', () => ({
         </label>
     ),
     Button: ({ children, onClick }: any) => <button onClick={onClick}>{children}</button>,
-    TabPanel: ({ tabs, children, onSelect }: any) => (
+    BaseControl: ({ label, children }: any) => (
         <div>
-            <div className="tabs">
-                {tabs.map((tab: any) => (
-                    <button key={tab.name} onClick={() => onSelect(tab.name)}>{tab.title}</button>
-                ))}
-            </div>
-            {children(tabs[0])}
+            {label ? <span>{label}</span> : null}
+            {children}
+        </div>
+    ),
+    ColorPalette: ({ value, onChange }: any) => (
+        <div data-testid="color-palette" data-value={value || ''}>
+            <button onClick={() => onChange && onChange('#123456')}>pick</button>
         </div>
     ),
     ColorPicker: () => <div data-testid="color-picker" />,
-    ToolbarGroup: ({ children }: any) => <div>{children}</div>,
-    ToolbarButton: ({ title, onClick, isActive }: any) => (
-        <button onClick={onClick} className={isActive ? 'is-active' : ''} data-testid={`toolbar-${title}`}>
-            {title}
-        </button>
+    TextControl: ({ label, value, onChange }: any) => (
+        <label>
+            {label}
+            <input
+                type="text"
+                value={value || ''}
+                onChange={(e) => onChange(e.target.value)}
+                data-testid={`text-${label}`}
+            />
+        </label>
+    ),
+    TextareaControl: ({ label, value, onChange }: any) => (
+        <label>
+            {label}
+            <textarea
+                value={value || ''}
+                onChange={(e) => onChange(e.target.value)}
+                data-testid={`textarea-${label}`}
+            />
+        </label>
     ),
 }));
 
@@ -130,6 +152,8 @@ describe('Carousel Edit', () => {
         bannerBackgroundColor: '#000',
         bannerPadding: 20,
         bannerBorderRadius: 0,
+        arrowsPosition: 'inside',
+        alwaysShowArrows: false,
         className: '',
     };
 
@@ -145,52 +169,63 @@ describe('Carousel Edit', () => {
 
     it('should render with default attributes', () => {
         render(<Edit {...defaultProps} />);
-        
+
         expect(screen.getByTestId('inner-blocks')).toBeInTheDocument();
         expect(screen.getByTestId('range-Slides Per View')).toHaveValue(1);
     });
 
     it('should update slides per view', () => {
         render(<Edit {...defaultProps} />);
-        
+
         const range = screen.getByTestId('range-Slides Per View');
         fireEvent.change(range, { target: { value: '2' } });
-        
+
         expect(defaultProps.setAttributes).toHaveBeenCalledWith({ slidesPerView: 2 });
     });
 
     it('should toggle autoplay', () => {
         render(<Edit {...defaultProps} />);
-        
+
         const toggle = screen.getByTestId('toggle-Autoplay');
         fireEvent.click(toggle);
-        
+
         expect(defaultProps.setAttributes).toHaveBeenCalledWith({ autoplay: true });
     });
 
-    it('should change banner style via toolbar', () => {
+    it('should switch content type to gallery', () => {
         render(<Edit {...defaultProps} />);
-        
-        const button = screen.getByTestId('toolbar-Banner');
-        fireEvent.click(button);
-        
-        expect(defaultProps.setAttributes).toHaveBeenCalledWith({ className: 'is-style-banner' });
+
+        const select = screen.getByTestId('select-Content type');
+        fireEvent.change(select, { target: { value: 'gallery' } });
+
+        expect(defaultProps.setAttributes).toHaveBeenCalledWith({ contentMode: 'gallery' });
     });
 
-    it('should switch to gallery mode', () => {
+    it('should seed two slides when inserted empty', () => {
         render(<Edit {...defaultProps} />);
-        
-        const galleryTab = screen.getByText('Gallery');
-        fireEvent.click(galleryTab);
-        
-        // Note: The TabPanel mock renders the first tab's content by default.
-        // In a real TabPanel, clicking would change content.
-        // Here we just check if onSelect was called which triggers setAttributes
-        // But in our mock TabPanel we pass children(tabs[0]).
-        // The real implementation calls setAttributes inside onSelect.
-        // We can check if setAttributes was called if we mock TabPanel to call onSelect.
-        
-        // Let's rely on the TabPanel implementation in the Edit component which calls setAttributes
-        // Our mock needs to trigger onSelect.
+
+        expect(mockReplaceInnerBlocks).toHaveBeenCalledTimes(1);
+        const [clientId, blocks] = mockReplaceInnerBlocks.mock.calls[0];
+        expect(clientId).toBe('test-client-id');
+        expect(blocks).toHaveLength(2);
+        expect(blocks.every((b: any) => b.name === 'jankx/carousel-slide')).toBe(true);
+    });
+
+    it('should change arrows position', () => {
+        render(<Edit {...defaultProps} />);
+
+        const select = screen.getByTestId('select-Arrows position');
+        fireEvent.change(select, { target: { value: 'outside' } });
+
+        expect(defaultProps.setAttributes).toHaveBeenCalledWith({ arrowsPosition: 'outside' });
+    });
+
+    it('should toggle always show arrows', () => {
+        render(<Edit {...defaultProps} />);
+
+        const toggle = screen.getByTestId('toggle-Always show arrows');
+        fireEvent.click(toggle);
+
+        expect(defaultProps.setAttributes).toHaveBeenCalledWith({ alwaysShowArrows: true });
     });
 });

@@ -1,797 +1,905 @@
 import { __ } from '@wordpress/i18n';
-import { useBlockProps, InspectorControls, useInnerBlocksProps, MediaUpload, MediaUploadCheck, BlockControls, InnerBlocks } from '@wordpress/block-editor';
-import { PanelBody, RangeControl, ToggleControl, SelectControl, Button, TabPanel, ColorPicker, ToolbarGroup, ToolbarButton, TextControl, TextareaControl, BaseControl } from '@wordpress/components';
-import { gallery, cover, layout, quote } from '@wordpress/icons';
+import {
+	useBlockProps,
+	InspectorControls,
+	useInnerBlocksProps,
+	MediaUpload,
+	MediaUploadCheck,
+	InnerBlocks,
+} from '@wordpress/block-editor';
+import {
+	PanelBody,
+	RangeControl,
+	ToggleControl,
+	SelectControl,
+	Button,
+	ColorPicker,
+} from '@wordpress/components';
 import { createBlock } from '@wordpress/blocks';
-import { useSelect } from '@wordpress/data';
+import { useSelect, dispatch } from '@wordpress/data';
+import { useState, useEffect, useRef, useMemo } from '@wordpress/element';
 import type { CarouselProps } from './types';
+import {
+	NavButtonStyleSettings,
+	NavIconSettings,
+	NavPreviewButton,
+} from '../../shared/components/CarouselNavSettings';
 
 // Utility function to convert hex to RGB
 const hexToRgb = (hex: string) => {
-  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-  return result ? {
-    r: parseInt(result[1], 16),
-    g: parseInt(result[2], 16),
-    b: parseInt(result[3], 16)
-  } : { r: 0, g: 0, b: 0 };
+	const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+	return result
+		? {
+				r: parseInt(result[1], 16),
+				g: parseInt(result[2], 16),
+				b: parseInt(result[3], 16),
+		  }
+		: { r: 0, g: 0, b: 0 };
 };
 
-// Render nav icon based on type
-const renderNavIcon = (
-  type: string,
-  imageUrl: string,
-  svgCode: string,
-  iconClass: string,
-  size: number,
-  color: string,
-  direction: 'prev' | 'next'
-): JSX.Element | null => {
-  const iconStyle: React.CSSProperties = {
-    width: `${size}px`,
-    height: `${size}px`,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    color: color || undefined
-  };
+const OVERLAY_BLOCK = 'jankx/carousel-inner-blocks-overlay';
+const SLIDE_BLOCK = 'jankx/carousel-slide';
+const BANNER_BLOCK = 'jankx/carousel-banner';
 
-  if (type === 'image' && imageUrl) {
-    return (
-      <img
-        src={imageUrl}
-        alt={direction === 'prev' ? 'Previous' : 'Next'}
-        style={{ width: `${size}px`, height: `${size}px`, objectFit: 'contain' }}
-      />
-    );
-  }
+export default function Edit({
+	attributes,
+	setAttributes,
+	clientId,
+}: CarouselProps): JSX.Element {
+	const {
+		slidesPerView,
+		slidesPerViewTablet,
+		slidesPerViewMobile,
+		spaceBetween,
+		loop,
+		autoplay,
+		autoplayDelay,
+		speed,
+		navigation,
+		pagination,
+		height,
+		minHeight,
+		contentMode,
+		galleryImages,
+		bannerStyle,
+		bannerTextColor,
+		bannerBackgroundColor,
+		bannerPadding,
+		bannerBorderRadius,
+		gradientOverlay,
+		gradientColor,
+		gradientOpacity,
+		gradientHeight,
+		className,
+		fitViewportMinusHeader = false,
+		fullHeight = false,
+		arrowsPosition = 'inside',
+		alwaysShowArrows = false,
+		...navAttributes
+	} = attributes;
 
-  if (type === 'svg' && svgCode) {
-    return (
-      <span
-        style={iconStyle}
-        dangerouslySetInnerHTML={{ __html: svgCode }}
-      />
-    );
-  }
+	const [activeIndex, setActiveIndex] = useState(0);
+	const seededRef = useRef(false);
 
-  if (type === 'fonticon' && iconClass) {
-    return (
-      <span
-        className={iconClass}
-        style={{ fontSize: `${size}px`, lineHeight: 1, color: color || undefined }}
-        aria-hidden="true"
-      />
-    );
-  }
+	// Style variation (registered as native block styles in block.json).
+	const styleVariation = useMemo(() => {
+		const match = className?.match(/is-style-(\w+)/);
+		return match ? match[1] : 'default';
+	}, [className]);
 
-  // Default: arrow (rendered by CSS ::after, no element needed)
-  return null;
-};
+	const { hasInnerBlocks, innerBlocks, slideCount } = useSelect(
+		(select: any) => {
+			const block = select('core/block-editor')?.getBlock?.(clientId);
+			const inner = block?.innerBlocks || [];
+			return {
+				hasInnerBlocks: inner.length > 0,
+				innerBlocks: inner,
+				slideCount: inner.filter((b: any) => b.name !== OVERLAY_BLOCK)
+					.length,
+			};
+		},
+		[clientId]
+	);
 
-export default function Edit({ attributes, setAttributes, clientId }: CarouselProps): JSX.Element {
-  const {
-    slidesPerView,
-    slidesPerViewTablet,
-    slidesPerViewMobile,
-    spaceBetween,
-    loop,
-    autoplay,
-    autoplayDelay,
-    speed,
-    navigation,
-    pagination,
-    effect,
-    height,
-    minHeight,
-    contentMode,
-    galleryImages,
-    bannerStyle,
-    bannerTextColor,
-    bannerBackgroundColor,
-    bannerPadding,
-    bannerBorderRadius,
-    gradientOverlay,
-    gradientColor,
-    gradientOpacity,
-    gradientHeight,
-    className,
-    fitViewportMinusHeader = false,
-    fullHeight = false,
-    // Navigation icon settings
-    navIconType = 'arrow',
-    prevIconImageId = 0,
-    prevIconImageUrl = '',
-    nextIconImageId = 0,
-    nextIconImageUrl = '',
-    prevIconSvg = '',
-    nextIconSvg = '',
-    prevIconClass = '',
-    nextIconClass = '',
-    navIconSize = 24,
-    navIconColor = '',
-    // Navigation button settings
-    navBtnWidth = 44,
-    navBtnHeight = 44,
-    navBtnBorderRadius = 50,
-    navBtnBgColor = 'rgba(0,0,0,0.7)'
-  } = attributes;
+	// Index (among slides) of the inner block currently selected in the editor,
+	// or -1 when the selection is outside this carousel. Keeps the visible
+	// slide in sync with what the user is editing.
+	const selectedSlideIndex = useSelect((select: any) => {
+		const editor = select('core/block-editor');
+		if (!editor || typeof editor.getSelectedBlock !== 'function') {
+			return -1;
+		}
+		const selected = editor.getSelectedBlock();
+		if (!selected || !selected.clientId) return -1;
 
-  // Get block's style variation
-  const styleVariation = useSelect((select) => {
-    const block = select('core/block-editor').getBlock(clientId);
-    if (!block) return 'default';
+		const chain: any[] = [];
+		let current = editor.getBlock(selected.clientId);
+		while (current && current.clientId !== clientId) {
+			chain.push(current);
+			if (!current.parentId) return -1;
+			current = editor.getBlock(current.parentId);
+		}
+		if (!current || chain.length === 0) return -1;
 
-    // Extract style variation from className
-    const match = className?.match(/is-style-(\w+)/);
-    return match ? match[1] : 'default';
-  }, [clientId, className]);
+		const topChild = chain[chain.length - 1];
+		const block = editor.getBlock(clientId);
+		if (!block) return -1;
 
-  // Function to update style variation
-  const updateStyleVariation = (variation: string) => {
-    // Remove existing variation classes
-    const currentClassName = className || '';
-    const cleanedClassName = currentClassName
-      .replace(/\bis-style-\w+\b/g, '')
-      .trim();
+		let index = -1;
+		for (const inner of block.innerBlocks) {
+			if (inner.name === OVERLAY_BLOCK) continue;
+			index++;
+			if (inner.clientId === topChild.clientId) return index;
+		}
+		return -1;
+	}, [clientId]);
 
-    // Add new variation class
-    const newVariationClass = variation === 'default' ? '' : `is-style-${variation}`;
-    const newClassName = [cleanedClassName, newVariationClass].filter(Boolean).join(' ');
+	const slides = useMemo(
+		() => innerBlocks.filter((b: any) => b.name !== OVERLAY_BLOCK),
+		[innerBlocks]
+	);
 
-    setAttributes({ className: newClassName });
-  };
+	// How far the track can slide: show `slidesPerView` slides at once.
+	const perView = Math.max(1, Math.ceil(slidesPerView || 1));
+	const maxIndex = Math.max(0, slideCount - perView);
 
-  const gradientRgb = hexToRgb(gradientColor || '#000000');
+	// Follow selection into a slide.
+	useEffect(() => {
+		if (selectedSlideIndex >= 0 && selectedSlideIndex <= maxIndex) {
+			setActiveIndex((prev) =>
+				prev === selectedSlideIndex ? prev : selectedSlideIndex
+			);
+		}
+	}, [selectedSlideIndex, maxIndex]);
 
-  const blockProps = useBlockProps({
-    className: `carousel-block banner-style-${bannerStyle} ${gradientOverlay ? 'has-gradient-overlay' : ''} ${className || ''} ${fitViewportMinusHeader ? 'fit-vh-minus-header' : ''} ${fullHeight ? 'is-full-height' : ''}`.trim(),
-    style: {
-      '--carousel-height': fullHeight ? '100vh' : `${height}px`,
-      '--carousel-min-height': `${minHeight}px`,
-      '--banner-style': bannerStyle,
-      '--banner-text-color': bannerTextColor,
-      '--banner-background-color': bannerBackgroundColor,
-      '--banner-padding': `${bannerPadding}px`,
-      '--banner-border-radius': `${bannerBorderRadius}px`,
-      '--gradient-overlay-enabled': gradientOverlay ? '1' : '0',
-      '--gradient-color-r': gradientRgb.r,
-      '--gradient-color-g': gradientRgb.g,
-      '--gradient-color-b': gradientRgb.b,
-      '--gradient-opacity': gradientOpacity,
-      '--gradient-height': `${gradientHeight}%`,
-      '--slides-per-view-desktop': slidesPerView,
-      '--slides-per-view-tablet': slidesPerViewTablet,
-      '--slides-per-view-mobile': slidesPerViewMobile,
-      '--space-between': `${spaceBetween}px`
-    } as React.CSSProperties
-  });
+	// Keep the active index in range when slides are added/removed.
+	useEffect(() => {
+		setActiveIndex((prev) => (prev > maxIndex ? maxIndex : prev));
+	}, [maxIndex]);
 
-  const innerBlocksProps = useInnerBlocksProps(
-    { className: 'carousel-wrapper' },
-    {
-      allowedBlocks: contentMode === 'slides'
-        ? ['jankx/carousel-slide', 'jankx/carousel-inner-blocks-overlay']
-        : ['jankx/carousel-banner', 'jankx/carousel-inner-blocks-overlay'],
-      templateLock: false,
-      orientation: 'horizontal',
-      renderAppender: InnerBlocks.ButtonBlockAppender
-    }
-  );
+	// Seed new carousels with two empty slides so the block is immediately
+	// usable (mirrors the `template` behaviour, but only for slide mode).
+	useEffect(() => {
+		if (seededRef.current) return;
+		seededRef.current = true;
+		if (contentMode !== 'slides' || hasInnerBlocks) return;
+		dispatch('core/block-editor').replaceInnerBlocks(clientId, [
+			createBlock(SLIDE_BLOCK),
+			createBlock(SLIDE_BLOCK),
+		]);
+	}, [contentMode, hasInnerBlocks, clientId]);
 
-  const { hasInnerBlocks, slideCount, hasOverlay } = useSelect(
-    (select) => {
-      const { getBlock } = select('core/block-editor');
-      const block = getBlock(clientId);
-      if (!block) return { hasInnerBlocks: false, slideCount: 0, hasOverlay: false };
+	const goTo = (index: number) => {
+		if (slideCount <= 0) return;
+		let next = index;
+		if (next > maxIndex) next = loop ? 0 : maxIndex;
+		if (next < 0) next = loop ? maxIndex : 0;
+		setActiveIndex(next);
+	};
 
-      const count = block.innerBlocks.filter((b: any) => b.name !== 'jankx/carousel-inner-blocks-overlay').length;
-      const overlay = block.innerBlocks.some((b: any) => b.name === 'jankx/carousel-inner-blocks-overlay');
-      return {
-        hasInnerBlocks: !!block.innerBlocks.length,
-        slideCount: count,
-        hasOverlay: overlay
-      };
-    },
-    [clientId]
-  );
+	const addSlide = () => {
+		dispatch('core/block-editor').replaceInnerBlocks(clientId, [
+			...innerBlocks,
+			createBlock(SLIDE_BLOCK),
+		]);
+	};
 
-  // Handle gallery image selection
-  const onSelectGalleryImages = (images: any[]) => {
-    const galleryData = images.map(img => ({
-      id: img.id,
-      url: img.url,
-      alt: img.alt || '',
-      caption: img.caption || ''
-    }));
+	const removeSlide = (slideClientId: string) => {
+		dispatch('core/block-editor').replaceInnerBlocks(
+			clientId,
+			innerBlocks.filter((b: any) => b.clientId !== slideClientId)
+		);
+	};
 
-    setAttributes({ galleryImages: galleryData });
+	const jumpToSlide = (index: number, slideClientId: string) => {
+		setActiveIndex(index);
+		dispatch('core/block-editor').selectBlock(slideClientId);
+	};
 
-    // Create carousel-banner blocks for each image
-    const bannerBlocks = images.map(img =>
-      createBlock('jankx/carousel-banner', {
-        imageId: img.id,
-        imageUrl: img.url,
-        imageAlt: img.alt || '',
-        imageCaption: img.caption || ''
-      })
-    );
+	// Handle gallery image selection
+	const onSelectGalleryImages = (images: any[]) => {
+		const galleryData = images.map((img) => ({
+			id: img.id,
+			url: img.url,
+			alt: img.alt || '',
+			caption: img.caption || '',
+		}));
 
-    // Replace inner blocks with banner blocks
-    wp.data.dispatch('core/block-editor').replaceInnerBlocks(clientId, bannerBlocks);
-  };
+		setAttributes({ galleryImages: galleryData });
 
-  return (
-    <>
-      <BlockControls>
-        <ToolbarGroup>
-          <ToolbarButton
-            icon={gallery}
-            title={__('Default', 'jankx')}
-            onClick={() => updateStyleVariation('default')}
-            isActive={styleVariation === 'default'}
-          />
-          <ToolbarButton
-            icon={cover}
-            title={__('Banner', 'jankx')}
-            onClick={() => updateStyleVariation('banner')}
-            isActive={styleVariation === 'banner'}
-          />
-          <ToolbarButton
-            icon={layout}
-            title={__('Carousel', 'jankx')}
-            onClick={() => updateStyleVariation('carousel')}
-            isActive={styleVariation === 'carousel'}
-          />
-          <ToolbarButton
-            icon={quote}
-            title={__('Testimonial', 'jankx')}
-            onClick={() => updateStyleVariation('testimonial')}
-            isActive={styleVariation === 'testimonial'}
-          />
-        </ToolbarGroup>
-      </BlockControls>
+		// Create carousel-banner blocks for each image
+		const bannerBlocks = images.map((img) =>
+			createBlock(BANNER_BLOCK, {
+				imageId: img.id,
+				imageUrl: img.url,
+				imageAlt: img.alt || '',
+				imageCaption: img.caption || '',
+			})
+		);
 
-      <div {...blockProps}>
-        <InspectorControls>
-          <TabPanel
-            className="carousel-tabs"
-            activeClass="is-active"
-            onSelect={(tabName: string) => {
-              if (tabName === 'gallery') {
-                setAttributes({ contentMode: 'gallery' });
-              } else {
-                setAttributes({ contentMode: 'slides' });
-              }
-            }}
-            tabs={[
-              {
-                name: 'slides',
-                title: __('Slides', 'jankx'),
-                className: 'tab-slides'
-              },
-              {
-                name: 'gallery',
-                title: __('Gallery', 'jankx'),
-                className: 'tab-gallery'
-              }
-            ]}
-          >
-            {(tab) => (
-              <>
-                {tab.name === 'slides' && (
-                  <PanelBody title={__('Add Slides', 'jankx')} initialOpen={true}>
-                    <p>{__('Use the + button to add individual slides', 'jankx')}</p>
-                  </PanelBody>
-                )}
+		// Replace inner blocks with banner blocks
+		dispatch('core/block-editor').replaceInnerBlocks(
+			clientId,
+			bannerBlocks
+		);
+	};
 
-                {tab.name === 'gallery' && (
-                  <PanelBody title={__('Select Images', 'jankx')} initialOpen={true}>
-                    <MediaUploadCheck>
-                      <MediaUpload
-                        onSelect={onSelectGalleryImages}
-                        allowedTypes={['image']}
-                        multiple={true}
-                        value={galleryImages.map(img => img.id)}
-                        render={({ open }) => (
-                          <Button
-                            variant="primary"
-                            onClick={open}
-                            style={{ width: '100%', marginBottom: '10px' }}
-                          >
-                            {galleryImages.length > 0
-                              ? __('Change Images', 'jankx')
-                              : __('Select Images', 'jankx')
-                            }
-                          </Button>
-                        )}
-                      />
-                    </MediaUploadCheck>
+	const gradientRgb = hexToRgb(gradientColor || '#000000');
 
-                    {galleryImages.length > 0 && (
-                      <p>
-                        {__('Selected', 'jankx')}: {galleryImages.length} {__('images', 'jankx')}
-                      </p>
-                    )}
-                  </PanelBody>
-                )}
-              </>
-            )}
-          </TabPanel>
+	// One slide-step of the track, in % + px of the track width.
+	const trackOffset = `calc(-${activeIndex} * ((100% - ${
+		(perView - 1) * spaceBetween
+	}px) / ${perView} + ${spaceBetween}px))`;
 
-          <PanelBody title={__('Slider Settings', 'jankx')} initialOpen={true}>
-            {(styleVariation === 'carousel' || styleVariation === 'testimonial') ? (
-              <>
-                <RangeControl
-                  label={__('Slides Per View (Desktop)', 'jankx')}
-                  value={slidesPerView}
-                  onChange={(val: number) => setAttributes({ slidesPerView: val })}
-                  min={1}
-                  max={6}
-                  step={1}
-                  help={__('Number of slides visible on desktop screens (≥1024px)', 'jankx')}
-                />
+	const blockProps = useBlockProps({
+		className: [
+			'carousel-block',
+			`banner-style-${bannerStyle}`,
+			gradientOverlay ? 'has-gradient-overlay' : '',
+			className || '',
+			fitViewportMinusHeader ? 'fit-vh-minus-header' : '',
+			fullHeight ? 'is-full-height' : '',
+			arrowsPosition !== 'inside'
+				? `carousel-arrows-position-${arrowsPosition}`
+				: '',
+		]
+			.filter(Boolean)
+			.join(' '),
+		style: {
+			'--carousel-height': fullHeight ? '100vh' : `${height}px`,
+			'--carousel-min-height': `${minHeight}px`,
+			'--banner-style': bannerStyle,
+			'--banner-text-color': bannerTextColor,
+			'--banner-background-color': bannerBackgroundColor,
+			'--banner-padding': `${bannerPadding}px`,
+			'--banner-border-radius': `${bannerBorderRadius}px`,
+			'--gradient-overlay-enabled': gradientOverlay ? '1' : '0',
+			'--gradient-color-r': gradientRgb.r,
+			'--gradient-color-g': gradientRgb.g,
+			'--gradient-color-b': gradientRgb.b,
+			'--gradient-opacity': gradientOpacity,
+			'--gradient-height': `${gradientHeight}%`,
+			'--slides-per-view-desktop': slidesPerView,
+			'--slides-per-view-tablet': slidesPerViewTablet,
+			'--slides-per-view-mobile': slidesPerViewMobile,
+			'--space-between': `${spaceBetween}px`,
+		} as React.CSSProperties,
+	});
 
-                <RangeControl
-                  label={__('Slides Per View (Tablet)', 'jankx')}
-                  value={slidesPerViewTablet}
-                  onChange={(val: number) => setAttributes({ slidesPerViewTablet: val })}
-                  min={1}
-                  max={4}
-                  step={1}
-                  help={__('Number of slides visible on tablet screens (768px - 1023px)', 'jankx')}
-                />
+	const innerBlocksProps = useInnerBlocksProps(
+		{ className: 'carousel-wrapper' },
+		{
+			allowedBlocks:
+				contentMode === 'slides'
+					? [SLIDE_BLOCK, OVERLAY_BLOCK]
+					: [BANNER_BLOCK, OVERLAY_BLOCK],
+			templateLock: false,
+			orientation: 'horizontal',
+			renderAppender: InnerBlocks.ButtonBlockAppender,
+		}
+	);
 
-                <RangeControl
-                  label={__('Slides Per View (Mobile)', 'jankx')}
-                  value={slidesPerViewMobile}
-                  onChange={(val: number) => setAttributes({ slidesPerViewMobile: val })}
-                  min={1}
-                  max={2}
-                  step={1}
-                  help={__('Number of slides visible on mobile screens (<768px)', 'jankx')}
-                />
-              </>
-            ) : (
-              <RangeControl
-                label={__('Slides Per View', 'jankx')}
-                value={slidesPerView}
-                onChange={(val: number) => setAttributes({ slidesPerView: val })}
-                min={1}
-                max={4}
-                step={1}
-              />
-            )}
+	const prevDisabled = !loop && activeIndex <= 0;
+	const nextDisabled = !loop && activeIndex >= maxIndex;
 
-            <RangeControl
-              label={__('Space Between (px)', 'jankx')}
-              value={spaceBetween}
-              onChange={(val: number) => setAttributes({ spaceBetween: val })}
-              min={0}
-              max={100}
-              step={10}
-            />
+	const renderArrows = (side: 'prev' | 'next') => (
+		<NavPreviewButton
+			side={side}
+			attributes={navAttributes as any}
+			disabled={side === 'prev' ? prevDisabled : nextDisabled}
+			onClick={() => goTo(side === 'prev' ? activeIndex - 1 : activeIndex + 1)}
+		/>
+	);
 
-            <RangeControl
-              label={__('Speed (ms)', 'jankx')}
-              value={speed}
-              onChange={(val: number) => setAttributes({ speed: val })}
-              min={100}
-              max={2000}
-              step={100}
-            />
+	const dotCount = maxIndex + 1;
 
-            <RangeControl
-              label={__('Height (px)', 'jankx')}
-              value={height}
-              onChange={(val?: number) => setAttributes({ height: val || 400 })}
-              min={50}
-              max={1000}
-              step={50}
-              help={__('Height for desktop (max-height on mobile)', 'jankx')}
-            />
+	return (
+		<div {...blockProps}>
+			<InspectorControls>
+				<PanelBody title={__('Content', 'jankx')} initialOpen={true}>
+					<SelectControl
+						label={__('Content type', 'jankx')}
+						value={contentMode}
+						options={[
+							{
+								label: __(
+									'Slides — editable blocks',
+									'jankx'
+								),
+								value: 'slides',
+							},
+							{
+								label: __(
+									'Image gallery — pick photos',
+									'jankx'
+								),
+								value: 'gallery',
+							},
+						]}
+						onChange={(value: string) =>
+							setAttributes({
+								contentMode: value as
+									| 'slides'
+									| 'gallery',
+							})
+						}
+						help={__(
+							'Slides: add and edit each slide like normal blocks. Gallery: select a set of photos once and banner slides are generated automatically.',
+							'jankx'
+						)}
+					/>
 
-            <RangeControl
-              label={__('Min Height (px)', 'jankx')}
-              value={minHeight}
-              onChange={(val?: number) => setAttributes({ minHeight: val || 50 })}
-              min={50}
-              max={600}
-              step={50}
-              help={__('Minimum height on mobile devices', 'jankx')}
-            />
-            <ToggleControl
-              label={__('Fit Viewport (Minus Header)', 'jankx')}
-              checked={!!fitViewportMinusHeader}
-              onChange={(val: boolean) => setAttributes({ fitViewportMinusHeader: val })}
-              help={__('Khi bật, Carousel sẽ lấp đầy phần còn lại của viewport sau header.', 'jankx')}
-            />
+					{contentMode === 'gallery' && (
+						<MediaUploadCheck>
+							<MediaUpload
+								onSelect={onSelectGalleryImages}
+								allowedTypes={['image']}
+								multiple={true}
+								value={galleryImages.map((img) => img.id)}
+								render={({ open }: { open: () => void }) => (
+									<Button
+										variant="primary"
+										onClick={open}
+										style={{
+											width: '100%',
+											marginTop: '10px',
+										}}
+									>
+										{galleryImages.length > 0
+											? __('Change Images', 'jankx')
+											: __('Select Images', 'jankx')}
+									</Button>
+								)}
+							/>
+						</MediaUploadCheck>
+					)}
+				</PanelBody>
 
-            <ToggleControl
-              label={__('Full Viewport Height (100vh)', 'jankx')}
-              checked={!!fullHeight}
-              onChange={(val: boolean) => setAttributes({ fullHeight: val })}
-              help={__('Bật để Carousel cao bằng toàn bộ màn hình (thường dùng cho Hero).', 'jankx')}
-            />
+				{contentMode === 'slides' && (
+					<PanelBody title={__('Slides', 'jankx')} initialOpen={true}>
+						{slides.length === 0 ? (
+							<p className="components-base-control__help">
+								{__(
+									'No slides yet — add the first one below.',
+									'jankx'
+								)}
+							</p>
+						) : (
+							<ul className="jx-carousel-slide-list">
+								{slides.map((slide: any, index: number) => (
+									<li
+										key={slide.clientId}
+										className={
+											index === activeIndex
+												? 'is-active'
+												: ''
+										}
+									>
+										<button
+											type="button"
+											className="jx-carousel-slide-list__jump"
+											onClick={() =>
+												jumpToSlide(
+													index,
+													slide.clientId
+												)
+											}
+										>
+											<span className="jx-carousel-slide-list__index">
+												{index + 1}
+											</span>
+											<span className="jx-carousel-slide-list__label">
+												{slide.name === BANNER_BLOCK
+													? __('Banner', 'jankx')
+													: __('Slide', 'jankx')}
+											</span>
+										</button>
+										<button
+											type="button"
+											className="jx-carousel-slide-list__remove"
+											aria-label={__(
+												'Delete slide',
+												'jankx'
+											)}
+											onClick={() =>
+												removeSlide(slide.clientId)
+											}
+										>
+											<svg
+												viewBox="0 0 24 24"
+												width="14"
+												height="14"
+												fill="none"
+												stroke="currentColor"
+												strokeWidth="2"
+											>
+												<path d="M3 6h18M8 6V4a1 1 0 011-1h6a1 1 0 011 1v2m3 0v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6" />
+											</svg>
+										</button>
+									</li>
+								))}
+							</ul>
+						)}
+						<Button
+							variant="primary"
+							onClick={addSlide}
+							style={{ width: '100%', marginTop: '10px' }}
+						>
+							{__('Add slide', 'jankx')}
+						</Button>
+					</PanelBody>
+				)}
 
-            <ToggleControl
-              label={__('Loop', 'jankx')}
-              checked={loop}
-              onChange={(val: boolean) => setAttributes({ loop: val })}
-            />
+				<PanelBody
+					title={__('Slider settings', 'jankx')}
+					initialOpen={true}
+				>
+					{styleVariation === 'carousel' ||
+					styleVariation === 'testimonial' ? (
+						<>
+							<RangeControl
+								label={__(
+									'Slides Per View (Desktop)',
+									'jankx'
+								)}
+								value={slidesPerView}
+								onChange={(val: number) =>
+									setAttributes({ slidesPerView: val })
+								}
+								min={1}
+								max={6}
+								step={1}
+								help={__(
+									'Number of slides visible on desktop screens (≥1024px)',
+									'jankx'
+								)}
+							/>
+							<RangeControl
+								label={__('Slides Per View (Tablet)', 'jankx')}
+								value={slidesPerViewTablet}
+								onChange={(val: number) =>
+									setAttributes({ slidesPerViewTablet: val })
+								}
+								min={1}
+								max={4}
+								step={1}
+								help={__(
+									'Number of slides visible on tablet screens (768px - 1023px)',
+									'jankx'
+								)}
+							/>
+							<RangeControl
+								label={__('Slides Per View (Mobile)', 'jankx')}
+								value={slidesPerViewMobile}
+								onChange={(val: number) =>
+									setAttributes({ slidesPerViewMobile: val })
+								}
+								min={1}
+								max={2}
+								step={1}
+								help={__(
+									'Number of slides visible on mobile screens (<768px)',
+									'jankx'
+								)}
+							/>
+						</>
+					) : (
+						<RangeControl
+							label={__('Slides Per View', 'jankx')}
+							value={slidesPerView}
+							onChange={(val: number) =>
+								setAttributes({ slidesPerView: val })
+							}
+							min={1}
+							max={4}
+							step={1}
+						/>
+					)}
 
-            <ToggleControl
-              label={__('Navigation', 'jankx')}
-              checked={navigation}
-              onChange={(val: boolean) => setAttributes({ navigation: val })}
-            />
+					<RangeControl
+						label={__('Space Between (px)', 'jankx')}
+						value={spaceBetween}
+						onChange={(val: number) =>
+							setAttributes({ spaceBetween: val })
+						}
+						min={0}
+						max={100}
+						step={10}
+					/>
 
-            <ToggleControl
-              label={__('Pagination', 'jankx')}
-              checked={pagination}
-              onChange={(val: boolean) => setAttributes({ pagination: val })}
-            />
+					<RangeControl
+						label={__('Speed (ms)', 'jankx')}
+						value={speed}
+						onChange={(val: number) =>
+							setAttributes({ speed: val })
+						}
+						min={100}
+						max={2000}
+						step={100}
+					/>
 
-            <ToggleControl
-              label={__('Autoplay', 'jankx')}
-              checked={autoplay}
-              onChange={(val: boolean) => setAttributes({ autoplay: val })}
-            />
+					<RangeControl
+						label={__('Height (px)', 'jankx')}
+						value={height}
+						onChange={(val?: number) =>
+							setAttributes({ height: val || 400 })
+						}
+						min={50}
+						max={1000}
+						step={50}
+						help={__(
+							'Height for desktop (max-height on mobile)',
+							'jankx'
+						)}
+					/>
 
-            {autoplay && (
-              <RangeControl
-                label={__('Autoplay Delay (ms)', 'jankx')}
-                value={autoplayDelay}
-                onChange={(val: number) => setAttributes({ autoplayDelay: val })}
-                min={1000}
-                max={10000}
-                step={500}
-              />
-            )}
-          </PanelBody>
+					<RangeControl
+						label={__('Min Height (px)', 'jankx')}
+						value={minHeight}
+						onChange={(val?: number) =>
+							setAttributes({ minHeight: val || 50 })
+						}
+						min={50}
+						max={600}
+						step={50}
+						help={__('Minimum height on mobile devices', 'jankx')}
+					/>
+					<ToggleControl
+						label={__('Fit Viewport (Minus Header)', 'jankx')}
+						checked={!!fitViewportMinusHeader}
+						onChange={(val: boolean) =>
+							setAttributes({ fitViewportMinusHeader: val })
+						}
+						help={__(
+							'Khi bật, Carousel sẽ lấp đầy phần còn lại của viewport sau header.',
+							'jankx'
+						)}
+					/>
 
-          <PanelBody title={__('Banner Style Settings', 'jankx')} initialOpen={false}>
-            <SelectControl
-              label={__('Banner Style', 'jankx')}
-              value={bannerStyle}
-              options={[
-                { label: __('Default', 'jankx'), value: 'default' },
-                { label: __('Circles', 'jankx'), value: 'circles' },
-                { label: __('Square', 'jankx'), value: 'square' },
-                { label: __('Banner', 'jankx'), value: 'banner' }
-              ]}
-              onChange={(val: string) => setAttributes({ bannerStyle: val })}
-            />
+					<ToggleControl
+						label={__('Full Viewport Height (100vh)', 'jankx')}
+						checked={!!fullHeight}
+						onChange={(val: boolean) =>
+							setAttributes({ fullHeight: val })
+						}
+						help={__(
+							'Bật để Carousel cao bằng toàn bộ màn hình (thường dùng cho Hero).',
+							'jankx'
+						)}
+					/>
 
-            <div style={{ marginBottom: '16px' }}>
-              <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>
-                {__('Text Color', 'jankx')}
-              </label>
-              <ColorPicker
-                color={bannerTextColor || '#ffffff'}
-                onChange={(color: string) => setAttributes({ bannerTextColor: color })}
-                enableAlpha={false}
-              />
-            </div>
+					<ToggleControl
+						label={__('Loop', 'jankx')}
+						checked={loop}
+						onChange={(val: boolean) =>
+							setAttributes({ loop: val })
+						}
+					/>
 
-            <div style={{ marginBottom: '16px' }}>
-              <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>
-                {__('Background Color', 'jankx')}
-              </label>
-              <ColorPicker
-                color={bannerBackgroundColor || '#000000'}
-                onChange={(color: string) => setAttributes({ bannerBackgroundColor: color })}
-                enableAlpha={false}
-              />
-            </div>
+					<ToggleControl
+						label={__('Autoplay', 'jankx')}
+						checked={autoplay}
+						onChange={(val: boolean) =>
+							setAttributes({ autoplay: val })
+						}
+					/>
 
-            <RangeControl
-              label={__('Padding (px)', 'jankx')}
-              value={bannerPadding}
-              onChange={(val: number) => setAttributes({ bannerPadding: val })}
-              min={0}
-              max={50}
-              step={5}
-            />
+					{autoplay && (
+						<RangeControl
+							label={__('Autoplay Delay (ms)', 'jankx')}
+							value={autoplayDelay}
+							onChange={(val: number) =>
+								setAttributes({ autoplayDelay: val })
+							}
+							min={1000}
+							max={10000}
+							step={500}
+						/>
+					)}
+				</PanelBody>
 
-            <RangeControl
-              label={__('Border Radius (px)', 'jankx')}
-              value={bannerBorderRadius}
-              onChange={(val: number) => setAttributes({ bannerBorderRadius: val })}
-              min={0}
-              max={20}
-              step={1}
-            />
-          </PanelBody>
+				<PanelBody
+					title={__('Navigation', 'jankx')}
+					initialOpen={false}
+				>
+					<ToggleControl
+						label={__('Show arrows', 'jankx')}
+						checked={navigation}
+						onChange={(val: boolean) =>
+							setAttributes({ navigation: val })
+						}
+					/>
+					<ToggleControl
+						label={__('Show pagination dots', 'jankx')}
+						checked={pagination}
+						onChange={(val: boolean) =>
+							setAttributes({ pagination: val })
+						}
+					/>
 
-          <PanelBody title={__('Gradient Overlay', 'jankx')} initialOpen={false}>
-            <ToggleControl
-              label={__('Enable Gradient Overlay', 'jankx')}
-              checked={!!gradientOverlay}
-              onChange={(val: boolean) => setAttributes({ gradientOverlay: val })}
-              help={__('Add a gradient overlay from bottom to top with decreasing transparency', 'jankx')}
-            />
+					{navigation && (
+						<>
+							<SelectControl
+								label={__('Arrows position', 'jankx')}
+								value={arrowsPosition}
+								options={[
+									{
+										label: __('Inside (sides)', 'jankx'),
+										value: 'inside',
+									},
+									{
+										label: __('Outside edges', 'jankx'),
+										value: 'outside',
+									},
+									{
+										label: __('Bottom', 'jankx'),
+										value: 'bottom',
+									},
+								]}
+								onChange={(value: string) =>
+									setAttributes({
+										arrowsPosition: value as
+											| 'inside'
+											| 'outside'
+											| 'bottom',
+									})
+								}
+							/>
+							<ToggleControl
+								label={__('Always show arrows', 'jankx')}
+								help={__(
+									'Always keep buttons visible even when at the start or end of slides.',
+									'jankx'
+								)}
+								checked={alwaysShowArrows}
+								onChange={(val: boolean) =>
+									setAttributes({ alwaysShowArrows: val })
+								}
+							/>
+							<NavIconSettings
+								attributes={navAttributes as any}
+								setAttributes={
+									setAttributes as any
+								}
+							/>
+							<NavButtonStyleSettings
+								attributes={navAttributes as any}
+								setAttributes={
+									setAttributes as any
+								}
+							/>
+						</>
+					)}
+				</PanelBody>
 
-            {gradientOverlay && (
-              <>
-                <div style={{ marginBottom: '16px' }}>
-                  <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>
-                    {__('Gradient Color', 'jankx')}
-                  </label>
-                  <ColorPicker
-                    color={gradientColor || '#000000'}
-                    onChange={(color: string) => setAttributes({ gradientColor: color })}
-                    enableAlpha={false}
-                  />
-                </div>
+				{(styleVariation === 'banner' ||
+					contentMode === 'gallery') && (
+					<PanelBody
+						title={__('Banner style', 'jankx')}
+						initialOpen={false}
+					>
+						<SelectControl
+							label={__('Banner Style', 'jankx')}
+							value={bannerStyle}
+							options={[
+								{
+									label: __('Default', 'jankx'),
+									value: 'default',
+								},
+								{
+									label: __('Circles', 'jankx'),
+									value: 'circles',
+								},
+								{
+									label: __('Square', 'jankx'),
+									value: 'square',
+								},
+								{
+									label: __('Banner', 'jankx'),
+									value: 'banner',
+								},
+							]}
+							onChange={(val: string) =>
+								setAttributes({ bannerStyle: val })
+							}
+						/>
 
-                <RangeControl
-                  label={__('Gradient Opacity', 'jankx')}
-                  value={gradientOpacity}
-                  onChange={(val: number) => setAttributes({ gradientOpacity: val })}
-                  min={0}
-                  max={1}
-                  step={0.1}
-                  help={__('Transparency of the gradient (0 = fully transparent, 1 = fully opaque)', 'jankx')}
-                />
+						<div style={{ marginBottom: '16px' }}>
+							<label
+								style={{
+									display: 'block',
+									marginBottom: '8px',
+									fontWeight: 'bold',
+								}}
+							>
+								{__('Text Color', 'jankx')}
+							</label>
+							<ColorPicker
+								color={bannerTextColor || '#ffffff'}
+								onChange={(color: string) =>
+									setAttributes({ bannerTextColor: color })
+								}
+								enableAlpha={false}
+							/>
+						</div>
 
-                <RangeControl
-                  label={__('Gradient Height (%)', 'jankx')}
-                  value={gradientHeight}
-                  onChange={(val: number) => setAttributes({ gradientHeight: val })}
-                  min={10}
-                  max={100}
-                  step={5}
-                  help={__('Height of the gradient overlay as percentage of slide height', 'jankx')}
-                />
-              </>
-            )}
-          </PanelBody>
+						<div style={{ marginBottom: '16px' }}>
+							<label
+								style={{
+									display: 'block',
+									marginBottom: '8px',
+									fontWeight: 'bold',
+								}}
+							>
+								{__('Background Color', 'jankx')}
+							</label>
+							<ColorPicker
+								color={bannerBackgroundColor || '#000000'}
+								onChange={(color: string) =>
+									setAttributes({
+										bannerBackgroundColor: color,
+									})
+								}
+								enableAlpha={false}
+							/>
+						</div>
 
-          <PanelBody title={__('Navigation Settings', 'jankx')} initialOpen={false}>
-            <div style={{ marginBottom: '24px', paddingBottom: '16px', borderBottom: '1px solid #e0e0e0' }}>
-              <h4 style={{ margin: '0 0 12px 0' }}>{__('Button Container Style', 'jankx')}</h4>
+						<RangeControl
+							label={__('Padding (px)', 'jankx')}
+							value={bannerPadding}
+							onChange={(val: number) =>
+								setAttributes({ bannerPadding: val })
+							}
+							min={0}
+							max={50}
+							step={5}
+						/>
 
-              <RangeControl
-                label={__('Button Width (px)', 'jankx')}
-                value={navBtnWidth}
-                onChange={(val?: number) => setAttributes({ navBtnWidth: val || 44 })}
-                min={20}
-                max={100}
-                step={2}
-              />
-              <RangeControl
-                label={__('Button Height (px)', 'jankx')}
-                value={navBtnHeight}
-                onChange={(val?: number) => setAttributes({ navBtnHeight: val || 44 })}
-                min={20}
-                max={100}
-                step={2}
-              />
-              <RangeControl
-                label={__('Border Radius (%)', 'jankx')}
-                value={navBtnBorderRadius}
-                onChange={(val?: number) => setAttributes({ navBtnBorderRadius: typeof val !== 'undefined' ? val : 50 })}
-                min={0}
-                max={50}
-                step={1}
-                help={__('0 for square, 50 for circle', 'jankx')}
-              />
+						<RangeControl
+							label={__('Border Radius (px)', 'jankx')}
+							value={bannerBorderRadius}
+							onChange={(val: number) =>
+								setAttributes({ bannerBorderRadius: val })
+							}
+							min={0}
+							max={20}
+							step={1}
+						/>
 
-              <div style={{ marginBottom: '16px' }}>
-                <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>
-                  {__('Button Background Color', 'jankx')}
-                </label>
-                <ColorPicker
-                  color={navBtnBgColor || 'rgba(0,0,0,0.7)'}
-                  onChange={(color: string) => setAttributes({ navBtnBgColor: color })}
-                  enableAlpha={true}
-                />
-              </div>
-            </div>
+						<ToggleControl
+							label={__('Enable Gradient Overlay', 'jankx')}
+							checked={!!gradientOverlay}
+							onChange={(val: boolean) =>
+								setAttributes({ gradientOverlay: val })
+							}
+							help={__(
+								'Add a gradient overlay from bottom to top with decreasing transparency',
+								'jankx'
+							)}
+						/>
 
-            <h4 style={{ margin: '0 0 12px 0' }}>{__('Icon Display', 'jankx')}</h4>
-            <SelectControl
-              label={__('Icon Type', 'jankx')}
-              value={navIconType}
-              options={[
-                { label: __('Arrow (CSS default)', 'jankx'), value: 'arrow' },
-                { label: __('Image (PNG/JPG/SVG file)', 'jankx'), value: 'image' },
-                { label: __('SVG Code', 'jankx'), value: 'svg' },
-                { label: __('Font Icon (class)', 'jankx'), value: 'fonticon' }
-              ]}
-              onChange={(val: string) => setAttributes({ navIconType: val as any })}
-              help={__('Choose how to display the prev/next navigation icons', 'jankx')}
-            />
+						{gradientOverlay && (
+							<>
+								<div style={{ marginBottom: '16px' }}>
+									<label
+										style={{
+											display: 'block',
+											marginBottom: '8px',
+											fontWeight: 'bold',
+										}}
+									>
+										{__('Gradient Color', 'jankx')}
+									</label>
+									<ColorPicker
+										color={gradientColor || '#000000'}
+										onChange={(color: string) =>
+											setAttributes({
+												gradientColor: color,
+											})
+										}
+										enableAlpha={false}
+									/>
+								</div>
 
-            <RangeControl
-              label={__('Icon Size (px)', 'jankx')}
-              value={navIconSize}
-              onChange={(val?: number) => setAttributes({ navIconSize: val || 24 })}
-              min={12}
-              max={80}
-              step={2}
-            />
+								<RangeControl
+									label={__('Gradient Opacity', 'jankx')}
+									value={gradientOpacity}
+									onChange={(val: number) =>
+										setAttributes({ gradientOpacity: val })
+									}
+									min={0}
+									max={1}
+									step={0.1}
+									help={__(
+										'Transparency of the gradient (0 = fully transparent, 1 = fully opaque)',
+										'jankx'
+									)}
+								/>
 
-            <div style={{ marginBottom: '16px' }}>
-              <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>
-                {__('Icon Color', 'jankx')}
-              </label>
-              <ColorPicker
-                color={navIconColor || '#ffffff'}
-                onChange={(color: string) => setAttributes({ navIconColor: color })}
-                enableAlpha={true}
-              />
-            </div>
+								<RangeControl
+									label={__('Gradient Height (%)', 'jankx')}
+									value={gradientHeight}
+									onChange={(val: number) =>
+										setAttributes({ gradientHeight: val })
+									}
+									min={10}
+									max={100}
+									step={5}
+									help={__(
+										'Height of the gradient overlay as percentage of slide height',
+										'jankx'
+									)}
+								/>
+							</>
+						)}
+					</PanelBody>
+				)}
+			</InspectorControls>
 
-            {navIconType === 'image' && (
-              <>
-                <BaseControl label={__('Previous Button Icon', 'jankx')} id="carousel-prev-icon">
-                  <MediaUploadCheck>
-                    <MediaUpload
-                      onSelect={(media: any) => setAttributes({ prevIconImageId: media.id, prevIconImageUrl: media.url })}
-                      allowedTypes={['image']}
-                      value={prevIconImageId}
-                      render={({ open }: { open: () => void }) => (
-                        <div>
-                          {prevIconImageUrl && (
-                            <img
-                              src={prevIconImageUrl}
-                              alt="Prev icon"
-                              style={{ width: `${navIconSize}px`, height: `${navIconSize}px`, objectFit: 'contain', display: 'block', marginBottom: '8px' }}
-                            />
-                          )}
-                          <Button variant={prevIconImageUrl ? 'secondary' : 'primary'} onClick={open} style={{ width: '100%' }}>
-                            {prevIconImageUrl ? __('Change Prev Icon', 'jankx') : __('Select Prev Icon', 'jankx')}
-                          </Button>
-                          {prevIconImageUrl && (
-                            <Button
-                              variant="link"
-                              isDestructive
-                              onClick={() => setAttributes({ prevIconImageId: 0, prevIconImageUrl: '' })}
-                              style={{ display: 'block', marginTop: '4px' }}
-                            >
-                              {__('Remove', 'jankx')}
-                            </Button>
-                          )}
-                        </div>
-                      )}
-                    />
-                  </MediaUploadCheck>
-                </BaseControl>
+			<div className="embla">
+				{!hasInnerBlocks && (
+					<div className="carousel-empty-hint">
+						{__(
+							'Carousel trống — nhấn nút + để thêm slide hoặc banner.',
+							'jankx'
+						)}
+					</div>
+				)}
 
-                <BaseControl label={__('Next Button Icon', 'jankx')} id="carousel-next-icon">
-                  <MediaUploadCheck>
-                    <MediaUpload
-                      onSelect={(media: any) => setAttributes({ nextIconImageId: media.id, nextIconImageUrl: media.url })}
-                      allowedTypes={['image']}
-                      value={nextIconImageId}
-                      render={({ open }: { open: () => void }) => (
-                        <div>
-                          {nextIconImageUrl && (
-                            <img
-                              src={nextIconImageUrl}
-                              alt="Next icon"
-                              style={{ width: `${navIconSize}px`, height: `${navIconSize}px`, objectFit: 'contain', display: 'block', marginBottom: '8px' }}
-                            />
-                          )}
-                          <Button variant={nextIconImageUrl ? 'secondary' : 'primary'} onClick={open} style={{ width: '100%' }}>
-                            {nextIconImageUrl ? __('Change Next Icon', 'jankx') : __('Select Next Icon', 'jankx')}
-                          </Button>
-                          {nextIconImageUrl && (
-                            <Button
-                              variant="link"
-                              isDestructive
-                              onClick={() => setAttributes({ nextIconImageId: 0, nextIconImageUrl: '' })}
-                              style={{ display: 'block', marginTop: '4px' }}
-                            >
-                              {__('Remove', 'jankx')}
-                            </Button>
-                          )}
-                        </div>
-                      )}
-                    />
-                  </MediaUploadCheck>
-                </BaseControl>
-              </>
-            )}
+				<div
+					{...innerBlocksProps}
+					className={`${innerBlocksProps.className} embla__container`}
+					style={
+						{
+							'--jx-track-offset': trackOffset,
+							transform: `translateX(var(--jx-track-offset))`,
+							transition: 'transform 350ms ease',
+						} as React.CSSProperties
+					}
+				/>
 
-            {navIconType === 'svg' && (
-              <>
-                <TextareaControl
-                  label={__('Previous Button SVG', 'jankx')}
-                  value={prevIconSvg}
-                  onChange={(val: string) => setAttributes({ prevIconSvg: val })}
-                  placeholder="<svg viewBox='0 0 24 24'>...</svg>"
-                  help={__('Paste the full SVG code for the previous button icon', 'jankx')}
-                  rows={4}
-                />
-                <TextareaControl
-                  label={__('Next Button SVG', 'jankx')}
-                  value={nextIconSvg}
-                  onChange={(val: string) => setAttributes({ nextIconSvg: val })}
-                  placeholder="<svg viewBox='0 0 24 24'>...</svg>"
-                  help={__('Paste the full SVG code for the next button icon', 'jankx')}
-                  rows={4}
-                />
-              </>
-            )}
+				{navigation && slideCount > 1 && arrowsPosition === 'inside' && (
+					<>
+						{renderArrows('prev')}
+						{renderArrows('next')}
+					</>
+				)}
 
-            {navIconType === 'fonticon' && (
-              <>
-                <TextControl
-                  label={__('Previous Button Icon Class', 'jankx')}
-                  value={prevIconClass}
-                  onChange={(val: string) => setAttributes({ prevIconClass: val })}
-                  placeholder="fas fa-chevron-left"
-                  help={__('CSS class(es) for the font icon (FontAwesome, Dashicons, etc.)', 'jankx')}
-                />
-                <TextControl
-                  label={__('Next Button Icon Class', 'jankx')}
-                  value={nextIconClass}
-                  onChange={(val: string) => setAttributes({ nextIconClass: val })}
-                  placeholder="fas fa-chevron-right"
-                  help={__('CSS class(es) for the font icon (FontAwesome, Dashicons, etc.)', 'jankx')}
-                />
-              </>
-            )}
-          </PanelBody>
-        </InspectorControls>
+				{pagination && dotCount > 1 && (
+					<div className="embla__dots">
+						{Array.from({ length: dotCount }, (_, index) => (
+							<button
+								key={index}
+								type="button"
+								className={`embla__dot${
+									index === activeIndex
+										? ' is-active'
+										: ''
+								}`}
+								aria-label={__(
+									'Go to slide',
+									'jankx'
+								)}
+								onClick={() => goTo(index)}
+							/>
+						))}
+					</div>
+				)}
+			</div>
 
-        <div className="embla">
-          {!hasInnerBlocks && (
-            <div className="carousel-empty-hint">
-              {__('Carousel trống — nhấn nút + để thêm slide hoặc banner.', 'jankx')}
-            </div>
-          )}
+			{navigation && slideCount > 1 && arrowsPosition === 'outside' && (
+				<>
+					{renderArrows('prev')}
+					{renderArrows('next')}
+				</>
+			)}
 
-          <div {...innerBlocksProps} className={`${innerBlocksProps.className} embla__container`} />
-
-          {navigation && slideCount > 1 && (
-            <>
-              <div
-                className={`embla__button embla__button--prev${navIconType !== 'arrow' ? ' has-custom-icon' : ''}`}
-                style={{
-                  width: `${navBtnWidth}px`,
-                  height: `${navBtnHeight}px`,
-                  borderRadius: `${navBtnBorderRadius}%`,
-                  backgroundColor: navBtnBgColor,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  zIndex: 2,
-                  position: 'absolute',
-                  left: '10px',
-                  top: '50%',
-                  transform: 'translateY(-50%)'
-                }}
-              >
-                {renderNavIcon(navIconType, prevIconImageUrl, prevIconSvg, prevIconClass, navIconSize, navIconColor, 'prev')}
-              </div>
-              <div
-                className={`embla__button embla__button--next${navIconType !== 'arrow' ? ' has-custom-icon' : ''}`}
-                style={{
-                  width: `${navBtnWidth}px`,
-                  height: `${navBtnHeight}px`,
-                  borderRadius: `${navBtnBorderRadius}%`,
-                  backgroundColor: navBtnBgColor,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  zIndex: 2,
-                  position: 'absolute',
-                  right: '10px',
-                  top: '50%',
-                  transform: 'translateY(-50%)'
-                }}
-              >
-                {renderNavIcon(navIconType, nextIconImageUrl, nextIconSvg, nextIconClass, navIconSize, navIconColor, 'next')}
-              </div>
-            </>
-          )}
-
-          {pagination && <div className="embla__dots"></div>}
-        </div>
-      </div>
-    </>
-  );
+			{navigation && slideCount > 1 && arrowsPosition === 'bottom' && (
+				<div className="carousel-arrows-bottom-row">
+					{renderArrows('prev')}
+					{renderArrows('next')}
+				</div>
+			)}
+		</div>
+	);
 }
