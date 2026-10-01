@@ -439,6 +439,7 @@ if (!function_exists('_x')) { function _x($t, $c, $d = 'default') { return $t; }
 if (!function_exists('get_term_link')) { function get_term_link($t, $taxonomy = '') { return '#'; } }
 if (!function_exists('get_post_meta')) { function get_post_meta($p, $k = '', $s = false) { return $s ? '' : []; } }
 if (!function_exists('get_the_post_thumbnail_url')) { function get_the_post_thumbnail_url($p = 0, $s = 'post-thumbnail') { return ''; } }
+if (!function_exists('has_post_thumbnail')) { function has_post_thumbnail($p = 0, $s = 'post-thumbnail', $i = false) { return false; } }
 if (!function_exists('wp_get_attachment_image_src')) { function wp_get_attachment_image_src($a, $s = 'thumbnail', $i = false) { return false; } }
 if (!function_exists('wp_doing_ajax')) { function wp_doing_ajax() { return false; } }
 
