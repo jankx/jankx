@@ -1,3 +1,7 @@
+// Frontend and editor must render the counter identically, so the editor
+// bundle pulls in the shape styles instead of relying on `style` (frontend only).
+@use './style.scss';
+
 .wp-block-jankx-loop-index-counter.is-outside-loop {
   outline: 1px dashed rgba(214, 88, 88, 0.65);
   outline-offset: 2px;
