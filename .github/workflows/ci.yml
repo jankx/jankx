@@ -61,6 +61,18 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      # webpack alias @jankx/gutenberg-controls/controls trỏ vào vendor/ — bắt buộc
+      # phải cài composer dependencies trước khi build resources.
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: mbstring, intl, bcmath, curl, gd, zip
+          tools: composer:v2
+
+      - name: Install Composer dependencies (blocks build needs vendor/gutenberg-controls)
+        run: composer update --prefer-dist --no-progress --no-interaction
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:

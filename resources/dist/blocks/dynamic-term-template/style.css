@@ -128,6 +128,15 @@
   bottom: 8px;
   right: 8px;
 }
+.jankx-thumbnail-overlay-wrapper.jankx-overlay-target-entry-image, .jankx-thumbnail-overlay-wrapper.jankx-overlay-target-entire-item {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 3;
+}
+.jankx-thumbnail-overlay-wrapper.jankx-overlay-target-entry-image .jankx-overlay-icon, .jankx-thumbnail-overlay-wrapper.jankx-overlay-target-entire-item .jankx-overlay-icon {
+  pointer-events: auto;
+}
 
 .jankx-reveal {
   --jankx-animation-duration: 1000ms;

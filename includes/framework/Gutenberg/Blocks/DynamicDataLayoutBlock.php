@@ -1033,6 +1033,39 @@ class DynamicDataLayoutBlock extends Block
     }
 
     /**
+     * Append the responsive min-height CSS variables consumed by style.scss.
+     *
+     * These blocks are rendered by PHP rather than replayed from the saved
+     * markup, so anything the editor wrote to the block wrapper has to be
+     * re-emitted here or it never reaches the front end.
+     *
+     * @param array $styleRules Accumulator, passed by reference.
+     * @param mixed $minHeight  Either a {desktop,tablet,mobile} map or a string.
+     * @return void
+     */
+    protected static function appendMinHeightStyleRules(array &$styleRules, $minHeight): void
+    {
+        if (is_array($minHeight)) {
+            foreach (['desktop', 'tablet', 'mobile'] as $device) {
+                $value = $minHeight[$device] ?? null;
+                if (is_string($value) && trim($value) !== '') {
+                    $styleRules[] = '--min-height-' . $device . ': ' . esc_attr(trim($value));
+                }
+            }
+
+            return;
+        }
+
+        if (is_string($minHeight) && trim($minHeight) !== '') {
+            // Legacy single value: drive every breakpoint from the one value.
+            $value = esc_attr(trim($minHeight));
+            $styleRules[] = '--min-height-desktop: ' . $value;
+            $styleRules[] = '--min-height-tablet: ' . $value;
+            $styleRules[] = '--min-height-mobile: ' . $value;
+        }
+    }
+
+    /**
      * Build wrapper attributes with data-* for AJAX/filter integrations
      *
      * @param array $attributes
@@ -1155,6 +1188,8 @@ class DynamicDataLayoutBlock extends Block
         if (!empty($attributes['thumbnailPosition'])) {
             $attrs['data-thumbnail-position'] = esc_attr($attributes['thumbnailPosition']);
         }
+
+        self::appendMinHeightStyleRules($styleRules, $attributes['minHeight'] ?? null);
 
         // Embed full attributes for AJAX fallback
         $attrs['data-block-settings'] = esc_attr(wp_json_encode($attributes));

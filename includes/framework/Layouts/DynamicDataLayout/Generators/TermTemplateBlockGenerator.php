@@ -163,6 +163,16 @@ class TermTemplateBlockGenerator extends AbstractContentGenerator
 
         $enableOverlay = !empty($templateAttrs['enableOverlay']);
 
+        $animationType = $templateAttrs['animationType'] ?? 'none';
+        $animationDuration = $templateAttrs['animationDuration'] ?? 1000;
+        $animationDelay = $templateAttrs['animationDelay'] ?? 0;
+        $animationTarget = $templateAttrs['animationTarget'] ?? 'entry';
+        $animationReverse = !empty($templateAttrs['animationReverse']);
+        $hoverAnimation = $templateAttrs['hoverAnimation'] ?? 'none';
+        $unhoverAnimation = $templateAttrs['unhoverAnimation'] ?? 'none';
+
+        $itemIndex = 0;
+
         foreach ($terms as $term) {
             $itemContent = $this->renderTermItem($term, $terms, $options);
             if ($itemContent === '') {
@@ -175,18 +185,33 @@ class TermTemplateBlockGenerator extends AbstractContentGenerator
                 $classes .= ' ' . $templateClasses;
             }
 
+            $itemDataAttrs = '';
+            if ($hoverAnimation !== 'none') {
+                $itemDataAttrs .= sprintf(' data-hover-ani="%s"', esc_attr($hoverAnimation));
+            }
+            if ($unhoverAnimation !== 'none') {
+                $itemDataAttrs .= sprintf(' data-unhover-ani="%s"', esc_attr($unhoverAnimation));
+            }
+            $itemDataAttrs .= $itemBgDataAttrs;
+
             $currentStyle = $this->buildTemplateItemInlineStyle($templateAttrs);
             $bgStyle = $this->buildTermItemBackgroundStyle($templateAttrs, $term);
             if ($bgStyle !== '') {
                 $currentStyle .= ($currentStyle !== '' ? '; ' : '') . $bgStyle;
             }
-            if ($enableOverlay) {
-                if (strpos($currentStyle, 'position:') === false) {
-                    $currentStyle .= ($currentStyle !== '' ? '; ' : '') . 'position: relative';
+
+            if ($animationType !== 'none') {
+                $classes .= sprintf(' jankx-reveal jankx-reveal--%s jankx-reveal--target-%s', $animationType, $animationTarget);
+                if ($animationReverse) {
+                    $classes .= ' jankx-reveal--reverse';
                 }
-                if (strpos($currentStyle, 'overflow:') === false) {
-                    $currentStyle .= ($currentStyle !== '' ? '; ' : '') . 'overflow: hidden';
-                }
+
+                $delay = $itemIndex * $animationDelay;
+                $currentStyle .= ($currentStyle !== '' ? '; ' : '') . sprintf(
+                    '--jankx-animation-duration: %dms; --jankx-animation-delay: %dms;',
+                    (int) $animationDuration,
+                    (int) $delay
+                );
             }
 
             $overlayHtml = $this->buildTermItemOverlayHtml($templateAttrs, $term);
@@ -195,8 +220,36 @@ class TermTemplateBlockGenerator extends AbstractContentGenerator
                 $itemContent = sprintf('<div class="dynamic-data-template__content" style="position: relative; z-index: 2">%s</div>', $itemContent);
             }
 
+            // entry-image / entire-item icon overlays anchor to the item
+            // rather than to a featured image block, which terms do not have.
+            $itemIconHtml = \Jankx\Layouts\DynamicDataLayout\OverlayIconRenderer::buildItemOverlayHtml(
+                $templateAttrs,
+                $this->templateTermHasMedia($templateAttrs, $term)
+            );
+
+            if ($enableOverlay || $itemIconHtml !== '') {
+                if (strpos($currentStyle, 'position:') === false) {
+                    $currentStyle .= ($currentStyle !== '' ? '; ' : '') . 'position: relative';
+                }
+            }
+
+            if ($enableOverlay) {
+                if (strpos($currentStyle, 'overflow:') === false) {
+                    $currentStyle .= ($currentStyle !== '' ? '; ' : '') . 'overflow: hidden';
+                }
+            }
+
             $currentStyleAttr = $currentStyle !== '' ? sprintf(' style="%s"', esc_attr($currentStyle)) : '';
-            $output[] = sprintf('<div class="%s"%s%s>%s%s</div>', esc_attr($classes), $currentStyleAttr, $itemBgDataAttrs, $itemContent, $overlayHtml);
+            $output[] = sprintf(
+                '<div class="%s"%s%s>%s%s%s</div>',
+                esc_attr($classes),
+                $currentStyleAttr,
+                $itemDataAttrs,
+                $itemContent,
+                $overlayHtml,
+                $itemIconHtml
+            );
+            $itemIndex++;
         }
 
         return implode('', $output);
@@ -262,6 +315,37 @@ class TermTemplateBlockGenerator extends AbstractContentGenerator
         }
 
         return implode('; ', $styles);
+    }
+
+    /**
+     * Whether this term has a real image for the `entry-image` target to sit on.
+     *
+     * Deliberately excludes the bundled placeholder, since a placeholder is not
+     * media the author chose for this term.
+     */
+    protected function templateTermHasMedia(array $attrs, \WP_Term $term): bool
+    {
+        if (($attrs['itemBgType'] ?? 'none') !== 'image') {
+            return false;
+        }
+
+        if (($attrs['itemBgImageSource'] ?? 'custom') === 'custom') {
+            return ($attrs['itemBgImageUrl'] ?? '') !== '';
+        }
+
+        $service = null;
+        if (class_exists('\Jankx\Extensions\TaxonomyFeaturedImage\TaxonomyFeaturedImageExtension')) {
+            $ext = \Jankx\Extensions\TaxonomyFeaturedImage\TaxonomyFeaturedImageExtension::get_instance();
+            $service = $ext ? $ext->getService() : null;
+        }
+        if (!$service && class_exists('\Jankx\Extensions\TaxonomyFeaturedImage\Services\TaxonomyImageService')) {
+            $service = new \Jankx\Extensions\TaxonomyFeaturedImage\Services\TaxonomyImageService();
+        }
+        if ($service) {
+            return ($service->getTermImageUrl($term, 'full') ?: '') !== '';
+        }
+
+        return false;
     }
 
     protected function buildTermItemOverlayHtml(array $attrs, \WP_Term $term): string

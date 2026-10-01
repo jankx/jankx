@@ -207,6 +207,23 @@
         bottom: 8px;
         right: 8px;
     }
+
+    // Item level targets: the wrapper is stretched over the whole item
+    // instead of hugging the image block. Pointer events stay on the icon
+    // so the item's own link/click handler keeps working underneath.
+    // The .overlay-pos-* rules above position against this stretched wrapper,
+    // so no extra per-target positioning is needed.
+    &.jankx-overlay-target-entry-image,
+    &.jankx-overlay-target-entire-item {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        z-index: 3;
+
+        .jankx-overlay-icon {
+            pointer-events: auto;
+        }
+    }
 }
 
 // =====================================================

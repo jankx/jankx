@@ -669,6 +669,8 @@ class DynamicTermLayoutBlock extends DynamicDataLayoutBlock
             $attrs['data-thumbnail-position'] = esc_attr($attributes['thumbnailPosition']);
         }
 
+        $this->appendMinHeightStyleRules($styleRules, $attributes['minHeight'] ?? null);
+
         // Embed full attributes for AJAX/stateless reconstruction
         $attrs['data-block-settings'] = esc_attr(wp_json_encode($attributes));
 

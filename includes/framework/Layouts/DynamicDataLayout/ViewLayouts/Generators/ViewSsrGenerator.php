@@ -103,19 +103,6 @@ class ViewSsrGenerator extends AbstractViewContentGenerator
         return $this->fallbackRender($templateBlock, $options);
     }
 
-    protected function getOverlayIconTemplateFile(): ?string
-    {
-        $child = get_stylesheet_directory() . '/views/layouts/common/overlay-icon.latte';
-        if (file_exists($child)) {
-            return $child;
-        }
-        $parent = get_template_directory() . '/views/layouts/common/overlay-icon.latte';
-        if (file_exists($parent)) {
-            return $parent;
-        }
-        return null;
-    }
-
     protected function fallbackRender(array $templateBlock, array $options): string
     {
         $blockName = $templateBlock['blockName'] ?? '';
@@ -281,51 +268,10 @@ class ViewSsrGenerator extends AbstractViewContentGenerator
             ];
         }
 
-        // Overlay icon injection for featured image when configured
-        $overlayIcon = $options['overlayIcon'] ?? '';
-        $overlayType = $options['overlayIconType'] ?? 'class';
-        $overlayImage = $options['overlayIconImageUrl'] ?? '';
-        $overlayText = $options['overlayIconText'] ?? '';
-        $overlayRotate = isset($options['overlayIconRotate']) ? (int) $options['overlayIconRotate'] : 0;
-        $overlayColor = $options['overlayIconColor'] ?? '#ffffff';
-        $overlayBg = $options['overlayIconBackground'] ?? 'rgba(0, 0, 0, 0.5)';
-        $overlaySize = isset($options['overlayIconSize']) ? (int) $options['overlayIconSize'] : 24;
-        $overlayPosition = $options['overlayIconPosition'] ?? 'center';
-        $overlayMode = $options['overlayIconShowMode'] ?? 'always-show';
-        $overlayTarget = $options['overlayIconTarget'] ?? 'featured-image';
-
-        if ($thumbnail['exists'] && ($overlayIcon || $overlayImage || $overlayText) && $overlayTarget === 'featured-image') {
-            $wrapperClasses = 'jankx-thumbnail-overlay-wrapper overlay-mode-' . sanitize_html_class($overlayMode) . ' overlay-pos-' . sanitize_html_class($overlayPosition);
-            $commonStyle = sprintf('style="color:%s;background:%s;font-size:%dpx;"', esc_attr($overlayColor), esc_attr($overlayBg), (int) $overlaySize);
-            $overlayIconTemplate = $this->getOverlayIconTemplateFile();
-            $iconMarkup = '';
-            if ($overlayIconTemplate && file_exists($overlayIconTemplate)) {
-                $iconMarkup = $this->latte->renderToString($overlayIconTemplate, [
-                    'type' => $overlayType,
-                    'className' => $overlayIcon,
-                    'imageUrl' => $overlayImage,
-                    'text' => $overlayText,
-                    'rotate' => (int) $overlayRotate,
-                    'size' => (int) $overlaySize,
-                ]);
-            } else {
-                if ($overlayType === 'image' && $overlayImage) {
-                    $iconMarkup = sprintf('<img src="%s" alt="" style="width:%dpx;height:%dpx;object-fit:contain;" />', esc_url($overlayImage), (int) $overlaySize, (int) $overlaySize);
-                } elseif ($overlayType === 'text' && $overlayText !== '') {
-                    $iconMarkup = sprintf('<span class="jankx-overlay-icon-text" style="transform: rotate(%ddeg);">%s</span>', (int) $overlayRotate, esc_html($overlayText));
-                } else {
-                    $iconMarkup = sprintf('<i class="%s" style="transform: rotate(%ddeg);"></i>', esc_attr($overlayIcon), (int) $overlayRotate);
-                }
-            }
-            $iconHtml = sprintf('<div class="jankx-overlay-icon" %s>%s</div>', $commonStyle, $iconMarkup);
-            $overlayInline = 'position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;';
-            $overlayHtml = sprintf('<div class="%s" style="%s">%s</div>', esc_attr($wrapperClasses), esc_attr($overlayInline), $iconHtml);
-            $thumbnail['html'] = sprintf(
-                '<div class="jankx-overlay-container" style="position:relative;">%s%s</div>',
-                $thumbnail['html'],
-                $overlayHtml
-            );
-        }
+        // Overlay icon is rendered by the loop item template
+        // (views/layouts/loop/item-*.latte), which is the overridable seam for
+        // this path. Injecting it here as well used to double up the icon for
+        // the featured-image target and left the other two targets unstyled.
 
         // Return all prepared data
         return [

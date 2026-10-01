@@ -24,6 +24,14 @@
 {var $overlayMode = isset($attrs['overlayIconShowMode']) ? $attrs['overlayIconShowMode'] : ($options['overlayIconShowMode'] ?? 'always-show')}
 {var $overlayRotate = isset($attrs['overlayIconRotate']) ? (int) $attrs['overlayIconRotate'] : (isset($options['overlayIconRotate']) ? (int) $options['overlayIconRotate'] : 0)}
 {var $hasOverlay = ($overlayType === 'image' ? ($overlayImageUrl !== '') : ($overlayType === 'text' ? ($overlayText !== '') : ($overlayClass !== '')))}
+{**
+ * The jankx-thumbnail-overlay-wrapper family is the one styled in the block
+ * stylesheets; overlay-mode-* / overlay-pos-* drive visibility and anchoring.
+ * jankx-overlay-target-* is added per target so item level targets can stretch
+ * over the whole item.
+ *}
+{var $overlayWrapperClass = 'jankx-thumbnail-overlay-wrapper jankx-overlay-target-' . $overlayTarget . ' overlay-mode-' . $overlayMode . ' overlay-pos-' . $overlayPos}
+{var $overlayIconStyle = 'color: ' . $overlayColor . '; background: ' . $overlayBg . '; font-size: ' . $overlaySize . 'px;'}
 
 {var $image_ratio = isset($image_ratio) ? $image_ratio : ($options['imageRatio'] ?? '')}
 {var $contentClassExtra = ' item-spacing-' . $item_spacing . ($show_item_border ? ' has-item-border' : '') . ($image_ratio ? ' has-image-ratio' : '')}
@@ -37,8 +45,10 @@
                     {$thumbHtml|noescape}
                 </a>
                 {if $hasOverlay && $overlayTarget in ['entry-image', 'featured-image'] }
-                    <span class="view-overlay overlay-{$overlayType} overlay-pos-{$overlayPos} overlay-mode-{$overlayMode}" style="color: {$overlayColor}; background: {$overlayBg}; font-size: {$overlaySize}px; width: {$overlaySize}px; height: {$overlaySize}px; line-height: {$overlaySize}px;">
-                        {include '../common/overlay-icon.latte', type => $overlayType, className => $overlayClass, imageUrl => $overlayImageUrl, text => $overlayText, rotate => $overlayRotate, size => $overlaySize}
+                    <span class="{$overlayWrapperClass}">
+                        <span class="jankx-overlay-icon" style="{$overlayIconStyle}">
+                            {include '../common/overlay-icon.latte', type => $overlayType, className => $overlayClass, imageUrl => $overlayImageUrl, text => $overlayText, rotate => $overlayRotate, size => $overlaySize}
+                        </span>
                     </span>
                 {/if}
             </figure>
@@ -112,8 +122,10 @@
         </div>
     </div>
     {if $hasOverlay && $overlayTarget === 'entire-item'}
-        <span class="view-overlay overlay-{$overlayType} overlay-pos-{$overlayPos} overlay-mode-{$overlayMode}" style="color: {$overlayColor}; background: {$overlayBg}; font-size: {$overlaySize}px; width: {$overlaySize}px; height: {$overlaySize}px; line-height: {$overlaySize}px;">
-            {include '../common/overlay-icon.latte', type => $overlayType, className => $overlayClass, imageUrl => $overlayImageUrl, text => $overlayText, rotate => $overlayRotate, size => $overlaySize}
+        <span class="{$overlayWrapperClass}">
+            <span class="jankx-overlay-icon" style="{$overlayIconStyle}">
+                {include '../common/overlay-icon.latte', type => $overlayType, className => $overlayClass, imageUrl => $overlayImageUrl, text => $overlayText, rotate => $overlayRotate, size => $overlaySize}
+            </span>
         </span>
     {/if}
 </div>

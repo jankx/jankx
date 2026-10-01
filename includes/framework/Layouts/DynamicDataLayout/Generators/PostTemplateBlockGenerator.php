@@ -248,19 +248,6 @@ class PostTemplateBlockGenerator extends AbstractContentGenerator
         // Get template block attributes
         $attrs = $this->templateBlock['attrs'] ?? [];
 
-        // Get overlay settings
-        $overlayIcon = $attrs['overlayIcon'] ?? '';
-        $overlayMode = $attrs['overlayIconShowMode'] ?? ($attrs['overlayIconMode'] ?? 'always-show');
-        $overlayType = $attrs['overlayIconType'] ?? 'class';
-        $overlayImage = $attrs['overlayIconImageUrl'] ?? '';
-        $overlayText = $attrs['overlayIconText'] ?? '';
-        $overlayRotate = isset($attrs['overlayIconRotate']) ? (int) $attrs['overlayIconRotate'] : 0;
-        $overlayColor = $attrs['overlayIconColor'] ?? '#ffffff';
-        $overlayBg = $attrs['overlayIconBackground'] ?? 'rgba(0, 0, 0, 0.5)';
-        $overlaySize = isset($attrs['overlayIconSize']) ? (int) $attrs['overlayIconSize'] : 24;
-        $overlayPosition = $attrs['overlayIconPosition'] ?? 'center';
-        $overlayTarget = $attrs['overlayIconTarget'] ?? 'featured-image';
-
         try {
             $innerBlocks = $this->templateBlock['innerBlocks'] ?? [];
 
@@ -318,26 +305,15 @@ class PostTemplateBlockGenerator extends AbstractContentGenerator
                     }
                 }
 
-                // Inject overlay only when targeting featured image (Standard Overlay)
-                // Note: core/template-part wrapping images is handled internally by the template.
+                // Anchor the overlay to the image block only for the
+                // featured-image target. entry-image and entire-item are
+                // rendered at item level once the loop has been assembled.
                 if (
-                    $overlayTarget === 'featured-image'
-                    && ($overlayIcon || $overlayImage || $overlayText)
+                    \Jankx\Layouts\DynamicDataLayout\OverlayIconRenderer::resolveTarget($attrs) === \Jankx\Layouts\DynamicDataLayout\OverlayIconRenderer::TARGET_FEATURED_IMAGE
+                    && \Jankx\Layouts\DynamicDataLayout\OverlayIconRenderer::isRenderable($attrs)
                     && in_array($normalizedBlock['blockName'], ['core/post-featured-image', 'woocommerce/product-image', 'jankx/advanced-image-box'], true)
                 ) {
-                    $blockHtml = $this->wrapWithOverlay(
-                        $blockHtml,
-                        $overlayIcon,
-                        $overlayMode,
-                        $overlayType,
-                        $overlayImage,
-                        $overlayText,
-                        $overlayRotate,
-                        $overlayColor,
-                        $overlayBg,
-                        $overlaySize,
-                        $overlayPosition
-                    );
+                    $blockHtml = \Jankx\Layouts\DynamicDataLayout\OverlayIconRenderer::wrapWithIcon($blockHtml, $attrs);
                 }
 
                 $output .= $blockHtml;
@@ -509,39 +485,6 @@ class PostTemplateBlockGenerator extends AbstractContentGenerator
         }
 
         return implode('; ', array_filter($styles));
-    }
-
-    protected function wrapWithOverlay(
-        string $html,
-        string $icon,
-        string $mode,
-        string $type = 'class',
-        string $imageUrl = '',
-        string $text = '',
-        int $rotate = 0,
-        string $color = '#ffffff',
-        string $bg = 'rgba(0, 0, 0, 0.5)',
-        int $size = 24,
-        string $position = 'center'
-    ): string {
-        $wrapperClasses = 'jankx-thumbnail-overlay-wrapper overlay-mode-' . $mode . ' overlay-pos-' . sanitize_html_class($position);
-
-        $commonStyle = sprintf('style="color:%s;background:%s;font-size:%dpx;"', esc_attr($color), esc_attr($bg), (int) $size);
-        $rotateStyle = $rotate !== 0 ? ' style="transform: rotate(' . (int) $rotate . 'deg);"' : '';
-        if ($type === 'image' && $imageUrl) {
-            $iconHtml = sprintf('<div class="jankx-overlay-icon" %s><img src="%s" alt="" style="width:%dpx;height:%dpx;object-fit:contain;" /></div>', $commonStyle, esc_url($imageUrl), (int) $size, (int) $size);
-        } elseif ($type === 'text' && $text !== '') {
-            $iconHtml = sprintf('<div class="jankx-overlay-icon" %s><span class="jankx-overlay-icon-text"%s>%s</span></div>', $commonStyle, $rotateStyle, esc_html($text));
-        } else {
-            $iconHtml = sprintf('<div class="jankx-overlay-icon" %s><i class="%s"%s></i></div>', $commonStyle, esc_attr($icon), $rotateStyle);
-        }
-
-        return sprintf(
-            '<div class="%s">%s%s</div>',
-            esc_attr($wrapperClasses),
-            $html,
-            $iconHtml
-        );
     }
 
     protected function buildBlockContext(WP_Post $post, WP_Query $query, array $options): array

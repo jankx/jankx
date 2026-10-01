@@ -89,18 +89,31 @@ trait PostTemplateRendererTrait
                 $currentStyle .= ($currentStyle !== '' ? '; ' : '') . $animationStyles;
             }
 
+            // entry-image / entire-item overlays anchor to the item itself
+            // rather than to the featured image block, so the item has to be
+            // the positioning context.
+            $itemOverlayHtml = \Jankx\Layouts\DynamicDataLayout\OverlayIconRenderer::buildItemOverlayHtml(
+                $templateAttrs,
+                $this->templateItemHasMedia($post)
+            );
+
+            if ($itemOverlayHtml !== '' && strpos($currentStyle, 'position:') === false) {
+                $currentStyle .= ($currentStyle !== '' ? '; ' : '') . 'position: relative';
+            }
+
             $currentStyleAttr = $currentStyle !== '' ? sprintf(' style="%s"', esc_attr($currentStyle)) : '';
 
             if ($mode === 'carousel') {
                 $output[] = sprintf(
-                    '<div class="embla__slide"><div class="%s"%s%s>%s</div></div>',
+                    '<div class="embla__slide"><div class="%s"%s%s>%s%s</div></div>',
                     esc_attr($classes),
                     $currentStyleAttr,
                     $itemDataAttrs,
-                    $itemContent
+                    $itemContent,
+                    $itemOverlayHtml
                 );
             } else {
-                $output[] = sprintf('<div class="%s"%s%s>%s</div>', esc_attr($classes), $currentStyleAttr, $itemDataAttrs, $itemContent);
+                $output[] = sprintf('<div class="%s"%s%s>%s%s</div>', esc_attr($classes), $currentStyleAttr, $itemDataAttrs, $itemContent, $itemOverlayHtml);
             }
             $itemIndex++;
         }
@@ -473,6 +486,30 @@ trait PostTemplateRendererTrait
         ];
 
         return $context;
+    }
+
+    /**
+     * Whether this entry has an image the `entry-image` overlay can sit on.
+     *
+     * Falls back to the item background image options so an item configured
+     * with a background image still counts as having media, then to the
+     * configured default image.
+     */
+    protected function templateItemHasMedia(WP_Post $post): bool
+    {
+        if (has_post_thumbnail($post->ID)) {
+            return true;
+        }
+
+        $attrs = $this->templateBlock['attrs'] ?? [];
+        if (($attrs['itemBgType'] ?? 'none') === 'image') {
+            $source = $attrs['itemBgImageSource'] ?? 'custom';
+            if ($source !== 'featured' && ($attrs['itemBgImageUrl'] ?? '') !== '') {
+                return true;
+            }
+        }
+
+        return ($attrs['itemDefaultImageUrl'] ?? '') !== '';
     }
 
     protected function buildItemClasses(WP_Post $post): string
