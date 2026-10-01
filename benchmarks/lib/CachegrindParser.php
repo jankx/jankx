@@ -490,6 +490,23 @@ if (strncmp($line, 'positions:', 10) === 0) {
         return $out;
     }
 
+    /**
+     * Self cost per function in nanoseconds, for every profiled function.
+     *
+     * Cheaper than topBySelfTime(PHP_INT_MAX), which builds a converted and
+     * sorted copy of the whole table.
+     *
+     * @return array<string, float>
+     */
+    public function selfTimesNs(): array
+    {
+        $out = [];
+        foreach ($this->functions as $name => $row) {
+            $out[$name] = $this->timeNs((int) $row['self_time']);
+        }
+        return $out;
+    }
+
     /** Total self cost, in nanoseconds. */
     public function totalTimeNs(): float
     {
@@ -515,8 +532,21 @@ if (strncmp($line, 'positions:', 10) === 0) {
         return $this->functions;
     }
 
+    /**
+     * Every edge, with the unit-correct inclusive cost attached.
+     *
+     * topEdges() would give the same data but only the hottest $limit rows,
+     * and the flame graph needs the full graph to walk.
+     *
+     * @return array<int, array>
+     */
     public function allEdges(): array
     {
-        return $this->edges;
+        $out = [];
+        foreach ($this->edges as $key => $row) {
+            $row['incl_time_ns'] = $this->timeNs((int) $row['incl_time']);
+            $out[$key] = $row;
+        }
+        return $out;
     }
 }

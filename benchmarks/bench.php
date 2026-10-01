@@ -19,6 +19,7 @@ namespace Jankx\Benchmarks;
 
 require_once __DIR__ . '/lib/CachegrindParser.php';
 require_once __DIR__ . '/lib/CallProfiler.php';
+require_once __DIR__ . '/lib/FlameGraph.php';
 
 const BEGIN = "\033[1m";
 const DIM   = "\033[2m";
@@ -324,9 +325,69 @@ switch ($command) {
         break;
     }
 
+    /* ----------------------------------------------------------------- graph */
+    case 'graph': {
+        if (!is_dir($reportDir)) @mkdir($reportDir, 0777, true);
+        $stamp    = date('Ymd-His');
+        $width    = max(600, (int) ($opts['width'] ?? 1600));
+        $fromFile = $opts['file'] ?? null;
+
+        if (is_string($fromFile) && $fromFile !== '') {
+            // Re-render an existing cachegrind capture without re-profiling.
+            $path = is_file($fromFile) ? $fromFile : $workDir . '/' . ltrim($fromFile, '/\\');
+            if (!is_file($path)) {
+                out(RED . 'cachegrind file not found: ' . $path . OFF);
+                exit(1);
+            }
+            $parser  = (new CachegrindParser())->parseFile($path)->aggregate();
+            $cachegrind = $path;
+        } else {
+            $cachegrindDir = $workDir . '/cachegrind_' . $scenario;
+            $res    = $profiler->profile(['--scenario=' . $scenario], $scenario, $cachegrindDir);
+            $parser = $res['parser'];
+            $cachegrind = (string) $res['cachegrind_file'];
+        }
+
+        // The tree always holds every timed function so widths stay exact; the
+        // depth cap is applied when rendering, where narrow rows cost nothing.
+        $depth = max(3, (int) ($opts['depth'] ?? 14));
+        $tree  = FlameGraph::buildTree($parser);
+
+        $svg  = FlameGraph::renderSvg($tree, $width, 0.4, $depth);
+        $html = FlameGraph::renderHtml(
+            $svg,
+            'Jankx flame graph - ' . $scenario,
+            sprintf(
+                'functions=%d  call events=%s  total inclusive=%.2f ms  cost unit=%.0f ns',
+                $parser->functionCount(),
+                number_format($parser->totalCalls()),
+                $tree['incl_ns'] / 1e6,
+                $parser->timeUnitNs()
+            )
+        );
+
+        $htmlFile = $reportDir . "/flamegraph-$scenario-$stamp.html";
+        $svgFile  = $reportDir . "/flamegraph-$scenario-$stamp.svg";
+        file_put_contents($htmlFile, $html);
+        file_put_contents($svgFile, $svg);
+
+        head('FLAME GRAPH  (' . $scenario . ')');
+        kv('cachegrind', basename($cachegrind), humanBytes((int) @filesize($cachegrind)));
+        kv('functions', (string) $parser->functionCount());
+        kv('call events', number_format($parser->totalCalls()));
+        kv('total inclusive', round($tree['incl_ns'] / 1e6, 2) . ' ms');
+        kv('root children', (string) count($tree['children']));
+        out();
+        out(GREEN . 'HTML: ' . $htmlFile . OFF);
+        out(GREEN . 'SVG : ' . $svgFile . OFF);
+        out(DIM . 'open the HTML file in a browser; hover any frame for detail' . OFF);
+        break;
+    }
+
     default:
         out(BEGIN . 'jankx benchmark' . OFF);
-        out('commands: probe | calls | trace | http | report');
-        out('options : --scenario=boot|home  --top=N  --runs=N  --url=...');
+        out('commands: probe | calls | trace | http | report | graph');
+        out('options : --scenario=boot|home  --top=N  --runs=N  --url=...  --depth=N  --width=N');
+        out('          --file=<cachegrind path or name>   (re-render without profiling)');
         exit(1);
 }
