@@ -114,6 +114,9 @@ importers:
         specifier: ^1.22.22
         version: 1.22.22
     devDependencies:
+      '@tannin/sprintf':
+        specifier: ^1.3.3
+        version: 1.3.3
       '@testing-library/jest-dom':
         specifier: ^6.9.1
         version: 6.9.1

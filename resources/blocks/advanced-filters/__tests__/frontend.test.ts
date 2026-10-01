@@ -12,6 +12,15 @@ describe('AdvancedFilters Frontend', () => {
     let advancedFilters: AdvancedFilters;
 
     beforeEach(() => {
+        // jsdom 16 has no fetch; resetting filters triggers an AJAX refresh.
+        global.fetch = jest.fn(() =>
+            Promise.resolve({
+                ok: true,
+                json: () => Promise.resolve({ success: true, data: { html: '<div>updated</div>' } }),
+            })
+        ) as unknown as typeof fetch;
+        window.alert = jest.fn();
+
         // Setup DOM
         document.body.innerHTML = '';
         container = document.createElement('div');
@@ -87,7 +96,7 @@ describe('AdvancedFilters Frontend', () => {
         expect(checkbox?.checked).toBe(true);
     });
 
-    it('should handle reset button click', () => {
+    it('should handle reset button click', async () => {
         advancedFilters = new AdvancedFilters(container);
         
         const checkbox = container.querySelector('.filter-taxonomy input[value="1"]') as HTMLInputElement;
@@ -100,7 +109,23 @@ describe('AdvancedFilters Frontend', () => {
         if (resetButton) {
             resetButton.click();
         }
-        
+
+        // Let the AJAX refresh promise chain settle so the trailing
+        // "target block not found" warning is emitted before assertions.
+        await new Promise((resolve) => setTimeout(resolve, 0));
+
+        // The fixture has no matching target block, so the AJAX refresh logs
+        // the documented fallback warnings while it resolves the block.
+        expect(console).toHaveWarnedWith(
+            'AdvancedFilters: Could not find block attributes for block block-123, server will try to detect from block_id'
+        );
+        expect(console).toHaveWarnedWith(
+            'AdvancedFilters: Could not determine post_id, server will try to detect it'
+        );
+        expect(console).toHaveWarnedWith(
+            'AdvancedFiltersBlock: Target block with ID "block-123" not found in DOM'
+        );
+
         // After reset, checkbox should be unchecked
         // Note: This depends on implementation
         expect(checkbox).toBeTruthy();

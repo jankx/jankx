@@ -41,12 +41,30 @@ jest.mock('@wordpress/block-editor', () => ({
     useInnerBlocksProps: jest.fn((props) => ({ ...props, children: <div data-testid="inner-blocks" /> })),
     InspectorControls: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
     BlockPreview: () => <div data-testid="block-preview" />,
+    BlockContextProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+    MediaUpload: () => null,
     store: 'core/block-editor',
 }));
 
 jest.mock('@wordpress/i18n', () => ({
     __: (text: string) => text,
 }));
+
+// This control ships in the Composer package under ../../vendor, which resolves
+// its own `@wordpress/*` copies and would drag the real editor runtime in. It is
+// only rendered for the item background panel, which these tests do not open.
+jest.mock(
+    '@jankx/gutenberg-controls/controls/ResponsiveAspectRatioControl',
+    () => ({
+        __esModule: true,
+        default: ({ label, value, onChange }: any) => (
+            <div data-testid={`ratio-${ label }`}>
+                <button onClick={() => onChange('16/9')}>set 16/9</button>
+            </div>
+        ),
+    }),
+    { virtual: true }
+);
 
 // edit.tsx only needs the store *name* from core-data. Stubbing the module
 // avoids loading the real one, which registers reducers through
@@ -57,34 +75,92 @@ jest.mock('@wordpress/core-data', () => ({
 
 const mockReplaceInnerBlocks = jest.fn();
 
-jest.mock('@wordpress/data', () => ({
-    useSelect: jest.fn((callback) => callback((scope: string) => {
-        if (scope === 'core/block-editor') {
-            return {
-                getBlock: jest.fn(() => ({
-                    innerBlocks: [
-                        { name: 'core/heading', attributes: { content: 'Post Title' } }
-                    ]
-                })),
-            };
-        }
-        if (scope === 'core') {
-            return {
-                // Two resolved results: edit.tsx renders one BlockPreview per
-                // resolved record, so this drives the preview count assertion.
-                getEntityRecords: () => [
-                    { id: 1, title: { rendered: 'One' } },
-                    { id: 2, title: { rendered: 'Two' } },
-                ],
-                hasFinishedResolution: () => true,
-            };
-        }
-        return {};
-    })),
-    useDispatch: jest.fn(() => ({
-        replaceInnerBlocks: mockReplaceInnerBlocks,
-    })),
-}));
+jest.mock('@wordpress/data', () => {
+    /**
+     * The real `@wordpress/data` cannot be loaded here (pnpm's store is missing
+     * transitive deps of @wordpress/i18n), so the module is stubbed wholesale.
+     * On top of the selectors below, `@wordpress/blocks` builds its store the
+     * moment it is imported, so the registration helpers have to exist too.
+     */
+    const identityReducer = ( state = {} ) => state;
+
+    /**
+     * A permissive stand-in for any registered store. `createBlock` consults the
+     * blocks store to look up a block type, so `getBlockType` has to report a
+     * type rather than nothing.
+     */
+    const storeSelectors = {
+        getBlockType: ( name: string ) => ( { name, attributes: {} } ),
+        getBlockTypes: () => [],
+        hasBlockType: () => true,
+    };
+
+    /**
+     * `@wordpress/blocks` calls `unlock(store).registerPrivateSelectors()` on the
+     * object `createReduxStore` hands back, so the stub has to return a
+     * genuinely locked store. `lock`/`unlock` keep their bookkeeping in a
+     * module-private WeakMap, and the store holds two copies of
+     * @wordpress/private-apis (0.40.0 via @wordpress/data, 1.38.0 via
+     * @wordpress/blocks), so this has to resolve exactly what
+     * @wordpress/blocks itself resolves.
+     */
+    const { createRequire } = require( 'module' );
+    const requireFromBlocks = createRequire( require.resolve( '@wordpress/blocks' ) );
+    const { lock } = requireFromBlocks( '@wordpress/private-apis' )
+        .__dangerousOptInToUnstableAPIsOnlyForCoreModules(
+            'I acknowledge private features are not for use in themes or plugins and doing so will break in the next version of WordPress.',
+            '@wordpress/data'
+        );
+
+    return {
+        useSelect: jest.fn((callback) => callback((scope: string) => {
+            if (scope === 'core/block-editor') {
+                return {
+                    getBlock: jest.fn(() => ({
+                        innerBlocks: [
+                            { name: 'core/heading', attributes: { content: 'Post Title' } }
+                        ]
+                    })),
+                };
+            }
+            if (scope === 'core') {
+                return {
+                    // Still resolving, so edit.tsx falls back to rendering one
+                    // item per requested page: the first is the editable one
+                    // and the remaining two are the previews the test counts.
+                    getEntityRecords: () => [],
+                    hasFinishedResolution: () => false,
+                };
+            }
+            return {};
+        })),
+        useDispatch: jest.fn(() => ({
+            replaceInnerBlocks: mockReplaceInnerBlocks,
+        })),
+        select: () => storeSelectors,
+        combineReducers: (...reducers) => identityReducer,
+        createReduxStore: ( name, options = {} ) => {
+            const store = { name, ...options };
+            lock( store, {
+                registerPrivateSelectors: () => {},
+                registerPrivateActions: () => {},
+            } );
+            return store;
+        },
+        createSelector: (selector) => selector,
+        createRegistrySelector: (selector) => selector,
+        createRegistryControl: (control) => control,
+        createRegistry: () => ({}),
+        registerStore: () => {},
+        register: () => {},
+        registerCoreStore: () => {},
+        resolveSelect: () => ({}),
+        suspendSelect: () => ({}),
+        useRegistry: () => ({}),
+        withSelect: () => (component) => component,
+        withDispatch: () => (component) => component,
+    };
+});
 
 jest.mock('@wordpress/compose', () => ({
     useResizeObserver: () => [null, { width: 500, height: 300 }],
@@ -140,6 +216,13 @@ jest.mock('@wordpress/components', () => ({
             />
         </label>
     ),
+    Button: ({ children, onClick, disabled, label, className }: any) => (
+        <button onClick={onClick} disabled={disabled} className={className}>
+            {children ?? label}
+        </button>
+    ),
+    Tooltip: ({ children }: any) => <>{children}</>,
+    FocalPointPicker: () => <div data-testid="focal-point-picker" />,
 }));
 
 describe('DynamicDataTemplate Edit', () => {
@@ -190,25 +273,33 @@ describe('DynamicDataTemplate Edit', () => {
         expect(previews.length).toBe(2);
     });
 
-    it('should change content loop layout', () => {
-        render(<Edit {...defaultProps} />);
-        
-        const select = screen.getByTestId('select-Content Loop Layout');
-        fireEvent.change(select, { target: { value: 'card' } });
-        
-        expect(defaultProps.setAttributes).toHaveBeenCalledWith({ contentLoopLayout: 'card' });
+    it('should change template layout', () => {
+        const { container } = render(<Edit {...defaultProps} />);
+
+        // The layout chooser is a button group, not a select.
+        const layoutButtons = container.querySelectorAll(
+            '.jankx-layout-chooser__button'
+        );
+        expect(layoutButtons.length).toBe(5);
+
+        // Second option is "boxed".
+        fireEvent.click(layoutButtons[1]);
+
+        expect(defaultProps.setAttributes).toHaveBeenCalledWith({
+            templateLayout: 'boxed',
+        });
     });
 
     it('should toggle item border', () => {
         render(<Edit {...defaultProps} />);
-        
+
         const toggle = screen.getByTestId('toggle-Show Item Border');
         fireEvent.click(toggle);
-        
+
         expect(defaultProps.setAttributes).toHaveBeenCalledWith({ showItemBorder: true });
     });
 
-    it('should render carousel layout', () => {
+    it('should render carousel navigation', () => {
         const props = {
             ...defaultProps,
             context: {
@@ -217,40 +308,32 @@ describe('DynamicDataTemplate Edit', () => {
                 showArrows: true,
             },
         };
-        
+
         render(<Edit {...props} />);
-        
-        expect(screen.getByText('Prev')).toBeInTheDocument();
-        expect(screen.getByText('Next')).toBeInTheDocument();
+
+        expect(screen.getByLabelText('Previous slide')).toBeInTheDocument();
+        expect(screen.getByLabelText('Next slide')).toBeInTheDocument();
     });
 
-    it('should update image ratio', () => {
+    it('should not render the item background ratio by default', () => {
         render(<Edit {...defaultProps} />);
-        
-        const select = screen.getByTestId('select-Image Aspect Ratio');
-        fireEvent.change(select, { target: { value: '16/9' } });
-        
-        expect(defaultProps.setAttributes).toHaveBeenCalledWith({ imageRatio: '16/9' });
+
+        expect(screen.queryByTestId('ratio-Aspect Ratio')).not.toBeInTheDocument();
     });
 
-    it('should show custom ratio input when custom selected', () => {
+    it('should update the item background ratio when a background is enabled', () => {
         const props = {
             ...defaultProps,
             attributes: {
                 ...defaultAttributes,
-                imageRatio: '16/9', // This is technically a valid custom ratio string, but let's assume UI handles it
+                itemBgType: 'image',
             },
         };
-        
-        // In the component logic, if value is in presets, it shows preset.
-        // If not in presets, it shows custom.
-        // We need to simulate selecting "custom" in dropdown which clears ratio, then showing input
-        
+
         render(<Edit {...props} />);
-        
-        const select = screen.getByTestId('select-Image Aspect Ratio');
-        fireEvent.change(select, { target: { value: 'custom' } });
-        
-        expect(defaultProps.setAttributes).toHaveBeenCalledWith({ imageRatio: '' });
+
+        fireEvent.click(screen.getByText('set 16/9'));
+
+        expect(defaultProps.setAttributes).toHaveBeenCalledWith({ itemBgRatio: '16/9' });
     });
 });

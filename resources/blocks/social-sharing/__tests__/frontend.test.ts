@@ -3,7 +3,7 @@
  */
 
 // Mock vanilla-sharing
-const mockVanillaSharing = {
+jest.mock('vanilla-sharing', () => ({
     fbButton: jest.fn(),
     tw: jest.fn(),
     linkedin: jest.fn(),
@@ -14,9 +14,12 @@ const mockVanillaSharing = {
     messenger: jest.fn(),
     viber: jest.fn(),
     line: jest.fn(),
-};
+}));
 
-jest.mock('vanilla-sharing', () => mockVanillaSharing);
+// Read the mocked module back so the spies below share identity with what
+// `social-sharing-icon/frontend` actually calls. The `jest.mock` factory is
+// hoisted above the import, so the object has to be fetched afterwards.
+const mockVanillaSharing = require('vanilla-sharing');
 
 // Mock clipboard API
 Object.assign(navigator, {
@@ -179,4 +182,4 @@ describe('SocialSharingIcon Frontend', () => {
 });
 
 // Import frontend code to trigger initialization
-import '../social-sharing-icon/frontend';
+import '../../social-sharing-icon/frontend';

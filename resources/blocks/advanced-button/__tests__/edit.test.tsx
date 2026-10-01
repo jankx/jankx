@@ -3,12 +3,38 @@
  */
 
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import '@testing-library/jest-dom';
 import Edit from '../edit';
+
+jest.mock('@wordpress/data', () => ({
+    useSelect: jest.fn((callback: (select: (scope: string) => any) => unknown) =>
+        callback((scope: string) => {
+            if (scope === 'core/block-editor') {
+                return {
+                    getBlockCount: () => 0,
+                    getBlockParents: () => [],
+                    getBlock: () => undefined,
+                    getBlocks: () => [],
+                };
+            }
+            if (scope === 'core') {
+                return {
+                    getPostTypes: () => [{ slug: 'post', name: 'Posts' }],
+                };
+            }
+            return {};
+        })
+    ),
+    useDispatch: jest.fn(() => ({})),
+}));
 
 // Mock WordPress dependencies
 jest.mock('@wordpress/block-editor', () => ({
     useBlockProps: jest.fn((props) => props),
-    InnerBlocks: ({ children }: { children?: React.ReactNode }) => <div data-testid="inner-blocks">{children}</div>,
+    InnerBlocks: Object.assign(
+        ({ children }: { children?: React.ReactNode }) => <div data-testid="inner-blocks">{children}</div>,
+        { ButtonBlockAppender: () => <button data-testid="block-appender">Add Block</button> }
+    ),
     InspectorControls: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
     BlockControls: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
     RichText: ({ value, onChange, tagName: Tag = 'span' }: { value: string; onChange: (value: string) => void; tagName?: string }) => (
@@ -22,6 +48,19 @@ jest.mock('@wordpress/block-editor', () => ({
         </Tag>
     ),
     ButtonBlockAppender: () => <button data-testid="block-appender">Add Block</button>,
+    // The real HOC injects resolved color objects; the block only reads
+    // `.slug`/`.color` defensively, so a pass-through is enough here.
+    withColors: () => (Component: React.ComponentType<any>) => Component,
+    __experimentalLinkControl: ({ value, onChange }: any) => (
+        <input
+            data-testid="link-control"
+            value={value?.url || ''}
+            onChange={(e) => onChange({ url: e.target.value })}
+        />
+    ),
+    __experimentalGetBorderClassesAndStyles: () => ({ className: undefined, style: {} }),
+    useBlockEditingMode: () => 'visual',
+    BlockEdit: ({ children }: { children?: React.ReactNode }) => <div>{children}</div>,
 }));
 
 jest.mock('@wordpress/components', () => ({
@@ -58,6 +97,14 @@ jest.mock('@wordpress/components', () => ({
             />
         </label>
     ),
+    Popover: ({ children }: any) => <div data-testid="popover">{children}</div>,
+    ToolbarButton: ({ title, onClick, children }: any) => (
+        <button type="button" onClick={onClick} data-testid={`toolbar-${title}`}>
+            {children ?? title}
+        </button>
+    ),
+    __experimentalToolsPanel: ({ children }: any) => <div data-testid="tools-panel">{children}</div>,
+    __experimentalToolsPanelItem: ({ children }: any) => <div data-testid="tools-panel-item">{children}</div>,
 }));
 
 describe('AdvancedButton Edit', () => {

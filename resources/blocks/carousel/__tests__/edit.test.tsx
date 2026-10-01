@@ -7,37 +7,6 @@ import { render, screen, fireEvent, act } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import Edit from '../edit';
 
-// Mock Carousel
-jest.mock('carousel/bundle', () => {
-    return jest.fn().mockImplementation(() => ({
-        params: {
-            navigation: {},
-            pagination: {},
-            autoplay: {},
-            breakpoints: {}
-        },
-        update: jest.fn(),
-        destroy: jest.fn(),
-        navigation: {
-            init: jest.fn(),
-            update: jest.fn(),
-            destroy: jest.fn(),
-        },
-        pagination: {
-            init: jest.fn(),
-            render: jest.fn(),
-            update: jest.fn(),
-            destroy: jest.fn(),
-        },
-        autoplay: {
-            start: jest.fn(),
-            stop: jest.fn(),
-        },
-    }));
-});
-
-jest.mock('carousel/css/bundle', () => {});
-
 // Mock WordPress dependencies
 jest.mock('@wordpress/block-editor', () => ({
     useBlockProps: jest.fn((props) => props),
@@ -46,6 +15,9 @@ jest.mock('@wordpress/block-editor', () => ({
     useInnerBlocksProps: jest.fn((props) => ({ ...props, children: <div data-testid="inner-blocks" /> })),
     MediaUpload: ({ render }: any) => render({ open: jest.fn() }),
     MediaUploadCheck: ({ children }: any) => <div>{children}</div>,
+    InnerBlocks: {
+        ButtonBlockAppender: () => <div data-testid="inner-blocks-appender" />,
+    },
 }));
 
 jest.mock('@wordpress/i18n', () => ({

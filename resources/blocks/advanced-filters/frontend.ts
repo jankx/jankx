@@ -18,7 +18,7 @@ interface FilterConfig {
     keywordFilter: any;
 }
 
-class AdvancedFilters {
+export class AdvancedFilters {
     private config: FilterConfig | null = null;
     private container: HTMLElement | null = null;
     private currentFilters: Record<string, any> = {};
