@@ -1,6 +1,3 @@
-/**
- * @jest-environment node
- */
 import { normalizeHexColor } from '../normalizeHexColor';
 
 describe('normalizeHexColor', () => {

@@ -33,8 +33,10 @@ export function normalizeHexColor( value: unknown, fallback: string ): string {
         return raw.slice( 0, 7 );
     }
 
+    // The sign is accepted so out of range channels are clamped rather than
+    // making the whole value unparseable.
     const rgbMatch = raw.match(
-        /^rgba?\(\s*([\d.]+)[\s,]+([\d.]+)[\s,]+([\d.]+)/
+        /^rgba?\(\s*([+-]?[\d.]+)[\s,]+([+-]?[\d.]+)[\s,]+([+-]?[\d.]+)/
     );
     if ( rgbMatch ) {
         const toHex = ( part: string | undefined ) => {

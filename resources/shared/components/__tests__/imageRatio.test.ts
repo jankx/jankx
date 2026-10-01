@@ -1,6 +1,3 @@
-/**
- * @jest-environment node
- */
 import {
     PRESET_IMAGE_RATIOS,
     normalizeImageRatio,
