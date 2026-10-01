@@ -66,9 +66,8 @@ final class CachegrindParser
             throw new \RuntimeException("Cannot read cachegrind file: {$path}");
         }
 
-        $cost = ['time' => 0, 'mem' => 0];
+        $positionCount = 1; // "positions: line" => one leading column per cost line
         $eventCount = 2; // Time, Memory (xdebug default)
-        $selfLine = 0;
 
         // current caller context (callee state lives on $this so the back-fill
         // logic can reach it)
@@ -89,15 +88,23 @@ final class CachegrindParser
                 $this->timeUnitNs = self::parseTimeUnit((string) ($eventNames[0] ?? ''));
                 continue;
             }
-            if (strncmp($line, 'summary:', 8) === 0
-                || strncmp($line, 'creator:', 8) === 0
-                || strncmp($line, 'cmd:', 4) === 0
-                || strncmp($line, 'part:', 5) === 0
-                || strncmp($line, 'version:', 8) === 0
-                || strncmp($line, 'positions:', 10) === 0
-                || strncmp($line, 'pid:', 4) === 0) {
-                continue;
-            }
+if (strncmp($line, 'positions:', 10) === 0) {
+                    $positionCount = max(0, count(preg_split(
+                        '/\s+/',
+                        trim(substr($line, 10)),
+                        -1,
+                        PREG_SPLIT_NO_EMPTY
+                    )));
+                    continue;
+                }
+                if (strncmp($line, 'summary:', 8) === 0
+                    || strncmp($line, 'creator:', 8) === 0
+                    || strncmp($line, 'cmd:', 4) === 0
+                    || strncmp($line, 'part:', 5) === 0
+                    || strncmp($line, 'version:', 8) === 0
+                    || strncmp($line, 'pid:', 4) === 0) {
+                    continue;
+                }
 
             $c0 = $line[0];
 
@@ -124,20 +131,35 @@ final class CachegrindParser
                 [$id, $value] = $this->resolveName($m[2]);
 
                 if ($isCallee) {
+                    // Always seed both keys: a bare "cfn=(N)" reference creates
+                    // no entry, and a later read of names[$id]['file'] would warn.
+                    if (!isset($this->names[$id])) {
+                        $this->names[$id] = ['file' => '', 'name' => ''];
+                    }
                     if ($value !== '') {
                         $this->names[$id]['name'] = $value;
                     }
-                    if ($value !== '' && !isset($this->names[$id])) {
-                        $this->names[$id] = ['file' => (string) $this->pendingCalleeFile, 'name' => $value];
+                    if ($this->names[$id]['file'] === '' && $this->pendingCalleeFile !== null) {
+                        $this->names[$id]['file'] = (string) $this->pendingCalleeFile;
                     }
                     $this->pendingCalleeId = $id;
                     $this->pendingCallee   = $value !== ''
                         ? $value
                         : ($this->names[$id]['name'] ?? null);
+                    if ($this->pendingCallee === '') {
+                        $this->pendingCallee = null; // id only, name still unknown
+                    }
 
-                    // Definition arriving after its calls= line: attribute now.
-                    if ($this->pendingCallee !== null && $this->pendingEdgeCaller !== null) {
-                        $this->attributePendingEdge($this->pendingCallee, (string) ($this->names[$id]['file'] ?? ''));
+                    // The callee may already have been defined earlier, in which case an
+                    // edge parked against it can be attributed now. Guard on the
+                    // id so a later, unrelated cfn= cannot claim the edge.
+                    if ($this->pendingCallee !== null
+                        && $this->pendingEdgeCaller !== null
+                        && $this->pendingEdgeCalleeId === $id) {
+                        $this->attributePendingEdge(
+                            $this->pendingCallee,
+                            (string) $this->names[$id]['file']
+                        );
                     }
                     continue;
                 }
@@ -150,6 +172,20 @@ final class CachegrindParser
                     if ($this->names[$id]['file'] === '' && $callerFile !== null) {
                         $this->names[$id]['file'] = $callerFile;
                     }
+                }
+
+                // Xdebug emits "cfn=(12)" before ever defining id 12, so an edge
+                // parked against that anonymous callee is resolved when the
+                // definition arrives here as "fn=(12) name". Matching on the
+                // parked id keeps unrelated names from claiming the edge.
+                if ($value !== ''
+                    && $this->pendingEdgeCaller !== null
+                    && $this->pendingEdgeCalleeId === $id) {
+                    $file = (string) $this->names[$id]['file'];
+                    if ($file === '' && $callerFile !== null) {
+                        $file = (string) $callerFile;
+                    }
+                    $this->attributePendingEdge($value, $file);
                 }
                 $callerName = $value !== '' ? $value : ($this->names[$id]['name'] ?? null);
                 if ($callerName !== null && $callerName !== '') {
@@ -169,8 +205,13 @@ final class CachegrindParser
                 // file. Store the raw id and resolve it when the name arrives.
                 $calleeId = $this->pendingCalleeId;
                 $resolved = $this->pendingCallee;
-                if ($resolved === null && $calleeId !== null) {
+                if (($resolved === null || $resolved === '') && $calleeId !== null) {
                     $resolved = $this->names[$calleeId]['name'] ?? null;
+                }
+                // An empty string means "id seen, name not known yet"; treating it
+                // as a name creates phantom edges keyed on ''.
+                if ($resolved === '') {
+                    $resolved = null;
                 }
 
                 if ($resolved !== null && $callerName !== null) {
@@ -192,19 +233,21 @@ final class CachegrindParser
                 $this->pendingInclusiveCallee = $resolved;
                 $this->pendingInclusiveCalleeId = $calleeId;
                 $this->pendingInclusiveFile   = $pendingCalleeFile ?? $callerFile;
+                // Remember the count even when the callee is still anonymous, so
+                // a later definition can attribute the whole edge.
+                $this->pendingInclusiveCalls = $callCount;
                 continue;
             }
 
             // --- cost line -------------------------------------------
             if (($c0 >= '0' && $c0 <= '9') || $c0 === '*' || $c0 === '+' || $c0 === '-') {
                 $parts = preg_split('/\s+/', trim($line), -1, PREG_SPLIT_NO_EMPTY);
-                $values = [];
-                foreach (array_slice($parts, 1) as $p) {
-                    $values[] = (int) $p;
-                }
+                // Skip the position column(s) ("positions: line" adds the source
+                // line ahead of the event costs). Reading it as time made every
+                // duration wildly too large.
+                $values = array_map('intval', array_slice($parts, $positionCount));
                 $t = $values[0] ?? 0;
                 $m = $values[1] ?? 0;
-                $cost = ['time' => $t, 'mem' => $m];
 
                 if (!empty($this->awaitingInclusive)) {
                     // The cost line that follows calls= carries the INCLUSIVE
@@ -213,30 +256,39 @@ final class CachegrindParser
                     $pc = $this->pendingInclusiveCallee;
                     $pn = $this->pendingInclusiveCaller;
 
-                    if ($pc === null && $this->pendingInclusiveCalleeId !== null) {
+                    if (($pc === null || $pc === '') && $this->pendingInclusiveCalleeId !== null) {
                         $pc = $this->names[$this->pendingInclusiveCalleeId]['name'] ?? null;
                     }
+                    if ($pc === '') {
+                        $pc = null;
+                    }
 
-                    if ($pc !== null && $pn !== null) {
-                        $key = $pn . "\0" . $pc;
-                        if (!isset($this->edges[$key])) {
-                            $this->edges[$key] = [
-                                'caller'    => $pn,
-                                'callee'    => $pc,
-                                'calls'     => 0,
-                                'incl_time' => 0,
-                                'incl_mem'  => 0,
-                            ];
+                    if ($pn !== null) {
+                        if ($pc !== null) {
+                            $key = $pn . "\0" . $pc;
+                            if (!isset($this->edges[$key])) {
+                                $this->edges[$key] = [
+                                    'caller'    => $pn,
+                                    'callee'    => $pc,
+                                    'calls'     => 0,
+                                    'incl_time' => 0,
+                                    'incl_mem'  => 0,
+                                ];
+                            }
+                            $this->edges[$key]['incl_time'] += $t;
+                            $this->edges[$key]['incl_mem']  += $m;
                         }
-                        $this->edges[$key]['incl_time'] += $t;
-                        $this->edges[$key]['incl_mem']  += $m;
 
-                        if ($this->edges[$key]['calls'] === 0) {
-                            // callee name arrived after calls=; park for back-fill
-                            $this->pendingEdgeCaller = $pn;
-                            $this->pendingEdgeCalls  = 0;
-                            $this->pendingEdgeIncl   = $t;
-                            $this->pendingEdgeMem    = $m;
+                        // Park whenever the callee name is still unknown. The
+                        // cost line has already been consumed, so it must be held
+                        // here until "cfn=(N)"/"fn=(N) name" resolves the id.
+                        if ($pc === null) {
+                            $this->pendingEdgeCaller  = $pn;
+                            $this->pendingEdgeCalleeId = $this->pendingInclusiveCalleeId;
+                            $this->pendingEdgeCalls   = $this->pendingInclusiveCalls;
+                            $this->pendingEdgeIncl    = $t;
+                            $this->pendingEdgeMem     = $m;
+                            $this->pendingEdgeFile    = (string) $this->pendingInclusiveFile;
                         }
                     }
                     if ($pc !== null) {
@@ -264,11 +316,15 @@ final class CachegrindParser
     private ?string $pendingInclusiveCalleeId = null;
     private ?string $pendingInclusiveFile = null;
 
-    /** Call state when cfn appears after its calls= line. */
+    /** Call state when the callee name appears after its calls=/cost lines. */
     private ?string $pendingEdgeCaller = null;
+    private ?string $pendingEdgeCalleeId = null;
     private int $pendingEdgeCalls = 0;
     private int $pendingEdgeIncl = 0;
     private int $pendingEdgeMem = 0;
+    private string $pendingEdgeFile = '';
+
+    private int $pendingInclusiveCalls = 0;
 
     /** Callee context for cfn= lines. */
     private ?string $pendingCallee = null;
@@ -284,10 +340,11 @@ final class CachegrindParser
      */
     private static function parseTimeUnit(string $eventName): float
     {
-        if (preg_match('/^\(([0-9.]+)n?s\)$/', $eventName, $m) === 1) {
+        // Xdebug: "Time_(10ns)". Plain cachegrind: "Time" (microseconds).
+        if (preg_match('/\((\d+(?:\.\d+)?)n?s\)/', $eventName, $m) === 1) {
             return (float) $m[1];
         }
-        return 1000.0; // "Time" == microseconds
+        return 1000.0;
     }
 
     /**
@@ -335,25 +392,30 @@ final class CachegrindParser
         }
         $key = $caller . "\0" . $callee;
         if (!isset($this->edges[$key])) {
+            // Start at zero and let the adds below apply, otherwise incl_time
+            // is counted twice for a newly created edge.
             $this->edges[$key] = [
                 'caller'    => $caller,
                 'callee'    => $callee,
                 'calls'     => 0,
-                'incl_time' => $this->pendingEdgeIncl,
-                'incl_mem'  => $this->pendingEdgeMem,
+                'incl_time' => 0,
+                'incl_mem'  => 0,
             ];
         }
         $this->edges[$key]['calls']     += $this->pendingEdgeCalls;
         $this->edges[$key]['incl_time'] += $this->pendingEdgeIncl;
+        $this->edges[$key]['incl_mem']  += $this->pendingEdgeMem;
 
-        $this->touchFunction($callee, $file);
-        $this->functions[$callee]['calls_as_callee'] += $this->pendingEdgeCalls;
-        $this->functions[$callee]['incl_time']      += $this->pendingEdgeIncl;
+        // Only register the function here; aggregate() folds edge counts and
+        // inclusive costs in, so writing them now would double count.
+        $this->touchFunction($callee, $file !== '' ? $file : $this->pendingEdgeFile);
 
-        $this->pendingEdgeCaller = null;
-        $this->pendingEdgeCalls  = 0;
-        $this->pendingEdgeIncl   = 0;
-        $this->pendingEdgeMem    = 0;
+        $this->pendingEdgeCaller   = null;
+        $this->pendingEdgeCalleeId = null;
+        $this->pendingEdgeCalls    = 0;
+        $this->pendingEdgeIncl     = 0;
+        $this->pendingEdgeMem      = 0;
+        $this->pendingEdgeFile     = '';
     }
 
     private function touchFunction(string $name, string $file): void

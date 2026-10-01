@@ -156,14 +156,19 @@ final class CallProfiler
         $total = 0;
         $fh = fopen($file, 'rb');
         while (($line = fgets($fh)) !== false) {
-            // Entry lines look like:  2  0   0  0.000188  244  Foo::bar()  /path/file.php  0  0
-            if (!preg_match('/^\s*\d+\s+\d+\s+[\d.]+\s+\d+\s+(\S+)\(\)\s+(\S+)/', $line, $m)) {
+            // Entry lines look like:
+            //   0.0022     534656   -> {main}() C:\path\collect.php:0
+            // Call depth is the leading run of spaces, so anchor on the arrow and
+            // capture the name before "()" instead of assuming column counts.
+            if (!preg_match('/^\s*[\d.]+\s+\d+\s+(?:->\s+)?(\S+)\(\)/', $line, $m)) {
                 continue;
             }
             $fn = $m[1];
             if ($fn === '{main}' || str_starts_with($fn, '==')) {
                 continue;
             }
+            // "require_once(C:\path)" has no () and is already skipped above;
+            // normalise the rare "Class::method(...)" form.
             $counts[$fn] = ($counts[$fn] ?? 0) + 1;
             $total++;
         }

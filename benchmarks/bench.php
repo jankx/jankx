@@ -86,7 +86,9 @@ function parseArgv(array $argv): array
             } else {
                 $opts[substr($body, 0, $eq)] = substr($body, $eq + 1);
             }
-        } elseif (!strncmp($arg, '-', 1)) {
+        } elseif ($arg[0] !== '-') {
+            // A positional token is the command. Note that a negated
+            // strncmp() would be wrong here: it matched every option token.
             $command = $arg;
         }
     }
@@ -179,19 +181,22 @@ switch ($command) {
         kv('cachegrind', basename((string) $res['cachegrind_file']), humanBytes((int) $res['cachegrind_bytes']));
         kv('functions profiled', (string) $parser->functionCount());
         kv('total call events', number_format($parser->totalCalls()));
-        kv('profiled CPU time', round($parser->totalTime() / 1e6, 1) . ' s');
+        kv('profiled CPU time', round($parser->totalTimeNs() / 1e9, 4) . ' s');
+        kv('cost unit', $parser->timeUnitNs() . ' ns');
         if ($d) {
             kv('WP wall time', round((float) $d['total_ms'], 1) . ' ms');
             kv('DB queries', (string) $d['queries']['total'], $d['queries']['duplicate_extra'] . ' redundant');
         }
 
+        // *_time_ns comes from the parser, which derives the unit from the
+        // cachegrind "events:" header (Xdebug uses 10ns ticks, not microseconds).
         $bySelf = $parser->topBySelfTime($top);
         head('TOP ' . count($bySelf) . ' BY SELF TIME (where the CPU is spent)');
         $max = max(array_map(static fn($x) => $x['self_time'], $bySelf) ?: [1]);
         foreach ($bySelf as $f) {
-            printf("  %s%s%s %9.1f ms  calls=%-6s %s%s%s\n",
+            printf("  %s%s%s %9.3f ms  calls=%-6s %s%s%s\n",
                 DIM, bar((float) $f['self_time'], (float) $max), OFF,
-                $f['self_time'] / 1000.0,
+                $f['self_time_ns'] / 1e6,
                 number_format((int) $f['calls_as_callee']),
                 $f['name'], DIM, '  ' . basename($f['file']) . OFF
             );
@@ -202,10 +207,10 @@ switch ($command) {
         $maxC = max(array_map(static fn($x) => $x['calls_as_callee'], $topCalls) ?: [1]);
         foreach ($topCalls as $f) {
             if ((int) $f['calls_as_callee'] === 0) continue;
-            printf("  %s%s%s %9s calls  incl=%8.1f ms  %s%s%s\n",
+            printf("  %s%s%s %9s calls  incl=%8.3f ms  %s%s%s\n",
                 DIM, bar((float) $f['calls_as_callee'], (float) $maxC), OFF,
                 number_format((int) $f['calls_as_callee']),
-                $f['incl_time'] / 1000.0,
+                ($f['incl_time'] * $parser->timeUnitNs()) / 1e6,
                 $f['name'], DIM, '  ' . basename($f['file']) . OFF
             );
         }
@@ -214,9 +219,9 @@ switch ($command) {
         head('HOTTEST CALL EDGES (caller -> callee)');
         foreach ($edges as $e) {
             if ($e['calls'] < 3) continue;
-            printf("  %-46s -> %-46s x%-7d incl=%8.1f ms\n",
+            printf("  %-46s -> %-46s x%-7d incl=%8.3f ms\n",
                 shorten($e['caller']), shorten($e['callee']),
-                $e['calls'], $e['incl_time'] / 1000.0);
+                $e['calls'], $e['incl_time_ns'] / 1e6);
         }
 
         if ($d) {
@@ -304,7 +309,8 @@ switch ($command) {
             'profile'      => [
                 'functions'  => $parser->functionCount(),
                 'calls'      => $parser->totalCalls(),
-                'cpu_us'     => $parser->totalTime(),
+                'cpu_ns'     => $parser->totalTimeNs(),
+                'cost_unit_ns' => $parser->timeUnitNs(),
                 'top_self'   => array_values($parser->topBySelfTime(40)),
                 'top_calls'  => array_values($parser->topByCallCount(40)),
                 'top_edges'  => array_values($parser->topEdges(60)),

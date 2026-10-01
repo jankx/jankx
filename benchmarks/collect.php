@@ -156,35 +156,51 @@ final class Probe
         ];
     }
 
-    /** @return array<string, mixed> */
-    public static function includeStats(): array
+    /**
+     * @return array<string, mixed>
+     *
+     * get_included_files() is cheap, but filesize()/str_replace()/str_contains()
+     * run once per file and showed up as thousands of calls in the Xdebug
+     * profile, distorting the very call graph we are trying to measure. Pass
+     * $withBytes=false while profiling to keep only the file count.
+     */
+    public static function includeStats(bool $withBytes = true): array
     {
         $files = get_included_files();
         $bytes = 0;
         $byRoot = [];
-        foreach ($files as $f) {
-            $size = @filesize($f);
-            if ($size === false) {
-                continue;
-            }
-            $bytes += $size;
-            foreach ([
+
+        if ($withBytes) {
+            $needles = [
                 'jankx'      => '/themes/jankx/',
                 'nobitour'   => '/themes/nibitour/',
                 'extensions' => '/extensions/',
                 'vendor'     => '/vendor/',
                 'wp-core'    => '/wp-includes/',
-            ] as $label => $needle) {
-                if (str_contains(str_replace('\\', '/', $f), $needle)) {
-                    $byRoot[$label] = ($byRoot[$label] ?? 0) + 1;
+            ];
+
+            foreach ($files as $f) {
+                $size = @filesize($f);
+                if ($size === false) {
+                    continue;
+                }
+                $bytes += $size;
+
+                $path = str_replace('\\', '/', $f);
+                foreach ($needles as $label => $needle) {
+                    if (str_contains($path, $needle)) {
+                        $byRoot[$label] = ($byRoot[$label] ?? 0) + 1;
+                    }
                 }
             }
+            arsort($byRoot);
         }
-        arsort($byRoot);
+
         return [
-            'count'   => count($files),
-            'bytes'   => $bytes,
-            'by_root' => $byRoot,
+            'count'       => count($files),
+            'bytes'       => $bytes,
+            'by_root'     => $byRoot,
+            'with_bytes'  => $withBytes,
         ];
     }
 
@@ -258,6 +274,10 @@ $opts = getopt('', ['scenario::', 'iterations::', 'no-emit']);
 $scenario    = (string) ($opts['scenario'] ?? 'boot');
 $iterations  = max(1, (int) ($opts['iterations'] ?? 1));
 
+// Used to decide whether diagnostic work may run; see $payload below.
+$xdebugActive = extension_loaded('xdebug')
+    && in_array('profile', array_map('trim', explode(',', (string) ini_get('xdebug.mode'))), true);
+
 // A browser-like request context must exist BEFORE WordPress loads: plugins
 // such as Polylang read $_SERVER during plugin load, before any hook we could
 // hang this off.
@@ -325,7 +345,9 @@ $payload = [
     'queries'     => Probe::analyseQueries($queries),
     'hooks'       => Probe::hookStats(),
     'autoload'    => Probe::autoloadStats(),
-    'includes'    => Probe::includeStats(),
+    // Filesize accounting is ~4 calls per included file; skip it under Xdebug
+    // so the profiler does not measure its own instrumentation.
+    'includes'    => Probe::includeStats(!$xdebugActive),
     'blocks'      => Probe::blockStats(),
     'extensions'  => Probe::extensionStats(),
     'memory'      => [
