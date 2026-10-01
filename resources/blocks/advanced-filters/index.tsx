@@ -417,3 +417,5 @@ registerBlockType(metadata.name, {
     edit: Edit,
     save: () => <InnerBlocks.Content />, // Lưu block con để giữ cấu hình filter
 } as any);
+
+export { Edit };

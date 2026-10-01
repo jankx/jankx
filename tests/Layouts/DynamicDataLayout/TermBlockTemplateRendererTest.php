@@ -242,6 +242,67 @@ namespace Tests\Layouts\DynamicDataLayout {
             $this->assertStringNotContainsString('wp-block-post-excerpt', $html);
         }
 
+        public function testCarouselRendersTheSameItemMarkupAsGrid()
+        {
+            $terms = [
+                $this->makeTerm(['term_id' => 1, 'name' => 'News', 'description' => 'Latest news.', 'count' => 12]),
+                $this->makeTerm(['term_id' => 2, 'name' => 'Events', 'description' => 'Upcoming events.', 'count' => 5]),
+            ];
+
+            $template = [
+                'attrs' => [
+                    'animationType' => 'fade-up',
+                    'animationDelay' => 100,
+                    'animationDuration' => 600,
+                    'hoverAnimation' => 'zoom',
+                    'itemBgType' => 'color',
+                    'itemBgColor' => '#ff0000',
+                    'itemBgContentAlign' => 'top',
+                ],
+            ];
+
+            $grid = (new TermTemplateBlockGenerator($template, []))->generate(
+                $terms,
+                ['layout' => 'grid', 'columns' => 3]
+            );
+            $carousel = (new TermTemplateBlockGenerator($template, []))->generate(
+                $terms,
+                ['layout' => 'carousel', 'columns' => 3, 'showDots' => false, 'showArrows' => false]
+            );
+
+            // Reveal animation, hover state and background hooks must not be
+            // dropped just because the items sit inside a carousel slide.
+            foreach (['jankx-reveal--fade-up', 'data-hover-ani="zoom"', 'data-item-bg-type="color"'] as $marker) {
+                $this->assertStringContainsString($marker, $grid, "grid is missing {$marker}");
+                $this->assertStringContainsString($marker, $carousel, "carousel is missing {$marker}");
+            }
+
+            // The stagger delay keeps counting across slides.
+            $this->assertStringContainsString('--jankx-animation-delay: 0ms', $carousel);
+            $this->assertStringContainsString('--jankx-animation-delay: 100ms', $carousel);
+
+            // Carousel-only chrome stays intact.
+            $this->assertStringContainsString('embla__slide', $carousel);
+            $this->assertStringNotContainsString('embla__slide', $grid);
+        }
+
+        public function testCarouselKeepsItemLayoutWrapping()
+        {
+            $terms = [
+                $this->makeTerm(['term_id' => 1, 'name' => 'News', 'description' => 'Latest news.']),
+            ];
+
+            $template = ['attrs' => ['templateLayout' => 'hero-overlay']];
+
+            $carousel = (new TermTemplateBlockGenerator($template, []))->generate(
+                $terms,
+                ['layout' => 'carousel', 'showDots' => false, 'showArrows' => false]
+            );
+
+            $this->assertStringContainsString('embla__slide', $carousel);
+            $this->assertStringContainsString('hero-overlay', $carousel);
+        }
+
         public function testLayoutSetQueryAcceptsPlainArrayOfTerms()
         {
             $layout = new GridLayout();

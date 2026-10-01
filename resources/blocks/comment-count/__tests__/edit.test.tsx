@@ -3,6 +3,7 @@
  */
 
 import { render, screen, waitFor } from '@testing-library/react';
+import '@testing-library/jest-dom';
 import Edit from '../edit';
 
 // Mock WordPress dependencies
@@ -20,17 +21,26 @@ const mockPost = {
     comment_count: '5',
 };
 
+// `jest.doMock` cannot swap the store here because `Edit` is imported before
+// the test body runs, so the mock reads this mutable value at render time.
+let mockSelectResult = {
+    commentCount: 5 as number | null,
+    isTemplateEditor: false,
+    isResolving: false,
+};
+
 jest.mock('@wordpress/data', () => ({
-    useSelect: jest.fn(() => ({
-        commentCount: 5,
-        isTemplateEditor: false,
-        isResolving: false,
-    })),
+    useSelect: jest.fn(() => mockSelectResult),
 }));
 
 describe('CommentCount Edit', () => {
     beforeEach(() => {
         jest.clearAllMocks();
+        mockSelectResult = {
+            commentCount: 5,
+            isTemplateEditor: false,
+            isResolving: false,
+        };
     });
 
     it('should render comment count', () => {
@@ -40,13 +50,11 @@ describe('CommentCount Edit', () => {
     });
 
     it('should show loading spinner when resolving', () => {
-        jest.doMock('@wordpress/data', () => ({
-            useSelect: jest.fn(() => ({
-                commentCount: null,
-                isTemplateEditor: false,
-                isResolving: true,
-            })),
-        }));
+        mockSelectResult = {
+            commentCount: null,
+            isTemplateEditor: false,
+            isResolving: true,
+        };
 
         render(<Edit />);
 
@@ -54,13 +62,11 @@ describe('CommentCount Edit', () => {
     });
 
     it('should display placeholder count in template editor', () => {
-        jest.doMock('@wordpress/data', () => ({
-            useSelect: jest.fn(() => ({
-                commentCount: null,
-                isTemplateEditor: true,
-                isResolving: false,
-            })),
-        }));
+        mockSelectResult = {
+            commentCount: null,
+            isTemplateEditor: true,
+            isResolving: false,
+        };
 
         render(<Edit />);
 
@@ -68,13 +74,11 @@ describe('CommentCount Edit', () => {
     });
 
     it('should display zero when no comments', () => {
-        jest.doMock('@wordpress/data', () => ({
-            useSelect: jest.fn(() => ({
-                commentCount: 0,
-                isTemplateEditor: false,
-                isResolving: false,
-            })),
-        }));
+        mockSelectResult = {
+            commentCount: 0,
+            isTemplateEditor: false,
+            isResolving: false,
+        };
 
         render(<Edit />);
 

@@ -24,6 +24,11 @@ jest.mock('@wordpress/block-editor', () => ({
     useBlockProps: jest.fn((props) => props),
     useInnerBlocksProps: jest.fn((props) => ({ ...props, children: <div data-testid="inner-blocks" /> })),
     InspectorControls: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+    ColorPalette: ({ value, onChange }: any) => (
+        <div data-testid="color-palette">
+            <button type="button" onClick={() => onChange('#ff0000')}>Red</button>
+        </div>
+    ),
 }));
 
 jest.mock('@wordpress/i18n', () => ({
@@ -40,6 +45,20 @@ jest.mock('@wordpress/components', () => ({
                     <option key={opt.value} value={opt.value}>{opt.label}</option>
                 ))}
             </select>
+        </label>
+    ),
+    RangeControl: ({ label, value, onChange, min, max, step }: any) => (
+        <label>
+            {label}
+            <input
+                type="number"
+                value={value}
+                min={min}
+                max={max}
+                step={step}
+                onChange={(e) => onChange(Number(e.target.value))}
+                data-testid={`range-${label}`}
+            />
         </label>
     ),
 }));

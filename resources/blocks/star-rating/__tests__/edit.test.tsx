@@ -3,7 +3,7 @@
  */
 
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import Edit from '../edit';
 
@@ -20,6 +20,24 @@ jest.mock('@wordpress/element', () => {
         Fragment: React.Fragment,
     };
 });
+
+jest.mock('@wordpress/api-fetch', () => ({
+    __esModule: true,
+    // Mirrors the fallback list in `edit.tsx` so the inspector renders the
+    // same provider-driven controls the editor shows.
+    default: jest.fn(() =>
+        Promise.resolve([
+            {
+                label: 'Manual',
+                value: 'manual',
+                editorConfig: [
+                    { type: 'range', attribute: 'manualRating', label: 'Rating Value', min: 0, max: 5, step: 0.1 },
+                ],
+            },
+            { label: 'WooCommerce Product', value: 'woocommerce', editorConfig: [] },
+        ])
+    ),
+}));
 
 jest.mock('@wordpress/block-editor', () => ({
     useBlockProps: jest.fn((props) => props),
@@ -91,6 +109,10 @@ jest.mock('@wordpress/components', () => ({
             />
         </label>
     ),
+    Button: ({ children, onClick }: any) => (
+        <button type="button" onClick={onClick}>{children}</button>
+    ),
+    Spinner: () => <div data-testid="spinner">Loading...</div>,
 }));
 
 describe('StarRating Edit', () => {
@@ -120,24 +142,25 @@ describe('StarRating Edit', () => {
         jest.clearAllMocks();
     });
 
-    it('should render with default attributes', () => {
+    it('should render with default attributes', async () => {
         render(<Edit {...defaultProps} />);
+        await waitFor(() => expect(screen.queryByTestId('spinner')).not.toBeInTheDocument());
         
         // Should show 5 stars by default
         const stars = document.getElementsByClassName('jankx-star full');
         expect(stars.length).toBe(5);
     });
 
-    it('should change rating source', () => {
+    it('should change rating source', async () => {
         render(<Edit {...defaultProps} />);
-        
-        const select = screen.getByTestId('select-Rating Source');
+
+        const select = await screen.findByTestId('select-Rating Source');
         fireEvent.change(select, { target: { value: 'woocommerce' } });
         
         expect(defaultProps.setAttributes).toHaveBeenCalledWith({ ratingSource: 'woocommerce' });
     });
 
-    it('should show placeholder info for non-manual sources', () => {
+    it('should show placeholder info for non-manual sources', async () => {
         const props = {
             ...defaultProps,
             attributes: {
@@ -147,29 +170,31 @@ describe('StarRating Edit', () => {
         };
         
         render(<Edit {...props} />);
-        
+        await waitFor(() => expect(screen.queryByTestId('spinner')).not.toBeInTheDocument());
+
         expect(screen.getByText('Previewing woocommerce rating')).toBeInTheDocument();
     });
 
-    it('should update manual rating', () => {
+    it('should update manual rating', async () => {
         render(<Edit {...defaultProps} />);
-        
-        const range = screen.getByTestId('range-Rating Value');
+
+        const range = await screen.findByTestId('range-Rating Value');
         fireEvent.change(range, { target: { value: '3' } });
         
         expect(defaultProps.setAttributes).toHaveBeenCalledWith({ manualRating: 3 });
     });
 
-    it('should switch to SVG icon type', () => {
+    it('should switch to SVG icon type', async () => {
         render(<Edit {...defaultProps} />);
-        
+        await waitFor(() => expect(screen.queryByTestId('spinner')).not.toBeInTheDocument());
+
         const select = screen.getByTestId('select-Icon Type');
         fireEvent.change(select, { target: { value: 'svg' } });
         
         expect(defaultProps.setAttributes).toHaveBeenCalledWith({ iconType: 'svg' });
     });
 
-    it('should render SVG icons when iconType is svg', () => {
+    it('should render SVG icons when iconType is svg', async () => {
         const props = {
             ...defaultProps,
             attributes: {
@@ -180,13 +205,14 @@ describe('StarRating Edit', () => {
         };
         
         render(<Edit {...props} />);
-        
+        await waitFor(() => expect(screen.queryByTestId('spinner')).not.toBeInTheDocument());
+
         const stars = document.getElementsByClassName('jankx-star full is-svg');
         expect(stars.length).toBe(5);
         expect(stars[0].innerHTML).toContain('<svg>Full</svg>');
     });
 
-    it('should show rating count when enabled', () => {
+    it('should show rating count when enabled', async () => {
         const props = {
             ...defaultProps,
             attributes: {
@@ -196,7 +222,8 @@ describe('StarRating Edit', () => {
         };
         
         render(<Edit {...props} />);
-        
+        await waitFor(() => expect(screen.queryByTestId('spinner')).not.toBeInTheDocument());
+
         expect(screen.getByText('(123)')).toBeInTheDocument();
     });
 });

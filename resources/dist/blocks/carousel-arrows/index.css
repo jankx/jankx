@@ -32,35 +32,118 @@
 /*!****************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** css ./node_modules/.pnpm/css-loader@7.1.2_webpack@5.104.1/node_modules/css-loader/dist/cjs.js!./node_modules/.pnpm/postcss-loader@8.2.0_postcss@8.5.6_typescript@5.9.3_webpack@5.104.1/node_modules/postcss-loader/dist/cjs.js!./node_modules/.pnpm/sass-loader@16.0.6_sass@1.97.3_webpack@5.104.1/node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[3].use[3]!./blocks/carousel-arrows/editor.scss ***!
   \****************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+@charset "UTF-8";
+/**
+ * Carousel Arrows Block – Editor Styles
+ *
+ * Strategy: the carousel-arrows block is an InnerBlock child of
+ * dynamic-data-layout / dynamic-term-layout. We use CSS on the
+ * block wrapper element to visually position the arrows overlaying
+ * the parent carousel, mirroring the frontend appearance.
+ *
+ * The block wrapper gets:
+ *   class="wp-block-jankx-carousel-arrows carousel-arrows-editor-preview
+ *          carousel-arrows-position--{inside|outside|bottom}
+ *          [carousel-arrows--always-show] [carousel-arrows--hidden]"
+ *   data-arrows-position="{inside|outside|bottom}"
+ */
 .wp-block-jankx-carousel-arrows {
-  display: flex;
-  justify-content: center;
-  padding: 8px 0;
+  margin: 0 !important;
+  padding: 0 !important;
+  width: 100%;
 }
-.wp-block-jankx-carousel-arrows .carousel-arrows-preview {
+
+.wp-block-jankx-carousel-arrows .carousel-nav {
   display: inline-flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6px;
-  padding: 10px 16px;
-  background: #fcfcfc;
-  border: 1px dashed #dcdcde;
-  border-radius: 8px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
-}
-.wp-block-jankx-carousel-arrows .carousel-arrows-preview__buttons {
-  display: flex;
-  gap: 12px;
   align-items: center;
   justify-content: center;
+  background: rgba(255, 255, 255, 0.92);
+  border: 1.5px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.14);
+  border-radius: 50%;
+  cursor: default;
+  transition: box-shadow 0.18s ease, background 0.18s ease;
+  flex-shrink: 0;
+  pointer-events: none;
 }
-.wp-block-jankx-carousel-arrows .carousel-arrows-preview__footer {
+
+.wp-block-jankx-carousel-arrows.carousel-arrows-position--inside {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 5;
+}
+.wp-block-jankx-carousel-arrows.carousel-arrows-position--inside .carousel-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+.wp-block-jankx-carousel-arrows.carousel-arrows-position--inside .carousel-nav.carousel-prev {
+  left: 10px;
+}
+.wp-block-jankx-carousel-arrows.carousel-arrows-position--inside .carousel-nav.carousel-next {
+  right: 10px;
+}
+
+.wp-block-jankx-carousel-arrows.carousel-arrows-position--outside {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 5;
+}
+.wp-block-jankx-carousel-arrows.carousel-arrows-position--outside .carousel-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+.wp-block-jankx-carousel-arrows.carousel-arrows-position--outside .carousel-nav.carousel-prev {
+  left: -22px;
+}
+.wp-block-jankx-carousel-arrows.carousel-arrows-position--outside .carousel-nav.carousel-next {
+  right: -22px;
+}
+
+.wp-block-jankx-carousel-arrows.carousel-arrows-position--bottom {
   display: flex;
+  justify-content: center;
+  padding: 10px 0 4px;
+}
+.wp-block-jankx-carousel-arrows.carousel-arrows-position--bottom .carousel-arrows-bottom-row {
+  display: inline-flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.wp-block-jankx-dynamic-data-layout,
+.wp-block-jankx-dynamic-term-layout {
+  position: relative;
+}
+
+.wp-block-jankx-carousel-arrows.carousel-arrows--hidden {
+  position: static !important;
+  width: 100%;
+  padding: 6px 10px !important;
+  display: flex;
+  align-items: center;
+}
+.wp-block-jankx-carousel-arrows.carousel-arrows--hidden .carousel-arrows-hidden-notice {
+  display: inline-flex;
   align-items: center;
   gap: 4px;
   font-size: 11px;
+  font-weight: 500;
   color: #757575;
-  text-transform: capitalize;
+  background: #f6f6f7;
+  border: 1px dashed #c3c4c7;
+  border-radius: 4px;
+  padding: 3px 8px;
+  pointer-events: none;
 }
 
 /*# sourceMappingURL=index.css.map*/

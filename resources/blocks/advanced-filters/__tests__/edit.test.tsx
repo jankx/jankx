@@ -3,7 +3,8 @@
  */
 
 import { render, screen, waitFor, fireEvent } from '@testing-library/react';
-import Edit from '../index';
+import '@testing-library/jest-dom';
+import { Edit } from '../index';
 
 // Mock WordPress dependencies
 jest.mock('@wordpress/server-side-render', () => ({
@@ -16,16 +17,63 @@ jest.mock('@wordpress/server-side-render', () => ({
 jest.mock('@wordpress/block-editor', () => ({
     useBlockProps: jest.fn((props) => props),
     InspectorControls: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+    InnerBlocks: Object.assign(
+        jest.fn(
+            ({
+                children,
+                renderAppender,
+            }: {
+                children?: React.ReactNode;
+                renderAppender?: () => React.ReactNode;
+            }) => (
+                <div data-testid="inner-blocks">
+                    {children}
+                    {renderAppender?.()}
+                </div>
+            )
+        ),
+        {
+            Content: jest.fn(() => <div data-testid="inner-blocks-content" />),
+            ButtonBlockAppender: jest.fn(() => <div data-testid="inner-blocks-appender" />),
+        }
+    ),
+}));
+
+// Mocked so the real package (and the store reducer chain it pulls in through
+// `@wordpress/rich-text`) never has to load in jsdom.
+jest.mock('@wordpress/blocks', () => ({
+    registerBlockType: jest.fn(),
+    createBlock: jest.fn((name: string, attributes: unknown) => ({ name, attributes })),
+}));
+
+// `Edit` reads inner filter blocks through `useSelect`, so the callback has to
+// receive a `select` stub rather than running against an empty registry.
+// `mock*` names are hoisted above the factory, so the tests can drive them.
+let mockInnerBlocks: any[] = [];
+let mockPageBlocks: any[] = [];
+
+jest.mock('@wordpress/data', () => ({
+    useSelect: jest.fn((mapSelect: (select: any) => any) =>
+        mapSelect((store: string) =>
+            store === 'core/block-editor'
+                ? {
+                    getBlock: () => ({ innerBlocks: mockInnerBlocks }),
+                    getBlocks: () => mockPageBlocks,
+                }
+                : {}
+        )
+    ),
 }));
 
 jest.mock('@wordpress/components', () => ({
     PanelBody: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
-    ToggleControl: ({ label, checked, onChange }: { label: string; checked: boolean; onChange: (value: boolean) => void }) => (
+    ToggleControl: ({ label, checked, onChange, disabled }: { label: string; checked: boolean; onChange: (value: boolean) => void; disabled?: boolean }) => (
         <label>
             {label}
             <input
                 type="checkbox"
                 checked={checked}
+                disabled={disabled}
                 onChange={(e) => onChange(e.target.checked)}
                 data-testid={`toggle-${label.toLowerCase().replace(/\s+/g, '-')}`}
             />
@@ -55,7 +103,9 @@ jest.mock('@wordpress/components', () => ({
     Button: ({ children, onClick }: { children: React.ReactNode; onClick?: () => void }) => (
         <button onClick={onClick} data-testid="button">{children}</button>
     ),
-    Placeholder: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+    Placeholder: ({ children }: { children: React.ReactNode }) => (
+        <div data-testid="placeholder">{children}</div>
+    ),
     Spinner: () => <div data-testid="spinner">Loading...</div>,
 }));
 
@@ -66,7 +116,9 @@ jest.mock('@wordpress/api-fetch', () => ({
 
 describe('AdvancedFilters Edit', () => {
     const defaultAttributes = {
+        blockId: '',
         targetBlockIds: [] as string[],
+        targetPostType: 'post',
         filterType: 'taxonomy' as const,
         layout: 'horizontal' as const,
         showLabels: true,
@@ -101,344 +153,194 @@ describe('AdvancedFilters Edit', () => {
         clientId: 'test-client-id',
     };
 
+    const layoutBlock = {
+        clientId: 'layout-1',
+        name: 'jankx/dynamic-data-layout',
+        attributes: { postType: 'product' },
+    };
+
     beforeEach(() => {
         jest.clearAllMocks();
+        mockInnerBlocks = [];
+        mockPageBlocks = [];
+        (window as any).wp = {
+            data: {
+                select: () => ({
+                    getBlocks: () => mockPageBlocks,
+                    getBlock: () => undefined,
+                }),
+                subscribe: () => () => undefined,
+            },
+        };
     });
 
-    it('should render with default attributes', () => {
+    afterEach(() => {
+        delete (window as any).wp;
+    });
+
+    it('should render the inner filter blocks container', () => {
         render(<Edit {...defaultProps} />);
 
+        expect(screen.getByTestId('inner-blocks')).toBeInTheDocument();
+        expect(screen.getByTestId('inner-blocks-appender')).toBeInTheDocument();
+    });
+
+    it('should ask for a target block instead of rendering the preview', () => {
+        render(<Edit {...defaultProps} />);
+
+        // No target selected yet, so SSR preview is replaced by a placeholder.
+        expect(screen.getAllByTestId('placeholder').length).toBeGreaterThan(0);
+        expect(screen.queryByTestId('server-side-render')).not.toBeInTheDocument();
+    });
+
+    it('should render the server side preview once a target block is selected', () => {
+        const props = {
+            ...defaultProps,
+            attributes: { ...defaultAttributes, targetBlockIds: ['layout-1'] },
+        };
+        render(<Edit {...props} />);
+
         expect(screen.getByTestId('server-side-render')).toBeInTheDocument();
     });
 
-    it('should update filterType when changed', () => {
+    it('should persist the client id as blockId', () => {
         const setAttributes = jest.fn();
         render(<Edit {...defaultProps} setAttributes={setAttributes} />);
 
-        const select = screen.getByTestId('select-filter-type') as HTMLSelectElement;
-        fireEvent.change(select, { target: { value: 'meta' } });
-
-        expect(setAttributes).toHaveBeenCalledWith({ filterType: 'meta' });
+        expect(setAttributes).toHaveBeenCalledWith({ blockId: 'test-client-id' });
     });
 
-    it('should update layout when changed', () => {
+    it.each([
+        ['Enable AJAX', 'ajaxEnabled', true],
+        ['Update URL', 'updateUrl', true],
+        ['Scroll to Results', 'scrollToResults', false],
+    ])('should toggle %s', (label, attribute, current) => {
         const setAttributes = jest.fn();
         render(<Edit {...defaultProps} setAttributes={setAttributes} />);
 
-        const select = screen.getByTestId('select-layout') as HTMLSelectElement;
-        fireEvent.change(select, { target: { value: 'vertical' } });
+        const toggle = screen.getByTestId(
+            `toggle-${(label as string).toLowerCase().replace(/\s+/g, '-')}`
+        ) as HTMLInputElement;
+        // React normalises checkbox updates through click, not change.
+        fireEvent.click(toggle);
 
-        expect(setAttributes).toHaveBeenCalledWith({ layout: 'vertical' });
+        expect(setAttributes).toHaveBeenCalledWith({ [attribute as string]: !current });
     });
 
-    it('should toggle showLabels', () => {
+    it('should disable the URL and scroll toggles when ajax is off', () => {
+        const props = {
+            ...defaultProps,
+            attributes: { ...defaultAttributes, ajaxEnabled: false },
+        };
+        render(<Edit {...props} />);
+
+        expect(screen.getByTestId('toggle-update-url')).toBeDisabled();
+        expect(screen.getByTestId('toggle-scroll-to-results')).toBeDisabled();
+    });
+
+    it('should toggle the reset button text field', () => {
         const setAttributes = jest.fn();
-        render(<Edit {...defaultProps} setAttributes={setAttributes} />);
+        const props = {
+            ...defaultProps,
+            attributes: { ...defaultAttributes, showResetButton: false },
+        };
+        render(<Edit {...props} setAttributes={setAttributes} />);
 
-        const toggle = screen.getByTestId('toggle-show-labels') as HTMLInputElement;
-        fireEvent.change(toggle, { target: { checked: false } });
+        // The text field is only rendered while the reset button is enabled.
+        expect(screen.queryByTestId('text-reset-button-text')).not.toBeInTheDocument();
 
-        expect(setAttributes).toHaveBeenCalledWith({ showLabels: false });
+        fireEvent.click(screen.getByTestId('toggle-show-reset-button'));
+
+        expect(setAttributes).toHaveBeenCalledWith({ showResetButton: true });
     });
 
-    it('should toggle ajaxEnabled', () => {
-        const setAttributes = jest.fn();
-        render(<Edit {...defaultProps} setAttributes={setAttributes} />);
-
-        const toggle = screen.getByTestId('toggle-ajax-enabled') as HTMLInputElement;
-        fireEvent.change(toggle, { target: { checked: false } });
-
-        expect(setAttributes).toHaveBeenCalledWith({ ajaxEnabled: false });
-    });
-
-    it('should update resetButtonText', () => {
+    it('should update the reset button text', () => {
         const setAttributes = jest.fn();
         render(<Edit {...defaultProps} setAttributes={setAttributes} />);
 
         const input = screen.getByTestId('text-reset-button-text') as HTMLInputElement;
-        fireEvent.change(input, { target: { value: 'Clear All' } });
+        fireEvent.change(input, { target: { value: 'Reset & Clear <Filters>' } });
 
-        expect(setAttributes).toHaveBeenCalledWith({ resetButtonText: 'Clear All' });
+        expect(setAttributes).toHaveBeenCalledWith({
+            resetButtonText: 'Reset & Clear <Filters>',
+        });
     });
 
-    // Test all filterType enum values
-    it.each([
-        ['taxonomy'],
-        ['meta'],
-        ['price'],
-        ['date'],
-        ['author'],
-        ['keyword'],
-        ['mixed'],
-    ])('should update filterType to %s', (filterType) => {
+    it('should list target blocks discovered on the current page', () => {
+        mockPageBlocks = [layoutBlock];
+        render(<Edit {...defaultProps} />);
+
+        const select = screen.getByTestId('select-target-block(s)') as HTMLSelectElement;
+        const values = Array.from(select.options).map((option) => option.value);
+        expect(values).toEqual(['', 'layout-1']);
+    });
+
+    it('should warn when the page has no dynamic data layout block', () => {
+        render(<Edit {...defaultProps} />);
+
+        expect(
+            screen.getByText(
+                /No Dynamic Data Layout blocks found in this page/i
+            )
+        ).toBeInTheDocument();
+    });
+
+    it('should store the selected target block', () => {
+        mockPageBlocks = [layoutBlock];
         const setAttributes = jest.fn();
         render(<Edit {...defaultProps} setAttributes={setAttributes} />);
 
-        const select = screen.getByTestId('select-filter-type') as HTMLSelectElement;
-        fireEvent.change(select, { target: { value: filterType } });
+        const select = screen.getByTestId('select-target-block(s)') as HTMLSelectElement;
+        fireEvent.change(select, { target: { value: 'layout-1' } });
 
-        expect(setAttributes).toHaveBeenCalledWith({ filterType });
+        expect(setAttributes).toHaveBeenCalledWith({ targetBlockIds: ['layout-1'] });
     });
 
-    // Test all layout enum values
-    it.each([
-        ['horizontal'],
-        ['vertical'],
-        ['dropdown'],
-        ['accordion'],
-    ])('should update layout to %s', (layout) => {
+    it('should clear the target block selection', () => {
+        mockPageBlocks = [layoutBlock];
+        const setAttributes = jest.fn();
+        const props = {
+            ...defaultProps,
+            attributes: { ...defaultAttributes, targetBlockIds: ['layout-1'] },
+        };
+        render(<Edit {...props} setAttributes={setAttributes} />);
+
+        const select = screen.getByTestId('select-target-block(s)') as HTMLSelectElement;
+        fireEvent.change(select, { target: { value: '' } });
+
+        expect(setAttributes).toHaveBeenCalledWith({ targetBlockIds: [] });
+    });
+
+    it('should group inner filter blocks into their typed attributes', () => {
+        const taxonomyAttributes = { filterType: 'taxonomy', taxonomy: 'category' };
+        const metaAttributes = { filterType: 'meta', metaKey: 'custom_field' };
+        mockInnerBlocks = [
+            { attributes: taxonomyAttributes },
+            { attributes: metaAttributes },
+        ];
         const setAttributes = jest.fn();
         render(<Edit {...defaultProps} setAttributes={setAttributes} />);
 
-        const select = screen.getByTestId('select-layout') as HTMLSelectElement;
-        fireEvent.change(select, { target: { value: layout } });
-
-        expect(setAttributes).toHaveBeenCalledWith({ layout });
+        expect(setAttributes).toHaveBeenCalledWith({
+            taxonomyFilters: [taxonomyAttributes],
+            metaFilters: [metaAttributes],
+            priceFilters: [],
+            dateFilters: [],
+            authorFilters: [],
+            keywordFilter: defaultAttributes.keywordFilter,
+            targetPostType: 'post',
+        });
     });
 
-    // Test all displayStyle enum values
-    it.each([
-        ['buttons'],
-        ['checkboxes'],
-        ['dropdown'],
-        ['select'],
-    ])('should update displayStyle to %s', (displayStyle) => {
-        const setAttributes = jest.fn();
-        render(<Edit {...defaultProps} setAttributes={setAttributes} />);
-
-        // Note: displayStyle might be controlled differently in the actual component
-        // This test assumes it's available as a select control
-        // Adjust based on actual implementation
-        const select = screen.queryByTestId('select-display-style') as HTMLSelectElement;
-        if (select) {
-            fireEvent.change(select, { target: { value: displayStyle } });
-            expect(setAttributes).toHaveBeenCalledWith({ displayStyle });
-        }
-    });
-
-    // Test all boolean toggles
-    it.each([
-        ['showLabels'],
-        ['showResetButton'],
-        ['ajaxEnabled'],
-        ['updateUrl'],
-        ['scrollToResults'],
-        ['showCount'],
-        ['showEmptyTerms'],
-        ['showOnlyTopLevel'],
-        ['showHierarchy'],
-        ['displayAsDropdown'],
-        ['multipleSelection'],
-        ['collapsible'],
-        ['defaultExpanded'],
-    ])('should toggle %s', (attributeName) => {
-        const setAttributes = jest.fn();
-        const camelCaseName = attributeName.charAt(0).toLowerCase() + attributeName.slice(1);
-        const label = attributeName.replace(/([A-Z])/g, ' $1').trim();
-        
-        render(<Edit {...defaultProps} setAttributes={setAttributes} />);
-
-        const toggle = screen.queryByTestId(`toggle-${label.toLowerCase().replace(/\s+/g, '-')}`) as HTMLInputElement;
-        if (toggle) {
-            const currentValue = defaultAttributes[camelCaseName as keyof typeof defaultAttributes] as boolean;
-            fireEvent.change(toggle, { target: { checked: !currentValue } });
-            
-            expect(setAttributes).toHaveBeenCalledWith({ [camelCaseName]: !currentValue });
-        }
-    });
-
-    it('should handle empty targetBlockIds', () => {
+    it('should show the post type of the target block', async () => {
+        mockPageBlocks = [layoutBlock];
         const props = {
             ...defaultProps,
-            attributes: {
-                ...defaultAttributes,
-                targetBlockIds: [],
-            },
+            attributes: { ...defaultAttributes, targetBlockIds: ['layout-1'] },
         };
-
         render(<Edit {...props} />);
 
-        // Should render placeholder or empty state
-        expect(screen.getByTestId('server-side-render')).toBeInTheDocument();
-    });
-
-    it('should handle multiple targetBlockIds', () => {
-        const props = {
-            ...defaultProps,
-            attributes: {
-                ...defaultAttributes,
-                targetBlockIds: ['block-1', 'block-2', 'block-3'],
-            },
-        };
-
-        render(<Edit {...props} />);
-
-        expect(screen.getByTestId('server-side-render')).toBeInTheDocument();
-    });
-
-    it('should handle keyword filter with custom placeholder', () => {
-        const setAttributes = jest.fn();
-        const props = {
-            ...defaultProps,
-            attributes: {
-                ...defaultAttributes,
-                keywordFilter: {
-                    enabled: true,
-                    placeholder: 'Custom search placeholder',
-                },
-            },
-            setAttributes,
-        };
-
-        render(<Edit {...props} />);
-
-        // Should render with custom placeholder
-        expect(screen.getByTestId('server-side-render')).toBeInTheDocument();
-    });
-
-    it('should handle taxonomy filters array', () => {
-        const props = {
-            ...defaultProps,
-            attributes: {
-                ...defaultAttributes,
-                taxonomyFilters: [
-                    {
-                        enabled: true,
-                        taxonomy: 'category',
-                        label: 'Categories',
-                    },
-                    {
-                        enabled: false,
-                        taxonomy: 'post_tag',
-                        label: 'Tags',
-                    },
-                ],
-            },
-        };
-
-        render(<Edit {...props} />);
-
-        expect(screen.getByTestId('server-side-render')).toBeInTheDocument();
-    });
-
-    it('should handle meta filters array', () => {
-        const props = {
-            ...defaultProps,
-            attributes: {
-                ...defaultAttributes,
-                metaFilters: [
-                    {
-                        enabled: true,
-                        metaKey: 'custom_field',
-                        label: 'Custom Field',
-                    },
-                ],
-            },
-        };
-
-        render(<Edit {...props} />);
-
-        expect(screen.getByTestId('server-side-render')).toBeInTheDocument();
-    });
-
-    it('should handle price filters array', () => {
-        const props = {
-            ...defaultProps,
-            attributes: {
-                ...defaultAttributes,
-                priceFilters: [
-                    {
-                        enabled: true,
-                        min: 0,
-                        max: 100,
-                    },
-                ],
-            },
-        };
-
-        render(<Edit {...props} />);
-
-        expect(screen.getByTestId('server-side-render')).toBeInTheDocument();
-    });
-
-    it('should handle date filters array', () => {
-        const props = {
-            ...defaultProps,
-            attributes: {
-                ...defaultAttributes,
-                dateFilters: [
-                    {
-                        enabled: true,
-                        startDate: '2024-01-01',
-                        endDate: '2024-12-31',
-                    },
-                ],
-            },
-        };
-
-        render(<Edit {...props} />);
-
-        expect(screen.getByTestId('server-side-render')).toBeInTheDocument();
-    });
-
-    it('should handle author filters array', () => {
-        const props = {
-            ...defaultProps,
-            attributes: {
-                ...defaultAttributes,
-                authorFilters: [
-                    {
-                        enabled: true,
-                        authors: [1, 2, 3],
-                    },
-                ],
-            },
-        };
-
-        render(<Edit {...props} />);
-
-        expect(screen.getByTestId('server-side-render')).toBeInTheDocument();
-    });
-
-    it('should update resetButtonText with special characters', () => {
-        const setAttributes = jest.fn();
-        render(<Edit {...defaultProps} setAttributes={setAttributes} />);
-
-        const input = screen.getByTestId('text-reset-button-text') as HTMLInputElement;
-        const specialText = 'Reset & Clear <Filters>';
-        fireEvent.change(input, { target: { value: specialText } });
-
-        expect(setAttributes).toHaveBeenCalledWith({ resetButtonText: specialText });
-    });
-
-    it('should handle all attributes combinations', () => {
-        const complexAttributes = {
-            ...defaultAttributes,
-            filterType: 'mixed' as const,
-            layout: 'accordion' as const,
-            displayStyle: 'dropdown' as const,
-            showLabels: false,
-            showResetButton: false,
-            ajaxEnabled: false,
-            updateUrl: false,
-            scrollToResults: true,
-            showCount: true,
-            showEmptyTerms: false,
-            showOnlyTopLevel: true,
-            showHierarchy: true,
-            displayAsDropdown: true,
-            multipleSelection: false,
-            collapsible: true,
-            defaultExpanded: false,
-        };
-
-        const props = {
-            ...defaultProps,
-            attributes: complexAttributes,
-        };
-
-        render(<Edit {...props} />);
-
-        expect(screen.getByTestId('server-side-render')).toBeInTheDocument();
+        // Blocks are collected in an effect, so the post type appears async.
+        await waitFor(() => expect(screen.getByText('product')).toBeInTheDocument());
     });
 });

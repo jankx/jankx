@@ -18,7 +18,7 @@ class CarouselArrowsRendererTest extends TestCase
         $html = CarouselArrowsRenderer::render([]);
 
         $this->assertStringContainsString(
-            'class="embla__button embla__button--prev carousel-nav carousel-prev"',
+            'class="embla__button embla__button--prev carousel-nav carousel-prev is-hidden"',
             $html
         );
         $this->assertStringContainsString(
@@ -31,6 +31,27 @@ class CarouselArrowsRendererTest extends TestCase
         $this->assertStringContainsString('height:44px', $html);
         $this->assertStringContainsString('<svg', $html);
         $this->assertStringNotContainsString('background-color:', $html);
+    }
+
+    public function testRenderHidesPrevArrowUntilCarouselIsScrollable(): void
+    {
+        $html = CarouselArrowsRenderer::render([]);
+
+        // The editor script unhides prev once there are enough slides.
+        $this->assertStringContainsString('is-hidden', $html);
+        $this->assertStringContainsString('display: none;', $html);
+    }
+
+    public function testRenderKeepsPrevArrowVisibleWhenAlwaysShowArrows(): void
+    {
+        $html = CarouselArrowsRenderer::render(['alwaysShowArrows' => true]);
+
+        $this->assertStringContainsString(
+            'class="embla__button embla__button--prev carousel-nav carousel-prev"',
+            $html
+        );
+        $this->assertStringNotContainsString('is-hidden', $html);
+        $this->assertStringNotContainsString('display: none;', $html);
     }
 
     public function testRenderReturnsEmptyWhenHidden(): void

@@ -98,10 +98,12 @@ jest.mock('@wordpress/components', () => ({
         </label>
     ),
     Popover: ({ children }: any) => <div data-testid="popover">{children}</div>,
-    ToolbarButton: ({ title, onClick, children }: any) => (
-        <button type="button" onClick={onClick} data-testid={`toolbar-${title}`}>
-            {children ?? title}
-        </button>
+    ToolbarButton: require('react').forwardRef(
+        ({ title, onClick, children }: any, ref: any) => (
+            <button ref={ref} type="button" onClick={onClick} data-testid={`toolbar-${title}`}>
+                {children ?? title}
+            </button>
+        )
     ),
     __experimentalToolsPanel: ({ children }: any) => <div data-testid="tools-panel">{children}</div>,
     __experimentalToolsPanelItem: ({ children }: any) => <div data-testid="tools-panel-item">{children}</div>,

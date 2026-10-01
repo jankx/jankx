@@ -2,7 +2,8 @@
  * @jest-environment jsdom
  */
 
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
+import '@testing-library/jest-dom';
 import Edit from '../edit';
 
 // Mock WordPress dependencies
@@ -14,70 +15,87 @@ jest.mock('@wordpress/components', () => ({
     Spinner: () => <div data-testid="spinner">Loading...</div>,
 }));
 
-const mockPost = {
-    id: 123,
-    type: 'post',
-    comment_count: '5',
+// `jest.doMock` cannot swap the store here because `Edit` is imported before
+// the test body runs, so the mock reads this mutable value at render time.
+let mockSelectResult = {
+    count: 0 as number,
+    isTemplateEditor: false,
+    isResolving: false,
 };
 
 jest.mock('@wordpress/data', () => ({
-    useSelect: jest.fn(() => ({
-        commentCount: 5,
-        isTemplateEditor: false,
-        isResolving: false,
-    })),
+    useSelect: jest.fn(() => mockSelectResult),
 }));
 
-describe('CommentCount Edit', () => {
+describe('SearchResultsCount Edit', () => {
     beforeEach(() => {
         jest.clearAllMocks();
+        mockSelectResult = {
+            count: 0,
+            isTemplateEditor: false,
+            isResolving: false,
+        };
     });
 
-    it('should render comment count', () => {
-        render(<Edit />);
+    it('should render the resolved count', () => {
+        mockSelectResult = {
+            count: 7,
+            isTemplateEditor: false,
+            isResolving: false,
+        };
 
-        expect(screen.getByText(/5/)).toBeInTheDocument();
+        const { container } = render(<Edit />);
+
+        expect(screen.getByText('7')).toBeInTheDocument();
+        // The block renders the number only, without a label.
+        expect(container.textContent).toBe('7');
     });
 
     it('should show loading spinner when resolving', () => {
-        jest.doMock('@wordpress/data', () => ({
-            useSelect: jest.fn(() => ({
-                commentCount: null,
-                isTemplateEditor: false,
-                isResolving: true,
-            })),
-        }));
+        mockSelectResult = {
+            count: 0,
+            isTemplateEditor: false,
+            isResolving: true,
+        };
 
         render(<Edit />);
 
         expect(screen.getByTestId('spinner')).toBeInTheDocument();
     });
 
-    it('should display placeholder count in template editor', () => {
-        jest.doMock('@wordpress/data', () => ({
-            useSelect: jest.fn(() => ({
-                commentCount: null,
-                isTemplateEditor: true,
-                isResolving: false,
-            })),
-        }));
+    it('should display the placeholder count in template editor', () => {
+        mockSelectResult = {
+            count: 42,
+            isTemplateEditor: true,
+            isResolving: false,
+        };
 
         render(<Edit />);
 
-        expect(screen.getByText(/12/)).toBeInTheDocument();
+        expect(screen.getByText('42')).toBeInTheDocument();
     });
 
-    it('should display zero when no comments', () => {
-        jest.doMock('@wordpress/data', () => ({
-            useSelect: jest.fn(() => ({
-                commentCount: 0,
-                isTemplateEditor: false,
-                isResolving: false,
-            })),
-        }));
+    it('should not render a spinner inside the template editor', () => {
+        mockSelectResult = {
+            count: 42,
+            isTemplateEditor: true,
+            isResolving: true,
+        };
 
         render(<Edit />);
 
-        expect(screen.getByText(/0/)).toBeInTheDocument();
+        expect(screen.queryByTestId('spinner')).not.toBeInTheDocument();
+    });
+
+    it('should display zero when no results', () => {
+        mockSelectResult = {
+            count: 0,
+            isTemplateEditor: false,
+            isResolving: false,
+        };
+
+        render(<Edit />);
+
+        expect(screen.getByText('0')).toBeInTheDocument();
     });
 });

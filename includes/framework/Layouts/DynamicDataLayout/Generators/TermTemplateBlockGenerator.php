@@ -145,113 +145,131 @@ class TermTemplateBlockGenerator extends AbstractContentGenerator
      * @param array $options
      * @return string
      */
-    protected function renderTerms(array $terms, array $options): string
+    /**
+     * Build the full item markup for a single term.
+     *
+     * Shared by the grid and carousel renderers so both paths keep the same
+     * layout wrapping, background, animation and overlay handling. `$itemIndex`
+     * only drives the staggered animation delay.
+     */
+    protected function renderTermItemMarkup(\WP_Term $term, array $terms, array $options, int $itemIndex): string
     {
-        $output = [];
         $templateAttrs = $this->getTemplateAttrs();
 
-        $bgType = $templateAttrs['itemBgType'] ?? 'none';
-        $itemBgDataAttrs = '';
-        if ($bgType !== 'none') {
-            $contentAlign = $templateAttrs['itemBgContentAlign'] ?? 'bottom';
-            $itemBgDataAttrs = sprintf(
-                ' data-item-bg-type="%s" data-item-bg-content-align="%s"',
-                esc_attr($bgType),
-                esc_attr($contentAlign)
-            );
+        $itemContent = $this->renderTermItem($term, $terms, $options);
+        if ($itemContent === '') {
+            return '';
         }
+
+        $itemContent = $this->wrapTermItemLayout(
+            $itemContent,
+            $templateAttrs['templateLayout'] ?? '',
+            $templateAttrs
+        );
 
         $enableOverlay = !empty($templateAttrs['enableOverlay']);
 
-        $animationType = $templateAttrs['animationType'] ?? 'none';
-        $animationDuration = $templateAttrs['animationDuration'] ?? 1000;
-        $animationDelay = $templateAttrs['animationDelay'] ?? 0;
-        $animationTarget = $templateAttrs['animationTarget'] ?? 'entry';
-        $animationReverse = !empty($templateAttrs['animationReverse']);
+        $classes = $this->buildItemClasses($term);
+        $templateClasses = $this->buildTemplateItemClasses($templateAttrs);
+        if ($templateClasses !== '') {
+            $classes .= ' ' . $templateClasses;
+        }
+
+        $itemDataAttrs = '';
         $hoverAnimation = $templateAttrs['hoverAnimation'] ?? 'none';
         $unhoverAnimation = $templateAttrs['unhoverAnimation'] ?? 'none';
+        if ($hoverAnimation !== 'none') {
+            $itemDataAttrs .= sprintf(' data-hover-ani="%s"', esc_attr($hoverAnimation));
+        }
+        if ($unhoverAnimation !== 'none') {
+            $itemDataAttrs .= sprintf(' data-unhover-ani="%s"', esc_attr($unhoverAnimation));
+        }
 
+        $bgType = $templateAttrs['itemBgType'] ?? 'none';
+        if ($bgType !== 'none') {
+            $itemDataAttrs .= sprintf(
+                ' data-item-bg-type="%s" data-item-bg-content-align="%s"',
+                esc_attr($bgType),
+                esc_attr($templateAttrs['itemBgContentAlign'] ?? 'bottom')
+            );
+        }
+
+        $currentStyle = $this->buildTemplateItemInlineStyle($templateAttrs);
+        $bgStyle = $this->buildTermItemBackgroundStyle($templateAttrs, $term);
+        if ($bgStyle !== '') {
+            $currentStyle .= ($currentStyle !== '' ? '; ' : '') . $bgStyle;
+        }
+
+        $animationType = $templateAttrs['animationType'] ?? 'none';
+        if ($animationType !== 'none') {
+            $animationTarget = $templateAttrs['animationTarget'] ?? 'entry';
+            $classes .= sprintf(
+                ' jankx-reveal jankx-reveal--%s jankx-reveal--target-%s',
+                $animationType,
+                $animationTarget
+            );
+            if (!empty($templateAttrs['animationReverse'])) {
+                $classes .= ' jankx-reveal--reverse';
+            }
+
+            $delay = $itemIndex * (int) ($templateAttrs['animationDelay'] ?? 0);
+            $currentStyle .= ($currentStyle !== '' ? '; ' : '') . sprintf(
+                '--jankx-animation-duration: %dms; --jankx-animation-delay: %dms;',
+                (int) ($templateAttrs['animationDuration'] ?? 1000),
+                $delay
+            );
+        }
+
+        $overlayHtml = $this->buildTermItemOverlayHtml($templateAttrs, $term);
+
+        if ($enableOverlay) {
+            $itemContent = sprintf(
+                '<div class="dynamic-data-template__content" style="position: relative; z-index: 2">%s</div>',
+                $itemContent
+            );
+        }
+
+        // entry-image / entire-item icon overlays anchor to the item rather than
+        // to a featured image block, which terms do not have.
+        $itemIconHtml = \Jankx\Layouts\DynamicDataLayout\OverlayIconRenderer::buildItemOverlayHtml(
+            $templateAttrs,
+            $this->templateTermHasMedia($templateAttrs, $term)
+        );
+
+        if ($enableOverlay || $itemIconHtml !== '') {
+            if (strpos($currentStyle, 'position:') === false) {
+                $currentStyle .= ($currentStyle !== '' ? '; ' : '') . 'position: relative';
+            }
+        }
+
+        if ($enableOverlay && strpos($currentStyle, 'overflow:') === false) {
+            $currentStyle .= ($currentStyle !== '' ? '; ' : '') . 'overflow: hidden';
+        }
+
+        $currentStyleAttr = $currentStyle !== '' ? sprintf(' style="%s"', esc_attr($currentStyle)) : '';
+
+        return sprintf(
+            '<div class="%s"%s%s>%s%s%s</div>',
+            esc_attr($classes),
+            $currentStyleAttr,
+            $itemDataAttrs,
+            $itemContent,
+            $overlayHtml,
+            $itemIconHtml
+        );
+    }
+
+    protected function renderTerms(array $terms, array $options): string
+    {
+        $output = [];
         $itemIndex = 0;
-        $templateLayout = $templateAttrs['templateLayout'] ?? '';
 
         foreach ($terms as $term) {
-            $itemContent = $this->renderTermItem($term, $terms, $options);
-            if ($itemContent === '') {
+            $itemHtml = $this->renderTermItemMarkup($term, $terms, $options, $itemIndex);
+            if ($itemHtml === '') {
                 continue;
             }
-
-            $itemContent = $this->wrapTermItemLayout($itemContent, $templateLayout, $templateAttrs);
-
-            $classes = $this->buildItemClasses($term);
-            $templateClasses = $this->buildTemplateItemClasses($templateAttrs);
-            if ($templateClasses !== '') {
-                $classes .= ' ' . $templateClasses;
-            }
-
-            $itemDataAttrs = '';
-            if ($hoverAnimation !== 'none') {
-                $itemDataAttrs .= sprintf(' data-hover-ani="%s"', esc_attr($hoverAnimation));
-            }
-            if ($unhoverAnimation !== 'none') {
-                $itemDataAttrs .= sprintf(' data-unhover-ani="%s"', esc_attr($unhoverAnimation));
-            }
-            $itemDataAttrs .= $itemBgDataAttrs;
-
-            $currentStyle = $this->buildTemplateItemInlineStyle($templateAttrs);
-            $bgStyle = $this->buildTermItemBackgroundStyle($templateAttrs, $term);
-            if ($bgStyle !== '') {
-                $currentStyle .= ($currentStyle !== '' ? '; ' : '') . $bgStyle;
-            }
-
-            if ($animationType !== 'none') {
-                $classes .= sprintf(' jankx-reveal jankx-reveal--%s jankx-reveal--target-%s', $animationType, $animationTarget);
-                if ($animationReverse) {
-                    $classes .= ' jankx-reveal--reverse';
-                }
-
-                $delay = $itemIndex * $animationDelay;
-                $currentStyle .= ($currentStyle !== '' ? '; ' : '') . sprintf(
-                    '--jankx-animation-duration: %dms; --jankx-animation-delay: %dms;',
-                    (int) $animationDuration,
-                    (int) $delay
-                );
-            }
-
-            $overlayHtml = $this->buildTermItemOverlayHtml($templateAttrs, $term);
-
-            if ($enableOverlay) {
-                $itemContent = sprintf('<div class="dynamic-data-template__content" style="position: relative; z-index: 2">%s</div>', $itemContent);
-            }
-
-            // entry-image / entire-item icon overlays anchor to the item
-            // rather than to a featured image block, which terms do not have.
-            $itemIconHtml = \Jankx\Layouts\DynamicDataLayout\OverlayIconRenderer::buildItemOverlayHtml(
-                $templateAttrs,
-                $this->templateTermHasMedia($templateAttrs, $term)
-            );
-
-            if ($enableOverlay || $itemIconHtml !== '') {
-                if (strpos($currentStyle, 'position:') === false) {
-                    $currentStyle .= ($currentStyle !== '' ? '; ' : '') . 'position: relative';
-                }
-            }
-
-            if ($enableOverlay) {
-                if (strpos($currentStyle, 'overflow:') === false) {
-                    $currentStyle .= ($currentStyle !== '' ? '; ' : '') . 'overflow: hidden';
-                }
-            }
-
-            $currentStyleAttr = $currentStyle !== '' ? sprintf(' style="%s"', esc_attr($currentStyle)) : '';
-            $output[] = sprintf(
-                '<div class="%s"%s%s>%s%s%s</div>',
-                esc_attr($classes),
-                $currentStyleAttr,
-                $itemDataAttrs,
-                $itemContent,
-                $overlayHtml,
-                $itemIconHtml
-            );
+            $output[] = $itemHtml;
             $itemIndex++;
         }
 
@@ -796,45 +814,15 @@ class TermTemplateBlockGenerator extends AbstractContentGenerator
     protected function renderTermsCarousel(array $terms, array $options): string
     {
         $slides = [];
-        $templateAttrs = $this->getTemplateAttrs();
-        $enableOverlay = !empty($templateAttrs['enableOverlay']);
+        $itemIndex = 0;
+
         foreach ($terms as $term) {
-            $itemContent = $this->renderTermItem($term, $terms, $options);
-            if ($itemContent === '') {
+            $itemHtml = $this->renderTermItemMarkup($term, $terms, $options, $itemIndex);
+            if ($itemHtml === '') {
                 continue;
             }
-            $classes = $this->buildItemClasses($term);
-            $templateClasses = $this->buildTemplateItemClasses($templateAttrs);
-            if ($templateClasses !== '') {
-                $classes .= ' ' . $templateClasses;
-            }
-            $currentStyle = $this->buildTemplateItemInlineStyle($templateAttrs);
-            $bgStyle = $this->buildTermItemBackgroundStyle($templateAttrs, $term);
-            if ($bgStyle !== '') {
-                $currentStyle .= ($currentStyle !== '' ? '; ' : '') . $bgStyle;
-            }
-            if ($enableOverlay) {
-                if (strpos($currentStyle, 'position:') === false) {
-                    $currentStyle .= ($currentStyle !== '' ? '; ' : '') . 'position: relative';
-                }
-                if (strpos($currentStyle, 'overflow:') === false) {
-                    $currentStyle .= ($currentStyle !== '' ? '; ' : '') . 'overflow: hidden';
-                }
-            }
-            $overlayHtml = $this->buildTermItemOverlayHtml($templateAttrs, $term);
-
-            if ($enableOverlay) {
-                $itemContent = sprintf('<div class="dynamic-data-template__content" style="position: relative; z-index: 2">%s</div>', $itemContent);
-            }
-
-            $styleAttr = $currentStyle !== '' ? sprintf(' style="%s"', esc_attr($currentStyle)) : '';
-            $slides[] = sprintf(
-                '<div class="embla__slide"><div class="%s"%s>%s%s</div></div>',
-                esc_attr($classes),
-                $styleAttr,
-                $itemContent,
-                $overlayHtml
-            );
+            $slides[] = sprintf('<div class="embla__slide">%s</div>', $itemHtml);
+            $itemIndex++;
         }
 
         if (empty($slides)) {

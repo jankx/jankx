@@ -3,6 +3,7 @@
  */
 
 import { render, screen, fireEvent } from '@testing-library/react';
+import '@testing-library/jest-dom';
 import Edit from '../edit';
 
 // Mock WordPress dependencies
@@ -11,19 +12,30 @@ jest.mock('@wordpress/block-editor', () => ({
     InspectorControls: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
     BlockControls: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
     MediaReplaceFlow: () => <button data-testid="media-replace">Replace</button>,
-    RichText: ({ value, onChange, tagName: Tag = 'span' }: { value: string; onChange: (value: string) => void; tagName?: string }) => (
-        <Tag
-            contentEditable
-            suppressContentEditableWarning
-            onBlur={(e) => onChange(e.currentTarget.textContent || '')}
-            data-testid="rich-text"
-        >
-            {value}
-        </Tag>
+    RichText: Object.assign(
+        ({ value, onChange, tagName: Tag = 'span' }: { value: string; onChange: (value: string) => void; tagName?: string }) => (
+            <Tag
+                contentEditable
+                suppressContentEditableWarning
+                onBlur={(e) => onChange(e.currentTarget.textContent || '')}
+                data-testid="rich-text"
+            >
+                {value}
+            </Tag>
+        ),
+        // Mirrors the real helper: whitespace-only content counts as empty.
+        { isEmpty: (value?: string) => !value || !value.replace(/<[^>]*>/g, '').trim() }
     ),
     InnerBlocks: () => <div data-testid="inner-blocks">Inner Blocks</div>,
     __experimentalUseBorderProps: jest.fn(() => ({ className: '', style: {} })),
     __experimentalGetShadowClassesAndStyles: jest.fn(() => ({ className: '', style: {} })),
+    __experimentalLinkControl: ({ value, onChange }: any) => (
+        <input
+            data-testid="link-control"
+            value={value?.url || ''}
+            onChange={(e) => onChange({ url: e.target.value })}
+        />
+    ),
     useBlockEditingMode: jest.fn(() => 'default'),
     store: {
         getSettings: jest.fn(),
@@ -95,8 +107,24 @@ jest.mock('@wordpress/components', () => ({
     ColorPalette: () => <div data-testid="color-palette">Color Palette</div>,
     Notice: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
     Button: ({ children, onClick }: { children: React.ReactNode; onClick: () => void }) => <button onClick={onClick}>{children}</button>,
-    ToolbarGroup: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
-    ToolbarButton: ({ children }: { children: React.ReactNode }) => <button>{children}</button>,
+    ToolbarGroup: ({ children }: { children?: React.ReactNode }) => <div>{children}</div>,
+    ToolbarButton: require('react').forwardRef(
+        ({ children, onClick }: any, ref: any) => (
+            <button ref={ref} type="button" onClick={onClick}>{children}</button>
+        )
+    ),
+    TextControl: ({ label, value, onChange }: any) => (
+        <label>
+            {label}
+            <input
+                type="text"
+                value={value ?? ''}
+                onChange={(e) => onChange(e.target.value)}
+                data-testid={`text-${label}`}
+            />
+        </label>
+    ),
+    Popover: ({ children }: { children?: React.ReactNode }) => <div data-testid="popover">{children}</div>,
     __experimentalToolsPanel: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
     __experimentalToolsPanelItem: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
 }));
@@ -159,7 +187,9 @@ describe('AdvancedImageBox Edit', () => {
     it('should render with default attributes', () => {
         render(<Edit {...defaultProps} />);
 
-        expect(screen.getByTestId('media-replace')).toBeInTheDocument();
+        // The editor renders the flow in the toolbar and in both inspector
+        // panels, so more than one instance is expected.
+        expect(screen.getAllByTestId('media-replace').length).toBeGreaterThan(0);
     });
 
     it('should show remove image button when image set and call setAttributes on click', () => {
@@ -179,8 +209,9 @@ describe('AdvancedImageBox Edit', () => {
         const setAttributes = jest.fn();
         render(<Edit {...defaultProps} setAttributes={setAttributes} />);
 
-        const toggle = screen.getByTestId('toggle-Show Overlay on Hover') as HTMLInputElement;
-        fireEvent.change(toggle, { target: { checked: true } });
+        const toggle = screen.getByTestId('toggle-Show overlay on hover') as HTMLInputElement;
+        // React normalises checkbox updates through click, not change.
+        fireEvent.click(toggle);
 
         expect(setAttributes).toHaveBeenCalledWith({ showOverlayOnHover: true });
     });
@@ -190,7 +221,9 @@ describe('AdvancedImageBox Edit', () => {
         const propsWithAlt = { ...defaultProps, attributes: { ...defaultAttributes, alt: 'Sample alt text', url: '' } };
         render(<Edit {...propsWithAlt} setAttributes={setAttributes} />);
 
-        expect(screen.getByText('Sample alt text')).toBeInTheDocument();
+        // The alt text is echoed both in the preview overlay and the
+        // placeholder, so match every occurrence.
+        expect(screen.getAllByText('Sample alt text').length).toBeGreaterThan(0);
     });
 
     it('placeholder should not have inline background or minHeight when no image', () => {
@@ -203,7 +236,7 @@ describe('AdvancedImageBox Edit', () => {
         expect(placeholder.style.minHeight).toBe('');
     });
 
-    it('should persist preset color option when opacity changed', () => {
+    it('should update overlayOpacity without rewriting preset colors', () => {
         // Mock window presets
         (window as any).jankxAdvancedImageBoxPresets = {
             'bordered-frame': {
@@ -218,34 +251,52 @@ describe('AdvancedImageBox Edit', () => {
         const setAttributes = jest.fn();
         const propsWithPreset = {
             ...defaultProps,
-            attributes: { ...defaultAttributes, preset: 'bordered-frame', presetOptions: {} }
+            attributes: {
+                ...defaultAttributes,
+                preset: 'bordered-frame',
+                presetOptions: {},
+                showOverlayOnHover: true,
+            }
         };
 
         render(<Edit {...propsWithPreset} setAttributes={setAttributes} />);
 
-        // Opacity RangeControl is rendered with label 'Opacity' inside the color control
-        const opacityRange = screen.getByTestId('range-Opacity') as HTMLInputElement;
-
-        // Change to 0 (parseInt in mock will convert '0' correctly)
+        const opacityRange = screen.getByTestId('range-Overlay Opacity') as HTMLInputElement;
         fireEvent.change(opacityRange, { target: { value: '0' } });
 
-        // Expect setAttributes called with combined rgba value for titleBackground
-        expect(setAttributes).toHaveBeenCalledWith({ presetOptions: { titleBackground: 'rgba(255, 0, 0, 0)' } });
+        // `overlayOpacity` is a standalone attribute applied to the overlay
+        // style at render time; changing it must not bake the opacity into
+        // the preset colours in the same update.
+        expect(setAttributes).toHaveBeenCalledWith({ overlayOpacity: 0 });
+        setAttributes.mock.calls.forEach(([update]: [Record<string, unknown>]) => {
+            expect(
+                'overlayOpacity' in update && 'presetOptions' in update
+            ).toBe(false);
+        });
     });
 
     it('should update overlayAnimation when changed', () => {
         const setAttributes = jest.fn();
-        render(<Edit {...defaultProps} setAttributes={setAttributes} />);
+        // The overlay controls only render once the overlay is enabled.
+        const propsWithOverlay = {
+            ...defaultProps,
+            attributes: { ...defaultAttributes, showOverlayOnHover: true },
+        };
+        render(<Edit {...propsWithOverlay} setAttributes={setAttributes} />);
 
-        const select = screen.getByTestId('select-Overlay Animation') as HTMLSelectElement;
-        fireEvent.change(select, { target: { value: 'slideUp' } });
+        const select = screen.getByTestId('select-Animation') as HTMLSelectElement;
+        fireEvent.change(select, { target: { value: 'slideInUp' } });
 
-        expect(setAttributes).toHaveBeenCalledWith({ overlayAnimation: 'slideUp' });
+        expect(setAttributes).toHaveBeenCalledWith({ overlayAnimation: 'slideInUp' });
     });
 
     it('should update overlayPosition when changed', () => {
         const setAttributes = jest.fn();
-        render(<Edit {...defaultProps} setAttributes={setAttributes} />);
+        const propsWithOverlay = {
+            ...defaultProps,
+            attributes: { ...defaultAttributes, showOverlayOnHover: true },
+        };
+        render(<Edit {...propsWithOverlay} setAttributes={setAttributes} />);
 
         const select = screen.getByTestId('select-Overlay Position') as HTMLSelectElement;
         fireEvent.change(select, { target: { value: 'top' } });

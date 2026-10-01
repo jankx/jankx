@@ -5,6 +5,10 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import Edit from '../src/edit';
 
+/** Build a stable test id from a control label, e.g. "Avatar Size (px)" -> "avatar-size-px". */
+const toTestId = (label: string) =>
+    label.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+
 // Mock WordPress dependencies
 jest.mock('@wordpress/block-editor', () => ({
     useBlockProps: jest.fn((props) => props),
@@ -20,7 +24,7 @@ jest.mock('@wordpress/components', () => ({
                 type="checkbox"
                 checked={checked}
                 onChange={(e) => onChange(e.target.checked)}
-                data-testid={`toggle-${label.toLowerCase().replace(/\s+/g, '-')}`}
+                data-testid={`toggle-${toTestId(label)}`}
             />
         </label>
     ),
@@ -31,14 +35,14 @@ jest.mock('@wordpress/components', () => ({
                 type="range"
                 value={value}
                 onChange={(e) => onChange(parseInt(e.target.value))}
-                data-testid={`range-${label.toLowerCase().replace(/\s+/g, '-')}`}
+                data-testid={`range-${toTestId(label)}`}
             />
         </label>
     ),
     SelectControl: ({ label, value, options, onChange }: { label: string; value: string; options: Array<{label: string; value: string}>; onChange: (value: string) => void }) => (
         <label>
             {label}
-            <select value={value} onChange={(e) => onChange(e.target.value)} data-testid={`select-${label.toLowerCase().replace(/\s+/g, '-')}`}>
+            <select value={value} onChange={(e) => onChange(e.target.value)} data-testid={`select-${toTestId(label)}`}>
                 {options.map(opt => (
                     <option key={opt.value} value={opt.value}>{opt.label}</option>
                 ))}
@@ -92,7 +96,7 @@ describe('AuthorBox Edit', () => {
     it('should render with default attributes', () => {
         render(<Edit {...defaultProps} />);
 
-        expect(screen.getByText(/test author/i)).toBeInTheDocument();
+        expect(screen.getAllByText(/test author/i).length).toBeGreaterThan(0);
     });
 
     it('should update layout when changed', () => {
@@ -110,7 +114,8 @@ describe('AuthorBox Edit', () => {
         render(<Edit {...defaultProps} setAttributes={setAttributes} />);
 
         const toggle = screen.getByTestId('toggle-show-avatar') as HTMLInputElement;
-        fireEvent.change(toggle, { target: { checked: false } });
+        // React normalises checkbox updates through click, not change.
+        fireEvent.click(toggle);
 
         expect(setAttributes).toHaveBeenCalledWith({ showAvatar: false });
     });
@@ -120,7 +125,8 @@ describe('AuthorBox Edit', () => {
         render(<Edit {...defaultProps} setAttributes={setAttributes} />);
 
         const toggle = screen.getByTestId('toggle-show-bio') as HTMLInputElement;
-        fireEvent.change(toggle, { target: { checked: false } });
+        // React normalises checkbox updates through click, not change.
+        fireEvent.click(toggle);
 
         expect(setAttributes).toHaveBeenCalledWith({ showBio: false });
     });
@@ -129,8 +135,9 @@ describe('AuthorBox Edit', () => {
         const setAttributes = jest.fn();
         render(<Edit {...defaultProps} setAttributes={setAttributes} />);
 
-        const toggle = screen.getByTestId('toggle-show-social') as HTMLInputElement;
-        fireEvent.change(toggle, { target: { checked: false } });
+        const toggle = screen.getByTestId('toggle-show-social-links') as HTMLInputElement;
+        // React normalises checkbox updates through click, not change.
+        fireEvent.click(toggle);
 
         expect(setAttributes).toHaveBeenCalledWith({ showSocial: false });
     });
@@ -139,8 +146,9 @@ describe('AuthorBox Edit', () => {
         const setAttributes = jest.fn();
         render(<Edit {...defaultProps} setAttributes={setAttributes} />);
 
-        const toggle = screen.getByTestId('toggle-show-posts') as HTMLInputElement;
-        fireEvent.change(toggle, { target: { checked: true } });
+        const toggle = screen.getByTestId('toggle-show-recent-posts') as HTMLInputElement;
+        // React normalises checkbox updates through click, not change.
+        fireEvent.click(toggle);
 
         expect(setAttributes).toHaveBeenCalledWith({ showPosts: true });
     });
@@ -149,7 +157,7 @@ describe('AuthorBox Edit', () => {
         const setAttributes = jest.fn();
         render(<Edit {...defaultProps} setAttributes={setAttributes} />);
 
-        const range = screen.getByTestId('range-avatar-size') as HTMLInputElement;
+        const range = screen.getByTestId('range-avatar-size-px') as HTMLInputElement;
         fireEvent.change(range, { target: { value: '100' } });
 
         expect(setAttributes).toHaveBeenCalledWith({ avatarSize: 100 });
@@ -166,7 +174,7 @@ describe('AuthorBox Edit', () => {
         };
         render(<Edit {...props} setAttributes={setAttributes} />);
 
-        const range = screen.getByTestId('range-posts-count') as HTMLInputElement;
+        const range = screen.getByTestId('range-number-of-posts') as HTMLInputElement;
         fireEvent.change(range, { target: { value: '10' } });
 
         expect(setAttributes).toHaveBeenCalledWith({ postsCount: 10 });

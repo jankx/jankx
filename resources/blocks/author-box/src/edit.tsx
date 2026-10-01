@@ -45,8 +45,8 @@ export default function Edit({ attributes, setAttributes }: AuthorBoxEditProps):
 		const authorData = currentAuthorId ? select('core')?.getUser(currentAuthorId) : null;
 		
 		// Get author posts if needed
-		const authorPosts = showPosts && currentAuthorId ? 
-			select('core')?.getEntityRecords('postType', 'post', {
+		const authorPosts = showPosts && currentAuthorId ?
+			select('core')?.getEntityRecords('post', 'post', {
 				author: currentAuthorId,
 				per_page: postsCount,
 				status: 'publish'

@@ -193,5 +193,5 @@ registerBlockType(name, {
     deprecated,
 });
 
-export { metadata, name };
+export { metadata, name, Edit };
 

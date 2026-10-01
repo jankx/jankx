@@ -9,7 +9,6 @@
   "keywords": [
     "slider",
     "carousel",
-    "carousel",
     "gallery",
     "slideshow"
   ],
@@ -69,7 +68,7 @@
     },
     "height": {
       "type": "number",
-      "default": 50
+      "default": 400
     },
     "minHeight": {
       "type": "number",
@@ -208,6 +207,19 @@
     "navBtnBgColor": {
       "type": "string",
       "default": "rgba(0,0,0,0.7)"
+    },
+    "arrowsPosition": {
+      "type": "string",
+      "enum": [
+        "inside",
+        "outside",
+        "bottom"
+      ],
+      "default": "inside"
+    },
+    "alwaysShowArrows": {
+      "type": "boolean",
+      "default": false
     }
   },
   "supports": {
@@ -259,6 +271,28 @@
     {
       "name": "testimonial",
       "label": "Testimonial"
+    }
+  ],
+  "variations": [
+    {
+      "name": "default",
+      "title": "Slider",
+      "description": "Slides with inner blocks you can freely edit",
+      "icon": "slides",
+      "isDefault": true,
+      "attributes": {
+        "contentMode": "slides"
+      }
+    },
+    {
+      "name": "gallery",
+      "title": "Image Gallery",
+      "description": "Banner slides built from a set of selected images",
+      "icon": "format-gallery",
+      "attributes": {
+        "contentMode": "gallery",
+        "className": "is-style-banner"
+      }
     }
   ]
 }

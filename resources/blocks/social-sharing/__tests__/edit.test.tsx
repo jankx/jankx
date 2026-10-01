@@ -3,17 +3,28 @@
  */
 
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import Edit from '../index';
+import '@testing-library/jest-dom';
+import { Edit } from '../index';
 
 // Mock WordPress dependencies
 jest.mock('@wordpress/block-editor', () => ({
-    useBlockProps: jest.fn((props) => props),
-    InspectorControls: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
-    InnerBlocks: ({ children }: { children?: React.ReactNode }) => <div data-testid="inner-blocks">{children}</div>,
-    useInnerBlocksProps: jest.fn((props, options) => ({
-        ...props,
-        ...options,
-    })),
+    // `Save` uses `useBlockProps.save`, so the mock needs both shapes.
+    useBlockProps: Object.assign(jest.fn((props) => props), {
+        save: jest.fn((props) => props),
+    }),
+    InspectorControls: ({ children }: { children?: React.ReactNode }) => <div>{children}</div>,
+    // `InnerBlocks.Content` is a static on the component; without it React gets
+    // `undefined` as the element type and throws "Element type is invalid".
+    InnerBlocks: Object.assign(
+        jest.fn(({ children }: { children?: React.ReactNode }) => (
+            <div data-testid="inner-blocks">{children}</div>
+        )),
+        { Content: jest.fn(() => <div data-testid="inner-blocks-content" />) }
+    ),
+    // `Edit` renders a plain div from `useInnerBlocksProps` props, so only the
+    // first argument is returned; spreading the options too would leak
+    // `allowedBlocks`/`template` onto the DOM node.
+    useInnerBlocksProps: jest.fn((props) => props),
 }));
 
 jest.mock('@wordpress/components', () => ({
@@ -92,9 +103,8 @@ jest.mock('@wordpress/blocks', () => ({
 describe('SocialSharing Edit', () => {
     const defaultAttributes = {
         networks: ['facebook', 'twitter'] as string[],
-        iconSize: 24,
+        iconSize: 'medium',
         showLabels: true,
-        style: 'default',
         alignment: 'left',
         showHeading: false,
         headingText: '',
@@ -113,7 +123,10 @@ describe('SocialSharing Edit', () => {
     it('should render with default attributes', () => {
         render(<Edit {...defaultProps} />);
 
-        expect(screen.getByTestId('inner-blocks')).toBeInTheDocument();
+        // The networks container comes from `useInnerBlocksProps`.
+        expect(document.querySelector('.sharing-buttons')).toBeInTheDocument();
+        expect(screen.getByTestId('checkbox-facebook')).toBeChecked();
+        expect(screen.getByTestId('checkbox-twitter/x')).toBeChecked();
     });
 
     it('should toggle network when checkbox clicked', () => {
@@ -121,7 +134,8 @@ describe('SocialSharing Edit', () => {
         render(<Edit {...defaultProps} setAttributes={setAttributes} />);
 
         const checkbox = screen.getByTestId('checkbox-facebook') as HTMLInputElement;
-        fireEvent.change(checkbox, { target: { checked: false } });
+        // React normalises checkbox updates through click, not change.
+        fireEvent.click(checkbox);
 
         expect(setAttributes).toHaveBeenCalled();
     });
@@ -130,37 +144,40 @@ describe('SocialSharing Edit', () => {
         const setAttributes = jest.fn();
         render(<Edit {...defaultProps} setAttributes={setAttributes} />);
 
-        const range = screen.getByTestId('range-icon-size') as HTMLInputElement;
-        fireEvent.change(range, { target: { value: '32' } });
+        // `iconSize` is a SelectControl with small/medium/large, not a range.
+        const select = screen.getByTestId('select-kích-thước-icon') as HTMLSelectElement;
+        fireEvent.change(select, { target: { value: 'large' } });
 
-        expect(setAttributes).toHaveBeenCalledWith({ iconSize: 32 });
+        expect(setAttributes).toHaveBeenCalledWith({ iconSize: 'large' });
     });
 
     it('should toggle showLabels', () => {
         const setAttributes = jest.fn();
         render(<Edit {...defaultProps} setAttributes={setAttributes} />);
 
-        const toggle = screen.getByTestId('toggle-show-labels') as HTMLInputElement;
-        fireEvent.change(toggle, { target: { checked: false } });
+        const toggle = screen.getByTestId('toggle-hiển-thị-nhãn') as HTMLInputElement;
+        // React normalises checkbox updates through click, not change.
+        fireEvent.click(toggle);
 
         expect(setAttributes).toHaveBeenCalledWith({ showLabels: false });
     });
 
-    it('should update style when changed', () => {
+    it('should toggle showHeading', () => {
         const setAttributes = jest.fn();
         render(<Edit {...defaultProps} setAttributes={setAttributes} />);
 
-        const select = screen.getByTestId('select-style') as HTMLSelectElement;
-        fireEvent.change(select, { target: { value: 'rounded' } });
+        const toggle = screen.getByTestId('toggle-hiển-thị-tiêu-đề') as HTMLInputElement;
+        // React normalises checkbox updates through click, not change.
+        fireEvent.click(toggle);
 
-        expect(setAttributes).toHaveBeenCalledWith({ style: 'rounded' });
+        expect(setAttributes).toHaveBeenCalledWith({ showHeading: true });
     });
 
     it('should update alignment when changed', () => {
         const setAttributes = jest.fn();
         render(<Edit {...defaultProps} setAttributes={setAttributes} />);
 
-        const select = screen.getByTestId('select-alignment') as HTMLSelectElement;
+        const select = screen.getByTestId('select-căn-chỉnh') as HTMLSelectElement;
         fireEvent.change(select, { target: { value: 'center' } });
 
         expect(setAttributes).toHaveBeenCalledWith({ alignment: 'center' });

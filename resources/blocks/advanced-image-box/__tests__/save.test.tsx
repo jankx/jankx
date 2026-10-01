@@ -8,12 +8,17 @@ import Save from '../save';
 
 // Mock WordPress dependencies for save component
 jest.mock('@wordpress/block-editor', () => ({
-    useBlockProps: jest.fn((props) => props),
+    // `save.tsx` calls `useBlockProps.save(...)` for the figure wrapper.
+    useBlockProps: Object.assign(jest.fn((props) => props), {
+        save: jest.fn((props) => props),
+    }),
     InnerBlocks: {
         Content: () => <div data-testid="inner-blocks">Inner Blocks Content</div>
     },
     RichText: {
-        Content: ({ value }: { value: string }) => <figcaption>{value}</figcaption>
+        Content: ({ value }: { value: string }) => <figcaption>{value}</figcaption>,
+        // Mirrors the real helper: whitespace-only content counts as empty.
+        isEmpty: (value?: string) => !value || !value.replace(/<[^>]*>/g, '').trim(),
     },
     __experimentalGetBorderClassesAndStyles: jest.fn(() => ({ className: '', style: {} })),
     __experimentalGetShadowClassesAndStyles: jest.fn(() => ({ className: '', style: {} })),

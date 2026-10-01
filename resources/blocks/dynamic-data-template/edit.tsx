@@ -684,7 +684,8 @@ export default function Edit({
     // Fetch posts
     const { posts, hasResolved } = useSelect((select) => {
         const { getEntityRecords, hasFinishedResolution } = select(coreStore);
-        const selectorArgs = ['postType', postType, queryArgs];
+        // The first argument is the entity kind, not the post type.
+        const selectorArgs = ['post', postType, queryArgs];
         return {
             posts: getEntityRecords(...selectorArgs),
             hasResolved: hasFinishedResolution('getEntityRecords', selectorArgs),
