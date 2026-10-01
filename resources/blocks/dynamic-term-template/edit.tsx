@@ -1478,11 +1478,19 @@ export default function Edit({
             </InspectorControls>
             <div {...blockProps}>
                 {displayLayout === 'carousel' ? (
-                    <div className={`dynamic-data-template__carousel columns-${columns}`}>
+                    <div className={`dynamic-data-template__carousel columns-${columns}`} style={{ position: 'relative' }}>
                         {showArrows ? (
                             <div className="dynamic-data-template__carousel-nav">
-                                <button type="button" className="carousel-button prev" onClick={() => scrollBySlides(-1)}>Prev</button>
-                                <button type="button" className="carousel-button next" onClick={() => scrollBySlides(1)}>Next</button>
+                                <button type="button" className="carousel-nav carousel-prev" onClick={() => scrollBySlides(-1)} aria-label={__('Previous slide', 'jankx')}>
+                                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                        <path d="M15 18l-6-6 6-6" />
+                                    </svg>
+                                </button>
+                                <button type="button" className="carousel-nav carousel-next" onClick={() => scrollBySlides(1)} aria-label={__('Next slide', 'jankx')}>
+                                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                        <path d="M9 18l6-6-6-6" />
+                                    </svg>
+                                </button>
                             </div>
                         ) : null}
                         <div

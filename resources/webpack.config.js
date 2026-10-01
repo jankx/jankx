@@ -260,7 +260,11 @@ module.exports = {
     // ../vendor. Without an explicit modules entry, imports such as @wordpress/icons
     // are resolved by walking up from the vendor folder and never reach
     // resources/node_modules.
-    modules: [path.resolve(__dirname, 'node_modules'), 'node_modules'],
+    modules: [
+      path.resolve(__dirname, 'node_modules'),
+      path.resolve(__dirname, '../../nibitour/node_modules'),
+      'node_modules'
+    ],
     alias: {
       // Force all plyr imports (including plyr-react's internal `import PlyrJS from "plyr"`)
       // to use the compiled dist build. This avoids webpack 5 strict ESM "fully specified"
