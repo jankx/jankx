@@ -67,6 +67,10 @@ jest.mock('@wordpress/i18n', () => ({
     __: (text: string) => text,
 }));
 
+// The real `@wordpress/data` cannot be loaded in this repo's dependency graph
+// (pnpm's store is missing transitive deps of @wordpress/i18n), so the module is
+// stubbed wholesale. Every selector that edit.tsx actually calls must be present
+// here, otherwise `select(scope).<selector>` throws at render time.
 jest.mock('@wordpress/data', () => ({
     useSelect: jest.fn((callback) => callback((scope: string) => {
         if (scope === 'core') {
@@ -76,6 +80,8 @@ jest.mock('@wordpress/data', () => ({
                     { name: 'Pages', slug: 'page', viewable: true },
                     { name: 'Products', slug: 'product', viewable: true },
                 ],
+                getEntityRecords: () => [],
+                getEntityRecord: () => undefined,
             };
         }
         if (scope === 'core/block-editor') {
@@ -153,6 +159,9 @@ jest.mock('@wordpress/components', () => ({
 
 // Mock shared components
 jest.mock('../../../shared/components', () => ({
+    // Keep the real pure helpers (normalizeImageRatio, resolveImageRatioSelectValue)
+    // and only stub the presentational control.
+    ...jest.requireActual('../../../shared/components'),
     ResponsiveControl: ({ label, values, onChange }: any) => (
         <div data-testid={`responsive-${label}`}>
             <input

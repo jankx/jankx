@@ -24,7 +24,8 @@ import { useSelect, useDispatch } from '@wordpress/data';
 import type { CSSProperties } from 'react';
 import type { BlockInstance } from '@wordpress/blocks';
 import ResponsiveAspectRatioControl from '@jankx/gutenberg-controls/controls/ResponsiveAspectRatioControl';
-import { createBlocksFromTemplate, normalizeHexColor } from '../../shared/components';
+import { normalizeHexColor } from '../../shared/components';
+import { createBlocksFromTemplate } from '../../shared/components/createBlocksFromTemplate';
 
 interface DynamicDataTemplateAttributes {
     templateLayout: string;

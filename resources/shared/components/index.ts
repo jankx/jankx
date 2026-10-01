@@ -8,7 +8,9 @@ export {
     resolveImageRatioSelectValue,
 } from './imageRatio';
 export type { PresetImageRatio, ImageRatioSelectValue } from './imageRatio';
-export { createBlocksFromTemplate } from './createBlocksFromTemplate';
-export type { TemplateNode } from './createBlocksFromTemplate';
+// `createBlocksFromTemplate` is intentionally NOT re-exported here: it depends
+// on the `@wordpress/blocks` store, so keeping it out of this barrel means
+// consumers of the pure helpers above do not pull the whole editor runtime in.
+// Import it from './createBlocksFromTemplate' where it is actually needed.
 export { normalizeHexColor } from './normalizeHexColor';
 

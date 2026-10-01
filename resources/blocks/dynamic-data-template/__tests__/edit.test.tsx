@@ -48,6 +48,15 @@ jest.mock('@wordpress/i18n', () => ({
     __: (text: string) => text,
 }));
 
+// edit.tsx only needs the store *name* from core-data. Stubbing the module
+// avoids loading the real one, which registers reducers through
+// `@wordpress/data` helpers that are stubbed out below.
+jest.mock('@wordpress/core-data', () => ({
+    store: 'core',
+}));
+
+const mockReplaceInnerBlocks = jest.fn();
+
 jest.mock('@wordpress/data', () => ({
     useSelect: jest.fn((callback) => callback((scope: string) => {
         if (scope === 'core/block-editor') {
@@ -59,7 +68,21 @@ jest.mock('@wordpress/data', () => ({
                 })),
             };
         }
+        if (scope === 'core') {
+            return {
+                // Two resolved results: edit.tsx renders one BlockPreview per
+                // resolved record, so this drives the preview count assertion.
+                getEntityRecords: () => [
+                    { id: 1, title: { rendered: 'One' } },
+                    { id: 2, title: { rendered: 'Two' } },
+                ],
+                hasFinishedResolution: () => true,
+            };
+        }
         return {};
+    })),
+    useDispatch: jest.fn(() => ({
+        replaceInnerBlocks: mockReplaceInnerBlocks,
     })),
 }));
 
