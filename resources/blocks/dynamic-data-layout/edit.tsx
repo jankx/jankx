@@ -15,7 +15,7 @@ import { useSelect } from '@wordpress/data';
 import { useCallback, useEffect, useState, useMemo, useRef } from '@wordpress/element';
 import type { CSSProperties } from 'react';
 type TokenLike = string | { value: string;[key: string]: unknown };
-import { ResponsiveControl, ResponsiveValue } from '../../shared/components';
+import { ResponsiveControl, ResponsiveValue, normalizeImageRatio, resolveImageRatioSelectValue } from '../../shared/components';
 import './style.scss';
 import './editor.scss';
 
@@ -299,11 +299,6 @@ const normalizeTokens = (tokens: TokenLike[]): string[] => {
         })
         .filter((value): value is string => value.length > 0);
 };
-
-// Image ratio presets
-const PRESET_IMAGE_RATIOS = ['16/9', '4/3', '21/9', '1/1', '3/4', '2/3', '9/16'] as const;
-type PresetImageRatio = typeof PRESET_IMAGE_RATIOS[number];
-type ImageRatioSelectValue = '' | 'custom' | PresetImageRatio;
 
 type QueryPreset =
     | 'default'
@@ -710,6 +705,11 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
         '--slides-per-view': (columns || 1) + ((attributes.carouselPeek || 0) / 100),
     } as CSSProperties;
 
+    const normalizedEditorImageRatio = normalizeImageRatio((attributes as any).imageRatio);
+    if (normalizedEditorImageRatio) {
+        (editorStyle as any)['--jankx-layout-image-ratio'] = normalizedEditorImageRatio;
+    }
+
     const editorMinHeight = (attributes as any).minHeight;
     if (editorMinHeight && typeof editorMinHeight === 'object') {
         if (editorMinHeight.desktop) editorStyle.minHeight = editorMinHeight.desktop;
@@ -875,15 +875,7 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
     const hasCommerceFeatures = ['product', 'tour'].includes(postType);
 
     // Image ratio handling
-    const imageRatioSelectValue = useMemo<ImageRatioSelectValue>(() => {
-        if (!imageRatio) {
-            return '';
-        }
-        if ((PRESET_IMAGE_RATIOS as readonly string[]).includes(imageRatio)) {
-            return imageRatio as PresetImageRatio;
-        }
-        return 'custom';
-    }, [imageRatio]);
+    const imageRatioSelectValue = resolveImageRatioSelectValue(imageRatio);
 
     const isCustomImageRatio = imageRatioSelectValue === 'custom';
     const customImageRatioValue = isCustomImageRatio && imageRatio ? imageRatio : '';

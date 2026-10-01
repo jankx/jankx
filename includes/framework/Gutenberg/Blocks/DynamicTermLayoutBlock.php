@@ -637,6 +637,15 @@ class DynamicTermLayoutBlock extends DynamicDataLayoutBlock
         $styleRules[] = '--slides-per-view: ' . $columns;
         $styleRules[] = '--peek-amount: ' . ($attributes['carouselPeek'] ?? 0) . '%';
 
+        // Featured image aspect ratio for every item. This is only a default: a
+        // template block that sets its own responsive itemBgRatio emits an inline
+        // <style> inside the content, which is printed after this wrapper and
+        // therefore keeps precedence.
+        $imageRatio = self::normalizeImageRatio($attributes['imageRatio'] ?? '');
+        if ($imageRatio !== '') {
+            $styleRules[] = '--jankx-layout-image-ratio: ' . $imageRatio;
+        }
+
         if (isset($attributes['postsPerPage'])) {
             $attrs['data-posts-per-page'] = (int) $attributes['postsPerPage'];
         }

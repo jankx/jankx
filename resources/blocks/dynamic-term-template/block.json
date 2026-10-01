@@ -274,15 +274,6 @@
       "type": "number",
       "default": 0
     },
-    "itemPadding": {
-      "type": "object",
-      "default": {
-        "top": "0",
-        "right": "0",
-        "bottom": "0",
-        "left": "0"
-      }
-    },
     "thumbnailPosition": {
       "type": "string",
       "default": "top",
@@ -360,10 +351,6 @@
         "type": "string",
         "default": "custom",
         "enum": ["custom", "featured"]
-    },
-    "itemFeaturedImage": {
-        "type": "boolean",
-        "default": false
     },
     "itemDefaultImageId": {
         "type": "number",

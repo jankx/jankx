@@ -1002,6 +1002,37 @@ class DynamicDataLayoutBlock extends Block
      * @return string
      */
     /**
+     * Normalise an image ratio attribute into a bare "w/h" string.
+     *
+     * Mirrors normalizeImageRatio() in resources/shared/components/imageRatio.ts.
+     * Block attributes are authored in the editor but round-trip through saved
+     * post content, so this is also the guard that keeps anything which is not a
+     * plain ratio out of the CSS custom property.
+     *
+     * @param mixed $value
+     * @return string Empty string when the value cannot be used.
+     */
+    protected static function normalizeImageRatio($value): string
+    {
+        if (!is_string($value)) {
+            return '';
+        }
+
+        $raw = trim($value);
+        if ($raw === '' || !preg_match('/^(\d{1,4})\s*\/\s*(\d{1,4})$/', $raw, $matches)) {
+            return '';
+        }
+
+        $width = (int) $matches[1];
+        $height = (int) $matches[2];
+        if ($width <= 0 || $height <= 0) {
+            return '';
+        }
+
+        return $width . '/' . $height;
+    }
+
+    /**
      * Build wrapper attributes with data-* for AJAX/filter integrations
      *
      * @param array $attributes
@@ -1072,6 +1103,15 @@ class DynamicDataLayoutBlock extends Block
         // Do not force --slides-per-view here, let CSS handle it responsively via --columns-*
         $styleRules[] = '--columns-desktop: ' . $columns;
         $styleRules[] = '--peek-amount: ' . ($attributes['carouselPeek'] ?? 0) . '%';
+
+        // Featured image aspect ratio for every item. This is only a default: a
+        // template block that sets its own responsive itemBgRatio emits an inline
+        // <style> inside the content, which is printed after this wrapper and
+        // therefore keeps precedence.
+        $imageRatio = self::normalizeImageRatio($attributes['imageRatio'] ?? '');
+        if ($imageRatio !== '') {
+            $styleRules[] = '--jankx-layout-image-ratio: ' . $imageRatio;
+        }
 
         if (isset($attributes['postsPerPage'])) {
             $attrs['data-posts-per-page'] = (int) $attributes['postsPerPage'];

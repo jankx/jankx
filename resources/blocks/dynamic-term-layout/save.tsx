@@ -1,4 +1,5 @@
 import { useBlockProps, InnerBlocks } from '@wordpress/block-editor';
+import { normalizeImageRatio } from '../../shared/components';
 
 interface SaveProps {
     attributes: Record<string, unknown>;
@@ -98,8 +99,17 @@ export default function Save({ attributes }: SaveProps): JSX.Element {
         'data-space-between': '16',
     };
 
+    // Featured image aspect ratio for every item. This is only a default: the
+    // template block's own responsive itemBgRatio is emitted later (inline, in
+    // the body) and therefore still wins when it is set.
+    const imageRatio = normalizeImageRatio(attrs.imageRatio);
+    if (imageRatio) {
+        inlineStyle['--jankx-layout-image-ratio'] = imageRatio;
+    }
+
     if (layout === 'carousel') {
         dataAttributes['data-autoplay'] = attributes.autoplay || false;
+
         dataAttributes['data-autoplay-delay'] = attributes.autoplayDelay || 3000;
         dataAttributes['data-slides-per-view'] = columns;
         dataAttributes['data-space-between'] = '16';

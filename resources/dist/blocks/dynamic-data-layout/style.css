@@ -427,4 +427,8 @@
   }
 }
 
+.wp-block-jankx-dynamic-data-layout .dynamic-data-template__item {
+  aspect-ratio: var(--jankx-layout-image-ratio, auto);
+}
+
 /*# sourceMappingURL=style.css.map*/

@@ -160,4 +160,8 @@
   min-height: 100px;
 }
 
+.wp-block-jankx-dynamic-data-layout .dynamic-data-template__item {
+  aspect-ratio: var(--jankx-layout-image-ratio, auto);
+}
+
 /*# sourceMappingURL=editor.css.map*/

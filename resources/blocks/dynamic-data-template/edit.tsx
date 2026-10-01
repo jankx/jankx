@@ -33,12 +33,6 @@ interface DynamicDataTemplateAttributes {
     itemSpacing?: 'none' | 'compact' | 'normal' | 'loose';
     showItemBorder?: boolean;
     itemBorderRadius?: number;
-    itemPadding?: {
-        top?: string;
-        right?: string;
-        bottom?: string;
-        left?: string;
-    };
     thumbnailPosition?: 'top' | 'bottom' | 'left' | 'right';
     // Hero Overlay layout settings
     heroMinHeight?: string;
@@ -498,7 +492,7 @@ const normalizeHexColor = (value: any, fallback: string): string => {
 
     const rgbMatch = raw.match(/^rgba?\(\s*([\d.]+)[\s,]+([\d.]+)[\s,]+([\d.]+)/);
     if (rgbMatch) {
-        const toHex = (part: string) => {
+        const toHex = (part: string | undefined) => {
             const num = Math.max(0, Math.min(255, Math.round(parseFloat(part))));
             return num.toString(16).padStart(2, '0');
         };
@@ -618,7 +612,6 @@ export default function Edit({
         itemSpacing = 'normal',
         showItemBorder = false,
         itemBorderRadius = 0,
-        itemPadding = {},
         thumbnailPosition = 'top',
         heroMinHeight = '320px',
         heroAspectRatio = '',

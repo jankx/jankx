@@ -32,12 +32,6 @@ interface DynamicDataTemplateAttributes {
     itemSpacing?: 'none' | 'compact' | 'normal' | 'loose';
     showItemBorder?: boolean;
     itemBorderRadius?: number;
-    itemPadding?: {
-        top?: string;
-        right?: string;
-        bottom?: string;
-        left?: string;
-    };
     thumbnailPosition?: 'top' | 'bottom' | 'left' | 'right';
     // Hero Overlay layout settings
     heroMinHeight?: string;
@@ -154,8 +148,6 @@ const DEFAULT_LAYOUTS_DATA = {
     layoutsByPostType: {},
     commonLayouts: [],
 };
-
-const DEFAULT_BLOCKS_DATA: Record<string, { blockName: string; attrs: Record<string, unknown> }[]> = {};
 
 const LAYOUT_ICONS: Record<string, JSX.Element> = {
     default: (
@@ -505,7 +497,7 @@ const normalizeHexColor = (value: any, fallback: string): string => {
 
     const rgbMatch = raw.match(/^rgba?\(\s*([\d.]+)[\s,]+([\d.]+)[\s,]+([\d.]+)/);
     if (rgbMatch) {
-        const toHex = (part: string) => {
+        const toHex = (part: string | undefined) => {
             const num = Math.max(0, Math.min(255, Math.round(parseFloat(part))));
             return num.toString(16).padStart(2, '0');
         };
@@ -601,7 +593,6 @@ export default function Edit({
         itemSpacing = 'normal',
         showItemBorder = false,
         itemBorderRadius = 0,
-        itemPadding = {},
         thumbnailPosition = 'top',
         heroMinHeight = '320px',
         heroAspectRatio = '',
@@ -1180,7 +1171,7 @@ export default function Edit({
                                     { label: __('Custom Upload', 'jankx'), value: 'custom' },
                                     { label: __('Taxonomy Featured Image', 'jankx'), value: 'featured' },
                                 ]}
-                                onChange={(value) => setAttributes({ itemBgImageSource: value, itemFeaturedImage: value === 'featured' })}
+                                onChange={(value) => setAttributes({ itemBgImageSource: value })}
                             />
                             {itemBgImageSource === 'custom' && (
                                 <MediaUpload

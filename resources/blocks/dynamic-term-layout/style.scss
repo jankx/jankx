@@ -387,3 +387,12 @@
         min-height: var(--min-height-mobile, var(--min-height-tablet, var(--min-height-desktop, auto)));
     }
 }
+// Featured Image Ratio
+// Applies the layout level ratio to every template item. A template block that
+// sets its own responsive itemBgRatio emits an inline <style> in the body,
+// which lands after this stylesheet and therefore keeps precedence.
+.wp-block-jankx-dynamic-term-layout {
+    .dynamic-data-template__item {
+        aspect-ratio: var(--jankx-layout-image-ratio, auto);
+    }
+}

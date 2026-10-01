@@ -388,6 +388,10 @@
     min-height: var(--min-height-mobile, var(--min-height-tablet, var(--min-height-desktop, auto)));
   }
 }
+
+.wp-block-jankx-dynamic-term-layout .dynamic-data-template__item {
+  aspect-ratio: var(--jankx-layout-image-ratio, auto);
+}
 /*!********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** css ./node_modules/.pnpm/css-loader@7.1.2_webpack@5.104.1/node_modules/css-loader/dist/cjs.js!./node_modules/.pnpm/postcss-loader@8.2.0_postcss@8.5.6_typescript@5.9.3_webpack@5.104.1/node_modules/postcss-loader/dist/cjs.js!./node_modules/.pnpm/sass-loader@16.0.6_sass@1.97.3_webpack@5.104.1/node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[3].use[3]!./blocks/dynamic-term-layout/editor.scss ***!
   \********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
@@ -548,6 +552,10 @@
 
 .wp-block-jankx-dynamic-term-layout .carousel-container {
   min-height: 100px;
+}
+
+.wp-block-jankx-dynamic-term-layout .dynamic-data-template__item {
+  aspect-ratio: var(--jankx-layout-image-ratio, auto);
 }
 
 /*# sourceMappingURL=index.css.map*/

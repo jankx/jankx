@@ -116,3 +116,11 @@
 .wp-block-jankx-dynamic-term-layout .carousel-container {
     min-height: 100px;
 }
+// Featured Image Ratio - mirrors style.scss so the editor preview matches the
+// rendered layout. The template block's own itemBgRatio still wins in the editor
+// because it is applied as an inline style on the item element.
+.wp-block-jankx-dynamic-term-layout {
+    .dynamic-data-template__item {
+        aspect-ratio: var(--jankx-layout-image-ratio, auto);
+    }
+}

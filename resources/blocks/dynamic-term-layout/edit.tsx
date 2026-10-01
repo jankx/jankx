@@ -17,8 +17,9 @@ const UnitControl: any =
     (WPComponents as any).UnitControl || (WPComponents as any).__experimentalUnitControl || TextControl;
 import { useSelect } from '@wordpress/data';
 import { store as coreStore } from '@wordpress/core-data';
-import { useState, useMemo, useEffect, useCallback } from '@wordpress/element';
+import { useState, useMemo, useEffect } from '@wordpress/element';
 import type { CSSProperties } from 'react';
+import { normalizeImageRatio, resolveImageRatioSelectValue } from '../../shared/components';
 import './style.scss';
 import './editor.scss';
 
@@ -304,6 +305,11 @@ export default function Edit({ attributes, setAttributes }: EditProps) {
         '--slides-per-view': (columns || 1) + ((carouselPeek || 0) / 100),
     } as CSSProperties;
 
+    const normalizedEditorImageRatio = normalizeImageRatio((attributes as any).imageRatio);
+    if (normalizedEditorImageRatio) {
+        (editorStyle as any)['--jankx-layout-image-ratio'] = normalizedEditorImageRatio;
+    }
+
     // Helper to render dynamic settings from the layout definition
     const renderSettingsControl = (setting: SettingDefinition, index: number): JSX.Element | null => {
         if (setting.condition) {
@@ -587,6 +593,57 @@ export default function Edit({ attributes, setAttributes }: EditProps) {
                                     help={__('Set minimum height for the wrapper', 'jankx')}
                                 />
                             </div>
+                        );
+                    })()}
+
+                    {/* Featured Image Ratio */}
+                    {(() => {
+                        const ratioOptions = [
+                            { label: __('Original', 'jankx'), value: '' },
+                            { label: '16:9', value: '16/9' },
+                            { label: '4:3', value: '4/3' },
+                            { label: '1:1', value: '1/1' },
+                            { label: '3:2', value: '3/2' },
+                            { label: '3:4', value: '3/4' },
+                            { label: '9:16', value: '9/16' },
+                            { label: __('Custom', 'jankx'), value: 'custom' },
+                        ];
+                        const currentRatio = (attributes as any).imageRatio || '';
+                        const selectValue = resolveImageRatioSelectValue(currentRatio);
+                        const isCustom = selectValue === 'custom';
+
+                        return isCustom ? (
+                            <div style={{ display: 'flex', gap: '10px', alignItems: 'flex-end', marginBottom: '1em' }}>
+                                <div style={{ flex: 1 }}>
+                                    <SelectControl
+                                        label={__('Image Ratio', 'jankx')}
+                                        value={selectValue}
+                                        options={ratioOptions}
+                                        onChange={(value: string) => setAttr('imageRatio', value === 'custom' ? '16/9' : value)}
+                                    />
+                                </div>
+                                <div style={{ flex: 1 }}>
+                                    <TextControl
+                                        label={__('Custom Ratio', 'jankx')}
+                                        value={currentRatio}
+                                        onChange={(value: string) => {
+                                            const ratioPattern = /^\d{1,4}\s*\/\s*\d{1,4}$/;
+                                            if (!value || ratioPattern.test(value)) {
+                                                setAttr('imageRatio', value || '');
+                                            }
+                                        }}
+                                        placeholder="16/9"
+                                    />
+                                </div>
+                            </div>
+                        ) : (
+                            <SelectControl
+                                label={__('Image Ratio', 'jankx')}
+                                value={selectValue}
+                                options={ratioOptions}
+                                onChange={(value: string) => setAttr('imageRatio', value === 'custom' ? '16/9' : value)}
+                                help={__('Aspect ratio for the featured image', 'jankx')}
+                            />
                         );
                     })()}
 
