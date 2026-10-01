@@ -276,6 +276,7 @@ class ViewTemplateContentGenerator extends AbstractContentGenerator
         $variables['item_spacing'] = $templateAttrs['itemSpacing'] ?? 'normal';
         $variables['show_item_border'] = $templateAttrs['showItemBorder'] ?? false;
         $variables['item_border_radius'] = $templateAttrs['itemBorderRadius'] ?? 0;
+        $variables['position_type'] = $templateAttrs['positionType'] ?? 'relative';
         
         // Add layout context
         $variables['current_layout'] = $this->currentLayout;

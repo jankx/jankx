@@ -36,17 +36,21 @@
 {var $image_ratio = isset($image_ratio) ? $image_ratio : ($options['imageRatio'] ?? '')}
 {var $contentClassExtra = ' item-spacing-' . $item_spacing . ($show_item_border ? ' has-item-border' : '') . ($image_ratio ? ' has-image-ratio' : '')}
 {*
-    entry-image / entire-item overlays are absolutely positioned over the whole
-    item (see .jankx-overlay-target-* in the block stylesheets), so the item
-    itself has to be the positioning context. The featured-image target keeps
-    the default `position: relative` wrapper that hugs the image block.
+    `positionType` is an explicit per-template setting (none | relative |
+    absolute, default relative). It is what makes the item a positioning
+    context for the entry-image / entire-item overlays, which are absolutely
+    positioned over the whole item (see .jankx-overlay-target-* in the block
+    stylesheets). `none` means "do not set position at all", so choosing it
+    hands the positioning context back to an ancestor.
 *}
+{var $position_type = isset($position_type) ? $position_type : (isset($attrs['positionType']) ? $attrs['positionType'] : ($options['positionType'] ?? 'relative'))}
+{var $position_type = in_array($position_type, ['none', 'relative', 'absolute'], true) ? $position_type : 'relative'}
 {var $itemStyleParts = []}
 {if $show_item_border && $item_border_radius > 0}
     {var $itemStyleParts[] = 'border-radius: ' . (int) $item_border_radius . 'px'}
 {/if}
-{if $hasOverlay && $overlayTarget !== 'featured-image'}
-    {var $itemStyleParts[] = 'position: relative'}
+{if $position_type !== 'none'}
+    {var $itemStyleParts[] = 'position: ' . $position_type}
 {/if}
 {var $contentStyleExtra = implode('; ', $itemStyleParts)}
 

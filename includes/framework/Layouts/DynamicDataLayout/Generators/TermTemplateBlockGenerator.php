@@ -236,10 +236,18 @@ class TermTemplateBlockGenerator extends AbstractContentGenerator
             $this->templateTermHasMedia($templateAttrs, $term)
         );
 
-        if ($enableOverlay || $itemIconHtml !== '') {
-            if (strpos($currentStyle, 'position:') === false) {
-                $currentStyle .= ($currentStyle !== '' ? '; ' : '') . 'position: relative';
-            }
+        // `positionType` is an explicit per-template setting (none | relative |
+        // absolute, default relative). It is what makes the term item a
+        // positioning context for the icon overlay and the enableOverlay
+        // gradient, both of which are absolutely positioned over the whole
+        // item. `none` means "do not set position at all", which hands the
+        // positioning context back to an ancestor.
+        $positionType = $templateAttrs['positionType'] ?? 'relative';
+        if (!is_string($positionType) || !in_array($positionType, ['none', 'relative', 'absolute'], true)) {
+            $positionType = 'relative';
+        }
+        if ($positionType !== 'none' && strpos($currentStyle, 'position:') === false) {
+            $currentStyle .= ($currentStyle !== '' ? '; ' : '') . 'position: ' . $positionType;
         }
 
         if ($enableOverlay && strpos($currentStyle, 'overflow:') === false) {
