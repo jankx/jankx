@@ -43,6 +43,8 @@ class SmartTabsBlockTest extends BlockTestCase
     protected function renderTabNavigation(array $innerBlocks, array $parentAttributes = []): string
     {
         $method = new ReflectionMethod(SmartTabsBlock::class, 'renderTabNavigation');
+        // Bắt buộc trên PHP < 8.1 (CI chạy matrix 8.0–8.4); no-op từ 8.1+.
+        $method->setAccessible(true);
         return $method->invoke(new SmartTabsBlock(), $innerBlocks, 0, 'left', $parentAttributes);
     }
 
@@ -52,6 +54,7 @@ class SmartTabsBlockTest extends BlockTestCase
     protected function findTabIconBlock(array $innerBlocks): array
     {
         $method = new ReflectionMethod(SmartTabsBlock::class, 'findTabIconBlock');
+        $method->setAccessible(true);
         return $method->invoke(new SmartTabsBlock(), $innerBlocks);
     }
 
@@ -61,6 +64,7 @@ class SmartTabsBlockTest extends BlockTestCase
     protected function renderTabIconMarkup(array $iconBlock): string
     {
         $method = new ReflectionMethod(SmartTabsBlock::class, 'renderTabIconMarkup');
+        $method->setAccessible(true);
         return $method->invoke(new SmartTabsBlock(), $iconBlock);
     }
 

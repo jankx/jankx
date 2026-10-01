@@ -87,7 +87,9 @@ class PostLayoutColumnsUpdateTest extends TestCase
         
         // Should have base classes
         $this->assertContains('post-type-layout-grid', $container['classes']);
-        $this->assertContains('is-flex-container', $container['classes']);
+        // is-flex-container đã bị gỡ trong refactor ee68fe04f — grid dùng CSS grid
+        // với --columns-* vars, khai báo qua class layout-grid.
+        $this->assertContains('layout-grid', $container['classes']);
         
         // Should have column classes
         $this->assertContains('columns-4', $container['classes']);
