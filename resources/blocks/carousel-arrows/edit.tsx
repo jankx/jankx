@@ -57,7 +57,8 @@ const buildStyledIcon = (
 		iconClass?: string;
 	},
 	size: number,
-	color: string
+	color: string,
+	side: 'prev' | 'next' = 'prev'
 ): JSX.Element => {
 	const sizeStyle = `width:${ size }px;height:${ size }px;`;
 	const colorStyle = color ? `color:${ color };` : '';
@@ -106,7 +107,7 @@ const buildStyledIcon = (
 	return (
 		<svg viewBox="0 0 24 24" width={ size } height={ size } fill="none">
 			<path
-				d="M15 18l-6-6 6-6"
+				d={ side === 'prev' ? 'M15 18l-6-6 6-6' : 'M9 18l6-6-6-6' }
 				stroke="currentColor"
 				strokeWidth="2"
 				strokeLinecap="round"
@@ -437,15 +438,6 @@ export default function Edit( {
 
 			<div { ...blockProps }>
 				<div className="carousel-arrows-preview">
-					<div className="carousel-arrows-preview__header">
-						<strong>{ __( 'Carousel Arrows', 'jankx' ) }</strong>
-						<span>
-							{ __(
-								'These settings apply to the carousel layout of the parent block.',
-								'jankx'
-							) }
-						</span>
-					</div>
 					<div className="carousel-arrows-preview__buttons">
 						{ showArrows && (
 							<>
@@ -466,7 +458,8 @@ export default function Edit( {
 											iconClass: prevIconClass,
 										},
 										navIconSize,
-										navIconColor
+										navIconColor,
+										'prev'
 									) }
 								</button>
 								<button
@@ -483,7 +476,8 @@ export default function Edit( {
 											iconClass: nextIconClass,
 										},
 										navIconSize,
-										navIconColor
+										navIconColor,
+										'next'
 									) }
 								</button>
 							</>
@@ -491,6 +485,9 @@ export default function Edit( {
 						{ ! showArrows && (
 							<em>{ __( 'Arrows are hidden.', 'jankx' ) }</em>
 						) }
+					</div>
+					<div className="carousel-arrows-preview__footer">
+						<span>{ __( 'Carousel Navigation Controls', 'jankx' ) } ({ arrowsPosition })</span>
 					</div>
 				</div>
 			</div>

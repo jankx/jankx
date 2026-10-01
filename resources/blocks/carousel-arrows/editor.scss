@@ -1,34 +1,33 @@
 .wp-block-jankx-carousel-arrows {
+    display: flex;
+    justify-content: center;
+    padding: 8px 0;
+
     .carousel-arrows-preview {
-        border: 1px dashed #c3c4c7;
-        border-radius: 4px;
-        padding: 1rem;
-        background: #fff;
-
-        &__header {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-            margin-bottom: 0.75rem;
-
-            strong {
-                font-size: 0.9rem;
-            }
-
-            span {
-                font-size: 0.8rem;
-                color: #646970;
-            }
-        }
+        display: inline-flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 6px;
+        padding: 10px 16px;
+        background: #fcfcfc;
+        border: 1px dashed #dcdcde;
+        border-radius: 8px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
 
         &__buttons {
             display: flex;
             gap: 12px;
             align-items: center;
             justify-content: center;
-            padding: 0.5rem;
-            background: #f0f0f1;
-            border-radius: 4px;
+        }
+
+        &__footer {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 11px;
+            color: #757575;
+            text-transform: capitalize;
         }
     }
 }
