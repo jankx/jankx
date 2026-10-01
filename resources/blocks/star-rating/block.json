@@ -92,6 +92,25 @@
     "position": {
       "type": "string",
       "default": ""
+    },
+    "top": {
+      "type": "string",
+      "default": ""
+    },
+    "right": {
+      "type": "string",
+      "default": ""
+    },
+    "bottom": {
+      "type": "string",
+      "default": ""
+    },
+    "left": {
+      "type": "string",
+      "default": ""
+    },
+    "zIndex": {
+      "type": "number"
     }
   },
   "supports": {

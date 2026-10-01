@@ -103,6 +103,11 @@ class StarRatingBlock extends Block
             'countMetaKey'   => 'rating_count',
             'align'          => 'left',
             'position'       => '',
+            'top'            => '',
+            'right'          => '',
+            'bottom'         => '',
+            'left'           => '',
+            'zIndex'         => '',
             'iconType'       => 'text',
             'svgFull'        => '',
             'svgHalf'        => '',
@@ -153,6 +158,20 @@ class StarRatingBlock extends Block
 
         if (!empty($attributes['position'])) {
             $style .= sprintf(' position: %s;', esc_attr($attributes['position']));
+
+            foreach (['top', 'right', 'bottom', 'left'] as $prop) {
+                if (isset($attributes[$prop]) && $attributes[$prop] !== '') {
+                    $val = trim((string) $attributes[$prop]);
+                    if (is_numeric($val)) {
+                        $val .= 'px';
+                    }
+                    $style .= sprintf(' %s: %s;', $prop, esc_attr($val));
+                }
+            }
+        }
+
+        if (isset($attributes['zIndex']) && $attributes['zIndex'] !== '') {
+            $style .= sprintf(' z-index: %s;', esc_attr($attributes['zIndex']));
         }
 
         $wrapper_classes = ['wp-block-jankx-star-rating'];

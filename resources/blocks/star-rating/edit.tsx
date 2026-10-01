@@ -21,6 +21,11 @@ interface Attributes {
     svgHalf: string;
     svgEmpty: string;
     position?: string;
+    top?: string;
+    right?: string;
+    bottom?: string;
+    left?: string;
+    zIndex?: number | string;
     [key: string]: unknown;
 }
 
@@ -203,7 +208,14 @@ const Edit = ({ attributes, setAttributes }: EditProps) => {
         svgHalf,
         svgEmpty,
         position,
+        top,
+        right,
+        bottom,
+        left,
+        zIndex,
     } = attributes;
+
+    const hasOffset = position === 'absolute' || position === 'fixed' || position === 'relative';
 
     const [providerOptions, setProviderOptions] = useState<ProviderOption[]>([]);
     const [loadingProviders, setLoadingProviders] = useState(true);
@@ -238,6 +250,11 @@ const Edit = ({ attributes, setAttributes }: EditProps) => {
             '--star-empty-color': starEmptyColor,
             textAlign: attributes.align,
             position: position ? position : undefined,
+            top: (hasOffset && top) ? top : undefined,
+            right: (hasOffset && right) ? right : undefined,
+            bottom: (hasOffset && bottom) ? bottom : undefined,
+            left: (hasOffset && left) ? left : undefined,
+            zIndex: zIndex !== undefined && zIndex !== '' ? Number(zIndex) : undefined,
         } as React.CSSProperties
     });
 
@@ -359,6 +376,47 @@ const Edit = ({ attributes, setAttributes }: EditProps) => {
                         ]}
                         onChange={(value) => setAttributes({ position: value })}
                     />
+
+                    {hasOffset && (
+                        <>
+                            <p style={{ margin: '0 0 4px', fontWeight: 600, fontSize: '11px', textTransform: 'uppercase', color: '#1e1e1e' }}>
+                                {__('Offset (px or any CSS unit)', 'jankx')}
+                            </p>
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginBottom: '8px' }}>
+                                <TextControl
+                                    label={__('Top', 'jankx')}
+                                    value={String(top || '')}
+                                    placeholder="e.g. 10px"
+                                    onChange={(value) => setAttributes({ top: value })}
+                                />
+                                <TextControl
+                                    label={__('Right', 'jankx')}
+                                    value={String(right || '')}
+                                    placeholder="e.g. 10px"
+                                    onChange={(value) => setAttributes({ right: value })}
+                                />
+                                <TextControl
+                                    label={__('Bottom', 'jankx')}
+                                    value={String(bottom || '')}
+                                    placeholder="e.g. 10px"
+                                    onChange={(value) => setAttributes({ bottom: value })}
+                                />
+                                <TextControl
+                                    label={__('Left', 'jankx')}
+                                    value={String(left || '')}
+                                    placeholder="e.g. 10px"
+                                    onChange={(value) => setAttributes({ left: value })}
+                                />
+                            </div>
+                            <TextControl
+                                label={__('Z-Index', 'jankx')}
+                                value={zIndex !== undefined && zIndex !== '' ? String(zIndex) : ''}
+                                placeholder="e.g. 10"
+                                type="number"
+                                onChange={(value) => setAttributes({ zIndex: value !== '' ? Number(value) : undefined })}
+                            />
+                        </>
+                    )}
                 </PanelBody>
 
                 <PanelBody title={__('Visual Settings', 'jankx')}>
