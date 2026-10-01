@@ -10,4 +10,5 @@ export {
 export type { PresetImageRatio, ImageRatioSelectValue } from './imageRatio';
 export { createBlocksFromTemplate } from './createBlocksFromTemplate';
 export type { TemplateNode } from './createBlocksFromTemplate';
+export { normalizeHexColor } from './normalizeHexColor';
 

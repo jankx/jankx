@@ -25,7 +25,7 @@ import { useSelect, useDispatch } from '@wordpress/data';
 import type { CSSProperties } from 'react';
 import type { BlockInstance } from '@wordpress/blocks';
 import ResponsiveAspectRatioControl from '@jankx/gutenberg-controls/controls/ResponsiveAspectRatioControl';
-import { createBlocksFromTemplate } from '../../shared/components';
+import { createBlocksFromTemplate, normalizeHexColor } from '../../shared/components';
 
 interface DynamicDataTemplateAttributes {
     templateLayout: string;
@@ -473,34 +473,6 @@ const getItemBgRatioDesktop = (attributes: any): string => {
     return ratio && ratio !== 'auto' ? ratio : '';
 };
 
-/**
- * A native <input type="color"> only accepts a #rrggbb value. Without this the
- * browser silently falls back to #000000 whenever the stored attribute is a
- * short hex, an 8 digit hex with alpha, or an rgb()/rgba() string, so the
- * swatch stops matching the rendered colour.
- */
-const normalizeHexColor = (value: any, fallback: string): string => {
-    const raw = String(value || '').trim().toLowerCase();
-
-    if (/^#[0-9a-f]{6}$/.test(raw)) {
-        return raw;
-    }
-
-    if (/^#[0-9a-f]{3}$/.test(raw)) {
-        return `#${raw[1]}${raw[1]}${raw[2]}${raw[2]}${raw[3]}${raw[3]}`;
-    }
-
-    const rgbMatch = raw.match(/^rgba?\(\s*([\d.]+)[\s,]+([\d.]+)[\s,]+([\d.]+)/);
-    if (rgbMatch) {
-        const toHex = (part: string | undefined) => {
-            const num = Math.max(0, Math.min(255, Math.round(parseFloat(part))));
-            return num.toString(16).padStart(2, '0');
-        };
-        return `#${toHex(rgbMatch[1])}${toHex(rgbMatch[2])}${toHex(rgbMatch[3])}`;
-    }
-
-    return fallback;
-};
 
 /**
  * Convert a CSS background-position value into the {x, y} point that
