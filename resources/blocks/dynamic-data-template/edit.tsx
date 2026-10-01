@@ -22,10 +22,10 @@ import {
 } from '@wordpress/components';
 import { useMemo, useEffect, useState, useRef, useCallback } from '@wordpress/element';
 import { useSelect, useDispatch } from '@wordpress/data';
-import { createBlocksFromTemplate } from '@wordpress/blocks';
 import type { CSSProperties } from 'react';
 import type { BlockInstance } from '@wordpress/blocks';
 import ResponsiveAspectRatioControl from '@jankx/gutenberg-controls/controls/ResponsiveAspectRatioControl';
+import { createBlocksFromTemplate } from '../../shared/components';
 
 interface DynamicDataTemplateAttributes {
     templateLayout: string;

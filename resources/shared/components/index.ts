@@ -8,4 +8,6 @@ export {
     resolveImageRatioSelectValue,
 } from './imageRatio';
 export type { PresetImageRatio, ImageRatioSelectValue } from './imageRatio';
+export { createBlocksFromTemplate } from './createBlocksFromTemplate';
+export type { TemplateNode } from './createBlocksFromTemplate';
 
