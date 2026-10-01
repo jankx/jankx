@@ -20,6 +20,7 @@ import {
 
 interface CarouselArrowsAttributes {
 	showArrows: boolean;
+	alwaysShowArrows?: boolean;
 	arrowsPosition: string;
 	navIconType: string;
 	prevIconImageId: number;
@@ -123,6 +124,7 @@ export default function Edit( {
 }: EditProps ): JSX.Element {
 	const {
 		showArrows = true,
+		alwaysShowArrows = false,
 		arrowsPosition = 'inside',
 		navIconType = 'arrow',
 		prevIconImageId = 0,
@@ -293,6 +295,19 @@ export default function Edit( {
 							setAttributes( { showArrows: value } )
 						}
 					/>
+					{ showArrows && (
+						<ToggleControl
+							label={ __( 'Always show arrows', 'jankx' ) }
+							help={ __(
+								'Always keep buttons visible even when at the start or end of slides.',
+								'jankx'
+							) }
+							checked={ alwaysShowArrows }
+							onChange={ ( value ) =>
+								setAttributes( { alwaysShowArrows: value } )
+							}
+						/>
+					) }
 					<SelectControl
 						label={ __( 'Arrows position', 'jankx' ) }
 						value={ arrowsPosition }

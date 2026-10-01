@@ -20,6 +20,10 @@
       "type": "boolean",
       "default": true
     },
+    "alwaysShowArrows": {
+      "type": "boolean",
+      "default": false
+    },
     "arrowsPosition": {
       "type": "string",
       "enum": [

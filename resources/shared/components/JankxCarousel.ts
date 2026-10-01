@@ -112,6 +112,9 @@ export default class JankxCarousel {
                 ? settings.showDots
                 : (this.carousel.classList.contains('has-dots') || this.carousel.classList.contains('show-dots')));
 
+        const carouselArrows = settings.carouselArrows || {};
+        const alwaysShowArrows = carouselArrows.alwaysShowArrows === true || this.carousel.getAttribute('data-always-show-arrows') === 'true';
+
         this.config = {
             slidesPerView: (dataSlides || dataColumns || cssSlides || 1),
             spaceBetween: (dataSpace || cssSpace || 16),
@@ -119,6 +122,7 @@ export default class JankxCarousel {
             autoplay: this.carousel.getAttribute('data-autoplay') === 'true' || this.carousel.classList.contains('has-autoplay'),
             autoplayDelay: Math.max(3000, parseInt(this.carousel.getAttribute('data-autoplay-delay')) || 5000),
             showArrows: showArrows,
+            alwaysShowArrows: alwaysShowArrows,
             showDots: showDots,
             loop: loop,
             dotsPerPage: this.carousel.getAttribute('data-dots-per-page') === 'true' || this.options.dotsPerPage || false,
@@ -292,8 +296,29 @@ export default class JankxCarousel {
     }
 
     updateUI() {
-        if (this.prevBtn) this.prevBtn.disabled = !this.embla.canScrollPrev();
-        if (this.nextBtn) this.nextBtn.disabled = !this.embla.canScrollNext();
+        const canPrev = this.embla.canScrollPrev();
+        const canNext = this.embla.canScrollNext();
+
+        if (this.prevBtn) {
+            this.prevBtn.disabled = !canPrev;
+            if (this.config.alwaysShowArrows) {
+                this.prevBtn.style.display = '';
+                this.prevBtn.classList.remove('is-hidden');
+            } else {
+                this.prevBtn.style.display = canPrev ? '' : 'none';
+                this.prevBtn.classList.toggle('is-hidden', !canPrev);
+            }
+        }
+        if (this.nextBtn) {
+            this.nextBtn.disabled = !canNext;
+            if (this.config.alwaysShowArrows) {
+                this.nextBtn.style.display = '';
+                this.nextBtn.classList.remove('is-hidden');
+            } else {
+                this.nextBtn.style.display = canNext ? '' : 'none';
+                this.nextBtn.classList.toggle('is-hidden', !canNext);
+            }
+        }
 
         if (this.dotsContainer) {
             const dots = this.dotsContainer.querySelectorAll('.carousel-dot');

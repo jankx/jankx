@@ -58,18 +58,25 @@ class CarouselArrowsRenderer
         }
         $buttonStyleString = implode('; ', $buttonStyle);
 
+        $alwaysShowArrows = !empty($arrows['alwaysShowArrows']);
+        $prevStyleString = $buttonStyleString;
+        if (!$alwaysShowArrows) {
+            $prevStyleString .= '; display: none;';
+        }
+
         $prevContent = self::buildIcon($iconType, 'prev', $arrows, $iconSize, $iconColor);
         $nextContent = self::buildIcon($iconType, 'next', $arrows, $iconSize, $iconColor);
 
         return sprintf(
-            '<button class="embla__button embla__button--prev carousel-nav carousel-prev" type="button" aria-label="%1$s"%3$s>%5$s</button>'
+            '<button class="embla__button embla__button--prev carousel-nav carousel-prev%7$s" type="button" aria-label="%1$s"%3$s>%5$s</button>'
             . '<button class="embla__button embla__button--next carousel-nav carousel-next" type="button" aria-label="%2$s"%4$s>%6$s</button>',
             esc_attr__('Previous slide', 'jankx'),
             esc_attr__('Next slide', 'jankx'),
-            ' style="' . esc_attr($buttonStyleString) . '"',
+            ' style="' . esc_attr($prevStyleString) . '"',
             ' style="' . esc_attr($buttonStyleString) . '"',
             $prevContent, // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-            $nextContent // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+            $nextContent, // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+            $alwaysShowArrows ? '' : ' is-hidden'
         );
     }
 
