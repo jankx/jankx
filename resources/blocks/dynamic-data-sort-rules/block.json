@@ -1,0 +1,41 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "jankx/dynamic-data-sort-rules",
+  "version": "1.0.0",
+  "title": "Sort Rules",
+  "category": "jankx",
+  "icon": "sort",
+  "description": "Sort dynamic data by multiple criteria (post fields, meta values, sticky posts, random).",
+  "keywords": [
+    "sort",
+    "order",
+    "orderby",
+    "query",
+    "rules"
+  ],
+  "textdomain": "jankx",
+  "attributes": {
+    "enabled": {
+      "type": "boolean",
+      "default": false
+    },
+    "rules": {
+      "type": "array",
+      "default": [],
+      "items": {
+        "type": "object"
+      }
+    }
+  },
+  "supports": {
+    "html": false,
+    "inserter": true
+  },
+  "parent": [
+    "jankx/dynamic-data-layout"
+  ],
+  "editorScript": "file:../../dist/blocks/dynamic-data-sort-rules/index.js",
+  "editorStyle": "file:../../dist/blocks/dynamic-data-sort-rules/editor.css",
+  "style": "file:../../dist/blocks/dynamic-data-sort-rules/style.css"
+}
