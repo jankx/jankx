@@ -1,33 +1,139 @@
+/**
+ * Carousel Arrows Block – Editor Styles
+ *
+ * Strategy: the carousel-arrows block is an InnerBlock child of
+ * dynamic-data-layout / dynamic-term-layout. We use CSS on the
+ * block wrapper element to visually position the arrows overlaying
+ * the parent carousel, mirroring the frontend appearance.
+ *
+ * The block wrapper gets:
+ *   class="wp-block-jankx-carousel-arrows carousel-arrows-editor-preview
+ *          carousel-arrows-position--{inside|outside|bottom}
+ *          [carousel-arrows--always-show] [carousel-arrows--hidden]"
+ *   data-arrows-position="{inside|outside|bottom}"
+ */
+
+// ── Reset block wrapper so it doesn't create its own layout box ──────────────
 .wp-block-jankx-carousel-arrows {
-    display: flex;
+    // Override Gutenberg's default block margin/padding
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100%;
+}
+
+// ── Shared button styles (used for all positions) ────────────────────────────
+.wp-block-jankx-carousel-arrows .carousel-nav {
+    display: inline-flex;
+    align-items: center;
     justify-content: center;
-    padding: 8px 0;
+    background: rgba(255, 255, 255, 0.92);
+    border: 1.5px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.14);
+    border-radius: 50%;
+    cursor: default; // editor – not interactive
+    transition: box-shadow 0.18s ease, background 0.18s ease;
+    flex-shrink: 0;
+    pointer-events: none; // editor overlay only
+}
 
-    .carousel-arrows-preview {
-        display: inline-flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 6px;
-        padding: 10px 16px;
-        background: #fcfcfc;
-        border: 1px dashed #dcdcde;
-        border-radius: 8px;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+// ── Position: INSIDE (arrows float on left/right over the carousel) ───────────
+.wp-block-jankx-carousel-arrows.carousel-arrows-position--inside {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 5;
 
-        &__buttons {
-            display: flex;
-            gap: 12px;
-            align-items: center;
-            justify-content: center;
+    // The two buttons are positioned at vertical center on each side
+    .carousel-nav {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+
+        &.carousel-prev {
+            left: 10px;
         }
 
-        &__footer {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            font-size: 11px;
-            color: #757575;
-            text-transform: capitalize;
+        &.carousel-next {
+            right: 10px;
         }
     }
 }
+
+// ── Position: OUTSIDE (arrows extend outside the carousel edges) ──────────────
+.wp-block-jankx-carousel-arrows.carousel-arrows-position--outside {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 5;
+
+    .carousel-nav {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+
+        &.carousel-prev {
+            // Push outside the left edge – overflow is clipped by parent only
+            // if parent has overflow:hidden, so we use a negative offset
+            left: -22px;
+        }
+
+        &.carousel-next {
+            right: -22px;
+        }
+    }
+}
+
+// ── Position: BOTTOM (arrows row below the carousel) ─────────────────────────
+.wp-block-jankx-carousel-arrows.carousel-arrows-position--bottom {
+    display: flex;
+    justify-content: center;
+    padding: 10px 0 4px;
+
+    .carousel-arrows-bottom-row {
+        display: inline-flex;
+        gap: 10px;
+        align-items: center;
+    }
+}
+
+// ── Ensure the parent is `position: relative` so absolute children work ───────
+// Target the dynamic-data-layout and dynamic-term-layout wrappers in editor
+.wp-block-jankx-dynamic-data-layout,
+.wp-block-jankx-dynamic-term-layout {
+    position: relative;
+}
+
+// ── "Arrows disabled" notice ─────────────────────────────────────────────────
+.wp-block-jankx-carousel-arrows.carousel-arrows--hidden {
+    // Collapse layout but show a small badge so editor knows it's here
+    position: static !important;
+    width: 100%;
+    padding: 6px 10px !important;
+    display: flex;
+    align-items: center;
+
+    .carousel-arrows-hidden-notice {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        font-size: 11px;
+        font-weight: 500;
+        color: #757575;
+        background: #f6f6f7;
+        border: 1px dashed #c3c4c7;
+        border-radius: 4px;
+        padding: 3px 8px;
+        pointer-events: none;
+    }
+}
+
+// ── Default visibility: show arrows "as if scrollable" ───────────────────────
+// By default arrows are visible in the editor (editor preview always shows them)
+// When alwaysShowArrows is false we still show them in the editor for context.
+// The actual JS-driven hide/show logic only applies in the frontend.

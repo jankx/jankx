@@ -143,7 +143,6 @@ export default function Edit( {
 		navBtnBgColor = '',
 	} = attributes;
 
-	const blockProps = useBlockProps();
 
 	const buttonStyle: CSSProperties = {
 		width: navBtnWidth,
@@ -280,6 +279,43 @@ export default function Edit( {
 			</BaseControl>
 		);
 	};
+
+	const blockProps = useBlockProps( {
+		className: [
+			'carousel-arrows-editor-preview',
+			`carousel-arrows-position--${ arrowsPosition }`,
+			! showArrows ? 'carousel-arrows--hidden' : '',
+			alwaysShowArrows ? 'carousel-arrows--always-show' : '',
+		]
+			.filter( Boolean )
+			.join( ' ' ),
+		'data-arrows-position': arrowsPosition,
+		'data-always-show': alwaysShowArrows ? 'true' : 'false',
+		'data-show-arrows': showArrows ? 'true' : 'false',
+	} );
+
+	// Build a single nav button
+	const renderNavBtn = ( side: 'prev' | 'next' ) => (
+		<button
+			type="button"
+			className={ `carousel-nav carousel-${ side }` }
+			style={ buttonStyle }
+			aria-label={ side === 'prev' ? __( 'Previous slide', 'jankx' ) : __( 'Next slide', 'jankx' ) }
+			tabIndex={ -1 }
+		>
+			{ buildStyledIcon(
+				navIconType,
+				{
+					svg: side === 'prev' ? prevIconSvg : nextIconSvg,
+					imageUrl: side === 'prev' ? prevIconImageUrl : nextIconImageUrl,
+					iconClass: side === 'prev' ? prevIconClass : nextIconClass,
+				},
+				navIconSize,
+				navIconColor,
+				side
+			) }
+		</button>
+	);
 
 	return (
 		<>
@@ -451,60 +487,30 @@ export default function Edit( {
 				</PanelBody>
 			</InspectorControls>
 
+			{ /* Canvas render: arrows positioned relative to parent carousel */ }
 			<div { ...blockProps }>
-				<div className="carousel-arrows-preview">
-					<div className="carousel-arrows-preview__buttons">
-						{ showArrows && (
+				{ showArrows ? (
+					<>
+						{ arrowsPosition !== 'bottom' ? (
 							<>
-								<button
-									type="button"
-									className="carousel-arrows-preview__btn"
-									style={ buttonStyle }
-									aria-label={ __(
-										'Previous slide',
-										'jankx'
-									) }
-								>
-									{ buildStyledIcon(
-										navIconType,
-										{
-											svg: prevIconSvg,
-											imageUrl: prevIconImageUrl,
-											iconClass: prevIconClass,
-										},
-										navIconSize,
-										navIconColor,
-										'prev'
-									) }
-								</button>
-								<button
-									type="button"
-									className="carousel-arrows-preview__btn"
-									style={ buttonStyle }
-									aria-label={ __( 'Next slide', 'jankx' ) }
-								>
-									{ buildStyledIcon(
-										navIconType,
-										{
-											svg: nextIconSvg,
-											imageUrl: nextIconImageUrl,
-											iconClass: nextIconClass,
-										},
-										navIconSize,
-										navIconColor,
-										'next'
-									) }
-								</button>
+								{ renderNavBtn( 'prev' ) }
+								{ renderNavBtn( 'next' ) }
 							</>
+						) : (
+							<div className="carousel-arrows-bottom-row">
+								{ renderNavBtn( 'prev' ) }
+								{ renderNavBtn( 'next' ) }
+							</div>
 						) }
-						{ ! showArrows && (
-							<em>{ __( 'Arrows are hidden.', 'jankx' ) }</em>
-						) }
-					</div>
-					<div className="carousel-arrows-preview__footer">
-						<span>{ __( 'Carousel Navigation Controls', 'jankx' ) } ({ arrowsPosition })</span>
-					</div>
-				</div>
+					</>
+				) : (
+					<span className="carousel-arrows-hidden-notice">
+						<svg viewBox="0 0 20 20" width="14" height="14" fill="currentColor" style={ { verticalAlign: 'middle', marginRight: 4 } }>
+							<path d="M13.586 3H18a1 1 0 011 1v4.414a1 1 0 01-.293.707l-8 8a1 1 0 01-1.414 0l-5.414-5.414a1 1 0 010-1.414l8-8A1 1 0 0113.586 3zM15 7a1 1 0 100-2 1 1 0 000 2z" />
+						</svg>
+						{ __( 'Arrows disabled', 'jankx' ) }
+					</span>
+				) }
 			</div>
 		</>
 	);
