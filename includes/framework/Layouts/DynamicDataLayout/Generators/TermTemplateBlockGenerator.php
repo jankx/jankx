@@ -172,12 +172,15 @@ class TermTemplateBlockGenerator extends AbstractContentGenerator
         $unhoverAnimation = $templateAttrs['unhoverAnimation'] ?? 'none';
 
         $itemIndex = 0;
+        $templateLayout = $templateAttrs['templateLayout'] ?? '';
 
         foreach ($terms as $term) {
             $itemContent = $this->renderTermItem($term, $terms, $options);
             if ($itemContent === '') {
                 continue;
             }
+
+            $itemContent = $this->wrapTermItemLayout($itemContent, $templateLayout, $templateAttrs);
 
             $classes = $this->buildItemClasses($term);
             $templateClasses = $this->buildTemplateItemClasses($templateAttrs);
@@ -315,6 +318,30 @@ class TermTemplateBlockGenerator extends AbstractContentGenerator
         }
 
         return implode('; ', $styles);
+    }
+
+    /**
+     * Apply the templateLayout wrapper for layouts that need PHP markup.
+     *
+     * Terms differ from posts in that they have no featured image block: the
+     * image is a CSS background on the item itself. So the image argument is
+     * always empty here, and the hero fallback background is forced transparent
+     * so it does not paint over the term image.
+     *
+     * overlap-card needs no wrapper, its template already ships the
+     * `.overlap-card-content` group; only the item class is required, and that
+     * comes from buildTemplateItemClasses().
+     */
+    protected function wrapTermItemLayout(string $content, string $layout, array $attrs): string
+    {
+        if ($layout === 'hero-overlay') {
+            $heroLayout = new \Jankx\Layouts\DynamicDataLayout\ContentLoopLayouts\HeroOverlayItemLayout();
+            $heroAttrs = array_merge($attrs, ['heroFallbackBackground' => 'transparent']);
+
+            return $heroLayout->renderHeroOverlay('', $content, $heroAttrs);
+        }
+
+        return $content;
     }
 
     /**
@@ -1067,6 +1094,14 @@ class TermTemplateBlockGenerator extends AbstractContentGenerator
         }
         if (!empty($attrs['borderColor'])) {
             $classes[] = 'has-' . sanitize_html_class($attrs['borderColor']) . '-border-color';
+        }
+
+        // The layout stylesheets (.content-loop-layout--*) are scoped on this
+        // class, so hero-overlay and overlap-card need it on the item.
+        if (!empty($attrs['templateLayout'])) {
+            $layoutClass = sanitize_html_class($attrs['templateLayout']);
+            $classes[] = 'content-loop-layout--' . $layoutClass;
+            $classes[] = 'template-layout--' . $layoutClass;
         }
 
         return implode(' ', array_unique(array_filter($classes)));

@@ -1,4 +1,11 @@
-export const PRESET_IMAGE_RATIOS = ['16/9', '4/3', '21/9', '1/1', '3/4', '2/3', '9/16'] as const;
+/**
+ * Ratios offered in the ratio <select>, in display order.
+ *
+ * Kept in sync with the option lists in both layout blocks' edit.tsx: a ratio
+ * that is offered as a preset but missing here would be classified `custom`,
+ * which shows the free-text field and hides the selected value from the select.
+ */
+export const PRESET_IMAGE_RATIOS = ['16/9', '4/3', '1/1', '3/2', '3/4', '9/16'] as const;
 
 export type PresetImageRatio = (typeof PRESET_IMAGE_RATIOS)[number];
 export type ImageRatioSelectValue = '' | 'custom' | PresetImageRatio;
