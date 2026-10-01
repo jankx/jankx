@@ -485,6 +485,36 @@ const getItemBgRatioDesktop = (attributes: any): string => {
     return ratio && ratio !== 'auto' ? ratio : '';
 };
 
+/**
+ * A native <input type="color"> only accepts a #rrggbb value. Without this the
+ * browser silently falls back to #000000 whenever the stored attribute is a
+ * short hex, an 8 digit hex with alpha, or an rgb()/rgba() string — which is
+ * exactly the case for overlayIconBackground's rgba() default — so the swatch
+ * stops matching the rendered colour.
+ */
+const normalizeHexColor = (value: any, fallback: string): string => {
+    const raw = String(value || '').trim().toLowerCase();
+
+    if (/^#[0-9a-f]{6}$/.test(raw)) {
+        return raw;
+    }
+
+    if (/^#[0-9a-f]{3}$/.test(raw)) {
+        return `#${raw[1]}${raw[1]}${raw[2]}${raw[2]}${raw[3]}${raw[3]}`;
+    }
+
+    const rgbMatch = raw.match(/^rgba?\(\s*([\d.]+)[\s,]+([\d.]+)[\s,]+([\d.]+)/);
+    if (rgbMatch) {
+        const toHex = (part: string) => {
+            const num = Math.max(0, Math.min(255, Math.round(parseFloat(part))));
+            return num.toString(16).padStart(2, '0');
+        };
+        return `#${toHex(rgbMatch[1])}${toHex(rgbMatch[2])}${toHex(rgbMatch[3])}`;
+    }
+
+    return fallback;
+};
+
 const getItemBgRatioMediaStyles = (attributes: any, selector: string): string => {
     const map = attributes?.itemBgRatio || {};
     const rules: string[] = [];
@@ -892,7 +922,7 @@ export default function Edit({
                             <div className="components-color-palette-control__color-indicator-wrapper">
                                 <input
                                     type="color"
-                                    value={overlapBackgroundColor || '#ffffff'}
+                                    value={normalizeHexColor(overlapBackgroundColor, '#ffffff')}
                                     onChange={(e) => setAttributes({ overlapBackgroundColor: e.target.value })}
                                     style={{ width: '100%', height: '40px' }}
                                 />
@@ -1088,7 +1118,7 @@ export default function Edit({
                                 <div className="components-color-palette-control__color-indicator-wrapper">
                                     <input
                                         type="color"
-                                        value={overlayIconColor || '#ffffff'}
+                                        value={normalizeHexColor(overlayIconColor, '#ffffff')}
                                         onChange={(e) => setAttributes({ overlayIconColor: e.target.value })}
                                         style={{ width: '100%', height: '40px' }}
                                     />
@@ -1102,7 +1132,7 @@ export default function Edit({
                                 <div className="components-color-palette-control__color-indicator-wrapper">
                                     <input
                                         type="color"
-                                        value={overlayIconBackground || 'rgba(0, 0, 0, 0.5)'}
+                                        value={normalizeHexColor(overlayIconBackground, '#000000')}
                                         onChange={(e) => setAttributes({ overlayIconBackground: e.target.value })}
                                         style={{ width: '100%', height: '40px' }}
                                     />
@@ -1134,7 +1164,7 @@ export default function Edit({
                             <div className="components-color-palette-control__color-indicator-wrapper">
                                 <input
                                     type="color"
-                                    value={itemBgColor || '#000000'}
+                                    value={normalizeHexColor(itemBgColor, '#000000')}
                                     onChange={(e) => setAttributes({ itemBgColor: e.target.value })}
                                     style={{ width: '100%', height: '40px' }}
                                 />
@@ -1308,7 +1338,7 @@ export default function Edit({
                             <div className="components-color-palette-control__color-indicator-wrapper">
                                 <input
                                     type="color"
-                                    value={itemBgOverlay || '#000000'}
+                                    value={normalizeHexColor(itemBgOverlay, '#000000')}
                                     onChange={(e) => setAttributes({ itemBgOverlay: e.target.value })}
                                     style={{ width: '100%', height: '40px' }}
                                 />

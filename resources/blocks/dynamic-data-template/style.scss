@@ -215,20 +215,27 @@
 .jankx-reveal {
     --jankx-animation-duration: 1000ms;
     --jankx-animation-delay: 0ms;
+    // Sign of the entry offset. animationReverse flips it to -1 so the effect
+    // plays from the opposite side.
+    --jankx-reveal-direction: 1;
 
     opacity: 0;
     transition-duration: var(--jankx-animation-duration);
     transition-delay: var(--jankx-animation-delay);
     transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-    transition-property: opacity, transform;
+    transition-property: opacity, transform, clip-path;
 
     &.is-in-view {
         opacity: 1;
         transform: translate(0, 0) scale(1);
     }
 
+    &--reverse {
+        --jankx-reveal-direction: -1;
+    }
+
     &--fade-in-up {
-        transform: translateY(30px);
+        transform: translateY(calc(30px * var(--jankx-reveal-direction)));
 
         &.is-in-view {
             transform: translateY(0);
@@ -236,7 +243,7 @@
     }
 
     &--fade-in-down {
-        transform: translateY(-30px);
+        transform: translateY(calc(-30px * var(--jankx-reveal-direction)));
 
         &.is-in-view {
             transform: translateY(0);
@@ -244,7 +251,7 @@
     }
 
     &--fade-in-left {
-        transform: translateX(-30px);
+        transform: translateX(calc(-30px * var(--jankx-reveal-direction)));
 
         &.is-in-view {
             transform: translateX(0);
@@ -252,7 +259,7 @@
     }
 
     &--fade-in-right {
-        transform: translateX(30px);
+        transform: translateX(calc(30px * var(--jankx-reveal-direction)));
 
         &.is-in-view {
             transform: translateX(0);
@@ -268,7 +275,7 @@
     }
 
     &--rotate-in {
-        transform: rotate(-15deg);
+        transform: rotate(calc(-15deg * var(--jankx-reveal-direction)));
 
         &.is-in-view {
             transform: rotate(0);
@@ -276,7 +283,7 @@
     }
 
     &--flip-in-x {
-        transform: perspective(400px) rotate3d(1, 0, 0, 90deg);
+        transform: perspective(400px) rotate3d(1, 0, 0, calc(90deg * var(--jankx-reveal-direction)));
 
         &.is-in-view {
             transform: perspective(400px) rotate3d(1, 0, 0, 0);
@@ -284,7 +291,7 @@
     }
 
     &--flip-in-y {
-        transform: perspective(400px) rotate3d(0, 1, 0, 90deg);
+        transform: perspective(400px) rotate3d(0, 1, 0, calc(90deg * var(--jankx-reveal-direction)));
 
         &.is-in-view {
             transform: perspective(400px) rotate3d(0, 1, 0, 0);
@@ -292,7 +299,7 @@
     }
 
     &--slide-in-up {
-        clip-path: inset(100% 0 0 0);
+        clip-path: inset(calc(100% * var(--jankx-reveal-direction)) 0 0 0);
 
         &.is-in-view {
             clip-path: inset(0 0 0 0);
@@ -300,7 +307,7 @@
     }
 
     &--slide-in-down {
-        clip-path: inset(0 0 100% 0);
+        clip-path: inset(0 0 calc(100% * var(--jankx-reveal-direction)) 0);
 
         &.is-in-view {
             clip-path: inset(0 0 0 0);
@@ -308,7 +315,7 @@
     }
 
     &--slide-in-left {
-        clip-path: inset(0 0 0 100%);
+        clip-path: inset(0 0 0 calc(100% * var(--jankx-reveal-direction)));
 
         &.is-in-view {
             clip-path: inset(0 0 0 0);
@@ -316,7 +323,7 @@
     }
 
     &--slide-in-right {
-        clip-path: inset(0 100% 0 0);
+        clip-path: inset(0 calc(100% * var(--jankx-reveal-direction)) 0 0);
 
         &.is-in-view {
             clip-path: inset(0 0 0 0);
@@ -340,19 +347,19 @@
         }
 
         &.jankx-reveal--fade-in-up img {
-            transform: translateY(30px);
+            transform: translateY(calc(30px * var(--jankx-reveal-direction)));
         }
 
         &.jankx-reveal--fade-in-down img {
-            transform: translateY(-30px);
+            transform: translateY(calc(-30px * var(--jankx-reveal-direction)));
         }
 
         &.jankx-reveal--fade-in-left img {
-            transform: translateX(-30px);
+            transform: translateX(calc(-30px * var(--jankx-reveal-direction)));
         }
 
         &.jankx-reveal--fade-in-right img {
-            transform: translateX(30px);
+            transform: translateX(calc(30px * var(--jankx-reveal-direction)));
         }
 
         &.jankx-reveal--zoom-in img {
@@ -360,15 +367,15 @@
         }
 
         &.jankx-reveal--rotate-in img {
-            transform: rotate(-15deg);
+            transform: rotate(calc(-15deg * var(--jankx-reveal-direction)));
         }
 
         &.jankx-reveal--flip-in-x img {
-            transform: perspective(400px) rotate3d(1, 0, 0, 90deg);
+            transform: perspective(400px) rotate3d(1, 0, 0, calc(90deg * var(--jankx-reveal-direction)));
         }
 
         &.jankx-reveal--flip-in-y img {
-            transform: perspective(400px) rotate3d(0, 1, 0, 90deg);
+            transform: perspective(400px) rotate3d(0, 1, 0, calc(90deg * var(--jankx-reveal-direction)));
         }
     }
 }

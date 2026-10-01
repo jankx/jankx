@@ -38,6 +38,47 @@ export default class JankxCarousel {
         this.updateUI();
     }
 
+    /**
+     * Read the full block attribute payload that the PHP renderers embed as
+     * JSON on the block wrapper. Dynamic layout blocks ship every attribute
+     * here, which lets us pick up carousel options without having to mirror
+     * each one into an individual data-* attribute.
+     */
+    readBlockSettings(): Record<string, any> {
+        const raw = this.carousel.getAttribute?.('data-block-settings');
+        if (!raw) return {};
+
+        try {
+            const parsed = JSON.parse(raw);
+            return parsed && typeof parsed === 'object' && !Array.isArray(parsed) ? parsed : {};
+        } catch {
+            return {};
+        }
+    }
+
+    private pickEnum<T extends string>(value: unknown, allowed: readonly T[], fallback: T): T {
+        return allowed.includes(value as T) ? (value as T) : fallback;
+    }
+
+    private pickNumber(value: unknown, fallback: number, min?: number, max?: number): number {
+        const parsed = typeof value === 'number' ? value : parseFloat(String(value));
+        if (!isFinite(parsed)) return fallback;
+        if (min !== undefined && parsed < min) return fallback;
+        if (max !== undefined && parsed > max) return fallback;
+        return parsed;
+    }
+
+    /**
+     * block.json declares carouselContainScroll as an enum of strings
+     * ("false" | "trimSnaps" | "keepSnaps"), while Embla expects a real boolean
+     * for the disabled case. Normalise both shapes.
+     */
+    private resolveContainScroll(value: unknown): false | 'trimSnaps' | 'keepSnaps' {
+        if (value === false || value === 'false' || value === 0 || value === '0') return false;
+        if (value === 'keepSnaps') return 'keepSnaps';
+        return 'trimSnaps';
+    }
+
     setupConfig() {
         const computed = getComputedStyle(this.carousel);
         const cssSlides = parseInt(computed.getPropertyValue('--slides-per-view')) || NaN;
@@ -47,24 +88,69 @@ export default class JankxCarousel {
         const dataColumns = parseInt(this.carousel.getAttribute('data-columns')) || NaN;
         const dataSpace = parseInt(this.carousel.getAttribute('data-space-between')) || NaN;
 
+        const settings = this.readBlockSettings();
+
+        const dataLoop = this.carousel.getAttribute('data-loop');
+        const loop = dataLoop !== null ? dataLoop !== 'false' : settings.loop !== false;
+
+        const dataSlidesToScroll = this.carousel.getAttribute('data-slides-to-scroll');
+
+        // The two layout renderers only emit data-autoplay/data-loop, while
+        // has-arrows/has-dots classes are added by a couple of secondary render
+        // paths. Resolve visibility from the block settings first so the
+        // Inspector toggles behave the same on every path.
+        const dataShowArrows = this.carousel.getAttribute('data-show-arrows');
+        const dataShowDots = this.carousel.getAttribute('data-show-dots');
+        const showArrows = dataShowArrows !== null
+            ? dataShowArrows !== 'false'
+            : (typeof settings.showArrows === 'boolean'
+                ? settings.showArrows
+                : (this.carousel.classList.contains('has-arrows') || this.carousel.classList.contains('show-arrows')));
+        const showDots = dataShowDots !== null
+            ? dataShowDots !== 'false'
+            : (typeof settings.showDots === 'boolean'
+                ? settings.showDots
+                : (this.carousel.classList.contains('has-dots') || this.carousel.classList.contains('show-dots')));
+
         this.config = {
             slidesPerView: (dataSlides || dataColumns || cssSlides || 1),
             spaceBetween: (dataSpace || cssSpace || 16),
             peekAmount: parseFloat(this.carousel.getAttribute('data-peek-amount') || '0') || 0,
             autoplay: this.carousel.getAttribute('data-autoplay') === 'true' || this.carousel.classList.contains('has-autoplay'),
             autoplayDelay: Math.max(3000, parseInt(this.carousel.getAttribute('data-autoplay-delay')) || 5000),
-            showArrows: this.carousel.getAttribute('data-show-arrows') !== 'false' && (this.carousel.classList.contains('has-arrows') || this.carousel.classList.contains('show-arrows')),
-            showDots: this.carousel.getAttribute('data-show-dots') !== 'false' && (this.carousel.classList.contains('has-dots') || this.carousel.classList.contains('show-dots')),
-            loop: this.carousel.getAttribute('data-loop') !== 'false',
+            showArrows: showArrows,
+            showDots: showDots,
+            loop: loop,
             dotsPerPage: this.carousel.getAttribute('data-dots-per-page') === 'true' || this.options.dotsPerPage || false,
+            align: this.pickEnum(settings.carouselAlign, ['start', 'center', 'end'] as const, 'start'),
+            axis: this.pickEnum(settings.carouselAxis, ['x', 'y'] as const, 'x'),
+            direction: this.pickEnum(settings.carouselDirection, ['ltr', 'rtl'] as const, 'ltr'),
+            containScroll: this.resolveContainScroll(settings.carouselContainScroll),
+            startIndex: this.pickNumber(settings.carouselStartIndex, 0, 0),
+            duration: this.pickNumber(settings.carouselDuration, 25, 0),
+            dragFree: settings.carouselDragFree === true,
+            dragThreshold: this.pickNumber(settings.carouselDragThreshold, 10, 0),
+            skipSnaps: settings.carouselSkipSnaps === true,
+            inViewThreshold: this.pickNumber(settings.carouselInViewThreshold, 0, 0, 1),
+            paginationAlignment: this.pickEnum(settings.paginationAlignment, ['left', 'center', 'right'] as const, 'center'),
             ...this.options
         };
 
+        // dotsPerPage relies on Embla's "auto" slide detection, so it wins over
+        // the explicit slidesToScroll value.
+        this.config.slidesToScroll = this.config.dotsPerPage
+            ? 'auto'
+            : this.pickNumber(
+                dataSlidesToScroll !== null ? dataSlidesToScroll : settings.slidesToScroll,
+                1,
+                1
+            );
+
         // If not specified, default these to true for certain block types or if they have specific classes
-        if (this.carousel.getAttribute('data-show-arrows') === null && !this.config.showArrows) {
+        if (dataShowArrows === null && settings.showArrows === undefined && !this.config.showArrows) {
             this.config.showArrows = this.carousel.classList.contains('wp-block-jankx-dynamic-data-layout');
         }
-        if (this.carousel.getAttribute('data-show-dots') === null && !this.config.showDots) {
+        if (dataShowDots === null && settings.showDots === undefined && !this.config.showDots) {
             this.config.showDots = this.carousel.classList.contains('wp-block-jankx-dynamic-data-layout');
         }
 
@@ -110,9 +196,17 @@ export default class JankxCarousel {
 
         this.embla = EmblaCarousel(this.container, {
             loop: this.config.loop,
-            duration: 25,
-            align: 'start',
-            slidesToScroll: this.config.dotsPerPage ? 'auto' : 1
+            duration: this.config.duration,
+            align: this.config.align,
+            axis: this.config.axis,
+            direction: this.config.direction,
+            containScroll: this.config.containScroll,
+            startIndex: this.config.startIndex,
+            dragFree: this.config.dragFree,
+            dragThreshold: this.config.dragThreshold,
+            skipSnaps: this.config.skipSnaps,
+            inViewThreshold: this.config.inViewThreshold,
+            slidesToScroll: this.config.slidesToScroll
         }, plugins);
     }
 
@@ -157,6 +251,9 @@ export default class JankxCarousel {
             dotsContainer.className = 'carousel-dots';
             this.carousel.appendChild(dotsContainer);
         }
+
+        dotsContainer.dataset.alignment = this.config.paginationAlignment;
+        dotsContainer.style.justifyContent = this.config.paginationAlignment;
 
         const updateDots = () => {
             const scrollSnaps = this.embla.scrollSnapList();

@@ -415,32 +415,10 @@ class DynamicTermLayoutBlock extends DynamicDataLayoutBlock
             return;
         }
 
-        $theme_dir = get_template_directory();
         $theme_uri = get_template_directory_uri();
         $dist_base = dirname($this->blockPath, 2) . '/dist';
 
-        $view_js_path = $dist_base . '/blocks/dynamic-term-layout/view.js';
-        $view_asset_path = $dist_base . '/blocks/dynamic-term-layout/view.asset.php';
-
-        if (file_exists($view_js_path)) {
-            $asset = file_exists($view_asset_path) ? require $view_asset_path : [
-                'dependencies' => [],
-                'version' => filemtime($view_js_path)
-            ];
-
-            $block_name = str_replace('jankx/', '', $this->blockId);
-            $handle = 'jankx-' . str_replace('/', '-', $block_name) . '-view';
-
-            $script_url = $theme_uri . '/resources/dist/blocks/dynamic-term-layout/view.js';
-
-            wp_enqueue_script(
-                $handle,
-                $script_url,
-                $asset['dependencies'],
-                $asset['version'],
-                true
-            );
-        }
+        $this->enqueueViewScript();
 
         // Enqueue dynamic-term-template styles since it's rendered via this block
         $template_style_path = $dist_base . '/blocks/dynamic-term-template/style.css';
@@ -472,6 +450,8 @@ class DynamicTermLayoutBlock extends DynamicDataLayoutBlock
     {
         $dist_base = dirname($this->blockPath, 2) . '/dist';
         $asset_file = $dist_base . '/blocks/dynamic-term-layout/index.asset.php';
+
+        $this->enqueueViewScript();
 
         if (!file_exists($asset_file)) {
             return;

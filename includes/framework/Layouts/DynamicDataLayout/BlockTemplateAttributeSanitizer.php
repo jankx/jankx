@@ -81,6 +81,12 @@ class BlockTemplateAttributeSanitizer
         $sanitized['postStatus'] = is_array($attributes['postStatus'] ?? null) ? $attributes['postStatus'] : ['publish'];
         $sanitized['postTemplate'] = $attributes['postTemplate'] ?? null;
 
+        // Multi post type support. Without these two the first server render
+        // silently fell back to $attributes['postType'] and the selection only
+        // reappeared after an AJAX re-render.
+        $sanitized['useMultiPostType'] = $this->sanitizeBooleanValue($attributes, 'useMultiPostType', false);
+        $sanitized['postTypes'] = $this->sanitizePostTypes($attributes['postTypes'] ?? null, $postType);
+
         // Carousel specific options
         if ($sanitized['layout'] === 'carousel') {
             $sanitized['slidesPerView'] = $this->sanitizeNumericValue($attributes, 'slidesPerView', 1, 6, 1);
@@ -95,6 +101,13 @@ class BlockTemplateAttributeSanitizer
             $sanitized['carouselDirection'] = $this->sanitizeCarouselDirection($attributes['carouselDirection'] ?? 'ltr');
             $sanitized['carouselPeek'] = $this->sanitizeNumericValue($attributes, 'carouselPeek', 0, 50, 0);
             $sanitized['carouselDuration'] = $this->sanitizeNumericValue($attributes, 'carouselDuration', 10, 100, 25);
+            $sanitized['slidesToScroll'] = $this->sanitizeNumericValue($attributes, 'slidesToScroll', 1, 6, 1);
+            $sanitized['carouselStartIndex'] = $this->sanitizeNumericValue($attributes, 'carouselStartIndex', 0, 50, 0);
+            $sanitized['carouselDragFree'] = $this->sanitizeBooleanValue($attributes, 'carouselDragFree', false);
+            $sanitized['carouselDragThreshold'] = $this->sanitizeNumericValue($attributes, 'carouselDragThreshold', 1, 100, 10);
+            $sanitized['carouselSkipSnaps'] = $this->sanitizeBooleanValue($attributes, 'carouselSkipSnaps', false);
+            $sanitized['carouselContainScroll'] = $this->sanitizeCarouselContainScroll($attributes['carouselContainScroll'] ?? 'trimSnaps');
+            $sanitized['carouselInViewThreshold'] = $this->sanitizeRatioValue($attributes, 'carouselInViewThreshold', 0.0, 1.0, 0.0);
         }
 
         // Apply filter for custom sanitization
@@ -152,5 +165,49 @@ class BlockTemplateAttributeSanitizer
     {
         $allowedDirections = ['ltr', 'rtl'];
         return in_array($direction, $allowedDirections, true) ? $direction : 'ltr';
+    }
+
+    /**
+     * block.json stores carouselContainScroll as an enum of strings, so the
+     * disabled case arrives as the literal "false" rather than a boolean.
+     */
+    protected function sanitizeCarouselContainScroll($value): string
+    {
+        $allowed = ['false', 'trimSnaps', 'keepSnaps'];
+        $value = is_scalar($value) ? (string) $value : '';
+
+        return in_array($value, $allowed, true) ? $value : 'trimSnaps';
+    }
+
+    protected function sanitizeRatioValue(array $attributes, string $key, float $min, float $max, float $default): float
+    {
+        $value = $attributes[$key] ?? $default;
+        $value = is_numeric($value) ? (float) $value : $default;
+
+        return max($min, min($max, $value));
+    }
+
+    /**
+     * Keep only post types that actually exist, falling back to the single
+     * post type so a stale selection cannot produce an empty query.
+     */
+    protected function sanitizePostTypes($postTypes, string $fallback): array
+    {
+        if (!is_array($postTypes)) {
+            return post_type_exists($fallback) ? [$fallback] : ['post'];
+        }
+
+        $valid = array_values(array_filter(
+            array_map('strval', $postTypes),
+            static function (string $type): bool {
+                return $type !== '' && post_type_exists($type);
+            }
+        ));
+
+        if (empty($valid)) {
+            return post_type_exists($fallback) ? [$fallback] : ['post'];
+        }
+
+        return $valid;
     }
 }

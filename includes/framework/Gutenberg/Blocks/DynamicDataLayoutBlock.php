@@ -455,41 +455,55 @@ class DynamicDataLayoutBlock extends Block
      *
      * @return void
      */
+    /**
+     * Enqueue the block view script.
+     *
+     * It drives the Embla carousel (arrows, dots, drag, autoplay) and must run
+     * in the editor too, otherwise the block preview never shows the carousel
+     * chrome that visitors get on the frontend.
+     *
+     * @return void
+     */
+    protected function enqueueViewScript(): void
+    {
+        $block_dir = basename($this->blockPath);
+        $dist_root = dirname($this->blockPath, 2) . '/dist';
+        $view_js_path = $dist_root . '/blocks/' . $block_dir . '/view.js';
+        $view_asset_path = $dist_root . '/blocks/' . $block_dir . '/view.asset.php';
+
+        if (!file_exists($view_js_path)) {
+            return;
+        }
+
+        $asset = file_exists($view_asset_path) ? require $view_asset_path : [
+            'dependencies' => [],
+            'version' => filemtime($view_js_path)
+        ];
+
+        $block_name = str_replace('jankx/', '', $this->blockId);
+        $handle = 'jankx-' . str_replace('/', '-', $block_name) . '-view';
+
+        wp_enqueue_script(
+            $handle,
+            trailingslashit(get_template_directory_uri()) . 'resources/dist/blocks/' . $block_dir . '/view.js',
+            $asset['dependencies'],
+            $asset['version'],
+            true
+        );
+
+        wp_localize_script($handle, 'jankxDynamicDataLayoutView', [
+            'ajaxUrl' => admin_url('admin-ajax.php'),
+            'nonce' => wp_create_nonce('jankx_load_more')
+        ]);
+    }
+
     public function enqueueFrontendAssets()
     {
         if (is_admin()) {
             return;
         }
 
-        $dist_base = dirname($this->blockPath, 2) . '/dist/blocks/dynamic-data-layout';
-        $view_js_path = $dist_base . '/view.js';
-        $view_asset_path = $dist_base . '/view.asset.php';
-
-        if (file_exists($view_js_path)) {
-            $asset = file_exists($view_asset_path) ? require $view_asset_path : [
-                'dependencies' => [],
-                'version' => filemtime($view_js_path)
-            ];
-
-            $block_name = str_replace('jankx/', '', $this->blockId);
-            $handle = 'jankx-' . str_replace('/', '-', $block_name) . '-view';
-
-            $script_url = get_template_directory_uri() . '/resources/dist/blocks/dynamic-data-layout/view.js';
-
-            wp_enqueue_script(
-                $handle,
-                $script_url,
-                $asset['dependencies'],
-                $asset['version'],
-                true
-            );
-
-            // Localize script with necessary data
-            wp_localize_script($handle, 'jankxDynamicDataLayoutView', [
-                'ajaxUrl' => admin_url('admin-ajax.php'),
-                'nonce' => wp_create_nonce('jankx_load_more')
-            ]);
-        }
+        $this->enqueueViewScript();
 
         // Enqueue dynamic-data-template styles since it's rendered via this block
         $template_dist = dirname($this->blockPath, 2) . '/dist/blocks/dynamic-data-template';
@@ -521,6 +535,8 @@ class DynamicDataLayoutBlock extends Block
     public function enqueueEditorAssets()
     {
         $asset_file = dirname($this->blockPath, 2) . '/dist/blocks/dynamic-data-layout/index.asset.php';
+
+        $this->enqueueViewScript();
 
         if (!file_exists($asset_file)) {
             return;

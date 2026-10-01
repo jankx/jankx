@@ -93,15 +93,6 @@ export default function Edit({ attributes, setAttributes }: Props): JSX.Element 
                 </PanelBody>
             </InspectorControls>
 
-            {!position.inLoop && (
-                <Notice status="warning" isDismissible={false}>
-                    {__(
-                        'Đặt block này bên trong loop (Post Template, Dynamic Data Template, Dynamic Term Template...) để số thứ tự được tính tự động.',
-                        'jankx'
-                    )}
-                </Notice>
-            )}
-
             <div {...blockProps}>
                 {formatIndex(position.index, { start, padStart, prefix, suffix })}
             </div>

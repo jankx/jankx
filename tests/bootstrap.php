@@ -189,6 +189,22 @@ if (!function_exists('add_filter')) {
         return true;
     }
 }
+if (!function_exists('remove_filter')) {
+    function remove_filter($tag, $callback, $priority = 10) {
+        if (empty($GLOBALS['wp_hooks']['filters'][$tag][$priority])) {
+            return false;
+        }
+
+        foreach ($GLOBALS['wp_hooks']['filters'][$tag][$priority] as $index => $registered) {
+            if ($registered === $callback) {
+                unset($GLOBALS['wp_hooks']['filters'][$tag][$priority][$index]);
+                return true;
+            }
+        }
+
+        return false;
+    }
+}
 if (!function_exists('add_shortcode')) {
     function add_shortcode($tag, $callback) {
         $GLOBALS['wp_hooks']['shortcodes'][$tag] = $callback;

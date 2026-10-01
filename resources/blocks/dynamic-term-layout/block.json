@@ -284,6 +284,14 @@
     "itemClass": {
       "type": "string",
       "default": ""
+    },
+    "minHeight": {
+      "type": "object",
+      "default": {
+        "desktop": "",
+        "tablet": "",
+        "mobile": ""
+      }
     }
   },
   "allowedBlocks": [
@@ -305,14 +313,6 @@
         "name": "jankx/dynamic-term-template",
         "attributes": {}
       }
-    ],
-    "minHeight": {
-      "type": "object",
-      "default": {
-        "desktop": "",
-        "tablet": "",
-        "mobile": ""
-      }
-    }
+    ]
   }
 }

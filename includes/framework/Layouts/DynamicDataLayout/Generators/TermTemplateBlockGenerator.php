@@ -444,7 +444,7 @@ class TermTemplateBlockGenerator extends AbstractContentGenerator
             }
         }
 
-        remove_filter('jankx/term-featured-image/current-term', $filter, 10);
+        \remove_filter('jankx/term-featured-image/current-term', $filter, 10);
         self::$currentRenderingTerm = $prevTerm;
 
         return $output;
