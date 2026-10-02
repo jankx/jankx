@@ -144,6 +144,5 @@
     }
   },
   "editorScript": "file:../../dist/blocks/star-rating/index.js",
-  "style": "file:../../dist/blocks/star-rating/style.css",
-  "editorStyle": "file:../../dist/blocks/star-rating/editor.css"
+  "style": "file:../../dist/blocks/star-rating/style.css"
 }

@@ -181,7 +181,6 @@ module.exports = {
 
     'dist/blocks/star-rating/index': './blocks/star-rating/index.tsx',
     'dist/blocks/star-rating/style': './blocks/star-rating/style.scss',
-    'dist/blocks/star-rating/editor': './blocks/star-rating/editor.scss',
 
     'dist/blocks/post-type-badge/index': './blocks/post-type-badge/index.tsx',
     'dist/blocks/post-type-badge/style': './blocks/post-type-badge/style.scss',
