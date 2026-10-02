@@ -389,5 +389,12 @@ switch ($command) {
         out('commands: probe | calls | trace | http | report | graph');
         out('options : --scenario=boot|home  --top=N  --runs=N  --url=...  --depth=N  --width=N');
         out('          --file=<cachegrind path or name>   (re-render without profiling)');
+        out();
+        out(DIM . 'diagnostics (see docs/*/testing/benchmark-performance.html):' . OFF);
+        out(DIM . '  php benchmarks/lib/analyze_existing.php [file]      offline capture analysis' . OFF);
+        out(DIM . '  php benchmarks/lib/who_calls.php <file>            who calls a hotspot' . OFF);
+        out(DIM . '  php benchmarks/lib/find_duplicate_queries.php       exact vs shape SQL repeats' . OFF);
+        out(YEL . 'note: "duplicate groups" above collapses literals, so its redundant' . OFF);
+        out(YEL . 'count overshoots. Use find_duplicate_queries.php to get real waste.' . OFF);
         exit(1);
 }
