@@ -716,6 +716,9 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
     const editorClassName = [
         'dynamic-data-layout',
         `dynamic-data-layout--${layout}`,
+        layout === 'carousel' ? 'jankx-carousel' : undefined,
+        layout === 'carousel' && showArrows ? 'has-arrows' : undefined,
+        layout === 'carousel' && showDots ? 'has-dots' : undefined,
         `columns-${columns}`,
         `columns-tablet-${columnsTablet}`,
         `columns-mobile-${columnsMobile}`,

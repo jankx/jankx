@@ -390,6 +390,9 @@ export default function Edit({ attributes, setAttributes }: EditProps) {
         className: [
             'dynamic-term-layout',
             `dynamic-term-layout--${resolvedLayout}`,
+            resolvedLayout === 'carousel' ? 'jankx-carousel' : undefined,
+            resolvedLayout === 'carousel' && showArrows ? 'has-arrows' : undefined,
+            resolvedLayout === 'carousel' && showDots ? 'has-dots' : undefined,
             `columns-${columns}`,
             `columns-tablet-${columnsTablet}`,
             `columns-mobile-${columnsMobile}`,

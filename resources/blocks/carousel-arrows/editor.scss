@@ -2,9 +2,12 @@
  * Carousel Arrows Block – Editor Styles
  *
  * Strategy: the carousel-arrows block is an InnerBlock child of
- * dynamic-data-layout / dynamic-term-layout. We use CSS on the
- * block wrapper element to visually position the arrows overlaying
- * the parent carousel, mirroring the frontend appearance.
+ * dynamic-data-layout / dynamic-term-layout. The block wrapper is an in-flow
+ * preview strip with a real (non-zero) height so the block is selectable in
+ * the editor; buttons are absolutely centered inside it to suggest the
+ * frontend overlay. Absolute `height:100%` overlays collapse to 0 here because
+ * the nearest positioned ancestor is Gutenberg's zero-height
+ * `.block-editor-block-list__layout`.
  *
  * The block wrapper gets:
  *   class="wp-block-jankx-carousel-arrows carousel-arrows-editor-preview
@@ -30,20 +33,27 @@
     border: 1.5px solid rgba(0, 0, 0, 0.1);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.14);
     border-radius: 50%;
-    cursor: default; // editor – not interactive
+    cursor: pointer;
     transition: box-shadow 0.18s ease, background 0.18s ease;
     flex-shrink: 0;
-    pointer-events: none; // editor overlay only
+    pointer-events: auto;
 }
 
 // ── Position: INSIDE (arrows float on left/right over the carousel) ───────────
-.wp-block-jankx-carousel-arrows.carousel-arrows-position--inside {
-    position: absolute;
-    top: 0;
-    left: 0;
+// NOTE: a `position:absolute; height:100%` overlay resolves against Gutenberg's
+// `.block-editor-block-list__layout` (height: 0), collapsing the wrapper to
+// 0px. Use an in-flow strip with a real min-height instead; buttons stay
+// absolutely centered inside the wrapper so they still read as an overlay.
+.wp-block-jankx-carousel-arrows.carousel-arrows-position--inside,
+.wp-block-jankx-carousel-arrows.carousel-arrows-position--outside {
+    position: relative;
+    top: auto;
+    left: auto;
     width: 100%;
-    height: 100%;
-    pointer-events: none;
+    height: auto;
+    min-height: 64px;
+    box-sizing: border-box;
+    pointer-events: auto;
     z-index: 5;
 
     // The two buttons are positioned at vertical center on each side
@@ -62,30 +72,15 @@
     }
 }
 
-// ── Position: OUTSIDE (arrows extend outside the carousel edges) ──────────────
-.wp-block-jankx-carousel-arrows.carousel-arrows-position--outside {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    z-index: 5;
+.wp-block-jankx-carousel-arrows.carousel-arrows-position--outside .carousel-nav {
+    &.carousel-prev {
+        // Push outside the left edge – overflow is clipped by parent only
+        // if parent has overflow:hidden, so we use a negative offset
+        left: -22px;
+    }
 
-    .carousel-nav {
-        position: absolute;
-        top: 50%;
-        transform: translateY(-50%);
-
-        &.carousel-prev {
-            // Push outside the left edge – overflow is clipped by parent only
-            // if parent has overflow:hidden, so we use a negative offset
-            left: -22px;
-        }
-
-        &.carousel-next {
-            right: -22px;
-        }
+    &.carousel-next {
+        right: -22px;
     }
 }
 
