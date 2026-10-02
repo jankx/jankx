@@ -94,6 +94,44 @@ abstract class BaseFilterRenderer implements FilterRendererInterface
     }
 
     /**
+     * Start the smooth animated dropdown wrapper (display style "dropdown").
+     *
+     * Markup contract consumed by frontend.ts:
+     * - .filter-dropdown__toggle opens/closes the panel
+     * - .filter-dropdown__value shows the currently selected label
+     * - option inputs/labels live inside .filter-dropdown__panel so existing
+     *   collectors (.filter-taxonomy input:checked, .filter-post_types) keep working
+     *
+     * @param string $current_label Label shown on the toggle button
+     * @param string $default_label Fallback label (usually "All")
+     * @return void
+     */
+    protected function renderSmoothDropdownStart(string $current_label, string $default_label = 'All'): void
+    {
+        echo '<div class="filter-dropdown" data-state="closed" data-default-label="' . esc_attr($default_label) . '">';
+        echo '<button type="button" class="filter-dropdown__toggle" aria-expanded="false" aria-haspopup="listbox">';
+        echo '<span class="filter-dropdown__value">' . esc_html($current_label) . '</span>';
+        echo '<svg class="filter-dropdown__chevron" width="12" height="12" viewBox="0 0 12 12" aria-hidden="true" focusable="false">';
+        echo '<path d="M2.5 4.5L6 8l3.5-3.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>';
+        echo '</svg>';
+        echo '</button>';
+        echo '<div class="filter-dropdown__panel" role="listbox">';
+        echo '<div class="filter-dropdown__scroll">';
+    }
+
+    /**
+     * Close the smooth animated dropdown wrapper.
+     *
+     * @return void
+     */
+    protected function renderSmoothDropdownEnd(): void
+    {
+        echo '</div>'; // filter-dropdown__scroll
+        echo '</div>'; // filter-dropdown__panel
+        echo '</div>'; // filter-dropdown
+    }
+
+    /**
      * Sanitize and render SVG/HTML icon
      * 
      * Allows SVG tags and common SVG attributes while preventing XSS

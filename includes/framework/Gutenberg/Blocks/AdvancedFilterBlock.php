@@ -83,6 +83,9 @@ class AdvancedFilterBlock extends Block
             'showOnlyTopLevel' => $ctx['jankx/advanced-filters/showOnlyTopLevel'] ?? false,
             'showHierarchy' => $ctx['jankx/advanced-filters/showHierarchy'] ?? false,
             'displayAsDropdown' => $ctx['jankx/advanced-filters/displayAsDropdown'] ?? false,
+            'multiPostTypes' => $filter['multiPostTypes']
+                ?? $ctx['jankx/advanced-filters/multiPostTypes']
+                ?? ['enabled' => false, 'postTypes' => []],
             'multipleSelection' => $ctx['jankx/advanced-filters/multipleSelection'] ?? true,
             'layout' => $ctx['jankx/advanced-filters/layout'] ?? 'horizontal',
             'listingType' => $filter['listingType'] ?? 'ul',

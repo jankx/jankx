@@ -236,6 +236,14 @@ class AdvancedFiltersBlock extends Block
                 if ($block instanceof \WP_Block) {
                     $children = $block->parsed_block['innerBlocks'] ?? [];
                     foreach ($children as $child) {
+                        // Inject the multi post type allowlist into each child so
+                        // renderers (post_types / keyword) know which post types
+                        // the target layouts accept. WP context is not shared with
+                        // render_block(), so attributes are the only channel.
+                        if (is_array($child['attrs'] ?? null)) {
+                            $child['attrs']['multiPostTypes'] = $attributes['multiPostTypes']
+                                ?? ['enabled' => false, 'postTypes' => []];
+                        }
                         echo render_block($child);
                     }
                 }

@@ -17,11 +17,12 @@ import { useSelect, dispatch, select } from '@wordpress/data';
 import metadata from './block.json';
 
 type FilterAttributes = {
-    filterType: 'taxonomy' | 'meta' | 'price' | 'date' | 'author' | 'keyword';
+    filterType: 'taxonomy' | 'meta' | 'price' | 'date' | 'author' | 'keyword' | 'post_types';
     label?: string;
     enabled?: boolean;
     taxonomy?: string;
     displayStyle?: 'buttons' | 'checkboxes' | 'dropdown' | 'select' | 'tabs' | undefined;
+    multiPostTypes?: { enabled?: boolean; postTypes?: string[] };
     listingType?: 'ul' | 'ol' | 'none' | undefined;
     showCount?: boolean;
     showEmptyTerms?: boolean;
@@ -105,6 +106,7 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
     const [taxonomies, setTaxonomies] = useState<any[]>([]);
     const [terms, setTerms] = useState<any[]>([]);
     const [authors, setAuthors] = useState<any[]>([]);
+    const [publicPostTypes, setPublicPostTypes] = useState<{ slug: string; name: string }[]>([]);
     const [loadingTaxonomies, setLoadingTaxonomies] = useState(false);
     const [loadingTerms, setLoadingTerms] = useState(false);
     const [loadingAuthors, setLoadingAuthors] = useState(false);
@@ -196,7 +198,7 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
 
     const resolvedTargetPostType = parentDefaults.targetPostType || 'post';
     const resolvedDisplayStyle = displayStyle || parentDefaults.displayStyle || 'buttons';
-    const normalizedDisplayStyle = ['buttons', 'checkboxes'].includes(resolvedDisplayStyle || '') ? resolvedDisplayStyle : 'buttons';
+    const normalizedDisplayStyle = ['buttons', 'checkboxes', 'dropdown', 'tabs'].includes(resolvedDisplayStyle || '') ? resolvedDisplayStyle : 'buttons';
     const resolvedLayout = layout || parentDefaults.layout || 'row';
     const resolvedShowLabels = showLabels ?? parentDefaults.showLabels ?? true;
     const resolvedShowCount = showCount ?? parentDefaults.showCount ?? false;
@@ -264,6 +266,28 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
         })();
     }, [taxonomy, taxonomies]);
 
+    // Fetch public post types khi filterType là post_types (preview trong editor)
+    useEffect(() => {
+        if (filterType !== 'post_types') {
+            return;
+        }
+        const fromWindow = (window as any).jankxPublicPostTypes;
+        if (Array.isArray(fromWindow) && fromWindow.length > 0) {
+            setPublicPostTypes(fromWindow);
+            return;
+        }
+        (async () => {
+            try {
+                const types = await (window as any).wp.apiFetch({ path: '/wp/v2/types?per_page=100' });
+                setPublicPostTypes(
+                    Object.values(types || {}).map((t: any) => ({ slug: t.slug, name: t.name }))
+                );
+            } catch (e) {
+                setPublicPostTypes([]);
+            }
+        })();
+    }, [filterType]);
+
     // Fetch authors khi filterType là author
     useEffect(() => {
         if (filterType !== 'author') {
@@ -308,6 +332,7 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                             { label: __('Date', 'jankx'), value: 'date' },
                             { label: __('Author', 'jankx'), value: 'author' },
                             { label: __('Keyword', 'jankx'), value: 'keyword' },
+                            { label: __('Post Types', 'jankx'), value: 'post_types' },
                         ]}
                         onChange={(value) => setAttributes({ filterType: value as FilterAttributes['filterType'] })}
                     />
@@ -371,6 +396,7 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                                 options={[
                                     { label: __('Buttons', 'jankx'), value: 'buttons' },
                                     { label: __('Checkboxes', 'jankx'), value: 'checkboxes' },
+                                    { label: __('Dropdown', 'jankx'), value: 'dropdown' },
                                     { label: __('Tabs', 'jankx'), value: 'tabs' },
                                 ]}
                                 onChange={(value) => setAttributes({ displayStyle: value as FilterAttributes['displayStyle'] })}
@@ -588,6 +614,7 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                                 options={[
                                     { label: __('Buttons', 'jankx'), value: 'buttons' },
                                     { label: __('Checkboxes', 'jankx'), value: 'checkboxes' },
+                                    { label: __('Dropdown', 'jankx'), value: 'dropdown' },
                                     { label: __('Tabs', 'jankx'), value: 'tabs' },
                                 ]}
                                 onChange={(value) => setAttributes({ displayStyle: value as FilterAttributes['displayStyle'] })}
@@ -681,6 +708,49 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                                     help={__('Từ khóa để filter khi tab được click', 'jankx')}
                                 />
                             )}
+                        </>
+                    )}
+
+                    {filterType === 'post_types' && (
+                        <>
+                            <SelectControl
+                                label={__('Display Style', 'jankx')}
+                                value={normalizedDisplayStyle}
+                                options={[
+                                    { label: __('Buttons', 'jankx'), value: 'buttons' },
+                                    { label: __('Checkboxes', 'jankx'), value: 'checkboxes' },
+                                    { label: __('Dropdown', 'jankx'), value: 'dropdown' },
+                                    { label: __('Tabs', 'jankx'), value: 'tabs' },
+                                ]}
+                                onChange={(value) => setAttributes({ displayStyle: value as FilterAttributes['displayStyle'] })}
+                            />
+                            <p style={{ marginBottom: '8px', fontSize: '12px', color: '#555' }}>
+                                {__('Chọn post type để đổi query của layout target khi người dùng bấm. "Tất cả" = post type mặc định của layout.', 'jankx')}
+                            </p>
+
+                            {isSmartTabChild && (
+                                <SelectControl
+                                    label={__('Post Type Value', 'jankx')}
+                                    value={filterValue || ''}
+                                    options={[
+                                        { label: __('-- Select Post Type --', 'jankx'), value: '' },
+                                        ...publicPostTypes.map((pt) => ({ label: pt.name, value: pt.slug })),
+                                    ]}
+                                    onChange={(value) => setAttributes({ filterValue: value })}
+                                    help={__('Post type để filter khi tab được click', 'jankx')}
+                                />
+                            )}
+                            <div style={{ marginTop: '4px' }}>
+                                <strong style={{ display: 'block', marginBottom: '6px' }}>
+                                    {__('Preview post types', 'jankx')}
+                                </strong>
+                                <ul style={{ maxHeight: '120px', overflow: 'auto', paddingLeft: '16px' }}>
+                                    <li>{__('All (default)', 'jankx')}</li>
+                                    {publicPostTypes.map((pt) => (
+                                        <li key={pt.slug}>{`${pt.name} (${pt.slug})`}</li>
+                                    ))}
+                                </ul>
+                            </div>
                         </>
                     )}
                 </PanelBody>

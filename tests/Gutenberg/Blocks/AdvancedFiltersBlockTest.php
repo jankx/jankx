@@ -205,7 +205,7 @@ class AdvancedFiltersBlockTest extends BlockTestCase
      */
     public function test_all_filter_types(): void
     {
-        $filterTypes = ['taxonomy', 'meta', 'price', 'date', 'author', 'keyword', 'mixed'];
+        $filterTypes = ['taxonomy', 'meta', 'price', 'date', 'author', 'keyword', 'post_types', 'mixed'];
         
         foreach ($filterTypes as $filterType) {
             $attributes = $this->getDefaultAttributes();

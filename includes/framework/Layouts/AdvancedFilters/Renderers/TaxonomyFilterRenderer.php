@@ -94,7 +94,10 @@ class TaxonomyFilterRenderer extends BaseFilterRenderer
         }
 
         // Render options
-        if ($display_as_dropdown) {
+        if ($display_style === 'dropdown') {
+            // Smooth animated dropdown (keeps option inputs so frontend.ts collectors work)
+            $this->renderSmoothTaxonomyDropdown($terms, $show_count, $show_hierarchy, $show_only_top_level, $input_type, $name_attr, $label);
+        } elseif ($display_as_dropdown) {
             $this->renderDropdown($terms, $show_count, $show_hierarchy, $show_only_top_level);
         } else {
             $this->renderOptions($terms, $display_style, $listing_type, $show_count, $input_type, $name_attr, $show_hierarchy, $show_only_top_level);
@@ -105,6 +108,55 @@ class TaxonomyFilterRenderer extends BaseFilterRenderer
         }
 
         echo '</div>'; // End filter-group
+    }
+
+    /**
+     * Render smooth animated dropdown (display style "dropdown").
+     *
+     * Options keep their input elements inside .filter-dropdown__panel so the
+     * existing frontend collectors (input:checked / .filter-option.active)
+     * continue to work unchanged.
+     *
+     * @param array $terms
+     * @param bool $show_count
+     * @param bool $show_hierarchy
+     * @param bool $show_only_top_level
+     * @param string $input_type
+     * @param string $name_attr
+     * @param string $group_label
+     * @return void
+     */
+    protected function renderSmoothTaxonomyDropdown(array $terms, bool $show_count, bool $show_hierarchy, bool $show_only_top_level, string $input_type, string $name_attr, string $group_label): void
+    {
+        $all_label = __('All', 'jankx');
+        $this->renderSmoothDropdownStart($all_label, $all_label);
+
+        echo '<div class="filter-options display-dropdown">';
+
+        // "All" option: radio for single-select (native uncheck), plain label
+        // for multi-select (empty value is skipped by the collector anyway).
+        if ($input_type === 'radio') {
+            echo '<label class="filter-option filter-term-item active" data-value="">';
+            echo '<input type="radio" name="' . esc_attr($name_attr) . '" value="" />';
+            echo '<span>' . esc_html($all_label) . '</span>';
+            echo '</label>';
+        } else {
+            echo '<label class="filter-option filter-term-item" data-value="">';
+            echo '<span>' . esc_html($all_label) . '</span>';
+            echo '</label>';
+        }
+
+        if ($show_hierarchy && !$show_only_top_level) {
+            $this->renderHierarchyOptions($terms, 'checkboxes', 'none', $show_count, $input_type, $name_attr, 'div', 0);
+        } else {
+            foreach ($terms as $term) {
+                $this->renderTermOption($term, 'checkboxes', 'none', $show_count, $input_type, $name_attr, 'div', 0);
+            }
+        }
+
+        echo '</div>';
+
+        $this->renderSmoothDropdownEnd();
     }
 
     /**
