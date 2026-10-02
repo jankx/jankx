@@ -44,6 +44,43 @@ class DynamicTermLayoutBlock extends DynamicDataLayoutBlock
     }
 
     /**
+     * Per-request memo of the term template transients.
+     *
+     * A block rendered many times must not re-read (or worse, re-write) the same
+     * transient on every instance: the write costs two wp_options UPDATEs and
+     * invalidates the option cache for the rest of the request.
+     *
+     * @var array<string, array|false>
+     */
+    protected static array $templateTransientRead = [];
+
+    /** @var array<string, bool> */
+    protected static array $templateTransientWritten = [];
+
+    protected function getTemplateTransient(string $blockId): array|false
+    {
+        $key = 'jankx_dtl_template_' . $blockId;
+        if (array_key_exists($key, self::$templateTransientRead)) {
+            return self::$templateTransientRead[$key];
+        }
+        $cached = get_transient($key);
+        $value = is_array($cached) ? $cached : false;
+        self::$templateTransientRead[$key] = $value;
+        return $value;
+    }
+
+    protected function setTemplateTransient(string $blockId, array $template): void
+    {
+        $key = 'jankx_dtl_template_' . $blockId;
+        if (!empty(self::$templateTransientWritten[$key])) {
+            return;
+        }
+        self::$templateTransientWritten[$key] = true;
+        self::$templateTransientRead[$key] = $template;
+        set_transient($key, $template, DAY_IN_SECONDS);
+    }
+
+    /**
      * Register WordPress hooks for this block
      *
      * @return void
@@ -120,14 +157,14 @@ class DynamicTermLayoutBlock extends DynamicDataLayoutBlock
         }
 
         if (empty($attributes['termTemplate'])) {
-            $cachedTemplate = get_transient('jankx_dtl_template_' . $block_id);
+            $cachedTemplate = $this->getTemplateTransient($block_id);
             if (is_array($cachedTemplate)) {
                 $attributes['termTemplate'] = $cachedTemplate;
             } elseif ($post_id > 0) {
                 $realAttrs = apply_filters('jankx_dynamic_term_layout_get_block_attributes', null, $post_id, $block_id);
                 if (!empty($realAttrs['termTemplate'])) {
                     $attributes['termTemplate'] = $realAttrs['termTemplate'];
-                    set_transient('jankx_dtl_template_' . $block_id, $attributes['termTemplate'], DAY_IN_SECONDS);
+                    $this->setTemplateTransient($block_id, $attributes['termTemplate']);
                 }
             }
         }

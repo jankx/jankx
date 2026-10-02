@@ -76,7 +76,21 @@ class TermPostCountBlock extends Block
         return null;
     }
 
-    protected function countPosts(\WP_Term $term, array $postTypes): int
+    /**
+ * Counts published posts of the given types attached to a term.
+ *
+ * Only the number is needed, so this deliberately avoids the
+ * "posts_per_page => 1 then read found_posts" trick: that makes WP_Query emit
+ * SQL_CALC_FOUND_ROWS, which combined with the GROUP BY a tax_query forces
+ * means MySQL materialises every matching row just to count them - and then a
+ * second SELECT FOUND_ROWS() round trip on top. On a term grid that ran once
+ * per term and was the single most expensive query on the page.
+ *
+ * @var array<string, int>
+ */
+private static array $countCache = [];
+
+protected function countPosts(\WP_Term $term, array $postTypes): int
     {
         if (empty($postTypes)) {
             return (int) $term->count;
@@ -84,12 +98,28 @@ class TermPostCountBlock extends Block
 
         $total = 0;
         foreach (array_unique($postTypes) as $postType) {
+            $cacheKey = $term->taxonomy . ':' . $term->term_id . ':' . $postType;
+
+            // A term grid plus a carousel often asks for the same term twice.
+            if (array_key_exists($cacheKey, self::$countCache)) {
+                $total += self::$countCache[$cacheKey];
+                continue;
+            }
+
             $query = new \WP_Query([
                 'post_type' => $postType,
                 'post_status' => 'publish',
-                'posts_per_page' => 1,
+                // Fetch IDs for the whole match set and count them locally:
+                // one plain SELECT, no SQL_CALC_FOUND_ROWS, no FOUND_ROWS().
+                // IDs only, so nothing heavier than the post cache is loaded.
+                'posts_per_page' => -1,
                 'fields' => 'ids',
+                'no_found_rows' => true,
                 'ignore_sticky_posts' => true,
+                'orderby' => 'ID',
+                'order' => 'DESC',
+                'update_post_meta_cache' => false,
+                'update_post_term_cache' => false,
                 'tax_query' => [
                     [
                         'taxonomy' => $term->taxonomy,
@@ -99,7 +129,9 @@ class TermPostCountBlock extends Block
                 ],
             ]);
 
-            $total += (int) $query->found_posts;
+            $count = count((array) $query->posts);
+            self::$countCache[$cacheKey] = $count;
+            $total += $count;
         }
 
         return $total;
