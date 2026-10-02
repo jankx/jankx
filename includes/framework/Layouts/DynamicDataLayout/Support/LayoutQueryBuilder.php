@@ -50,6 +50,8 @@ class LayoutQueryBuilder
             'posts_per_page' => $this->attributes['postsPerPage'] ?? 10,
             'orderby' => $orderby,
             'post_status' => 'publish',
+            // Counting rows only matters for pagination; see applyPaginationArgs().
+            'no_found_rows' => true,
         ];
 
         if ($order !== null) {
@@ -114,6 +116,18 @@ class LayoutQueryBuilder
 
     protected function applyPaginationArgs(array $args): array
     {
+        // Found-rows counting is what makes WP add SQL_CALC_FOUND_ROWS plus a
+        // separate SELECT FOUND_ROWS() round trip. It is the single most
+        // expensive part of a tax_query (which forces a GROUP BY), and
+        // max_num_pages/found_posts are only ever read when pagination is on,
+        // so keep the count only for those blocks.
+        if (empty($this->attributes['enablePagination'])) {
+            $args['no_found_rows'] = true;
+            return $args;
+        }
+
+        $args['no_found_rows'] = false;
+
         if (isset($this->attributes['_internal_paged']) && $this->attributes['_internal_paged'] > 0) {
             $args['paged'] = (int) $this->attributes['_internal_paged'];
         }

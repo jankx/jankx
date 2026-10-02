@@ -1326,15 +1326,43 @@ class DynamicDataLayoutBlock extends Block
         }
     }
 
+    /**
+     * Per-request memo of the block template transient.
+     *
+     * A single page can render the same block many times. Reading the transient
+     * each time costs a wp_options SELECT, and re-writing it costs two UPDATEs
+     * plus the option-cache invalidation that comes with update_option(), which
+     * then makes every unrelated get_option() miss again. Both are resolved once
+     * per request instead.
+     *
+     * @var array<string, array|null>
+     */
+    protected static array $templateTransientRead = [];
+
+    /** @var array<string, bool> transient keys already written during this request */
+    protected static array $templateTransientWritten = [];
+
     protected function cacheTemplateByBlockId(string $blockId, array $template): void
     {
-        set_transient('jankx_ddl_template_' . $blockId, $template, DAY_IN_SECONDS);
+        $key = 'jankx_ddl_template_' . $blockId;
+        if (!empty(self::$templateTransientWritten[$key])) {
+            return;
+        }
+        self::$templateTransientWritten[$key] = true;
+        self::$templateTransientRead[$key] = $template;
+        set_transient($key, $template, DAY_IN_SECONDS);
     }
 
     protected function getCachedTemplateByBlockId(string $blockId): ?array
     {
-        $cached = get_transient('jankx_ddl_template_' . $blockId);
-        return is_array($cached) ? $cached : null;
+        $key = 'jankx_ddl_template_' . $blockId;
+        if (array_key_exists($key, self::$templateTransientRead)) {
+            return self::$templateTransientRead[$key];
+        }
+        $cached = get_transient($key);
+        $value = is_array($cached) ? $cached : null;
+        self::$templateTransientRead[$key] = $value;
+        return $value;
     }
 
     /**

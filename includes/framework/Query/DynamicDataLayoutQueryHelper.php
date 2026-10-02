@@ -64,6 +64,12 @@ class DynamicDataLayoutQueryHelper
             // This ensures a fresh query is executed instead of reusing global $wp_query posts
             unset($query_vars['posts']);
 
+            // Only blocks that render pagination consume found_posts/max_num_pages.
+            // Everywhere else the count is dead weight: it forces SQL_CALC_FOUND_ROWS
+            // (expensive with the GROUP BY a tax_query forces) plus an extra
+            // SELECT FOUND_ROWS() round trip on every query.
+            $query_vars['no_found_rows'] = empty($attributes['enablePagination']);
+
             // The "default" preset mirrors the current page query, so the sort-rules
             // child block has to be applied on top of the inherited query vars.
             $query_vars = \Jankx\Layouts\DynamicDataLayout\Support\SortRulesResolver::applyToArgs(
@@ -81,7 +87,9 @@ class DynamicDataLayoutQueryHelper
         }
 
         // Fallback - never return the global $wp_query directly
-        return current_theme_supports('jankx') ? new WP_Query(['posts_per_page' => $postsPerPage]) : ($wp_query instanceof WP_Query ? clone $wp_query : new WP_Query(['posts_per_page' => $postsPerPage]));
+        $noFoundRows = empty($attributes['enablePagination']);
+        $fallbackArgs = ['posts_per_page' => $postsPerPage, 'no_found_rows' => $noFoundRows];
+        return current_theme_supports('jankx') ? new WP_Query($fallbackArgs) : ($wp_query instanceof WP_Query ? clone $wp_query : new WP_Query($fallbackArgs));
     }
 
     /**
