@@ -160,7 +160,7 @@ describe('StarRating Edit', () => {
         expect(defaultProps.setAttributes).toHaveBeenCalledWith({ ratingSource: 'woocommerce' });
     });
 
-    it('should show placeholder info for non-manual sources', async () => {
+    it('should not render the preview note for non-manual sources', async () => {
         const props = {
             ...defaultProps,
             attributes: {
@@ -168,11 +168,11 @@ describe('StarRating Edit', () => {
                 ratingSource: 'woocommerce' as const,
             },
         };
-        
+
         render(<Edit {...props} />);
         await waitFor(() => expect(screen.queryByTestId('spinner')).not.toBeInTheDocument());
 
-        expect(screen.getByText('Previewing woocommerce rating')).toBeInTheDocument();
+        expect(screen.queryByText('Previewing woocommerce rating')).not.toBeInTheDocument();
     });
 
     it('should update manual rating', async () => {

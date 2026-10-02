@@ -508,11 +508,6 @@ const Edit = ({ attributes, setAttributes }: EditProps) => {
                         </>
                     )}
                 </div>
-                {ratingSource !== 'manual' && (
-                    <div className="jankx-block-placeholder-info">
-                        {__(`Previewing ${ratingSource} rating`, 'jankx')}
-                    </div>
-                )}
             </div>
         </>
     );

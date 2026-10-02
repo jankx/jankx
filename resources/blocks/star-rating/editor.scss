@@ -1,12 +1,5 @@
-.wp-block-jankx-star-rating {
-    .jankx-block-placeholder-info {
-        font-size: 10px;
-        color: #999;
-        margin-top: 5px;
-        font-style: italic;
-        text-align: center;
-        border: 1px dashed #ccc;
-        padding: 2px 5px;
-        display: inline-block;
-    }
-}
+// Editor-only styles for the star rating block.
+//
+// The "Previewing <source> rating" placeholder note was removed from
+// resources/blocks/star-rating/edit.tsx, so `.jankx-block-placeholder-info` is
+// no longer rendered anywhere and had no other consumers in the theme.
