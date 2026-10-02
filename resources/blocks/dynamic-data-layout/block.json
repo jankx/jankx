@@ -64,7 +64,8 @@
     "core/heading",
     "jankx/dynamic-data-template",
     "jankx/layout-switcher",
-    "jankx/carousel-arrows"
+    "jankx/carousel-arrows",
+    "jankx/dynamic-data-sort-rules"
   ],
   "supports": {
     "html": false,

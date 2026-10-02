@@ -26,7 +26,17 @@ class LayoutQueryBuilder
         $args = $this->applyLanguageArgs($args);
         $args = $this->applyFilters($args);
 
-        return new WP_Query($args);
+        // Applied last so the sort-rules child block wins over the single
+        // orderBy/order pair and over any orderby added by the filters above.
+        $args = SortRulesResolver::applyToArgs($args, $this->attributes['sortRules'] ?? null);
+
+        try {
+            return new WP_Query($args);
+        } finally {
+            // WP_Query already ran its SQL, so the secondary-meta JOIN filter
+            // must not stay attached and leak into the main query.
+            SortRulesResolver::unregisterClauseFilter();
+        }
     }
 
     protected function buildBaseArgs(): array

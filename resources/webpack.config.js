@@ -91,6 +91,10 @@ module.exports = {
     'dist/blocks/carousel-arrows/style': './blocks/carousel-arrows/style.scss',
     'dist/blocks/carousel-arrows/editor': './blocks/carousel-arrows/editor.scss',
 
+    'dist/blocks/dynamic-data-sort-rules/index': './blocks/dynamic-data-sort-rules/index.tsx',
+    'dist/blocks/dynamic-data-sort-rules/style': './blocks/dynamic-data-sort-rules/style.scss',
+    'dist/blocks/dynamic-data-sort-rules/editor': './blocks/dynamic-data-sort-rules/editor.scss',
+
     'dist/blocks/carousel-slide/index': './blocks/carousel-slide/index.tsx',
     'dist/blocks/carousel-slide/style': './blocks/carousel-slide/style.scss',
     'dist/blocks/carousel-slide/editor': './blocks/carousel-slide/editor.scss',

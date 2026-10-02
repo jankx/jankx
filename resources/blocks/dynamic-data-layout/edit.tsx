@@ -143,6 +143,34 @@ interface WordPressSelect {
     };
 }
 
+// Inner blocks accepted by the layout wrapper: the item template plus the
+// settings-only child blocks (carousel arrows, query sort rules).
+const PARENT_ALLOWED_BLOCKS = [
+    'jankx/dynamic-data-template',
+    'core/heading',
+    'jankx/carousel-arrows',
+    'jankx/dynamic-data-sort-rules',
+];
+
+// Block names the server accepts as the item template. Mirrors the list in
+// DynamicDataLayoutBlock::extractTemplateBlockFromParsedBlock().
+const TEMPLATE_BLOCK_NAMES = [
+    'jankx/dynamic-data-template',
+    'jankx/dynamic-data-ssr',
+    'jankx/dynamic-ssr-template',
+];
+
+// Settings-only children (carousel arrows, sort rules) are allowed inner blocks
+// but they are not an item template, so they must not hide the "add a template"
+// placeholder. Only real template blocks satisfy that check.
+const containsTemplateBlock = (candidateBlocks: Array<{ name?: string; innerBlocks?: unknown[] }>): boolean =>
+    candidateBlocks.some((block) => {
+        if (block?.name && TEMPLATE_BLOCK_NAMES.indexOf(block.name) !== -1) {
+            return true;
+        }
+        return Array.isArray(block?.innerBlocks) && containsTemplateBlock(block.innerBlocks);
+    });
+
 // ---- Helpers to guard runtime data coming from PHP/localize ----
 const normalizeQueryPresets = (rawPresets: unknown): QueryPresetOption[] => {
     if (!Array.isArray(rawPresets)) {
@@ -1034,7 +1062,7 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
         (select) => select(blockEditorStore).getBlocks(clientId),
         [clientId]
     );
-    const hasTemplateBlock = blocks && blocks.length > 0;
+    const hasTemplateBlock = blocks && containsTemplateBlock(blocks);
 
     return (
         <>
@@ -1974,14 +2002,14 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                             {__('Add Dynamic Data Template to define item layout', 'jankx')}
                         </div>
                         <InnerBlocks
-                            allowedBlocks={['jankx/dynamic-data-template', 'core/heading', 'jankx/carousel-arrows']}
+                            allowedBlocks={PARENT_ALLOWED_BLOCKS}
                             templateLock={false}
                             renderAppender={InnerBlocks.ButtonBlockAppender}
                         />
                     </div>
                 ) : (
                     <InnerBlocks
-                        allowedBlocks={['jankx/dynamic-data-template', 'core/heading', 'jankx/carousel-arrows']}
+                        allowedBlocks={PARENT_ALLOWED_BLOCKS}
                         templateLock={false}
                         renderAppender={InnerBlocks.DefaultBlockAppender}
                     />

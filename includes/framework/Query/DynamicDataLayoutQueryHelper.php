@@ -64,7 +64,20 @@ class DynamicDataLayoutQueryHelper
             // This ensures a fresh query is executed instead of reusing global $wp_query posts
             unset($query_vars['posts']);
 
-            return new WP_Query($query_vars);
+            // The "default" preset mirrors the current page query, so the sort-rules
+            // child block has to be applied on top of the inherited query vars.
+            $query_vars = \Jankx\Layouts\DynamicDataLayout\Support\SortRulesResolver::applyToArgs(
+                $query_vars,
+                $attributes['sortRules'] ?? null
+            );
+
+            try {
+                return new WP_Query($query_vars);
+            } finally {
+                // WP_Query already ran its SQL, so the secondary-meta JOIN filter
+                // must not stay attached and leak into the main query.
+                \Jankx\Layouts\DynamicDataLayout\Support\SortRulesResolver::unregisterClauseFilter();
+            }
         }
 
         // Fallback - never return the global $wp_query directly

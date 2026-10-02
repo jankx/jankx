@@ -6,7 +6,7 @@
   "title": "Sort Rules",
   "category": "jankx",
   "icon": "sort",
-  "description": "Sort dynamic data by multiple criteria (post fields, meta values, sticky posts, random).",
+  "description": "Sort dynamic data by multiple criteria using the same order options as the Query Settings panel.",
   "keywords": [
     "sort",
     "order",

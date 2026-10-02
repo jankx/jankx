@@ -337,6 +337,20 @@ class DynamicDataLayoutBlock extends Block
                 $attributes['carouselArrows'] = $arrowsBlock['attrs'];
             }
 
+            // Extract the sort-rules child block and store its criteria inside the
+            // parent attributes so the query builder can apply them server-side
+            // (and stateless AJAX re-renders keep the configured order).
+            $sortRulesBlock = null;
+            if ($block instanceof \WP_Block) {
+                $sortRulesBlock = $this->extractChildBlockFromParsedBlock(
+                    $block->parsed_block ?? [],
+                    'jankx/dynamic-data-sort-rules'
+                );
+            }
+            if (is_array($sortRulesBlock) && is_array($sortRulesBlock['attrs'] ?? null)) {
+                $attributes['sortRules'] = $sortRulesBlock['attrs'];
+            }
+
             $rendered = $this->rendererService->render($attributes, $content, $block);
 
             // Build a quick query to check if we have results (for heading visibility)
@@ -876,6 +890,10 @@ class DynamicDataLayoutBlock extends Block
                     $template = $this->extractTemplateBlockFromParsedBlock($block);
                     if ($template !== null) {
                         $attrs['postTemplate'] = $template;
+                    }
+                    $sortRules = $this->extractChildBlockFromParsedBlock($block, 'jankx/dynamic-data-sort-rules');
+                    if (is_array($sortRules) && is_array($sortRules['attrs'] ?? null)) {
+                        $attrs['sortRules'] = $sortRules['attrs'];
                     }
                     return $attrs;
                 }

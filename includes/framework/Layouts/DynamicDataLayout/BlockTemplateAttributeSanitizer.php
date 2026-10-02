@@ -3,6 +3,7 @@
 namespace Jankx\Layouts\DynamicDataLayout;
 
 use Jankx\Layouts\DynamicDataLayout\BlockTemplateLayoutManager;
+use Jankx\Layouts\DynamicDataLayout\Support\SortRulesResolver;
 
 class BlockTemplateAttributeSanitizer
 {
@@ -80,6 +81,17 @@ class BlockTemplateAttributeSanitizer
         $sanitized['postNotIn'] = is_array($attributes['postNotIn'] ?? null) ? $attributes['postNotIn'] : [];
         $sanitized['postStatus'] = is_array($attributes['postStatus'] ?? null) ? $attributes['postStatus'] : ['publish'];
         $sanitized['postTemplate'] = $attributes['postTemplate'] ?? null;
+
+        // Sort rules from the jankx/dynamic-data-sort-rules child block. Stored as
+        // a normalized payload because the query builder needs a single ordered
+        // list, while the child block keeps "enabled" separate.
+        if (isset($attributes['sortRules']) && is_array($attributes['sortRules'])) {
+            [$sortRulesEnabled, $sortRules] = SortRulesResolver::normalize($attributes['sortRules']);
+            $sanitized['sortRules'] = [
+                'enabled' => $sortRulesEnabled,
+                'rules' => $sortRules,
+            ];
+        }
 
         // Multi post type support. Without these two the first server render
         // silently fell back to $attributes['postType'] and the selection only
