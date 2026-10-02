@@ -44,6 +44,7 @@ class FilterDataAttributeStrategyRegistry
         self::register(new DateFilterStrategy());
         self::register(SimpleValueFilterStrategy::forAuthor());
         self::register(SimpleValueFilterStrategy::forKeyword());
+        self::register(SimpleValueFilterStrategy::forPostTypes());
 
         // Allow external registration
         do_action('jankx/filters/register_data_attribute_strategies');

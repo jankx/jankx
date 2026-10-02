@@ -656,6 +656,15 @@ class DynamicTermLayoutBlock extends DynamicDataLayoutBlock
             $attrs['data-peek-amount'] = esc_attr($attributes['carouselPeek'] ?? 0);
 
             $attrs['class'] .= ' has-carousel';
+
+            // Visibility classes consumed by editor.scss / style.scss (`:not(.has-arrows)` / `:not(.has-dots)`)
+            $showArrowsClass = isset($arrows['showArrows']) ? (bool) $arrows['showArrows'] : (bool) ($attributes['showArrows'] ?? true);
+            if ($showArrowsClass) {
+                $attrs['class'] .= ' has-arrows';
+            }
+            if ((bool) ($attributes['showDots'] ?? true)) {
+                $attrs['class'] .= ' has-dots';
+            }
         }
 
         $queryId = isset($attributes['queryId']) ? (string) $attributes['queryId'] : '';

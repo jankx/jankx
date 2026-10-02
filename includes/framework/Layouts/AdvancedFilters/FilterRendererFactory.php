@@ -39,6 +39,8 @@ class FilterRendererFactory
         // self::register('author', AuthorFilterRenderer::class);
         // Register keyword renderer to render keyword input filters
         self::register('keyword', \Jankx\Layouts\AdvancedFilters\Renderers\KeywordFilterRenderer::class);
+        // Post type switcher (single-select radio/buttons/dropdown/tabs)
+        self::register('post_types', \Jankx\Layouts\AdvancedFilters\Renderers\PostTypeFilterRenderer::class);
     }
 
     /**

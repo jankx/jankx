@@ -1134,6 +1134,15 @@ class DynamicDataLayoutBlock extends Block
 
             // Add carousel container class
             $attrs['class'] .= ' has-carousel';
+
+            // Visibility classes consumed by style.scss (`&:not(.has-arrows)` / `&:not(.has-dots)`)
+            $showArrowsClass = isset($arrows['showArrows']) ? (bool) $arrows['showArrows'] : (bool) ($attributes['showArrows'] ?? true);
+            if ($showArrowsClass) {
+                $attrs['class'] .= ' has-arrows';
+            }
+            if ((bool) ($attributes['showDots'] ?? true)) {
+                $attrs['class'] .= ' has-dots';
+            }
         }
 
         // queryId is required; expose as data-block-id and data-query-id

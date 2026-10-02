@@ -159,6 +159,66 @@ export class AdvancedFilters {
             }
         });
 
+        // Post types filter (single-select: radios / buttons / tabs / dropdown)
+        this.container.querySelectorAll('.filter-post_types input, .filter-post_types .filter-option').forEach((element) => {
+            if (element instanceof HTMLInputElement) {
+                element.addEventListener('change', () => this.handleFilterChange());
+                return;
+            }
+            if (!(element instanceof HTMLElement)) return;
+            // Tabs have their own handler below
+            if (element.classList.contains('filter-tab')) return;
+
+            element.addEventListener('click', (e) => {
+                e.preventDefault();
+                const input = element.querySelector('input[type="radio"]') as HTMLInputElement | null;
+                const group = element.closest('.filter-post_types');
+
+                if (input) {
+                    // Single-select: uncheck sibling radios, then check this one
+                    group?.querySelectorAll('input[type="radio"]').forEach((sibling) => {
+                        if (sibling instanceof HTMLInputElement) {
+                            sibling.checked = false;
+                            sibling.closest('.filter-option')?.classList.remove('active');
+                        }
+                    });
+                    input.checked = true;
+                    element.classList.add('active');
+                    input.dispatchEvent(new Event('change', { bubbles: true }));
+                } else {
+                    // Button-style option (no input): deactivate siblings, toggle this one
+                    group?.querySelectorAll('.filter-option').forEach((sibling) => sibling.classList.remove('active'));
+                    element.classList.add('active');
+                }
+
+                this.handleFilterChange();
+            });
+        });
+
+        // Smooth dropdown display style: toggle open/close with animation
+        this.container.querySelectorAll<HTMLElement>('.filter-dropdown').forEach((dropdown) => {
+            const toggle = dropdown.querySelector<HTMLElement>('.filter-dropdown__toggle');
+            if (toggle) {
+                toggle.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const willOpen = !dropdown.classList.contains('is-open');
+                    this.closeAllDropdowns(dropdown);
+                    dropdown.classList.toggle('is-open', willOpen);
+                    dropdown.setAttribute('data-state', willOpen ? 'open' : 'closed');
+                    toggle.setAttribute('aria-expanded', String(willOpen));
+                });
+            }
+        });
+
+        // Close dropdowns on outside click (delegated at document level)
+        document.addEventListener('click', (e) => {
+            this.container?.querySelectorAll('.filter-dropdown.is-open').forEach((dropdown) => {
+                if (dropdown instanceof HTMLElement && !dropdown.contains(e.target as Node)) {
+                    this.closeDropdown(dropdown);
+                }
+            });
+        });
+
         // Tabs display style: click on tab activates it, single selection only
         this.container.querySelectorAll('.display-tabs .filter-tab').forEach((tab) => {
             tab.addEventListener('click', (e) => {
@@ -338,8 +398,55 @@ export class AdvancedFilters {
         }
     }
 
+    private closeDropdown(dropdown: HTMLElement): void {
+        dropdown.classList.remove('is-open');
+        dropdown.setAttribute('data-state', 'closed');
+        dropdown.querySelector('.filter-dropdown__toggle')?.setAttribute('aria-expanded', 'false');
+    }
+
+    private closeAllDropdowns(except?: HTMLElement): void {
+        this.container?.querySelectorAll('.filter-dropdown.is-open').forEach((dropdown) => {
+            if (dropdown instanceof HTMLElement && dropdown !== except) {
+                this.closeDropdown(dropdown);
+            }
+        });
+    }
+
+    private syncDropdownLabels(): void {
+        this.container?.querySelectorAll('.filter-dropdown').forEach((dropdown) => {
+            if (!(dropdown instanceof HTMLElement)) return;
+            const valueEl = dropdown.querySelector('.filter-dropdown__value');
+            if (!valueEl) return;
+
+            const defaultLabel = dropdown.getAttribute('data-default-label') || 'All';
+            let text = '';
+
+            const group = dropdown.closest('.filter-post_types, .filter-taxonomy');
+            if (group) {
+                const checked = group.querySelector('input:checked') as HTMLInputElement | null;
+                if (checked && checked.value !== '') {
+                    const label = checked.closest('label');
+                    text = (label?.querySelector('span')?.textContent || label?.textContent || checked.value).trim();
+                } else if (!checked) {
+                    // Button/tab style options carry their value in data-value
+                    const active = group.querySelector('.filter-tab.active, .filter-option.active') as HTMLElement | null;
+                    const activeValue = active?.getAttribute('data-value') ?? '';
+                    if (active && activeValue) {
+                        text = (active.textContent || activeValue).trim();
+                    }
+                }
+            }
+
+            valueEl.textContent = text || defaultLabel;
+        });
+    }
+
     private handleFilterChange(): void {
         if (!this.config) return;
+
+        // Close open dropdowns and refresh their toggle labels after a selection
+        this.closeAllDropdowns();
+        this.syncDropdownLabels();
 
         this.collectFilters();
 
@@ -420,10 +527,27 @@ export class AdvancedFilters {
             filters.keyword = keywordInput.value;
         }
 
-        // Collect selected post type (if radios exist)
-        const selectedPostType = (this.container.querySelector('.filter-keyword .post-type-radios input[type="radio"]:checked') as HTMLInputElement | null)?.value || '';
-        if (selectedPostType) {
-            filters.post_type = selectedPostType;
+        // Collect selected post type from the dedicated post_types filter group
+        const postTypesGroup = this.container.querySelector('.filter-post_types');
+        if (postTypesGroup) {
+            const checkedRadio = postTypesGroup.querySelector('input[type="radio"]:checked') as HTMLInputElement | null;
+            if (checkedRadio) {
+                // Radio mode (incl. "All" with value='') is the source of truth
+                filters.post_type = checkedRadio.value;
+            } else {
+                // Button / tab style options carry their value in data-value
+                const activeTab = postTypesGroup.querySelector('.filter-tab.active') as HTMLElement | null;
+                const activeOption = postTypesGroup.querySelector('.filter-option.active:not(.filter-tab)') as HTMLElement | null;
+                filters.post_type = activeTab?.getAttribute('data-value')
+                    || activeOption?.getAttribute('data-value')
+                    || '';
+            }
+        } else {
+            // Legacy: post type radios rendered inside the keyword filter
+            const selectedPostType = (this.container.querySelector('.filter-keyword .post-type-radios input[type="radio"]:checked') as HTMLInputElement | null)?.value || '';
+            if (selectedPostType) {
+                filters.post_type = selectedPostType;
+            }
         }
 
         // Collect WooCommerce ordering
@@ -1018,7 +1142,23 @@ export class AdvancedFilters {
                     keywordInput.value = value;
                 }
             } else if (key === 'post_type') {
-                // Post type radio
+                // Dedicated post types filter group (radios / buttons / tabs)
+                const postTypesGroup = this.container!.querySelector('.filter-post_types');
+                if (postTypesGroup) {
+                    postTypesGroup.querySelectorAll('input[type="radio"]').forEach((radio) => {
+                        if (radio instanceof HTMLInputElement) {
+                            radio.checked = (radio.value === value) || (value === '' && radio.value === '');
+                            radio.closest('.filter-option')?.classList.toggle('active', radio.checked);
+                        }
+                    });
+                    postTypesGroup.querySelectorAll('.filter-tab, .filter-option').forEach((option) => {
+                        if (option instanceof HTMLElement && !option.querySelector('input')) {
+                            option.classList.toggle('active', (option.getAttribute('data-value') || '') === value);
+                        }
+                    });
+                }
+
+                // Legacy: post type radios inside the keyword filter
                 const radios = this.container!.querySelectorAll('.filter-keyword .post-type-radios input[type="radio"]') as NodeListOf<HTMLInputElement>;
                 radios.forEach((radio) => {
                     radio.checked = (radio.value === value) || (value === '' && radio.value === '');
@@ -1027,6 +1167,7 @@ export class AdvancedFilters {
                         option.classList.toggle('active', radio.checked);
                     }
                 });
+                this.syncDropdownLabels();
             } else if (key.startsWith('meta_')) {
                 // Meta filter
                 const metaKey = key.replace('meta_', '');

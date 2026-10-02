@@ -1,1 +1,1 @@
-{"version":3,"file":"dist/blocks/dynamic-data-sort-rules/style.css","mappings":";;;AAAA;EACC;AACD,C","sources":["webpack://jankx/./blocks/dynamic-data-sort-rules/style.scss"],"sourcesContent":[".jankx-dynamic-data-sort-rules {\n\tpadding: 0;\n}"],"names":[],"sourceRoot":""}
+{"version":3,"file":"dist/blocks/dynamic-data-sort-rules/style.css","mappings":";;;AAAA;EACC;AACD,C","sources":["webpack://jankx/./blocks/dynamic-data-sort-rules/style.scss"],"sourcesContent":[".jankx-dynamic-data-sort-rules {\n\tpadding: 0;\n}"],"names":[],"ignoreList":[],"sourceRoot":""}

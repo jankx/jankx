@@ -130,4 +130,92 @@ describe('AdvancedFilters Frontend', () => {
         // Note: This depends on implementation
         expect(checkbox).toBeTruthy();
     });
+
+    it('should toggle the smooth dropdown open and closed', () => {
+        container.insertAdjacentHTML('beforeend', `
+            <div class="filter-post_types filter-group" data-filter-type="post_types">
+                <div class="filter-dropdown" data-state="closed" data-default-label="All">
+                    <button type="button" class="filter-dropdown__toggle" aria-expanded="false">
+                        <span class="filter-dropdown__value">All</span>
+                    </button>
+                    <div class="filter-dropdown__panel">
+                        <div class="filter-dropdown__scroll">
+                            <label class="filter-option active" data-value="">
+                                <input type="radio" name="post_type" value="" checked />
+                            </label>
+                            <label class="filter-option" data-value="page">
+                                <input type="radio" name="post_type" value="page" />
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `);
+        advancedFilters = new AdvancedFilters(container);
+
+        const dropdown = container.querySelector('.filter-dropdown') as HTMLElement;
+        const toggle = dropdown.querySelector('.filter-dropdown__toggle') as HTMLButtonElement;
+
+        toggle.click();
+        expect(dropdown.classList.contains('is-open')).toBe(true);
+        expect(dropdown.getAttribute('data-state')).toBe('open');
+        expect(toggle.getAttribute('aria-expanded')).toBe('true');
+
+        toggle.click();
+        expect(dropdown.classList.contains('is-open')).toBe(false);
+        expect(dropdown.getAttribute('data-state')).toBe('closed');
+    });
+
+    it('should collect post_type from the post_types group and close the dropdown', async () => {
+        container.insertAdjacentHTML('beforeend', `
+            <div class="filter-post_types filter-group" data-filter-type="post_types">
+                <div class="filter-dropdown is-open" data-state="open" data-default-label="All">
+                    <button type="button" class="filter-dropdown__toggle" aria-expanded="true">
+                        <span class="filter-dropdown__value">All</span>
+                    </button>
+                    <div class="filter-dropdown__panel">
+                        <div class="filter-dropdown__scroll">
+                            <label class="filter-option active" data-value="">
+                                <input type="radio" name="post_type" value="" checked />
+                            </label>
+                            <label class="filter-option" data-value="page">
+                                <input type="radio" name="post_type" value="page" />
+                                <span>Page</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `);
+        advancedFilters = new AdvancedFilters(container);
+
+        const pageRadio = container.querySelector('.filter-post_types input[value="page"]') as HTMLInputElement;
+        expect(pageRadio).toBeTruthy();
+
+        // Simulate clicking the option label (handled by the post_types listener)
+        const optionLabel = pageRadio.closest('.filter-option') as HTMLElement;
+        optionLabel.click();
+        await new Promise((resolve) => setTimeout(resolve, 0));
+
+        expect(pageRadio.checked).toBe(true);
+        const currentFilters = (advancedFilters as any).currentFilters;
+        expect(currentFilters.post_type).toBe('page');
+
+        // The label click handler and the radio change event each trigger an
+        // AJAX refresh; the fixture has no matching target block, so the
+        // documented fallback warnings are expected.
+        await new Promise((resolve) => setTimeout(resolve, 0));
+        expect(console).toHaveWarnedWith(
+            'AdvancedFilters: Could not find block attributes for block block-123, server will try to detect from block_id'
+        );
+        expect(console).toHaveWarnedWith(
+            'AdvancedFiltersBlock: Target block with ID "block-123" not found in DOM'
+        );
+
+        // Selecting an option closes the dropdown and refreshes the toggle label
+        const dropdown = container.querySelector('.filter-dropdown') as HTMLElement;
+        expect(dropdown.classList.contains('is-open')).toBe(false);
+        expect(dropdown.getAttribute('data-state')).toBe('closed');
+        expect((dropdown.querySelector('.filter-dropdown__value') as HTMLElement).textContent).toBe('Page');
+    });
 });

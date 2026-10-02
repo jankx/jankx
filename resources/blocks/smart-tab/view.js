@@ -1118,6 +1118,13 @@ function extractFilterDataFromBlock(filterBlock, filterType) {
                 data.filterValue = keyword;
             }
             break;
+
+        case 'post_types':
+            const postTypeValue = filterBlock.getAttribute('data-filter-value') || '';
+            if (postTypeValue) {
+                data.filterValue = postTypeValue;
+            }
+            break;
     }
     
     // Return data if we have at least the required fields for each type
@@ -1128,7 +1135,8 @@ function extractFilterDataFromBlock(filterBlock, filterType) {
         (filterType === 'price' && (data.filterValueMin || data.filterValueMax)) ||
         (filterType === 'date' && (data.filterValueStart || data.filterValueEnd)) ||
         (filterType === 'author' && data.filterValue) ||
-        (filterType === 'keyword' && data.filterValue);
+        (filterType === 'keyword' && data.filterValue) ||
+        (filterType === 'post_types' && data.filterValue);
     
     console.log('[SmartTab AdvancedFilter] Extracted data result', {
         filterType,
@@ -1208,6 +1216,12 @@ function triggerAdvancedFilterFromBlock(targetBlockId, filterType, filterData, u
         case 'keyword':
             if (filterData.filterValue) {
                 filtersPayload.keyword = filterData.filterValue;
+            }
+            break;
+
+        case 'post_types':
+            if (filterData.filterValue) {
+                filtersPayload.post_type = filterData.filterValue;
             }
             break;
     }

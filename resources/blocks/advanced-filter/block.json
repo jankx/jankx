@@ -27,7 +27,8 @@
         "price",
         "date",
         "author",
-        "keyword"
+        "keyword",
+        "post_types"
       ]
     },
     "label": {
@@ -41,6 +42,10 @@
     "taxonomy": {
       "type": "string",
       "default": ""
+    },
+    "multiPostTypes": {
+      "type": "object",
+      "default": {}
     },
     "displayStyle": {
       "type": "string",

@@ -49,4 +49,14 @@ class SimpleValueFilterStrategy extends AbstractFilterStrategy
     {
         return new self('keyword');
     }
+
+    /**
+     * Factory method to create post types filter strategy
+     *
+     * @return static
+     */
+    public static function forPostTypes(): self
+    {
+        return new self('post_types');
+    }
 }
