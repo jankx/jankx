@@ -800,8 +800,16 @@ class DynamicDataLayoutBlock extends Block
         // Render layout
         $html = $decorator->render();
 
+        // Re-render the sort dropdown so the AJAX response keeps the sorter UI
+        // (and its label) exactly like the initial render. The rules themselves
+        // were already applied to the query above.
+        $sortRulesHtml = $this->renderSortRulesFromAttributes($attributes);
+        if ($sortRulesHtml !== '') {
+            $html = $sortRulesHtml . $html;
+        }
+
         if ($query->post_count === 0 && ($attributes['showEmptyMessage'] ?? true)) {
-            $html = sprintf(
+            $html = $sortRulesHtml . sprintf(
                 '<div class="wp-block-jankx-dynamic-data-layout empty-state">%s</div>',
                 esc_html($attributes['emptyMessage'] ?? __('No posts found.', 'jankx'))
             );
@@ -817,6 +825,36 @@ class DynamicDataLayoutBlock extends Block
             'html' => $html,
             'attributes' => $attributes,
         ];
+    }
+
+    /**
+     * Render the dynamic-data-sort-rules dropdown from the sortRules attribute.
+     *
+     * The initial render() extracts the sort-rules child block from the parsed
+     * block content and renders it inline. Stateless AJAX re-renders only have
+     * the serialized attributes, so the dropdown has to be rebuilt from
+     * attributes['sortRules'] to keep the sorter (and its label) on the page
+     * after an advanced-filters update.
+     *
+     * @param array $attributes Block attributes (must contain sortRules).
+     * @return string Rendered dropdown HTML, empty when no rules are configured.
+     */
+    protected function renderSortRulesFromAttributes(array $attributes): string
+    {
+        $sortRules = $attributes['sortRules'] ?? null;
+        if (!is_array($sortRules) || empty($sortRules)) {
+            return '';
+        }
+
+        $rendered = render_block([
+            'blockName'    => 'jankx/dynamic-data-sort-rules',
+            'attrs'        => $sortRules,
+            'innerBlocks'  => [],
+            'innerHTML'    => '',
+            'innerContent' => [],
+        ]);
+
+        return is_string($rendered) ? $rendered : '';
     }
 
     protected function attachElementsStyles(string $html): string

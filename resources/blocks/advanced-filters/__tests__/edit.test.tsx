@@ -7,12 +7,16 @@ import '@testing-library/jest-dom';
 import { Edit } from '../index';
 
 // Mock WordPress dependencies
-jest.mock('@wordpress/server-side-render', () => ({
-    __esModule: true,
-    default: ({ block }: { block: string }) => (
-        <div data-testid="server-side-render">{block}</div>
-    ),
-}));
+jest.mock(
+    '@wordpress/server-side-render',
+    () => ({
+        __esModule: true,
+        default: ({ block }: { block: string }) => (
+            <div data-testid="server-side-render">{block}</div>
+        ),
+    }),
+    { virtual: true }
+);
 
 jest.mock('@wordpress/block-editor', () => ({
     useBlockProps: jest.fn((props) => props),

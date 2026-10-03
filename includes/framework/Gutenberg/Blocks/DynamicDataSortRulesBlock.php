@@ -40,9 +40,12 @@ class DynamicDataSortRulesBlock extends Block
         }
 
         ob_start();
+        $displayLabel = isset($attributes['displayLabel']) ? $attributes['displayLabel'] : 'Sắp xếp theo';
         ?>
         <div class="jankx-dynamic-data-sort-dropdown" style="display: flex; justify-content: flex-end; align-items: center; gap: 10px; margin-bottom: 20px;">
-            <label class="sort-label"><?php echo esc_html__('Sắp xếp theo', 'jankx'); ?></label>
+            <?php if (!empty($displayLabel)): ?>
+                <label class="sort-label"><?php echo esc_html($displayLabel); ?></label>
+            <?php endif; ?>
             <select class="sort-select jankx-data-sorter">
                 <?php foreach ($rules as $index => $rule): ?>
                     <?php 

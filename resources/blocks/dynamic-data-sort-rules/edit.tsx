@@ -55,6 +55,7 @@ interface SortRule {
 
 interface SortRulesAttributes {
 	enabled: boolean;
+	displayLabel: string;
 	rules: SortRule[];
 }
 
@@ -177,7 +178,7 @@ export default function Edit({
 	attributes: SortRulesAttributes;
 	setAttributes: (attrs: Partial<SortRulesAttributes>) => void;
 }): JSX.Element {
-	const { enabled = false, rules = [] } = attributes;
+	const { enabled = false, displayLabel = 'Sắp xếp theo', rules = [] } = attributes;
 
 	const blockProps = useBlockProps();
 
@@ -365,6 +366,12 @@ export default function Edit({
 					/>
 					{enabled ? (
 						<>
+							<TextControl
+								label={__('Display Label', 'jankx')}
+								value={displayLabel}
+								onChange={(value) => setAttributes({ displayLabel: value })}
+								help={__('Label shown next to the sort dropdown (e.g. Sắp xếp theo)', 'jankx')}
+							/>
 							{normalizedRules.map((rule, index) =>
 								renderRulePanel(rule, index)
 							)}
@@ -382,7 +389,7 @@ export default function Edit({
 			<div {...blockProps}>
 				{enabled ? (
 					<div className="jankx-dynamic-data-sort-dropdown-preview" style={{ padding: '10px 0', display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: '10px' }}>
-						<label style={{ fontSize: '14px', color: '#555' }}>{__('Sắp xếp theo', 'jankx')}</label>
+						{displayLabel && <label style={{ fontSize: '14px', color: '#555' }}>{displayLabel}</label>}
 						<select style={{ padding: '6px 30px 6px 12px', border: '1px solid #ddd', borderRadius: '4px', fontSize: '14px', appearance: 'none', background: '#fff url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'12\' height=\'12\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'%23333\' stroke-width=\'2\' stroke-linecap=\'round\' stroke-linejoin=\'round\'%3E%3Cpath d=\'M6 9l6 6 6-6\'/%3E%3C/svg%3E") no-repeat right 8px center' }}>
 							{normalizedRules.length > 0 ? (
 								normalizedRules.map((rule, index) => (

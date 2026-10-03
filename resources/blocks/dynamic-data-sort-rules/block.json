@@ -20,6 +20,10 @@
       "type": "boolean",
       "default": false
     },
+    "displayLabel": {
+      "type": "string",
+      "default": "Sắp xếp theo"
+    },
     "rules": {
       "type": "array",
       "default": [],

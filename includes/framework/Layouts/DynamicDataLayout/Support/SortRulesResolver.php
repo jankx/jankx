@@ -90,9 +90,13 @@ class SortRulesResolver
      * Sanitize the raw child-block attributes into a usable rule list.
      *
      * @param mixed $sortRules Raw "sortRules" attribute from the child block.
+     * @param bool $limitForQuery When true, stop at the first non-combinable
+     *                            rule because WP_Query can only apply it alone.
+     *                            Pass false for display payloads (the sorter
+     *                            dropdown must keep every configured rule).
      * @return array{0: bool, 1: array[]} [enabled, rules]
      */
-    public static function normalize($sortRules): array
+    public static function normalize($sortRules, bool $limitForQuery = true): array
     {
         if (!is_array($sortRules)) {
             return [false, []];
@@ -129,6 +133,13 @@ class SortRulesResolver
                     : 'DESC',
             ];
 
+            // Keep the human-readable option label. It never reaches the query,
+            // but the sorter dropdown re-renders from these normalized rules on
+            // AJAX, so dropping it would replace every option with "Option N".
+            if (isset($rule['label']) && is_string($rule['label']) && $rule['label'] !== '') {
+                $normalizedRule['label'] = sanitize_text_field($rule['label']);
+            }
+
             if (in_array($orderBy, ['meta_value', 'meta_value_num'], true)) {
                 $metaKey = isset($rule['metaKey']) && is_scalar($rule['metaKey'])
                     ? sanitize_key((string) $rule['metaKey'])
@@ -156,7 +167,7 @@ class SortRulesResolver
 
             // A non-combinable criterion has to stay the only orderby value, so
             // any rule below it could never be applied anyway.
-            if (!self::isCombinable($orderBy)) {
+            if ($limitForQuery && !self::isCombinable($orderBy)) {
                 break;
             }
         }

@@ -86,11 +86,23 @@ class BlockTemplateAttributeSanitizer
         // a normalized payload because the query builder needs a single ordered
         // list, while the child block keeps "enabled" separate.
         if (isset($attributes['sortRules']) && is_array($attributes['sortRules'])) {
-            [$sortRulesEnabled, $sortRules] = SortRulesResolver::normalize($attributes['sortRules']);
+            // Normalize for display, not for the query: the query builder runs
+            // its own normalize() (limiting to combinable rules) at build time,
+            // while the sorter dropdown re-rendered from these attributes has to
+            // keep every configured rule plus its label.
+            [$sortRulesEnabled, $sortRules] = SortRulesResolver::normalize($attributes['sortRules'], false);
             $sanitized['sortRules'] = [
                 'enabled' => $sortRulesEnabled,
                 'rules' => $sortRules,
             ];
+
+            // Keep the dropdown heading too. It is display-only (never part of
+            // the query), but dropping it made the AJAX re-render fall back to
+            // the default "Sắp xếp theo" label after a filter update.
+            $displayLabel = $attributes['sortRules']['displayLabel'] ?? '';
+            if (is_string($displayLabel) && $displayLabel !== '') {
+                $sanitized['sortRules']['displayLabel'] = sanitize_text_field($displayLabel);
+            }
         }
 
         // Multi post type support. Without these two the first server render
