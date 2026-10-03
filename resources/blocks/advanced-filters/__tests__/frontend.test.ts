@@ -46,7 +46,8 @@ describe('AdvancedFilters Frontend', () => {
     afterEach(() => {
         document.body.innerHTML = '';
         if (advancedFilters) {
-            // Clean up if needed
+            advancedFilters.destroy();
+            advancedFilters = undefined as unknown as AdvancedFilters;
         }
     });
 
@@ -217,5 +218,153 @@ describe('AdvancedFilters Frontend', () => {
         expect(dropdown.classList.contains('is-open')).toBe(false);
         expect(dropdown.getAttribute('data-state')).toBe('closed');
         expect((dropdown.querySelector('.filter-dropdown__value') as HTMLElement).textContent).toBe('Page');
+    });
+
+    describe('sort rule interplay with dynamic-data-sort-rules', () => {
+        const SORT_RULE = '{"orderBy":"title","order":"ASC"}';
+
+        const addTargetBlock = (): void => {
+            document.body.insertAdjacentHTML(
+                'beforeend',
+                `
+                <div class="wp-block-jankx-dynamic-data-layout" data-query-id="block-123" data-block-settings='{"queryId":"block-123","postType":"tour"}'>
+                    <div class="jankx-dynamic-data-sort-dropdown">
+                        <select class="sort-select jankx-data-sorter">
+                            <option value="0" data-rule='{"orderBy":"date","order":"DESC"}'>Newest</option>
+                            <option value="1" data-rule='{"orderBy":"title","order":"ASC"}'>A-Z</option>
+                        </select>
+                    </div>
+                </div>
+            `
+            );
+        };
+
+        const dispatchSort = (blockId: string, rule: string): CustomEvent<{ blockId: string; rule: string; handled: boolean }> => {
+            const event = new CustomEvent('jankx:sort-rule-change', {
+                cancelable: true,
+                detail: { blockId, rule, handled: false },
+            });
+            document.dispatchEvent(event);
+            return event;
+        };
+
+        const lastRequestBody = (): URLSearchParams => {
+            const calls = (global.fetch as jest.Mock).mock.calls;
+            const [, init] = calls[calls.length - 1];
+            return new URLSearchParams(String(init.body));
+        };
+
+        const flush = (): Promise<void> => new Promise((resolve) => setTimeout(resolve, 10));
+
+        it('reloads the target on sort change with filters + sort_rule', async () => {
+            addTargetBlock();
+            advancedFilters = new AdvancedFilters(container);
+
+            const checkbox = container.querySelector('.filter-taxonomy input[value="1"]') as HTMLInputElement;
+            checkbox.checked = true;
+
+            const event = dispatchSort('block-123', SORT_RULE);
+            await flush();
+
+            expect(event.detail.handled).toBe(true);
+            expect(global.fetch).toHaveBeenCalledTimes(1);
+
+            const body = lastRequestBody();
+            expect(body.get('block_id')).toBe('block-123');
+            expect(body.get('sort_rule')).toBe(SORT_RULE);
+            expect(JSON.parse(body.get('filters') || '{}')).toEqual({ category: ['1'] });
+            expect(console).toHaveWarnedWith(
+                'AdvancedFilters: Could not determine post_id, server will try to detect it'
+            );
+        });
+
+        it('keeps the selected sort rule when a filter changes afterwards', async () => {
+            addTargetBlock();
+            advancedFilters = new AdvancedFilters(container);
+
+            dispatchSort('block-123', SORT_RULE);
+            await flush();
+            expect(global.fetch).toHaveBeenCalledTimes(1);
+
+            const checkbox = container.querySelector('.filter-taxonomy input[value="2"]') as HTMLInputElement;
+            checkbox.checked = true;
+            checkbox.dispatchEvent(new Event('change', { bubbles: true }));
+            await flush();
+
+            expect(global.fetch).toHaveBeenCalledTimes(2);
+            const body = lastRequestBody();
+            expect(body.get('sort_rule')).toBe(SORT_RULE);
+            expect(JSON.parse(body.get('filters') || '{}')).toEqual({ category: ['2'] });
+            expect(console).toHaveWarnedWith(
+                'AdvancedFilters: Could not determine post_id, server will try to detect it'
+            );
+        });
+
+        it('restores the selected option after the target HTML is rebuilt', async () => {
+            addTargetBlock();
+            (global.fetch as jest.Mock).mockImplementation(() =>
+                Promise.resolve({
+                    ok: true,
+                    json: () =>
+                        Promise.resolve({
+                            success: true,
+                            data: {
+                                html: `
+                                    <div class="wp-block-jankx-dynamic-data-layout" data-query-id="block-123">
+                                        <div class="jankx-dynamic-data-sort-dropdown">
+                                            <select class="sort-select jankx-data-sorter">
+                                                <option value="0" data-rule='{"orderBy":"date","order":"DESC"}'>Newest</option>
+                                                <option value="1" data-rule='{"orderBy":"title","order":"ASC"}'>A-Z</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                `,
+                            },
+                        }),
+                })
+            );
+            advancedFilters = new AdvancedFilters(container);
+
+            dispatchSort('block-123', SORT_RULE);
+            await flush();
+
+            const select = document.querySelector(
+                '[data-query-id="block-123"] .jankx-data-sorter'
+            ) as HTMLSelectElement;
+            expect(select).toBeTruthy();
+            expect(select.value).toBe('1');
+            expect(select.selectedOptions[0].getAttribute('data-rule')).toBe(SORT_RULE);
+            expect(console).toHaveWarnedWith(
+                'AdvancedFilters: Could not determine post_id, server will try to detect it'
+            );
+        });
+
+        it('ignores sort changes for blocks it does not target', async () => {
+            addTargetBlock();
+            advancedFilters = new AdvancedFilters(container);
+
+            const event = dispatchSort('other-block', SORT_RULE);
+            await flush();
+
+            expect(event.detail.handled).toBe(false);
+            expect(global.fetch).not.toHaveBeenCalled();
+        });
+
+        it('leaves untargeted sort changes to the sort-rules fallback when AJAX is disabled', async () => {
+            container
+                .querySelector('.advanced-filters-config')!
+                .setAttribute(
+                    'data-config',
+                    '{"targetBlockIds":["block-123"],"ajaxEnabled":false,"updateUrl":false,"scrollToResults":false,"taxonomyFilters":[],"metaFilters":[],"priceFilters":[],"dateFilters":[],"authorFilters":[],"keywordFilter":{}}'
+                );
+            addTargetBlock();
+            advancedFilters = new AdvancedFilters(container);
+
+            const event = dispatchSort('block-123', SORT_RULE);
+            await flush();
+
+            expect(event.detail.handled).toBe(false);
+            expect(global.fetch).not.toHaveBeenCalled();
+        });
     });
 });

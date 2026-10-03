@@ -22,6 +22,10 @@ export class AdvancedFilters {
     private config: FilterConfig | null = null;
     private container: HTMLElement | null = null;
     private currentFilters: Record<string, any> = {};
+    // blockId → data-rule JSON of the option picked in that block's sorter
+    // dropdown. Kept in JS because every AJAX update rebuilds the <select> and
+    // would otherwise snap back to the first option.
+    private selectedSortRules: Record<string, string> = {};
 
     constructor(container: HTMLElement) {
         this.container = container;
@@ -90,8 +94,14 @@ export class AdvancedFilters {
                 
                 // Load filter values from URL on page load
                 this.loadFiltersFromUrl();
-                
+
                 this.setupEventListeners();
+
+                // dynamic-data-sort-rules announces value changes through a
+                // CustomEvent so BOTH directions stay in sync: a sort change
+                // reloads the target (with the current filter values) and every
+                // filter change keeps reloading it with the selected sort rule.
+                document.addEventListener('jankx:sort-rule-change', this.onSortRuleChange);
             }
         } catch (error) {
             console.error('Error parsing filter config:', error);
@@ -441,6 +451,57 @@ export class AdvancedFilters {
         });
     }
 
+    /**
+     * Detach listeners that live outside the container so a destroyed instance
+     * stops reacting to sort changes.
+     */
+    destroy(): void {
+        document.removeEventListener('jankx:sort-rule-change', this.onSortRuleChange);
+    }
+
+    /**
+     * A value changed in a dynamic-data-sort-rules dropdown targeting one of
+     * our blocks: remember the rule and reload the data (filter values are
+     * collected from the DOM, so they stay applied).
+     */
+    private onSortRuleChange = (event: Event): void => {
+        const detail = (event as CustomEvent<{ blockId?: string; rule?: string; handled?: boolean }>).
+            detail || {};
+        const blockId = detail.blockId || '';
+
+        if (!this.config || !blockId) return;
+        if (this.config.targetBlockIds.indexOf(blockId) === -1) return;
+        // Another instance already owns this reload.
+        if (detail.handled) return;
+        // A non-AJAX filter block cannot carry the sort rule through its form
+        // submit — leave the event unhandled so the sort-rules fallback
+        // performs the reload instead.
+        if (!this.config.ajaxEnabled) return;
+
+        detail.handled = true;
+        this.selectedSortRules[blockId] = detail.rule || '';
+        this.handleFilterChange();
+    };
+
+    /**
+     * Re-apply the stored sort selection to a rebuilt sorter dropdown.
+     * Called after every AJAX update replaces the target's inner HTML.
+     */
+    private restoreSortSelection(target: HTMLElement, blockId: string): void {
+        const rule = this.selectedSortRules[blockId];
+        if (!rule) return;
+
+        const select = target.querySelector('.jankx-data-sorter') as HTMLSelectElement | null;
+        if (!select) return;
+
+        const match = Array.from(select.options).find(
+            (option) => option.getAttribute('data-rule') === rule
+        );
+        if (match) {
+            select.value = match.value;
+        }
+    }
+
     private handleFilterChange(): void {
         if (!this.config) return;
 
@@ -693,6 +754,12 @@ export class AdvancedFilters {
                     filters: JSON.stringify(this.currentFilters),
                 });
 
+                // Keep the selected sort rule applied while filters change.
+                const sortRule = this.selectedSortRules[blockId];
+                if (sortRule) {
+                    params.set('sort_rule', sortRule);
+                }
+
                 // Always send post_id if we have it
                 if (postId > 0) {
                     params.append('post_id', String(postId));
@@ -852,11 +919,16 @@ export class AdvancedFilters {
                     // Update inner HTML only
                     target.innerHTML = source.innerHTML;
 
+                    // The sorter dropdown was rebuilt from scratch — put the
+                    // visitor's selection back on it.
+                    this.restoreSortSelection(target, blockId);
+
                     // Re-initialize any scripts that might be needed (e.g., carousel, load-more)
                     this.reinitializeBlockScripts(target);
                 } else {
                     // Fallback: just replace innerHTML
                     (targetElement as HTMLElement).innerHTML = html;
+                    this.restoreSortSelection(targetElement as HTMLElement, blockId);
                 }
             } else {
                 console.warn(`AdvancedFiltersBlock: Target block with ID "${blockId}" not found in DOM`);

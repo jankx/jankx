@@ -92,6 +92,7 @@ module.exports = {
     'dist/blocks/carousel-arrows/editor': './blocks/carousel-arrows/editor.scss',
 
     'dist/blocks/dynamic-data-sort-rules/index': './blocks/dynamic-data-sort-rules/index.tsx',
+    'dist/blocks/dynamic-data-sort-rules/frontend': './blocks/dynamic-data-sort-rules/frontend.ts',
     'dist/blocks/dynamic-data-sort-rules/style': './blocks/dynamic-data-sort-rules/style.scss',
     'dist/blocks/dynamic-data-sort-rules/editor': './blocks/dynamic-data-sort-rules/editor.scss',
 

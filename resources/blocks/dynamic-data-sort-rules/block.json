@@ -41,5 +41,6 @@
   ],
   "editorScript": "file:../../dist/blocks/dynamic-data-sort-rules/index.js",
   "editorStyle": "file:../../dist/blocks/dynamic-data-sort-rules/editor.css",
-  "style": "file:../../dist/blocks/dynamic-data-sort-rules/style.css"
+  "style": "file:../../dist/blocks/dynamic-data-sort-rules/style.css",
+  "viewScript": "file:../../dist/blocks/dynamic-data-sort-rules/frontend.js"
 }

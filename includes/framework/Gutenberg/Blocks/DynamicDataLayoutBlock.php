@@ -9,6 +9,7 @@ use Jankx\Layouts\DynamicDataLayout\BlockTemplateLayoutManager;
 use Jankx\Layouts\DynamicDataLayout\BlockTemplateRenderer;
 use Jankx\Layouts\DynamicDataLayout\BlockTemplateAttributeSanitizer;
 use Jankx\Layouts\DynamicDataLayout\BlockTemplateLayoutDecorator;
+use Jankx\Layouts\DynamicDataLayout\Support\SortRulesResolver;
 use Jankx\Query\DynamicDataLayoutQueryHelper;
 use Jankx\Foundation\Application;
 use Jankx\Services\DefaultThumbnailService;
@@ -65,7 +66,7 @@ class DynamicDataLayoutBlock extends Block
         add_filter('render_block_data', [$this, 'normalizeBlockAttributes'], 10, 1);
 
         // Register handlers via WordPress filters (for AJAX requests from advanced-filters)
-        add_filter('jankx_dynamic_data_layout_filter_update', [$this, 'handleFilterUpdate'], 10, 2);
+        add_filter('jankx_dynamic_data_layout_filter_update', [$this, 'handleFilterUpdate'], 10, 3);
         add_filter('jankx_dynamic_data_layout_get_block_attributes', [$this, 'handleGetBlockAttributes'], 10, 3);
 
         // AJAX endpoints for dynamic-data-layout
@@ -724,11 +725,15 @@ class DynamicDataLayoutBlock extends Block
     /**
      * Handle Filter Update request via filter
      *
-     * @param array $attributes Block attributes
+     * @param array $attributes Block attributes (data-block-settings payload)
      * @param array $filters Filter values
+     * @param array|null $sortRule The rule selected in the sorter dropdown, if
+     *                             any. Applied to the query only — the full
+     *                             configured rule list keeps rendering every
+     *                             option in the dropdown.
      * @return array Response data
      */
-    public function handleFilterUpdate(array $attributes, array $filters): array
+    public function handleFilterUpdate(array $attributes, array $filters, $sortRule = null): array
     {
         Log::debug('Incoming Filters: ' . json_encode($filters));
         Log::debug('Incoming Attributes: ' . json_encode($attributes));
@@ -773,7 +778,21 @@ class DynamicDataLayoutBlock extends Block
 
         // Build query
         $originalPreset = $attributes['queryPreset'] ?? 'custom';
-        $query = $this->buildQueryForPreset($decorator, $attributes, $originalPreset, $postType, $filteredPostType);
+
+        // The sorter dropdown narrows the configured rule list down to the rule
+        // the visitor picked. Validate it through the same whitelist the query
+        // uses and apply it for THIS request only — $attributes keeps the full
+        // list so the re-rendered dropdown still offers every option.
+        $queryAttributes = $attributes;
+        if (is_array($sortRule) && !empty($sortRule)) {
+            [, $selectedRules] = SortRulesResolver::normalize(['enabled' => true, 'rules' => [$sortRule]]);
+            if (!empty($selectedRules)) {
+                Log::debug('Applying selected sort rule: ' . json_encode($selectedRules[0]));
+                $queryAttributes['sortRules'] = ['enabled' => true, 'rules' => $selectedRules];
+            }
+        }
+
+        $query = $this->buildQueryForPreset($decorator, $queryAttributes, $originalPreset, $postType, $filteredPostType);
         $decorator->withQuery($query);
         $decorator->withAttributes($attributes);
 
@@ -1295,6 +1314,15 @@ class DynamicDataLayoutBlock extends Block
         $filters_json = isset($_POST['filters']) ? wp_unslash($_POST['filters']) : '[]';
         $post_id = isset($_POST['post_id']) ? intval($_POST['post_id']) : 0;
 
+        // Rule selected in the sorter dropdown (dynamic-data-sort-rules).
+        $sort_rule = null;
+        if (!empty($_POST['sort_rule'])) {
+            $decoded = json_decode(wp_unslash($_POST['sort_rule']), true);
+            if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+                $sort_rule = $decoded;
+            }
+        }
+
         if (empty($block_id)) {
             wp_send_json_error(['message' => __('Block ID is required', 'jankx')]);
         }
@@ -1361,7 +1389,7 @@ class DynamicDataLayoutBlock extends Block
         }
 
         try {
-            $result = apply_filters('jankx_dynamic_data_layout_filter_update', $attributes, $filters);
+            $result = apply_filters('jankx_dynamic_data_layout_filter_update', $attributes, $filters, $sort_rule);
             if (!is_array($result)) {
                 $result = ['html' => '', 'attributes' => $attributes];
             }
