@@ -341,6 +341,7 @@ class DynamicDataLayoutBlock extends Block
             // parent attributes so the query builder can apply them server-side
             // (and stateless AJAX re-renders keep the configured order).
             $sortRulesBlock = null;
+            $sortRulesHtml = '';
             if ($block instanceof \WP_Block) {
                 $sortRulesBlock = $this->extractChildBlockFromParsedBlock(
                     $block->parsed_block ?? [],
@@ -349,6 +350,7 @@ class DynamicDataLayoutBlock extends Block
             }
             if (is_array($sortRulesBlock) && is_array($sortRulesBlock['attrs'] ?? null)) {
                 $attributes['sortRules'] = $sortRulesBlock['attrs'];
+                $sortRulesHtml = render_block($sortRulesBlock);
             }
 
             $rendered = $this->rendererService->render($attributes, $content, $block);
@@ -360,7 +362,7 @@ class DynamicDataLayoutBlock extends Block
             // Expose data attributes so other blocks (e.g., advanced-filters) can find and update this block via AJAX
             $wrapperAttrs = $this->buildWrapperAttributes($this->resolveQueriedObjectTaxQuery($attributes));
 
-            return sprintf('<div %s>%s%s</div>', $wrapperAttrs, $headingHtml, $rendered);
+            return sprintf('<div %s>%s%s%s</div>', $wrapperAttrs, $headingHtml, $sortRulesHtml, $rendered);
         } catch (\Exception $e) {
             return sprintf(
                 '<div class="dynamic-data-layout-error">%s</div>',
