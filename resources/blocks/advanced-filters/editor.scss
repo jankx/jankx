@@ -10,18 +10,6 @@
 
 // Minimal editor-specific overrides
 .wp-block-jankx-advanced-filters {
-    // Placeholder only shows when no target block is selected
-    .components-placeholder {
-        min-height: 100px;
-        padding: 1.5rem;
-        text-align: center;
-
-        .components-placeholder__label {
-            font-size: 1rem;
-            margin-bottom: 0.5rem;
-        }
-    }
-
     // ServerSideRender container should not have extra spacing
     .wp-block-embed__wrapper {
         margin: 0;

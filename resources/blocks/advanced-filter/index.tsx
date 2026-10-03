@@ -12,8 +12,9 @@ import {
     Spinner,
     Placeholder,
 } from '@wordpress/components';
-import { useEffect, useMemo, useState } from '@wordpress/element';
+import { useEffect, useState } from '@wordpress/element';
 import { useSelect, dispatch, select } from '@wordpress/data';
+import ServerSideRender from '@wordpress/server-side-render';
 import metadata from './block.json';
 
 type FilterAttributes = {
@@ -216,11 +217,6 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
     const blockProps = useBlockProps({
         className: `jankx-advanced-filter jankx-advanced-filter--layout-${resolvedLayout} jankx-advanced-filter--width-${width || 'full'}`,
     });
-
-    const filterTitle = useMemo(() => {
-        const typeLabel = filterType ? filterType.charAt(0).toUpperCase() + filterType.slice(1) : 'Filter';
-        return label || `${__('Filter', 'jankx')} (${typeLabel})`;
-    }, [label, filterType]);
 
     // Fetch taxonomies theo post type từ parent
     useEffect(() => {
@@ -771,14 +767,8 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
             </InspectorControls>
 
             <div {...blockProps}>
-                {resolvedShowLabels && (
-                    <strong className="jankx-advanced-filter__label">{filterTitle}</strong>
-                )}
-                <div className="jankx-advanced-filter__preview">
-                    <span style={{ fontSize: '12px', color: '#777', fontStyle: 'italic' }}>
-                        [{filterType}{taxonomy ? `: ${taxonomy}` : ''}{label ? ` — ${label}` : ''}]
-                    </span>
-                </div>
+                {/* Preview the real server-rendered control so the editor matches the frontend */}
+                <ServerSideRender block="jankx/advanced-filter" attributes={attributes} />
             </div>
         </>
     );

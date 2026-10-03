@@ -104,7 +104,6 @@ class AdvancedFilterBlock extends Block
         $gap = $attributes['gap'] ?? '1rem';
         $flexWrap = $attributes['flexWrap'] ?? 'nowrap';
         $width = $attributes['width'] ?? 'full';
-        $label = $attributes['label'] ?? '';
 
         $widthClass = 'jankx-advanced-filter--width-' . esc_attr($width);
         $wrapperAttrs = get_block_wrapper_attributes([
@@ -141,9 +140,6 @@ class AdvancedFilterBlock extends Block
             }
         </style>
         <form <?php echo $wrapperAttrs; ?> action="<?php echo esc_url(home_url('/')); ?>" method="get">
-            <?php if ($label && ($attributes['showLabels'] ?? true)) : ?>
-                <strong class="jankx-advanced-filter__label"><?php echo esc_html($label); ?></strong>
-            <?php endif; ?>
             <div <?php echo $contentAttrs; ?>>
                 <?php
                 // If there are inner blocks, we use them. Otherwise, fallback to the default PHP renderer.

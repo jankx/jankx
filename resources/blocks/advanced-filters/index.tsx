@@ -397,16 +397,11 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                         renderAppender={() => <InnerBlocks.ButtonBlockAppender />}
                     />
                 </div>
-                {targetBlockIds.length === 0 ? (
-                    <Placeholder icon="filter" label={__('Advanced Filters', 'jankx')}>
-                        <p>{__('Please select at least one target block to filter in the sidebar.', 'jankx')}</p>
-                    </Placeholder>
-                ) : (
-                    <ServerSideRender
-                        block="jankx/advanced-filters"
-                        attributes={attributes}
-                    />
-                )}
+                {/* Preview always mirrors the frontend; the target-block hint lives in the sidebar */}
+                <ServerSideRender
+                    block="jankx/advanced-filters"
+                    attributes={attributes}
+                />
             </div>
         </>
     );

@@ -185,12 +185,14 @@ describe('AdvancedFilters Edit', () => {
         expect(screen.getByTestId('inner-blocks-appender')).toBeInTheDocument();
     });
 
-    it('should ask for a target block instead of rendering the preview', () => {
+    it('should render the frontend preview even before a target block is selected', () => {
         render(<Edit {...defaultProps} />);
 
-        // No target selected yet, so SSR preview is replaced by a placeholder.
-        expect(screen.getAllByTestId('placeholder').length).toBeGreaterThan(0);
-        expect(screen.queryByTestId('server-side-render')).not.toBeInTheDocument();
+        // The canvas always mirrors the frontend; no placeholder text there.
+        expect(screen.getByTestId('server-side-render')).toBeInTheDocument();
+        expect(
+            screen.queryByText(/Please select at least one target block to filter in the sidebar/i)
+        ).not.toBeInTheDocument();
     });
 
     it('should render the server side preview once a target block is selected', () => {
