@@ -10,7 +10,6 @@ import {
 	SelectControl,
 	TextControl,
 	Button,
-	Placeholder,
 } from '@wordpress/components';
 import metadata from './block.json';
 import './editor.scss';
@@ -47,6 +46,7 @@ declare global {
 }
 
 interface SortRule {
+	label: string;
 	orderBy: string;
 	order: 'ASC' | 'DESC';
 	metaKey: string;
@@ -128,6 +128,7 @@ const normalizeOrderOptions = (raw: unknown): OrderOption[] => {
 };
 
 const createRule = (): SortRule => ({
+	label: '',
 	orderBy: 'date',
 	order: 'DESC',
 	metaKey: '',
@@ -144,6 +145,7 @@ const normalizeRule = (raw: unknown): SortRule => {
 	const order = obj.order === 'ASC' ? 'ASC' : 'DESC';
 
 	return {
+		label: typeof obj.label === 'string' ? obj.label : '',
 		orderBy: orderBy.length > 0 ? orderBy : 'date',
 		order,
 		metaKey: typeof obj.metaKey === 'string' ? obj.metaKey : '',
@@ -156,6 +158,9 @@ const describeRule = (
 	orderByOptions: OrderByOption[],
 	orderOptions: OrderOption[]
 ): string => {
+	if (rule.label) {
+		return rule.label;
+	}
 	const label =
 		orderByOptions.find((option) => option.value === rule.orderBy)?.label ||
 		rule.orderBy;
@@ -221,7 +226,7 @@ export default function Edit({
 		<PanelBody
 			key={index}
 			title={__(
-				`Rule ${index + 1}: ${describeRule(
+				`Option ${index + 1}: ${describeRule(
 					rule,
 					orderByOptions,
 					orderOptions
@@ -230,6 +235,13 @@ export default function Edit({
 			)}
 			initialOpen={false}
 		>
+			<TextControl
+				label={__('Option Label', 'jankx')}
+				value={rule.label}
+				onChange={(value) => updateRule(index, { label: value })}
+				placeholder={__('e.g., Mới nhất, Giá tăng dần', 'jankx')}
+				help={__('Text displayed in the sort dropdown on the frontend', 'jankx')}
+			/>
 			<SelectControl
 				label={__('Order By', 'jankx')}
 				value={rule.orderBy}
@@ -339,13 +351,13 @@ export default function Edit({
 
 			<InspectorControls>
 				<PanelBody
-					title={__('Sort Rules', 'jankx')}
+					title={__('Sort Options', 'jankx')}
 					initialOpen={true}
 				>
 					<ToggleControl
-						label={__('Enable custom sort rules', 'jankx')}
+						label={__('Enable custom sort options', 'jankx')}
 						help={__(
-							'When enabled these rules replace the Order setting in Query Settings. Rules are applied from top to bottom.',
+							'When enabled these options will be rendered as a dropdown for users to choose how to sort.',
 							'jankx'
 						)}
 						checked={enabled}
@@ -359,8 +371,8 @@ export default function Edit({
 							<Button
 								variant="secondary"
 								onClick={addRule}
-								label={__('Add sort rule', 'jankx')}
-								text={__('Add rule', 'jankx')}
+								label={__('Add sort option', 'jankx')}
+								text={__('Add Option', 'jankx')}
 							/>
 						</>
 					) : null}
@@ -368,21 +380,26 @@ export default function Edit({
 			</InspectorControls>
 
 			<div {...blockProps}>
-				<Placeholder
-					icon={metadata.icon as string}
-					label={__('Sort Rules', 'jankx')}
-					instructions={
-						enabled
-							? __(
-									`${normalizedRules.length} rule(s) will be applied, highest priority first.`,
-									'jankx'
-							  )
-							: __(
-									'Add sort rules in the block settings to control the query order.',
-									'jankx'
-							  )
-					}
-				/>
+				{enabled ? (
+					<div className="jankx-dynamic-data-sort-dropdown-preview" style={{ padding: '10px 0', display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: '10px' }}>
+						<label style={{ fontSize: '14px', color: '#555' }}>{__('Sắp xếp theo', 'jankx')}</label>
+						<select style={{ padding: '6px 30px 6px 12px', border: '1px solid #ddd', borderRadius: '4px', fontSize: '14px', appearance: 'none', background: '#fff url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'12\' height=\'12\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'%23333\' stroke-width=\'2\' stroke-linecap=\'round\' stroke-linejoin=\'round\'%3E%3Cpath d=\'M6 9l6 6 6-6\'/%3E%3C/svg%3E") no-repeat right 8px center' }}>
+							{normalizedRules.length > 0 ? (
+								normalizedRules.map((rule, index) => (
+									<option key={index} value={index}>
+										{rule.label || describeRule(rule, orderByOptions, orderOptions)}
+									</option>
+								))
+							) : (
+								<option>{__('Mặc định', 'jankx')}</option>
+							)}
+						</select>
+					</div>
+				) : (
+					<div style={{ padding: '20px', textAlign: 'center', border: '1px dashed #ccc', color: '#888' }}>
+						{__('Sort dropdown is disabled. Enable in block settings to configure options.', 'jankx')}
+					</div>
+				)}
 			</div>
 		</>
 	);

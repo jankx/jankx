@@ -475,15 +475,6 @@
     justify-content: center;
   }
 }
-.wp-block-jankx-advanced-filters .components-placeholder {
-  min-height: 100px;
-  padding: 1.5rem;
-  text-align: center;
-}
-.wp-block-jankx-advanced-filters .components-placeholder .components-placeholder__label {
-  font-size: 1rem;
-  margin-bottom: 0.5rem;
-}
 .wp-block-jankx-advanced-filters .wp-block-embed__wrapper {
   margin: 0;
   padding: 0;

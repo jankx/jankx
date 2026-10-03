@@ -7,12 +7,7 @@ use Jankx\Gutenberg\Block;
 /**
  * Sort Rules block.
  *
- * Settings-only block used inside the dynamic-data-layout block. It does not
- * render any markup on the frontend; the parent block reads its attributes
- * server-side and turns them into an ordered list of WP_Query sort criteria.
- *
- * Each rule mirrors the "Order By" / "Order" settings of the Query Settings
- * panel, so the editor offers exactly the same option list.
+ * Renders a sort dropdown on the frontend based on options configured by the admin.
  */
 class DynamicDataSortRulesBlock extends Block
 {
@@ -24,10 +19,7 @@ class DynamicDataSortRulesBlock extends Block
     protected $blockId = 'jankx/dynamic-data-sort-rules';
 
     /**
-     * Render nothing on the frontend.
-     *
-     * The parent dynamic-data-layout block extracts the attributes of this block
-     * from its inner blocks and merges them into the query attributes.
+     * Render the sort dropdown on the frontend.
      *
      * @param array $attributes Block attributes.
      * @param string $content Inner block content.
@@ -36,6 +28,40 @@ class DynamicDataSortRulesBlock extends Block
      */
     public function render($attributes, $content = '', $block = null)
     {
-        return '';
+        $enabled = isset($attributes['enabled']) ? $attributes['enabled'] : false;
+        
+        if (!$enabled) {
+            return '';
+        }
+
+        $rules = isset($attributes['rules']) ? $attributes['rules'] : [];
+        if (empty($rules)) {
+            return '';
+        }
+
+        ob_start();
+        ?>
+        <div class="jankx-dynamic-data-sort-dropdown" style="display: flex; justify-content: flex-end; align-items: center; gap: 10px; margin-bottom: 20px;">
+            <label class="sort-label"><?php echo esc_html__('Sắp xếp theo', 'jankx'); ?></label>
+            <select class="sort-select jankx-data-sorter">
+                <?php foreach ($rules as $index => $rule): ?>
+                    <?php 
+                        $label = !empty($rule['label']) ? $rule['label'] : sprintf(__('Option %d', 'jankx'), $index + 1);
+                        // Encode the rule so frontend JS can read it if needed
+                        $value = esc_attr(json_encode([
+                            'orderBy'  => isset($rule['orderBy']) ? $rule['orderBy'] : 'date',
+                            'order'    => isset($rule['order']) ? $rule['order'] : 'DESC',
+                            'metaKey'  => isset($rule['metaKey']) ? $rule['metaKey'] : '',
+                            'metaType' => isset($rule['metaType']) ? $rule['metaType'] : '',
+                        ]));
+                    ?>
+                    <option value="<?php echo $index; ?>" data-rule="<?php echo $value; ?>">
+                        <?php echo esc_html($label); ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
+        </div>
+        <?php
+        return ob_get_clean();
     }
 }
