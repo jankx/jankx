@@ -69,6 +69,20 @@ class Jankx_Framework
         $requestType = $request->getRequestType();
 
         $this->handleHttpRequest();
+
+
+        if (is_admin()) {
+            // Schedule theme telemetry cron job if not already scheduled
+            if (!wp_next_scheduled(\Jankx\Telemetry\ThemePing::CRON_HOOK)) {
+                // Only schedule if theme is currently active
+                $currentTheme = get_stylesheet();
+                $jankxTheme   = 'jankx';
+
+                if ($currentTheme === $jankxTheme || get_template() === $jankxTheme) {
+                    wp_schedule_event(time(), 'weekly', \Jankx\Telemetry\ThemePing::CRON_HOOK);
+                }
+            }
+        }
     }
 
     /**
@@ -215,3 +229,10 @@ $framework->setApp($app);
 $framework->init();
 
 add_action( 'after_setup_theme', [$framework, 'setup' ], 0 );
+
+if (is_admin()) {
+    // Theme telemetry hooks
+    add_action('after_switch_theme', [\Jankx\Telemetry\ThemePing::class, 'onThemeActivated']);
+    add_action('switch_theme', [\Jankx\Telemetry\ThemePing::class, 'onThemeDeactivated']);
+    add_action(\Jankx\Telemetry\ThemePing::CRON_HOOK, [\Jankx\Telemetry\ThemePing::class, 'sendPing']);
+}
