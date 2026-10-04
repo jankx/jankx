@@ -32,6 +32,6 @@
  *
  */
 
-// Đăng ký namespace cho AI Chatbox extension
-$router->addNamespace('ai', 'Jankx\\Extensions\\AiChatbox\\Ajax\\Controller\\');
-$router->addNamespace('ecommerce', 'Jankx\Extensions\Ecommerce\Ajax\Controller\');
+// Bạn có thể đăng ký route F3 tùy chỉnh ở đây nếu cần.
+// Tuy nhiên, việc đăng ký namespace cho các extension nay đã được tự động hóa 
+// thông qua khai báo `ajax_slug` và `ajax_namespace` bên trong file `manifest.json`.

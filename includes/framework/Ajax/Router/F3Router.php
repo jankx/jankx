@@ -80,11 +80,26 @@ class F3Router
      */
     protected function loadExternalRoutes(): void
     {
-        // Cho phép extension đăng ký namespace thêm qua file config
-        $routeConfig = $this->themeDir . '/includes/framework/Ajax/routes.php';
-        if (file_exists($routeConfig)) {
-            $router = $this;
-            require $routeConfig;
+        $template = get_option('template');
+        $stylesheet = get_option('stylesheet');
+        $themesDir = dirname($this->themeDir);
+        
+        $dirs = [$this->themeDir];
+        if ($template !== $stylesheet && $stylesheet) {
+            $dirs[] = $themesDir . '/' . $stylesheet;
+        }
+
+        foreach (array_unique($dirs) as $dir) {
+            $manifests = glob($dir . '/extensions/*/manifest.json');
+            if (is_array($manifests)) {
+                foreach ($manifests as $manifest) {
+                    $content = file_get_contents($manifest);
+                    $data = json_decode($content, true);
+                    if (is_array($data) && !empty($data['ajax_slug']) && !empty($data['ajax_namespace'])) {
+                        $this->addNamespace($data['ajax_slug'], $data['ajax_namespace']);
+                    }
+                }
+            }
         }
     }
 
@@ -99,8 +114,12 @@ class F3Router
     /**
      * Dispatch request đến đúng Controller::action().
      */
-    public function dispatch(Base $f3): void
+    public function dispatch(\Base $f3 = null): void
     {
+        if ($f3 === null) {
+            $this->f3->run();
+            return;
+        }
         $ns         = strtolower($f3->get('PARAMS.ns')         ?? 'jankx');
         $controller = $f3->get('PARAMS.controller') ?? '';
         $action     = $f3->get('PARAMS.action')     ?? 'index';
