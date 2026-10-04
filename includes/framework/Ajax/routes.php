@@ -34,3 +34,4 @@
 
 // Đăng ký namespace cho AI Chatbox extension
 $router->addNamespace('ai', 'Jankx\\Extensions\\AiChatbox\\Ajax\\Controller\\');
+$router->addNamespace('ecommerce', 'Jankx\Extensions\Ecommerce\Ajax\Controller\');
