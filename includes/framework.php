@@ -230,9 +230,9 @@ $framework->init();
 
 add_action( 'after_setup_theme', [$framework, 'setup' ], 0 );
 
-if (is_admin()) {
-    // Theme telemetry hooks
-    add_action('after_switch_theme', [\Jankx\Telemetry\ThemePing::class, 'onThemeActivated']);
-    add_action('switch_theme', [\Jankx\Telemetry\ThemePing::class, 'onThemeDeactivated']);
-    add_action(\Jankx\Telemetry\ThemePing::CRON_HOOK, [\Jankx\Telemetry\ThemePing::class, 'sendPing']);
-}
+// Theme telemetry hooks. Registered unconditionally: wp-cron.php runs with
+// is_admin() === false, so gating the CRON_HOOK callback on is_admin() would
+// silently drop every scheduled ping.
+add_action('after_switch_theme', [\Jankx\Telemetry\ThemePing::class, 'onThemeActivated']);
+add_action('switch_theme', [\Jankx\Telemetry\ThemePing::class, 'onThemeDeactivated']);
+add_action(\Jankx\Telemetry\ThemePing::CRON_HOOK, [\Jankx\Telemetry\ThemePing::class, 'sendPing']);
