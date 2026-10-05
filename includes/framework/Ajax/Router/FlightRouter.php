@@ -4,6 +4,9 @@ namespace Jankx\Ajax\Router;
 
 use flight\Engine;
 use Jankx\Ajax\Response\JsonResponse;
+use Jankx\Facades\Facade;
+use Jankx\Foundation\Application;
+use Jankx\Foundation\Bootstrap\RegisterFacades;
 use Jankx\Flight\WordpressConcept\Bootstrap;
 
 /**
@@ -29,9 +32,56 @@ class FlightRouter
     public function __construct(string $themeDir)
     {
         $this->themeDir = $themeDir;
+        $this->bootFacades();
         $this->flight   = new Engine();
         $this->configure();
         $this->registerRoutes();
+    }
+
+    /**
+     * Đăng ký facade của theme để extension gọi được Jankx\Facades\Log.
+     *
+     * Standalone không nạp functions.php nên container của theme chưa tồn tại;
+     * extension dùng facade (vd Currency gọi Log khi chuyển đổi tiền tệ) sẽ ném
+     * "A facade root has not been set.".
+     *
+     * Hàm này idempotent: ở đường rewrite, theme đã boot qua functions.php và
+     * container đầy đủ đang được dùng – không được ghi đè bằng container rỗng.
+     */
+    protected function bootFacades(): void
+    {
+        if (Facade::getFacadeApplication() !== null) {
+            return;
+        }
+
+        (new RegisterFacades())->bootstrap(new Application($this->themeDir));
+    }
+
+    /**
+     * HTTP status phù hợp cho một exception.
+     *
+     * Không dùng $ex->getCode() trực tiếp: PDOException trả về SQLSTATE dạng
+     * chuỗi ("42S02"), truyền vào http_response_code() sẽ ném TypeError và che
+     * mất lỗi gốc.
+     */
+    protected static function statusCodeOf(\Throwable $ex): int
+    {
+        // Exception HTTP của Flight đặt status ở getStatusCode().
+        if (method_exists($ex, 'getStatusCode')) {
+            $status = $ex->getStatusCode();
+
+            if (is_int($status) && $status >= 400 && $status <= 599) {
+                return $status;
+            }
+        }
+
+        $code = $ex->getCode();
+
+        if (is_int($code) && $code >= 400 && $code <= 599) {
+            return $code;
+        }
+
+        return 500;
     }
 
     /**
@@ -42,13 +92,15 @@ class FlightRouter
         $self = $this;
 
         $this->flight->map('error', function (\Throwable $ex) {
+            $status = self::statusCodeOf($ex);
+
             if (! headers_sent()) {
                 header('Content-Type: application/json; charset=utf-8');
-                http_response_code($ex->getCode() ?: 500);
+                http_response_code($status);
             }
             echo JsonResponse::error(
                 $ex->getMessage() ?: 'Internal Server Error',
-                $ex->getCode() ?: 500
+                $status
             )->toJson();
             exit;
         });
