@@ -128,11 +128,22 @@ abstract class AbstractController
     }
 
     /**
-     * Thực hiện truy vấn database an toàn qua $wpdb (SHORTINIT đã nạp $wpdb).
+     * Truy vấn database qua connection của package.
+     *
+     * Controller không dùng $wpdb vì entry này không có WordPress. Dùng
+     * Connection::select() rồi bổ sung điều kiện, hoặc gọi helper của package
+     * (get_posts/get_user) khi cần truy vấn ở mức nội dung.
      */
-    protected function db(): \wpdb
+    protected function select(): \Atlas\Query\Select
     {
-        global $wpdb;
-        return $wpdb;
+        return \Jankx\Flight\WordpressConcept\Db\Connection::select();
+    }
+
+    /**
+     * Tên bảng đầy đủ theo prefix của site, vd table('posts') → 'wp_posts'.
+     */
+    protected function table(string $name): string
+    {
+        return \Jankx\Flight\WordpressConcept\Config::load(dirname(__DIR__, 4))->table($name);
     }
 }

@@ -1,22 +1,37 @@
 <?php
 
 /**
- * Jankx Fast AJAX Entry Point
+ * Jankx Fast AJAX – entry point độc lập.
  *
- * Sử dụng WordPress SHORTINIT để boot tối giản (mục tiêu <10ms),
- * sau đó dùng Flight PHP để route request theo MVC.
+ * Xử lý request Ajax mà không nạp WordPress: không wp-load.php, không
+ * SHORTINIT, không plugin, không theme functions.php. Toàn bộ ngữ nghĩa
+ * WordPress mà controller cần (hook, đăng nhập, escape) do package
+ * jankx/flight-wordpress-concept cung cấp trên Atlas ORM.
  *
- * URL format:  /jankx-ajax/<ns>/<controller>/<action>[/<params>]
- * Ví dụ:       /jankx-ajax/jankx/ping/index
+ * URL: /jankx-ajax/<namespace>/<controller>/<action>[/<params>]
+ *   vd: /jankx-ajax/jankx/ping/index
  *
  * @package Jankx
  */
 
-// ── 0. Bắt đầu đo thời gian ngay từ đầu ──────────────────────────────────────
+// ── 0. Đồng hồ đo thời gian ──────────────────────────────────────────────────
 $_JANKX_AJAX_START = microtime(true);
 
-// Preflight CORS (OPTIONS request không cần boot WP)
-if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+// ── 1. Autoload ───────────────────────────────────────────────────────────────
+$autoload = __DIR__ . '/vendor/autoload.php';
+
+if (! is_readable($autoload)) {
+    http_response_code(500);
+    header('Content-Type: application/json; charset=utf-8');
+    echo '{"success":false,"error":"Thiếu vendor/autoload.php. Chạy composer install."}';
+    exit;
+}
+
+require $autoload;
+
+// ── 2. Preflight CORS ─────────────────────────────────────────────────────────
+// OPTIONS chỉ cần header, không cần boot.
+if (($_SERVER['REQUEST_METHOD'] ?? '') === 'OPTIONS') {
     header('Access-Control-Allow-Origin: *');
     header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
     header('Access-Control-Allow-Headers: Content-Type, X-WP-Nonce');
@@ -24,39 +39,34 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'OPTIONS
     exit;
 }
 
-// ── 1. Xác định đường dẫn đến wp-load.php ─────────────────────────────────────
-$wpRoot = __DIR__;
-for ($i = 0; $i < 8; $i++) {
-    if (file_exists($wpRoot . '/wp-load.php')) {
-        break;
-    }
-    $wpRoot = dirname($wpRoot);
-}
+// ── 3. Chuẩn bị runtime ──────────────────────────────────────────────────────
+// Đọc wp-config, xác thực cookie, nạp extension, kích 'init'.
+$themeDir = __DIR__;
 
-if (! file_exists($wpRoot . '/wp-load.php')) {
+try {
+    \Jankx\Flight\WordpressConcept\Bootstrap::boot($themeDir);
+} catch (\Throwable $exception) {
     http_response_code(500);
-    header('Content-Type: application/json');
-    echo json_encode(['success' => false, 'error' => 'WordPress not found.']);
+    header('Content-Type: application/json; charset=utf-8');
+    echo json_encode(
+        ['success' => false, 'error' => $exception->getMessage()],
+        JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES
+    );
     exit;
 }
 
-// ── 2. Boot WordPress ở chế độ SHORTINIT ──────────────────────────────────────
-// SHORTINIT bỏ qua: tất cả plugins, theme, rewrite rules, WP_Query, REST API.
-// CHỈ nạp: $wpdb, get_option(), wp_verify_nonce(), các hàm DB cơ bản.
-
-define('SHORTINIT', true);
-require $wpRoot . '/wp-load.php';
-
-// ── 3. Nạp Composer autoloader của Jankx theme ────────────────────────────────
-$themeDir = __DIR__;
-if (file_exists($themeDir . '/vendor/autoload.php')) {
-    require $themeDir . '/vendor/autoload.php';
-}
-
-// ── 4. Khởi tạo JsonResponse timer ────────────────────────────────────────────
+// ── 4. Đo thời gian phản hồi ──────────────────────────────────────────────────
 \Jankx\Ajax\Response\JsonResponse::startTimer();
 
-// ── 5. Khởi tạo Flight PHP và dispatch routes ────────────────────────────────
+// ── 5. Route ──────────────────────────────────────────────────────────────────
+// Rewrite /jankx-ajax/* trỏ thẳng vào file này. Ở chế độ direct, REQUEST_URI
+// vẫn giữ phần /ajax.php phía trước nên cắt từ /jankx-ajax trở đi.
+$requestUri = $_SERVER['REQUEST_URI'] ?? '';
+$position   = strpos($requestUri, '/jankx-ajax');
+
+if ($position !== false) {
+    $_SERVER['REQUEST_URI'] = substr($requestUri, $position);
+}
+
 $router = new \Jankx\Ajax\Router\FlightRouter($themeDir);
 $router->dispatch();
-

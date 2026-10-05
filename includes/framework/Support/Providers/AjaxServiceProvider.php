@@ -15,7 +15,7 @@ use Jankx\Support\Providers\ServiceProvider;
  * - Inject jankx_ajax_nonce vào frontend để client sử dụng
  * - Cung cấp hàm helper jankx_ajax_url() cho theme/extension
  *
- * Kiến trúc Fast AJAX (SHORTINIT + Fat-Free Framework):
+ * Kiến trúc Fast AJAX (Flight PHP, không nạp lại WordPress):
  *   - Boot time mục tiêu: <10ms (bỏ qua toàn bộ plugins/theme)
  *   - URL pattern: /jankx-ajax/<ns>/<controller>/<action>[/<params>]
  *   - MVC structure: includes/framework/Ajax/{Router,Controller,Middleware,Response}
@@ -35,7 +35,6 @@ class AjaxServiceProvider extends ServiceProvider
     public function register(Application $app): void
     {
         // Đăng ký PSR-4 namespace Jankx\Ajax\ vào Composer autoloader
-        // (chạy cả trong SHORTINIT context)
         $this->registerAutoload();
     }
 
@@ -94,29 +93,42 @@ class AjaxServiceProvider extends ServiceProvider
             return;
         }
 
-        // Reconstruct PATH_INFO cho F3 router
+        // Reconstruct PATH_INFO cho router
         $path = '/' . ltrim(get_query_var('jankx_fast_ajax'), '/');
         $_SERVER['REQUEST_URI'] = '/jankx-ajax' . $path;
 
-        // Chạy file ajax.php (vẫn trong full WP context, không dùng SHORTINIT)
-        // SHORTINIT chỉ được dùng khi gọi ajax.php trực tiếp qua web server
+        // File ajax.php là entry độc lập cho web server gọi thẳng. Ở nhánh
+        // rewrite này WordPress đã boot sẵn, nên ta dựng router trực tiếp
+        // thay vì include lại ajax.php.
         $ajaxFile = get_template_directory() . '/ajax.php';
         if (file_exists($ajaxFile)) {
-            // Khi chạy qua template_redirect, WP đã boot đầy đủ
-            // Nên ta dùng F3 Router trực tiếp mà không cần SHORTINIT
-            $this->dispatchViaF3($ajaxFile);
+            $this->dispatchFastAjax($ajaxFile);
         }
     }
 
     /**
-     * Dispatch F3 router khi chạy trong full WP context.
+     * Dispatch Fast AJAX router khi chạy trong full WP context.
      */
-    protected function dispatchViaF3(string $ajaxFile): void
+    protected function dispatchFastAjax(string $ajaxFile): void
     {
         $themeDir = get_template_directory();
 
         if (file_exists($themeDir . '/vendor/autoload.php')) {
             require_once $themeDir . '/vendor/autoload.php';
+        }
+
+        // Bắt buộc: router đọc namespace ajax từ manifest qua
+        // Bootstrap::ajaxNamespaces(). Bỏ qua bước này thì map rỗng và mọi
+        // endpoint của extension trả 404 "Unknown namespace" – vì ở nhánh
+        // rewrite này file ajax.php không được include.
+        try {
+            \Jankx\Flight\WordpressConcept\Bootstrap::boot($themeDir);
+        } catch (\Throwable $exception) {
+            \Jankx\Ajax\Response\JsonResponse::error(
+                $exception->getMessage(),
+                500
+            )->send();
+            exit;
         }
 
         \Jankx\Ajax\Response\JsonResponse::startTimer();
@@ -181,7 +193,7 @@ class AjaxServiceProvider extends ServiceProvider
 
     /**
      * Đăng ký PSR-4 autoload cho namespace Jankx\Ajax\
-     * Compatible với cả SHORTINIT và full WP context.
+     * Cần thiết khi theme chưa chạy composer dump-autoload.
      */
     protected function registerAutoload(): void
     {

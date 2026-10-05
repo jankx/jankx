@@ -4,12 +4,15 @@ namespace Jankx\Ajax\Middleware;
 
 use flight\net\Request;
 use Jankx\Ajax\Response\JsonResponse;
+use Jankx\Flight\WordpressConcept\Config;
+use Jankx\Flight\WordpressConcept\Db\Connection;
 
 /**
  * RateLimitMiddleware – Giới hạn request per IP để chống DDoS/spam.
  *
- * Sử dụng WordPress Transient (yêu cầu $wpdb đã sẵn sàng qua SHORTINIT).
- * Giá trị mặc định: 60 request / 60 giây per IP.
+ * Đếm cửa sổ trượt bằng cách ghi vào bảng options, giống transient của
+ * WordPress nhưng tự quản lý nên không cần $wpdb. Mặc định 60 request / 60
+ * giây mỗi IP.
  *
  * @package Jankx\Ajax\Middleware
  */
@@ -23,49 +26,44 @@ class RateLimitMiddleware implements MiddlewareInterface
 
     public function handle(Request $request): bool
     {
-        global $wpdb;
+        $config     = Config::load(dirname(__DIR__, 3));
+        $connection = Connection::instance();
+        $options    = $config->table('options');
 
         $ip  = $request->ip;
         $key = '_transient_jankx_rl_' . md5($ip);
 
-        // Đọc trực tiếp từ DB (SHORTINIT không có wp_cache)
-        $row = $wpdb->get_row(
-            $wpdb->prepare(
-                "SELECT option_value, option_name FROM {$wpdb->options}
-                 WHERE option_name = %s LIMIT 1",
-                $key
-            )
+        $value = $connection->fetchValue(
+            "SELECT option_value FROM {$options} WHERE option_name = :key LIMIT 1",
+            [':key' => $key]
         );
 
         $now  = time();
-        $data = $row ? json_decode($row->option_value, true) : null;
+        $data = is_string($value) ? json_decode($value, true) : null;
 
-        if (! $data || ($now - $data['window_start']) >= $this->windowSeconds) {
-            // Bắt đầu cửa sổ mới
+        if (! is_array($data) || ($now - (int) ($data['window_start'] ?? 0)) >= $this->windowSeconds) {
             $data = ['window_start' => $now, 'count' => 1];
         } else {
-            $data['count']++;
+            $data['count'] = (int) $data['count'] + 1;
         }
 
-        // Lưu lại (upsert)
-        $expiry = '_transient_timeout_' . substr($key, strlen('_transient_'));
-        if ($row) {
-            $wpdb->update(
-                $wpdb->options,
-                ['option_value' => json_encode($data)],
-                ['option_name'  => $key]
-            );
-        } else {
-            $wpdb->insert($wpdb->options, [
-                'option_name'  => $key,
-                'option_value' => json_encode($data),
-                'autoload'     => 'no',
-            ]);
-        }
+        $encoded = json_encode($data);
+
+        // INSERT ... ON DUPLICATE KEY để không cần đọc rồi quyết định insert
+        // hay update – một câu, an toàn khi nhiều request chạy song song.
+        $connection->perform(
+            "INSERT INTO {$options} (option_name, option_value, autoload)
+             VALUES (:key, :value, 'no')
+             ON DUPLICATE KEY UPDATE option_value = VALUES(option_value)",
+            [
+                ':key'   => $key,
+                ':value' => $encoded,
+            ]
+        );
 
         if ($data['count'] > $this->maxRequests) {
             JsonResponse::error('Rate limit exceeded. Try again later.', 429)
-                ->with('retry_after', $this->windowSeconds - ($now - $data['window_start']))
+                ->with('retry_after', $this->windowSeconds - ($now - (int) $data['window_start']))
                 ->send();
             return false;
         }

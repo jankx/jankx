@@ -4,6 +4,7 @@ namespace Jankx\Ajax\Router;
 
 use flight\Engine;
 use Jankx\Ajax\Response\JsonResponse;
+use Jankx\Flight\WordpressConcept\Bootstrap;
 
 /**
  * FlightRouter – Flight PHP Router cho Jankx Fast AJAX.
@@ -87,70 +88,16 @@ class FlightRouter
     }
 
     /**
-     * Nạp route tùy chỉnh từ các extension/plugin.
-     * Mỗi extension khai báo ajax_slug + ajax_namespace bên trong manifest.json.
+     * Nạp namespace ajax từ extension (qua manifest.json).
+     *
+     * Bootstrap đã quét manifest và nạp extension, nên ở đây chỉ cần bảng đồ
+     * namespace để route về đúng controller. Theme cha và theme con đều được
+     * Bootstrap quét sẵn.
      */
     protected function loadExternalRoutes(): void
     {
-        $themesDir = dirname($this->themeDir);
-        $dirs      = [$this->themeDir];
-
-        // Thêm child theme nếu có (chỉ khi full WP đã boot)
-        if (function_exists('get_option')) {
-            $template   = get_option('template');
-            $stylesheet = get_option('stylesheet');
-            if ($template !== $stylesheet && $stylesheet) {
-                $dirs[] = $themesDir . '/' . $stylesheet;
-            }
-        }
-
-        foreach (array_unique($dirs) as $dir) {
-            $manifests = glob($dir . '/extensions/*/manifest.json');
-            if (! is_array($manifests)) {
-                continue;
-            }
-            foreach ($manifests as $manifest) {
-                $this->registerExtensionAutoload(dirname($manifest));
-                $content = file_get_contents($manifest);
-                $data    = json_decode($content, true);
-                if (is_array($data) && ! empty($data['ajax_slug']) && ! empty($data['ajax_namespace'])) {
-                    $this->addNamespace($data['ajax_slug'], $data['ajax_namespace']);
-                }
-            }
-        }
-    }
-
-    /**
-     * SHORTINIT không chạy extension bootstrap, nên tự đăng ký PSR-4
-     * dựa vào composer.json của từng extension.
-     */
-    protected function registerExtensionAutoload(string $extensionDir): void
-    {
-        $composerFile = $extensionDir . '/composer.json';
-        if (! is_file($composerFile)) {
-            return;
-        }
-
-        $composer = json_decode((string) file_get_contents($composerFile), true);
-        $psr4     = is_array($composer) && isset($composer['autoload']['psr-4'])
-            ? (array) $composer['autoload']['psr-4']
-            : [];
-
-        foreach ($psr4 as $prefix => $relPaths) {
-            foreach ((array) $relPaths as $relPath) {
-                $baseDir   = $extensionDir . '/' . trim((string) $relPath, '/') . '/';
-                $prefixLen = strlen((string) $prefix);
-
-                spl_autoload_register(function (string $class) use ($prefix, $baseDir, $prefixLen): void {
-                    if (strncmp($class, $prefix, $prefixLen) !== 0) {
-                        return;
-                    }
-                    $file = $baseDir . str_replace('\\', '/', substr($class, $prefixLen)) . '.php';
-                    if (is_file($file)) {
-                        require_once $file;
-                    }
-                });
-            }
+        foreach (Bootstrap::ajaxNamespaces() as $slug => $namespace) {
+            $this->addNamespace($slug, $namespace);
         }
     }
 

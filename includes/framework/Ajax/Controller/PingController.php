@@ -32,16 +32,19 @@ class PingController extends AbstractController
 
     /**
      * GET /jankx-ajax/jankx/ping/info
+     *
+     * Chỉ đọc, không ghi – an toàn để bật công khai.
      */
     public function info(array $params = []): void
     {
-        global $wpdb;
+        $config = \Jankx\Flight\WordpressConcept\Config::load(dirname(__DIR__, 4));
 
         $this->success([
             'php_version' => PHP_VERSION,
-            'db_name'     => DB_NAME,
-            'prefix'      => $wpdb->prefix,
-            'shortinit'   => defined('SHORTINIT') && SHORTINIT,
+            'db_name'     => $config->get('DB_NAME'),
+            'prefix'      => $config->tablePrefix(),
+            'logged_in'   => is_user_logged_in(),
+            'user_id'     => get_current_user_id(),
         ]);
     }
 }
