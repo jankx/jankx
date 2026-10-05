@@ -13,6 +13,10 @@ declare(strict_types=1);
 
 require dirname(__DIR__, 3) . '/vendor/autoload.php';
 
+// Package không nạp qua composer files (đụng tên hàm global của core), nên
+// flow nào dùng API của nó – kể cả test – đều phải require bootstrap.
+require dirname(__DIR__, 3) . '/vendor/jankx/flight-wordpress-concept/bootstrap.php';
+
 use Jankx\Flight\WordpressConcept\Bootstrap;
 use Jankx\Flight\WordpressConcept\Cache\Options;
 use Jankx\Flight\WordpressConcept\Cache\Transient;

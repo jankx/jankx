@@ -29,6 +29,11 @@ if (! is_readable($autoload)) {
 
 require $autoload;
 
+// Package flight-wordpress-concept khai các hàm/lớp global trùng tên core
+// nên KHÔNG tự nạp qua composer files (xem bootstrap.php của package).
+// Ở đây là nơi duy nhất của Fast-AJAX cần tới nó → require tường minh.
+require_once __DIR__ . '/vendor/jankx/flight-wordpress-concept/bootstrap.php';
+
 // ── 2. Preflight CORS ─────────────────────────────────────────────────────────
 // OPTIONS chỉ cần header, không cần boot.
 if (($_SERVER['REQUEST_METHOD'] ?? '') === 'OPTIONS') {

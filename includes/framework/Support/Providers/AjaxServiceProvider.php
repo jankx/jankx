@@ -27,6 +27,17 @@ use Jankx\Support\Providers\ServiceProvider;
 class AjaxServiceProvider extends ServiceProvider
 {
     /**
+     * Handle dùng để in cấu hình Ajax ra frontend.
+     *
+     * KHÔNG gắn inline script vào 'jquery-core'. Theme này không nạp jQuery ở
+     * frontend, nên handle đó không bao giờ được enqueue và WordPress sẽ âm
+     * thầm bỏ qua toàn bộ inline data gắn vào – window.JankxAjax không được
+     * in, client im lặng rơi về REST route. Handle riêng với src = false thì
+     * luôn được in, không phụ thuộc thư viện nào.
+     */
+    private const CONFIG_HANDLE = 'jankx-ajax-config';
+
+    /**
      * Register any application services.
      *
      * @param  \Jankx\Foundation\Application  $app
@@ -173,8 +184,16 @@ class AjaxServiceProvider extends ServiceProvider
             $config['mode'] = 'direct';
         }
 
+        // Handle riêng, src = false: WordPress in inline data của nó mà không
+        // tạo thẻ <script src>, nên không cần (và không nên) phụ thuộc jQuery.
+        if (! wp_script_is(self::CONFIG_HANDLE, 'registered')) {
+            wp_register_script(self::CONFIG_HANDLE, false, [], null, false);
+        }
+
+        wp_enqueue_script(self::CONFIG_HANDLE);
+
         wp_add_inline_script(
-            'jquery-core',
+            self::CONFIG_HANDLE,
             'window.JankxAjax = ' . wp_json_encode($config) . ';',
             'before'
         );

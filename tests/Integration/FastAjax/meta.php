@@ -15,6 +15,10 @@ declare(strict_types=1);
 
 require dirname(__DIR__, 3) . '/vendor/autoload.php';
 
+// Package không nạp qua composer files (đụng tên hàm global của core), nên
+// flow nào dùng API của nó – kể cả test – đều phải require bootstrap.
+require dirname(__DIR__, 3) . '/vendor/jankx/flight-wordpress-concept/bootstrap.php';
+
 use Jankx\Flight\WordpressConcept\Config;
 use Jankx\Flight\WordpressConcept\Db\Connection;
 use Jankx\Flight\WordpressConcept\Db\Meta;
@@ -52,7 +56,9 @@ echo "\n== get_post / get_post_type / get_the_title ==\n";
 $found = Posts::find($postId);
 $check('Posts::find trả về đúng ID', $found !== null && (int) $found->ID === $postId);
 $check('get_post(int) trả về object', is_object(get_post($postId)));
-$check('get_post() không tồn tại → WP_Error', is_wp_error(get_post(99999999)));
+// Core trả null (không phải WP_Error): extension kiểm tra `if (!$post)`.
+// Trả WP_Error sẽ lọt qua nhánh đó rồi đọc ->post_type trên đối tượng lỗi.
+$check('get_post() không tồn tại → null', get_post(99999999) === null);
 $check('get_post_type khớp DB', get_post_type($postId) === $post['post_type']);
 $check('get_the_title khớp DB', get_the_title($postId) === (string) $post['post_title']);
 $check('get_the_title của ID không tồn tại trả chuỗi rỗng', get_the_title(99999999) === '');
