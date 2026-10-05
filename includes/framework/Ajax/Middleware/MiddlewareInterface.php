@@ -2,7 +2,7 @@
 
 namespace Jankx\Ajax\Middleware;
 
-use Base;
+use flight\net\Request;
 use Jankx\Ajax\Response\JsonResponse;
 
 /**
@@ -17,5 +17,5 @@ interface MiddlewareInterface
      *
      * @return bool  true = tiếp tục pipeline, false = đã gửi response và dừng lại
      */
-    public function handle(Base $f3): bool;
+    public function handle(Request $request): bool;
 }

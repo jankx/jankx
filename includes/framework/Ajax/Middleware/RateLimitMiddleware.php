@@ -2,7 +2,7 @@
 
 namespace Jankx\Ajax\Middleware;
 
-use Base;
+use flight\net\Request;
 use Jankx\Ajax\Response\JsonResponse;
 
 /**
@@ -21,11 +21,11 @@ class RateLimitMiddleware implements MiddlewareInterface
     /** Cửa sổ thời gian tính bằng giây */
     protected int $windowSeconds = 60;
 
-    public function handle(Base $f3): bool
+    public function handle(Request $request): bool
     {
         global $wpdb;
 
-        $ip  = $f3->get('IP');
+        $ip  = $request->ip;
         $key = '_transient_jankx_rl_' . md5($ip);
 
         // Đọc trực tiếp từ DB (SHORTINIT không có wp_cache)

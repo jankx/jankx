@@ -4,7 +4,7 @@
  * Jankx Fast AJAX Entry Point
  *
  * Sử dụng WordPress SHORTINIT để boot tối giản (mục tiêu <10ms),
- * sau đó dùng Fat-Free Framework 3.9 để route request theo MVC.
+ * sau đó dùng Flight PHP để route request theo MVC.
  *
  * URL format:  /jankx-ajax/<ns>/<controller>/<action>[/<params>]
  * Ví dụ:       /jankx-ajax/jankx/ping/index
@@ -56,7 +56,7 @@ if (file_exists($themeDir . '/vendor/autoload.php')) {
 // ── 4. Khởi tạo JsonResponse timer ────────────────────────────────────────────
 \Jankx\Ajax\Response\JsonResponse::startTimer();
 
-// ── 5. Khởi tạo Fat-Free Framework và dispatch routes ─────────────────────────
-$router = new \Jankx\Ajax\Router\F3Router($themeDir);
+// ── 5. Khởi tạo Flight PHP và dispatch routes ────────────────────────────────
+$router = new \Jankx\Ajax\Router\FlightRouter($themeDir);
 $router->dispatch();
 

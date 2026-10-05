@@ -121,7 +121,7 @@ class AjaxServiceProvider extends ServiceProvider
 
         \Jankx\Ajax\Response\JsonResponse::startTimer();
 
-        $router = new \Jankx\Ajax\Router\F3Router($themeDir);
+        $router = new \Jankx\Ajax\Router\FlightRouter($themeDir);
         $router->dispatch();
         exit;
     }

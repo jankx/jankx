@@ -20,7 +20,8 @@
     "jankx/dashboard-framework": "dev-master",
     "latte/latte": "^2.11|^3.0",
     "jankx/gutenberg-controls": "*",
-    "bcosca/fatfree-core": "^3.9"
+    "flightphp/core": "^3.19",
+    "jankx/flight-wordpress-concept": "dev-master"
   },
   "require-dev": {
     "phpunit/phpunit": "^9.5|^10.0",

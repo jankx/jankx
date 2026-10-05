@@ -2,7 +2,7 @@
 
 namespace Jankx\Ajax\Controller;
 
-use Base;
+use flight\net\Request;
 use Jankx\Ajax\Response\JsonResponse;
 
 /**
@@ -16,7 +16,7 @@ use Jankx\Ajax\Response\JsonResponse;
  */
 abstract class AbstractController
 {
-    protected Base        $f3;
+    protected Request     $request;
     protected JsonResponse $response;
 
     /**
@@ -27,9 +27,9 @@ abstract class AbstractController
      */
     protected array $middlewares = [];
 
-    public function __construct(Base $f3)
+    public function __construct(?Request $request)
     {
-        $this->f3       = $f3;
+        $this->request  = $request ?? new Request();
         $this->response = new JsonResponse();
     }
 
@@ -52,18 +52,16 @@ abstract class AbstractController
     protected function input(string $key, mixed $default = null): mixed
     {
         // JSON body
-        $body = $this->f3->get('BODY');
-        if ($body) {
-            $json = json_decode($body, true);
+        $contentType = $_SERVER['CONTENT_TYPE'] ?? '';
+        if (str_contains($contentType, 'application/json')) {
+            $json = json_decode($this->request->getBody(), true);
             if (isset($json[$key])) {
                 return $json[$key];
             }
         }
 
         // Form / query param
-        return $this->f3->get("POST.$key")
-            ?? $this->f3->get("GET.$key")
-            ?? $default;
+        return $_POST[$key] ?? $_GET[$key] ?? $default;
     }
 
     /**
@@ -71,9 +69,9 @@ abstract class AbstractController
      */
     protected function all(): array
     {
-        $body = $this->f3->get('BODY');
-        if ($body) {
-            $json = json_decode($body, true);
+        $contentType = $_SERVER['CONTENT_TYPE'] ?? '';
+        if (str_contains($contentType, 'application/json')) {
+            $json = json_decode($this->request->getBody(), true);
             if (is_array($json)) {
                 return $json;
             }
@@ -86,7 +84,7 @@ abstract class AbstractController
      */
     protected function query(string $key, mixed $default = null): mixed
     {
-        return $this->f3->get("GET.$key") ?? $default;
+        return $_GET[$key] ?? $default;
     }
 
     /**
@@ -110,7 +108,7 @@ abstract class AbstractController
      */
     protected function method(): string
     {
-        return strtoupper($this->f3->get('VERB'));
+        return strtoupper($_SERVER['REQUEST_METHOD'] ?? 'GET');
     }
 
     /**
@@ -126,7 +124,7 @@ abstract class AbstractController
      */
     protected function ip(): string
     {
-        return $this->f3->get('IP');
+        return $this->request->ip;
     }
 
     /**

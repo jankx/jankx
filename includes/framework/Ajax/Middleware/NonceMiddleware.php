@@ -2,7 +2,7 @@
 
 namespace Jankx\Ajax\Middleware;
 
-use Base;
+use flight\net\Request;
 use Jankx\Ajax\Response\JsonResponse;
 
 /**
@@ -22,7 +22,7 @@ class NonceMiddleware implements MiddlewareInterface
 {
     protected string $action = 'jankx_ajax';
 
-    public function handle(Base $f3): bool
+    public function handle(Request $request): bool
     {
         // Lấy nonce từ header hoặc body
         $nonce = $_SERVER['HTTP_X_WP_NONCE']

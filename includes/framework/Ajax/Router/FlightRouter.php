@@ -2,24 +2,22 @@
 
 namespace Jankx\Ajax\Router;
 
-use Base;
-use Jankx\Ajax\Middleware\NonceMiddleware;
-use Jankx\Ajax\Middleware\RateLimitMiddleware;
+use flight\Engine;
 use Jankx\Ajax\Response\JsonResponse;
 
 /**
- * F3Router – Fat-Free Framework Router cho Jankx Fast AJAX.
+ * FlightRouter – Flight PHP Router cho Jankx Fast AJAX.
  *
- * Route pattern:  /jankx-ajax/@controller/@action[/@params]
+ * Route pattern:  /jankx-ajax/@ns/@controller/@action[/@params]
  *
  * Mọi Controller phải extend AbstractController.
  * Middleware được chạy tuần tự trước khi dispatch đến controller.
  *
  * @package Jankx\Ajax\Router
  */
-class F3Router
+class FlightRouter
 {
-    protected Base  $f3;
+    protected Engine $flight;
     protected string $themeDir;
 
     /** @var array Namespace map: tên slug -> PHP namespace */
@@ -30,24 +28,37 @@ class F3Router
     public function __construct(string $themeDir)
     {
         $this->themeDir = $themeDir;
-        $this->f3       = Base::instance();
+        $this->flight   = new Engine();
         $this->configure();
         $this->registerRoutes();
     }
 
     /**
-     * Cấu hình F3 cơ bản.
+     * Cấu hình Flight cơ bản.
      */
     protected function configure(): void
     {
-        $this->f3->set('DEBUG', 0);
-        $this->f3->set('ONERROR', function (Base $f3) {
-            header('Content-Type: application/json; charset=utf-8');
-            http_response_code((int) $f3->get('ERROR.code') ?: 500);
+        $self = $this;
+
+        $this->flight->map('error', function (\Throwable $ex) {
+            if (! headers_sent()) {
+                header('Content-Type: application/json; charset=utf-8');
+                http_response_code($ex->getCode() ?: 500);
+            }
             echo JsonResponse::error(
-                $f3->get('ERROR.text') ?: 'Internal Server Error',
-                (int) $f3->get('ERROR.code') ?: 500
+                $ex->getMessage() ?: 'Internal Server Error',
+                $ex->getCode() ?: 500
             )->toJson();
+            exit;
+        });
+
+        $this->flight->map('notFound', function () {
+            if (! headers_sent()) {
+                header('Content-Type: application/json; charset=utf-8');
+                http_response_code(404);
+            }
+            echo JsonResponse::error('Not Found', 404)->toJson();
+            exit;
         });
     }
 
@@ -62,43 +73,48 @@ class F3Router
      */
     protected function registerRoutes(): void
     {
-        $handler = [$this, 'dispatch'];
+        $self = $this;
 
-        // Route chính
-        $this->f3->route('GET|POST /jankx-ajax/@ns/@controller/@action',          $handler);
-        $this->f3->route('GET|POST /jankx-ajax/@ns/@controller/@action/@params',   $handler);
+        $handler = function (string $ns, string $controller, string $action, string $params = '') use ($self): void {
+            $self->handleRequest($ns, $controller, $action, $params);
+        };
 
-        // Hook để plugin/extension đăng ký route tùy chỉnh
-        // Không gọi do_action vì SHORTINIT, nên dùng file config tĩnh
+        $this->flight->route('GET|POST /jankx-ajax/@ns/@controller/@action', $handler);
+        $this->flight->route('GET|POST /jankx-ajax/@ns/@controller/@action/@params', $handler);
+
+        // Nạp namespace từ extension/plugin (qua manifest.json)
         $this->loadExternalRoutes();
     }
 
     /**
      * Nạp route tùy chỉnh từ các extension/plugin.
-     * Mỗi extension tạo file: `<extension>/ajax-routes.php`
-     * và gọi: $router->addNamespace(slug, namespace)
+     * Mỗi extension khai báo ajax_slug + ajax_namespace bên trong manifest.json.
      */
     protected function loadExternalRoutes(): void
     {
-        $template = get_option('template');
-        $stylesheet = get_option('stylesheet');
         $themesDir = dirname($this->themeDir);
-        
-        $dirs = [$this->themeDir];
-        if ($template !== $stylesheet && $stylesheet) {
-            $dirs[] = $themesDir . '/' . $stylesheet;
+        $dirs      = [$this->themeDir];
+
+        // Thêm child theme nếu có (chỉ khi full WP đã boot)
+        if (function_exists('get_option')) {
+            $template   = get_option('template');
+            $stylesheet = get_option('stylesheet');
+            if ($template !== $stylesheet && $stylesheet) {
+                $dirs[] = $themesDir . '/' . $stylesheet;
+            }
         }
 
         foreach (array_unique($dirs) as $dir) {
             $manifests = glob($dir . '/extensions/*/manifest.json');
-            if (is_array($manifests)) {
-                foreach ($manifests as $manifest) {
-                    $this->registerExtensionAutoload(dirname($manifest));
-                    $content = file_get_contents($manifest);
-                    $data = json_decode($content, true);
-                    if (is_array($data) && !empty($data['ajax_slug']) && !empty($data['ajax_namespace'])) {
-                        $this->addNamespace($data['ajax_slug'], $data['ajax_namespace']);
-                    }
+            if (! is_array($manifests)) {
+                continue;
+            }
+            foreach ($manifests as $manifest) {
+                $this->registerExtensionAutoload(dirname($manifest));
+                $content = file_get_contents($manifest);
+                $data    = json_decode($content, true);
+                if (is_array($data) && ! empty($data['ajax_slug']) && ! empty($data['ajax_namespace'])) {
+                    $this->addNamespace($data['ajax_slug'], $data['ajax_namespace']);
                 }
             }
         }
@@ -106,6 +122,7 @@ class F3Router
 
     /**
      * SHORTINIT không chạy extension bootstrap, nên tự đăng ký PSR-4
+     * dựa vào composer.json của từng extension.
      */
     protected function registerExtensionAutoload(string $extensionDir): void
     {
@@ -128,7 +145,6 @@ class F3Router
                     if (strncmp($class, $prefix, $prefixLen) !== 0) {
                         return;
                     }
-
                     $file = $baseDir . str_replace('\\', '/', substr($class, $prefixLen)) . '.php';
                     if (is_file($file)) {
                         require_once $file;
@@ -139,7 +155,7 @@ class F3Router
     }
 
     /**
-     * Thêm namespace mới (dùng trong routes.php của extension).
+     * Thêm namespace mới (gọi từ routes.php hoặc manifest.json của extension).
      */
     public function addNamespace(string $slug, string $phpNamespace): void
     {
@@ -147,18 +163,11 @@ class F3Router
     }
 
     /**
-     * Dispatch request đến đúng Controller::action().
+     * Xử lý request: resolve namespace → controller → middleware → action.
      */
-    public function dispatch(\Base $f3 = null): void
+    public function handleRequest(string $ns, string $controller, string $action, string $params = ''): void
     {
-        if ($f3 === null) {
-            $this->f3->run();
-            return;
-        }
-        $ns         = strtolower($f3->get('PARAMS.ns')         ?? 'jankx');
-        $controller = $f3->get('PARAMS.controller') ?? '';
-        $action     = $f3->get('PARAMS.action')     ?? 'index';
-        $params     = $f3->get('PARAMS.params')     ?? '';
+        $ns = strtolower($ns);
 
         // -- Resolve namespace
         if (! isset($this->namespaces[$ns])) {
@@ -174,13 +183,13 @@ class F3Router
             return;
         }
 
-        $instance = new $class($f3);
+        $instance = new $class($this->flight->request());
 
         // -- Middleware pipeline
         $middlewares = $instance->getMiddlewares();
         foreach ($middlewares as $middleware) {
-            if (! (new $middleware())->handle($f3)) {
-                return;  // Middleware đã tự gửi response lỗi
+            if (! (new $middleware())->handle($this->flight->request())) {
+                return; // Middleware đã tự gửi response lỗi
             }
         }
 
@@ -193,6 +202,14 @@ class F3Router
         }
 
         $instance->$method($params !== '' ? explode('/', $params) : []);
+    }
+
+    /**
+     * Khởi động Flight engine và dispatch request.
+     */
+    public function dispatch(): void
+    {
+        $this->flight->start();
     }
 
     // ── Helpers ───────────────────────────────────────────────────────────────
