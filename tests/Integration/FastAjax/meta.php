@@ -152,9 +152,12 @@ $check('chuỗi rỗng dùng fallback', sanitize_title('', 'fallback') === 'fall
 echo "\n== WP_Error ==\n";
 $err = new WPError('code_x', 'thông báo', ['k' => 1]);
 $check('is_wp_error nhận diện đúng', is_wp_error($err));
-$check('getErrorCode trả về code', $err->getErrorCode() === 'code_x');
-$check('getErrorMessage trả về message', $err->getErrorMessage() === 'thông báo');
-$check('getErrorData trả về data', $err->getErrorData() === ['k' => 1]);
+// Tên phương thức phải đúng như core: extension gọi get_error_code(), không
+// phải camelCase.
+$check('get_error_code trả về code', $err->get_error_code() === 'code_x');
+$check('get_error_message trả về message', $err->get_error_message() === 'thông báo');
+$check('->errors giữ cấu trúc [code => [[message, data]]]', $err->errors['code_x'][0][0] === 'thông báo');
+$check('getErrorData trả về data', $err->get_error_data() === ['k' => 1]);
 $check('is_wp_error(null) là false', !is_wp_error(null));
 
 // ---- Dọn dẹp ----
