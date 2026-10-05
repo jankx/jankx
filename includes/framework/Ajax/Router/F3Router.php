@@ -93,12 +93,47 @@ class F3Router
             $manifests = glob($dir . '/extensions/*/manifest.json');
             if (is_array($manifests)) {
                 foreach ($manifests as $manifest) {
+                    $this->registerExtensionAutoload(dirname($manifest));
                     $content = file_get_contents($manifest);
                     $data = json_decode($content, true);
                     if (is_array($data) && !empty($data['ajax_slug']) && !empty($data['ajax_namespace'])) {
                         $this->addNamespace($data['ajax_slug'], $data['ajax_namespace']);
                     }
                 }
+            }
+        }
+    }
+
+    /**
+     * SHORTINIT không chạy extension bootstrap, nên tự đăng ký PSR-4
+     */
+    protected function registerExtensionAutoload(string $extensionDir): void
+    {
+        $composerFile = $extensionDir . '/composer.json';
+        if (! is_file($composerFile)) {
+            return;
+        }
+
+        $composer = json_decode((string) file_get_contents($composerFile), true);
+        $psr4     = is_array($composer) && isset($composer['autoload']['psr-4'])
+            ? (array) $composer['autoload']['psr-4']
+            : [];
+
+        foreach ($psr4 as $prefix => $relPaths) {
+            foreach ((array) $relPaths as $relPath) {
+                $baseDir   = $extensionDir . '/' . trim((string) $relPath, '/') . '/';
+                $prefixLen = strlen((string) $prefix);
+
+                spl_autoload_register(function (string $class) use ($prefix, $baseDir, $prefixLen): void {
+                    if (strncmp($class, $prefix, $prefixLen) !== 0) {
+                        return;
+                    }
+
+                    $file = $baseDir . str_replace('\\', '/', substr($class, $prefixLen)) . '.php';
+                    if (is_file($file)) {
+                        require_once $file;
+                    }
+                });
             }
         }
     }
