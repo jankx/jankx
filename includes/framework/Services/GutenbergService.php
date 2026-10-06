@@ -9,6 +9,8 @@ use Jankx\Gutenberg\Blocks\AdvancedFiltersBlock;
 use Jankx\Gutenberg\Blocks\AdvancedFilterBlock;
 use Jankx\Gutenberg\Blocks\AdvancedImageBoxBlock;
 use Jankx\Gutenberg\Blocks\AuthorBoxBlock;
+use Jankx\Gutenberg\Blocks\FilterCheckboxBlock;
+use Jankx\Gutenberg\Blocks\FilterRadioBlock;
 use Jankx\Gutenberg\Blocks\IconPickerBlock;
 use Jankx\Gutenberg\Blocks\CommentCountBlock;
 use Jankx\Gutenberg\Blocks\SearchResultsCountBlock;
@@ -157,6 +159,8 @@ class GutenbergService
     {
         $this->repository->registerBlock(AdvancedButtonBlock::class);
         $this->repository->registerBlock(AdvancedFilterBlock::class);
+        $this->repository->registerBlock(FilterCheckboxBlock::class);
+        $this->repository->registerBlock(FilterRadioBlock::class);
         $this->repository->registerBlock(AdvancedFiltersBlock::class);
         $this->repository->registerBlock(AdvancedImageBoxBlock::class);
         $this->repository->registerBlock(AuthorBoxBlock::class);

@@ -1,0 +1,24 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "jankx/filter-radio",
+  "version": "1.0.0",
+  "title": "Radio Style",
+  "category": "jankx",
+  "icon": "rest",
+  "description": "Tùy biến giao diện radio của bộ lọc trong Advanced Filter.",
+  "parent": ["jankx/advanced-filter"],
+  "textdomain": "jankx",
+  "supports": {
+    "html": false,
+    "reusable": false
+  },
+  "attributes": {
+    "size": { "type": "number", "default": 18 },
+    "borderWidth": { "type": "number", "default": 1.5 },
+    "borderColor": { "type": "string", "default": "#8c8f94" },
+    "checkedColor": { "type": "string", "default": "#503aa8" },
+    "gap": { "type": "number", "default": 8 }
+  },
+  "editorScript": "file:../../dist/blocks/filter-radio/index.js"
+}

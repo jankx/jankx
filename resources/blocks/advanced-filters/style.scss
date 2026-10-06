@@ -599,3 +599,65 @@
         }
     }
 }
+
+// ---------------------------------------------------------------------------
+// Checkbox / radio box styling driven by the jankx/filter-checkbox and
+// jankx/filter-radio style blocks.
+//
+// AdvancedFilterBlock mirrors their attributes as CSS custom properties on the
+// filter wrapper and only adds `.jankx-filter-box-styled` when such a block is
+// present, so filters without one keep the browser's native control.
+// ---------------------------------------------------------------------------
+.jankx-filter-box-styled .filter-option input[type='checkbox'],
+.jankx-filter-box-styled .filter-option input[type='radio'],
+.jankx-filter-style-preview input {
+    appearance: none;
+    -webkit-appearance: none;
+    flex: 0 0 auto;
+    box-sizing: border-box;
+    width: var(--jankx-filter-box-size, 18px);
+    height: var(--jankx-filter-box-size, 18px);
+    margin: 0;
+    padding: 0;
+    border: var(--jankx-filter-box-border-width, 1.5px) solid var(--jankx-filter-box-border-color, #8c8f94);
+    background-color: #fff;
+    cursor: pointer;
+    transition: border-color 0.15s ease-in-out, background-color 0.15s ease-in-out;
+}
+
+.jankx-filter-box-styled .filter-option input[type='checkbox'],
+.jankx-filter-style-preview input[type='checkbox'] {
+    border-radius: var(--jankx-filter-box-radius, 4px);
+}
+
+.jankx-filter-box-styled .filter-option input[type='radio'],
+.jankx-filter-style-preview input[type='radio'] {
+    border-radius: 50%;
+}
+
+.jankx-filter-box-styled .filter-option input[type='checkbox']:checked,
+.jankx-filter-style-preview input[type='checkbox']:checked {
+    border-color: var(--jankx-filter-box-checked-color, #503aa8);
+    background-color: var(--jankx-filter-box-checked-color, #503aa8);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 65% 65%;
+}
+
+.jankx-filter-box-styled .filter-option input[type='radio']:checked,
+.jankx-filter-style-preview input[type='radio']:checked {
+    border-color: var(--jankx-filter-box-checked-color, #503aa8);
+    background-color: #fff;
+    background-image: radial-gradient(
+        circle,
+        var(--jankx-filter-box-checked-color, #503aa8) 0 38%,
+        transparent 40%
+    );
+}
+
+// The option label already declares its own gap with a deeper selector, so
+// this one has to win explicitly.
+.jankx-filter-box-styled .filter-option {
+    gap: var(--jankx-filter-box-gap, 0.5rem) !important;
+}

@@ -66,7 +66,7 @@ class AdvancedFilterBlock extends Block
 
         // Nếu là child của smart-tab, render data attributes để JavaScript đọc được
         if ($is_smart_tab_child) {
-            return $this->renderSmartTabChild($attributes);
+            return $this->renderSmartTabChild($attributes, $block);
         }
         
         // Nếu là child của advanced-filters, không render gì; dữ liệu được parent xử lý.
@@ -106,9 +106,17 @@ class AdvancedFilterBlock extends Block
         $width = $attributes['width'] ?? 'full';
 
         $widthClass = 'jankx-advanced-filter--width-' . esc_attr($width);
+        [$box_styled, $box_vars] = $this->resolveBoxStyle($block);
+
+        $wrapperClass = 'jankx-advanced-filter jankx-advanced-filter--layout-' . esc_attr($containerLayout) . ' ' . $widthClass . ' filter-group';
+        if ($box_styled) {
+            $wrapperClass .= ' jankx-filter-box-styled';
+        }
+
         $wrapperAttrs = get_block_wrapper_attributes([
-            'class' => 'jankx-advanced-filter jankx-advanced-filter--layout-' . esc_attr($containerLayout) . ' ' . $widthClass . ' filter-group',
+            'class' => $wrapperClass,
             'data-filter-type' => esc_attr($type),
+            'style' => $box_vars,
         ]);
 
         $contentAttrs = sprintf(
@@ -168,7 +176,7 @@ class AdvancedFilterBlock extends Block
      * @param array $attributes Block attributes
      * @return string HTML output
      */
-    protected function renderSmartTabChild(array $attributes): string
+    protected function renderSmartTabChild(array $attributes, ?object $block = null): string
     {
         $filterType = $attributes['filterType'] ?? 'taxonomy';
 
@@ -176,6 +184,14 @@ class AdvancedFilterBlock extends Block
             'class' => 'wp-block-jankx-advanced-filter jankx-advanced-filter',
             'data-filter-type' => esc_attr($filterType),
         ];
+
+        [$box_styled, $box_vars] = $this->resolveBoxStyle($block);
+        if ($box_styled) {
+            $wrapperAttrs['class'] .= ' jankx-filter-box-styled';
+        }
+        if ($box_vars !== '') {
+            $wrapperAttrs['style'] = $box_vars;
+        }
 
         // Use Strategy Pattern to build type-specific attributes
         FilterDataAttributeStrategyRegistry::init();
@@ -193,6 +209,69 @@ class AdvancedFilterBlock extends Block
         }
 
         return sprintf('<div%s></div>', $attrsString);
+    }
+
+    /**
+     * Read the checkbox/radio style blocks (jankx/filter-checkbox, jankx/filter-radio)
+     * dropped into this filter and turn their attributes into CSS custom
+     * properties for the filter wrapper.
+     *
+     * @param object|null $block Parsed block object
+     * @return array{0: bool, 1: string} Whether a style block exists and the CSS declarations
+     */
+    protected function resolveBoxStyle(?object $block): array
+    {
+        if (!$block instanceof \WP_Block || empty($block->inner_blocks)) {
+            return [false, ''];
+        }
+
+        $styleBlocks = ['jankx/filter-checkbox', 'jankx/filter-radio'];
+        $numericAttributes = ['size', 'borderWidth', 'radius', 'gap'];
+        $properties = [
+            'size' => '--jankx-filter-box-size',
+            'borderWidth' => '--jankx-filter-box-border-width',
+            'borderColor' => '--jankx-filter-box-border-color',
+            'checkedColor' => '--jankx-filter-box-checked-color',
+            'gap' => '--jankx-filter-box-gap',
+        ];
+
+        $styled = false;
+        $declarations = '';
+
+        foreach ($block->inner_blocks as $inner) {
+            $name = is_object($inner) && isset($inner->name) ? (string) $inner->name : '';
+            if (!in_array($name, $styleBlocks, true)) {
+                continue;
+            }
+
+            $innerProperties = $properties;
+            if ($name === 'jankx/filter-checkbox') {
+                $innerProperties['radius'] = '--jankx-filter-box-radius';
+            }
+
+            $attributes = is_object($inner) && isset($inner->attributes) && is_array($inner->attributes)
+                ? $inner->attributes
+                : [];
+
+            foreach ($innerProperties as $attribute => $property) {
+                if (!isset($attributes[$attribute]) || $attributes[$attribute] === '' || $attributes[$attribute] === null) {
+                    continue;
+                }
+
+                $value = $attributes[$attribute];
+                if (is_numeric($value) && in_array($attribute, $numericAttributes, true)) {
+                    $value .= 'px';
+                } else {
+                    $value = (string) $value;
+                }
+
+                $declarations .= $property . ':' . $value . ';';
+            }
+
+            $styled = true;
+        }
+
+        return [$styled, $declarations];
     }
 }
 

@@ -31,3 +31,28 @@
     // ServerSideRender content should be identical to frontend
 }
 
+
+// ---------------------------------------------------------------------------
+// Editor-only chrome for the checkbox/radio style blocks that sit inside
+// jankx/advanced-filter (jankx/filter-checkbox, jankx/filter-radio).
+// ---------------------------------------------------------------------------
+.jankx-advanced-filter__style-slot {
+    margin-top: 0.5rem;
+}
+
+.jankx-filter-style-block {
+    display: inline-block;
+    padding: 6px 10px;
+    border: 1px dashed #c3c4c7;
+    border-radius: 4px;
+    background: #fff;
+}
+
+.jankx-filter-style-preview {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 13px;
+    line-height: 1.4;
+    color: #1e1e1e;
+}

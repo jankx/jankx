@@ -417,6 +417,84 @@ interface EditProps {
     clientId: string;
 }
 
+// ---------------------------------------------------------------------------
+// Module-level request caches — shared by every DDL instance in the editor.
+// Previously each block mount / post-type switch re-fetched taxonomies,
+// authors and terms (one REST round-trip and MySQL query set per call).
+// Promises are cached so concurrent blocks share a single in-flight request.
+// ---------------------------------------------------------------------------
+const taxonomyRequestCache = new Map<string, Promise<TaxonomyItem[]>>();
+const termsRequestCache = new Map<string, Promise<TermItem[]>>();
+let authorsRequest: Promise<AuthorItem[]> | null = null;
+
+const normalizeTaxonomyList = (data: Record<string, TaxonomyItem> | undefined): TaxonomyItem[] =>
+    Object.values(data || {})
+        .filter((item): item is TaxonomyItem => typeof item?.slug === 'string' && typeof item?.name === 'string')
+        .map((item) => ({
+            slug: item.slug,
+            name: item.name,
+            rest_base: item.rest_base,
+        }));
+
+const normalizeAuthorList = (data: Array<Record<string, unknown>> | undefined): AuthorItem[] =>
+    (data || [])
+        .map((author) => {
+            const id = typeof author?.id === 'number' ? author.id : Number(author?.id);
+            const name =
+                typeof author?.name === 'string' && author.name.length > 0
+                    ? author.name
+                    : typeof author?.slug === 'string'
+                        ? author.slug
+                        : '';
+            return { id: Number.isFinite(id) ? id : 0, name };
+        })
+        .filter((author): author is AuthorItem => author.id > 0 && author.name.length > 0);
+
+const normalizeTermList = (data: Array<Record<string, unknown>> | undefined): TermItem[] =>
+    (data || [])
+        .map((term) => {
+            const id = typeof term?.id === 'number' ? term.id : Number(term?.id);
+            const name = typeof term?.name === 'string' ? term.name : '';
+            return { id: Number.isFinite(id) ? id : 0, name };
+        })
+        .filter((term): term is TermItem => term.id > 0 && term.name.length > 0);
+
+const requestTaxonomies = (postType: string): Promise<TaxonomyItem[]> => {
+    let request = taxonomyRequestCache.get(postType);
+    if (!request) {
+        request = window.wp!.apiFetch({
+            path: `/wp/v2/taxonomies?type=${postType}`,
+        }).then((data) => normalizeTaxonomyList(data as Record<string, TaxonomyItem> | undefined));
+        taxonomyRequestCache.set(postType, request);
+        request.catch(() => taxonomyRequestCache.delete(postType));
+    }
+    return request;
+};
+
+const requestAuthors = (): Promise<AuthorItem[]> => {
+    if (!authorsRequest) {
+        authorsRequest = window.wp!.apiFetch({
+            path: '/wp/v2/users?who=authors&per_page=100',
+        }).then((data) => normalizeAuthorList(data as Array<Record<string, unknown>> | undefined));
+        authorsRequest.catch(() => {
+            authorsRequest = null;
+        });
+    }
+    return authorsRequest;
+};
+
+const requestTerms = (restBase: string): Promise<TermItem[]> => {
+    let request = termsRequestCache.get(restBase);
+    if (!request) {
+        request = window.wp!.apiFetch({
+            path: `/wp/v2/${restBase}?per_page=100&orderby=name&order=asc`,
+        }).then((data) => normalizeTermList(data as Array<Record<string, unknown>> | undefined));
+        termsRequestCache.set(restBase, request);
+        request.catch(() => termsRequestCache.delete(restBase));
+    }
+    return request;
+};
+
 function Edit({ attributes, setAttributes, clientId }: EditProps) {
     const {
         queryPreset = 'custom',
@@ -486,34 +564,11 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
         spaceBetween = 16,
     } = attributes;
 
-    // Sanitize taxQuery for editor REST API preview
-    const editorTaxQuery = useMemo(() => {
-        return taxQuery.filter(tq => tq.operator !== 'CURRENT_QUERIED_OBJECT');
-    }, [taxQuery]);
-
     // Fetch posts based on query attributes
-    const fetchedPosts = useSelect(
-        (select) => select('core').getEntityRecords(
-            'post',
-            postType,
-            {
-                per_page: postsPerPage,
-                offset: offset,
-                s: keyword,
-                orderby: orderBy,
-                order: order,
-                include: postIn,
-                exclude: postNotIn,
-                author: authorIn.length > 0 ? authorIn[0] : undefined,
-                author_not_in: authorNotIn,
-                meta_query: metaQuery,
-                tax_query: editorTaxQuery,
-                post_status: postStatus,
-                ignore_sticky_posts: includeStickyPosts ? undefined : true,
-            }
-        ),
-        [postType, postsPerPage, offset, keyword, orderBy, order, postIn, postNotIn, authorIn, authorNotIn, metaQuery, editorTaxQuery, postStatus, includeStickyPosts]
-    );
+    // REMOVED: preview data comes from the client-side template renderer.
+    // The old `getEntityRecords` useSelect here was dead code (result never
+    // used) but re-queried the REST API on every query-attribute change,
+    // adding a MySQL round-trip per keystroke/toggle in the inspector.
 
     // States for taxonomies and authors
     const [taxonomies, setTaxonomies] = useState<TaxonomyItem[]>([]);
@@ -567,62 +622,32 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
         }
     }, [postType, queryPreset, setAttributes]);
 
-    // Fetch taxonomies and authors when postType changes
+    // Fetch taxonomies and authors when postType changes.
+    // Uses module-level request caches: taxonomies are fetched once per
+    // post type, authors once per editor session — shared across every
+    // DDL instance (previously each block re-fetched both).
     useEffect(() => {
+        let cancelled = false;
 
         const fetchTaxonomiesAndAuthors = async () => {
-
             if (!window.wp?.apiFetch) {
                 return;
             }
 
             try {
-                const taxonomiesData = await window.wp.apiFetch({
-                    path: `/wp/v2/taxonomies?type=${postType}`,
-                }) as Record<string, TaxonomyItem> | undefined;
-
-                if (!isMountedRef.current) {
+                const taxArray = await requestTaxonomies(postType);
+                if (cancelled || !isMountedRef.current) {
                     return;
                 }
-
-                const taxArray = Object.values(taxonomiesData || {}).filter(
-                    (item): item is TaxonomyItem => typeof item?.slug === 'string' && typeof item?.name === 'string'
-                ).map(item => ({
-                    slug: item.slug,
-                    name: item.name,
-                    rest_base: item.rest_base
-                }));
                 setTaxonomies(taxArray);
 
-                const authorsData = await window.wp.apiFetch({
-                    path: '/wp/v2/users?who=authors&per_page=100',
-                }) as Array<Record<string, unknown>> | undefined;
-
-                if (!isMountedRef.current) {
+                const normalizedAuthors = await requestAuthors();
+                if (cancelled || !isMountedRef.current) {
                     return;
                 }
-
-                const normalizedAuthors = (authorsData || [])
-                    .map((author) => {
-                        const id = typeof author?.id === 'number' ? author.id : Number(author?.id);
-                        const name =
-                            typeof author?.name === 'string' && author.name.length > 0
-                                ? author.name
-                                : typeof author?.slug === 'string'
-                                    ? author.slug
-                                    : '';
-
-                        return {
-                            id: Number.isFinite(id) ? id : 0,
-                            name,
-                        };
-                    })
-                    .filter((author): author is AuthorItem => author.id > 0 && author.name.length > 0);
-
                 setAuthors(normalizedAuthors);
             } catch (error) {
-
-                if (!isMountedRef.current) {
+                if (cancelled || !isMountedRef.current) {
                     return;
                 }
 
@@ -632,6 +657,10 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
         };
 
         fetchTaxonomiesAndAuthors();
+
+        return () => {
+            cancelled = true;
+        };
     }, [postType]);
 
     // Prune taxQuery items whose taxonomy is not registered for the selected post type.
@@ -663,25 +692,12 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
         const restBase = taxonomy?.rest_base || taxonomySlug;
 
         try {
-            const termsResponse = await window.wp.apiFetch({
-                path: `/wp/v2/${restBase}?per_page=100&orderby=name&order=asc`,
-            }) as Array<Record<string, unknown>> | undefined;
+            // Module-level cache: concurrent blocks / remounts share one request.
+            const normalizedTerms = await requestTerms(restBase);
 
             if (!isMountedRef.current) {
                 return;
             }
-
-            const normalizedTerms = (termsResponse || [])
-                .map((term) => {
-                    const id = typeof term?.id === 'number' ? term.id : Number(term?.id);
-                    const name = typeof term?.name === 'string' ? term.name : '';
-                    return {
-                        id: Number.isFinite(id) ? id : 0,
-                        name,
-                    };
-                })
-                .filter((term): term is TermItem => term.id > 0 && term.name.length > 0);
-
 
             setTaxonomyTerms(prev => {
                 const newState = {

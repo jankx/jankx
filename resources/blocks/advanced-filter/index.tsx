@@ -1,7 +1,8 @@
-import { registerBlockType } from '@wordpress/blocks';
+import { registerBlockType, createBlock } from '@wordpress/blocks';
 import { __ } from '@wordpress/i18n';
 import {
     InspectorControls,
+    InnerBlocks,
     useBlockProps,
 } from '@wordpress/block-editor';
 import {
@@ -12,9 +13,10 @@ import {
     Spinner,
     Placeholder,
 } from '@wordpress/components';
-import { useEffect, useState } from '@wordpress/element';
+import { useEffect, useMemo, useState } from '@wordpress/element';
 import { useSelect, dispatch, select } from '@wordpress/data';
 import ServerSideRender from '@wordpress/server-side-render';
+import { FILTER_STYLE_BLOCKS, desiredFilterStyleBlock } from '../../shared/filter-style';
 import metadata from './block.json';
 
 type FilterAttributes = {
@@ -213,6 +215,39 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
     const resolvedSearchButtonText = searchButtonText || __('Search', 'jankx');
     const resolvedSearchButtonDisplay = searchButtonDisplay || 'text';
     const resolvedSearchButtonIcon = searchButtonIcon || '';
+
+    // Which style block belongs in this filter: only the display styles that
+    // draw a checkbox/radio list need one, and single-select filters get the
+    // radio variant.
+    const desiredStyleBlock = useMemo(
+        () => desiredFilterStyleBlock(filterType, resolvedDisplayStyle, resolvedMultiple),
+        [filterType, resolvedDisplayStyle, resolvedMultiple]
+    );
+
+    // Keep the style slot in sync with the display style: switching to
+    // Checkboxes inserts the matching block, switching away removes it.
+    useEffect(() => {
+        if (!clientId) {
+            return;
+        }
+        const blockEditor = select('core/block-editor') as any;
+        const innerBlocks: any[] = blockEditor.getBlock(clientId)?.innerBlocks || [];
+        const styleBlocks = innerBlocks.filter((block) =>
+            FILTER_STYLE_BLOCKS.includes(block.name)
+        );
+        const outdated = styleBlocks.filter((block) => block.name !== desiredStyleBlock);
+
+        if (outdated.length) {
+            blockEditor.removeBlocks(
+                outdated.map((block) => block.clientId),
+                false
+            );
+        }
+        if (desiredStyleBlock && !styleBlocks.some((block) => block.name === desiredStyleBlock)) {
+            blockEditor.insertBlock(createBlock(desiredStyleBlock), 0, clientId, false);
+        }
+    }, [clientId, desiredStyleBlock]);
+
 
     const blockProps = useBlockProps({
         className: `jankx-advanced-filter jankx-advanced-filter--layout-${resolvedLayout} jankx-advanced-filter--width-${width || 'full'}`,
@@ -769,6 +804,15 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
             <div {...blockProps}>
                 {/* Preview the real server-rendered control so the editor matches the frontend */}
                 <ServerSideRender block="jankx/advanced-filter" attributes={attributes} />
+                {/* Holds the checkbox/radio style block, kept in sync with the display style */}
+                <div className="jankx-advanced-filter__style-slot">
+                    <InnerBlocks
+                        allowedBlocks={FILTER_STYLE_BLOCKS}
+                        templateLock={false}
+                        orientation="horizontal"
+                        renderAppender={InnerBlocks.ButtonBlockAppender}
+                    />
+                </div>
             </div>
         </>
     );
@@ -777,7 +821,9 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
 registerBlockType(metadata.name, {
     ...metadata,
     edit: Edit,
-    save: () => null,
+    // InnerBlocks.Content is required: save() returning null empties
+    // getSaveElement() and the style block would never reach post_content.
+    save: () => <InnerBlocks.Content />,
 } as any);
 
 

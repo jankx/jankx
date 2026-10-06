@@ -142,6 +142,9 @@ module.exports = {
 
     'dist/blocks/advanced-filter/index': './blocks/advanced-filter/index.tsx',
 
+    'dist/blocks/filter-checkbox/index': './blocks/filter-checkbox/index.tsx',
+    'dist/blocks/filter-radio/index': './blocks/filter-radio/index.tsx',
+
     'dist/blocks/advanced-filters/index': './blocks/advanced-filters/index.tsx',
     'dist/blocks/advanced-filters/frontend': './blocks/advanced-filters/frontend.ts',
     'dist/blocks/advanced-filters/style': './blocks/advanced-filters/style.scss',
