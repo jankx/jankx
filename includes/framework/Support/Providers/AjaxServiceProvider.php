@@ -45,6 +45,12 @@ class AjaxServiceProvider extends ServiceProvider
      */
     public function register(Application $app): void
     {
+        // Hàm helper global của Fast AJAX (jankx_ajax_url).
+        // Tách file riêng vì file này khai namespace: khai hàm global từ
+        // trong namespace sẽ tạo ra hàm namespaced và extension gọi hàm
+        // global sẽ nhận "undefined function" không kèm dấu hiệu gì.
+        require_once get_template_directory() . '/includes/framework/Ajax/helpers.php';
+
         // Đăng ký PSR-4 namespace Jankx\Ajax\ vào Composer autoloader
         $this->registerAutoload();
     }
@@ -172,17 +178,13 @@ class AjaxServiceProvider extends ServiceProvider
      */
     public function enqueueAjaxConfig(): void
     {
+        // Logic URL nằm trong helper jankx_ajax_url() để extension lấy base
+        // URL giống hệt, không mỗi bên tự chế.
         $config = [
-            'url'   => home_url('/jankx-ajax'),
+            'url'   => jankx_ajax_url(),
             'nonce' => wp_create_nonce('jankx_ajax'),
-            'mode'  => 'rewrite',
+            'mode'  => $this->isRewriteActive() ? 'rewrite' : 'direct',
         ];
-
-        // Fallback: nếu rewrite chưa được flush, dùng direct URL đến ajax.php
-        if (! $this->isRewriteActive()) {
-            $config['url']  = get_template_directory_uri() . '/ajax.php/jankx-ajax';
-            $config['mode'] = 'direct';
-        }
 
         // Handle riêng, src = false: WordPress in inline data của nó mà không
         // tạo thẻ <script src>, nên không cần (và không nên) phụ thuộc jQuery.
@@ -237,4 +239,3 @@ class AjaxServiceProvider extends ServiceProvider
         });
     }
 }
-
