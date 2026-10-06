@@ -84,6 +84,30 @@ class StarRatingBlock extends Block
         return new \WP_REST_Response($options, 200);
     }
 
+    /**
+     * Resolve "auto" rating source to a concrete provider ID for a post.
+     *
+     * Prefers a provider registered specifically for the post type,
+     * falls back to the universal "meta" provider.
+     */
+    public static function resolveSourceForPost($postId)
+    {
+        $postId = (int) $postId;
+        $postType = $postId ? (get_post_type($postId) ?: '') : '';
+
+        if ($postType) {
+            $candidates = StarRatingRegistry::getProvidersForPostType($postType);
+
+            foreach ($candidates as $candidate) {
+                if (!empty($candidate->getSupportedPostTypes())) {
+                    return $candidate->getId();
+                }
+            }
+        }
+
+        return 'meta';
+    }
+
     // -----------------------------------------------------------------------
     // Block render
     // -----------------------------------------------------------------------
@@ -92,15 +116,15 @@ class StarRatingBlock extends Block
     {
         $attributes = wp_parse_args($attributes, [
             'displayStyle'   => 'stars',
-            'ratingSource'   => 'manual',
+            'ratingSource'   => 'auto',
             'manualRating'   => 5,
-            'metaKey'        => 'rating_score',
+            'metaKey'        => 'jankx_rating_average',
             'crawlerTable'   => '',
             'starSize'       => 16,
             'starColor'      => '#f1c40f',
             'starEmptyColor' => '#dddddd',
             'showCount'      => false,
-            'countMetaKey'   => 'rating_count',
+            'countMetaKey'   => 'jankx_rating_count',
             'align'          => 'left',
             'position'       => '',
             'top'            => '',
@@ -116,6 +140,11 @@ class StarRatingBlock extends Block
 
         $postId   = get_the_ID() ?: 0;
         $source   = $attributes['ratingSource'];
+
+        if ($source === 'auto') {
+            $source = static::resolveSourceForPost($postId);
+        }
+
         $provider = StarRatingRegistry::getProvider($source);
 
         if ($provider === null) {

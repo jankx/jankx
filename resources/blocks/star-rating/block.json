@@ -25,8 +25,9 @@
     },
     "ratingSource": {
       "type": "string",
-      "default": "manual",
+      "default": "auto",
       "enum": [
+        "auto",
         "manual",
         "woocommerce",
         "meta",
@@ -39,7 +40,7 @@
     },
     "metaKey": {
       "type": "string",
-      "default": "rating_score"
+      "default": "jankx_rating_average"
     },
     "crawlerTable": {
       "type": "string",
@@ -83,7 +84,7 @@
     },
     "countMetaKey": {
       "type": "string",
-      "default": "rating_count"
+      "default": "jankx_rating_count"
     },
     "align": {
       "type": "string",

@@ -221,19 +221,25 @@ const Edit = ({ attributes, setAttributes }: EditProps) => {
     const [loadingProviders, setLoadingProviders] = useState(true);
 
     useEffect(() => {
+        const autoOption: ProviderOption = {
+            label: __('Auto (by post type)', 'jankx'),
+            value: 'auto',
+            editorConfig: [],
+        };
         apiFetch<ProviderOption[]>({ path: '/jankx/v1/star-rating/providers' })
             .then((options) => {
-                setProviderOptions(options);
+                setProviderOptions([autoOption, ...options]);
             })
             .catch(() => {
                 setProviderOptions([
+                    autoOption,
                     { label: __('Manual', 'jankx'), value: 'manual', editorConfig: [
                         { type: 'range', attribute: 'manualRating', label: __('Rating Value', 'jankx'), min: 0, max: 5, step: 0.1 },
                     ]},
                     { label: __('WooCommerce Product', 'jankx'), value: 'woocommerce', editorConfig: [] },
                     { label: __('Post Meta', 'jankx'), value: 'meta', editorConfig: [
-                        { type: 'text', attribute: 'metaKey', label: __('Rating Meta Key', 'jankx'), default: 'rating_score' },
-                        { type: 'text', attribute: 'countMetaKey', label: __('Count Meta Key', 'jankx'), default: 'rating_count' },
+                        { type: 'text', attribute: 'metaKey', label: __('Rating Meta Key', 'jankx'), default: 'jankx_rating_average' },
+                        { type: 'text', attribute: 'countMetaKey', label: __('Count Meta Key', 'jankx'), default: 'jankx_rating_count' },
                     ]},
                     { label: __('Crawler Data', 'jankx'), value: 'crawler', editorConfig: [
                         { type: 'text', attribute: 'crawlerTable', label: __('Crawler Table', 'jankx') },

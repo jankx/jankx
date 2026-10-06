@@ -23,7 +23,7 @@ class PostMetaRatingProvider extends AbstractStarRatingProvider
 
     public function getRating(int $postId, array $attributes): float
     {
-        $metaKey = $attributes['metaKey'] ?? 'rating_score';
+        $metaKey = $attributes['metaKey'] ?? 'jankx_rating_average';
         return (float) get_post_meta($postId, $metaKey, true);
     }
 
@@ -32,7 +32,7 @@ class PostMetaRatingProvider extends AbstractStarRatingProvider
         if (empty($attributes['showCount'])) {
             return 0;
         }
-        $countMetaKey = $attributes['countMetaKey'] ?? 'rating_count';
+        $countMetaKey = $attributes['countMetaKey'] ?? 'jankx_rating_count';
         return (int) get_post_meta($postId, $countMetaKey, true);
     }
 
@@ -44,14 +44,14 @@ class PostMetaRatingProvider extends AbstractStarRatingProvider
                 'attribute' => 'metaKey',
                 'label'     => __('Rating Meta Key', 'jankx'),
                 'help'      => __('Custom field name for rating score.', 'jankx'),
-                'default'   => 'rating_score',
+                'default'   => 'jankx_rating_average',
             ],
             [
                 'type'      => 'text',
                 'attribute' => 'countMetaKey',
                 'label'     => __('Count Meta Key', 'jankx'),
                 'help'      => __('Custom field name for review count.', 'jankx'),
-                'default'   => 'rating_count',
+                'default'   => 'jankx_rating_count',
             ],
         ];
     }
