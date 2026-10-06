@@ -4,6 +4,7 @@ namespace Jankx\Gutenberg\Blocks;
 
 use Jankx\Gutenberg\Block;
 use Jankx\Gutenberg\StarRating\StarRatingRegistry;
+use Jankx\Gutenberg\StarRating\RatingSourceResolver;
 use Jankx\Gutenberg\StarRating\RatingSubmission;
 use Jankx\Gutenberg\StarRating\RatingSubmissionShortcode;
 use Jankx\Gutenberg\StarRating\Providers\ManualRatingProvider;
@@ -87,25 +88,14 @@ class StarRatingBlock extends Block
     /**
      * Resolve "auto" rating source to a concrete provider ID for a post.
      *
-     * Prefers a provider registered specifically for the post type,
-     * falls back to the universal "meta" provider.
+     * Delegates to RatingSourceResolver (two-level cache: static + transient).
+     *
+     * @param int|null $postId
+     * @return string
      */
     public static function resolveSourceForPost($postId)
     {
-        $postId = (int) $postId;
-        $postType = $postId ? (get_post_type($postId) ?: '') : '';
-
-        if ($postType) {
-            $candidates = StarRatingRegistry::getProvidersForPostType($postType);
-
-            foreach ($candidates as $candidate) {
-                if (!empty($candidate->getSupportedPostTypes())) {
-                    return $candidate->getId();
-                }
-            }
-        }
-
-        return 'meta';
+        return RatingSourceResolver::resolve($postId);
     }
 
     // -----------------------------------------------------------------------

@@ -58,6 +58,16 @@ class ConfigurableRatingProvider extends AbstractStarRatingProvider
         return $this->postTypes;
     }
 
+    public function getRatingMetaKey(): string
+    {
+        return $this->ratingMetaKey;
+    }
+
+    public function getCountMetaKey(): string
+    {
+        return $this->countMetaKey;
+    }
+
     public function getRating(int $postId, array $attributes): float
     {
         $rating = (float) get_post_meta($postId, $this->ratingMetaKey, true);
