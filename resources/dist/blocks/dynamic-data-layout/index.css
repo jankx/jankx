@@ -249,13 +249,32 @@
 .wp-block-jankx-dynamic-data-layout.jankx-carousel .carousel-dots .embla__dot,
 .wp-block-jankx-dynamic-data-layout.jankx-carousel .embla__dots .carousel-dot,
 .wp-block-jankx-dynamic-data-layout.jankx-carousel .embla__dots .embla__dot {
+  position: relative;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.wp-block-jankx-dynamic-data-layout.dynamic-data-layout--carousel .carousel-dots .carousel-dot::before,
+.wp-block-jankx-dynamic-data-layout.dynamic-data-layout--carousel .carousel-dots .embla__dot::before,
+.wp-block-jankx-dynamic-data-layout.dynamic-data-layout--carousel .embla__dots .carousel-dot::before,
+.wp-block-jankx-dynamic-data-layout.dynamic-data-layout--carousel .embla__dots .embla__dot::before, .wp-block-jankx-dynamic-data-layout.jankx-carousel .carousel-dots .carousel-dot::before,
+.wp-block-jankx-dynamic-data-layout.jankx-carousel .carousel-dots .embla__dot::before,
+.wp-block-jankx-dynamic-data-layout.jankx-carousel .embla__dots .carousel-dot::before,
+.wp-block-jankx-dynamic-data-layout.jankx-carousel .embla__dots .embla__dot::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
   width: 10px;
   height: 10px;
   border-radius: 50%;
   background: #ccc;
-  border: none;
-  padding: 0;
-  cursor: pointer;
+  transform: translate(-50%, -50%);
   transition: all 0.3s ease;
 }
 .wp-block-jankx-dynamic-data-layout.dynamic-data-layout--carousel .carousel-dots .carousel-dot.is-active, .wp-block-jankx-dynamic-data-layout.dynamic-data-layout--carousel .carousel-dots .carousel-dot.is-selected,
@@ -271,8 +290,24 @@
 .wp-block-jankx-dynamic-data-layout.jankx-carousel .embla__dots .carousel-dot.is-selected,
 .wp-block-jankx-dynamic-data-layout.jankx-carousel .embla__dots .embla__dot.is-active,
 .wp-block-jankx-dynamic-data-layout.jankx-carousel .embla__dots .embla__dot.is-selected {
+  background: transparent;
+  transform: none;
+}
+.wp-block-jankx-dynamic-data-layout.dynamic-data-layout--carousel .carousel-dots .carousel-dot.is-active::before, .wp-block-jankx-dynamic-data-layout.dynamic-data-layout--carousel .carousel-dots .carousel-dot.is-selected::before,
+.wp-block-jankx-dynamic-data-layout.dynamic-data-layout--carousel .carousel-dots .embla__dot.is-active::before,
+.wp-block-jankx-dynamic-data-layout.dynamic-data-layout--carousel .carousel-dots .embla__dot.is-selected::before,
+.wp-block-jankx-dynamic-data-layout.dynamic-data-layout--carousel .embla__dots .carousel-dot.is-active::before,
+.wp-block-jankx-dynamic-data-layout.dynamic-data-layout--carousel .embla__dots .carousel-dot.is-selected::before,
+.wp-block-jankx-dynamic-data-layout.dynamic-data-layout--carousel .embla__dots .embla__dot.is-active::before,
+.wp-block-jankx-dynamic-data-layout.dynamic-data-layout--carousel .embla__dots .embla__dot.is-selected::before, .wp-block-jankx-dynamic-data-layout.jankx-carousel .carousel-dots .carousel-dot.is-active::before, .wp-block-jankx-dynamic-data-layout.jankx-carousel .carousel-dots .carousel-dot.is-selected::before,
+.wp-block-jankx-dynamic-data-layout.jankx-carousel .carousel-dots .embla__dot.is-active::before,
+.wp-block-jankx-dynamic-data-layout.jankx-carousel .carousel-dots .embla__dot.is-selected::before,
+.wp-block-jankx-dynamic-data-layout.jankx-carousel .embla__dots .carousel-dot.is-active::before,
+.wp-block-jankx-dynamic-data-layout.jankx-carousel .embla__dots .carousel-dot.is-selected::before,
+.wp-block-jankx-dynamic-data-layout.jankx-carousel .embla__dots .embla__dot.is-active::before,
+.wp-block-jankx-dynamic-data-layout.jankx-carousel .embla__dots .embla__dot.is-selected::before {
   background: #000;
-  transform: scale(1.2);
+  transform: translate(-50%, -50%) scale(1.2);
 }
 .wp-block-jankx-dynamic-data-layout.dynamic-data-layout--carousel .carousel-dots .carousel-dot:focus,
 .wp-block-jankx-dynamic-data-layout.dynamic-data-layout--carousel .carousel-dots .embla__dot:focus,

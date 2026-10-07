@@ -418,8 +418,10 @@ class SmartTabsBlock extends Block
                 $rel_attr = $rel ? sprintf(' rel="%s"', esc_attr($rel)) : '';
 
                 $nav_items[] = sprintf(
-                    '<a class="%s" data-tab-index="%d" data-trigger="%s" href="%s" target="%s"%s%s>%s</a>',
+                    '<a class="%s" role="tab" aria-selected="%s" tabindex="%s" data-tab-index="%d" data-trigger="%s" href="%s" target="%s"%s%s>%s</a>',
                     implode(' ', $item_classes),
+                    $is_active ? 'true' : 'false',
+                    $is_active ? '0' : '-1',
                     $index,
                     esc_attr($trigger_key),
                     esc_url($href),
@@ -430,8 +432,10 @@ class SmartTabsBlock extends Block
                 );
             } else {
                 $nav_items[] = sprintf(
-                    '<button class="%s" data-tab-index="%d" data-trigger="%s" type="button"%s%s>%s</button>',
+                    '<button class="%s" role="tab" aria-selected="%s" tabindex="%s" data-tab-index="%d" data-trigger="%s" type="button"%s%s>%s</button>',
                     implode(' ', $item_classes),
+                    $is_active ? 'true' : 'false',
+                    $is_active ? '0' : '-1',
                     $index,
                     esc_attr($trigger_key),
                     $tab_style_attr,
@@ -442,7 +446,7 @@ class SmartTabsBlock extends Block
         }
 
         return sprintf(
-            '<div class="smart-tabs__nav-list align-%s">%s</div>',
+            '<div class="smart-tabs__nav-list align-%s" role="tablist">%s</div>',
             esc_attr($tab_alignment),
             implode('', $nav_items)
         );

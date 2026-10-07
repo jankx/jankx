@@ -267,7 +267,9 @@ export default class JankxCarousel {
 
             scrollSnaps.forEach((_: any, index: number) => {
                 const dot = document.createElement('button');
+                dot.type = 'button';
                 dot.className = 'carousel-dot';
+                dot.setAttribute('aria-label', `Chuyển tới slide ${index + 1}`);
                 if (index === this.embla.selectedScrollSnap()) dot.classList.add('is-active');
                 dot.onclick = () => this.embla.scrollTo(index);
                 dotsContainer.appendChild(dot);
