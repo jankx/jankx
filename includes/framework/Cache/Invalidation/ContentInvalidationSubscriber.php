@@ -9,6 +9,11 @@ use Jankx\Cache\Contracts\QueryCacheInterface;
 /**
  * Keeps every cache layer coherent with the content (Observer pattern).
  *
+ * Every write WordPress makes has a matching observation here — post, term,
+ * comment, menu, widget, option and user changes all end up clearing at least
+ * one layer, because a stale page after an edit is the one bug that destroys
+ * trust in a cache.
+ *
  * Two invalidations, deliberately different in granularity:
  *
  * - query cache → one bucket bump per change (cheap, and a post save really
@@ -21,6 +26,36 @@ use Jankx\Cache\Contracts\QueryCacheInterface;
  */
 class ContentInvalidationSubscriber implements CacheSubscriberInterface
 {
+    /**
+     * Options whose new value changes what the front end renders: writing one
+     * of them bumps the query bucket and drops every cached page.
+     *
+     * @var string[]
+     */
+    const FRONT_OPTIONS = [
+        'home',
+        'siteurl',
+        'blogname',
+        'blogdescription',
+        'show_on_front',
+        'page_on_front',
+        'page_for_posts',
+        'posts_per_page',
+        'sticky_posts',
+        'permalink_structure',
+        'category_base',
+        'tag_base',
+        'site_icon',
+        'date_format',
+        'time_format',
+        'timezone_string',
+        'default_comment_status',
+        'thread_comments',
+        'thread_comments_depth',
+        'page_comments',
+        'comments_per_page',
+    ];
+
     /**
      * @var PageCacheInterface
      */
@@ -57,10 +92,37 @@ class ContentInvalidationSubscriber implements CacheSubscriberInterface
             return;
         }
 
+        // ── Posts: create, update, trash, untrash, delete ───────────────────
         add_action('save_post', [$this, 'onSavePost'], 20, 3);
+        add_action('trashed_post', [$this, 'onPostTrashed'], 20, 2);
+        add_action('untrashed_post', [$this, 'onPostTrashed'], 20, 2);
         add_action('deleted_post', [$this, 'onPostDeleted'], 20, 1);
+
+        // ── Taxonomy: create, edit, delete, post ↔ term relationships ───────
+        add_action('created_term', [$this, 'onTermChanged'], 20, 3);
         add_action('edited_term', [$this, 'onTermChanged'], 20, 3);
         add_action('delete_term', [$this, 'onTermDeleted'], 20, 4);
+        add_action('set_object_terms', [$this, 'onObjectTermsChanged'], 20, 5);
+
+        // ── Comments: `comment_count` lives inside the cached WP_Post ───────
+        add_action('wp_insert_comment', [$this, 'onCommentInserted'], 20, 2);
+        add_action('transition_comment_status', [$this, 'onCommentStatusChanged'], 20, 3);
+        add_action('edit_comment', [$this, 'onCommentEdited'], 20, 2);
+        add_action('deleted_comment', [$this, 'onCommentDeleted'], 20, 2);
+
+        // ── Markup that wraps every page: menus, widgets, users ─────────────
+        add_action('wp_update_nav_menu', [$this, 'onMarkupChanged'], 20, 3);
+        add_action('wp_delete_nav_menu', [$this, 'onMarkupChanged'], 20, 1);
+        add_action('user_register', [$this, 'onMarkupChanged'], 20, 2);
+        add_action('profile_update', [$this, 'onMarkupChanged'], 20, 2);
+        add_action('deleted_user', [$this, 'onMarkupChanged'], 20, 1);
+
+        // ── Options: added, updated and deleted all decide what shows ───────
+        add_action('add_option', [$this, 'onOptionChanged'], 20, 2);
+        add_action('update_option', [$this, 'onOptionChanged'], 20, 3);
+        add_action('delete_option', [$this, 'onOptionChanged'], 20, 1);
+
+        // ── Everything stale: theme switch, upgrade, Customizer save ────────
         add_action('switch_theme', [$this, 'onEverythingChanged']);
         add_action('upgrader_process_complete', [$this, 'onEverythingChanged'], 20, 2);
         add_action('customize_save_after', [$this, 'onEverythingChanged']);
@@ -89,15 +151,142 @@ class ContentInvalidationSubscriber implements CacheSubscriberInterface
             return;
         }
 
-        $postType = is_object($post) && !empty($post->post_type)
-            ? (string) $post->post_type
-            : (function_exists('get_post_type') ? (string) get_post_type($postId) : 'post');
+        $this->postChanged($postId, $post);
+    }
 
-        if ($postType === '' || $postType === 'false') {
-            $postType = 'post';
+    /**
+     * A post was moved to or restored from the trash (no `save_post` here).
+     *
+     * @param int    $postId         Post ID.
+     * @param string $previousStatus Status the post had before.
+     * @return void
+     */
+    public function onPostTrashed($postId, $previousStatus = ''): void
+    {
+        $postId = (int) $postId;
+        if ($postId <= 0) {
+            return;
         }
 
-        $this->invalidate($this->postTags($postId, $postType), $this->urlsFor($postId));
+        $this->postChanged($postId, null);
+    }
+
+    /**
+     * Terms were attached to (or detached from) an object — quick edit, bulk
+     * edit and programmatic assignments never fire `save_post`.
+     *
+     * @param int    $objectId Object ID.
+     * @param mixed  $terms    Terms (IDs or names).
+     * @param mixed  $ttIds    Term taxonomy IDs.
+     * @param string $taxonomy Taxonomy name.
+     * @param bool   $append   Whether terms were appended.
+     * @return void
+     */
+    public function onObjectTermsChanged($objectId, $terms = null, $ttIds = null, $taxonomy = '', $append = false): void
+    {
+        $objectId = (int) $objectId;
+        if ($objectId <= 0) {
+            return;
+        }
+
+        $postType = function_exists('get_post_type') ? get_post_type($objectId) : 'post';
+        if (!$postType) {
+            return;
+        }
+
+        $tags = $this->postTags($objectId, (string) $postType);
+        if (is_string($taxonomy) && $taxonomy !== '') {
+            $tags[] = 'taxonomy-' . $taxonomy;
+        }
+
+        $this->invalidate(array_values(array_unique($tags)), $this->urlsFor($objectId));
+    }
+
+    /**
+     * A comment was created (programmatic inserts included).
+     *
+     * @param int     $commentId Comment ID.
+     * @param mixed   $comment   Comment object.
+     * @return void
+     */
+    public function onCommentInserted($commentId, $comment = null): void
+    {
+        $this->commentChanged($comment, (int) $commentId);
+    }
+
+    /**
+     * A comment was approved, unapproved, spammed or trashed.
+     *
+     * @param string $newStatus New status.
+     * @param string $oldStatus Previous status.
+     * @param mixed  $comment   Comment object.
+     * @return void
+     */
+    public function onCommentStatusChanged($newStatus, $oldStatus = '', $comment = null): void
+    {
+        $this->commentChanged($comment, 0);
+    }
+
+    /**
+     * A comment was edited.
+     *
+     * @param int   $commentId Comment ID.
+     * @param mixed $data      Comment data.
+     * @return void
+     */
+    public function onCommentEdited($commentId, $data = null): void
+    {
+        $this->commentChanged(null, (int) $commentId);
+    }
+
+    /**
+     * A comment was deleted.
+     *
+     * @param int   $commentId Comment ID.
+     * @param mixed $comment   Comment object.
+     * @return void
+     */
+    public function onCommentDeleted($commentId, $comment = null): void
+    {
+        $this->commentChanged($comment, (int) $commentId);
+    }
+
+    /**
+     * Menus, widgets and user profiles are rendered around every page, but
+     * they never change the queried posts: drop the pages, keep the queries.
+     *
+     * @param mixed ...$args Ignored hook arguments.
+     * @return void
+     */
+    public function onMarkupChanged(...$args): void
+    {
+        $this->pageCache->purge(['all', 'home'], $this->homeUrls());
+    }
+
+    /**
+     * An option was added, updated or deleted.
+     *
+     * @param string $option Option name.
+     * @param mixed  ...$rest Hook arguments (vary per hook).
+     * @return void
+     */
+    public function onOptionChanged($option, ...$rest): void
+    {
+        $option = (string) $option;
+        if ($option === '') {
+            return;
+        }
+
+        // Widget instances and theme mods paint the page around the content.
+        if (strpos($option, 'widget_') === 0 || strpos($option, 'theme_mods_') === 0 || $option === 'sidebars_widgets') {
+            $this->onMarkupChanged();
+
+            return;
+        }
+
+        if (in_array($option, $this->frontOptions(), true)) {
+            $this->invalidate(['all', 'home', 'front-page'], $this->homeUrls());
+        }
     }
 
     /**
@@ -109,9 +298,11 @@ class ContentInvalidationSubscriber implements CacheSubscriberInterface
     public function onPostDeleted($postId): void
     {
         $postId = (int) $postId;
-        $postType = function_exists('get_post_type') ? (string) get_post_type($postId) : 'post';
+        if ($postId <= 0) {
+            return;
+        }
 
-        $this->invalidate($this->postTags($postId, $postType ?: 'post'), $this->urlsFor($postId));
+        $this->postChanged($postId, null);
     }
 
     /**
@@ -159,6 +350,77 @@ class ContentInvalidationSubscriber implements CacheSubscriberInterface
         }
 
         $this->pageCache->purge(['all'], []);
+    }
+
+    /**
+     * A post changed: bump the query bucket and drop its pages.
+     *
+     * @param int          $postId Post ID.
+     * @param \WP_Post|null $post  Post object when still available.
+     * @return void
+     */
+    private function postChanged($postId, $post): void
+    {
+        $postType = is_object($post) && !empty($post->post_type)
+            ? (string) $post->post_type
+            : (function_exists('get_post_type') ? (string) get_post_type($postId) : 'post');
+
+        if ($postType === '' || $postType === 'false') {
+            $postType = 'post';
+        }
+
+        $this->invalidate($this->postTags((int) $postId, $postType), $this->urlsFor($postId));
+    }
+
+    /**
+     * A comment changed: the post that carries it (comment count, moderation
+     * and the comment list itself) is now stale.
+     *
+     * @param mixed $comment   Comment object when still available.
+     * @param int   $commentId Comment ID.
+     * @return void
+     */
+    private function commentChanged($comment, int $commentId): void
+    {
+        $postId = 0;
+
+        if (is_object($comment) && isset($comment->comment_post_ID)) {
+            $postId = (int) $comment->comment_post_ID;
+        }
+
+        if ($postId <= 0 && $commentId > 0 && function_exists('get_comment_post_id')) {
+            $postId = (int) get_comment_post_id($commentId);
+        }
+
+        if ($postId <= 0) {
+            return;
+        }
+
+        $postType = function_exists('get_post_type') ? (string) get_post_type($postId) : 'post';
+
+        $this->invalidate($this->postTags($postId, $postType ?: 'post'), $this->urlsFor($postId));
+    }
+
+    /**
+     * Options that change what the front end renders, plus whatever the
+     * `jankx/cache/front_options` filter adds to the list.
+     *
+     * @return string[]
+     */
+    private function frontOptions(): array
+    {
+        $options = self::FRONT_OPTIONS;
+
+        if (function_exists('apply_filters')) {
+            $extra = (array) apply_filters('jankx/cache/front_options', []);
+            foreach ($extra as $name) {
+                if (is_string($name) && $name !== '') {
+                    $options[] = $name;
+                }
+            }
+        }
+
+        return $options;
     }
 
     /**
