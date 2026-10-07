@@ -16,6 +16,11 @@ use Jankx\Cache\Contracts\QueryKeyGeneratorInterface;
  * cache-hit path too — hence the per-request "served" set, which prevents
  * writing back what was just read.
  *
+ * The key is computed once, when `posts_pre_query` runs, and reused by
+ * `store()`: WordPress rewrites `WP_Query::$request` in between (the split
+ * query swaps `wp_posts.*` for `wp_posts.ID`), so hashing `$query->request`
+ * at each stage would write under one key and read under another.
+ *
  * Only public, filter-enabled, front-end queries are cached; a query is keyed
  * by its final SQL, so every clause filter (ordering, meta, search) is part of
  * the identity of the entry.
@@ -46,6 +51,13 @@ class QueryCacheInterceptor
     private $served;
 
     /**
+     * Key computed at `posts_pre_query` time, waiting for `the_posts`.
+     *
+     * @var \SplObjectStorage
+     */
+    private $pendingKeys;
+
+    /**
      * @param QueryCacheInterface       $cache   Query cache.
      * @param QueryKeyGeneratorInterface $keys   Query key generator.
      * @param array<string,mixed>       $options cache.query configuration.
@@ -56,6 +68,7 @@ class QueryCacheInterceptor
         $this->keys = $keys;
         $this->options = $options;
         $this->served = new \SplObjectStorage();
+        $this->pendingKeys = new \SplObjectStorage();
     }
 
     /**
@@ -96,6 +109,11 @@ class QueryCacheInterceptor
             return null;
         }
 
+        // Hand the key over to `store()`: WordPress rewrites
+        // `$query->request` before `the_posts` fires (split query), so
+        // recomputing it there would write under a different key.
+        $this->pendingKeys->attach($query, $key);
+
         $payload = $this->cache->get($key, $this->bucket());
         if (!is_array($payload) || !isset($payload['posts']) || !is_array($payload['posts'])) {
             return null;
@@ -126,16 +144,26 @@ class QueryCacheInterceptor
             // Just served from cache: writing it back would be a no-op that
             // also hides a `the_posts` plugin filter applied to the hit.
             $this->served->detach($query);
+            $this->pendingKeys->detach($query);
 
             return $posts;
         }
 
         if (!$this->isCacheable($query) || !is_array($posts)) {
+            $this->pendingKeys->detach($query);
+
             return $posts;
         }
 
-        $key = $this->keyFor($query);
-        if ($key === null) {
+        // The key the miss path already looked up (and WordPress may have
+        // changed `$query->request` since); fall back for queries that were
+        // never offered to `serve()` (e.g. another plugin short-circuited).
+        $key = $this->pendingKeys->contains($query)
+            ? (string) $this->pendingKeys[$query]
+            : $this->keyFor($query);
+        $this->pendingKeys->detach($query);
+
+        if ($key === null || $key === '') {
             return $posts;
         }
 

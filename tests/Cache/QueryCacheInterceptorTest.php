@@ -99,6 +99,32 @@ class QueryCacheInterceptorTest extends TestCase
         $this->assertSame(3, $hitQuery->max_num_pages);
     }
 
+    public function testSplitQueryRewriteDoesNotChangeTheCacheKey()
+    {
+        $sql = "SELECT SQL_CALC_FOUND_ROWS  wp_posts.* FROM wp_posts WHERE 1=1 LIMIT 0, 3";
+        $split = str_replace('wp_posts.*', 'wp_posts.ID', $sql);
+
+        $query = $this->query([], $sql);
+        $posts = [(object) ['ID' => 1], (object) ['ID' => 2]];
+
+        // Miss: the key is taken from the statement as it looks at
+        // `posts_pre_query`, before WordPress swaps the fields for its split
+        // query, and must be the key `store()` writes to.
+        $this->assertNull($this->interceptor->serve(null, $query));
+
+        $query->request = $split;
+        $query->found_posts = 5;
+        $query->max_num_pages = 2;
+        $this->interceptor->store($posts, $query);
+
+        $fresh = $this->query([], $sql);
+        $served = $this->interceptor->serve(null, $fresh);
+
+        $this->assertEquals($posts, $served);
+        $this->assertSame(5, $fresh->found_posts);
+        $this->assertSame(2, $fresh->max_num_pages);
+    }
+
     public function testHitIsNotWrittenBack()
     {
         $query = $this->query();
