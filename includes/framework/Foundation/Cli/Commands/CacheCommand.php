@@ -2,6 +2,7 @@
 
 namespace Jankx\Foundation\Cli\Commands;
 
+use Jankx\Foundation\Application;
 use WP_CLI;
 use WP_CLI_Command;
 
@@ -104,6 +105,117 @@ class CacheCommand extends WP_CLI_Command
             $status = $info['count'] > 0 ? 'Active' : 'Empty';
             WP_CLI::log(sprintf('  %s: %s (%d items)', ucfirst($type), $status, $info['count']));
         }
+
+        // Cache system (query cache + page cache) resolved status.
+        $this->report($this->cacheManager());
+    }
+
+    /**
+     * Purge the page cache and the query cache.
+     *
+     * Without arguments everything is invalidated: rendered pages (storage and
+     * the edge cache), every cached query and the storage engine itself.
+     *
+     * ## OPTIONS
+     *
+     * [--tags=<tags>]
+     * : Comma separated cache tags to purge, e.g. `post-12,type-post,home`.
+     *   When given (or when --url is given) only a selective purge runs.
+     *
+     * [--url=<url>]
+     * : Comma separated absolute URLs to purge.
+     *
+     * ## EXAMPLES
+     *
+     *     wp jankx cache purge
+     *     wp jankx cache purge --tags=post-12,home
+     *     wp jankx cache purge --url=https://nibitour.vn/tour/hanoi/
+     *
+     * @when after_wp_load
+     *
+     * @param array $args       Positional arguments.
+     * @param array $assoc_args Associative arguments.
+     */
+    public function purge($args, $assoc_args)
+    {
+        $manager = $this->cacheManager();
+
+        $selective = !empty($assoc_args['tags']) || !empty($assoc_args['url']);
+
+        if ($selective) {
+            $tags = !empty($assoc_args['tags'])
+                ? array_values(array_filter(array_map('trim', explode(',', (string) $assoc_args['tags']))))
+                : [];
+            $urls = !empty($assoc_args['url'])
+                ? array_values(array_filter(array_map('trim', explode(',', (string) $assoc_args['url']))))
+                : [];
+
+            $ok = $manager->purge($tags, $urls);
+
+            WP_CLI::log(sprintf(
+                'Selective purge — tags: %s | urls: %s',
+                $tags ? implode(', ', $tags) : '(none)',
+                $urls ? implode(', ', $urls) : '(none)'
+            ));
+        } else {
+            $ok = $manager->clearAll();
+            WP_CLI::log('Full purge — page cache, query cache and storage.');
+        }
+
+        $this->report($manager);
+
+        if (!$ok) {
+            WP_CLI::warning('Some cache layers did not confirm the purge (the edge purge endpoint may be unconfigured).');
+        }
+
+        if ($ok) {
+            WP_CLI::success('Cache purged.');
+        }
+    }
+
+    /**
+     * @return \Jankx\Cache\CacheManager
+     */
+    protected function cacheManager()
+    {
+        $app = Application::getInstance();
+
+        if (!$app->bound('cache.manager')) {
+            WP_CLI::error('The Jankx cache system is not registered (is cache.enabled true in config/cache.php?).');
+        }
+
+        return $app->make('cache.manager');
+    }
+
+    /**
+     * @param \Jankx\Cache\CacheManager $manager Cache manager.
+     * @return void
+     */
+    protected function report($manager)
+    {
+        $status = $manager->status();
+
+        WP_CLI::log('');
+        WP_CLI::log(sprintf(
+            'Engine : %s%s',
+            $status['engine']['driver'],
+            $status['engine']['persistent'] ? ' (persistent)' : ' (per-request unless files)'
+        ));
+        WP_CLI::log(sprintf(
+            'Page   : %s | mode %s | server %s | storage %s | edge %s',
+            $status['page']['enabled'] ? 'enabled' : 'disabled',
+            $status['page']['mode'],
+            $status['page']['server'],
+            $status['page']['storage'] ? 'on' : 'off',
+            $status['page']['edge'] ? 'on' : 'off'
+        ));
+        WP_CLI::log(sprintf(
+            'Query  : %s | hits %d | misses %d',
+            $status['query']['enabled'] ? 'enabled' : 'disabled',
+            (int) $status['query']['stats']['hits'],
+            (int) $status['query']['stats']['misses']
+        ));
+        WP_CLI::log('');
     }
 
     /**

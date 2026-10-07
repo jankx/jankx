@@ -15,6 +15,7 @@ return [
         Jankx\Support\Providers\ThemeOptionsServiceProvider::class,
         App\Providers\ThemeOptionsIntegrationServiceProvider::class,
         Jankx\Support\Providers\PerformanceServiceProvider::class,
+        Jankx\Support\Providers\CacheServiceProvider::class,
         Jankx\Support\Providers\TemplateEngineServiceProvider::class,
         Jankx\Support\Providers\ThemeServiceProvider::class,
         Jankx\Support\Providers\WordPressCliServiceProvider::class,
