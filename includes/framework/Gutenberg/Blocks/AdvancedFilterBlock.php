@@ -249,9 +249,9 @@ class AdvancedFilterBlock extends Block
                 $innerProperties['radius'] = '--jankx-filter-box-radius';
             }
 
-            $attributes = is_object($inner) && isset($inner->attributes) && is_array($inner->attributes)
-                ? $inner->attributes
-                : [];
+            // WP_Block exposes attributes through __get(), so it must be read
+            // directly: isset() would evaluate to false and drop everything.
+            $attributes = is_object($inner) ? (array) $inner->attributes : [];
 
             foreach ($innerProperties as $attribute => $property) {
                 if (!isset($attributes[$attribute]) || $attributes[$attribute] === '' || $attributes[$attribute] === null) {

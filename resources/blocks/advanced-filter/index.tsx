@@ -225,17 +225,26 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
     );
 
     // Keep the style slot in sync with the display style: switching to
-    // Checkboxes inserts the matching block, switching away removes it.
+    // Checkboxes inserts the matching block, switching away removes it. The
+    // effect has to stay idempotent, so it re-reads the store after every
+    // write instead of trusting the snapshot it started with.
     useEffect(() => {
         if (!clientId) {
             return;
         }
         const blockEditor = select('core/block-editor') as any;
-        const innerBlocks: any[] = blockEditor.getBlock(clientId)?.innerBlocks || [];
-        const styleBlocks = innerBlocks.filter((block) =>
-            FILTER_STYLE_BLOCKS.includes(block.name)
+        const readStyleBlocks = (): any[] =>
+            (blockEditor.getBlock(clientId)?.innerBlocks || []).filter((block) =>
+                FILTER_STYLE_BLOCKS.includes(block.name)
+            );
+
+        const styleBlocks = readStyleBlocks();
+        const keptIndex = desiredStyleBlock
+            ? styleBlocks.findIndex((block) => block.name === desiredStyleBlock)
+            : -1;
+        const outdated = styleBlocks.filter(
+            (block, index) => block.name !== desiredStyleBlock || index !== keptIndex
         );
-        const outdated = styleBlocks.filter((block) => block.name !== desiredStyleBlock);
 
         if (outdated.length) {
             blockEditor.removeBlocks(
@@ -243,7 +252,8 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                 false
             );
         }
-        if (desiredStyleBlock && !styleBlocks.some((block) => block.name === desiredStyleBlock)) {
+
+        if (desiredStyleBlock && !readStyleBlocks().some((block) => block.name === desiredStyleBlock)) {
             blockEditor.insertBlock(createBlock(desiredStyleBlock), 0, clientId, false);
         }
     }, [clientId, desiredStyleBlock]);

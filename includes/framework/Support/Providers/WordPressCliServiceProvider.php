@@ -185,6 +185,7 @@ class WordPressCliServiceProvider extends ServiceProvider
                 'clear-blocks' => 'Clear block cache',
                 'clear-widgets'=> 'Clear widget cache',
                 'clear-users'  => 'Clear user cache',
+                'purge'        => 'Purge page cache + query cache (storage and edge)',
                 'status'       => 'Show cache status',
             ],
             'jankx config' => [
