@@ -317,4 +317,91 @@ describe('DynamicDataLayout Edit', () => {
         expect(screen.getByTestId('form-token-field')).toBeInTheDocument();
         expect(screen.queryByTestId('select-Post Type')).not.toBeInTheDocument();
     });
+
+    const cqoToggleId = 'toggle-Filter by current term (queried object)';
+
+    it('should show the queried-object toggle only for the default preset', async () => {
+        const first = render(<Edit {...defaultProps} />);
+        await act(async () => {});
+        expect(screen.getByTestId(cqoToggleId)).toBeInTheDocument();
+        first.unmount();
+
+        const custom = { ...defaultProps, attributes: { ...defaultAttributes, queryPreset: 'custom' } };
+        await act(async () => {
+            render(<Edit {...custom} />);
+        });
+        expect(screen.queryByTestId(cqoToggleId)).not.toBeInTheDocument();
+    });
+
+    it('should add a CURRENT_QUERIED_OBJECT taxQuery entry when toggled on', async () => {
+        const setAttributes = jest.fn();
+        await act(async () => {
+            render(<Edit {...defaultProps} setAttributes={setAttributes} />);
+        });
+
+        fireEvent.click(screen.getByTestId(cqoToggleId));
+        expect(setAttributes).toHaveBeenLastCalledWith({
+            taxQuery: [{ taxonomy: '', terms: [], operator: 'CURRENT_QUERIED_OBJECT' }],
+        });
+    });
+
+    it('should remove existing CURRENT_QUERIED_OBJECT entries when toggled off', async () => {
+        const setAttributes = jest.fn();
+        const props = {
+            ...defaultProps,
+            setAttributes,
+            attributes: {
+                ...defaultAttributes,
+                taxQuery: [
+                    { taxonomy: 'category', terms: [5], operator: 'IN' },
+                    { taxonomy: '', terms: [], operator: 'CURRENT_QUERIED_OBJECT' },
+                ],
+            },
+        };
+        await act(async () => {
+            render(<Edit {...props} />);
+        });
+
+        fireEvent.click(screen.getByTestId(cqoToggleId));
+        expect(setAttributes).toHaveBeenLastCalledWith({
+            taxQuery: [{ taxonomy: 'category', terms: [5], operator: 'IN' }],
+        });
+    });
+
+    it('should keep the CURRENT_QUERIED_OBJECT entry when pruning unknown taxonomies', async () => {
+        mockApiFetch.mockImplementation((options: { path: string }) => {
+            if (options.path.includes('taxonomies')) {
+                return Promise.resolve({
+                    category: { slug: 'category', name: 'Categories' },
+                });
+            }
+            if (options.path.includes('users')) {
+                return Promise.resolve([]);
+            }
+            return Promise.resolve({});
+        });
+
+        const setAttributes = jest.fn();
+        const props = {
+            ...defaultProps,
+            setAttributes,
+            attributes: {
+                ...defaultAttributes,
+                taxQuery: [
+                    { taxonomy: 'destination', terms: [6], operator: 'IN' },
+                    { taxonomy: '', terms: [], operator: 'CURRENT_QUERIED_OBJECT' },
+                ],
+            },
+        };
+
+        await act(async () => {
+            render(<Edit {...props} />);
+        });
+
+        await waitFor(() => {
+            expect(setAttributes).toHaveBeenCalledWith({
+                taxQuery: [{ taxonomy: '', terms: [], operator: 'CURRENT_QUERIED_OBJECT' }],
+            });
+        });
+    });
 });
