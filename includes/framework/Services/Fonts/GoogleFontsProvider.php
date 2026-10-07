@@ -10,70 +10,197 @@ class GoogleFontsProvider
     protected $apiKey;
     protected $fonts = [];
 
+    /**
+     * Fonts chờ gộp thành một request css2 duy nhất.
+     * Keyed by font name để tránh duplicate.
+     *
+     * @var array<string, array{name: string, variants: array, subsets: array}>
+     */
+    protected $pendingFonts = [];
+
+    protected $combinedScheduled = false;
+
+    protected $preconnectAdded = false;
+
     public function __construct()
     {
         $this->apiKey = get_option('jankx_google_fonts_api_key', '');
     }
 
     /**
-     * Enqueue Google Font
+     * Enqueue Google Font.
+     *
+     * Thay vì mỗi family một request css2 (3-4 request render-blocking),
+     * các font được tích lũy và gộp thành MỘT request duy nhất.
      */
     public function enqueueFont($fontData)
     {
         $fontName = $fontData['name'];
-        $variants = $fontData['variants'] ?? ['400'];
-        $subsets = $fontData['subsets'] ?? ['latin'];
 
+        $this->pendingFonts[$fontName] = [
+            'name' => $fontName,
+            'variants' => $fontData['variants'] ?? ['400'],
+            'subsets' => $fontData['subsets'] ?? ['latin'],
+        ];
 
-        // Tạo Google Fonts URL
-        $url = $this->buildGoogleFontsUrl($fontName, $variants, $subsets);
+        $this->scheduleCombinedEnqueue();
+    }
 
-        if ($url) {
-            // Thêm preconnect links cho Google Fonts
-            $this->addGoogleFontsPreconnect();
+    /**
+     * Đăng ký flush tích hợp vào hook enqueue hiện tại (hoặc chạy ngay nếu
+     * enqueueFont được gọi ngoàiwp_enqueue_scripts/admin_enqueue_scripts).
+     */
+    protected function scheduleCombinedEnqueue()
+    {
+        if ($this->combinedScheduled) {
+            return;
+        }
+        $this->combinedScheduled = true;
 
-            // Enqueue Google Fonts CSS
-            $sanitizedId = \Jankx\Helper\HtmlHelper::sanitizeFontClassName($fontName);
-            $handle = 'google-font-' . $sanitizedId;
+        add_action('wp_enqueue_scripts', [$this, 'enqueueCombinedFonts'], 99);
+        add_action('admin_enqueue_scripts', [$this, 'enqueueCombinedFonts'], 99);
 
-            wp_register_style($handle, $url, [], null);
-            wp_enqueue_style($handle);
-        } else {
+        if (!doing_action('wp_enqueue_scripts') && !doing_action('admin_enqueue_scripts')) {
+            $this->enqueueCombinedFonts();
         }
     }
 
     /**
-     * Thêm preconnect links cho Google Fonts
+     * Enqueue một stylesheet Google Fonts duy nhất chứa tất cả families.
      */
-    protected function addGoogleFontsPreconnect()
+    public function enqueueCombinedFonts()
     {
-        // Chỉ thêm preconnect một lần
-        static $preconnectAdded = false;
-
-        if ($preconnectAdded) {
+        if (empty($this->pendingFonts)) {
             return;
         }
 
-        // Thêm preconnect links vào head
-        add_action('wp_head', function () {
-            echo '<link rel="preconnect" href="https://fonts.googleapis.com">' . "\n";
-            echo '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>' . "\n";
-        }, 1);
+        $url = $this->buildCombinedUrl();
+        if (!$url) {
+            return;
+        }
 
-        $preconnectAdded = true;
+        $handle = 'jankx-google-fonts';
+
+        if (wp_style_is($handle, 'registered')) {
+            // Có font mới được thêm sau lần flush đầu — cập nhật src.
+            global $wp_styles;
+            if ($wp_styles && isset($wp_styles->registered[$handle])) {
+                $wp_styles->registered[$handle]->src = $url;
+            }
+            wp_enqueue_style($handle);
+
+            return;
+        }
+
+        $this->addGoogleFontsPreconnect();
+
+        wp_register_style($handle, $url, [], null);
+        wp_enqueue_style($handle);
     }
 
     /**
-     * Tạo Google Fonts URL
+     * Gộp toàn bộ pending fonts thành một URL css2.
+     */
+    protected function buildCombinedUrl()
+    {
+        $familyParams = [];
+        foreach ($this->pendingFonts as $font) {
+            $family = $this->buildFamilyParam($font['name'], $font['variants']);
+            if ($family) {
+                $familyParams[] = 'family=' . $family;
+            }
+        }
+
+        if (empty($familyParams)) {
+            return '';
+        }
+
+        $url = 'https://fonts.googleapis.com/css2?' . implode('&', $familyParams) . '&display=swap';
+
+        if (!empty($this->apiKey)) {
+            $url .= "&key={$this->apiKey}";
+        }
+
+        return $url;
+    }
+
+    /**
+     * Thêm preconnect links cho Google Fonts qua wp_resource_hints.
+     *
+     * Đăng ký filter trong wp_enqueue_scripts (wp_head priority 1) nên vẫn
+     * kịp chạy trước wp_resource_hints (wp_head priority 2).
+     */
+    protected function addGoogleFontsPreconnect()
+    {
+        if ($this->preconnectAdded) {
+            return;
+        }
+        $this->preconnectAdded = true;
+
+        add_filter('wp_resource_hints', [$this, 'resourceHints'], 10, 2);
+    }
+
+    /**
+     * Preconnect tới fonts.googleapis.com (CSS) và fonts.gstatic.com (font files).
+     */
+    public function resourceHints($urls, $relationType)
+    {
+        if ($relationType !== 'preconnect' || is_admin()) {
+            return $urls;
+        }
+
+        $urls[] = 'https://fonts.googleapis.com';
+        $urls[] = [
+            'href' => 'https://fonts.gstatic.com',
+            'crossorigin' => 'anonymous',
+        ];
+
+        return $urls;
+    }
+
+    /**
+     * Tạo Google Fonts URL (giữ nguyên API cho các caller cũ).
      */
     public function buildGoogleFontsUrl($fontName, $variants, $subsets)
+    {
+        $family = $this->buildFamilyParam($fontName, $variants);
+
+        if (!$family) {
+            return '';
+        }
+
+        $url = "https://fonts.googleapis.com/css2?family={$family}&display=swap";
+
+        // Thêm API key nếu có
+        if (!empty($this->apiKey)) {
+            $url .= "&key={$this->apiKey}";
+        }
+
+        return $url;
+    }
+
+    /**
+     * Tạo tham số family cho css2, ví dụ: "Inter:ital,wght@0,400;0,700"
+     */
+    public function buildFamilyParam($fontName, $variants)
     {
         // Chuyển đổi font name thành Google Fonts format
         $googleFontName = str_replace(' ', '+', $fontName);
 
-        // Tạo variants string cho Google Fonts v2
-        $variantsString = '';
+        $variantsString = $this->buildVariantsString($variants);
 
+        if (!$variantsString) {
+            return '';
+        }
+
+        return "{$googleFontName}:{$variantsString}";
+    }
+
+    /**
+     * Tạo variants string cho Google Fonts v2 (ital,wght@... hoặc wght@...)
+     */
+    protected function buildVariantsString($variants)
+    {
         // Tách riêng regular và italic variants
         $regularWeights = [];
         $italicWeights = [];
@@ -125,22 +252,13 @@ class GoogleFontsProvider
             if ($variantsString) {
                 $variantsString = "ital,wght@" . $variantsString;
             }
-        } else {
-            // Nếu không có variants, sử dụng format đơn giản
-            $variantsString = "wght@" . implode(';', $variants);
+
+            return $variantsString;
         }
 
-        // Tạo URL cho Google Fonts v2
-        $url = "https://fonts.googleapis.com/css2?family={$googleFontName}:{$variantsString}&display=swap";
-
-        // Thêm API key nếu có
-        if (!empty($this->apiKey)) {
-            $url .= "&key={$this->apiKey}";
-        }
-
-        return $url;
+        // Nếu không có variants, sử dụng format đơn giản
+        return $variants ? 'wght@' . implode(';', $variants) : '';
     }
-
 
     /**
      * Set Google Fonts API key

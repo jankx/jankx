@@ -200,6 +200,12 @@ class TermTemplateBlockGenerator extends AbstractContentGenerator
             $currentStyle .= ($currentStyle !== '' ? '; ' : '') . $bgStyle;
         }
 
+        $bgImageUrl = $this->resolveTermItemImageUrl($templateAttrs, $term);
+        $bgImgHtml = \Jankx\Layouts\DynamicDataLayout\BackgroundImageRenderer::build($templateAttrs, $bgImageUrl, $itemIndex);
+        $bgTintHtml = $bgImgHtml !== ''
+            ? \Jankx\Layouts\DynamicDataLayout\BackgroundImageRenderer::buildTint($templateAttrs)
+            : '';
+
         $animationType = $templateAttrs['animationType'] ?? 'none';
         if ($animationType !== 'none') {
             $animationTarget = $templateAttrs['animationTarget'] ?? 'entry';
@@ -257,10 +263,12 @@ class TermTemplateBlockGenerator extends AbstractContentGenerator
         $currentStyleAttr = $currentStyle !== '' ? sprintf(' style="%s"', esc_attr($currentStyle)) : '';
 
         return sprintf(
-            '<div class="%s"%s%s>%s%s%s</div>',
+            '<div class="%s"%s%s>%s%s%s%s%s</div>',
             esc_attr($classes),
             $currentStyleAttr,
             $itemDataAttrs,
+            $bgImgHtml,
+            $bgTintHtml,
             $itemContent,
             $overlayHtml,
             $itemIconHtml
@@ -293,43 +301,9 @@ class TermTemplateBlockGenerator extends AbstractContentGenerator
             $styles[] = 'background-color: ' . esc_attr($attrs['itemBgColor']);
         }
 
-        if ($bgType === 'image') {
-            $imageUrl = $attrs['itemBgImageUrl'] ?? '';
-            if (($attrs['itemBgImageSource'] ?? 'custom') === 'featured') {
-                $service = null;
-                if (class_exists('\Jankx\Extensions\TaxonomyFeaturedImage\TaxonomyFeaturedImageExtension')) {
-                    $ext = \Jankx\Extensions\TaxonomyFeaturedImage\TaxonomyFeaturedImageExtension::get_instance();
-                    $service = $ext ? $ext->getService() : null;
-                }
-                if (!$service && class_exists('\Jankx\Extensions\TaxonomyFeaturedImage\Services\TaxonomyImageService')) {
-                    $service = new \Jankx\Extensions\TaxonomyFeaturedImage\Services\TaxonomyImageService();
-                }
-                if ($service) {
-                    $url = $service->getTermImageUrl($term, 'full');
-                    if (!empty($url)) {
-                        $imageUrl = $url;
-                    }
-                }
-            }
-            if ($imageUrl === '' && !empty($attrs['itemDefaultImageUrl'])) {
-                $imageUrl = $attrs['itemDefaultImageUrl'];
-            }
-            if ($imageUrl === '') {
-                $defaultImagePath = get_template_directory() . '/resources/assets/images/placeholder-image.png';
-                if (file_exists($defaultImagePath)) {
-                    $imageUrl = get_template_directory_uri() . '/resources/assets/images/placeholder-image.png';
-                }
-            }
-            if ($imageUrl !== '') {
-                $styles[] = 'background-image: url(' . esc_url($imageUrl) . ')';
-            }
-            $styles[] = 'background-size: ' . esc_attr($attrs['itemBgSize'] ?? 'cover');
-            $styles[] = 'background-repeat: ' . esc_attr($attrs['itemBgRepeat'] ?? 'no-repeat');
-            $styles[] = 'background-position: ' . esc_attr($attrs['itemBgPosition'] ?? 'center center');
-            if (!empty($attrs['itemBgOverlay'])) {
-                $styles[] = 'position: relative';
-            }
-        }
+        // Background images are rendered as an absolutely positioned <img>
+        // (see BackgroundImageRenderer), not as a CSS background, so nothing
+        // image-specific is emitted here.
 
         if (in_array($bgType, ['color', 'image'], true)) {
             $styles[] = 'display: flex';
@@ -344,6 +318,49 @@ class TermTemplateBlockGenerator extends AbstractContentGenerator
         }
 
         return implode('; ', $styles);
+    }
+
+    /**
+     * Resolve the background image URL for a term item.
+     *
+     * Shared between the (now unused) inline-background path and the <img>
+     * renderer so both read the same source/placeholder rules.
+     */
+    protected function resolveTermItemImageUrl(array $attrs, \WP_Term $term): string
+    {
+        $bgType = $attrs['itemBgType'] ?? 'none';
+        if ($bgType !== 'image') {
+            return '';
+        }
+
+        $imageUrl = $attrs['itemBgImageUrl'] ?? '';
+        if (($attrs['itemBgImageSource'] ?? 'custom') === 'featured') {
+            $service = null;
+            if (class_exists('\Jankx\Extensions\TaxonomyFeaturedImage\TaxonomyFeaturedImageExtension')) {
+                $ext = \Jankx\Extensions\TaxonomyFeaturedImage\TaxonomyFeaturedImageExtension::get_instance();
+                $service = $ext ? $ext->getService() : null;
+            }
+            if (!$service && class_exists('\Jankx\Extensions\TaxonomyFeaturedImage\Services\TaxonomyImageService')) {
+                $service = new \Jankx\Extensions\TaxonomyFeaturedImage\Services\TaxonomyImageService();
+            }
+            if ($service) {
+                $url = $service->getTermImageUrl($term, 'full');
+                if (!empty($url)) {
+                    $imageUrl = $url;
+                }
+            }
+        }
+        if ($imageUrl === '' && !empty($attrs['itemDefaultImageUrl'])) {
+            $imageUrl = $attrs['itemDefaultImageUrl'];
+        }
+        if ($imageUrl === '') {
+            $defaultImagePath = get_template_directory() . '/resources/assets/images/placeholder-image.png';
+            if (file_exists($defaultImagePath)) {
+                $imageUrl = get_template_directory_uri() . '/resources/assets/images/placeholder-image.png';
+            }
+        }
+
+        return $imageUrl;
     }
 
     /**

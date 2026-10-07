@@ -77,6 +77,15 @@ trait PostTemplateRendererTrait
                 $currentStyle .= ($currentStyle !== '' ? '; ' : '') . $itemBackgroundStyle;
             }
 
+            // Background images render as an absolutely positioned <img> so
+            // the browser can discover/prioritize them with the HTML.
+            $bgImageUrl = $this->resolveTemplateItemImageUrl($templateAttrs, $post);
+            $bgImgHtml = \Jankx\Layouts\DynamicDataLayout\BackgroundImageRenderer::build($templateAttrs, $bgImageUrl, $itemIndex);
+            if ($bgImgHtml !== '') {
+                $bgTintHtml = \Jankx\Layouts\DynamicDataLayout\BackgroundImageRenderer::buildTint($templateAttrs);
+                $itemContent = $bgImgHtml . $bgTintHtml . $itemContent;
+            }
+
             if ($animationType !== 'none') {
                 $classes .= sprintf(' jankx-reveal jankx-reveal--%s jankx-reveal--target-%s', $animationType, $animationTarget);
                 if ($animationReverse) {
@@ -172,29 +181,11 @@ trait PostTemplateRendererTrait
         }
 
         if ($backgroundType === 'image') {
-            $imageUrl = $attrs['itemBgImageUrl'] ?? '';
-            if (($attrs['itemBgImageSource'] ?? 'custom') === 'featured' && $post instanceof WP_Post && has_post_thumbnail($post->ID)) {
-                $imageUrl = get_the_post_thumbnail_url($post->ID, 'full');
-            }
-            if ($imageUrl !== '') {
-                if (!empty($attrs['itemBgOverlay'])) {
-                    $overlayColor = $attrs['itemBgOverlay'];
-                    $styles[] = 'background-image: linear-gradient(' . $overlayColor . ', ' . $overlayColor . '), url(' . esc_url($imageUrl) . ')';
-                } else {
-                    $styles[] = 'background-image: url(' . esc_url($imageUrl) . ')';
-                }
-            } elseif (!empty($attrs['itemBgOverlay'])) {
+            // The image itself is rendered as an absolutely positioned <img>
+            // by BackgroundImageRenderer; only the no-image fallback tint
+            // stays as a CSS background.
+            if ($this->resolveTemplateItemImageUrl($attrs, $post) === '' && !empty($attrs['itemBgOverlay'])) {
                 $styles[] = 'background-color: ' . esc_attr($attrs['itemBgOverlay']);
-            }
-            $styles[] = 'background-size: ' . esc_attr($attrs['itemBgSize'] ?? 'cover');
-            $styles[] = 'background-repeat: ' . esc_attr($attrs['itemBgRepeat'] ?? 'no-repeat');
-            $bgPosition = $attrs['itemBgPosition'] ?? 'center center';
-            if (is_array($bgPosition)) {
-                $bgPosition = (($bgPosition['x'] ?? 0.5) * 100) . '% ' . (($bgPosition['y'] ?? 0.5) * 100) . '%';
-            }
-            $styles[] = 'background-position: ' . esc_attr($bgPosition);
-            if (!empty($attrs['itemBgOverlay'])) {
-                $styles[] = 'position: relative';
             }
         }
 
@@ -211,6 +202,23 @@ trait PostTemplateRendererTrait
         }
 
         return implode('; ', $styles);
+    }
+
+    /**
+     * Resolve the background image URL for a post item.
+     */
+    protected function resolveTemplateItemImageUrl(array $attrs, ?WP_Post $post = null): string
+    {
+        if (($attrs['itemBgType'] ?? 'none') !== 'image') {
+            return '';
+        }
+
+        $imageUrl = $attrs['itemBgImageUrl'] ?? '';
+        if ((($attrs['itemBgImageSource'] ?? 'custom') === 'featured') && $post instanceof WP_Post && has_post_thumbnail($post->ID)) {
+            $imageUrl = get_the_post_thumbnail_url($post->ID, 'full');
+        }
+
+        return is_string($imageUrl) ? $imageUrl : '';
     }
 
     protected function renderCarousel(WP_Query $query, array $options): string

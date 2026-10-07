@@ -25,16 +25,21 @@ if (file_exists($blocks_integration)) {
 }
 
 /**
- * Enqueue fonts and styles for frontend
- */
-add_action('wp_enqueue_scripts', function() {
-    // Enqueue Inter and Montserrat from Google Fonts
-    wp_enqueue_style('jankx-fonts', 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Montserrat:wght@700;800&display=swap', [], null);
-});
-
-/**
  * Enqueue fonts and styles for block editor
  */
 add_action('enqueue_block_editor_assets', function() {
     wp_enqueue_style('jankx-editor-fonts', 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Montserrat:wght@700;800&display=swap', [], null);
+});
+
+/**
+ * Self-hosted animate.css (blocks previously @imported it from cdnjs inside
+ * their CSS, creating a render-blocking @import chain).
+ */
+add_action('wp_enqueue_scripts', function() {
+    wp_enqueue_style(
+        'jankx-animate',
+        get_template_directory_uri() . '/resources/assets/css/animate.min.css',
+        [],
+        '4.1.1'
+    );
 });

@@ -67,7 +67,9 @@ class DynamicDataTemplateContentAlignTest extends TestCase
 
         $style = $method->invoke($generator, $templateBlock['attrs'], null);
 
-        $this->assertStringContainsString('background-image: url(https://example.com/image.jpg)', $style);
+        // The image itself renders as an <img> (BackgroundImageRenderer), so
+        // the inline style only carries the layout rules.
+        $this->assertStringNotContainsString('background-image', $style);
         $this->assertStringContainsString('display: flex', $style);
         $this->assertStringContainsString('flex-direction: column', $style);
         $this->assertStringContainsString('justify-content: flex-end', $style);

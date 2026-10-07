@@ -10,9 +10,6 @@
  * Wrapper cho toàn bộ items thuộc dynamic-data-layout block.
  */
 
-// Import Animate.css for hover/unhover animation support
-@import url('https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css');
-
 // =====================================================
 // Overlap Card Layout — per-item
 // =====================================================
@@ -73,6 +70,20 @@
 .dynamic-data-template[data-item-bg-content-align] .dynamic-data-template__item {
     display: flex;
     flex-direction: column;
+}
+
+// =====================================================
+// Item background image rendered as <img> (LCP-friendly)
+// =====================================================
+.dynamic-data-template__item > img.dynamic-data-template__bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    display: block;
+    object-fit: cover;
+    pointer-events: none;
 }
 
 .dynamic-data-template[data-item-bg-content-align="top"] .dynamic-data-template__item {
