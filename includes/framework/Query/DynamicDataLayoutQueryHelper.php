@@ -77,6 +77,13 @@ class DynamicDataLayoutQueryHelper
                 $attributes['sortRules'] ?? null
             );
 
+            // Merge block-level filters on top of the inherited query vars:
+            // CURRENT_QUERIED_OBJECT entries (current term), advanced-filters
+            // taxonomy/meta/author rules and manual query attributes are all
+            // combined with AND, so the archive scope and the AJAX filter
+            // rules apply together.
+            $query_vars = self::mergeAttributeFilters($query_vars, $attributes);
+
             try {
                 return new WP_Query($query_vars);
             } finally {
@@ -90,6 +97,150 @@ class DynamicDataLayoutQueryHelper
         $noFoundRows = empty($attributes['enablePagination']);
         $fallbackArgs = ['posts_per_page' => $postsPerPage, 'no_found_rows' => $noFoundRows];
         return current_theme_supports('jankx') ? new WP_Query($fallbackArgs) : ($wp_query instanceof WP_Query ? clone $wp_query : new WP_Query($fallbackArgs));
+    }
+
+    /**
+     * Resolve CURRENT_QUERIED_OBJECT entries of a taxQuery list into concrete
+     * term constraints for the current request (term archive / singular post).
+     *
+     * Entries that cannot be resolved on this request are dropped so they can
+     * never produce an empty / impossible tax clause.
+     *
+     * @param array $taxQuery Raw taxQuery entries.
+     * @return array
+     */
+    public static function resolveQueriedObjectTaxQuery(array $taxQuery): array
+    {
+        $resolved = [];
+
+        foreach ($taxQuery as $entry) {
+            if (($entry['operator'] ?? '') !== 'CURRENT_QUERIED_OBJECT') {
+                $resolved[] = $entry;
+                continue;
+            }
+
+            $taxonomy = $entry['taxonomy'] ?? '';
+            $queriedObject = get_queried_object();
+
+            if ($queriedObject instanceof \WP_Term && ($taxonomy === '' || $queriedObject->taxonomy === $taxonomy)) {
+                $resolved[] = [
+                    'taxonomy' => $queriedObject->taxonomy,
+                    'field'     => 'term_id',
+                    'terms'     => [(int) $queriedObject->term_id],
+                    'operator'  => 'IN',
+                ];
+                continue;
+            }
+
+            if (is_singular() && $taxonomy !== '') {
+                $terms = get_the_terms(get_the_ID(), $taxonomy);
+                if (is_array($terms) && !empty($terms)) {
+                    $resolved[] = [
+                        'taxonomy' => $taxonomy,
+                        'field'     => 'term_id',
+                        'terms'     => array_map('intval', wp_list_pluck($terms, 'term_id')),
+                        'operator'  => 'IN',
+                    ];
+                    continue;
+                }
+            }
+
+            // Not resolvable in this request context — drop the entry.
+        }
+
+        return $resolved;
+    }
+
+    /**
+     * Merge block-level query filters (advanced-filters rules, manual
+     * tax/meta/author attributes) into already-built query vars.
+     * Everything is combined with AND so the inherited archive scope and the
+     * filter rules all apply together.
+     *
+     * @param array $query_vars Query vars to merge into.
+     * @param array $attributes Block attributes.
+     * @return array
+     */
+    protected static function mergeAttributeFilters(array $query_vars, array $attributes): array
+    {
+        // --- taxonomy filters (advanced-filters rules + manual taxQuery) ---
+        $taxQuery = is_array($attributes['taxQuery'] ?? null) ? $attributes['taxQuery'] : [];
+        if (!empty($taxQuery)) {
+            $taxQuery = self::resolveQueriedObjectTaxQuery($taxQuery);
+
+            $built = [];
+            foreach ($taxQuery as $entry) {
+                $taxonomy = sanitize_key($entry['taxonomy'] ?? '');
+                $operator = in_array(($entry['operator'] ?? 'IN'), ['IN', 'NOT IN', 'AND', 'EXISTS', 'NOT EXISTS'], true)
+                    ? ($entry['operator'] ?? 'IN')
+                    : 'IN';
+
+                if ($taxonomy === '') {
+                    continue;
+                }
+                if (in_array($operator, ['EXISTS', 'NOT EXISTS'], true)) {
+                    $built[] = ['taxonomy' => $taxonomy, 'operator' => $operator];
+                    continue;
+                }
+                if (empty($entry['terms'])) {
+                    continue;
+                }
+                $built[] = [
+                    'taxonomy' => $taxonomy,
+                    'field'     => 'term_id',
+                    'terms'     => array_map('intval', (array) $entry['terms']),
+                    'operator'  => $operator,
+                ];
+            }
+
+            if (!empty($built)) {
+                if (!empty($query_vars['tax_query']) && is_array($query_vars['tax_query'])) {
+                    $query_vars['tax_query'] = array_merge($query_vars['tax_query'], $built);
+                } else {
+                    $query_vars['tax_query'] = $built;
+                }
+            }
+        }
+
+        // --- meta filters (advanced-filters meta_* rules + manual metaQuery) ---
+        $metaQuery = is_array($attributes['metaQuery'] ?? null) ? $attributes['metaQuery'] : [];
+        $builtMeta = [];
+        foreach ($metaQuery as $entry) {
+            $key = sanitize_key($entry['key'] ?? '');
+            if ($key === '') {
+                continue;
+            }
+            $allowed = ['=', '!=', '>', '>=', '<', '<=', 'LIKE', 'NOT LIKE', 'IN', 'NOT IN', 'EXISTS', 'NOT EXISTS'];
+            $compare = in_array(($entry['compare'] ?? '='), $allowed, true) ? ($entry['compare'] ?? '=') : '=';
+            $item = ['key' => $key, 'compare' => $compare];
+            if (!in_array($compare, ['EXISTS', 'NOT EXISTS'], true)) {
+                $item['value'] = sanitize_text_field($entry['value'] ?? '');
+            }
+            if (!empty($entry['type'])) {
+                $type = strtoupper(sanitize_text_field($entry['type']));
+                if (in_array($type, ['NUMERIC', 'BINARY', 'CHAR', 'DATE', 'DATETIME', 'DECIMAL', 'SIGNED', 'UNSIGNED'], true)) {
+                    $item['type'] = $type;
+                }
+            }
+            $builtMeta[] = $item;
+        }
+        if (!empty($builtMeta)) {
+            if (!empty($query_vars['meta_query']) && is_array($query_vars['meta_query'])) {
+                $query_vars['meta_query'] = array_merge($query_vars['meta_query'], $builtMeta);
+            } else {
+                $query_vars['meta_query'] = $builtMeta;
+            }
+        }
+
+        // --- author filter (advanced-filters author rules + manual authorIn) ---
+        $authorIn = is_array($attributes['authorIn'] ?? null) ? $attributes['authorIn'] : [];
+        $authorIn = array_values(array_filter(array_map('intval', $authorIn)));
+        if (!empty($authorIn)) {
+            $existing = is_array($query_vars['author__in'] ?? null) ? array_map('intval', $query_vars['author__in']) : [];
+            $query_vars['author__in'] = array_values(array_unique(array_merge($existing, $authorIn)));
+        }
+
+        return $query_vars;
     }
 
     /**

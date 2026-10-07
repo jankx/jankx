@@ -671,7 +671,9 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
             return;
         }
         const availableSlugs = new Set(taxonomies.map((taxonomy) => taxonomy.slug));
-        const pruned = taxQuery.filter((query) => availableSlugs.has(query.taxonomy));
+        const pruned = taxQuery.filter(
+            (query) => query.operator === 'CURRENT_QUERIED_OBJECT' || availableSlugs.has(query.taxonomy)
+        );
         if (pruned.length !== taxQuery.length) {
             setAttributes({ taxQuery: pruned });
         }
@@ -1166,6 +1168,25 @@ function Edit({ attributes, setAttributes, clientId }: EditProps) {
                             checked={includeStickyPosts}
                             onChange={(value) => setAttributes({ includeStickyPosts: value })}
                             help={__('Include sticky posts in the query (disabled by default).', 'jankx')}
+                        />
+                    ) : null}
+
+                    {/* Current-term (queried object) filter for the "default" preset */}
+                    {queryPreset === 'default' ? (
+                        <ToggleControl
+                            label={__('Filter by current term (queried object)', 'jankx')}
+                            checked={taxQuery.some((tq) => tq.operator === 'CURRENT_QUERIED_OBJECT')}
+                            onChange={(value) => {
+                                const next = taxQuery.filter((tq) => tq.operator !== 'CURRENT_QUERIED_OBJECT');
+                                if (value) {
+                                    next.push({ taxonomy: '', terms: [], operator: 'CURRENT_QUERIED_OBJECT' });
+                                }
+                                setAttributes({ taxQuery: next });
+                            }}
+                            help={__(
+                                'On a term/archive page only show items of the current term. Combined (AND) with advanced-filters rules and sort rules.',
+                                'jankx'
+                            )}
                         />
                     ) : null}
 

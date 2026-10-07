@@ -241,9 +241,12 @@ class LayoutQueryBuilder
         foreach ($this->attributes['taxQuery'] as $taxItem) {
             $taxonomy = $taxItem['taxonomy'] ?? '';
             if ($taxonomy === '') {
-                continue;
-            }
-            if (!$this->isTaxonomyRegisteredForQueriedPostType($taxonomy)) {
+                // Wildcard: only meaningful for CURRENT_QUERIED_OBJECT entries
+                // (any current term), never for regular term lists.
+                if (($taxItem['operator'] ?? '') !== 'CURRENT_QUERIED_OBJECT') {
+                    continue;
+                }
+            } elseif (!$this->isTaxonomyRegisteredForQueriedPostType($taxonomy)) {
                 continue;
             }
             $operator = $this->sanitizeOperator($taxItem['operator'] ?? 'IN');
