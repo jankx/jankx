@@ -25,8 +25,10 @@ class AdvancedImageBoxBlock extends Block
         // Register default presets
         $this->registerDefaultPresets();
 
-        // Pass presets data to JavaScript
-        add_action('wp_enqueue_scripts', [$this, 'enqueuePresetsData'], 20);
+        // Pass presets data to JavaScript.
+        // Frontend hook intentionally omitted: the handle below is the block's
+        // editorScript (deps: wp-block-editor + full Gutenberg stack), which
+        // must never load on the public site.
         add_action('enqueue_block_editor_assets', [$this, 'enqueuePresetsData'], 20);
     }
 

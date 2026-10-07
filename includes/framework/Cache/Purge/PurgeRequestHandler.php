@@ -3,6 +3,8 @@
 namespace Jankx\Cache\Purge;
 
 use Jankx\Cache\Contracts\CacheSubscriberInterface;
+use Jankx\Cache\Contracts\PageCacheInterface;
+use Jankx\Cache\Contracts\QueryCacheInterface;
 
 /**
  * Applies queued LiteSpeed purges and serves the loopback purge endpoint.
@@ -12,6 +14,11 @@ use Jankx\Cache\Contracts\CacheSubscriberInterface;
  * on the next front-end response that runs PHP — and, when `active_trigger`
  * is on, the loopback request below guarantees such a response exists even
  * while every URL is already served straight from LSCache.
+ *
+ * The same endpoint also accepts `jankx_scope` (`all`|`selective`) from the
+ * token-authenticated loopback, which is how the Fast-AJAX entry point purges
+ * after a write without booting the container itself
+ * (`Jankx\Ajax\Cache\Purge`).
  *
  * @package Jankx\Cache\Purge
  * @since 2.0.0
@@ -29,13 +36,21 @@ class PurgeRequestHandler implements CacheSubscriberInterface
     private $enabled;
 
     /**
+     * @var array<string,mixed>
+     */
+    private $options;
+
+    /**
      * @param LiteSpeedPurgeClient $client  Purge client holding the queue.
      * @param bool                 $enabled Whether the handler is active.
+     * @param array<string,mixed>  $options page, query and bucket used by the
+     *                                      `jankx_scope` protocol.
      */
-    public function __construct(LiteSpeedPurgeClient $client, bool $enabled = true)
+    public function __construct(LiteSpeedPurgeClient $client, bool $enabled = true, array $options = [])
     {
         $this->client = $client;
         $this->enabled = $enabled;
+        $this->options = $options;
     }
 
     /**
@@ -80,12 +95,50 @@ class PurgeRequestHandler implements CacheSubscriberInterface
             header('X-Jankx-Cache: PURGE', true);
         }
 
+        if ($valid) {
+            // The requested scope is applied before the second flush, so the
+            // tags it queues leave on this very response.
+            $this->applyRequestedPurge();
+            $this->flushPendingHeader();
+        }
+
         if (!$valid && function_exists('status_header')) {
             status_header(403);
         }
 
         echo $valid ? 'purged' : 'forbidden';
         exit;
+    }
+
+    /**
+     * Purge requested by the loopback caller (`jankx_scope` and friends).
+     *
+     * @return void
+     */
+    protected function applyRequestedPurge(): void
+    {
+        $scope = isset($_GET['jankx_scope']) ? (string) $_GET['jankx_scope'] : '';
+        if ($scope === '' || !isset($this->options['page']) || !$this->options['page'] instanceof PageCacheInterface) {
+            return;
+        }
+
+        $pageCache = $this->options['page'];
+
+        if ($scope === 'all') {
+            $pageCache->purge(['all'], []);
+
+            if (isset($this->options['query']) && $this->options['query'] instanceof QueryCacheInterface) {
+                $bucket = isset($this->options['bucket']) && is_string($this->options['bucket'])
+                    && $this->options['bucket'] !== ''
+                    ? $this->options['bucket']
+                    : 'posts';
+                $this->options['query']->flushBucket($bucket);
+            }
+
+            return;
+        }
+
+        $pageCache->purge($this->csv('jankx_tags'), $this->csv('jankx_urls'));
     }
 
     /**
@@ -102,5 +155,27 @@ class PurgeRequestHandler implements CacheSubscriberInterface
         foreach ($this->client->pendingHeaders() as $name => $value) {
             header($name . ': ' . $value, true);
         }
+    }
+
+    /**
+     * @param string $key GET parameter holding a comma separated list.
+     * @return string[]
+     */
+    private function csv(string $key): array
+    {
+        $raw = isset($_GET[$key]) ? (string) $_GET[$key] : '';
+        if ($raw === '') {
+            return [];
+        }
+
+        $values = [];
+        foreach (explode(',', $raw) as $value) {
+            $value = trim($value);
+            if ($value !== '') {
+                $values[] = $value;
+            }
+        }
+
+        return $values;
     }
 }

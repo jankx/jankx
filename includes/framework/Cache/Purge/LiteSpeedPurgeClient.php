@@ -99,6 +99,10 @@ class LiteSpeedPurgeClient implements PurgeClientInterface
      */
     public function enqueue(array $tags): bool
     {
+        if (!$this->supportsHeaderPurge()) {
+            return false;
+        }
+
         if (!function_exists('get_option') || !function_exists('update_option')) {
             return false;
         }
@@ -147,6 +151,12 @@ class LiteSpeedPurgeClient implements PurgeClientInterface
     {
         $pending = $this->pullPending();
         if (empty($pending)) {
+            return [];
+        }
+
+        if (!$this->supportsHeaderPurge()) {
+            // Nothing can act on the header — drop the queue instead of
+            // handing OpenLiteSpeed a header it segfaults on.
             return [];
         }
 
@@ -205,6 +215,34 @@ class LiteSpeedPurgeClient implements PurgeClientInterface
         }
 
         return $token;
+    }
+
+    /**
+     * Whether the `X-LiteSpeed-Purge` response header can do any good here.
+     *
+     * OpenLiteSpeed's cache module segfaults (signal=11) on any response
+     * carrying the header — reproducible with a two-line script — and with
+     * the module unregistered there is no LSCache to purge either. Skip the
+     * header there; LSWS Enterprise (production) is unaffected. The
+     * `cache.page.purge.litespeed_header` option overrides the guess.
+     *
+     * @return bool
+     */
+    private function supportsHeaderPurge(): bool
+    {
+        $configured = isset($this->options['litespeed_header']) ? $this->options['litespeed_header'] : 'auto';
+
+        if (is_bool($configured)) {
+            return $configured;
+        }
+
+        $edition = isset($_SERVER['LSWS_EDITION']) ? (string) $_SERVER['LSWS_EDITION'] : '';
+
+        if ($edition !== '' && stripos($edition, 'openlitespeed') !== false) {
+            return false;
+        }
+
+        return true;
     }
 
     /**

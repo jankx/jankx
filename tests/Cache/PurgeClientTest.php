@@ -9,11 +9,30 @@ use Tests\Helpers\TestCase;
 
 class PurgeClientTest extends TestCase
 {
+    /**
+     * @var mixed
+     */
+    private $originalEdition;
+
     protected function setUp(): void
     {
         parent::setUp();
         unset($GLOBALS['options']);
         $GLOBALS['options'] = [];
+
+        $this->originalEdition = isset($_SERVER['LSWS_EDITION']) ? $_SERVER['LSWS_EDITION'] : null;
+        unset($_SERVER['LSWS_EDITION']);
+    }
+
+    protected function tearDown(): void
+    {
+        if ($this->originalEdition === null) {
+            unset($_SERVER['LSWS_EDITION']);
+        } else {
+            $_SERVER['LSWS_EDITION'] = $this->originalEdition;
+        }
+
+        parent::tearDown();
     }
 
     // ── HTTP transport (Varnish / nginx) ─────────────────────────────────────
@@ -146,5 +165,64 @@ class PurgeClientTest extends TestCase
 
         $this->assertFalse($client->maybeTrigger());
         $this->assertCount(0, $GLOBALS['wp_remote_gets']);
+    }
+
+    // ── OpenLiteSpeed guard (its cache module segfaults on the header) ──────
+
+    public function testOpenLiteSpeedNeverQueuesOrEmitsThePurgeHeader()
+    {
+        $_SERVER['LSWS_EDITION'] = 'Openlitespeed 1.5.12';
+        $client = new LiteSpeedPurgeClient(['active_trigger' => true]);
+
+        $this->assertFalse($client->enqueue(['all']));
+        $this->assertFalse($client->purgeAll());
+        $this->assertArrayNotHasKey(LiteSpeedPurgeClient::PENDING_OPTION, $GLOBALS['options']);
+        $this->assertSame([], $client->pendingHeaders());
+    }
+
+    public function testOpenLiteSpeedDropsAStaleQueuedHeader()
+    {
+        $_SERVER['LSWS_EDITION'] = 'Openlitespeed 1.5.12';
+        $GLOBALS['options'][LiteSpeedPurgeClient::PENDING_OPTION] = ['post-9'];
+        $client = new LiteSpeedPurgeClient(['active_trigger' => false]);
+
+        $this->assertSame([], $client->pendingHeaders());
+        $this->assertArrayNotHasKey(LiteSpeedPurgeClient::PENDING_OPTION, $GLOBALS['options']);
+    }
+
+    public function testEnterpriseEditionKeepsThePurgeHeader()
+    {
+        $_SERVER['LSWS_EDITION'] = 'LiteSpeed v1.8.4 Enterprise';
+        $client = new LiteSpeedPurgeClient(['active_trigger' => false]);
+
+        $this->assertTrue($client->enqueue(['all']));
+        $this->assertSame(
+            ['X-LiteSpeed-Purge' => 'public, all'],
+            $client->pendingHeaders()
+        );
+    }
+
+    public function testConfigCanForceTheHeaderOnOpenLiteSpeed()
+    {
+        $_SERVER['LSWS_EDITION'] = 'Openlitespeed 1.5.12';
+        $client = new LiteSpeedPurgeClient([
+            'active_trigger'   => false,
+            'litespeed_header' => true,
+        ]);
+
+        $this->assertTrue($client->enqueue(['all']));
+        $this->assertArrayHasKey(LiteSpeedPurgeClient::PENDING_OPTION, $GLOBALS['options']);
+    }
+
+    public function testConfigCanDisableTheHeaderOnEnterprise()
+    {
+        $_SERVER['LSWS_EDITION'] = 'LiteSpeed v1.8.4 Enterprise';
+        $client = new LiteSpeedPurgeClient([
+            'active_trigger'   => false,
+            'litespeed_header' => false,
+        ]);
+
+        $this->assertFalse($client->purgeAll());
+        $this->assertArrayNotHasKey(LiteSpeedPurgeClient::PENDING_OPTION, $GLOBALS['options']);
     }
 }

@@ -17,6 +17,18 @@
 // ── 0. Đồng hồ đo thời gian ──────────────────────────────────────────────────
 $_JANKX_AJAX_START = microtime(true);
 
+// ── 0b. Không bao giờ cho cache lưu response AJAX ────────────────────────────
+// Page cache (storage) đã loại trừ /jankx-ajax qua config, nhưng edge cache
+// (LSCache, nginx, Varnish) và browser không đọc được config đó — header này
+// là câu trả lời cuối cùng cho mọi tầng cache. Không thể lùi lại sau khi đã
+// echo nên đặt ngay đây, trước mọi nhánh output.
+if (! headers_sent()) {
+    header('Cache-Control: no-store, no-cache, must-revalidate, private', true);
+    header('Pragma: no-cache', true);
+    header('Expires: 0', true);
+    header('X-Jankx-Cache: BYPASS', true);
+}
+
 // ── 1. Autoload ───────────────────────────────────────────────────────────────
 $autoload = __DIR__ . '/vendor/autoload.php';
 

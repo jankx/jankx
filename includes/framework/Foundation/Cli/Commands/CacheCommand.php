@@ -3,6 +3,7 @@
 namespace Jankx\Foundation\Cli\Commands;
 
 use Jankx\Foundation\Application;
+use Jankx\Support\Opcache\Warmup;
 use WP_CLI;
 use WP_CLI_Command;
 
@@ -174,6 +175,81 @@ class CacheCommand extends WP_CLI_Command
     }
 
     /**
+     * Warm OPcache with the theme manifest (or validate it in this SAPI).
+     *
+     * Compiles every file of the theme (framework, child theme, autoload maps)
+     * into OPcache when OPcache is running — this SAPI usually has it off, in
+     * which case the manifest is validated instead and the php.ini lines for
+     * the real warm boot (`opcache.preload`) are printed.
+     *
+     * ## OPTIONS
+     *
+     * [--ini]
+     * : Print the ready-to-paste php.ini snippet.
+     *
+     * ## EXAMPLES
+     *
+     *     wp jankx cache warmup
+     *     wp jankx cache warmup --ini
+     *
+     * @when after_wp_load
+     *
+     * @param array $args       Positional arguments.
+     * @param array $assoc_args Associative arguments.
+     */
+    public function warmup($args, $assoc_args)
+    {
+        $themeDir = get_template_directory();
+        $warmup = new Warmup(Warmup::themeDirs($themeDir));
+        $files = $warmup->manifest();
+
+        WP_CLI::log(sprintf('OPcache warmup — %d files from %s', count($files), $themeDir));
+
+        if (Warmup::isStarted()) {
+            $stats = $warmup->compile($files);
+
+            WP_CLI::log(sprintf(
+                'Compiled %d files (%d failed) in %.2fs.',
+                $stats['compiled'],
+                $stats['failed'],
+                $stats['elapsed']
+            ));
+
+            foreach (array_slice($stats['messages'], 0, 5) as $message) {
+                WP_CLI::warning($message);
+            }
+        } else {
+            $stats = $warmup->validate($files);
+
+            WP_CLI::log(sprintf(
+                'OPcache is not started in SAPI "%s" — validated %d/%d readable files instead.',
+                PHP_SAPI,
+                $stats['readable'],
+                count($files)
+            ));
+
+            foreach (array_slice($stats['missing'], 0, 5) as $missing) {
+                WP_CLI::warning('Missing: ' . $missing);
+            }
+        }
+
+        if (!empty($assoc_args['ini']) || !Warmup::isStarted()) {
+            WP_CLI::log('');
+            WP_CLI::log('Warm boot for the web SAPI (php.ini):');
+            foreach (Warmup::iniSnippet($themeDir . '/opcache-preload.php', count($files)) as $line) {
+                WP_CLI::log('  ' . $line);
+            }
+        }
+
+        WP_CLI::log('');
+        WP_CLI::log('OPcache: ' . Warmup::summaryLine());
+
+        if (Warmup::isStarted() && $stats['failed'] === 0) {
+            WP_CLI::success('OPcache warmed.');
+        }
+    }
+
+    /**
      * @return \Jankx\Cache\CacheManager
      */
     protected function cacheManager()
@@ -215,6 +291,7 @@ class CacheCommand extends WP_CLI_Command
             (int) $status['query']['stats']['hits'],
             (int) $status['query']['stats']['misses']
         ));
+        WP_CLI::log(sprintf('OPcache: %s', Warmup::summaryLine()));
         WP_CLI::log('');
     }
 
