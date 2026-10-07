@@ -105,8 +105,16 @@ class CacheServiceProvider extends ServiceProvider
             );
         });
 
-        $app->singleton('cache.purge.handler', static function () {
-            return new PurgeRequestHandler(new LiteSpeedPurgeClient(), true);
+        $app->singleton('cache.purge.handler', static function ($app) use ($queryConfig) {
+            return new PurgeRequestHandler(new LiteSpeedPurgeClient(), true, [
+                // Loopback purges from Fast-AJAX (Jankx\Ajax\Cache\Purge)
+                // resolve the real layers here, inside a full WordPress boot.
+                'page'   => $app->make('cache.page'),
+                'query'  => $app->make('cache.query'),
+                'bucket' => isset($queryConfig['bucket']) && $queryConfig['bucket'] !== ''
+                    ? $queryConfig['bucket']
+                    : 'posts',
+            ]);
         });
 
         $app->singleton('cache.invalidator', static function ($app) use ($queryConfig) {

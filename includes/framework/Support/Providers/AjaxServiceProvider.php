@@ -128,6 +128,15 @@ class AjaxServiceProvider extends ServiceProvider
      */
     protected function dispatchFastAjax(string $ajaxFile): void
     {
+        // AJAX response là private data: không tầng cache nào được giữ lại
+        // (trùng với ajax.php ở nhánh standalone để cả hai đường đều an toàn).
+        if (! headers_sent()) {
+            header('Cache-Control: no-store, no-cache, must-revalidate, private', true);
+            header('Pragma: no-cache', true);
+            header('Expires: 0', true);
+            header('X-Jankx-Cache: BYPASS', true);
+        }
+
         $themeDir = get_template_directory();
 
         if (file_exists($themeDir . '/vendor/autoload.php')) {

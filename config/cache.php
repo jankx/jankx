@@ -155,6 +155,10 @@ return [
             // Send a loopback request so a front-end cache that did not run
             // PHP still receives the purge headers (LiteSpeed without plugin).
             'active_trigger' => true,
+            // Emit the LiteSpeed `X-LiteSpeed-Purge` response header.
+            // 'auto' → yes, except under OpenLiteSpeed whose cache module
+            // segfaults on that header (and has no LSCache when unregistered).
+            'litespeed_header' => 'auto',
         ],
     ],
 ];
