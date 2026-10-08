@@ -1,0 +1,44 @@
+<!-- wp:template-part {"slug":"header"} /-->
+
+<!-- wp:html -->
+<style>
+body { background-color: #09090b !important; color: #e4e4e7 !important; }
+.jkx-404-code { color: #e11d48 !important; }
+.jkx-404-sub { color: #ffffff !important; }
+.jkx-404-desc { color: #a1a1aa !important; }
+.jkx-404-back a { color: #e11d48 !important; text-decoration: none; font-weight: 600; }
+.jkx-404-back a:hover { text-decoration: underline !important; }
+</style>
+<!-- /wp:html -->
+
+<!-- wp:group {"tagName":"main","style":{"spacing":{"padding":{"top":"80px","bottom":"100px"}}},"layout":{"type":"constrained"}} -->
+<main class="wp-block-group" style="padding-top:80px;padding-bottom:100px">
+
+	<!-- wp:group {"layout":{"type":"flex","orientation":"vertical","justifyContent":"center","itemsJustification":"center"},"style":{"spacing":{"blockGap":"20px"}}} -->
+	<div class="wp-block-group">
+
+		<!-- wp:heading {"textAlign":"center","level":1,"className":"jkx-404-code","style":{"typography":{"fontWeight":"900","fontSize":"clamp(80px, 15vw, 160px)","lineHeight":"1"}}} -->
+		<h1 class="wp-block-heading has-text-align-center jkx-404-code" style="font-size:clamp(80px, 15vw, 160px);font-weight:900;line-height:1">404</h1>
+		<!-- /wp:heading -->
+
+		<!-- wp:heading {"textAlign":"center","level":2,"className":"jkx-404-sub","style":{"typography":{"fontWeight":"800","fontSize":"28px"}}} -->
+		<h2 class="wp-block-heading has-text-align-center jkx-404-sub" style="font-size:28px;font-weight:800">Không tìm thấy trang</h2>
+		<!-- /wp:heading -->
+
+		<!-- wp:paragraph {"align":"center","className":"jkx-404-desc","style":{"typography":{"fontSize":"18px","lineHeight":"1.6"}}} -->
+		<p class="has-text-align-center jkx-404-desc" style="font-size:18px;line-height:1.6">Oops! That page can't be found. Trang bạn tìm không tồn tại, đã bị di chuyển hoặc chưa từng tồn tại.</p>
+		<!-- /wp:paragraph -->
+
+		<!-- wp:search {"showLabel":false,"placeholder":"Nhập từ khóa tìm kiếm...","width":60,"widthUnit":"%","buttonText":"Tìm Kiếm","buttonUseIcon":false,"align":"center","style":{"spacing":{"margin":{"top":"24px","bottom":"0"}},"border":{"radius":"8px"},"color":{"background":"#18181b","text":"#ffffff"}}} /-->
+
+		<!-- wp:paragraph {"align":"center","className":"jkx-404-back","style":{"typography":{"fontSize":"16px"}}} -->
+		<p class="has-text-align-center jkx-404-back" style="font-size:16px"><a href="/">&larr; Về trang chủ</a></p>
+		<!-- /wp:paragraph -->
+
+	</div>
+	<!-- /wp:group -->
+
+</main>
+<!-- /wp:group -->
+
+<!-- wp:template-part {"slug":"footer"} /-->
